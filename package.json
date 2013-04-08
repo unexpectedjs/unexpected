@@ -1,0 +1,20 @@
+{
+    "name": "unexpected",
+    "version": "0.0.1",
+    "author": "Sune Sloth Simonsen <sune@we-knowhow.dk>",
+    "keywords": [ "assertion", "test", "assert" ],
+    "license": "Apache 2.0",
+    "bugs": "https://github.com/sunesimonsen/unexpected/issues",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/sunesimonsen/unexpected"
+    },
+    "scripts": {
+        "test": "./node_modules/.bin/mocha"
+    },
+    "main": "./lib/unexpected.js",
+    "dependencies": {},
+    "devDependencies": {
+        "mocha": "~1.9.0"
+    }
+}
