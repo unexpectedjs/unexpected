@@ -2,7 +2,7 @@
 var expect = require(__dirname + '/../lib/unexpected.js');
 
 describe('unexpected', function () {
-    describe('ok assertion', function () {
+    describe('ok/truthy/falsy assertion', function () {
         it('assert that the value is truthy or not', function () {
             expect(1, 'to be ok');
             expect(true, 'to be ok');
@@ -11,10 +11,16 @@ describe('unexpected', function () {
             expect(0, 'to not be ok');
             expect(0, 'to be falsy');
         });
+
+        it('throws when the assertion fails', function () {
+            expect(function () {
+                expect(0, 'to be ok');
+            }, 'to throw exception', /expected 0 to be ok/);
+        });
     });
 
     describe('be assertion', function () {
-        it('uses === for comparison', function () {
+        it('assert === equality', function () {
             var obj = {};
             expect(obj, 'to be', obj);
             expect(obj, 'to not be', {});
@@ -28,6 +34,20 @@ describe('unexpected', function () {
             expect(function () {
                 expect('foo', 'to be', 'bar');
             }, 'to throw exception', /expected 'foo' to be 'bar'/);
+        });
+    });
+
+    describe('eql assertion', function () {
+        it('asserts loose equality that works with objects', function () {
+            expect({ a: 'b' }, 'to eql', { a: 'b' });
+            expect(1, 'to eql', '1');
+        });
+
+        it('throws when the assertion fails', function () {
+            expect(function () {
+                expect({ a: 'b' }, 'to not eql', { a: 'b' });
+            }, 'to throw exception', /expected \{ a: 'b' \} to not eql \{ a: 'b' \}/);
+
         });
     });
 
