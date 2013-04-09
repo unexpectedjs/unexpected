@@ -15,7 +15,7 @@ describe('unexpected', function () {
         it('throws when the assertion fails', function () {
             expect(function () {
                 expect(0, 'to be ok');
-            }, 'to throw exception', /expected 0 to be ok/);
+            }, 'to throw exception', 'expected 0 to be ok');
         });
     });
 
@@ -33,7 +33,22 @@ describe('unexpected', function () {
         it('throws when the assertion fails', function () {
             expect(function () {
                 expect('foo', 'to be', 'bar');
-            }, 'to throw exception', /expected 'foo' to be 'bar'/);
+            }, 'to throw exception', "expected 'foo' to be 'bar'");
+        });
+    });
+
+    describe('a/an assertion', function () {
+        it('asserts typeof with support for array type and instanceof', function () {
+            expect(5, 'to be a', 'number');
+            expect([], 'to be an', 'array');
+            expect([], 'to be an', 'object');
+            expect([], 'to be an', Array);
+        });
+
+        it('throws when the assertion fails', function () {
+            expect(function () {
+                expect(5, 'to be a', Array);
+            }, 'to throw exception', 'expected 5 to be a [Function: Array]');
         });
     });
 
@@ -46,7 +61,7 @@ describe('unexpected', function () {
         it('throws when the assertion fails', function () {
             expect(function () {
                 expect({ a: 'b' }, 'to not equal', { a: 'b' });
-            }, 'to throw exception', /expected \{ a: 'b' \} to not equal \{ a: 'b' \}/);
+            }, 'to throw exception', "expected { a: 'b' } to not equal { a: 'b' }");
         });
     });
 
@@ -65,13 +80,22 @@ describe('unexpected', function () {
             });
         });
 
-        it('matches the message given regular expression', function () {
+        it('matches the message against the given regular expression', function () {
             expect(function () {
                 throw new Error('matches the exception message');
             }, 'to throw exception', /matches the exception message/);
             expect(function () {
                 throw new Error('Other error');
             }, 'to not throw exception', /matches the exception message/);
+        });
+
+        it('exactly matches the message against the given string', function () {
+            expect(function () {
+                throw new Error('matches the exception message');
+            }, 'to throw exception', 'matches the exception message');
+            expect(function () {
+                throw new Error('matches the exception message');
+            }, 'to not throw exception', 'the exception message');
         });
     });
 
@@ -84,7 +108,7 @@ describe('unexpected', function () {
         it('throws when the assertion fails', function () {
             expect(function () {
                 expect('test', 'to match', /foo/);
-            }, 'to throw exception', /expected 'test' to match \/foo\//);
+            }, 'to throw exception', "expected 'test' to match /foo/");
         });
     });
 });
