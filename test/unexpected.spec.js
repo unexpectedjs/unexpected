@@ -25,8 +25,8 @@ describe('unexpected', function () {
             expect(obj, 'to be', obj);
             expect(obj, 'to not be', {});
             expect(1, 'to be', 1);
-            expect(NaN, 'not to equal', NaN);
-            expect(1, 'not to be', true);
+            expect(NaN, 'to not be', NaN);
+            expect(1, 'to not be', true);
             expect('1', 'to not be', 1);
         });
 
@@ -37,17 +37,16 @@ describe('unexpected', function () {
         });
     });
 
-    describe('eql assertion', function () {
+    describe('equal assertion', function () {
         it('asserts loose equality that works with objects', function () {
-            expect({ a: 'b' }, 'to eql', { a: 'b' });
-            expect(1, 'to eql', '1');
+            expect({ a: 'b' }, 'to equal', { a: 'b' });
+            expect(1, 'to equal', '1');
         });
 
         it('throws when the assertion fails', function () {
             expect(function () {
-                expect({ a: 'b' }, 'to not eql', { a: 'b' });
-            }, 'to throw exception', /expected \{ a: 'b' \} to not eql \{ a: 'b' \}/);
-
+                expect({ a: 'b' }, 'to not equal', { a: 'b' });
+            }, 'to throw exception', /expected \{ a: 'b' \} to not equal \{ a: 'b' \}/);
         });
     });
 
