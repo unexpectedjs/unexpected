@@ -15,6 +15,7 @@
     "main": "./lib/unexpected.js",
     "dependencies": {},
     "devDependencies": {
-        "mocha": "~1.9.0"
+        "mocha": "~1.9.0",
+        "mocha-slow-reporter": "*"
     }
 }
