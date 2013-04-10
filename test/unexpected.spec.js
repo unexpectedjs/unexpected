@@ -10,6 +10,8 @@ describe('unexpected', function () {
             expect({}, 'to be truthy');
             expect(0, 'to not be ok');
             expect(0, 'to be falsy');
+            expect(null, 'to be falsy');
+            expect(undefined, 'to be falsy');
         });
 
         it('throws when the assertion fails', function () {
@@ -28,6 +30,7 @@ describe('unexpected', function () {
             expect(NaN, 'to not be', NaN);
             expect(1, 'to not be', true);
             expect('1', 'to not be', 1);
+            expect(null, 'to not be', undefined);
         });
 
         it('throws when the assertion fails', function () {
@@ -43,6 +46,7 @@ describe('unexpected', function () {
             expect([], 'to be an', 'array');
             expect([], 'to be an', 'object');
             expect([], 'to be an', Array);
+            expect(null, 'to not be an', 'object');
         });
 
         it('throws when the assertion fails', function () {
@@ -56,6 +60,7 @@ describe('unexpected', function () {
         it('asserts loose equality that works with objects', function () {
             expect({ a: 'b' }, 'to equal', { a: 'b' });
             expect(1, 'to equal', '1');
+            expect(null, 'to not equal', '1');
         });
 
         it('throws when the assertion fails', function () {
@@ -103,12 +108,67 @@ describe('unexpected', function () {
         it('tests that the subject matches the given regular expression', function () {
             expect('test', 'to match', /.*st/);
             expect('test', 'to not match', /foo/);
+            expect(null, 'to not match', /foo/);
         });
 
         it('throws when the assertion fails', function () {
             expect(function () {
                 expect('test', 'to match', /foo/);
             }, 'to throw exception', "expected 'test' to match /foo/");
+        });
+    });
+
+    describe('contain assertion', function () {
+        it('asserts indexOf for an array or string', function () {
+            expect([1, 2], 'to contain', 1);
+            expect('hello world', 'to contain', 'world');
+            expect(null, 'to not contain', 'world');
+        });
+        
+        it('throws when the assertion fails', function () {
+            expect(function () {
+                expect('hello world', 'to contain', 'foo');
+            }, 'to throw exception', "expected 'hello world' to contain 'foo'");
+        });
+    });
+
+    describe('length assertion', function () {
+        it('asserts array .length', function () {
+            expect([], 'to have length', 0);
+            expect([1,2,3], 'to have length', 3);
+            expect([1,2,3], 'to not have length', 4);
+        });
+    });
+
+    describe('property assertion', function () {
+        it('asserts presence of an own property (and value optionally)', function () {
+            expect([1, 2], 'to have property', 'length');
+            expect([1, 2], 'to have property', 'length', 2);
+            expect({a: 'b'}, 'to have property', 'a');
+            expect({a: 'b'}, 'to have property', 'a', 'b');
+        });
+        
+        it('throws when the assertion fails', function () {
+            expect(function () {
+                expect({a: 'b'}, 'to have property', 'b');
+            }, 'to throw exception', "expected { a: 'b' } to have property 'b'");
+        });
+    });
+
+    describe('empty assertion', function () {
+        it('asserts presence of an own property (and value optionally)', function () {
+            expect([], 'to be empty');
+            expect('', 'to be empty');
+            expect({}, 'to be empty');
+            expect({ length: 0, duck: 'typing' }, 'to be empty');
+            expect({ my: 'object' }, 'to not be empty');
+            expect([1,2,3], 'to not be empty');
+        });
+        
+        it('throws when the assertion fails', function () {
+            expect(function () {
+                expect([1,2,3], 'to be empty');
+            }, 'to throw exception', "expected [ 1, 2, 3 ] to be empty");
         });
     });
 });
