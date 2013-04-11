@@ -171,4 +171,22 @@ describe('unexpected', function () {
             }, 'to throw exception', "expected [ 1, 2, 3 ] to be empty");
         });
     });
+
+    describe('key assertion', function () {
+        it('asserts the presence of a key', function () {
+            expect(null, 'to not have key', 'a');
+            expect({ a: 'b' }, 'to have key', 'a');
+            expect({ a: 'b' }, 'to not have key', 'b');
+            expect({ a: 'b', c: 'd' }, 'to not only have key', 'a');
+            expect({ a: 'b', c: 'd' }, 'to only have keys', 'a', 'c');
+            expect({ a: 'b', c: 'd' }, 'to only have keys', ['a', 'c']);
+            expect({ a: 'b', c: 'd', e: 'f' }, 'to not only have keys', ['a', 'c']);
+        });
+        
+        it('throws when the assertion fails', function () {
+            expect(function () {
+                expect({ a: 'b', b: 'c' }, 'to not have key', 'b');
+            }, 'to throw exception', "expected { a: 'b', b: 'c' } to not have key 'b'");
+        });
+    });
 });
