@@ -189,4 +189,20 @@ describe('unexpected', function () {
             }, 'to throw exception', "expected { a: 'b', b: 'c' } to not have key 'b'");
         });
     });
+
+    describe('within assertion', function () {
+        it('asserts a number within a range', function () {
+            expect(0, 'to be within', 0, 4);
+            expect(1, 'to be within', 0, 4);
+            expect(4, 'to be within', 0, 4);
+            expect(-1, 'to not be within', 0, 4);
+            expect(5, 'to not be within', 0, 4);
+        });
+        
+        it('throws when the assertion fails', function () {
+            expect(function () {
+                expect(4, 'to not be within', 0, 4);
+            }, 'to throw exception', "expected 4 to not be within '0..4'");
+        });
+    });
 });
