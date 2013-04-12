@@ -205,4 +205,30 @@ describe('unexpected', function () {
             }, 'to throw exception', "expected 4 to not be within '0..4'");
         });
     });
+
+    describe('less than assertion', function () {
+        it('asserts <', function () {
+            expect(0, 'to be less than', 4);
+            expect(0, 'to be below', 1);
+        });
+        
+        it('throws when the assertion fails', function () {
+            expect(function () {
+                expect(0, 'to be less than', 0);
+            }, 'to throw exception', "expected 0 to be less than 0");
+        });
+    });
+
+    describe('greater than assertion', function () {
+        it('assert >', function () {
+            expect(3, 'to be greater than', 2);
+            expect(1, 'to be above', 0);
+        });
+        
+        it('throws when the assertion fails', function () {
+            expect(function () {
+                expect(0, 'to be greater than', 0);
+            }, 'to throw exception', "expected 0 to be greater than 0");
+        });
+    });
 });
