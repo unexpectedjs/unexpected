@@ -233,4 +233,28 @@ describe('unexpected', function () {
             }, 'to throw exception', "expected 0 to be greater than 0");
         });
     });
+
+    describe('fail assertion', function () {
+        it('throws an error', function () {
+            expect(function () {
+                expect.fail();
+            }, 'to throw exception', "explicit failure");
+        });
+
+        it('throws when an error with a given message', function () {
+            expect(function () {
+                expect.fail('fail with error message');
+            }, 'to throw exception', "fail with error message");
+        });
+
+        it('supports placeholders', function () {
+            expect(function () {
+                expect.fail('{0} was expected to be {1}', 0, 'zero');
+            }, 'to throw exception', "0 was expected to be 'zero'");
+
+            expect(function () {
+                expect.fail('{0} was expected to be {1}', 0);
+            }, 'to throw exception', "0 was expected to be {1}");
+        });
+    });
 });
