@@ -210,6 +210,7 @@ describe('unexpected', function () {
         it('asserts <', function () {
             expect(0, 'to be less than', 4);
             expect(0, 'to be below', 1);
+            expect(3, 'to be <', 4);
         });
         
         it('throws when the assertion fails', function () {
@@ -223,6 +224,7 @@ describe('unexpected', function () {
         it('assert >', function () {
             expect(3, 'to be greater than', 2);
             expect(1, 'to be above', 0);
+            expect(4, 'to be >', 3);
         });
         
         it('throws when the assertion fails', function () {
