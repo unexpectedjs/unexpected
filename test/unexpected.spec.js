@@ -234,6 +234,44 @@ describe('unexpected', function () {
         });
     });
 
+    describe('greater than assertion', function () {
+        it('assert >', function () {
+            expect(3, 'to be greater than', 2);
+            expect(1, 'to be above', 0);
+            expect(4, 'to be >', 3);
+        });
+        
+        it('throws when the assertion fails', function () {
+            expect(function () {
+                expect(0, 'to be greater than', 0);
+            }, 'to throw exception', "expected 0 to be greater than 0");
+        });
+    });
+
+    describe('positive assertion', function () {
+        it('assert that a number is positive', function () {
+            expect(3, 'to be positive');
+        });
+        
+        it('throws when the assertion fails', function () {
+            expect(function () {
+                expect(0, 'to be positive');
+            }, 'to throw exception', "expected 0 to be positive");
+        });
+    });
+
+    describe('negative assertion', function () {
+        it('assert that a number is negative', function () {
+            expect(-1, 'to be negative');
+        });
+        
+        it('throws when the assertion fails', function () {
+            expect(function () {
+                expect(0, 'to be negative');
+            }, 'to throw exception', "expected 0 to be negative");
+        });
+    });
+
     describe('fail assertion', function () {
         it('throws an error', function () {
             expect(function () {
@@ -241,7 +279,7 @@ describe('unexpected', function () {
             }, 'to throw exception', "explicit failure");
         });
 
-        it('throws when an error with a given message', function () {
+        it('throws an error with a given message', function () {
             expect(function () {
                 expect.fail('fail with error message');
             }, 'to throw exception', "fail with error message");
