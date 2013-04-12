@@ -19,6 +19,12 @@ describe('unexpected', function () {
                 expect(0, 'to be ok');
             }, 'to throw exception', 'expected 0 to be ok');
         });
+
+        it('throws with message when the assertion fails', function () {
+            expect(function () {
+                expect(4 < 4, 'to be ok', '4 < 4');
+            }, "to throw exception", "expected false to be ok '4 < 4'");
+        });
     });
 
     describe('be assertion', function () {
