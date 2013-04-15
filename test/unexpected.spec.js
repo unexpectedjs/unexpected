@@ -1,5 +1,8 @@
 /*global describe, it*/
-var expect = require(__dirname + '/../lib/unexpected.js');
+console.log();
+var expect = process.env.COVERAGE ?
+    require('../lib-cov/unexpected') :
+    require('../lib/unexpected');
 
 describe('unexpected', function () {
     describe('ok/truthy/falsy assertion', function () {
