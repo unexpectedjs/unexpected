@@ -70,6 +70,10 @@ describe('unexpected', function () {
             expect({ a: 'b' }, 'to equal', { a: 'b' });
             expect(1, 'to equal', '1');
             expect(null, 'to not equal', '1');
+            var now = new Date();
+            expect(now, 'to equal', now);
+            expect(now, 'to equal', new Date(now.getTime()));
+            expect({ now: now }, 'to equal', { now: now });
         });
 
         it('throws when the assertion fails', function () {
@@ -212,6 +216,9 @@ describe('unexpected', function () {
             expect(function () {
                 expect(4, 'to not be within', 0, 4);
             }, 'to throw exception', "expected 4 to not be within '0..4'");
+            expect(function () {
+                expect(null, 'to not be within', 0, 4);
+            }, 'to throw exception', "expected null to not be within '0..4'");
         });
     });
 
