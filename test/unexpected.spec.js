@@ -86,8 +86,16 @@ describe('unexpected', function () {
     describe('exception assertion', function () {
         it('fails if no exception is thrown', function () {
             expect(function () {
-                throw new Error();
-            }, 'to throw exception');
+                expect(function () {
+                    // Don't throw
+                }, 'to throw exception');
+            }, 'to throw exception', 'expected [Function] to throw exception');
+        });
+
+        it('fails if the argument is not a function', function () {
+            expect(function () {
+                expect(1, 'to throw exception');
+            }, 'to throw exception', "Assertion 'to throw exception' only supports functions");
         });
 
         it('given a function the function is called with the exception', function () {
@@ -151,6 +159,16 @@ describe('unexpected', function () {
             expect([1,2,3], 'to have length', 3);
             expect([1,2,3], 'to not have length', 4);
         });
+
+        it('throws when the assertion fails', function () {
+            expect(function () {
+                expect(null, 'to have length', 4);
+            }, 'to throw exception', "expected null to have length 4");
+
+            expect(function () {
+                expect({ length: 'foo' }, 'to have length', 4);
+            }, 'to throw exception', "expected { length: 'foo' } to have length 4");
+        });
     });
 
     describe('property assertion', function () {
@@ -159,12 +177,19 @@ describe('unexpected', function () {
             expect([1, 2], 'to have property', 'length', 2);
             expect({a: 'b'}, 'to have property', 'a');
             expect({a: 'b'}, 'to have property', 'a', 'b');
+            expect({a: 'b'}, 'to have property', 'toString');
+            expect({a: 'b'}, 'to have own property', 'a');
+            expect(Object.create({a: 'b'}), 'to not have own property', 'a');
         });
         
         it('throws when the assertion fails', function () {
             expect(function () {
                 expect({a: 'b'}, 'to have property', 'b');
             }, 'to throw exception', "expected { a: 'b' } to have property 'b'");
+
+            expect(function () {
+                expect(null, 'to have property', 'b');
+            }, 'to throw exception', "expected null to have property 'b'");
         });
     });
 
@@ -182,6 +207,10 @@ describe('unexpected', function () {
             expect(function () {
                 expect([1,2,3], 'to be empty');
             }, 'to throw exception', "expected [ 1, 2, 3 ] to be empty");
+
+            expect(function () {
+                expect(null, 'to be empty');
+            }, 'to throw exception', "Assertion 'to be empty' only supports strings, arrays and objects");
         });
     });
 
