@@ -326,5 +326,12 @@ describe('unexpected', function () {
                 expect.fail('{0} was expected to be {1}', 0);
             }, 'to throw exception', "0 was expected to be {1}");
         });
+
+        it('throws if the assertion does not exists', function () {
+            expect(function () {
+                expect(1, "foo bar", 2);
+            }, 'to throw exception', 'Unknown assertion "foo bar"');
+        });
     });
+
 });
