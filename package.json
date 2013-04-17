@@ -10,7 +10,7 @@
         "url": "https://github.com/sunesimonsen/unexpected"
     },
     "scripts": {
-        "test": "./node_modules/.bin/mocha",
+        "test": "./node_modules/.bin/mocha"
     },
     "main": "./lib/unexpected.js",
     "dependencies": {},
