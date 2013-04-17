@@ -13,6 +13,8 @@ expect([], 'to be an', 'array');
 expect(window, 'to not be an', Image);
 ```
 
+[![Build Status](https://travis-ci.org/sunesimonsen/unexpected.png)](https://travis-ci.org/sunesimonsen/unexpected)
+
 ## Features
 
 - Compatible with all test frameworks.
