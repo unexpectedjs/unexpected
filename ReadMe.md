@@ -169,15 +169,16 @@ expect({ a: 'b', c: 'd' }, 'to only have keys', ['a', 'c']);
 expect({ a: 'b', c: 'd', e: 'f' }, 'to not only have keys', ['a', 'c']);
 ```
 
-**throwException** / **throwError**: asserts that the `Function` throws or not when called
+**throw exception** / **throw error**: asserts that the `Function` throws or not when called
 
 ```js
-expect(fn).to.throwError(); // synonym of throwException
-expect(fn).to.throwException(function (e) { // get the exception object
+expect(fn, 'to throw exception'); // synonym of throwException
+expect(fn, 'to throw exception', function (e) { // get the exception object
   expect(e, 'to be a', SyntaxError);
 });
-expect(fn).to.throwException(/matches the exception message/);
-expect(fn2).to.not.throwException();
+expect(fn, 'to throw exception', /matches the exception message/);
+expect(fn, 'to throw error, 'matches the exact exception message');
+expect(fn2, 'to not throw error');
 ```
 
 **within**: asserts a number within a range
