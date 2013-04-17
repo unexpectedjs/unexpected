@@ -42,7 +42,7 @@ Include the `unexpected.js` found at the lib directory of this
 repository.
 
 ```html
-<script src=unexpected.js"></script>
+<script src="unexpected.js"></script>
 ```
 
 this will expose the expect function under the following namespace:
