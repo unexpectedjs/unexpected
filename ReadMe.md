@@ -177,7 +177,7 @@ expect(fn, 'to throw exception', function (e) { // get the exception object
   expect(e, 'to be a', SyntaxError);
 });
 expect(fn, 'to throw exception', /matches the exception message/);
-expect(fn, 'to throw error, 'matches the exact exception message');
+expect(fn, 'to throw error', 'matches the exact exception message');
 expect(fn2, 'to not throw error');
 ```
 
