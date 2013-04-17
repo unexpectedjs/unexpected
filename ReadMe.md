@@ -18,7 +18,7 @@ expect(window, 'to not be an', Image);
 ## Features
 
 - Compatible with all test frameworks.
-- TODO: Node.JS ready (`require('unexpected')`).
+- Node.JS ready (`require('unexpected')`).
 - TODO: Cross-browser: works on IE6+, Firefox, Safari, Chrome, Opera.
 - TODO: Standalone. Single global with no prototype extensions or shims.
 
