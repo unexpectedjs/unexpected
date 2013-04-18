@@ -102,7 +102,7 @@ expect(now, 'to equal', new Date(now.getTime()));
 expect({ now: now }, 'to equal', { now: now });
 ```
 
-**a**/**an**: asserts `typeof` with support for `array` type and `instanceof`
+**a** / **an**: asserts `typeof` with support for `array` type and `instanceof`
 
 ```js
 expect(5, 'to be a', 'number');
