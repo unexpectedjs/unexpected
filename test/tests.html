@@ -1,0 +1,18 @@
+<html>
+  <head>
+    <title>Mocha</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="../node_modules/mocha/mocha.css" />
+  </head>
+  <body>
+    <div id="mocha"></div>
+    <script src="../node_modules/mocha/mocha.js"></script>
+    <script>mocha.setup('bdd')</script>
+    <script src="../lib/unexpected.js"></script>
+    <script src="unexpected.spec.js"></script>
+    <script>
+      expect = weknowhow.expect;
+      mocha.run();
+    </script>
+  </body>
+</html>

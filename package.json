@@ -16,6 +16,7 @@
     "dependencies": {},
     "devDependencies": {
         "mocha": "~1.9.0",
-        "mocha-slow-reporter": "*"
+        "mocha-slow-reporter": "*",
+        "serve": "*"
     }
 }
