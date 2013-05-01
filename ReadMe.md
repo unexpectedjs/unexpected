@@ -15,6 +15,8 @@ expect(window, 'to not be an', Image);
 
 [![Build Status](https://travis-ci.org/sunesimonsen/unexpected.png)](https://travis-ci.org/sunesimonsen/unexpected)
 
+[Run the test in the browser](http://sunesimonsen.github.io/unexpected/test/tests.html)
+
 ## Features
 
 - Compatible with all test frameworks.
