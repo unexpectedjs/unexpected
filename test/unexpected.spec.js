@@ -1,4 +1,13 @@
-/*global describe, it*/
+/*global describe, it, expect*/
+
+// use this instead of Object.create in order to make the tests run in
+// es5 compatible browsers
+function create(o) {
+    function F() {}
+    F.prototype = o;
+    return new F();
+}
+
 describe('unexpected', function () {
     describe('ok/truthy/falsy assertion', function () {
         it('assert that the value is truthy or not', function () {
@@ -174,7 +183,7 @@ describe('unexpected', function () {
             expect({a: 'b'}, 'to have property', 'a', 'b');
             expect({a: 'b'}, 'to have property', 'toString');
             expect({a: 'b'}, 'to have own property', 'a');
-            expect(Object.create({a: 'b'}), 'to not have own property', 'a');
+            expect(create({a: 'b'}), 'to not have own property', 'a');
         });
         
         it('throws when the assertion fails', function () {
