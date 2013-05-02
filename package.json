@@ -1,6 +1,6 @@
 {
     "name": "unexpected",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "author": "Sune Sloth Simonsen <sune@we-knowhow.dk>",
     "keywords": [ "assertion", "test", "assert" ],
     "license": "MIT",
