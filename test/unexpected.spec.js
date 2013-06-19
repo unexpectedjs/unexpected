@@ -50,6 +50,10 @@ describe('unexpected', function () {
             expect(function () {
                 expect('foo', 'to be', 'bar');
             }, 'to throw exception', "expected 'foo' to be 'bar'");
+
+            expect(function () {
+                expect(true, 'to not be', true);
+            }, 'to throw exception', "expected true to not be true");
         });
     });
 
