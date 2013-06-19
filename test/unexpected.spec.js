@@ -184,6 +184,10 @@ describe('unexpected', function () {
             expect(function () {
                 expect([1, 2], 'to contain', 2, 3);
             }, 'to throw exception', "expected [ 1, 2 ] to contain 2, 3");
+
+            expect(function () {
+                expect(1, 'to contain', 1);
+            }, 'to throw exception', "Assertion 'to contain' only supports strings and arrays");
         });
     });
 
