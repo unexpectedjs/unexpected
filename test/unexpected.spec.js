@@ -189,6 +189,11 @@ describe('unexpected', function () {
             expect({a: 'b'}, 'to not have property', 'b');
             expect({a: 'b'}, 'to have own property', 'a');
             expect(create({a: 'b'}), 'to not have own property', 'a');
+            expect(1, 'to not have property', 'a');
+            expect(null, 'to not have property', 'a');
+            expect(undefined, 'to not have property', 'a');
+            expect(true, 'to not have property', 'a');
+            expect(false, 'to not have property', 'a');
         });
 
         it('throws when the assertion fails', function () {
@@ -203,6 +208,16 @@ describe('unexpected', function () {
             expect(function () {
                 expect({a: 'b'}, 'to have property', 'a', 'c');
             }, 'to throw exception', "expected { a: 'b' } to have property 'a', 'c'");
+
+            expect(function () {
+                // property expectations on value expects the property to be present
+                expect(null, 'to not have property', 'a', 'b');
+            }, 'to throw exception', "expected null to not have property 'a', 'b'");
+
+            expect(function () {
+                // property expectations on value expects the property to be present
+                expect(null, 'to not have own property', 'a', 'b');
+            }, 'to throw exception', "expected null to not have own property 'a', 'b'");
         });
     });
 
