@@ -244,19 +244,42 @@ describe('unexpected', function () {
 
     describe('key assertion', function () {
         it('asserts the presence of a key', function () {
-            expect(null, 'to not have key', 'a');
             expect({ a: 'b' }, 'to have key', 'a');
             expect({ a: 'b' }, 'to not have key', 'b');
             expect({ a: 'b', c: 'd' }, 'to not only have key', 'a');
             expect({ a: 'b', c: 'd' }, 'to only have keys', 'a', 'c');
             expect({ a: 'b', c: 'd' }, 'to only have keys', ['a', 'c']);
             expect({ a: 'b', c: 'd', e: 'f' }, 'to not only have keys', ['a', 'c']);
+            expect(null, 'to not have key', 'a');
+            expect(undefined, 'to not have key', 'a');
+            expect(true, 'to not have key', 'a');
+            expect(false, 'to not have key', 'a');
         });
 
         it('throws when the assertion fails', function () {
             expect(function () {
+                expect({ a: 'b', b: 'c' }, 'to have key', 'e');
+            }, 'to throw exception', "expected { a: 'b', b: 'c' } to have key 'e'");
+
+            expect(function () {
+                expect({ a: 'b', b: 'c' }, 'to only have key', 'b');
+            }, 'to throw exception', "expected { a: 'b', b: 'c' } to only have key 'b'");
+
+            expect(function () {
                 expect({ a: 'b', b: 'c' }, 'to not have key', 'b');
             }, 'to throw exception', "expected { a: 'b', b: 'c' } to not have key 'b'");
+
+            expect(function () {
+                expect({ a: 'b', c: 'd' }, 'to not only have keys', ['a', 'c']);
+            }, 'to throw exception', "expected { a: 'b', c: 'd' } to not only have keys [ 'a', 'c' ]");
+
+            expect(function () {
+                expect({ a: 'b', c: 'd' }, 'to only have keys', 'a', 'd');
+            }, 'to throw exception', "expected { a: 'b', c: 'd' } to only have keys 'a', 'd'");
+
+            expect(function () {
+                expect({ a: 'b', c: 'd' }, 'to not only have keys', 'a', 'c');
+            }, 'to throw exception', "expected { a: 'b', c: 'd' } to not only have keys 'a', 'c'");
         });
     });
 
