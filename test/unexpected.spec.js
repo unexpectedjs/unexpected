@@ -451,17 +451,18 @@ describe('unexpected', function () {
 
     describe('internal', function () {
         describe('expandPattern', function () {
-            it('expands patterns containing one flag', function () {
-                var expanded = expect.internal.expandPattern('foo [not] bar');
-                expect(expanded, 'to contain', 'foo bar', 'foo not bar');
-                expect(expanded.length, 'to be', 2);
-            });
-
             it('expands patterns containing multiple flags', function () {
                 var expanded = expect.internal.expandPattern('foo [not] [only] bar');
                 expect(expanded, 'to contain',
                        'foo bar', 'foo not bar',
                        'foo only bar', 'foo not only bar');
+                expect(expanded.length, 'to be', 4);
+            });
+            it('expands patterns alternations', function () {
+                var expanded = expect.internal.expandPattern('foo (bar|bar baz) (qux|quux)');
+                expect(expanded, 'to contain',
+                       'foo bar qux', 'foo bar baz qux',
+                       'foo bar quux', 'foo bar baz quux');
                 expect(expanded.length, 'to be', 4);
             });
         });
