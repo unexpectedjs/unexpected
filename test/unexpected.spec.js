@@ -155,6 +155,11 @@ describe('unexpected', function () {
             expect(function () {
                 expect('hello world', 'to contain', 'foo');
             }, 'to throw exception', "expected 'hello world' to contain 'foo'");
+
+            expect(function () {
+                expect('hello world', 'to contain', 'hello', 'foo');
+            }, 'to throw exception', "expected 'hello world' to contain 'hello', 'foo'");
+
             expect(function () {
                 expect([1, 2], 'to contain', 2, 3);
             }, 'to throw exception', "expected [ 1, 2 ] to contain 2, 3");
