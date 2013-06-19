@@ -60,12 +60,17 @@ describe('unexpected', function () {
             expect([], 'to be an', 'object');
             expect([], 'to be an', Array);
             expect(null, 'to not be an', 'object');
+            expect(true, 'to be a', 'boolean');
         });
 
         it('throws when the assertion fails', function () {
             expect(function () {
                 expect(5, 'to be a', Array);
             }, 'to throw exception', /expected 5 to be a \[Function(: Array)?\]/);
+
+            expect(function () {
+                expect([], 'to not be an', 'array');
+            }, 'to throw exception', "expected [] to not be an 'array'");
         });
     });
 
