@@ -448,4 +448,22 @@ describe('unexpected', function () {
             }, 'to throw exception', 'Unknown assertion "foo bar"');
         });
     });
+
+    describe('internal', function () {
+        describe('expandPattern', function () {
+            it('expands patterns containing one flag', function () {
+                var expanded = expect.internal.expandPattern('foo [not] bar');
+                expect(expanded, 'to contain', 'foo bar', 'foo not bar');
+                expect(expanded.length, 'to be', 2);
+            });
+
+            it('expands patterns containing multiple flags', function () {
+                var expanded = expect.internal.expandPattern('foo [not] [only] bar');
+                expect(expanded, 'to contain',
+                       'foo bar', 'foo not bar',
+                       'foo only bar', 'foo not only bar');
+                expect(expanded.length, 'to be', 4);
+            });
+        });
+    });
 });
