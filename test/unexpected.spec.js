@@ -146,14 +146,18 @@ describe('unexpected', function () {
     describe('contain assertion', function () {
         it('asserts indexOf for an array or string', function () {
             expect([1, 2], 'to contain', 1);
+            expect([1, 2], 'to contain', 2, 1);
             expect('hello world', 'to contain', 'world');
             expect(null, 'to not contain', 'world');
         });
-        
+
         it('throws when the assertion fails', function () {
             expect(function () {
                 expect('hello world', 'to contain', 'foo');
             }, 'to throw exception', "expected 'hello world' to contain 'foo'");
+            expect(function () {
+                expect([1, 2], 'to contain', 2, 3);
+            }, 'to throw exception', "expected [ 1, 2 ] to contain 2, 3");
         });
     });
 
@@ -185,7 +189,7 @@ describe('unexpected', function () {
             expect({a: 'b'}, 'to have own property', 'a');
             expect(create({a: 'b'}), 'to not have own property', 'a');
         });
-        
+
         it('throws when the assertion fails', function () {
             expect(function () {
                 expect({a: 'b'}, 'to have property', 'b');
@@ -206,7 +210,7 @@ describe('unexpected', function () {
             expect({ my: 'object' }, 'to not be empty');
             expect([1,2,3], 'to not be empty');
         });
-        
+
         it('throws when the assertion fails', function () {
             expect(function () {
                 expect([1,2,3], 'to be empty');
@@ -228,7 +232,7 @@ describe('unexpected', function () {
             expect({ a: 'b', c: 'd' }, 'to only have keys', ['a', 'c']);
             expect({ a: 'b', c: 'd', e: 'f' }, 'to not only have keys', ['a', 'c']);
         });
-        
+
         it('throws when the assertion fails', function () {
             expect(function () {
                 expect({ a: 'b', b: 'c' }, 'to not have key', 'b');
@@ -244,7 +248,7 @@ describe('unexpected', function () {
             expect(-1, 'to not be within', 0, 4);
             expect(5, 'to not be within', 0, 4);
         });
-        
+
         it('throws when the assertion fails', function () {
             expect(function () {
                 expect(4, 'to not be within', 0, 4);
@@ -262,7 +266,7 @@ describe('unexpected', function () {
             expect(3, 'to be <', 4);
             expect(3, '<', 4);
         });
-        
+
         it('throws when the assertion fails', function () {
             expect(function () {
                 expect(0, 'to be less than', 0);
@@ -276,7 +280,7 @@ describe('unexpected', function () {
             expect(4, 'to be <=', 4);
             expect(3, '<=', 4);
         });
-        
+
         it('throws when the assertion fails', function () {
             expect(function () {
                 expect(0, 'to be less than or equals to', -1);
@@ -291,7 +295,7 @@ describe('unexpected', function () {
             expect(4, 'to be >', 3);
             expect(4, '>', 3);
         });
-        
+
         it('throws when the assertion fails', function () {
             expect(function () {
                 expect(0, 'to be greater than', 0);
@@ -305,7 +309,7 @@ describe('unexpected', function () {
             expect(3, 'to be >=', 3);
             expect(3, '>=', 3);
         });
-        
+
         it('throws when the assertion fails', function () {
             expect(function () {
                 expect(-1, 'to be greater than or equals to', 0);
@@ -317,7 +321,7 @@ describe('unexpected', function () {
         it('assert that a number is positive', function () {
             expect(3, 'to be positive');
         });
-        
+
         it('throws when the assertion fails', function () {
             expect(function () {
                 expect(0, 'to be positive');
@@ -329,7 +333,7 @@ describe('unexpected', function () {
         it('assert that a number is negative', function () {
             expect(-1, 'to be negative');
         });
-        
+
         it('throws when the assertion fails', function () {
             expect(function () {
                 expect(0, 'to be negative');
@@ -366,5 +370,4 @@ describe('unexpected', function () {
             }, 'to throw exception', 'Unknown assertion "foo bar"');
         });
     });
-
 });
