@@ -186,6 +186,7 @@ describe('unexpected', function () {
             expect({a: 'b'}, 'to have property', 'a');
             expect({a: 'b'}, 'to have property', 'a', 'b');
             expect({a: 'b'}, 'to have property', 'toString');
+            expect({a: 'b'}, 'to not have property', 'b');
             expect({a: 'b'}, 'to have own property', 'a');
             expect(create({a: 'b'}), 'to not have own property', 'a');
         });
@@ -198,6 +199,10 @@ describe('unexpected', function () {
             expect(function () {
                 expect(null, 'to have property', 'b');
             }, 'to throw exception', "expected null to have property 'b'");
+
+            expect(function () {
+                expect({a: 'b'}, 'to have property', 'a', 'c');
+            }, 'to throw exception', "expected { a: 'b' } to have property 'a', 'c'");
         });
     });
 
