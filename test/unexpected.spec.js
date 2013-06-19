@@ -166,16 +166,21 @@ describe('unexpected', function () {
             expect([], 'to have length', 0);
             expect([1,2,3], 'to have length', 3);
             expect([1,2,3], 'to not have length', 4);
+            expect({ length: 4 }, 'to have length', 4);
         });
 
         it('throws when the assertion fails', function () {
             expect(function () {
+                expect([1, 2], 'to have length', 3);
+            }, 'to throw exception', "expected [ 1, 2 ] to have length 3");
+
+            expect(function () {
                 expect(null, 'to have length', 4);
-            }, 'to throw exception', "expected null to have length 4");
+            }, 'to throw exception', "Assertion 'to have length' only supports array like objects");
 
             expect(function () {
                 expect({ length: 'foo' }, 'to have length', 4);
-            }, 'to throw exception', "expected { length: 'foo' } to have length 4");
+            }, 'to throw exception', "Assertion 'to have length' only supports array like objects");
         });
     });
 
