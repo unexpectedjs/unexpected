@@ -73,11 +73,17 @@ describe('unexpected', function () {
         it('asserts loose equality that works with objects', function () {
             expect({ a: 'b' }, 'to equal', { a: 'b' });
             expect(1, 'to equal', '1');
+            expect(1, 'to equal', 1);
             expect(null, 'to not equal', '1');
             var now = new Date();
             expect(now, 'to equal', now);
             expect(now, 'to equal', new Date(now.getTime()));
             expect({ now: now }, 'to equal', { now: now });
+            expect(null, 'to equal', null);
+            expect(null, 'to not equal', undefined);
+            expect(undefined, 'to equal', undefined);
+            expect(true, 'to equal', true);
+            expect(false, 'to equal', false);
         });
 
         it('throws when the assertion fails', function () {
