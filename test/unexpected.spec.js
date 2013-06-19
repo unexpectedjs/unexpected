@@ -84,9 +84,15 @@ describe('unexpected', function () {
             expect(undefined, 'to equal', undefined);
             expect(true, 'to equal', true);
             expect(false, 'to equal', false);
+            expect({ a: { b: 'c' } }, 'to equal', { a: { b: 'c' } });
+            expect({ a: { b: 'c' } }, 'to not equal', { a: { b: 'd' } });
         });
 
         it('throws when the assertion fails', function () {
+            expect(function () {
+                expect({ a: { b: 'c'} }, 'to equal', { a: { b: 'd'} });
+            }, 'to throw exception', "expected { a: { b: 'c' } } to equal { a: { b: 'd' } }");
+
             expect(function () {
                 expect({ a: 'b' }, 'to not equal', { a: 'b' });
             }, 'to throw exception', "expected { a: 'b' } to not equal { a: 'b' }");
