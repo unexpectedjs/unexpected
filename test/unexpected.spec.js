@@ -453,16 +453,26 @@ describe('unexpected', function () {
         describe('expandPattern', function () {
             it('expands patterns containing multiple flags', function () {
                 var expanded = expect.internal.expandPattern('foo [not] [only] bar');
-                expect(expanded, 'to contain',
-                       'foo bar', 'foo not bar',
-                       'foo only bar', 'foo not only bar');
+                expanded.sort();
+
+                expect(expanded, 'to equal', [
+                    'foo bar',
+                    'foo not bar',
+                    'foo not only bar',
+                    'foo only bar'
+                ]);
                 expect(expanded.length, 'to be', 4);
             });
             it('expands patterns alternations', function () {
                 var expanded = expect.internal.expandPattern('foo (bar|bar baz) (qux|quux)');
-                expect(expanded, 'to contain',
-                       'foo bar qux', 'foo bar baz qux',
-                       'foo bar quux', 'foo bar baz quux');
+                expanded.sort();
+
+                expect(expanded, 'to equal', [
+                    'foo bar baz quux',
+                    'foo bar baz qux',
+                    'foo bar quux',
+                    'foo bar qux'
+                ]);
                 expect(expanded.length, 'to be', 4);
             });
         });
