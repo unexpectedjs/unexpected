@@ -449,29 +449,39 @@ describe('unexpected', function () {
         });
     });
 
+    function sortBy(arr, property) {
+        arr.sort(function (x, y) {
+            var xp = x[property];
+            var yp = y[property];
+            if (xp > yp) { return 1; }
+            if (xp < yp) { return -1; }
+            return 0;
+        });
+    }
+
     describe('internal', function () {
         describe('expandPattern', function () {
             it('expands patterns containing multiple flags', function () {
                 var expanded = expect.internal.expandPattern('foo [not] [only] bar');
-                expanded.sort();
+                sortBy(expanded, 'text');
 
                 expect(expanded, 'to equal', [
-                    'foo bar',
-                    'foo not bar',
-                    'foo not only bar',
-                    'foo only bar'
+                    { text: 'foo bar', flags: []},
+                    { text: 'foo not bar', flags: ['not']},
+                    { text: 'foo not only bar', flags: ['not', 'only']},
+                    { text: 'foo only bar', flags: ['only']}
                 ]);
                 expect(expanded.length, 'to be', 4);
             });
             it('expands patterns alternations', function () {
                 var expanded = expect.internal.expandPattern('foo (bar|bar baz) (qux|quux)');
-                expanded.sort();
+                sortBy(expanded, 'text');
 
                 expect(expanded, 'to equal', [
-                    'foo bar baz quux',
-                    'foo bar baz qux',
-                    'foo bar quux',
-                    'foo bar qux'
+                    { text: 'foo bar baz quux', flags: []},
+                    { text: 'foo bar baz qux', flags: []},
+                    { text: 'foo bar quux', flags: []},
+                    { text: 'foo bar qux', flags: []}
                 ]);
                 expect(expanded.length, 'to be', 4);
             });
