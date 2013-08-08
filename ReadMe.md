@@ -17,8 +17,6 @@ expect(window, 'to not be an', Image);
 
 [Run the test in the browser](http://sunesimonsen.github.io/unexpected/test/tests.html)
 
-[A tiny performance comparison with expect.js](http://jsperf.com/unexpected)
-
 ## Features
 
 - Fast
