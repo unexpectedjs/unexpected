@@ -1,22 +1,26 @@
 {
-    "name": "unexpected",
-    "version": "0.0.3",
-    "author": "Sune Sloth Simonsen <sune@we-knowhow.dk>",
-    "keywords": [ "assertion", "test", "assert" ],
-    "license": "MIT",
-    "bugs": "https://github.com/sunesimonsen/unexpected/issues",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/sunesimonsen/unexpected"
-    },
-    "scripts": {
-        "test": "./node_modules/.bin/mocha"
-    },
-    "main": "./lib/unexpected.js",
-    "dependencies": {},
-    "devDependencies": {
-        "mocha": "~1.9.0",
-        "mocha-slow-reporter": "*",
-        "serve": "*"
-    }
+  "name": "unexpected",
+  "version": "0.0.4",
+  "author": "Sune Sloth Simonsen <sune@we-knowhow.dk>",
+  "keywords": [
+    "assertion",
+    "test",
+    "assert"
+  ],
+  "license": "MIT",
+  "bugs": "https://github.com/sunesimonsen/unexpected/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sunesimonsen/unexpected"
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/mocha"
+  },
+  "main": "./lib/unexpected.js",
+  "dependencies": {},
+  "devDependencies": {
+    "mocha": "~1.9.0",
+    "mocha-slow-reporter": "*",
+    "serve": "*"
+  }
 }
