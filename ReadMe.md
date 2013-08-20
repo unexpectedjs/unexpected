@@ -20,6 +20,8 @@ expect(window, 'to not be an', Image);
 ## Features
 
 - Fast
+- Provides really nice error messages
+- Helps you if you misspells assertions
 - Compatible with all test frameworks.
 - Node.JS ready (`require('unexpected')`).
 - Single global with no prototype extensions or shims.
