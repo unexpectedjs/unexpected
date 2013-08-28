@@ -1,7 +1,5 @@
 # Unexpected
 
-**Warning: this is not totally ready for prime time yet**
-
 Minimalistic BDD assertion toolkit based on
 [expect.js](https://github.com/LearnBoost/expect.js)
 
@@ -69,6 +67,10 @@ define(['unexpected/lib/unexpected.js'], funtion (expect) {
 ```
 
 ## API
+
+### to be ok
+
+asserts that the value is _truthy_
 
 **ok** / **truthy** / **falsy**: asserts that the value is _truthy_ or not
 
