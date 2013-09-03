@@ -222,10 +222,10 @@ expect(4, 'to be >', 3);
 expect(4, '>', 3);
 ```
 
-**greater than or equals to**: asserts `>`
+**greater than or equal to**: asserts `>`
 
 ```js
-expect(3, 'to be greater than or equals to', 2);
+expect(3, 'to be greater than or equal to', 2);
 expect(3, 'to be >=', 3);
 expect(3, '>=', 3);
 ```
@@ -239,10 +239,10 @@ expect(3, 'to be <', 4);
 expect(3, '<', 4);
 ```
 
-**less than or equals to**: asserts `>`
+**less than or equal to**: asserts `>`
 
 ```js
-expect(0, 'to be less than or equals to', 4);
+expect(0, 'to be less than or equal to', 4);
 expect(4, 'to be <=', 4);
 expect(3, '<=', 4);
 ```
