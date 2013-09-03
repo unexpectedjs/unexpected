@@ -359,17 +359,17 @@ describe('unexpected', function () {
         });
     });
 
-    describe('less than or equals assertion', function () {
+    describe('less than or equal assertion', function () {
         it('asserts <=', function () {
-            expect(0, 'to be less than or equals to', 4);
+            expect(0, 'to be less than or equal to', 4);
             expect(4, 'to be <=', 4);
             expect(3, '<=', 4);
         });
 
         it('throws when the assertion fails', function () {
             expect(function () {
-                expect(0, 'to be less than or equals to', -1);
-            }, 'to throw exception', "expected 0 to be less than or equals to -1");
+                expect(0, 'to be less than or equal to', -1);
+            }, 'to throw exception', "expected 0 to be less than or equal to -1");
         });
     });
 
@@ -388,17 +388,17 @@ describe('unexpected', function () {
         });
     });
 
-    describe('greater than or equals assertion', function () {
+    describe('greater than or equal assertion', function () {
         it('assert >=', function () {
-            expect(3, 'to be greater than or equals to', 2);
+            expect(3, 'to be greater than or equal to', 2);
             expect(3, 'to be >=', 3);
             expect(3, '>=', 3);
         });
 
         it('throws when the assertion fails', function () {
             expect(function () {
-                expect(-1, 'to be greater than or equals to', 0);
-            }, 'to throw exception', "expected -1 to be greater than or equals to 0");
+                expect(-1, 'to be greater than or equal to', 0);
+            }, 'to throw exception', "expected -1 to be greater than or equal to 0");
         });
     });
 
