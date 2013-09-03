@@ -102,6 +102,11 @@ describe('unexpected', function () {
             expect(false, 'to equal', false);
             expect({ a: { b: 'c' } }, 'to equal', { a: { b: 'c' } });
             expect({ a: { b: 'c' } }, 'to not equal', { a: { b: 'd' } });
+            expect(/foo/, 'to equal', /foo/);
+            expect(/foo/i, 'to not equal', /foo/);
+            expect(/foo/gm, 'to equal', /foo/gm);
+            expect(/foo/m, 'to not equal', /foo/i);
+            expect(/foo/m, 'to equal', new RegExp('foo', 'm'));
         });
 
         it('throws when the assertion fails', function () {
