@@ -60,11 +60,18 @@ describe('unexpected', function () {
     describe('a/an assertion', function () {
         it('asserts typeof with support for array type and instanceof', function () {
             expect(5, 'to be a', 'number');
+            expect(5, 'to be a number');
             expect([], 'to be an', 'array');
+            expect([], 'to be an array');
             expect([], 'to be an', 'object');
+            expect([], 'to be an object');
             expect([], 'to be an', Array);
             expect(null, 'to not be an', 'object');
+            expect(null, 'to not be an object');
             expect(true, 'to be a', 'boolean');
+            expect(true, 'to be a boolean');
+            expect("".substring, 'to be a', 'function');
+            expect("".substring, 'to be a function');
         });
 
         it('throws when the assertion fails', function () {
