@@ -113,10 +113,23 @@ expect({ now: now }, 'to equal', { now: now });
 
 ```js
 expect(5, 'to be a', 'number');
+expect(5, 'to be a number');
+
 expect([], 'to be an', 'array');
-expect([], 'to be an', 'object');
+expect([], 'to be an array');
 expect([], 'to be an', Array);
+
+expect([], 'to be an', 'object');
+expect([], 'to be an object');
+
 expect(null, 'to not be an', 'object');
+expect(null, 'to not be an object');
+
+expect(true, 'to be a', 'boolean');
+expect(true, 'to be a boolean');
+
+expect("".substring, 'to be a', 'function');
+expect("".substring, 'to be a function');
 ```
 
 **match**: asserts `String` regular expression match
