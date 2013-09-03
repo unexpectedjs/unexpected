@@ -66,6 +66,12 @@ describe('unexpected', function () {
             expect([], 'to be an', 'object');
             expect([], 'to be an object');
             expect([], 'to be an', Array);
+            expect(/ab/, 'to be a', RegExp);
+            expect(/ab/, 'to be a regexp');
+            expect(123, 'to not be a regex');
+            expect(/ab/, 'to be a regex');
+            expect(/ab/, 'to be a regular expression');
+            expect(123, 'to not be a regular expression');
             expect(null, 'to not be an', 'object');
             expect(null, 'to not be an object');
             expect(true, 'to be a', 'boolean');
