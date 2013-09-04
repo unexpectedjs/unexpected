@@ -66,6 +66,12 @@ describe('unexpected', function () {
             expect([], 'to be an', 'object');
             expect([], 'to be an object');
             expect([], 'to be an', Array);
+            expect(/ab/, 'to be a', RegExp);
+            expect(/ab/, 'to be a regexp');
+            expect(123, 'to not be a regex');
+            expect(/ab/, 'to be a regex');
+            expect(/ab/, 'to be a regular expression');
+            expect(123, 'to not be a regular expression');
             expect(null, 'to not be an', 'object');
             expect(null, 'to not be an object');
             expect(true, 'to be a', 'boolean');
@@ -102,6 +108,11 @@ describe('unexpected', function () {
             expect(false, 'to equal', false);
             expect({ a: { b: 'c' } }, 'to equal', { a: { b: 'c' } });
             expect({ a: { b: 'c' } }, 'to not equal', { a: { b: 'd' } });
+            expect(/foo/, 'to equal', /foo/);
+            expect(/foo/i, 'to not equal', /foo/);
+            expect(/foo/gm, 'to equal', /foo/gm);
+            expect(/foo/m, 'to not equal', /foo/i);
+            expect(/foo/m, 'to equal', new RegExp('foo', 'm'));
         });
 
         it('throws when the assertion fails', function () {
