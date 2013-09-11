@@ -32,6 +32,16 @@ describe('unexpected', function () {
                 expect(4 < 4, 'to be ok', '4 < 4');
             }, "to throw exception", "expected false to be ok '4 < 4'");
         });
+
+        it('throws with a stack trace that has the calling function as the top frame when the assertion fails (if the environment supports it)', function () {
+            if (Error.captureStackTrace || 'stack' in new Error()) {
+                expect(function TheCallingFunction() {
+                    expect(4 < 4, 'to be ok');
+                }, 'to throw exception', function (err) {
+                    expect(err.stack.split('\n')[1], 'to match', /TheCallingFunction/);
+                });
+            }
+        });
     });
 
     describe('be assertion', function () {
