@@ -134,6 +134,26 @@ describe('unexpected', function () {
                 expect({ a: 'b' }, 'to not equal', { a: 'b' });
             }, 'to throw exception', "expected { a: 'b' } to not equal { a: 'b' }");
         });
+
+        it("throws an error with 'expected' and 'actual' properties when not negated", function () {
+            var expected = 123,
+                actual = 456;
+            expect(function () {
+                expect(actual, 'to equal', expected);
+            }, 'to throw exception', function (e) {
+                expect(e.expected, 'to equal', expected);
+                expect(e.actual, 'to equal', actual);
+            });
+        });
+
+        it("throws an error without 'expected' and 'actual' properties when negated", function () {
+            expect(function () {
+                expect(123, 'not to equal', 123);
+            }, 'to throw exception', function (e) {
+                expect(e.expected, 'to not be ok');
+                expect(e.actual, 'to not be ok');
+            });
+        });
     });
 
     describe('exception assertion', function () {
