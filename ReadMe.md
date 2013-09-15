@@ -68,10 +68,6 @@ define(['unexpected/lib/unexpected.js'], funtion (expect) {
 
 ## API
 
-### to be ok
-
-asserts that the value is _truthy_
-
 **ok** / **truthy** / **falsy**: asserts that the value is _truthy_ or not
 
 ```js
@@ -91,6 +87,7 @@ expect(undefined, 'to be falsy');
 expect(obj, 'to be', obj);
 expect(obj, 'to not be', {});
 expect(1, 'to be', 1);
+expect(2, 'not to be', 1);
 expect(NaN, 'to not be', NaN);
 expect(1, 'to not be', true);
 expect('1', 'to not be', 1);
@@ -102,6 +99,7 @@ expect(null, 'to not be', undefined);
 ```js
 expect({ a: 'b' }, 'to equal', { a: 'b' });
 expect(1, 'to equal', '1');
+expect(1, 'not to equal', '2');
 expect(null, 'to not equal', '1');
 var now = new Date();
 expect(now, 'to equal', now);
