@@ -54,6 +54,10 @@ describe('unexpected', function () {
             expect(1, 'to not be', true);
             expect('1', 'to not be', 1);
             expect(null, 'to not be', undefined);
+            if (typeof Buffer !== 'undefined') {
+                var buffer = new Buffer([0x45, 0x59]);
+                expect(buffer, 'to be', buffer);
+            }
         });
 
         it('throws when the assertion fails', function () {
@@ -123,6 +127,9 @@ describe('unexpected', function () {
             expect(/foo/gm, 'to equal', /foo/gm);
             expect(/foo/m, 'to not equal', /foo/i);
             expect(/foo/m, 'to equal', new RegExp('foo', 'm'));
+            if (typeof Buffer !== 'undefined') {
+                expect(new Buffer([0x45, 0x59]), 'to equal', new Buffer([0x45, 0x59]));
+            }
         });
 
         it('throws when the assertion fails', function () {
