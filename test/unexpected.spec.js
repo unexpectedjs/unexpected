@@ -53,7 +53,6 @@ describe('unexpected', function () {
             expect(NaN, 'to not be', NaN);
             expect(1, 'to not be', true);
             expect('1', 'to not be', 1);
-            expect('1', 'not to be', 1);
             expect(null, 'to not be', undefined);
             if (typeof Buffer !== 'undefined') {
                 var buffer = new Buffer([0x45, 0x59]);
@@ -112,7 +111,6 @@ describe('unexpected', function () {
             expect(1, 'to equal', '1');
             expect(1, 'to equal', 1);
             expect(null, 'to not equal', '1');
-            expect(null, 'not to equal', '1');
             var now = new Date();
             expect(now, 'to equal', now);
             expect(now, 'to equal', new Date(now.getTime()));
