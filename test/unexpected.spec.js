@@ -151,7 +151,7 @@ describe('unexpected', function () {
                 expect(function () {
                     // Don't throw
                 }, 'to throw exception');
-            }, 'to throw exception', 'expected [Function] to throw exception');
+            }, 'to throw', 'expected [Function] to throw exception');
         });
 
         it('fails if the argument is not a function', function () {

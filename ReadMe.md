@@ -189,10 +189,11 @@ expect({ a: 'b', c: 'd' }, 'to only have keys', ['a', 'c']);
 expect({ a: 'b', c: 'd', e: 'f' }, 'to not only have keys', ['a', 'c']);
 ```
 
-**throw exception** / **throw error**: asserts that the `Function` throws or not when called
+**throw exception** / **throw error** / **throw**: asserts that the `Function` throws or not when called
 
 ```js
-expect(fn, 'to throw exception'); // synonym of throwException
+expect(fn, 'to throw exception');
+expect(fn, 'to throw');
 expect(fn, 'to throw exception', function (e) { // get the exception object
   expect(e, 'to be a', SyntaxError);
 });
