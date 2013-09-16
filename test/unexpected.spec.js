@@ -54,6 +54,10 @@ describe('unexpected', function () {
             expect(1, 'not to be', true);
             expect('1', 'not to be', 1);
             expect(null, 'not to be', undefined);
+            expect(null, 'to be null');
+            expect(0, 'not to be null');
+            expect(undefined, 'not to be null');
+            expect(undefined, 'to be undefined');
             if (typeof Buffer !== 'undefined') {
                 var buffer = new Buffer([0x45, 0x59]);
                 expect(buffer, 'to be', buffer);
