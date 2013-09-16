@@ -373,6 +373,42 @@ describe('unexpected', function () {
         });
     });
 
+    describe('finite assertion', function () {
+        it('asserts a finite number', function () {
+            expect(123, 'to be finite');
+            expect(0, 'to be finite');
+            expect(Infinity, 'not to be finite');
+            expect(-Infinity, 'not to be finite');
+            expect(NaN, 'not to be finite');
+            expect(null, 'not to be finite');
+            expect({}, 'not to be finite');
+
+            it('throws when the assertion fails', function () {
+                expect(function () {
+                    expect(Infinity, 'to be finite');
+                }, 'to throw exception', 'expected Infinity to be finite');
+            });
+        });
+    });
+
+    describe('finite assertion', function () {
+        it('asserts a infinite number', function () {
+            expect(123, 'not to be infinite');
+            expect(0, 'not to be infinite');
+            expect(Infinity, 'to be infinite');
+            expect(-Infinity, 'to be infinite');
+            expect(NaN, 'not to be infinite');
+            expect(null, 'not to be infinite');
+            expect({}, 'not to be infinite');
+
+            it('throws when the assertion fails', function () {
+                expect(function () {
+                    expect(123, 'to be finite');
+                }, 'to throw exception', 'expected 123 to be infinite');
+            });
+        });
+    });
+
     describe('within assertion', function () {
         it('asserts a number within a range', function () {
             expect(0, 'to be within', 0, 4);
