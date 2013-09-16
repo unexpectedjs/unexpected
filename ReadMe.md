@@ -8,7 +8,7 @@ expect(window.r, 'to be', undefined);
 expect({ a: 'b' }, 'to equal', { a: 'b' });
 expect(5, 'to be a', 'number');
 expect([], 'to be an', 'array');
-expect(window, 'to not be an', Image);
+expect(window, 'not to be an', Image);
 ```
 
 [![Build Status](https://travis-ci.org/sunesimonsen/unexpected.png)](https://travis-ci.org/sunesimonsen/unexpected)
@@ -77,9 +77,9 @@ asserts that the value is _truthy_
 ```js
 expect(1, 'to be ok');
 expect(true, 'to be ok');
-expect(true, 'to not be falsy');
+expect(true, 'not to be falsy');
 expect({}, 'to be truthy');
-expect(0, 'to not be ok');
+expect(0, 'not to be ok');
 expect(0, 'to be falsy');
 expect(null, 'to be falsy');
 expect(undefined, 'to be falsy');
@@ -89,12 +89,12 @@ expect(undefined, 'to be falsy');
 
 ```js
 expect(obj, 'to be', obj);
-expect(obj, 'to not be', {});
+expect(obj, 'not to be', {});
 expect(1, 'to be', 1);
-expect(NaN, 'to not be', NaN);
-expect(1, 'to not be', true);
-expect('1', 'to not be', 1);
-expect(null, 'to not be', undefined);
+expect(NaN, 'not to be', NaN);
+expect(1, 'not to be', true);
+expect('1', 'not to be', 1);
+expect(null, 'not to be', undefined);
 ```
 
 **equal**: asserts loose equality that works with objects
@@ -102,7 +102,7 @@ expect(null, 'to not be', undefined);
 ```js
 expect({ a: 'b' }, 'to equal', { a: 'b' });
 expect(1, 'to equal', '1');
-expect(null, 'to not equal', '1');
+expect(null, 'not to equal', '1');
 var now = new Date();
 expect(now, 'to equal', now);
 expect(now, 'to equal', new Date(now.getTime()));
@@ -122,8 +122,8 @@ expect([], 'to be an', Array);
 expect([], 'to be an', 'object');
 expect([], 'to be an object');
 
-expect(null, 'to not be an', 'object');
-expect(null, 'to not be an object');
+expect(null, 'not to be an', 'object');
+expect(null, 'not to be an object');
 
 expect(true, 'to be a', 'boolean');
 expect(true, 'to be a boolean');
@@ -136,8 +136,8 @@ expect("".substring, 'to be a function');
 
 ```js
 expect('test', 'to match', /.*st/);
-expect('test', 'to not match', /foo/);
-expect(null, 'to not match', /foo/);
+expect('test', 'not to match', /foo/);
+expect(null, 'not to match', /foo/);
 ```
 
 **contain**: asserts indexOf for an array or string
@@ -145,7 +145,7 @@ expect(null, 'to not match', /foo/);
 ```js
 expect([1, 2], 'to contain', 1);
 expect('hello world', 'to contain', 'world');
-expect(null, 'to not contain', 'world');
+expect(null, 'not to contain', 'world');
 ```
 
 **length**: asserts array `.length`
@@ -153,7 +153,7 @@ expect(null, 'to not contain', 'world');
 ```js
 expect([], 'to have length', 0);
 expect([1,2,3], 'to have length', 3);
-expect([1,2,3], 'to not have length', 4);
+expect([1,2,3], 'not to have length', 4);
 ```
 
 **empty**: asserts that an array is empty or not
@@ -163,8 +163,8 @@ expect([], 'to be empty');
 expect('', 'to be empty');
 expect({}, 'to be empty');
 expect({ length: 0, duck: 'typing' }, 'to be empty');
-expect({ my: 'object' }, 'to not be empty');
-expect([1,2,3], 'to not be empty');
+expect({ my: 'object' }, 'not to be empty');
+expect([1,2,3], 'not to be empty');
 ```
 
 **property**: asserts presence of an own property (and value optionally)
@@ -176,15 +176,15 @@ expect({a: 'b'}, 'to have property', 'a');
 expect({a: 'b'}, 'to have property', 'a', 'b');
 expect({a: 'b'}, 'to have property', 'toString');
 expect({a: 'b'}, 'to have own property', 'a');
-expect(Object.create({a: 'b'}), 'to not have own property', 'a');
+expect(Object.create({a: 'b'}), 'not to have own property', 'a');
 ```
 
 **key** / **keys**: asserts the presence of a key. Supports the `only` modifier
 
 ```js
-expect(null, 'to not have key', 'a');
+expect(null, 'not to have key', 'a');
 expect({ a: 'b' }, 'to have key', 'a');
-expect({ a: 'b' }, 'to not have key', 'b');
+expect({ a: 'b' }, 'not to have key', 'b');
 expect({ a: 'b', c: 'd' }, 'to not only have key', 'a');
 expect({ a: 'b', c: 'd' }, 'to only have keys', 'a', 'c');
 expect({ a: 'b', c: 'd' }, 'to only have keys', ['a', 'c']);
@@ -201,7 +201,7 @@ expect(fn, 'to throw exception', function (e) { // get the exception object
 });
 expect(fn, 'to throw exception', /matches the exception message/);
 expect(fn, 'to throw error', 'matches the exact exception message');
-expect(fn2, 'to not throw error');
+expect(fn2, 'not to throw error');
 ```
 
 **within**: asserts a number within a range
@@ -210,8 +210,8 @@ expect(fn2, 'to not throw error');
 expect(0, 'to be within', 0, 4);
 expect(1, 'to be within', 0, 4);
 expect(4, 'to be within', 0, 4);
-expect(-1, 'to not be within', 0, 4);
-expect(5, 'to not be within', 0, 4);
+expect(-1, 'not to be within', 0, 4);
+expect(5, 'not to be within', 0, 4);
 ```
 
 **greater than** / **above**: asserts `>`

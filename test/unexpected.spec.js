@@ -13,9 +13,9 @@ describe('unexpected', function () {
         it('assert that the value is truthy or not', function () {
             expect(1, 'to be ok');
             expect(true, 'to be ok');
-            expect(true, 'to not be falsy');
+            expect(true, 'not to be falsy');
             expect({}, 'to be truthy');
-            expect(0, 'to not be ok');
+            expect(0, 'not to be ok');
             expect(0, 'to be falsy');
             expect(null, 'to be falsy');
             expect(undefined, 'to be falsy');
@@ -48,12 +48,12 @@ describe('unexpected', function () {
         it('assert === equality', function () {
             var obj = {};
             expect(obj, 'to be', obj);
-            expect(obj, 'to not be', {});
+            expect(obj, 'not to be', {});
             expect(1, 'to be', 1);
-            expect(NaN, 'to not be', NaN);
-            expect(1, 'to not be', true);
-            expect('1', 'to not be', 1);
-            expect(null, 'to not be', undefined);
+            expect(NaN, 'not to be', NaN);
+            expect(1, 'not to be', true);
+            expect('1', 'not to be', 1);
+            expect(null, 'not to be', undefined);
             if (typeof Buffer !== 'undefined') {
                 var buffer = new Buffer([0x45, 0x59]);
                 expect(buffer, 'to be', buffer);
@@ -66,8 +66,8 @@ describe('unexpected', function () {
             }, 'to throw exception', "expected 'foo' to be 'bar'");
 
             expect(function () {
-                expect(true, 'to not be', true);
-            }, 'to throw exception', "expected true to not be true");
+                expect(true, 'not to be', true);
+            }, 'to throw exception', "expected true not to be true");
         });
     });
 
@@ -82,12 +82,12 @@ describe('unexpected', function () {
             expect([], 'to be an', Array);
             expect(/ab/, 'to be a', RegExp);
             expect(/ab/, 'to be a regexp');
-            expect(123, 'to not be a regex');
+            expect(123, 'not to be a regex');
             expect(/ab/, 'to be a regex');
             expect(/ab/, 'to be a regular expression');
-            expect(123, 'to not be a regular expression');
-            expect(null, 'to not be an', 'object');
-            expect(null, 'to not be an object');
+            expect(123, 'not to be a regular expression');
+            expect(null, 'not to be an', 'object');
+            expect(null, 'not to be an object');
             expect(true, 'to be a', 'boolean');
             expect(true, 'to be a boolean');
             expect("".substring, 'to be a', 'function');
@@ -100,8 +100,8 @@ describe('unexpected', function () {
             }, 'to throw exception', /expected 5 to be a \[Function(: Array)?\]/);
 
             expect(function () {
-                expect([], 'to not be an', 'array');
-            }, 'to throw exception', "expected [] to not be an 'array'");
+                expect([], 'not to be an', 'array');
+            }, 'to throw exception', "expected [] not to be an 'array'");
         });
     });
 
@@ -110,22 +110,22 @@ describe('unexpected', function () {
             expect({ a: 'b' }, 'to equal', { a: 'b' });
             expect(1, 'to equal', '1');
             expect(1, 'to equal', 1);
-            expect(null, 'to not equal', '1');
+            expect(null, 'not to equal', '1');
             var now = new Date();
             expect(now, 'to equal', now);
             expect(now, 'to equal', new Date(now.getTime()));
             expect({ now: now }, 'to equal', { now: now });
             expect(null, 'to equal', null);
-            expect(null, 'to not equal', undefined);
+            expect(null, 'not to equal', undefined);
             expect(undefined, 'to equal', undefined);
             expect(true, 'to equal', true);
             expect(false, 'to equal', false);
             expect({ a: { b: 'c' } }, 'to equal', { a: { b: 'c' } });
-            expect({ a: { b: 'c' } }, 'to not equal', { a: { b: 'd' } });
+            expect({ a: { b: 'c' } }, 'not to equal', { a: { b: 'd' } });
             expect(/foo/, 'to equal', /foo/);
-            expect(/foo/i, 'to not equal', /foo/);
+            expect(/foo/i, 'not to equal', /foo/);
             expect(/foo/gm, 'to equal', /foo/gm);
-            expect(/foo/m, 'to not equal', /foo/i);
+            expect(/foo/m, 'not to equal', /foo/i);
             expect(/foo/m, 'to equal', new RegExp('foo', 'm'));
             if (typeof Buffer !== 'undefined') {
                 expect(new Buffer([0x45, 0x59]), 'to equal', new Buffer([0x45, 0x59]));
@@ -138,8 +138,8 @@ describe('unexpected', function () {
             }, 'to throw exception', "expected { a: { b: 'c' } } to equal { a: { b: 'd' } }");
 
             expect(function () {
-                expect({ a: 'b' }, 'to not equal', { a: 'b' });
-            }, 'to throw exception', "expected { a: 'b' } to not equal { a: 'b' }");
+                expect({ a: 'b' }, 'not to equal', { a: 'b' });
+            }, 'to throw exception', "expected { a: 'b' } not to equal { a: 'b' }");
         });
 
         it("throws an error with 'expected' and 'actual' properties when not negated", function () {
@@ -157,8 +157,8 @@ describe('unexpected', function () {
             expect(function () {
                 expect(123, 'not to equal', 123);
             }, 'to throw exception', function (e) {
-                expect(e.expected, 'to not be ok');
-                expect(e.actual, 'to not be ok');
+                expect(e.expected, 'not to be ok');
+                expect(e.actual, 'not to be ok');
             });
         });
     });
@@ -192,7 +192,7 @@ describe('unexpected', function () {
             }, 'to throw exception', /matches the exception message/);
             expect(function () {
                 throw new Error('Other error');
-            }, 'to not throw exception', /matches the exception message/);
+            }, 'not to throw exception', /matches the exception message/);
         });
 
         it('exactly matches the message against the given string', function () {
@@ -201,15 +201,15 @@ describe('unexpected', function () {
             }, 'to throw exception', 'matches the exception message');
             expect(function () {
                 throw new Error('matches the exception message');
-            }, 'to not throw exception', 'the exception message');
+            }, 'not to throw exception', 'the exception message');
         });
     });
 
     describe('match assertion', function () {
         it('tests that the subject matches the given regular expression', function () {
             expect('test', 'to match', /.*st/);
-            expect('test', 'to not match', /foo/);
-            expect(null, 'to not match', /foo/);
+            expect('test', 'not to match', /foo/);
+            expect(null, 'not to match', /foo/);
         });
 
         it('throws when the assertion fails', function () {
@@ -224,7 +224,7 @@ describe('unexpected', function () {
             expect([1, 2], 'to contain', 1);
             expect([1, 2], 'to contain', 2, 1);
             expect('hello world', 'to contain', 'world');
-            expect(null, 'to not contain', 'world');
+            expect(null, 'not to contain', 'world');
         });
 
         it('throws when the assertion fails', function () {
@@ -250,7 +250,7 @@ describe('unexpected', function () {
         it('asserts array .length', function () {
             expect([], 'to have length', 0);
             expect([1,2,3], 'to have length', 3);
-            expect([1,2,3], 'to not have length', 4);
+            expect([1,2,3], 'not to have length', 4);
             expect({ length: 4 }, 'to have length', 4);
         });
 
@@ -276,14 +276,14 @@ describe('unexpected', function () {
             expect({a: 'b'}, 'to have property', 'a');
             expect({a: 'b'}, 'to have property', 'a', 'b');
             expect({a: 'b'}, 'to have property', 'toString');
-            expect({a: 'b'}, 'to not have property', 'b');
+            expect({a: 'b'}, 'not to have property', 'b');
             expect({a: 'b'}, 'to have own property', 'a');
-            expect(create({a: 'b'}), 'to not have own property', 'a');
-            expect(1, 'to not have property', 'a');
-            expect(null, 'to not have property', 'a');
-            expect(undefined, 'to not have property', 'a');
-            expect(true, 'to not have property', 'a');
-            expect(false, 'to not have property', 'a');
+            expect(create({a: 'b'}), 'not to have own property', 'a');
+            expect(1, 'not to have property', 'a');
+            expect(null, 'not to have property', 'a');
+            expect(undefined, 'not to have property', 'a');
+            expect(true, 'not to have property', 'a');
+            expect(false, 'not to have property', 'a');
         });
 
         it('throws when the assertion fails', function () {
@@ -301,13 +301,13 @@ describe('unexpected', function () {
 
             expect(function () {
                 // property expectations on value expects the property to be present
-                expect(null, 'to not have property', 'a', 'b');
-            }, 'to throw exception', "expected null to not have property 'a', 'b'");
+                expect(null, 'not to have property', 'a', 'b');
+            }, 'to throw exception', "expected null not to have property 'a', 'b'");
 
             expect(function () {
                 // property expectations on value expects the property to be present
-                expect(null, 'to not have own property', 'a', 'b');
-            }, 'to throw exception', "expected null to not have own property 'a', 'b'");
+                expect(null, 'not to have own property', 'a', 'b');
+            }, 'to throw exception', "expected null not to have own property 'a', 'b'");
         });
     });
 
@@ -317,8 +317,8 @@ describe('unexpected', function () {
             expect('', 'to be empty');
             expect({}, 'to be empty');
             expect({ length: 0, duck: 'typing' }, 'to be empty');
-            expect({ my: 'object' }, 'to not be empty');
-            expect([1,2,3], 'to not be empty');
+            expect({ my: 'object' }, 'not to be empty');
+            expect([1,2,3], 'not to be empty');
         });
 
         it('throws when the assertion fails', function () {
@@ -335,15 +335,15 @@ describe('unexpected', function () {
     describe('key assertion', function () {
         it('asserts the presence of a key', function () {
             expect({ a: 'b' }, 'to have key', 'a');
-            expect({ a: 'b' }, 'to not have key', 'b');
+            expect({ a: 'b' }, 'not to have key', 'b');
             expect({ a: 'b', c: 'd' }, 'to not only have key', 'a');
             expect({ a: 'b', c: 'd' }, 'to only have keys', 'a', 'c');
             expect({ a: 'b', c: 'd' }, 'to only have keys', ['a', 'c']);
             expect({ a: 'b', c: 'd', e: 'f' }, 'to not only have keys', ['a', 'c']);
-            expect(null, 'to not have key', 'a');
-            expect(undefined, 'to not have key', 'a');
-            expect(true, 'to not have key', 'a');
-            expect(false, 'to not have key', 'a');
+            expect(null, 'not to have key', 'a');
+            expect(undefined, 'not to have key', 'a');
+            expect(true, 'not to have key', 'a');
+            expect(false, 'not to have key', 'a');
         });
 
         it('throws when the assertion fails', function () {
@@ -356,8 +356,8 @@ describe('unexpected', function () {
             }, 'to throw exception', "expected { a: 'b', b: 'c' } to only have key 'b'");
 
             expect(function () {
-                expect({ a: 'b', b: 'c' }, 'to not have key', 'b');
-            }, 'to throw exception', "expected { a: 'b', b: 'c' } to not have key 'b'");
+                expect({ a: 'b', b: 'c' }, 'not to have key', 'b');
+            }, 'to throw exception', "expected { a: 'b', b: 'c' } not to have key 'b'");
 
             expect(function () {
                 expect({ a: 'b', c: 'd' }, 'to not only have keys', ['a', 'c']);
@@ -378,17 +378,17 @@ describe('unexpected', function () {
             expect(0, 'to be within', 0, 4);
             expect(1, 'to be within', 0, 4);
             expect(4, 'to be within', 0, 4);
-            expect(-1, 'to not be within', 0, 4);
-            expect(5, 'to not be within', 0, 4);
+            expect(-1, 'not to be within', 0, 4);
+            expect(5, 'not to be within', 0, 4);
         });
 
         it('throws when the assertion fails', function () {
             expect(function () {
-                expect(4, 'to not be within', 0, 4);
-            }, 'to throw exception', "expected 4 to not be within '0..4'");
+                expect(4, 'not to be within', 0, 4);
+            }, 'to throw exception', "expected 4 not to be within '0..4'");
             expect(function () {
-                expect(null, 'to not be within', 0, 4);
-            }, 'to throw exception', "expected null to not be within '0..4'");
+                expect(null, 'not to be within', 0, 4);
+            }, 'to throw exception', "expected null not to be within '0..4'");
         });
     });
 
