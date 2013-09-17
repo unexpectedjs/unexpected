@@ -50,7 +50,6 @@ describe('unexpected', function () {
             expect(obj, 'to be', obj);
             expect(obj, 'not to be', {});
             expect(1, 'to be', 1);
-            expect(NaN, 'not to be', NaN);
             expect(1, 'not to be', true);
             expect('1', 'not to be', 1);
             expect(null, 'not to be', undefined);
@@ -511,6 +510,27 @@ describe('unexpected', function () {
             expect(function () {
                 expect(0, 'to be negative');
             }, 'to throw exception', "expected 0 to be negative");
+        });
+    });
+
+    describe('to be NaN assertion', function () {
+        it('assert that the value is NaN or not', function () {
+            expect(NaN, 'to be NaN');
+            expect({}, 'to be NaN');
+            expect(2, 'not to be NaN');
+            expect(null, 'not to be NaN');
+            expect(undefined, 'to be NaN');
+            expect("String", 'to be NaN');
+        });
+
+        it('fails when the assertion fails', function () {
+            expect(function () {
+                expect(0, 'to be NaN');
+            }, 'to throw', "expected 0 to be NaN");
+
+            expect(function () {
+                expect(NaN, 'not to be NaN');
+            }, 'to throw', "expected NaN not to be NaN");
         });
     });
 
