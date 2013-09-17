@@ -206,6 +206,15 @@ expect(fn, 'to throw error', 'matches the exact exception message');
 expect(fn2, 'not to throw error');
 ```
 
+**finite/infinite**: asserts a finite or infinite number
+
+```js
+expect(123, 'to be finite');
+expect(Infinity, 'not to be finite');
+expect(Infinity, 'to be infinite');
+expect(false, 'not to be infinite');
+```
+
 **within**: asserts a number within a range
 
 ```js
