@@ -91,6 +91,8 @@ expect(undefined, 'to be falsy');
 expect(obj, 'to be', obj);
 expect(obj, 'not to be', {});
 expect(1, 'to be', 1);
+expect(undefined, 'to be undefined');
+expect(null, 'to be null');
 expect(NaN, 'not to be', NaN);
 expect(1, 'not to be', true);
 expect('1', 'not to be', 1);
