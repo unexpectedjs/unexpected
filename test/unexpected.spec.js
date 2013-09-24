@@ -574,6 +574,126 @@ describe('unexpected', function () {
         });
     }
 
+    describe('addAssertion', function () {
+        describe('pattern', function () {
+            it("must be a string", function () {
+                expect(function () {
+                    expect.addAssertion(null, function () {});
+                }, 'to throw', "Assertion patterns must be a non empty string");
+            });
+
+            it("must be a non empty", function () {
+                expect(function () {
+                    expect.addAssertion('', function () {});
+                }, 'to throw', "Assertion patterns must be a non empty string");
+            });
+
+            it("can't start or end with whitespace", function () {
+                expect(function () {
+                    expect.addAssertion('   ', function () {});
+                }, 'to throw', "Assertion patterns can't start or end with whitespace");
+            });
+
+            it("can't start with whitespace", function () {
+                expect(function () {
+                    expect.addAssertion(' foo', function () {});
+                }, 'to throw', "Assertion patterns can't start or end with whitespace");
+            });
+
+            it("can't end with whitespace", function () {
+                expect(function () {
+                    expect.addAssertion('foo   ', function () {});
+                }, 'to throw', "Assertion patterns can't start or end with whitespace");
+            });
+
+            it.skip("must not contain unbalanced brackets", function () {
+                expect(function () {
+                    expect.addAssertion('foo [', function () {});
+                }, 'to throw', "Assertion patterns must not contain unbalanced brackets: 'foo ['");
+
+                expect(function () {
+                    expect.addAssertion('foo ]', function () {});
+                }, 'to throw', "Assertion patterns must not contain unbalanced brackets: 'foo ]'");
+            });
+
+            it.skip("must not contain unbalanced parenthesis", function () {
+                expect(function () {
+                    expect.addAssertion('foo (', function () {});
+                }, 'to throw', "Assertion patterns must not contain unbalanced parenthesis: 'foo ('");
+
+                expect(function () {
+                    expect.addAssertion('foo )', function () {});
+                }, 'to throw', "Assertion patterns must not contain unbalanced parenthesis: 'foo )'");
+            });
+
+            it.skip("must not only contain flags", function () {
+                expect(function () {
+                    expect.addAssertion('[foo] [bar]', function () {});
+                }, 'to throw', "Assertion patterns must not only contain flags");
+            });
+
+            describe.skip('flags', function () {
+                it("must not be empty", function () {
+                    expect(function () {
+                        expect.addAssertion('foo []', function () {});
+                    }, 'to throw', "Assertion patterns must not contain empty flags: 'foo []'");
+                });
+
+                it("must not contain brackets", function () {
+                    expect(function () {
+                        expect.addAssertion('foo [[bar]', function () {});
+                    }, 'to throw', "Assertion patterns must not contain flags with brackets: 'foo [[bar]'");
+
+                    expect(function () {
+                        expect.addAssertion('foo [bar]]', function () {});
+                    }, 'to throw', "Assertion patterns must not contain flags with brackets: 'foo [bar]]'");
+                });
+
+                it("must not contain parenthesis", function () {
+                    expect(function () {
+                        expect.addAssertion('foo [(bar]', function () {});
+                    }, 'to throw', "Assertion patterns must not contain flags with parenthesis: 'foo [(bar]'");
+
+                    expect(function () {
+                        expect.addAssertion('foo [bar)]', function () {});
+                    }, 'to throw', "Assertion patterns must not contain flags with parenthesis: 'foo [bar)]");
+                });
+            });
+
+            describe.skip('alternations', function () {
+                it("must not be empty", function () {
+                    expect(function () {
+                        expect.addAssertion('foo ()', function () {});
+                    }, 'to throw', "Assertion patterns must not contain empty alternations: 'foo ()");
+
+                    expect(function () {
+                        expect.addAssertion('foo (bar|)', function () {});
+                    }, 'to throw', "Assertion patterns must not contain empty alternations: 'foo (bar|)");
+                });
+
+                it("must not contain brackets", function () {
+                    expect(function () {
+                        expect.addAssertion('foo ([bar)', function () {});
+                    }, 'to throw', "Assertion patterns must not contain alternations with brackets: 'foo ([bar)'");
+
+                    expect(function () {
+                        expect.addAssertion('foo (bar])', function () {});
+                    }, 'to throw', "Assertion patterns must not contain alternations with brackets: 'foo (bar])'");
+                });
+
+                it("must not contain parenthesis", function () {
+                    expect(function () {
+                        expect.addAssertion('foo ((bar)', function () {});
+                    }, 'to throw', "Assertion patterns must not contain alternations with parenthesis: 'foo ((bar)'");
+
+                    expect(function () {
+                        expect.addAssertion('foo [bar)]', function () {});
+                    }, 'to throw', "Assertion patterns must not contain alternations with parenthesis: 'foo (bar))");
+                });
+            });
+        });
+    });
+
     describe('internal', function () {
         describe('expandPattern', function () {
             it('expands patterns containing multiple flags', function () {
