@@ -626,7 +626,7 @@ describe('unexpected', function () {
                 }, 'to throw', "Assertion patterns must not contain unbalanced parenthesis: 'foo )'");
             });
 
-            it.skip("must not only contain flags", function () {
+            it("must not only contain flags", function () {
                 expect(function () {
                     expect.addAssertion('[foo] [bar]', function () {});
                 }, 'to throw', "Assertion patterns must not only contain flags");
