@@ -633,7 +633,7 @@ describe('unexpected', function () {
             });
 
             describe('flags', function () {
-                it.skip("must not be empty", function () {
+                it("must not be empty", function () {
                     expect(function () {
                         expect.addAssertion('foo []', function () {});
                     }, 'to throw', "Assertion patterns must not contain empty flags: 'foo []'");
