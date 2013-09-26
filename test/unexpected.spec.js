@@ -661,14 +661,22 @@ describe('unexpected', function () {
             });
 
             describe('alternations', function () {
-                it.skip("must not be empty", function () {
+                it("must not be empty", function () {
                     expect(function () {
                         expect.addAssertion('foo ()', function () {});
-                    }, 'to throw', "Assertion patterns must not contain empty alternations: 'foo ()");
+                    }, 'to throw', "Assertion patterns must not contain empty alternations: 'foo ()'");
 
                     expect(function () {
                         expect.addAssertion('foo (bar|)', function () {});
-                    }, 'to throw', "Assertion patterns must not contain empty alternations: 'foo (bar|)");
+                    }, 'to throw', "Assertion patterns must not contain empty alternations: 'foo (bar|)'");
+
+                    expect(function () {
+                        expect.addAssertion('foo (||)', function () {});
+                    }, 'to throw', "Assertion patterns must not contain empty alternations: 'foo (||)'");
+
+                    expect(function () {
+                        expect.addAssertion('foo (|bar|)', function () {});
+                    }, 'to throw', "Assertion patterns must not contain empty alternations: 'foo (|bar|)'");
                 });
 
                 it("must not contain brackets", function () {
