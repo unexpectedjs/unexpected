@@ -1,7 +1,7 @@
 /*global describe, it, expect*/
 
 // use this instead of Object.create in order to make the tests run in
-// es5 compatible browsers
+// browsers that are not es5 compatible.
 function create(o) {
     function F() {}
     F.prototype = o;
