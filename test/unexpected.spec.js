@@ -701,33 +701,4 @@ describe('unexpected', function () {
             });
         });
     });
-
-    describe('internal', function () {
-        describe('expandPattern', function () {
-            it('expands patterns containing multiple flags', function () {
-                var expanded = expect.internal.expandPattern('foo [not] [only] bar');
-                sortBy(expanded, 'text');
-
-                expect(expanded, 'to equal', [
-                    { text: 'foo bar', flags: []},
-                    { text: 'foo not bar', flags: ['not']},
-                    { text: 'foo not only bar', flags: ['not', 'only']},
-                    { text: 'foo only bar', flags: ['only']}
-                ]);
-                expect(expanded.length, 'to be', 4);
-            });
-            it('expands patterns alternations', function () {
-                var expanded = expect.internal.expandPattern('foo (bar|bar baz) (qux|quux)');
-                sortBy(expanded, 'text');
-
-                expect(expanded, 'to equal', [
-                    { text: 'foo bar baz quux', flags: []},
-                    { text: 'foo bar baz qux', flags: []},
-                    { text: 'foo bar quux', flags: []},
-                    { text: 'foo bar qux', flags: []}
-                ]);
-                expect(expanded.length, 'to be', 4);
-            });
-        });
-    });
 });
