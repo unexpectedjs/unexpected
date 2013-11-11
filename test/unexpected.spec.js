@@ -701,4 +701,32 @@ describe('unexpected', function () {
             });
         });
     });
+
+    describe('clone', function () {
+        var clonedExpect;
+        beforeEach(function () {
+            clonedExpect = expect.clone();
+            clonedExpect.addAssertion('[not] to be answer to the Ultimate Question of Life, the Universe, and Everything', function () {
+                this.assert(this.obj === 42);
+            });
+        });
+
+        it('changes to the clone does not affect the orignal instance', function () {
+            expect(expect.assertions, 'not to have keys',
+                   'to be answer to the Ultimate Question of Life, the Universe, and Everything',
+                   'not to be answer to the Ultimate Question of Life, the Universe, and Everything');
+        });
+
+        it('assertions can be added to the clone', function () {
+            expect(clonedExpect.assertions, 'to have keys',
+                   'to be answer to the Ultimate Question of Life, the Universe, and Everything',
+                   'not to be answer to the Ultimate Question of Life, the Universe, and Everything');
+            clonedExpect(42, 'to be answer to the Ultimate Question of Life, the Universe, and Everything');
+            clonedExpect(41, 'not to be answer to the Ultimate Question of Life, the Universe, and Everything');
+
+            expect(function () {
+                clonedExpect(41, 'to be answer to the Ultimate Question of Life, the Universe, and Everything');
+            }, 'to throw');
+        });
+    });
 });
