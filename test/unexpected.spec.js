@@ -575,6 +575,15 @@ describe('unexpected', function () {
     }
 
     describe('addAssertion', function () {
+        it('is chainable', function () {
+            expect.addAssertion('foo', function () {})
+                  .addAssertion('bar', function () {});
+
+            expect(expect.assertions, 'to have keys',
+                   'foo',
+                   'bar');
+        });
+
         describe('pattern', function () {
             it("must be a string", function () {
                 expect(function () {
