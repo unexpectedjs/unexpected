@@ -295,7 +295,13 @@ expect.fail('Custom failure message')
 expect.fail('{0} was expected to be {1}', 0, 'zero');
 ```
 
-## Using with a test framework
+## Print all registered assertions to the console
+
+```js
+console.log(expect.toString());
+```
+
+## Using Unexpected with a test framework
 
 For example, if you create a test suite with
 [mocha](http://github.com/visionmedia/mocha).
