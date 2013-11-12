@@ -96,6 +96,10 @@ expect(null, 'to be null');
 expect(1, 'not to be', true);
 expect('1', 'not to be', 1);
 expect(null, 'not to be', undefined);
+expect(true, 'to be true');
+expect(false, 'not to be true');
+expect(false, 'to be false');
+expect(true, 'not to be false');
 ```
 
 **equal**: asserts loose equality that works with objects
