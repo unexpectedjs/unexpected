@@ -97,8 +97,8 @@ describe('unexpected', function () {
             expect(null, 'not to be an object');
             expect(true, 'to be a', 'boolean');
             expect(true, 'to be a boolean');
-            expect("".substring, 'to be a', 'function');
-            expect("".substring, 'to be a function');
+            expect(expect, 'to be a', 'function');
+            expect(expect, 'to be a function');
         });
 
         it('throws when the assertion fails', function () {
