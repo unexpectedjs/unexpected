@@ -561,11 +561,12 @@ describe('unexpected', function () {
             }, 'to throw exception', "0 was expected to be {1}");
         });
 
-        it('throws if the assertion does not exists', function () {
-            expect(function () {
-                expect(1, "foo bar", 2);
-            }, 'to throw exception', 'Unknown assertion "foo bar", did you mean: "to be"');
-        });
+    });
+
+    it('throws if the assertion does not exists', function () {
+        expect(function () {
+            expect(1, "to bee", 2);
+        }, 'to throw exception', 'Unknown assertion "to bee", did you mean: "to be"');
     });
 
     function sortBy(arr, property) {
@@ -740,6 +741,32 @@ describe('unexpected', function () {
             expect(function () {
                 clonedExpect(41, 'to be answer to the Ultimate Question of Life, the Universe, and Everything');
             }, 'to throw');
+        });
+
+        it('suggests an assertion if the given assertion does not exists', function () {
+            expect(function () {
+                clonedExpect(1, "to bee", 2);
+            }, 'to throw', 'Unknown assertion "to bee", did you mean: "to be"');
+
+            expect(function () {
+                clonedExpect(1, "to be answer to the ultimate question of life, the universe, and everything");
+            }, 'to throw', 'Unknown assertion "to be answer to the ultimate question of life, the universe, and everything", did you mean: "to be answer to the Ultimate Question of Life, the Universe, and Everything"');
+        });
+
+        describe('toString', function () {
+            it('returns a string containing all the expanded assertions', function () {
+                expect(clonedExpect.toString(), 'to contain', 'to be');
+                expect(clonedExpect.toString(), 'to contain', 'not to be');
+                expect(clonedExpect.toString(), 'to contain', 'to be answer to the Ultimate Question of Life, the Universe, and Everything');
+                expect(clonedExpect.toString(), 'to contain', 'not to be answer to the Ultimate Question of Life, the Universe, and Everything');
+            });
+        });
+    });
+
+    describe('toString', function () {
+        it('returns a string containing all the expanded assertions', function () {
+            expect(expect.toString(), 'to contain', 'to be');
+            expect(expect.toString(), 'to contain', 'not to be');
         });
     });
 });
