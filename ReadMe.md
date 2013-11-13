@@ -61,7 +61,7 @@ var expect = weknowhow.expect;
 Include the library with RequireJS the following way:
 
 ```js
-define(['unexpected/lib/unexpected.js'], funtion (expect) {
+define(['unexpected/lib/unexpected.js'], function (expect) {
    // Your code
 });
 ```
