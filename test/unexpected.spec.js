@@ -630,14 +630,14 @@ describe('unexpected', function () {
                 }, 'to throw', "Assertion patterns must not contain unbalanced brackets: 'foo ]'");
             });
 
-            it("must not contain unbalanced parenthesis", function () {
+            it("must not contain unbalanced parentheses", function () {
                 expect(function () {
                     expect.addAssertion('foo (', function () {});
-                }, 'to throw', "Assertion patterns must not contain unbalanced parenthesis: 'foo ('");
+                }, 'to throw', "Assertion patterns must not contain unbalanced parentheses: 'foo ('");
 
                 expect(function () {
                     expect.addAssertion('foo )', function () {});
-                }, 'to throw', "Assertion patterns must not contain unbalanced parenthesis: 'foo )'");
+                }, 'to throw', "Assertion patterns must not contain unbalanced parentheses: 'foo )'");
             });
 
             it("must not only contain flags", function () {
@@ -663,14 +663,14 @@ describe('unexpected', function () {
                     }, 'to throw', "Assertion patterns must not contain flags with brackets: 'foo [[bar]]'");
                 });
 
-                it("must not contain parenthesis", function () {
+                it("must not contain parentheses", function () {
                     expect(function () {
                         expect.addAssertion('foo [(bar]', function () {});
-                    }, 'to throw', "Assertion patterns must not contain flags with parenthesis: 'foo [(bar]'");
+                    }, 'to throw', "Assertion patterns must not contain flags with parentheses: 'foo [(bar]'");
 
                     expect(function () {
                         expect.addAssertion('foo [bar)]', function () {});
-                    }, 'to throw', "Assertion patterns must not contain flags with parenthesis: 'foo [bar)]'");
+                    }, 'to throw', "Assertion patterns must not contain flags with parentheses: 'foo [bar)]'");
                 });
             });
 
@@ -703,14 +703,14 @@ describe('unexpected', function () {
                     }, 'to throw', "Assertion patterns must not contain alternations with brackets: 'foo (bar])'");
                 });
 
-                it("must not contain parenthesis", function () {
+                it("must not contain parentheses", function () {
                     expect(function () {
                         expect.addAssertion('foo ((bar)', function () {});
-                    }, 'to throw', "Assertion patterns must not contain alternations with parenthesis: 'foo ((bar)'");
+                    }, 'to throw', "Assertion patterns must not contain alternations with parentheses: 'foo ((bar)'");
 
                     expect(function () {
                         expect.addAssertion('foo ((bar))', function () {});
-                    }, 'to throw', "Assertion patterns must not contain alternations with parenthesis: 'foo ((bar))'");
+                    }, 'to throw', "Assertion patterns must not contain alternations with parentheses: 'foo ((bar))'");
                 });
             });
         });
