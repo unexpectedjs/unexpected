@@ -122,9 +122,16 @@ expect({ now: now }, 'to equal', { now: now });
 expect(5, 'to be a', 'number');
 expect(5, 'to be a number');
 
+expect('abc', 'to be a', 'string');
+expect('abc', 'to be a string');
+expect('', 'to be an empty string');
+expect('abc', 'to be a non-empty string');
+
 expect([], 'to be an', 'array');
 expect([], 'to be an array');
 expect([], 'to be an', Array);
+expect([], 'to be an empty array');
+expect([123], 'to be a non-empty array');
 
 expect([], 'to be an', 'object');
 expect([], 'to be an object');
