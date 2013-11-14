@@ -725,7 +725,7 @@ describe('unexpected', function () {
             });
         });
 
-        it('changes to the clone does not affect the orignal instance', function () {
+        it('changes to the clone does not affect the original instance', function () {
             expect(expect.assertions, 'not to have keys',
                    'to be answer to the Ultimate Question of Life, the Universe, and Everything',
                    'not to be answer to the Ultimate Question of Life, the Universe, and Everything');
