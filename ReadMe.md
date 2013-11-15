@@ -313,7 +313,8 @@ expect([0, 1, 2, 3, 4], 'to be an array whose items satisfy', function (item) {
 Using this assertion result in very detailed error reporting show in the below example:
 
 ```js
-expect([[0, 1, 2], [4, '5', 6], [7, 8, '9']], 'to be an array whose items satisfy', function (arr) {
+expect([[0, 1, 2], [4, '5', 6], [7, 8, '9']], 
+       'to be an array whose items satisfy', function (arr) {
     expect(arr, 'to be an array whose items satisfy', function (item) {
         expect(item, 'to be a number');
     });
