@@ -295,6 +295,34 @@ expect.fail('Custom failure message')
 expect.fail('{0} was expected to be {1}', 0, 'zero');
 ```
 
+**array whose items satify**: will run an assertion function for each items in an array
+
+```js
+expect([0, 1, 2, 3, 4], 'to be an array whose items satisfy', function (item) {
+    expect(item, 'to be a number');
+});
+```
+
+Using this assertion result in very detailed error reporting show in the below example:
+
+```js
+expect([[0, 1, 2], [4, '5', 6], [7, 8, '9']], 'to be an array whose items satisfy', function (arr) {
+    expect(arr, 'to be an array whose items satisfy', function (item) {
+        expect(item, 'to be a number');
+    });
+});
+```
+
+will output:
+
+```
+failed expectation in [ [ 0, 1, 2 ], [ 4, '5', 6 ], [ 7, 8, '9' ] ]
+  1: failed expectation in [ 4, '5', 6 ]
+    1: expected '5' to be a 'number'
+  2: failed expectation in [ 7, 8, '9' ]
+    2: expected '9' to be a 'number'
+```
+
 ## Print all registered assertions to the console
 
 ```js
