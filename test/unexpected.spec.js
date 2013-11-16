@@ -612,9 +612,9 @@ describe('unexpected', function () {
                     expect(item, 'to be less than', 4);
                 });
             }, 'to throw',
-                   "failed expectation in [ 0, 1, '2', 3, 4 ]\n" +
-                   "  2: expected '2' to be a 'number'\n" +
-                   "  4: expected 4 to be less than 4");
+                   "failed expectation in [ 0, 1, '2', 3, 4 ]:\n" +
+                   "    2: expected '2' to be a 'number'\n" +
+                   "    4: expected 4 to be less than 4");
         });
 
         it('indents failure reports of nested assertions correctly', function () {
@@ -625,11 +625,77 @@ describe('unexpected', function () {
                     });
                 });
             }, 'to throw',
-                "failed expectation in [ [ 0, 1, 2 ], [ 4, '5', 6 ], [ 7, 8, '9' ] ]\n" +
-                "  1: failed expectation in [ 4, '5', 6 ]\n" +
-                "    1: expected '5' to be a 'number'\n" +
-                "  2: failed expectation in [ 7, 8, '9' ]\n" +
-                "    2: expected '9' to be a 'number'");
+                "failed expectation in [ [ 0, 1, 2 ], [ 4, '5', 6 ], [ 7, 8, '9' ] ]:\n" +
+                "    1: failed expectation in [ 4, '5', 6 ]:\n" +
+                "        1: expected '5' to be a 'number'\n" +
+                "    2: failed expectation in [ 7, 8, '9' ]:\n" +
+                "        2: expected '9' to be a 'number'");
+        });
+    });
+
+    describe('to be a map whose values satisfy assertion', function () {
+        it('only accepts a function', function () {
+            expect(function () {
+                expect([1,2,3], 'to be a map whose values satisfy');
+            }, 'to throw', 'Assertions "to be a map whose values satisfy" expects a functions as argument');
+
+            expect(function () {
+                expect([1,2,3], 'to be a map whose values satisfy', 42);
+            }, 'to throw', 'Assertions "to be a map whose values satisfy" expects a functions as argument');
+        });
+
+        it('only accepts objects as the target', function () {
+            expect(function () {
+                expect(42, 'to be a map whose values satisfy', function (value) {});
+            }, 'to throw', "expected 42 to be an 'object'");
+        });
+
+        it('asserts that the given callback does not throw for any values in the map', function () {
+            expect({ foo: 0, bar: 1, baz: 2, qux: 3 }, 'to be a map whose values satisfy', function (value) {
+                expect(value, 'to be a number');
+            });
+
+            expect({ foo: '0', bar: '1', baz: '2', qux: '3' }, 'to be a map whose values satisfy', function (value) {
+                expect(value, 'not to be a number');
+            });
+        });
+
+        it('fails when the assertion fails', function () {
+            expect(function () {
+                expect({ foo: '0', bar: 1, baz: '2', qux: '3' }, 'to be a map whose values satisfy', function (value) {
+                    expect(value, 'not to be a number');
+                });
+            }, 'to throw', /expected 1 not to be a 'number'/);
+        });
+
+        it('provides a detailed report of where failures occur', function () {
+            expect(function () {
+                expect({ foo: 0, bar: 1, baz: '2', qux: 3, quux: 4 }, 'to be a map whose values satisfy', function (value) {
+                    expect(value, 'to be a number');
+                    expect(value, 'to be less than', 4);
+                });
+            }, 'to throw',
+                   "failed expectation in { foo: 0, bar: 1, baz: '2', qux: 3, quux: 4 }:\n" +
+                   "    baz: expected '2' to be a 'number'\n" +
+                   "    quux: expected 4 to be less than 4");
+        });
+
+        it('indents failure reports of nested assertions correctly', function () {
+            expect(function () {
+                expect({ foo: [0, 1, 2], bar: [4, '5', 6], baz: [7, 8, '9'] }, 'to be a map whose values satisfy', function (arr) {
+                    expect(arr, 'to be a map whose values satisfy', function (value) {
+                        expect(value, 'to be a number');
+                    });
+                });
+            }, 'to throw',
+                "failed expectation in\n" +
+                "{ foo: [ 0, 1, 2 ],\n" +
+                "  bar: [ 4, '5', 6 ],\n" +
+                "  baz: [ 7, 8, '9' ] }:\n" +
+                "    bar: failed expectation in [ 4, '5', 6 ]:\n" +
+                "        1: expected '5' to be a 'number'\n" +
+                "    baz: failed expectation in [ 7, 8, '9' ]:\n" +
+                "        2: expected '9' to be a 'number'");
         });
     });
 

@@ -324,11 +324,42 @@ expect([[0, 1, 2], [4, '5', 6], [7, 8, '9']],
 will output:
 
 ```
-failed expectation in [ [ 0, 1, 2 ], [ 4, '5', 6 ], [ 7, 8, '9' ] ]
-  1: failed expectation in [ 4, '5', 6 ]
-    1: expected '5' to be a 'number'
-  2: failed expectation in [ 7, 8, '9' ]
-    2: expected '9' to be a 'number'
+failed expectation in [ [ 0, 1, 2 ], [ 4, '5', 6 ], [ 7, 8, '9' ] ]:
+    1: failed expectation in [ 4, '5', 6 ]:
+        1: expected '5' to be a 'number'
+    2: failed expectation in [ 7, 8, '9' ]:
+        2: expected '9' to be a 'number'
+```
+
+**map whose values satify**: will run an assertion function for each value in a map
+
+```js
+expect({ foo: 0, bar: 1, baz: 2, qux: 3 }, 'to be a map whose values satisfy', function (value) {
+    expect(value, 'to be a number');
+});
+```
+
+Using this assertion result in very detailed error reporting show in the below example:
+
+```js
+expect({ foo: [0, 1, 2], bar: [4, '5', 6], baz: [7, 8, '9'] }, 'to be a map whose values satisfy', function (arr) {
+    expect(arr, 'to be a map whose values satisfy', function (value) {
+        expect(value, 'to be a number');
+    });
+});
+```
+
+will output:
+
+```
+failed expectation in
+{ foo: [ 0, 1, 2 ],
+  bar: [ 4, '5', 6 ],
+  baz: [ 7, 8, '9' ] }:
+    bar: failed expectation in [ 4, '5', 6 ]:
+        1: expected '5' to be a 'number'
+    baz: failed expectation in [ 7, 8, '9' ]:
+        2: expected '9' to be a 'number'
 ```
 
 ## Print all registered assertions to the console
