@@ -683,8 +683,8 @@ describe('unexpected', function () {
         it('indents failure reports of nested assertions correctly', function () {
             expect(function () {
                 expect({ foo: [0, 1, 2], bar: [4, '5', 6], baz: [7, 8, '9'] }, 'to be a map whose values satisfy', function (arr) {
-                    expect(arr, 'to be a map whose values satisfy', function (value) {
-                        expect(value, 'to be a number');
+                    expect(arr, 'to be an array whose items satisfy', function (item) {
+                        expect(item, 'to be a number');
                     });
                 });
             }, 'to throw',
