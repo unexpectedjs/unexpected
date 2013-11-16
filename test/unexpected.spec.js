@@ -332,13 +332,19 @@ describe('unexpected', function () {
             expect({}, 'to be empty');
             expect({ length: 0, duck: 'typing' }, 'to be empty');
             expect({ my: 'object' }, 'not to be empty');
+            expect({ my: 'object' }, 'to be non-empty');
             expect([1,2,3], 'not to be empty');
+            expect([1,2,3], 'to be non-empty');
         });
 
         it('throws when the assertion fails', function () {
             expect(function () {
                 expect([1,2,3], 'to be empty');
             }, 'to throw exception', "expected [ 1, 2, 3 ] to be empty");
+
+            expect(function () {
+                expect('', 'to be non-empty');
+            }, 'to throw exception', "expected '' not to be empty");
 
             expect(function () {
                 expect(null, 'to be empty');
