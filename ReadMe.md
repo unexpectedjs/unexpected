@@ -308,6 +308,10 @@ expect.fail('{0} was expected to be {1}', 0, 'zero');
 expect([0, 1, 2, 3, 4], 'to be an array whose items satisfy', function (item) {
     expect(item, 'to be a number');
 });
+
+expect([[], []], 'to be a non-empty array whose items satisfy', function (item) {
+    expect(item, 'to be an empty array');
+});
 ```
 
 Using this assertion result in very detailed error reporting show in the below example:

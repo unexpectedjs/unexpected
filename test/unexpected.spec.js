@@ -587,6 +587,12 @@ describe('unexpected', function () {
             }, 'to throw', "expected 42 to be an 'array'");
         });
 
+        it('supports the non-empty clause', function () {
+            expect([1], 'to be a non-empty array whose items satisfy', function (item) {
+                expect(item, 'to be a number');
+            });
+        });
+
         it('asserts that the given callback does not throw for any items in the array', function () {
             expect([0,1,2,3], 'to be an array whose items satisfy', function (item) {
                 expect(item, 'to be a number');
@@ -603,6 +609,12 @@ describe('unexpected', function () {
                     expect(item, 'not to be a number');
                 });
             }, 'to throw', /expected 1 not to be a 'number'/);
+
+            expect(function () {
+                expect([], 'to be a non-empty array whose items satisfy', function (item) {
+                    expect(item, 'not to be a number');
+                });
+            }, 'to throw', 'expected [] not to be empty');
         });
 
         it('provides a detailed report of where failures occur', function () {
