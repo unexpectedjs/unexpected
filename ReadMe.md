@@ -334,7 +334,8 @@ failed expectation in [ [ 0, 1, 2 ], [ 4, '5', 6 ], [ 7, 8, '9' ] ]:
 **map whose values satify**: will run an assertion function for each value in a map
 
 ```js
-expect({ foo: 0, bar: 1, baz: 2, qux: 3 }, 'to be a map whose values satisfy', function (value) {
+expect({ foo: 0, bar: 1, baz: 2, qux: 3 },
+       'to be a map whose values satisfy', function (value) {
     expect(value, 'to be a number');
 });
 ```
@@ -342,7 +343,8 @@ expect({ foo: 0, bar: 1, baz: 2, qux: 3 }, 'to be a map whose values satisfy', f
 Using this assertion result in very detailed error reporting show in the below example:
 
 ```js
-expect({ foo: [0, 1, 2], bar: [4, '5', 6], baz: [7, 8, '9'] }, 'to be a map whose values satisfy', function (arr) {
+expect({ foo: [0, 1, 2], bar: [4, '5', 6], baz: [7, 8, '9'] },
+       'to be a map whose values satisfy', function (arr) {
     expect(arr, 'to be a map whose values satisfy', function (value) {
         expect(value, 'to be a number');
     });
