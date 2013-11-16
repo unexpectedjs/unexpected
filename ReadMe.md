@@ -133,8 +133,10 @@ expect([], 'to be an', Array);
 expect([], 'to be an empty array');
 expect([123], 'to be a non-empty array');
 
-expect([], 'to be an', 'object');
-expect([], 'to be an object');
+expect({foo: 123}, 'to be an', 'object');
+expect({foo: 123}, 'to be an object');
+expect({foo: 123}, 'to be a non-empty object');
+expect({}, 'to be an empty object');
 
 expect(null, 'not to be an', 'object');
 expect(null, 'not to be an object');

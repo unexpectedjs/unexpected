@@ -90,9 +90,13 @@ describe('unexpected', function () {
             expect([], 'to be an', 'array');
             expect([], 'to be an array');
             expect([], 'to be an empty array');
+            expect({}, 'to be an', Object);
+            expect({}, 'to be an empty object');
+            expect({foo: 123}, 'to be a non-empty object');
             expect([123], 'to be a non-empty array');
             expect([], 'to be an', 'object');
             expect([], 'to be an object');
+            expect([], 'to be an empty object');
             expect([], 'to be an', Array);
             expect(/ab/, 'to be a', RegExp);
             expect(/ab/, 'to be a regexp');
