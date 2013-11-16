@@ -331,6 +331,32 @@ failed expectation in [ [ 0, 1, 2 ], [ 4, '5', 6 ], [ 7, 8, '9' ] ]:
         2: expected '9' to be a 'number'
 ```
 
+**map whose keys satify**: will run an assertion function for each key in a map
+
+
+```js
+expect({ foo: 0, bar: 1, baz: 2, qux: 3 },
+       'to be a map whose keys satisfy', function (key) {
+    expect(key, 'to match', /[a-z]{3}/);
+});
+```
+
+Using this assertion result in very detailed error reporting show in the below example:
+
+```js
+expect({ foo: 0, bar: 1, baz: 2, qux: 3, quux: 4 },
+       'to be a map whose keys satisfy', function (key) {
+    expect(key, 'to have length', 3);
+});
+```
+
+will output:
+
+```
+failed expectation on keys foo, bar, baz, qux, quux:
+    quux: expected 'quux' to have length 3
+```
+
 **map whose values satify**: will run an assertion function for each value in a map
 
 ```js

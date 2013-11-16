@@ -699,6 +699,52 @@ describe('unexpected', function () {
         });
     });
 
+    describe('to be a map whose keys satisfy assertion', function () {
+        it('only accepts a function', function () {
+            expect(function () {
+                expect([1,2,3], 'to be a map whose keys satisfy');
+            }, 'to throw', 'Assertions "to be a map whose keys satisfy" expects a functions as argument');
+
+            expect(function () {
+                expect([1,2,3], 'to be a map whose keys satisfy', 42);
+            }, 'to throw', 'Assertions "to be a map whose keys satisfy" expects a functions as argument');
+        });
+
+        it('only accepts objects as the target', function () {
+            expect(function () {
+                expect(42, 'to be a map whose keys satisfy', function (key) {});
+            }, 'to throw', "expected 42 to be an 'object'");
+        });
+
+        it('asserts that the given callback does not throw for any keys in the map', function () {
+            expect({ foo: 0, bar: 1, baz: 2, qux: 3 }, 'to be a map whose keys satisfy', function (key) {
+                expect(key, 'not to be empty');
+            });
+
+            expect({ foo: 0, bar: 1, baz: 2, qux: 3 }, 'to be a map whose keys satisfy', function (key) {
+                expect(key, 'to match', /[a-z]{3}/);
+            });
+        });
+
+        it('fails when the assertion fails', function () {
+            expect(function () {
+                expect({ foo: 0, bar: 1, Baz: 2, qux: 3 }, 'to be a map whose keys satisfy', function (key) {
+                    expect(key, 'to match', /[a-z]{3}/);
+                });
+            }, 'to throw', /expected 'Baz' to match/);
+        });
+
+        it('provides a detailed report of where failures occur', function () {
+            expect(function () {
+                expect({ foo: 0, bar: 1, baz: 2, qux: 3, quux: 4 }, 'to be a map whose keys satisfy', function (key) {
+                    expect(key, 'to have length', 3);
+                });
+            }, 'to throw',
+                   "failed expectation on keys foo, bar, baz, qux, quux:\n" +
+                   "    quux: expected 'quux' to have length 3");
+        });
+    });
+
     it('throws if the assertion does not exists', function () {
         expect(function () {
             expect(1, "to bee", 2);
