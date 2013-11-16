@@ -682,6 +682,16 @@ describe('unexpected', function () {
             });
         });
 
+        it('supports "hash" and "object" as aliases', function () {
+            expect({ foo: '0' }, 'to be an object whose values satisfy', function (value) {
+                expect(value, 'not to be a number');
+            });
+
+            expect({ foo: '0' }, 'to be a hash whose values satisfy', function (value) {
+                expect(value, 'not to be a number');
+            });
+        });
+
         it('fails when the assertion fails', function () {
             expect(function () {
                 expect({ foo: '0', bar: 1, baz: '2', qux: '3' }, 'to be a map whose values satisfy', function (value) {
@@ -744,6 +754,22 @@ describe('unexpected', function () {
             });
 
             expect({ foo: 0, bar: 1, baz: 2, qux: 3 }, 'to be a map whose keys satisfy', function (key) {
+                expect(key, 'to match', /[a-z]{3}/);
+            });
+        });
+
+        it('supports the non-empty clause', function () {
+            expect({ foo: '0' }, 'to be a non-empty map whose keys satisfy', function (key) {
+                expect(key, 'to match', /[a-z]{3}/);
+            });
+        });
+
+        it('supports "hash" and "object" as aliases', function () {
+            expect({ foo: '0' }, 'to be an object whose keys satisfy', function (key) {
+                expect(key, 'to match', /[a-z]{3}/);
+            });
+
+            expect({ foo: '0' }, 'to be a hash whose keys satisfy', function (key) {
                 expect(key, 'to match', /[a-z]{3}/);
             });
         });
