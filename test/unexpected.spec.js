@@ -682,6 +682,12 @@ describe('unexpected', function () {
             });
         });
 
+        it('supports the non-empty clause', function () {
+            expect({ foo: '0' }, 'to be a non-empty map whose values satisfy', function (value) {
+                expect(value, 'to equal', '0');
+            });
+        });
+
         it('supports "hash" and "object" as aliases', function () {
             expect({ foo: '0' }, 'to be an object whose values satisfy', function (value) {
                 expect(value, 'not to be a number');
