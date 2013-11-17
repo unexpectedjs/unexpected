@@ -313,7 +313,8 @@ expect([0, 1, 2, 3, 4], 'to be an array whose items satisfy', function (item) {
 
 expect([0, 1, 2, 3, 4], 'to be an array whose items satisfy', 'to be a number');
 
-expect([[1], [2]], 'to be an array whose items satisfy', 'to be an array whose items satisfy', 'to be a number');
+expect([[1], [2]], 'to be an array whose items satisfy',
+       'to be an array whose items satisfy', 'to be a number');
 
 expect([[], []], 'to be a non-empty array whose items satisfy', function (item) {
     expect(item, 'to be an empty array');
