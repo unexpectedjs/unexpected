@@ -311,6 +311,10 @@ expect([0, 1, 2, 3, 4], 'to be an array whose items satisfy', function (item) {
     expect(item, 'to be a number');
 });
 
+expect([0, 1, 2, 3, 4], 'to be an array whose items satisfy', 'to be a number');
+
+expect([[1], [2]], 'to be an array whose items satisfy', 'to be an array whose items satisfy', 'to be a number');
+
 expect([[], []], 'to be a non-empty array whose items satisfy', function (item) {
     expect(item, 'to be an empty array');
 });
@@ -319,7 +323,7 @@ expect([[], []], 'to be a non-empty array whose items satisfy', function (item) 
 Using this assertion result in very detailed error reporting show in the below example:
 
 ```js
-expect([[0, 1, 2], [4, '5', 6], [7, 8, '9']], 
+expect([[0, 1, 2], [4, '5', 6], [7, 8, '9']],
        'to be an array whose items satisfy', function (arr) {
     expect(arr, 'to be an array whose items satisfy', function (item) {
         expect(item, 'to be a number');
@@ -343,8 +347,12 @@ failed expectation in [ [ 0, 1, 2 ], [ 4, '5', 6 ], [ 7, 8, '9' ] ]:
 ```js
 expect({ foo: 0, bar: 1, baz: 2, qux: 3 },
        'to be a map whose keys satisfy', function (key) {
-    expect(key, 'to match', /[a-z]{3}/);
+    expect(key, 'to match', /^[a-z]{3}$/);
 });
+
+expect({ foo: 0, bar: 1, baz: 2, qux: 3 },
+       'to be a map whose keys satisfy',
+       'to match', /^[a-z]{3}$/);
 ```
 
 Using this assertion result in very detailed error reporting show in the below example:
@@ -370,6 +378,10 @@ expect({ foo: 0, bar: 1, baz: 2, qux: 3 },
        'to be a map whose values satisfy', function (value) {
     expect(value, 'to be a number');
 });
+
+expect({ foo: 0, bar: 1, baz: 2, qux: 3 },
+       'to be a map whose values satisfy',
+       'to be a number');
 ```
 
 Using this assertion result in very detailed error reporting show in the below example:
@@ -473,5 +485,5 @@ SOFTWARE.
 
 ### 3rd-party
 
-Heavily borrows from [expect.js](https://github.com/LearnBoost/expect.js) by 
+Heavily borrows from [expect.js](https://github.com/LearnBoost/expect.js) by
 Guillermo Rauch - MIT.

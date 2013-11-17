@@ -587,7 +587,7 @@ describe('unexpected', function () {
     });
 
     describe('to be an array whose items satisfy assertion', function () {
-        it('only accepts a function', function () {
+        it('requires a function or a string as the third argument', function () {
             expect(function () {
                 expect([1,2,3], 'to be an array whose items satisfy');
             }, 'to throw', 'Assertions "to be an array whose items satisfy" expects a functions as argument');
@@ -617,6 +617,12 @@ describe('unexpected', function () {
             expect(['0','1','2','3'], 'to be an array whose items satisfy', function (item) {
                 expect(item, 'not to be a number');
             });
+
+            expect([0,1,2,3], 'to be an array whose items satisfy', 'to be a number');
+
+            expect(['0','1','2','3'], 'to be an array whose items satisfy', 'not to be a number');
+
+            expect([[1], [2]], 'to be an array whose items satisfy', 'to be an array whose items satisfy', 'to be a number');
         });
 
         it('fails when the assertion fails', function () {
@@ -624,6 +630,10 @@ describe('unexpected', function () {
                 expect(['0',1,'2','3'], 'to be an array whose items satisfy', function (item) {
                     expect(item, 'not to be a number');
                 });
+            }, 'to throw', /expected 1 not to be a 'number'/);
+
+            expect(function () {
+                expect(['0',1,'2','3'], 'to be an array whose items satisfy', 'not to be a number');
             }, 'to throw', /expected 1 not to be a 'number'/);
 
             expect(function () {
@@ -662,7 +672,7 @@ describe('unexpected', function () {
     });
 
     describe('to be a map whose values satisfy assertion', function () {
-        it('only accepts a function', function () {
+        it('requires a function or a string as the third argument', function () {
             expect(function () {
                 expect([1,2,3], 'to be a map whose values satisfy');
             }, 'to throw', 'Assertions "to be a map whose values satisfy" expects a functions as argument');
@@ -686,6 +696,10 @@ describe('unexpected', function () {
             expect({ foo: '0', bar: '1', baz: '2', qux: '3' }, 'to be a map whose values satisfy', function (value) {
                 expect(value, 'not to be a number');
             });
+
+            expect({ foo: 0, bar: 1, baz: 2, qux: 3 }, 'to be a map whose values satisfy', 'to be a number');
+
+            expect({ foo: '0', bar: '1', baz: '2', qux: '3' }, 'to be a map whose values satisfy', 'not to be a number');
         });
 
         it('supports the non-empty clause', function () {
@@ -744,7 +758,7 @@ describe('unexpected', function () {
     });
 
     describe('to be a map whose keys satisfy assertion', function () {
-        it('only accepts a function', function () {
+        it('requires a function or string as the third argument', function () {
             expect(function () {
                 expect([1,2,3], 'to be a map whose keys satisfy');
             }, 'to throw', 'Assertions "to be a map whose keys satisfy" expects a functions as argument');
@@ -768,6 +782,10 @@ describe('unexpected', function () {
             expect({ foo: 0, bar: 1, baz: 2, qux: 3 }, 'to be a map whose keys satisfy', function (key) {
                 expect(key, 'to match', /^[a-z]{3}$/);
             });
+
+            expect({ foo: 0, bar: 1, baz: 2, qux: 3 }, 'to be a map whose keys satisfy', 'not to be empty');
+
+            expect({ foo: 0, bar: 1, baz: 2, qux: 3 }, 'to be a map whose keys satisfy', 'to match', /^[a-z]{3}$/);
         });
 
         it('supports the non-empty clause', function () {
