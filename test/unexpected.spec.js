@@ -185,6 +185,38 @@ describe('unexpected', function () {
                 expect(e.actual, 'not to be ok');
             });
         });
+
+        it("throws an error with showDiff:true when comparing arrays and not negated", function () {
+            expect(function () {
+                expect([1], 'to equal', [2]);
+            }, 'to throw exception', function (e) {
+                expect(e.showDiff, 'to be ok');
+            });
+        });
+
+        it("throws an error with showDiff:true when comparing objects and not negated", function () {
+            expect(function () {
+                expect({foo: 1}, 'to equal', {foo: 2});
+            }, 'to throw exception', function (e) {
+                expect(e.showDiff, 'to be ok');
+            });
+        });
+
+        it("throws an error with showDiff:true when comparing an object to an array", function () {
+            expect(function () {
+                expect({foo: 1}, 'to equal', []);
+            }, 'to throw exception', function (e) {
+                expect(e.showDiff, 'not to be ok');
+            });
+        });
+
+        it("throws an error without showDiff:true when negated", function () {
+            expect(function () {
+                expect({foo: 1}, 'not to equal', {foo: 1});
+            }, 'to throw exception', function (e) {
+                expect(e.showDiff, 'not to be ok');
+            });
+        });
     });
 
     describe('exception assertion', function () {
