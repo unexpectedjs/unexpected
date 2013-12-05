@@ -246,6 +246,19 @@ describe('unexpected', function () {
                     // Don't throw
                 }, 'to throw exception');
             }, 'to throw', 'expected [Function] to throw exception');
+
+        });
+        it('fails if expection is throw', function () {
+            expect(function () {
+                expect(function () {
+                    throw new Error('The exception message');
+                }, 'not to throw exception');
+            }, 'to throw');
+            expect(function () {
+                expect(function () {
+                    throw new Error('The exception message');
+                }, 'not to throw exception');
+            }, 'to throw', 'expected [Function] not to throw exception');
         });
 
         it('fails if the argument is not a function', function () {
