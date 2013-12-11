@@ -675,12 +675,14 @@ describe('unexpected', function () {
         });
 
         it('asserts that the given callback does not throw for any items in the array', function () {
-            expect([0,1,2,3], 'to be an array whose items satisfy', function (item) {
+            expect([0,1,2,3], 'to be an array whose items satisfy', function (item, index) {
                 expect(item, 'to be a number');
+                expect(index, 'to be a number');
             });
 
-            expect(['0','1','2','3'], 'to be an array whose items satisfy', function (item) {
+            expect(['0','1','2','3'], 'to be an array whose items satisfy', function (item, index) {
                 expect(item, 'not to be a number');
+                expect(index, 'to be a number');
             });
 
             expect([0,1,2,3], 'to be an array whose items satisfy', 'to be a number');
@@ -688,6 +690,14 @@ describe('unexpected', function () {
             expect(['0','1','2','3'], 'to be an array whose items satisfy', 'not to be a number');
 
             expect([[1], [2]], 'to be an array whose items satisfy', 'to be an array whose items satisfy', 'to be a number');
+        });
+
+        it('provides the item index to the callback function', function () {
+            var arr = ['0','1','2','3'];
+            expect(arr, 'to be an array whose items satisfy', function (item, index) {
+                expect(index, 'to be a number');
+                expect(index, 'to be', arr.indexOf(item));
+            });
         });
 
         it('fails when the assertion fails', function () {

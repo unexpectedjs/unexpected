@@ -307,7 +307,7 @@ expect.fail('{0} was expected to be {1}', 0, 'zero');
 **array whose items satify**: will run an assertion function for each items in an array
 
 ```js
-expect([0, 1, 2, 3, 4], 'to be an array whose items satisfy', function (item) {
+expect([0, 1, 2, 3, 4], 'to be an array whose items satisfy', function (item, index) {
     expect(item, 'to be a number');
 });
 
