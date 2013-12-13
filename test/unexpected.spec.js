@@ -1104,4 +1104,14 @@ describe('unexpected', function () {
             expect(expect.toString(), 'to contain', 'not to be');
         });
     });
+
+    describe('installPlugin', function () {
+        it('calls the given plugin with the expect instance as the paramenter', function (done) {
+            var plugin = function (expectInstance) {
+                expect(expectInstance, 'to be', expect);
+                done();
+            };
+            expect.installPlugin(plugin);
+        });
+    });
 });
