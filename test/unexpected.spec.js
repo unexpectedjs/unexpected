@@ -400,6 +400,54 @@ describe('unexpected', function () {
         });
     });
 
+    describe('properties assertion', function () {
+        it('asserts presence of a list of properties', function () {
+            expect({a: 'foo', b: 'bar'}, 'to have properties', ['a', 'b']);
+        });
+        it('asserts presence of a list of own properties', function () {
+            expect({a: 'foo', b: 'bar'}, 'to have own properties', ['a', 'b']);
+            expect(function () {
+                var obj = create({a: 'foo', b: 'bar'});
+                expect(obj, 'to have properties', ['a', 'b']); // should not fail
+                expect(obj, 'to have own properties', ['a', 'b']); // should fail
+            }, 'to throw', "expected {} to have own properties [ 'a', 'b' ]")
+        });
+
+        it('asserts absence of a list of properties', function () {
+            expect({a: 'foo', b: 'bar'}, 'not to have properties', ['c','d']);
+            expect(function () {
+                expect({a: 'foo', b: 'bar'}, 'not to have properties', ['a','d']);
+            }, 'to throw', "expected { a: 'foo', b: 'bar' } not to have properties [ 'a', 'd' ]")
+        });
+
+        it('asserts absence of a list of own properties', function () {
+            var obj = create({a: 'foo', b: 'bar'});
+            expect(obj, 'to have properties', ['a', 'b']);
+            expect(obj, 'not to have own properties', ['a', 'b']);
+            expect(function () {
+                expect({a: 'foo', b: 'bar'}, 'not to have own properties', ['a', 'b']); // should fail
+            }, 'to throw', "expected { a: 'foo', b: 'bar' } not to have own properties [ 'a', 'b' ]")
+        });
+
+        it.skip('asserts presence and values of an object of properties');
+        it.skip('asserts presence and values of an object of own properties');
+
+        it.skip('asserts absence and values of an object of properties');
+        it.skip('asserts absence and values of an object of own properties');
+
+        it('throws when the assertion fails', function () {
+            expect(function () {
+                expect({a: 'foo', b: 'bar'}, 'to have properties', ['c', 'd']);
+            }, 'to throw', "expected { a: 'foo', b: 'bar' } to have properties [ 'c', 'd' ]");
+        });
+
+        it('throws when given invalid input', function () {
+            expect(function () {
+                expect({a: 'foo', b: 'bar'}, 'to have properties', 'a', 'b');
+            }, 'to throw', "Assertion 'to have properties' only supports input in the form of an Array.");
+        });
+    });
+
     describe('empty assertion', function () {
         it('asserts presence of an own property (and value optionally)', function () {
             expect([], 'to be empty');
