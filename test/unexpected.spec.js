@@ -410,14 +410,14 @@ describe('unexpected', function () {
                 var obj = create({a: 'foo', b: 'bar'});
                 expect(obj, 'to have properties', ['a', 'b']); // should not fail
                 expect(obj, 'to have own properties', ['a', 'b']); // should fail
-            }, 'to throw', "expected {} to have own properties [ 'a', 'b' ]")
+            }, 'to throw', "expected {} to have own properties [ 'a', 'b' ]");
         });
 
         it('asserts absence of a list of properties', function () {
             expect({a: 'foo', b: 'bar'}, 'not to have properties', ['c','d']);
             expect(function () {
                 expect({a: 'foo', b: 'bar'}, 'not to have properties', ['a','d']);
-            }, 'to throw', "expected { a: 'foo', b: 'bar' } not to have properties [ 'a', 'd' ]")
+            }, 'to throw', "expected { a: 'foo', b: 'bar' } not to have properties [ 'a', 'd' ]");
         });
 
         it('asserts absence of a list of own properties', function () {
@@ -426,7 +426,7 @@ describe('unexpected', function () {
             expect(obj, 'not to have own properties', ['a', 'b']);
             expect(function () {
                 expect({a: 'foo', b: 'bar'}, 'not to have own properties', ['a', 'b']); // should fail
-            }, 'to throw', "expected { a: 'foo', b: 'bar' } not to have own properties [ 'a', 'b' ]")
+            }, 'to throw', "expected { a: 'foo', b: 'bar' } not to have own properties [ 'a', 'b' ]");
         });
 
         it('asserts presence and values of an object of properties', function () {
