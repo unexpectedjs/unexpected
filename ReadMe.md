@@ -212,7 +212,10 @@ expect(Object.create({a: 'b'}), 'not to have own property', 'a');
 expect({ a: 'a', b: { c: 'c' }, d: 'd' }, 'to have properties', ['a', 'b']);
 expect({ a: 'a', b: { c: 'c' }, d: 'd' }, 'to have own properties', ['a', 'b']);
 expect({ a: 'a', b: { c: 'c' }, d: 'd' }, 'to not have properties', ['k', 'l']);
-expect({ a: 'a', b: { c: 'c' }, d: 'd' }, 'to have properties', { a: 'a', b: { c: 'c' } });
+expect({ a: 'a', b: { c: 'c' }, d: 'd' }, 'to have properties', {
+    a: 'a', 
+    b: { c: 'c' } 
+});
 ```
 
 **key** / **keys**: asserts the presence of a key. Supports the `only` modifier
