@@ -53,11 +53,7 @@ HLP.kill(Array.prototype, [
 /* (these are used internally by 'require' in node) */
 if (typeof process === 'undefined') {
     HLP.kill(Array, [
-        'forEach', 'isArray'
-    ]);
-
-    HLP.kill(Array.prototype, [
-        'forEach'
+        'isArray'
     ]);
 
     HLP.kill(Object, [
@@ -65,6 +61,6 @@ if (typeof process === 'undefined') {
     ]);
 
     HLP.kill(Array.prototype, [
-        'map', 'filter',
+        'forEach', 'map', 'filter',
     ]);
 }
