@@ -458,18 +458,9 @@ describe('test suite', function () {
 If a certain expectation fails, an exception will be raised which gets captured
 and shown/processed by the test runner.
 
-## Running tests
+## Development
 
-Clone the repository and install the developer dependencies:
-
-```
-git clone git://github.com/sunesimonsen/unexpected.git unexpected
-cd unexpected && npm install
-```
-
-### Node
-
-`npm test`
+[Everything you need to know to contribute to unexpected.](Development.md)
 
 ## Credits
 

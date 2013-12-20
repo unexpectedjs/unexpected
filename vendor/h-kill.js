@@ -61,6 +61,15 @@ if (typeof process === 'undefined') {
     ]);
 
     HLP.kill(Array.prototype, [
-        'forEach', 'map', 'filter',
+        'map', 'filter',
     ]);
+
+    if (typeof mochaPhantomJS === 'undefined') {
+        // Mocha Phantom JS uses forEach internally
+        HLP.kill(Array.prototype, [
+            'forEach'
+        ]);
+    }
+
+
 }
