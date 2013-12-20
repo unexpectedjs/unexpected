@@ -150,7 +150,7 @@ describe('unexpected', function () {
     });
 
     describe('equal assertion', function () {
-        it('asserts loose equality that works with objects', function () {
+        it('asserts deep equality that works with objects', function () {
             expect({ a: 'b' }, 'to equal', { a: 'b' });
             expect(1, 'not to equal', '1');
             expect({ foo: 1 }, 'not to equal', { foo: '1' });

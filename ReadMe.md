@@ -104,11 +104,12 @@ expect(true, 'not to be false');
 expect(undefined, 'to be undefined');
 ```
 
-**equal**: asserts loose equality that works with objects
+**equal**: asserts deep equality that works with objects
 
 ```js
 expect({ a: 'b' }, 'to equal', { a: 'b' });
-expect(1, 'to equal', '1');
+expect(1, 'not to equal', '1');
+expect({ one: 1 }, 'not to equal', { one: '1' });
 expect(null, 'not to equal', '1');
 var now = new Date();
 expect(now, 'to equal', now);
