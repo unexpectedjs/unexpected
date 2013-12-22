@@ -14,7 +14,7 @@
     "url": "https://github.com/sunesimonsen/unexpected"
   },
   "scripts": {
-    "test": "./node_modules/.bin/mocha-phantomjs test/tests.html"
+    "test": "make test"
   },
   "main": "./lib/unexpected.js",
   "dependencies": {},
