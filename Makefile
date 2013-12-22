@@ -1,6 +1,11 @@
 REPORTER = dot
 
-lib/unexpected.js: src/unexpected-license.js src/unexpected-namespace.js src/unexpected-es4-compatible.js src/unexpected-utils.js src/unexpected-equal.js src/unexpected-inspect.js src/unexpected-core.js src/unexpected-assertions.js src/unexpected-module.js
+lint:
+	jshint src/*
+
+.PHONY: lint
+
+lib/unexpected.js: lint src/unexpected-license.js src/unexpected-namespace.js src/unexpected-es4-compatible.js src/unexpected-utils.js src/unexpected-equal.js src/unexpected-inspect.js src/unexpected-core.js src/unexpected-assertions.js src/unexpected-module.js
 	@echo "Build unexpected for production"
 	@echo "(function () {" > lib/unexpected.js
 
@@ -16,12 +21,12 @@ lib/unexpected.js: src/unexpected-license.js src/unexpected-namespace.js src/une
 
 	@echo "}());" >> lib/unexpected.js
 
-test:
+test: lint
 	@./node_modules/.bin/mocha-phantomjs test/tests.html
 
 .PHONY: test
 
-test-production: lib/unexpected.js
+test-production: lint lib/unexpected.js
 	@./node_modules/.bin/mocha-phantomjs test/tests.production.html
 
 .PHONY: test-production

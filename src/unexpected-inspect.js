@@ -22,11 +22,11 @@
     var inspect = function (obj, showHidden, depth) {
         var seen = [];
 
-        function stylize (str) {
+        function stylize(str) {
             return str;
         }
 
-        function format (value, recurseTimes) {
+        function format(value, recurseTimes) {
 
             // Provide a hook for user-specified inspect functions.
             // Check that value is an object with an inspect function on it
@@ -187,8 +187,8 @@
 
             var numLinesEst = 0;
             var length = reduce(output, function (prev, cur) {
-                numLinesEst++;
-                if (indexOf(cur, '\n') >= 0) numLinesEst++;
+                numLinesEst += 1;
+                if (indexOf(cur, '\n') >= 0) numLinesEst += 1;
                 return prev + cur.length + 1;
             }, 0);
 

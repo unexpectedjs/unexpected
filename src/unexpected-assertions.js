@@ -130,7 +130,6 @@
     });
 
     expect.addAssertion('[not] to be empty', function () {
-        var type = typeof this.obj;
         if (this.obj && 'number' === typeof this.obj.length) {
             this.assert(!this.obj.length);
         } else if (isArray(this.obj) || typeof this.obj === 'string') {

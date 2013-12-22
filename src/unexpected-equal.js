@@ -18,11 +18,11 @@
         // 7.1. All identical values are equivalent, as determined by ===.
         if (actual === expected) {
             return true;
-        } else if ('undefined' != typeof Buffer &&
+        } else if ('undefined' !== typeof Buffer &&
                    Buffer.isBuffer(actual) && Buffer.isBuffer(expected)) {
-            if (actual.length != expected.length) return false;
+            if (actual.length !== expected.length) return false;
 
-            for (var i = 0; i < actual.length; i++) {
+            for (var i = 0; i < actual.length; i += 1) {
                 if (actual[i] !== expected[i]) return false;
             }
 
@@ -35,7 +35,7 @@
 
             // 7.3. Other pairs that do not both pass typeof value == "object",
             // equivalence is determined by ==.
-        } else if (typeof actual != 'object' && typeof expected != 'object') {
+        } else if (typeof actual !== 'object' && typeof expected !== 'object') {
             return actual === expected;
 
             // 7.4. For all other Object pairs, including Array objects, equivalence is
@@ -49,7 +49,7 @@
         }
     }
 
-    function objEquiv (a, b) {
+    function objEquiv(a, b) {
         if (isUndefinedOrNull(a) || isUndefinedOrNull(b))
             return false;
         // an identical "prototype" property.
@@ -66,31 +66,31 @@
             if (!isArguments(b)) {
                 return false;
             }
-            a = pSlice.call(a);
-            b = pSlice.call(b);
+            a = Array.prototype.slice.call(a);
+            b = Array.prototype.slice.call(b);
             return equal(a, b);
         }
         var ka, kb, key, i;
-        try{
+        try {
             ka = getKeys(a);
             kb = getKeys(b);
         } catch (e) {//happens when one is a string literal and the other isn't
             return false;
         }
         // having the same number of owned properties (keys incorporates hasOwnProperty)
-        if (ka.length != kb.length)
+        if (ka.length !== kb.length)
             return false;
         //the same set of keys (although not necessarily the same order),
         ka.sort();
         kb.sort();
         //~~~cheap key test
-        for (i = ka.length - 1; i >= 0; i--) {
-            if (ka[i] != kb[i])
+        for (i = ka.length - 1; i >= 0; i -= 1) {
+            if (ka[i] !== kb[i])
                 return false;
         }
         //equivalent values for every corresponding key, and
         //~~~possibly expensive deep test
-        for (i = ka.length - 1; i >= 0; i--) {
+        for (i = ka.length - 1; i >= 0; i -= 1) {
             key = ka[i];
             if (!equal(a[key], b[key]))
                 return false;

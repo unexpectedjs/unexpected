@@ -26,7 +26,6 @@
     }
 
     Assertion.prototype.throwStandardError = function () {
-        var that = this;
         var argsString = map(this.args, function (arg) {
             return inspect(arg);
         }).join(', ');
@@ -42,7 +41,6 @@
     };
 
     Assertion.prototype.assert = function (condition) {
-        var that = this;
         var not = !!this.flags.not;
         condition = !!condition;
         if (condition === not) {
@@ -219,7 +217,6 @@
             }
         }
         return function (pattern) {
-            var result = [];
             pattern = pattern.replace(/(\[[^\]]+\]) ?/g, '$1');
             var splitRegex = /\[[^\]]+\]|\([^\)]+\)/g;
             var tokens = [];
@@ -267,7 +264,7 @@
                     throw new Error("Assertion patterns must not contain flags with parentheses: '" + pattern + "'");
                 }
 
-                if (pattern[i-1] === '[') {
+                if (pattern[i - 1] === '[') {
                     throw new Error("Assertion patterns must not contain empty flags: '" + pattern + "'");
                 }
             } else if (c === ')' && counts['('] >= counts[')']) {
@@ -281,7 +278,7 @@
             }
 
             if ((c === ')' || c === '|') && counts['('] >= counts[')']) {
-                if (pattern[i-1] === '(' || pattern[i-1] === '|') {
+                if (pattern[i - 1] === '(' || pattern[i - 1] === '|') {
                     throw new Error("Assertion patterns must not contain empty alternations: '" + pattern + "'");
                 }
             }

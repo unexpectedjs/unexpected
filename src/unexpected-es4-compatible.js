@@ -11,7 +11,7 @@
 
         every: function (arr, fn, thisObj) {
             var scope = thisObj || global;
-            for (var i = 0, j = arr.length; i < j; ++i) {
+            for (var i = 0, j = arr.length; i < j; i += 1) {
                 if (!fn.call(scope, arr[i], i, arr)) {
                     return false;
                 }
@@ -28,8 +28,9 @@
                 return -1;
             }
 
-            for (var j = arr.length, k = k < 0 ? k + j < 0 ? 0 : k + j : k || 0;
-                 k < j && arr[k] !== o; k++);
+            for (var j = arr.length, k = k < 0 ? k + j < 0 ? 0 : k + j : k || 0; k < j && arr[k] !== o; k += 1) {
+                // Looping
+            }
 
             return j <= i ? -1 : i;
         },
@@ -55,7 +56,7 @@
                 return Array.prototype.forEach.call(arr, callback, that);
             }
 
-            for (var i= 0, n = arr.length; i<n; i++)
+            for (var i = 0, n = arr.length; i < n; i += 1)
                 if (i in arr)
                     callback.call(that, arr[i], i, arr);
         },
@@ -67,7 +68,7 @@
 
             var other = new Array(arr.length);
 
-            for (var i= 0, n = arr.length; i<n; i++)
+            for (var i = 0, n = arr.length; i < n; i += 1)
                 if (i in arr)
                     other[i] = mapper.call(that, arr[i], i, arr);
 
@@ -128,17 +129,19 @@
             } else {
                 do {
                     if (i in arr) {
-                        rv = arr[i++];
+                        rv = arr[i];
+                        i += 1;
                         break;
                     }
 
                     // if array contains no values, no initial value to return
-                    if (++i >= len)
+                    i += 1;
+                    if (i >= len)
                         throw new TypeError();
                 } while (true);
             }
 
-            for (; i < len; i++) {
+            for (; i < len; i += 1) {
                 if (i in arr)
                     rv = fun.call(null, rv, arr[i], i, this);
             }
@@ -149,7 +152,7 @@
         JSON: (function () {
             "use strict";
 
-            if ('object' == typeof JSON && JSON.parse && JSON.stringify) {
+            if ('object' === typeof JSON && JSON.parse && JSON.stringify) {
                 return JSON;
             }
 
@@ -372,6 +375,7 @@
             // If the JSON object does not yet have a parse method, give it one.
 
             jsonShim.parse = function (text, reviver) {
+                // jshint evil:true
                 // The parse method takes a text and an optional reviver function, and returns
                 // a JavaScript value if the text is a valid JSON text.
 
