@@ -19,6 +19,7 @@
   "main": "./lib/unexpected.js",
   "dependencies": {},
   "devDependencies": {
+    "jshint": "*",
     "mocha": "=1.12.0",
     "phantomjs": "=1.9.1-0",
     "mocha-phantomjs": "=3.1.0",
