@@ -1,14 +1,6 @@
-// Never include this script directly. You should use the prebuild version.
 (function () {
     var global = this;
     global.unexpected.shim = {
-
-        bind: function (fn, scope) {
-            return function () {
-                return fn.apply(scope, arguments);
-            };
-        },
-
         every: function (arr, fn, thisObj) {
             var scope = thisObj || global;
             for (var i = 0, j = arr.length; i < j; i += 1) {
@@ -20,10 +12,6 @@
         },
 
         indexOf: function (arr, o, i) {
-            if (Array.prototype.indexOf) {
-                return Array.prototype.indexOf.call(arr, o, i);
-            }
-
             if (arr.length === undefined) {
                 return -1;
             }
@@ -36,10 +24,6 @@
         },
 
         getKeys: function (obj) {
-            if (Object.keys) {
-                return Object.keys(obj);
-            }
-
             var result = [];
 
             for (var i in obj) {
@@ -52,20 +36,12 @@
         },
 
         forEach: function (arr, callback, that) {
-            if (Array.prototype.forEach) {
-                return Array.prototype.forEach.call(arr, callback, that);
-            }
-
             for (var i = 0, n = arr.length; i < n; i += 1)
                 if (i in arr)
                     callback.call(that, arr[i], i, arr);
         },
 
         map: function (arr, mapper, that) {
-            if (Array.prototype.map) {
-                return Array.prototype.map.call(arr, mapper, that);
-            }
-
             var other = new Array(arr.length);
 
             for (var i = 0, n = arr.length; i < n; i += 1)
@@ -76,12 +52,6 @@
         },
 
         filter: function (arr, predicate) {
-            if (Array.prototype.filter) {
-                return Array.prototype.filter.apply(
-                    arr, Array.prototype.slice.call(arguments, 1)
-                );
-            }
-
             var length = +arr.length;
 
             var result = [];
@@ -100,19 +70,10 @@
         },
 
         trim: function (text) {
-            if (String.prototype.trim) {
-                return text.trim();
-            }
             return text.replace(/^\s+|\s+$/g, '');
         },
 
         reduce: function (arr, fun) {
-            if (Array.prototype.reduce) {
-                return Array.prototype.reduce.apply(
-                    arr, Array.prototype.slice.call(arguments, 1)
-                );
-            }
-
             var len = +arr.length;
 
             if (typeof fun !== "function")
@@ -151,10 +112,6 @@
 
         JSON: (function () {
             "use strict";
-
-            if ('object' === typeof JSON && JSON.parse && JSON.stringify) {
-                return JSON;
-            }
 
             var jsonShim = {};
 
