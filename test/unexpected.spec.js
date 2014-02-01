@@ -507,7 +507,7 @@ describe('unexpected', function () {
 
             expect(function () {
                 expect('', 'to be non-empty');
-            }, 'to throw exception', "expected '' not to be empty");
+            }, 'to throw exception', "expected '' to be non-empty");
 
             expect(function () {
                 expect(null, 'to be empty');
@@ -754,7 +754,7 @@ describe('unexpected', function () {
         it('only accepts arrays as the target object', function () {
             expect(function () {
                 expect(42, 'to be an array whose items satisfy', function (item) {});
-            }, 'to throw', "expected 42 to be an 'array'");
+            }, 'to throw', /expected 42 to be an array/);
         });
 
         it('supports the non-empty clause', function () {
@@ -794,17 +794,17 @@ describe('unexpected', function () {
                 expect(['0', 1, '2', '3'], 'to be an array whose items satisfy', function (item) {
                     expect(item, 'not to be a number');
                 });
-            }, 'to throw', /expected 1 not to be a 'number'/);
+            }, 'to throw', /expected 1 not to be a number/);
 
             expect(function () {
                 expect(['0', 1, '2', '3'], 'to be an array whose items satisfy', 'not to be a number');
-            }, 'to throw', /expected 1 not to be a 'number'/);
+            }, 'to throw', /expected 1 not to be a number/);
 
             expect(function () {
                 expect([], 'to be a non-empty array whose items satisfy', function (item) {
                     expect(item, 'not to be a number');
                 });
-            }, 'to throw', 'expected [] not to be empty');
+            }, 'to throw', /expected \[\] to be non-empty/);
         });
 
         it('provides a detailed report of where failures occur', function () {
@@ -815,7 +815,7 @@ describe('unexpected', function () {
                 });
             }, 'to throw',
                    "failed expectation in [ 0, 1, '2', 3, 4 ]:\n" +
-                   "    2: expected '2' to be a 'number'\n" +
+                   "    2: expected '2' to be a number\n" +
                    "    4: expected 4 to be less than 4");
         });
 
@@ -829,9 +829,9 @@ describe('unexpected', function () {
             }, 'to throw',
                 "failed expectation in [ [ 0, 1, 2 ], [ 4, '5', 6 ], [ 7, 8, '9' ] ]:\n" +
                 "    1: failed expectation in [ 4, '5', 6 ]:\n" +
-                "        1: expected '5' to be a 'number'\n" +
+                "        1: expected '5' to be a number\n" +
                 "    2: failed expectation in [ 7, 8, '9' ]:\n" +
-                "        2: expected '9' to be a 'number'");
+                "        2: expected '9' to be a number");
         });
     });
 
@@ -849,7 +849,7 @@ describe('unexpected', function () {
         it('only accepts objects as the target', function () {
             expect(function () {
                 expect(42, 'to be a map whose values satisfy', function (value) {});
-            }, 'to throw', "expected 42 to be an 'object'");
+            }, 'to throw', /expected 42 to be an object/);
         });
 
         it('asserts that the given callback does not throw for any values in the map', function () {
@@ -887,7 +887,7 @@ describe('unexpected', function () {
                 expect({ foo: '0', bar: 1, baz: '2', qux: '3' }, 'to be a map whose values satisfy', function (value) {
                     expect(value, 'not to be a number');
                 });
-            }, 'to throw', /expected 1 not to be a 'number'/);
+            }, 'to throw', /expected 1 not to be a number/);
         });
 
         it('provides a detailed report of where failures occur', function () {
@@ -898,7 +898,7 @@ describe('unexpected', function () {
                 });
             }, 'to throw',
                    "failed expectation in { foo: 0, bar: 1, baz: '2', qux: 3, quux: 4 }:\n" +
-                   "    baz: expected '2' to be a 'number'\n" +
+                   "    baz: expected '2' to be a number\n" +
                    "    quux: expected 4 to be less than 4");
         });
 
@@ -915,9 +915,9 @@ describe('unexpected', function () {
                 "  bar: [ 4, '5', 6 ],\n" +
                 "  baz: [ 7, 8, '9' ] }:\n" +
                 "    bar: failed expectation in [ 4, '5', 6 ]:\n" +
-                "        1: expected '5' to be a 'number'\n" +
+                "        1: expected '5' to be a number\n" +
                 "    baz: failed expectation in [ 7, 8, '9' ]:\n" +
-                "        2: expected '9' to be a 'number'");
+                "        2: expected '9' to be a number");
         });
     });
 
@@ -935,7 +935,7 @@ describe('unexpected', function () {
         it('only accepts objects as the target', function () {
             expect(function () {
                 expect(42, 'to be a map whose keys satisfy', function (key) {});
-            }, 'to throw', "expected 42 to be an 'object'");
+            }, 'to throw', /expected 42 to be an object/);
         });
 
         it('asserts that the given callback does not throw for any keys in the map', function () {

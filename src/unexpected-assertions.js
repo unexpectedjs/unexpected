@@ -240,6 +240,7 @@
     });
 
     expect.addAssertion('[not] to (throw|throw error|throw exception)', function (arg) {
+        this.bubbleExpectErrors = true;
         if (typeof this.obj !== 'function') {
             throw new Error("Assertion '" + this.testDescription +
                             "' only supports functions");
@@ -292,10 +293,12 @@
         } else {
             throw new Error('Assertions "' + this.testDescription + '" expects a functions as argument');
         }
+        this.nestExpectErrors = true;
         expect(this.obj, 'to be an object');
         if (this.flags['non-empty']) {
             expect(this.obj, 'to be non-empty');
         }
+        this.nestExpectErrors = false;
 
         var obj = this.obj;
         var errors = [];
@@ -328,10 +331,13 @@
         } else {
             throw new Error('Assertions "' + this.testDescription + '" expects a functions as argument');
         }
+        this.nestExpectErrors = true;
         expect(this.obj, 'to be an array');
         if (this.flags['non-empty']) {
             expect(this.obj, 'to be non-empty');
         }
+        this.nestExpectErrors = false;
+        this.bubbleExpectErrors = true;
         expect(this.obj, 'to be a map whose values satisfy', callback);
     });
 
@@ -349,6 +355,7 @@
     expect.addAssertion('to be (a|an) [non-empty] (map|hash|object) whose keys satisfy', function (callbackOrString) {
         var callback;
         if ('function' === typeof callbackOrString) {
+            this.nestExpectErrors = true;
             callback = callbackOrString;
         } else if ('string' === typeof callbackOrString) {
             var args = Array.prototype.slice.call(arguments);
@@ -358,10 +365,12 @@
         } else {
             throw new Error('Assertions "' + this.testDescription + '" expects a functions as argument');
         }
+        this.nestExpectErrors = true;
         expect(this.obj, 'to be an object');
         if (this.flags['non-empty']) {
             expect(this.obj, 'to be non-empty');
         }
+        this.nestExpectErrors = false;
 
         var obj = this.obj;
         var errors = [];

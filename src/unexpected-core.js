@@ -113,6 +113,19 @@
         plugin(this.expect);
     };
 
+    function handleNestedExpects(e, assertion) {
+        if (e._unexpected) {
+            if (assertion.nestExpectErrors) {
+                e.message = assertion.stardardErrorMessage() + '\n    ' + e.message.replace(/\n/g, '\n    ');
+            } else if (!assertion.bubbleExpectErrors) {
+                e.message = assertion.stardardErrorMessage();
+            }
+        }
+        assertion.stardardErrorMessage = false;
+        assertion.nestExpectErrors = false;
+        e._unexpected = true;
+    }
+
     Unexpected.prototype.expect = function (subject, testDescriptionString) {
         if (arguments.length < 2) {
             throw new Error('The expect functions requires at least two parameters.');
@@ -133,6 +146,7 @@
                 handler.apply(assertion, args);
             } catch (e) {
                 truncateStack(e, this.expect);
+                handleNestedExpects(e, assertion);
                 throw e;
             }
         } else {
