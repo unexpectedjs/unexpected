@@ -24,7 +24,7 @@
         this.args = args;
     }
 
-    Assertion.prototype.throwStandardError = function () {
+    Assertion.prototype.stardardErrorMessage = function () {
         var argsString = map(this.args, function (arg) {
             return inspect(arg);
         }).join(', ');
@@ -33,10 +33,14 @@
             argsString = ' ' + argsString;
         }
 
-        throw new Error('expected ' +
-                        inspect(this.obj) +
-                        ' ' + this.testDescription +
-                        argsString);
+        return 'expected ' +
+            inspect(this.obj) +
+            ' ' + this.testDescription +
+            argsString;
+    };
+
+    Assertion.prototype.throwStandardError = function () {
+        throw new Error(this.stardardErrorMessage());
     };
 
     Assertion.prototype.assert = function (condition) {
