@@ -1,7 +1,7 @@
 REPORTER = dot
 
 lint:
-	@./node_modules/.bin/jshint src/*
+	@./node_modules/.bin/jshint src/*.js test/*.js
 
 .PHONY: lint
 
