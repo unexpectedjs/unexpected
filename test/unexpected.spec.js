@@ -1,4 +1,4 @@
-/*global describe, it, expect*/
+/*global describe, it, expect, beforeEach*/
 
 // use this instead of Object.create in order to make the tests run in
 // browsers that are not es5 compatible.
@@ -345,8 +345,8 @@ describe('unexpected', function () {
     describe('length assertion', function () {
         it('asserts array .length', function () {
             expect([], 'to have length', 0);
-            expect([1,2,3], 'to have length', 3);
-            expect([1,2,3], 'not to have length', 4);
+            expect([1, 2, 3], 'to have length', 3);
+            expect([1, 2, 3], 'not to have length', 4);
             expect({ length: 4 }, 'to have length', 4);
         });
 
@@ -496,13 +496,13 @@ describe('unexpected', function () {
             expect({ length: 0, duck: 'typing' }, 'to be empty');
             expect({ my: 'object' }, 'not to be empty');
             expect({ my: 'object' }, 'to be non-empty');
-            expect([1,2,3], 'not to be empty');
-            expect([1,2,3], 'to be non-empty');
+            expect([1, 2, 3], 'not to be empty');
+            expect([1, 2, 3], 'to be non-empty');
         });
 
         it('throws when the assertion fails', function () {
             expect(function () {
-                expect([1,2,3], 'to be empty');
+                expect([1, 2, 3], 'to be empty');
             }, 'to throw exception', "expected [ 1, 2, 3 ] to be empty");
 
             expect(function () {
@@ -743,11 +743,11 @@ describe('unexpected', function () {
     describe('to be an array whose items satisfy assertion', function () {
         it('requires a function or a string as the third argument', function () {
             expect(function () {
-                expect([1,2,3], 'to be an array whose items satisfy');
+                expect([1, 2, 3], 'to be an array whose items satisfy');
             }, 'to throw', 'Assertions "to be an array whose items satisfy" expects a functions as argument');
 
             expect(function () {
-                expect([1,2,3], 'to be an array whose items satisfy', 42);
+                expect([1, 2, 3], 'to be an array whose items satisfy', 42);
             }, 'to throw', 'Assertions "to be an array whose items satisfy" expects a functions as argument');
         });
 
@@ -764,25 +764,25 @@ describe('unexpected', function () {
         });
 
         it('asserts that the given callback does not throw for any items in the array', function () {
-            expect([0,1,2,3], 'to be an array whose items satisfy', function (item, index) {
+            expect([0, 1, 2, 3], 'to be an array whose items satisfy', function (item, index) {
                 expect(item, 'to be a number');
                 expect(index, 'to be a number');
             });
 
-            expect(['0','1','2','3'], 'to be an array whose items satisfy', function (item, index) {
+            expect(['0', '1', '2', '3'], 'to be an array whose items satisfy', function (item, index) {
                 expect(item, 'not to be a number');
                 expect(index, 'to be a number');
             });
 
-            expect([0,1,2,3], 'to be an array whose items satisfy', 'to be a number');
+            expect([0, 1, 2, 3], 'to be an array whose items satisfy', 'to be a number');
 
-            expect(['0','1','2','3'], 'to be an array whose items satisfy', 'not to be a number');
+            expect(['0', '1', '2', '3'], 'to be an array whose items satisfy', 'not to be a number');
 
             expect([[1], [2]], 'to be an array whose items satisfy', 'to be an array whose items satisfy', 'to be a number');
         });
 
         it('provides the item index to the callback function', function () {
-            var arr = ['0','1','2','3'];
+            var arr = ['0', '1', '2', '3'];
             expect(arr, 'to be an array whose items satisfy', function (item, index) {
                 expect(index, 'to be a number');
                 expect(index, 'to be', parseInt(item, 10));
@@ -791,13 +791,13 @@ describe('unexpected', function () {
 
         it('fails when the assertion fails', function () {
             expect(function () {
-                expect(['0',1,'2','3'], 'to be an array whose items satisfy', function (item) {
+                expect(['0', 1, '2', '3'], 'to be an array whose items satisfy', function (item) {
                     expect(item, 'not to be a number');
                 });
             }, 'to throw', /expected 1 not to be a 'number'/);
 
             expect(function () {
-                expect(['0',1,'2','3'], 'to be an array whose items satisfy', 'not to be a number');
+                expect(['0', 1, '2', '3'], 'to be an array whose items satisfy', 'not to be a number');
             }, 'to throw', /expected 1 not to be a 'number'/);
 
             expect(function () {
@@ -838,11 +838,11 @@ describe('unexpected', function () {
     describe('to be a map whose values satisfy assertion', function () {
         it('requires a function or a string as the third argument', function () {
             expect(function () {
-                expect([1,2,3], 'to be a map whose values satisfy');
+                expect([1, 2, 3], 'to be a map whose values satisfy');
             }, 'to throw', 'Assertions "to be a map whose values satisfy" expects a functions as argument');
 
             expect(function () {
-                expect([1,2,3], 'to be a map whose values satisfy', 42);
+                expect([1, 2, 3], 'to be a map whose values satisfy', 42);
             }, 'to throw', 'Assertions "to be a map whose values satisfy" expects a functions as argument');
         });
 
@@ -924,11 +924,11 @@ describe('unexpected', function () {
     describe('to be a map whose keys satisfy assertion', function () {
         it('requires a function or string as the third argument', function () {
             expect(function () {
-                expect([1,2,3], 'to be a map whose keys satisfy');
+                expect([1, 2, 3], 'to be a map whose keys satisfy');
             }, 'to throw', 'Assertions "to be a map whose keys satisfy" expects a functions as argument');
 
             expect(function () {
-                expect([1,2,3], 'to be a map whose keys satisfy', 42);
+                expect([1, 2, 3], 'to be a map whose keys satisfy', 42);
             }, 'to throw', 'Assertions "to be a map whose keys satisfy" expects a functions as argument');
         });
 
@@ -992,16 +992,6 @@ describe('unexpected', function () {
             expect(1, "to bee", 2);
         }, 'to throw exception', 'Unknown assertion "to bee", did you mean: "to be"');
     });
-
-    function sortBy(arr, property) {
-        arr.sort(function (x, y) {
-            var xp = x[property];
-            var yp = y[property];
-            if (xp > yp) { return 1; }
-            if (xp < yp) { return -1; }
-            return 0;
-        });
-    }
 
     describe('addAssertion', function () {
         it('is chainable', function () {
