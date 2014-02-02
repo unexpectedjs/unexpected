@@ -121,7 +121,7 @@
                 e.message = assertion.standardErrorMessage();
             }
         }
-        assertion.stardardErrorMessage = false;
+        assertion.bubbleExpectErrors = false;
         assertion.nestExpectErrors = false;
         e._unexpected = true;
     }
