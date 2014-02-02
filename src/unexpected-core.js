@@ -24,7 +24,7 @@
         this.args = args;
     }
 
-    Assertion.prototype.stardardErrorMessage = function () {
+    Assertion.prototype.standardErrorMessage = function () {
         var argsString = map(this.args, function (arg) {
             return inspect(arg);
         }).join(', ');
@@ -40,7 +40,7 @@
     };
 
     Assertion.prototype.throwStandardError = function () {
-        throw new Error(this.stardardErrorMessage());
+        throw new Error(this.standardErrorMessage());
     };
 
     Assertion.prototype.assert = function (condition) {
@@ -116,9 +116,9 @@
     function handleNestedExpects(e, assertion) {
         if (e._unexpected) {
             if (assertion.nestExpectErrors) {
-                e.message = assertion.stardardErrorMessage() + '\n    ' + e.message.replace(/\n/g, '\n    ');
+                e.message = assertion.standardErrorMessage() + '\n    ' + e.message.replace(/\n/g, '\n    ');
             } else if (!assertion.bubbleExpectErrors) {
-                e.message = assertion.stardardErrorMessage();
+                e.message = assertion.standardErrorMessage();
             }
         }
         assertion.stardardErrorMessage = false;
