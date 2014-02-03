@@ -22,6 +22,7 @@
         this.testDescription = testDescription;
         this.flags = flags;
         this.args = args;
+        this.errorMode = 'default';
     }
 
     Assertion.prototype.standardErrorMessage = function () {
@@ -115,14 +116,19 @@
 
     function handleNestedExpects(e, assertion) {
         if (e._unexpected) {
-            if (assertion.nestExpectErrors) {
-                e.message = assertion.standardErrorMessage() + '\n    ' + e.message.replace(/\n/g, '\n    ');
-            } else if (!assertion.bubbleExpectErrors) {
-                e.message = assertion.standardErrorMessage();
+            switch (assertion.errorMode) {
+                case 'nested':
+                    e.message = assertion.standardErrorMessage() + '\n    ' + e.message.replace(/\n/g, '\n    ');
+                    break;
+                case 'default':
+                    e.message = assertion.standardErrorMessage();
+                    break;
+                case 'bubble':
+                    break;
+                default:
+                    throw new Error("Unknown error mode: '" + assertion.errorMode + "'");
             }
         }
-        assertion.bubbleExpectErrors = false;
-        assertion.nestExpectErrors = false;
         e._unexpected = true;
     }
 

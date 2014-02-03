@@ -240,7 +240,7 @@
     });
 
     expect.addAssertion('[not] to (throw|throw error|throw exception)', function (arg) {
-        this.bubbleExpectErrors = true;
+        this.errorMode = 'bubble';
         if (typeof this.obj !== 'function') {
             throw new Error("Assertion '" + this.testDescription +
                             "' only supports functions");
@@ -293,12 +293,12 @@
         } else {
             throw new Error('Assertions "' + this.testDescription + '" expects a functions as argument');
         }
-        this.nestExpectErrors = true;
+        this.errorMode = 'nested';
         expect(this.obj, 'to be an object');
         if (this.flags['non-empty']) {
             expect(this.obj, 'to be non-empty');
         }
-        this.nestExpectErrors = false;
+        this.errorMode = 'default';
 
         var obj = this.obj;
         var errors = [];
@@ -331,13 +331,12 @@
         } else {
             throw new Error('Assertions "' + this.testDescription + '" expects a functions as argument');
         }
-        this.nestExpectErrors = true;
+        this.errorMode = 'nested';
         expect(this.obj, 'to be an array');
         if (this.flags['non-empty']) {
             expect(this.obj, 'to be non-empty');
         }
-        this.nestExpectErrors = false;
-        this.bubbleExpectErrors = true;
+        this.errorMode = 'bubble';
         expect(this.obj, 'to be a map whose values satisfy', callback);
     });
 
@@ -355,7 +354,7 @@
     expect.addAssertion('to be (a|an) [non-empty] (map|hash|object) whose keys satisfy', function (callbackOrString) {
         var callback;
         if ('function' === typeof callbackOrString) {
-            this.nestExpectErrors = true;
+            this.errorMode = 'nested';
             callback = callbackOrString;
         } else if ('string' === typeof callbackOrString) {
             var args = Array.prototype.slice.call(arguments);
@@ -365,12 +364,12 @@
         } else {
             throw new Error('Assertions "' + this.testDescription + '" expects a functions as argument');
         }
-        this.nestExpectErrors = true;
+        this.errorMode = 'nested';
         expect(this.obj, 'to be an object');
         if (this.flags['non-empty']) {
             expect(this.obj, 'to be non-empty');
         }
-        this.nestExpectErrors = false;
+        this.errorMode = 'default';
 
         var obj = this.obj;
         var errors = [];
