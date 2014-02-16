@@ -110,9 +110,9 @@
                 if (this.flags.own) {
                     this.assert(this.obj &&
                                 this.obj.hasOwnProperty(property) &&
-                                this.obj[property] === properties[property]);
+                                this.equal(this.obj[property], properties[property]));
                 } else {
-                    this.assert(this.obj && this.obj[property] === properties[property]);
+                    this.assert(this.obj && this.equal(this.obj[property], properties[property]));
                 }
             }, this);
         } else {

@@ -415,9 +415,9 @@ describe('unexpected', function () {
         });
 
         it('asserts absence of a list of properties', function () {
-            expect({a: 'foo', b: 'bar'}, 'not to have properties', ['c','d']);
+            expect({a: 'foo', b: 'bar'}, 'not to have properties', ['c', 'd']);
             expect(function () {
-                expect({a: 'foo', b: 'bar'}, 'not to have properties', ['a','d']);
+                expect({a: 'foo', b: 'bar'}, 'not to have properties', ['a', 'd']);
             }, 'to throw', "expected { a: 'foo', b: 'bar' } not to have properties [ 'a', 'd' ]");
         });
 
@@ -431,7 +431,11 @@ describe('unexpected', function () {
         });
 
         it('asserts presence and values of an object of properties', function () {
-            expect({a: 'foo', b: 'bar', c: 'baz'}, 'to have properties', {a: 'foo', b: 'bar'});
+            expect({a: 'foo', b: 'bar', c: 'baz', d: { qux: 'qux', quux: 'quux'}}, 'to have properties', {
+                a: 'foo',
+                b: 'bar',
+                d: { qux: 'qux', quux: 'quux'}
+            });
             expect(function () {
                 expect({a: 'foo', b: 'bar'}, 'to have properties', {c: 'baz'});
             }, 'to throw', "expected { a: 'foo', b: 'bar' } to have properties { c: 'baz' }");
