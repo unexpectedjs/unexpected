@@ -11,16 +11,29 @@
             return true;
         },
 
-        indexOf: function (arr, o, i) {
-            if (arr.length === undefined) {
-                return -1;
+        indexOf: function (arr, searchElement, fromIndex) {
+            var length = arr.length >>> 0; // Hack to convert object.length to a UInt32
+
+            fromIndex = +fromIndex || 0;
+
+            if (Math.abs(fromIndex) === Infinity) {
+                fromIndex = 0;
             }
 
-            for (var j = arr.length, k = k < 0 ? k + j < 0 ? 0 : k + j : k || 0; k < j && arr[k] !== o; k += 1) {
-                // Looping
+            if (fromIndex < 0) {
+                fromIndex += length;
+                if (fromIndex < 0) {
+                    fromIndex = 0;
+                }
             }
 
-            return j <= i ? -1 : i;
+            for (;fromIndex < length; fromIndex += 1) {
+                if (arr[fromIndex] === searchElement) {
+                    return fromIndex;
+                }
+            }
+
+            return -1;
         },
 
         getKeys: function (obj) {
