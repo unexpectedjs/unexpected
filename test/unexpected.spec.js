@@ -779,7 +779,7 @@ describe('unexpected', function () {
             var arr = ['0','1','2','3'];
             expect(arr, 'to be an array whose items satisfy', function (item, index) {
                 expect(index, 'to be a number');
-                expect(index, 'to be', arr.indexOf(item));
+                expect(index, 'to be', parseInt(item, 10));
             });
         });
 
