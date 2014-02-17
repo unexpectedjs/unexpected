@@ -251,7 +251,7 @@
             ')': 0
         };
         for (var i = 0; i < pattern.length; i += 1) {
-            var c = pattern[i];
+            var c = pattern.charAt(i);
             if (c in counts) {
                 counts[c] += 1;
             }
@@ -264,7 +264,7 @@
                     throw new Error("Assertion patterns must not contain flags with parentheses: '" + pattern + "'");
                 }
 
-                if (pattern[i - 1] === '[') {
+                if (pattern.charAt(i - 1) === '[') {
                     throw new Error("Assertion patterns must not contain empty flags: '" + pattern + "'");
                 }
             } else if (c === ')' && counts['('] >= counts[')']) {
@@ -278,7 +278,7 @@
             }
 
             if ((c === ')' || c === '|') && counts['('] >= counts[')']) {
-                if (pattern[i - 1] === '(' || pattern[i - 1] === '|') {
+                if (pattern.charAt(i - 1) === '(' || pattern.charAt(i - 1) === '|') {
                     throw new Error("Assertion patterns must not contain empty alternations: '" + pattern + "'");
                 }
             }
