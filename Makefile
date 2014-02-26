@@ -18,7 +18,7 @@ lib/unexpected.js: lint src/unexpected-license.js src/unexpected-namespace.js sr
          src/unexpected-inspect.js \
          src/unexpected-core.js \
          src/unexpected-assertions.js \
-         src/unexpected-module.js | sed -e 's/^/    /' | sed -e 's/^\s*$$//' >> lib/unexpected.js
+         src/unexpected-module.js | sed -e 's/^/    /' | sed -e 's/^\s*$$//' | sed -e 's/\/\*\(global\|exported\).*//' >> lib/unexpected.js
 
 	@echo "}());" >> lib/unexpected.js
 
@@ -34,7 +34,7 @@ lib/unexpected.es5.js: lint src/unexpected-license.js src/unexpected-namespace.j
          src/unexpected-inspect.js \
          src/unexpected-core.js \
          src/unexpected-assertions.js \
-         src/unexpected-module.js | sed -e 's/^/    /' | sed -e 's/^\s*$$//' >> lib/unexpected.es5.js
+         src/unexpected-module.js | sed -e 's/^/    /' | sed -e 's/^\s*$$//' | sed -e 's/\/\*\(global\|exported\).*//' >> lib/unexpected.es5.js
 
 	@echo "}());" >> lib/unexpected.es5.js
 

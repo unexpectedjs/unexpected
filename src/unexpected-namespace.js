@@ -1,4 +1,2 @@
-(function () {
-    var global = this;
-    global.unexpected = {};
-}());
+/*exported namespace*/
+var namespace = {};

@@ -1,10 +1,9 @@
+/*global namespace*/
 (function () {
-    var global = this;
-    var unexpected = global.unexpected;
-    var shim = unexpected.shim;
+    var shim = namespace.shim;
     var getKeys = shim.getKeys;
 
-    var utils = unexpected.utils;
+    var utils = namespace.utils;
     var isRegExp = utils.isRegExp;
     var isArguments = utils.isArguments;
     var isUndefinedOrNull = utils.isUndefinedOrNull;
@@ -98,5 +97,5 @@
         return true;
     }
 
-    global.unexpected.equal = equal;
+    namespace.equal = equal;
 }());

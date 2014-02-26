@@ -1,6 +1,6 @@
+/*global namespace*/
 (function () {
-    var global = this;
-    var shim = global.unexpected.shim;
+    var shim = namespace.shim;
     var forEach = shim.forEach;
     var getKeys = shim.getKeys;
 
@@ -136,5 +136,5 @@
         }
     };
 
-    global.unexpected.utils = utils;
+    namespace.utils = utils;
 }());

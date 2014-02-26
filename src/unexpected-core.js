@@ -1,10 +1,9 @@
+/*global namespace*/
 (function () {
-    var global = this;
-    var unexpected = global.unexpected;
-    var inspect = unexpected.inspect;
-    var equal = unexpected.equal;
+    var inspect = namespace.inspect;
+    var equal = namespace.equal;
 
-    var shim = unexpected.shim;
+    var shim = namespace.shim;
     var bind = shim.bind;
     var forEach = shim.forEach;
     var filter = shim.filter;
@@ -13,7 +12,7 @@
     var reduce = shim.reduce;
     var getKeys = shim.getKeys;
 
-    var utils = unexpected.utils;
+    var utils = namespace.utils;
     var truncateStack = utils.truncateStack;
     var extend = utils.extend;
     var levenshteinDistance = utils.levenshteinDistance;
@@ -309,5 +308,5 @@
     Assertion.prototype.eql = equal; // Deprecated
     Assertion.prototype.equal = equal;
 
-    global.unexpected.expect = Unexpected.create();
+    namespace.expect = Unexpected.create();
 }());

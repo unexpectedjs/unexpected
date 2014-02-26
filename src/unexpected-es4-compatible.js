@@ -1,8 +1,8 @@
+/*global namespace*/
 (function () {
-    var global = this;
-    global.unexpected.shim = {
+    namespace.shim = {
         every: function (arr, fn, thisObj) {
-            var scope = thisObj || global;
+            var scope = thisObj || null;
             for (var i = 0, j = arr.length; i < j; i += 1) {
                 if (!fn.call(scope, arr[i], i, arr)) {
                     return false;
