@@ -1,15 +1,14 @@
+/*global namespace*/
 (function () {
-    var global = this;
-    var unexpected = global.unexpected;
-    var expect = unexpected.expect;
+    var expect = namespace.expect;
 
-    var shim = unexpected.shim;
+    var shim = namespace.shim;
     var forEach = shim.forEach;
     var getKeys = shim.getKeys;
     var every = shim.every;
     var indexOf = shim.indexOf;
 
-    var utils = unexpected.utils;
+    var utils = namespace.utils;
     var isRegExp = utils.isRegExp;
     var isArray = utils.isArray;
 

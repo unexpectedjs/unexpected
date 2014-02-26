@@ -1,6 +1,7 @@
+/*global namespace*/
 (function () {
     var global = this;
-    var expect = global.unexpected.expect;
+    var expect = namespace.expect;
 
     // Support three module loading scenarios
     if (typeof require === 'function' && typeof exports === 'object' && typeof module === 'object') {

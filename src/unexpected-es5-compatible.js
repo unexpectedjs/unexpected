@@ -1,7 +1,7 @@
+/*global namespace*/
 (function () {
-    var global = this;
-    global.unexpected.shim = global.unexpected.shim || {};
-    var shim = global.unexpected.shim;
+    namespace.shim = namespace.shim || {};
+    var shim = namespace.shim;
 
     var prototypes = {
         'bind': Function.prototype.bind,

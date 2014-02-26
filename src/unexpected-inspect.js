@@ -1,13 +1,13 @@
+/*global namespace*/
 (function () {
-    var global = this;
-    var shim = global.unexpected.shim;
+    var shim = namespace.shim;
     var json = shim.JSON;
     var getKeys = shim.getKeys;
     var map = shim.map;
     var indexOf = shim.indexOf;
     var reduce = shim.reduce;
 
-    var utils = global.unexpected.utils;
+    var utils = namespace.utils;
     var isDOMElement = utils.isDOMElement;
     var getOuterHTML = utils.getOuterHTML;
     var isArray = utils.isArray;
@@ -209,5 +209,5 @@
         return format(obj, (typeof depth === 'undefined' ? 2 : depth));
     };
 
-    global.unexpected.inspect = inspect;
+    namespace.inspect = inspect;
 }());
