@@ -1128,14 +1128,47 @@ describe('unexpected', function () {
                 });
             });
         });
+
+        describe('error modes', function () {
+            var errorMode = 'default';
+            var clonedExpect;
+            beforeEach(function () {
+                clonedExpect = expect.clone().addAssertion('to be sorted', function (expect, subject) {
+                    this.errorMode = errorMode;
+                    expect(subject, 'to be an array');
+                    expect(subject, 'to equal', [].concat(subject).sort());
+                });
+            });
+
+            it('errorMode=nested nest the error message of expect failures in the assertion under the assertion standard message', function () {
+                errorMode = 'nested';
+                expect(function () {
+                    clonedExpect(42, 'to be sorted');
+                }, 'to throw', 'expected 42 to be sorted\n    expected 42 to be an array');
+            });
+
+            it('errorMode=bubble bubbles uses the error message of expect failures in the assertion', function () {
+                errorMode = 'bubble';
+                expect(function () {
+                    clonedExpect(42, 'to be sorted');
+                }, 'to throw', 'expected 42 to be an array');
+            });
+
+            it('errorMode=default uses the standard error message of the assertion', function () {
+                errorMode = 'default';
+                expect(function () {
+                    clonedExpect(42, 'to be sorted');
+                }, 'to throw', 'expected 42 to be sorted');
+            });
+        });
     });
 
     describe('clone', function () {
         var clonedExpect;
         beforeEach(function () {
             clonedExpect = expect.clone();
-            clonedExpect.addAssertion('[not] to be answer to the Ultimate Question of Life, the Universe, and Everything', function () {
-                this.assert(this.obj === 42);
+            clonedExpect.addAssertion('[not] to be answer to the Ultimate Question of Life, the Universe, and Everything', function (expect, subject) {
+                this.assert(subject === 42);
             });
         });
 

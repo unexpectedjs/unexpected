@@ -18,7 +18,7 @@
     var levenshteinDistance = utils.levenshteinDistance;
 
     function Assertion(subject, testDescription, flags, args) {
-        this.obj = subject;
+        this.subject = subject;
         this.testDescription = testDescription;
         this.flags = flags;
         this.args = args;
@@ -35,7 +35,7 @@
         }
 
         return 'expected ' +
-            inspect(this.obj) +
+            inspect(this.subject) +
             ' ' + this.testDescription +
             argsString;
     };
@@ -103,7 +103,7 @@
             });
         });
 
-        return this; // for chaining
+        return this.expect; // for chaining
     };
 
     Unexpected.prototype.installPlugin = function (plugin) {
@@ -115,24 +115,39 @@
     };
 
     function handleNestedExpects(e, assertion) {
-        if (e._unexpected) {
-            switch (assertion.errorMode) {
-                case 'nested':
-                    e.message = assertion.standardErrorMessage() + '\n    ' + e.message.replace(/\n/g, '\n    ');
-                    break;
-                case 'default':
-                    e.message = assertion.standardErrorMessage();
-                    break;
-                case 'bubble':
-                    break;
-                default:
-                    throw new Error("Unknown error mode: '" + assertion.errorMode + "'");
-            }
+        switch (assertion.errorMode) {
+        case 'nested':
+            e.message = assertion.standardErrorMessage() + '\n    ' + e.message.replace(/\n/g, '\n    ');
+            break;
+        case 'default':
+            e.message = assertion.standardErrorMessage();
+            break;
+        case 'bubble':
+            break;
+        default:
+            throw new Error("Unknown error mode: '" + assertion.errorMode + "'");
         }
-        e._unexpected = true;
+    }
+
+    function installExpectMethods(unexpected, expectFunction) {
+        var expect = bind(expectFunction, unexpected);
+        expect.fail = bind(unexpected.fail, unexpected);
+        expect.addAssertion = bind(unexpected.addAssertion, unexpected);
+        expect.clone = bind(unexpected.clone, unexpected);
+        expect.toString = bind(unexpected.toString, unexpected);
+        expect.assertions = unexpected.assertions;
+        expect.installPlugin = bind(unexpected.installPlugin, unexpected);
+        return expect;
+    }
+
+    function makeExpectFunction(unexpected) {
+        var expect = installExpectMethods(unexpected, unexpected.expect);
+        unexpected.expect = expect;
+        return expect;
     }
 
     Unexpected.prototype.expect = function (subject, testDescriptionString) {
+        var that = this;
         if (arguments.length < 2) {
             throw new Error('The expect functions requires at least two parameters.');
         }
@@ -146,13 +161,28 @@
                 return flags;
             }, {});
             var args = Array.prototype.slice.call(arguments, 2);
-            var assertion = new Assertion(subject, testDescriptionString, flags, args);
+            var nestingLevel = 0;
+            var wrappedExpect = function () {
+                nestingLevel += 1;
+                try {
+                    that.expect.apply(that, arguments);
+                    nestingLevel -= 1;
+                } catch (e) {
+                    nestingLevel -= 1;
+                    truncateStack(e, that.expect);
+                    if (nestingLevel === 0) {
+                        handleNestedExpects(e, assertion);
+                    }
+                    throw e;
+                }
+            };
+            args.unshift(wrappedExpect, subject);
+            var assertion = new Assertion(subject, testDescriptionString, flags, args.slice(2));
             var handler = assertionRule.handler;
             try {
                 handler.apply(assertion, args);
             } catch (e) {
                 truncateStack(e, this.expect);
-                handleNestedExpects(e, assertion);
                 throw e;
             }
         } else {
@@ -169,18 +199,6 @@
     Unexpected.prototype.toString = function () {
         return getKeys(this.assertions).sort().join('\n');
     };
-
-    function makeExpectFunction(unexpected) {
-        var expect = bind(unexpected.expect, unexpected);
-        unexpected.expect = expect;
-        expect.fail = bind(unexpected.fail, unexpected);
-        expect.addAssertion = bind(unexpected.addAssertion, unexpected);
-        expect.clone = bind(unexpected.clone, unexpected);
-        expect.toString = bind(unexpected.toString, unexpected);
-        expect.assertions = unexpected.assertions;
-        expect.installPlugin = bind(unexpected.installPlugin, unexpected);
-        return expect;
-    }
 
     Unexpected.prototype.clone = function () {
         var unexpected = new Unexpected(extend({}, this.assertions));
