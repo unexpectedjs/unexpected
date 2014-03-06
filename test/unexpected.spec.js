@@ -1218,7 +1218,7 @@ describe('unexpected', function () {
     });
 
     describe('installPlugin', function () {
-        it('calls the given plugin with the expect instance as the paramenter', function (done) {
+        it('calls the given plugin with the expect instance as the parameter', function (done) {
             var plugin = function (expectInstance) {
                 expect(expectInstance, 'to be', expect);
                 done();
