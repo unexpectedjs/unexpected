@@ -16,7 +16,7 @@
   "scripts": {
     "test": "make test"
   },
-  "main": "./lib/unexpected.js",
+  "main": "./índex.js",
   "dependencies": {},
   "devDependencies": {
     "jshint": "*",
