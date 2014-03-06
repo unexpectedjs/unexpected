@@ -1,4 +1,4 @@
-/*global describe, it, expect, beforeEach*/
+/*global describe, it, expect, beforeEach, setTimeout*/
 
 // use this instead of Object.create in order to make the tests run in
 // browsers that are not es5 compatible.
@@ -1140,33 +1140,78 @@ describe('unexpected', function () {
         describe('error modes', function () {
             var errorMode = 'default';
             var clonedExpect;
-            beforeEach(function () {
-                clonedExpect = expect.clone().addAssertion('to be sorted', function (expect, subject) {
-                    this.errorMode = errorMode;
-                    expect(subject, 'to be an array');
-                    expect(subject, 'to equal', [].concat(subject).sort());
+
+            describe('for synchronous custom assertions', function () {
+                beforeEach(function () {
+                    clonedExpect = expect.clone()
+                        .addAssertion('to be sorted', function (expect, subject) {
+                            this.errorMode = errorMode;
+                            expect(subject, 'to be an array');
+                            expect(subject, 'to equal', [].concat(subject).sort());
+                        });
+                });
+
+                it('errorMode=nested nest the error message of expect failures in the assertion under the assertion standard message', function () {
+                    errorMode = 'nested';
+                    expect(function () {
+                        clonedExpect(42, 'to be sorted');
+                    }, 'to throw', 'expected 42 to be sorted\n    expected 42 to be an array');
+                });
+
+                it('errorMode=bubble bubbles uses the error message of expect failures in the assertion', function () {
+                    errorMode = 'bubble';
+                    expect(function () {
+                        clonedExpect(42, 'to be sorted');
+                    }, 'to throw', 'expected 42 to be an array');
+                });
+
+                it('errorMode=default uses the standard error message of the assertion', function () {
+                    errorMode = 'default';
+                    expect(function () {
+                        clonedExpect(42, 'to be sorted');
+                    }, 'to throw', 'expected 42 to be sorted');
                 });
             });
 
-            it('errorMode=nested nest the error message of expect failures in the assertion under the assertion standard message', function () {
-                errorMode = 'nested';
-                expect(function () {
-                    clonedExpect(42, 'to be sorted');
-                }, 'to throw', 'expected 42 to be sorted\n    expected 42 to be an array');
-            });
+            describe('for asynchronous custom assertions', function () {
+                beforeEach(function () {
+                    clonedExpect = expect.clone()
+                        .addAssertion('to be sorted after delay', function (expect, subject, delay, done) {
+                            this.errorMode = errorMode;
+                            setTimeout(function () {
+                                try {
+                                    expect(subject, 'to be an array');
+                                    expect(subject, 'to equal', [].concat(subject).sort());
+                                } catch (e) {
+                                    done(e);
+                                }
+                            }, delay);
+                        });
+                });
 
-            it('errorMode=bubble bubbles uses the error message of expect failures in the assertion', function () {
-                errorMode = 'bubble';
-                expect(function () {
-                    clonedExpect(42, 'to be sorted');
-                }, 'to throw', 'expected 42 to be an array');
-            });
+                it('errorMode=nested nest the error message of expect failures in the assertion under the assertion standard message', function (done) {
+                    errorMode = 'nested';
+                    clonedExpect(42, 'to be sorted after delay', 1, function (err) {
+                        expect(err.message, 'to match', /^expected 42 to be sorted after delay 1.*\n    expected 42 to be an array/);
+                        done();
+                    });
+                });
 
-            it('errorMode=default uses the standard error message of the assertion', function () {
-                errorMode = 'default';
-                expect(function () {
-                    clonedExpect(42, 'to be sorted');
-                }, 'to throw', 'expected 42 to be sorted');
+                it('errorMode=bubble bubbles uses the error message of expect failures in the assertion', function (done) {
+                    errorMode = 'bubble';
+                    clonedExpect(42, 'to be sorted after delay', 1, function (err) {
+                        expect(err.message, 'to match', /^expected 42 to be an array/);
+                        done();
+                    });
+                });
+
+                it('errorMode=default uses the standard error message of the assertion', function (done) {
+                    errorMode = 'default';
+                    clonedExpect(42, 'to be sorted after delay', 1, function (err) {
+                        expect(err.message, 'to match', /^expected 42 to be sorted after delay 1/);
+                        done();
+                    });
+                });
             });
         });
 
