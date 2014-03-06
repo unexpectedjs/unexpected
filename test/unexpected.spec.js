@@ -1161,6 +1161,30 @@ describe('unexpected', function () {
                 }, 'to throw', 'expected 42 to be sorted');
             });
         });
+
+        // I can't figure out why this doesn't work in mocha-phantomjs:
+        it.skip('truncates the stack when a custom assertion throws a regular assertion error', function () {
+            var clonedExpect = expect.clone().addAssertion('to equal foo', function theCustomAssertion(expect, subject) {
+                expect(subject, 'to equal', 'foo');
+            });
+            expect(function () {
+                clonedExpect('bar', 'to equal foo');
+            }, 'to throw', function (err) {
+                expect(err.stack, 'not to contain', 'theCustomAssertion');
+            });
+        });
+
+        it('does not truncate the stack when the assertion function itself contains an error', function () {
+            var clonedExpect = expect.clone().addAssertion('to equal foo', function theCustomAssertion(expect, subject) {
+                expect(subject, 'to equal', 'foo');
+                this(); // Will throw a TypeError
+            });
+            expect(function () {
+                clonedExpect('foo', 'to equal foo');
+            }, 'to throw', function (err) {
+                expect(err.stack, 'to contain', 'theCustomAssertion');
+            });
+        });
     });
 
     describe('clone', function () {

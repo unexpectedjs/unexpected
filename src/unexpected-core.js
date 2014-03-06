@@ -42,7 +42,9 @@
     };
 
     Assertion.prototype.throwStandardError = function () {
-        throw new Error(this.standardErrorMessage());
+        var err = new Error(this.standardErrorMessage());
+        err._isUnexpected = true;
+        throw err;
     };
 
     Assertion.prototype.assert = function (condition) {
@@ -170,7 +172,9 @@
                     nestingLevel -= 1;
                 } catch (e) {
                     nestingLevel -= 1;
-                    truncateStack(e, that.expect);
+                    if (e._isUnexpected) {
+                        truncateStack(e, wrappedExpect);
+                    }
                     if (nestingLevel === 0) {
                         handleNestedExpects(e, assertion);
                     }
@@ -183,7 +187,9 @@
             try {
                 handler.apply(assertion, args);
             } catch (e) {
-                truncateStack(e, this.expect);
+                if (e._isUnexpected) {
+                    truncateStack(e, this.expect);
+                }
                 throw e;
             }
         } else {
