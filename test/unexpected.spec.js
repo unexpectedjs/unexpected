@@ -8,6 +8,14 @@ function create(o) {
     return new F();
 }
 
+function itSkipInPhantom() { //...
+    if (typeof mochaPhantomJS === 'undefined') {
+        it.apply(it, arguments);
+    } else {
+        it.skip.apply(it, arguments);
+    }
+}
+
 describe('unexpected', function () {
     describe('argument validation', function () {
         it('fails when given no parameters', function () {
@@ -1163,7 +1171,7 @@ describe('unexpected', function () {
         });
 
         // I can't figure out why this doesn't work in mocha-phantomjs:
-        it.skip('truncates the stack when a custom assertion throws a regular assertion error', function () {
+        itSkipInPhantom('truncates the stack when a custom assertion throws a regular assertion error', function () {
             var clonedExpect = expect.clone().addAssertion('to equal foo', function theCustomAssertion(expect, subject) {
                 expect(subject, 'to equal', 'foo');
             });
