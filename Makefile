@@ -39,7 +39,8 @@ lib/unexpected.es5.js: lint src/unexpected-license.js src/unexpected-namespace.j
 	@echo "}());" >> lib/unexpected.es5.js
 
 test: lint
-	@./node_modules/.bin/mocha-phantomjs test/tests.html
+	@$(eval QUERY=$(shell node -e "console.log(decodeURIComponent(process.argv.pop()))" "${grep}")) \
+    ./node_modules/.bin/mocha-phantomjs test/tests.html?grep=${QUERY}
 
 .PHONY: test
 
