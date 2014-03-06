@@ -12,7 +12,12 @@
     var getOuterHTML = utils.getOuterHTML;
     var isArray = utils.isArray;
     var isRegExp = utils.isRegExp;
+    var isError = utils.isError;
     var isDate = utils.isDate;
+
+    function formatError(err) {
+        return '[' + Error.prototype.toString.call(err) + ']';
+    }
 
     /**
      * Inspects an object.
@@ -66,6 +71,10 @@
 
             if (isRegExp(value)) {
                 return stylize('' + value, 'regexp');
+            }
+
+            if (isError(value)) {
+                return formatError(value);
             }
 
             // Look up the keys of the object.

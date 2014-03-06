@@ -53,6 +53,12 @@ describe('unexpected', function () {
             }, "to throw exception", "expected false to be ok '4 < 4'");
         });
 
+        it('formats Error instances correctly when an assertion fails', function () {
+            expect(function () {
+                expect(new Error('error message'), 'to be a number');
+            }, 'to throw', "expected [Error: error message] to be a 'number'");
+        });
+
         it('throws with a stack trace that has the calling function as the top frame when the assertion fails (if the environment supports it)', function () {
             if (Error.captureStackTrace || 'stack' in new Error()) {
                 expect(function TheCallingFunction() {

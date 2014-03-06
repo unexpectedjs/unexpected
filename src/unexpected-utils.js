@@ -58,6 +58,10 @@
                 s.match(/^\/.*\/[gim]{0,3}$/);
         },
 
+        isError: function (err) {
+            return typeof err === 'object' && Object.prototype.toString.call(err) === '[object Error]';
+        },
+
         isDate: function (d) {
             if (d instanceof Date) return true;
             return false;
