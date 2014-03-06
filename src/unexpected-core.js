@@ -18,6 +18,7 @@
     var levenshteinDistance = utils.levenshteinDistance;
 
     function Assertion(subject, testDescription, flags, args) {
+        this.obj = subject; // deprecated
         this.subject = subject;
         this.testDescription = testDescription;
         this.flags = flags;
