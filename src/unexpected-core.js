@@ -149,7 +149,7 @@
         return expect;
     }
 
-    Unexpected.prototype.expect = function (subject, testDescriptionString) {
+    Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
         var that = this;
         if (arguments.length < 2) {
             throw new Error('The expect functions requires at least two parameters.');
@@ -165,7 +165,7 @@
             }, {});
             var args = Array.prototype.slice.call(arguments, 2);
             var nestingLevel = 0;
-            var wrappedExpect = function () {
+            var wrappedExpect = function wrappedExpect() {
                 nestingLevel += 1;
                 try {
                     that.expect.apply(that, arguments);
