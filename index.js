@@ -19,7 +19,6 @@ var Path = require('path'),
 
 [
     'unexpected-namespace.js',
-    'unexpected-es4-compatible.js',
     'unexpected-es5-compatible.js',
     'unexpected-utils.js',
     'unexpected-equal.js',
