@@ -1,4 +1,4 @@
-/*global describe, it, expect, beforeEach*/
+/*global describe, it, expect, beforeEach, setTimeout*/
 
 // use this instead of Object.create in order to make the tests run in
 // browsers that are not es5 compatible.
