@@ -214,8 +214,8 @@ expect({ a: 'a', b: { c: 'c' }, d: 'd' }, 'to have properties', ['a', 'b']);
 expect({ a: 'a', b: { c: 'c' }, d: 'd' }, 'to have own properties', ['a', 'b']);
 expect({ a: 'a', b: { c: 'c' }, d: 'd' }, 'to not have properties', ['k', 'l']);
 expect({ a: 'a', b: { c: 'c' }, d: 'd' }, 'to have properties', {
-    a: 'a', 
-    b: { c: 'c' } 
+    a: 'a',
+    b: { c: 'c' }
 });
 ```
 
@@ -421,6 +421,155 @@ failed expectation in
     baz: failed expectation in [ 7, 8, '9' ]:
         2: expected '9' to be a 'number'
 ```
+
+## Extending Unexpected with new assertions
+
+### expect.clone()
+
+Before extending the `expect` instance with new assertions it is
+usually a good idea to clone it, so you don't change the global
+instance. You do that by calling the `clone` method on `expect`.
+Adding new assertions to the clone will not affect the original
+instance.
+
+### expect.addAssertion(...assertionString, handler)
+
+Warning: if you were an early adopter and used `addAssertion` before
+it was made public, the API has change slightly to allow more advanced
+assertions.
+
+New assertions can be added to Unexpected to following way.
+
+```js
+expect.addAssertion('[not] to be (sorted|ordered)', function(expect, subject, cmp) {
+    var notPrefix = this.flags.not ? 'not ' : '';
+    expect(subject, notPrefix + 'to equal', [].concat(subject).sort(cmp));
+});
+
+```
+
+The above assertion definition makes the following expects possible:
+
+```js
+expect([1,2,3], 'to be sorted');
+expect([1,2,3], 'to be ordered');
+expect([2,1,3], 'not to be sorted');
+expect([2,1,3], 'not to be ordered');
+expect([3,2,1], 'to be sorted', function (x, y) { return y - x; });
+```
+
+Let's dissect the different parts of the custom assertion we just
+introduced.
+
+The first parameter to `addAssertion` is a string describing the
+different expectation strings this custom assertion should match. A
+word in square brackets represents a flag that can either be there or
+not. If the flag is present `this.flags[flag]` will contain the value
+`true`. In this case `not` is a flag. Text that is in parentheses with
+vertical bars between them are treated as alternative texts that can
+be used. In this case you can write _ordered_ as an alternative to
+_sorted_.
+
+The last parameter to `addAssertion` is function that will be called
+when `expect` is invoked with one of the expectation strings generated
+from the custom assertion. When the `expect` function is called the
+following way:
+
+```js
+expect(testSubject, expectationString, ...arguments);
+```
+
+The expectation string is used to identify a handler for the
+expectation. The handler is then called with an instance of `expect`
+that can be used inside the custom assertion, the test subject and the
+rest of the arguments.
+
+So in this case when `expect` is called the following way:
+
+```js
+expect([3,2,1], 'to be sorted', reverse);
+```
+
+The handler to our custom assertion will be called with the values
+this way:
+
+```js
+expect.addAssertion('[not] to be (sorted|ordered)', function(expect, [3,2,1], reverse){
+    var notPrefix = false ? 'not ' : '';
+    expect([3,2,1], notPrefix + 'to equal', [].concat([3,2,1]).sort(reverse));
+});
+```
+
+#### Controlling the output of nested expects
+
+When an `expect` fails inside your custom assertion the standard error
+message for the custom assertion will be used. In the case of our
+_sorted_ assertion the output will be something along the lines:
+
+```
+expected [ 4, 3, 1, 2 ] to be sorted
+```
+
+We can control the output of the nested expects by using the `this.errorMode`
+flag.
+
+```js
+expect.addAssertion('[not] to be (sorted|ordered)', function(expect, subject, cmp) {
+    this.errorMode = 'bubble';
+    var notPrefix = this.flags.not ? 'not ' : '';
+    expect(subject, notPrefix + 'to equal', [].concat(subject).sort(cmp));
+});
+
+```
+
+This will change the error output to:
+
+```
+expected [ 4, 3, 1, 2 ] to equal [ 1, 2, 3, 4 ]
+```
+
+If we change the error mode to _nested_, we get the following:
+
+```
+expected [ 4, 3, 1, 2 ] to be sorted
+    expected [ 4, 3, 1, 2 ] to equal [ 1, 2, 3, 4 ]
+```
+
+#### Asserting boolean conditions
+
+If your custom assertion can't be expressed as delegation to one or
+more calls to `expect` you can use `this.assert`:
+
+```js
+expect.addAssertion('[not] to be (sorted|ordered)', function(expect, subject, cmp) {
+    this.assert(this.equal(subject, [].concat(subject).sort(cmp)));
+});
+```
+
+`this.assert(condition)` throw a standard error if `!!condition === !!this.flags.not`.
+
+You are also free to just throw a regular error, in that case the
+error message will be used as the error message for the failing
+expectation. This provides you with ultimate control over the output,
+but should only be used in rare cases.
+
+The best resource for learning more abort custom assertions is to look
+at how the predefined assertions are build:
+
+[unexpected-assertions.js](https://github.com/sunesimonsen/unexpected/blob/master/src/unexpected-assertions.js)
+
+### expect.installPlugin(plugin)
+
+Unexpected plugins are just functions that uses the `addAssertion`
+method to add new custom assertions to the `expect` instance.
+
+```js
+expect.installPlugin(require('unexpected-sinon'));
+```
+
+See the
+[unexpected-sinon](https://github.com/sunesimonsen/unexpected-sinon)
+plugin as an example on how to create a plugin.
 
 ## Print all registered assertions to the console
 
