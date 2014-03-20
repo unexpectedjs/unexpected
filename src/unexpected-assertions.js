@@ -82,34 +82,29 @@
     });
 
     expect.addAssertion('[not] to have [own] property', function (expect, subject, key, value) {
-        expect(this.flags.own ?
-               subject && subject.hasOwnProperty(key) :
-               subject && subject[key] !== undefined,
-               '[not] to be truthy');
-
         if (arguments.length === 4) {
-            expect(subject, 'to be truthy');
-            expect(subject[key], 'to be', value);
+            expect(subject, 'to have [own] property', key);
+            expect(subject[key], '[not] to equal', value);
+        } else {
+            expect(this.flags.own ?
+                   subject && subject.hasOwnProperty(key) :
+                   subject && subject[key] !== undefined,
+                   '[not] to be truthy');
         }
     });
 
     expect.addAssertion('[not] to have [own] properties', function (expect, subject, properties) {
         if (properties && isArray(properties)) {
             forEach(properties, function (property) {
-                if (this.flags.own) {
-                    this.assert(subject && subject.hasOwnProperty(property));
-                } else {
-                    this.assert(subject && subject[property] !== undefined);
-                }
-            }, this);
+                expect(subject, '[not] to have [own] property', property);
+            });
         } else if (properties && typeof properties === 'object') {
+            // TODO the not flag does not make a lot of sense in this case
             forEach(getKeys(properties), function (property) {
-                if (this.flags.own) {
-                    this.assert(subject &&
-                                subject.hasOwnProperty(property) &&
-                                this.equal(subject[property], properties[property]));
+                if (this.flags.not) {
+                    expect(subject, 'not to have [own] property', property);
                 } else {
-                    this.assert(subject && this.equal(subject[property], properties[property]));
+                    expect(subject, 'to have [own] property', property, properties[property]);
                 }
             }, this);
         } else {
@@ -123,20 +118,22 @@
             throw new Error("Assertion '" + this.testDescription +
                             "' only supports array like objects");
         }
-        this.assert(length === subject.length);
+        expect(subject.length, '[not] to be', length);
     });
 
     expect.addAssertion('[not] to be empty', function (expect, subject) {
+        var length;
         if (subject && 'number' === typeof subject.length) {
-            this.assert(!subject.length);
+            length = subject.length;
         } else if (isArray(subject) || typeof subject === 'string') {
-            this.assert(subject.length === 0);
+            length = subject.length;
         } else if (subject && typeof subject === 'object') {
-            this.assert(!getKeys(subject).length);
+            length = getKeys(subject).length;
         } else {
             throw new Error("Assertion '" + this.testDescription +
                             "' only supports strings, arrays and objects");
         }
+        expect(length, '[not] to be', 0);
     });
 
     expect.addAssertion('to be non-empty', function (expect, subject) {

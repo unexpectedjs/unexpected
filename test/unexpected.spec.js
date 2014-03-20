@@ -404,7 +404,7 @@ describe('unexpected', function () {
             }, 'to throw exception', "expected { a: 'b' } to have property 'a', 'c'");
 
             expect(function () {
-                // property expectations on value expects the property to be present
+                // property expectations ignores value if property
                 expect(null, 'not to have property', 'a', 'b');
             }, 'to throw exception', "expected null not to have property 'a', 'b'");
 
