@@ -17,7 +17,7 @@
     });
 
     expect.addAssertion('[not] to be true', function (expect, subject) {
-        this.assert(subject === true);
+        expect(subject, '[not] to be', true);
     });
 
     expect.addAssertion('[not] to be (ok|truthy)', function (expect, subject) {
@@ -25,35 +25,35 @@
     });
 
     expect.addAssertion('[not] to be false', function (expect, subject) {
-        this.assert(subject === false);
+        expect(subject, '[not] to be', false);
     });
 
     expect.addAssertion('[not] to be falsy', function (expect, subject) {
-        this.assert(!subject);
+        expect(subject, '[!not] to be truthy');
     });
 
     expect.addAssertion('[not] to be null', function (expect, subject) {
-        this.assert(subject === null);
+        expect(subject, '[not] to be', null);
     });
 
     expect.addAssertion('[not] to be undefined', function (expect, subject) {
-        this.assert(typeof subject === 'undefined');
+        expect(typeof subject, '[not] to be', 'undefined');
     });
 
     expect.addAssertion('[not] to be NaN', function (expect, subject) {
-        this.assert(isNaN(subject));
+        expect(isNaN(subject), '[not] to be true');
     });
 
     expect.addAssertion('[not] to be (a|an)', function (expect, subject, type) {
         if ('string' === typeof type) {
             // typeof with support for 'array'
-            this.assert(
-                'array' === type ? isArray(subject) :
+            expect('array' === type ? isArray(subject) :
                     'object' === type ? 'object' === typeof subject && null !== subject :
                         /^reg(?:exp?|ular expression)$/.test(type) ? isRegExp(subject) :
-                            type === typeof subject);
+                            type === typeof subject,
+                   '[not] to be true');
         } else {
-            this.assert(subject instanceof type);
+            expect(subject instanceof type, '[not] to be true');
         }
 
         return this;
@@ -78,19 +78,18 @@
     });
 
     expect.addAssertion('[not] to match', function (expect, subject, regexp) {
-        this.assert(regexp.exec(subject));
+        expect(regexp.exec(subject), '[not] to be truthy');
     });
 
     expect.addAssertion('[not] to have [own] property', function (expect, subject, key, value) {
-        if (this.flags.own) {
-            this.assert(subject && subject.hasOwnProperty(key));
-        } else {
-            this.assert(subject && subject[key] !== undefined);
-        }
+        expect(this.flags.own ?
+               subject && subject.hasOwnProperty(key) :
+               subject && subject[key] !== undefined,
+               '[not] to be truthy');
 
         if (arguments.length === 4) {
-            this.flags.not = false;
-            this.assert(subject && subject[key] === value);
+            expect(subject, 'to be truthy');
+            expect(subject[key], 'to be', value);
         }
     });
 
