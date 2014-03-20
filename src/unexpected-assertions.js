@@ -149,9 +149,9 @@
             return subject.hasOwnProperty(key);
         });
         if (this.flags.only) {
-            this.assert(hasKeys && getKeys(subject).length === keys.length);
+            expect(hasKeys && getKeys(subject).length === keys.length, '[not] to be truthy');
         } else {
-            this.assert(hasKeys);
+            expect(hasKeys, '[not] to be truthy');
         }
     });
 
@@ -161,14 +161,14 @@
 
         if ('string' === typeof subject) {
             forEach(args, function (arg) {
-                that.assert(subject.indexOf(arg) !== -1);
+                expect(subject.indexOf(arg) !== -1, '[not] to be truthy');
             });
         } else if (isArray(subject)) {
             forEach(args, function (arg) {
-                that.assert(subject && indexOf(subject, arg) !== -1);
+                expect(subject && indexOf(subject, arg) !== -1, '[not] to be truthy');
             });
         } else if (subject === null) {
-            that.assert(!that.flags.not);
+            expect(that.flags.not, '[not] to be falsy');
         } else {
             throw new Error("Assertion '" + this.testDescription +
                             "' only supports strings and arrays");
@@ -176,55 +176,57 @@
     });
 
     expect.addAssertion('[not] to be finite', function (expect, subject) {
-        this.assert(typeof subject === 'number' && isFinite(subject));
+        expect(typeof subject === 'number' && isFinite(subject), '[not] to be truthy');
     });
 
     expect.addAssertion('[not] to be infinite', function (expect, subject) {
-        this.assert(typeof subject === 'number' && !isNaN(subject) && !isFinite(subject));
+        expect(typeof subject === 'number' && !isNaN(subject) && !isFinite(subject), '[not] to be truthy');
     });
 
     expect.addAssertion('[not] to be within', function (expect, subject, start, finish) {
         this.args = [start + '..' + finish];
-        if (typeof subject !== 'number') {
-            this.throwStandardError();
-        }
-        this.assert(subject >= start && subject <= finish);
+        expect(subject, 'to be a number');
+        expect(subject >= start && subject <= finish, '[not] to be true');
     });
 
     expect.addAssertion('<', 'to be (<|less than|below)', function (expect, subject, value) {
-        this.assert(subject < value);
+        expect(subject < value, 'to be true');
     });
 
     expect.addAssertion('<=', 'to be (<=|less than or equal to)', function (expect, subject, value) {
-        this.assert(subject <= value);
+        expect(subject <= value, 'to be true');
     });
 
     expect.addAssertion('>', 'to be (>|greater than|above)', function (expect, subject, value) {
-        this.assert(subject > value);
+        expect(subject > value, 'to be true');
     });
 
     expect.addAssertion('>=', 'to be (>=|greater than or equal to)', function (expect, subject, value) {
-        this.assert(subject >= value);
+        expect(subject >= value, 'to be true');
     });
 
     expect.addAssertion('to be positive', function (expect, subject) {
-        this.assert(subject > 0);
+        expect(subject, '>', 0);
     });
 
     expect.addAssertion('to be negative', function (expect, subject) {
-        this.assert(subject < 0);
+        expect(subject, '<', 0);
     });
 
     expect.addAssertion('[not] to equal', function (expect, subject, value) {
         try {
-            this.assert(this.equal(value,
-                                   subject));
+            expect(this.equal(value, subject), '[not] to be true');
         } catch (e) {
             if (!this.flags.not) {
                 e.expected = value;
                 e.actual = subject;
-                // Explicitly tell mocha to stringify and diff arrays and objects, but only when the types are identical and non-primitive:
-                if (e.actual && e.expected && typeof e.actual === 'object' && typeof e.expected === 'object' && isArray(e.actual) === isArray(e.expected)) {
+                // Explicitly tell mocha to stringify and diff arrays
+                // and objects, but only when the types are identical
+                // and non-primitive:
+                if (e.actual && e.expected &&
+                    typeof e.actual === 'object' &&
+                    typeof e.expected === 'object' &&
+                    isArray(e.actual) === isArray(e.expected)) {
                     e.showDiff = true;
                 }
             }
@@ -240,7 +242,6 @@
         }
 
         var thrown = false;
-        var not = this.flags.not;
         var argType = typeof arg;
 
         try {
@@ -250,28 +251,21 @@
             if ('function' === argType) {
                 arg(e);
             } else if ('string' === argType) {
-                if (not) {
-                    expect(subject, 'not to be', arg);
-                } else {
-                    expect(subject, 'to be', arg);
-                }
+                expect(subject, '[not] to be', arg);
             } else if (isRegExp(arg)) {
-                if (not) {
-                    expect(subject, 'not to match', arg);
-                } else {
-                    expect(subject, 'to match', arg);
-                }
+                expect(subject, '[not] to match', arg);
             }
             thrown = true;
         }
 
-        if (('string' === argType || isRegExp(arg)) && not) {
+        this.errorMode = 'default';
+        if ('string' === argType || isRegExp(arg)) {
             // in the presence of a matcher, ensure the `not` only applies to
             // the matching.
-            this.flags.not = false;
+            expect(thrown, 'to be true');
+        } else {
+            expect(thrown, '[not] to be true');
         }
-
-        this.assert(thrown);
     });
 
     expect.addAssertion('to be (a|an) [non-empty] (map|hash|object) whose values satisfy', function (expect, subject, callbackOrString) {
