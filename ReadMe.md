@@ -442,8 +442,7 @@ New assertions can be added to Unexpected to following way.
 
 ```js
 expect.addAssertion('[not] to be (sorted|ordered)', function(expect, subject, cmp) {
-    var notPrefix = this.flags.not ? 'not ' : '';
-    expect(subject, notPrefix + 'to equal', [].concat(subject).sort(cmp));
+    expect(subject, '[not] to equal', [].concat(subject).sort(cmp));
 });
 
 ```
@@ -465,7 +464,9 @@ The first parameter to `addAssertion` is a string describing the
 different expectation strings this custom assertion should match. A
 word in square brackets represents a flag that can either be there or
 not. If the flag is present `this.flags[flag]` will contain the value
-`true`. In this case `not` is a flag. Text that is in parentheses with
+`true`. In this case `not` is a flag. When a flag it present in a
+nested `expect` it will be inserted is the custom assertion has that
+flag; otherwise it will be removed. Text that is in parentheses with
 vertical bars between them are treated as alternative texts that can
 be used. In this case you can write _ordered_ as an alternative to
 _sorted_.
@@ -491,12 +492,11 @@ expect([3,2,1], 'to be sorted', reverse);
 ```
 
 The handler to our custom assertion will be called with the values
-this way:
+this way, where the _not_ flag in the nested expect will be removed:
 
 ```js
 expect.addAssertion('[not] to be (sorted|ordered)', function(expect, [3,2,1], reverse){
-    var notPrefix = false ? 'not ' : '';
-    expect([3,2,1], notPrefix + 'to equal', [].concat([3,2,1]).sort(reverse));
+    expect([3,2,1], '[not] to equal', [].concat([3,2,1]).sort(reverse));
 });
 ```
 
@@ -516,8 +516,7 @@ flag.
 ```js
 expect.addAssertion('[not] to be (sorted|ordered)', function(expect, subject, cmp) {
     this.errorMode = 'bubble';
-    var notPrefix = this.flags.not ? 'not ' : '';
-    expect(subject, notPrefix + 'to equal', [].concat(subject).sort(cmp));
+    expect(subject, '[not] to equal', [].concat(subject).sort(cmp));
 });
 
 ```
@@ -535,25 +534,7 @@ expected [ 4, 3, 1, 2 ] to be sorted
     expected [ 4, 3, 1, 2 ] to equal [ 1, 2, 3, 4 ]
 ```
 
-#### Asserting boolean conditions
-
-If your custom assertion can't be expressed as delegation to one or
-more calls to `expect` you can use `this.assert`:
-
-```js
-expect.addAssertion('[not] to be (sorted|ordered)', function(expect, subject, cmp) {
-    this.assert(this.equal(subject, [].concat(subject).sort(cmp)));
-});
-```
-
-`this.assert(condition)` throw a standard error if `!!condition === !!this.flags.not`.
-
-You are also free to just throw a regular error, in that case the
-error message will be used as the error message for the failing
-expectation. This provides you with ultimate control over the output,
-but should only be used in rare cases.
-
-The best resource for learning more abort custom assertions is to look
+The best resource for learning more about custom assertions is to look
 at how the predefined assertions are build:
 
 [unexpected-assertions.js](https://github.com/sunesimonsen/unexpected/blob/master/src/unexpected-assertions.js)
