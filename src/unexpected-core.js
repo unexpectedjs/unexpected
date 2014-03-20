@@ -159,10 +159,7 @@
         }
         var assertionRule = this.assertions[testDescriptionString];
         if (assertionRule) {
-            var flags = reduce(assertionRule.flags, function (flags, flag) {
-                flags[flag] = true;
-                return flags;
-            }, {});
+            var flags = extend({}, assertionRule.flags);
             var args = Array.prototype.slice.call(arguments, 2);
             var nestingLevel = 0;
             var wrappedExpect = function wrappedExpect() {
@@ -231,7 +228,7 @@
         }
         function createPermutations(tokens, index) {
             if (index === tokens.length) {
-                return [{ text: '', flags: []}];
+                return [{ text: '', flags: {}}];
             }
 
             var token = tokens[index];
@@ -239,11 +236,20 @@
             if (isFlag(token)) {
                 var flag = token.slice(1, -1);
                 return map(tail, function (pattern) {
+                    var flags = {};
+                    flags[flag] = true;
                     return {
                         text: flag + ' ' + pattern.text,
-                        flags: [flag].concat(pattern.flags)
+                        flags: extend(flags, pattern.flags)
                     };
-                }).concat(tail);
+                }).concat(map(tail, function (pattern) {
+                    var flags = {};
+                    flags[flag] = false;
+                    return {
+                        text: pattern.text,
+                        flags: extend(flags, pattern.flags)
+                    };
+                }));
             } else if (isAlternation(token)) {
                 var alternations = token.split(/\(|\)|\|/);
                 alternations = removeEmptyStrings(alternations);
