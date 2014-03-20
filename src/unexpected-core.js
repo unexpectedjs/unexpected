@@ -160,12 +160,16 @@
         var assertionRule = this.assertions[testDescriptionString];
         if (assertionRule) {
             var flags = extend({}, assertionRule.flags);
-            var args = Array.prototype.slice.call(arguments, 2);
             var nestingLevel = 0;
-            var wrappedExpect = function wrappedExpect() {
+            var wrappedExpect = function wrappedExpect(subject, testDescriptionString) {
+                testDescriptionString = trim(testDescriptionString.replace(/\[([^\]]+)\] ?/g, function (match, flag) {
+                    return flags[flag] ? flag + ' ' : '';
+                }));
+
+                var args = Array.prototype.slice.call(arguments, 2);
                 nestingLevel += 1;
                 try {
-                    that.expect.apply(that, arguments);
+                    that.expect.apply(that, [subject, testDescriptionString].concat(args));
                     nestingLevel -= 1;
                 } catch (e) {
                     nestingLevel -= 1;
@@ -178,6 +182,8 @@
                     throw e;
                 }
             };
+
+            var args = Array.prototype.slice.call(arguments, 2);
             args.unshift(wrappedExpect, subject);
             var assertion = new Assertion(subject, testDescriptionString, flags, args.slice(2));
             var handler = assertionRule.handler;

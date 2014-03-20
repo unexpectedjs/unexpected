@@ -1011,6 +1011,20 @@ describe('unexpected', function () {
                    'bar');
         });
 
+        it('supports transfering flags from the custom assertion to nested expect', function () {
+            var clonedExpect = expect.clone()
+                .addAssertion('[not] to be sorted', function (expect, subject) {
+                    expect(subject, 'to be an array');
+                    expect(subject, '[not] to equal', [].concat(subject).sort());
+                });
+
+            clonedExpect([1, 2, 3], 'to be sorted');
+            clonedExpect([1, 3, 2], 'not to be sorted');
+            expect(function () {
+                clonedExpect([1, 2, 3], 'not to be sorted');
+            }, 'to throw', 'expected [ 1, 2, 3 ] not to be sorted');
+        });
+
         describe('pattern', function () {
             it("must be a string", function () {
                 expect(function () {
@@ -1144,10 +1158,10 @@ describe('unexpected', function () {
             describe('for synchronous custom assertions', function () {
                 beforeEach(function () {
                     clonedExpect = expect.clone()
-                        .addAssertion('to be sorted', function (expect, subject) {
+                        .addAssertion('[not] to be sorted', function (expect, subject) {
                             this.errorMode = errorMode;
                             expect(subject, 'to be an array');
-                            expect(subject, 'to equal', [].concat(subject).sort());
+                            expect(subject, '[not] to equal', [].concat(subject).sort());
                         });
                 });
 
