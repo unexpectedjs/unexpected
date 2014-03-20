@@ -162,8 +162,9 @@
             var flags = extend({}, assertionRule.flags);
             var nestingLevel = 0;
             var wrappedExpect = function wrappedExpect(subject, testDescriptionString) {
-                testDescriptionString = trim(testDescriptionString.replace(/\[([^\]]+)\] ?/g, function (match, flag) {
-                    return flags[flag] ? flag + ' ' : '';
+                testDescriptionString = trim(testDescriptionString.replace(/\[(!?)([^\]]+)\] ?/g, function (match, negate, flag) {
+                    negate = !!negate;
+                    return flags[flag] !== negate ? flag + ' ' : '';
                 }));
 
                 var args = Array.prototype.slice.call(arguments, 2);
