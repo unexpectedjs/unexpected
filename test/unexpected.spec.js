@@ -1,4 +1,4 @@
-/*global describe, it, expect*/
+/*global describe, it, expect, beforeEach, setTimeout*/
 
 // use this instead of Object.create in order to make the tests run in
 // browsers that are not es5 compatible.
@@ -6,6 +6,14 @@ function create(o) {
     function F() {}
     F.prototype = o;
     return new F();
+}
+
+function itSkipInPhantom() { //...
+    if (typeof mochaPhantomJS === 'undefined') {
+        it.apply(it, arguments);
+    } else {
+        it.skip.apply(it, arguments);
+    }
 }
 
 describe('unexpected', function () {
@@ -56,7 +64,7 @@ describe('unexpected', function () {
         it('formats Error instances correctly when an assertion fails', function () {
             expect(function () {
                 expect(new Error('error message'), 'to be a number');
-            }, 'to throw', "expected [Error: error message] to be a 'number'");
+            }, 'to throw', "expected [Error: error message] to be a number");
         });
 
         it('throws with a stack trace that has the calling function as the top frame when the assertion fails (if the environment supports it)', function () {
@@ -345,8 +353,8 @@ describe('unexpected', function () {
     describe('length assertion', function () {
         it('asserts array .length', function () {
             expect([], 'to have length', 0);
-            expect([1,2,3], 'to have length', 3);
-            expect([1,2,3], 'not to have length', 4);
+            expect([1, 2, 3], 'to have length', 3);
+            expect([1, 2, 3], 'not to have length', 4);
             expect({ length: 4 }, 'to have length', 4);
         });
 
@@ -396,7 +404,7 @@ describe('unexpected', function () {
             }, 'to throw exception', "expected { a: 'b' } to have property 'a', 'c'");
 
             expect(function () {
-                // property expectations on value expects the property to be present
+                // property expectations ignores value if property
                 expect(null, 'not to have property', 'a', 'b');
             }, 'to throw exception', "expected null not to have property 'a', 'b'");
 
@@ -496,18 +504,18 @@ describe('unexpected', function () {
             expect({ length: 0, duck: 'typing' }, 'to be empty');
             expect({ my: 'object' }, 'not to be empty');
             expect({ my: 'object' }, 'to be non-empty');
-            expect([1,2,3], 'not to be empty');
-            expect([1,2,3], 'to be non-empty');
+            expect([1, 2, 3], 'not to be empty');
+            expect([1, 2, 3], 'to be non-empty');
         });
 
         it('throws when the assertion fails', function () {
             expect(function () {
-                expect([1,2,3], 'to be empty');
+                expect([1, 2, 3], 'to be empty');
             }, 'to throw exception', "expected [ 1, 2, 3 ] to be empty");
 
             expect(function () {
                 expect('', 'to be non-empty');
-            }, 'to throw exception', "expected '' not to be empty");
+            }, 'to throw exception', "expected '' to be non-empty");
 
             expect(function () {
                 expect(null, 'to be empty');
@@ -743,18 +751,18 @@ describe('unexpected', function () {
     describe('to be an array whose items satisfy assertion', function () {
         it('requires a function or a string as the third argument', function () {
             expect(function () {
-                expect([1,2,3], 'to be an array whose items satisfy');
+                expect([1, 2, 3], 'to be an array whose items satisfy');
             }, 'to throw', 'Assertions "to be an array whose items satisfy" expects a functions as argument');
 
             expect(function () {
-                expect([1,2,3], 'to be an array whose items satisfy', 42);
+                expect([1, 2, 3], 'to be an array whose items satisfy', 42);
             }, 'to throw', 'Assertions "to be an array whose items satisfy" expects a functions as argument');
         });
 
         it('only accepts arrays as the target object', function () {
             expect(function () {
                 expect(42, 'to be an array whose items satisfy', function (item) {});
-            }, 'to throw', "expected 42 to be an 'array'");
+            }, 'to throw', /expected 42 to be an array/);
         });
 
         it('supports the non-empty clause', function () {
@@ -764,25 +772,25 @@ describe('unexpected', function () {
         });
 
         it('asserts that the given callback does not throw for any items in the array', function () {
-            expect([0,1,2,3], 'to be an array whose items satisfy', function (item, index) {
+            expect([0, 1, 2, 3], 'to be an array whose items satisfy', function (item, index) {
                 expect(item, 'to be a number');
                 expect(index, 'to be a number');
             });
 
-            expect(['0','1','2','3'], 'to be an array whose items satisfy', function (item, index) {
+            expect(['0', '1', '2', '3'], 'to be an array whose items satisfy', function (item, index) {
                 expect(item, 'not to be a number');
                 expect(index, 'to be a number');
             });
 
-            expect([0,1,2,3], 'to be an array whose items satisfy', 'to be a number');
+            expect([0, 1, 2, 3], 'to be an array whose items satisfy', 'to be a number');
 
-            expect(['0','1','2','3'], 'to be an array whose items satisfy', 'not to be a number');
+            expect(['0', '1', '2', '3'], 'to be an array whose items satisfy', 'not to be a number');
 
             expect([[1], [2]], 'to be an array whose items satisfy', 'to be an array whose items satisfy', 'to be a number');
         });
 
         it('provides the item index to the callback function', function () {
-            var arr = ['0','1','2','3'];
+            var arr = ['0', '1', '2', '3'];
             expect(arr, 'to be an array whose items satisfy', function (item, index) {
                 expect(index, 'to be a number');
                 expect(index, 'to be', parseInt(item, 10));
@@ -791,20 +799,20 @@ describe('unexpected', function () {
 
         it('fails when the assertion fails', function () {
             expect(function () {
-                expect(['0',1,'2','3'], 'to be an array whose items satisfy', function (item) {
+                expect(['0', 1, '2', '3'], 'to be an array whose items satisfy', function (item) {
                     expect(item, 'not to be a number');
                 });
-            }, 'to throw', /expected 1 not to be a 'number'/);
+            }, 'to throw', /expected 1 not to be a number/);
 
             expect(function () {
-                expect(['0',1,'2','3'], 'to be an array whose items satisfy', 'not to be a number');
-            }, 'to throw', /expected 1 not to be a 'number'/);
+                expect(['0', 1, '2', '3'], 'to be an array whose items satisfy', 'not to be a number');
+            }, 'to throw', /expected 1 not to be a number/);
 
             expect(function () {
                 expect([], 'to be a non-empty array whose items satisfy', function (item) {
                     expect(item, 'not to be a number');
                 });
-            }, 'to throw', 'expected [] not to be empty');
+            }, 'to throw', /expected \[\] to be non-empty/);
         });
 
         it('provides a detailed report of where failures occur', function () {
@@ -815,7 +823,7 @@ describe('unexpected', function () {
                 });
             }, 'to throw',
                    "failed expectation in [ 0, 1, '2', 3, 4 ]:\n" +
-                   "    2: expected '2' to be a 'number'\n" +
+                   "    2: expected '2' to be a number\n" +
                    "    4: expected 4 to be less than 4");
         });
 
@@ -829,27 +837,27 @@ describe('unexpected', function () {
             }, 'to throw',
                 "failed expectation in [ [ 0, 1, 2 ], [ 4, '5', 6 ], [ 7, 8, '9' ] ]:\n" +
                 "    1: failed expectation in [ 4, '5', 6 ]:\n" +
-                "        1: expected '5' to be a 'number'\n" +
+                "        1: expected '5' to be a number\n" +
                 "    2: failed expectation in [ 7, 8, '9' ]:\n" +
-                "        2: expected '9' to be a 'number'");
+                "        2: expected '9' to be a number");
         });
     });
 
     describe('to be a map whose values satisfy assertion', function () {
         it('requires a function or a string as the third argument', function () {
             expect(function () {
-                expect([1,2,3], 'to be a map whose values satisfy');
+                expect([1, 2, 3], 'to be a map whose values satisfy');
             }, 'to throw', 'Assertions "to be a map whose values satisfy" expects a functions as argument');
 
             expect(function () {
-                expect([1,2,3], 'to be a map whose values satisfy', 42);
+                expect([1, 2, 3], 'to be a map whose values satisfy', 42);
             }, 'to throw', 'Assertions "to be a map whose values satisfy" expects a functions as argument');
         });
 
         it('only accepts objects as the target', function () {
             expect(function () {
                 expect(42, 'to be a map whose values satisfy', function (value) {});
-            }, 'to throw', "expected 42 to be an 'object'");
+            }, 'to throw', /expected 42 to be an object/);
         });
 
         it('asserts that the given callback does not throw for any values in the map', function () {
@@ -887,7 +895,7 @@ describe('unexpected', function () {
                 expect({ foo: '0', bar: 1, baz: '2', qux: '3' }, 'to be a map whose values satisfy', function (value) {
                     expect(value, 'not to be a number');
                 });
-            }, 'to throw', /expected 1 not to be a 'number'/);
+            }, 'to throw', /expected 1 not to be a number/);
         });
 
         it('provides a detailed report of where failures occur', function () {
@@ -898,7 +906,7 @@ describe('unexpected', function () {
                 });
             }, 'to throw',
                    "failed expectation in { foo: 0, bar: 1, baz: '2', qux: 3, quux: 4 }:\n" +
-                   "    baz: expected '2' to be a 'number'\n" +
+                   "    baz: expected '2' to be a number\n" +
                    "    quux: expected 4 to be less than 4");
         });
 
@@ -915,27 +923,27 @@ describe('unexpected', function () {
                 "  bar: [ 4, '5', 6 ],\n" +
                 "  baz: [ 7, 8, '9' ] }:\n" +
                 "    bar: failed expectation in [ 4, '5', 6 ]:\n" +
-                "        1: expected '5' to be a 'number'\n" +
+                "        1: expected '5' to be a number\n" +
                 "    baz: failed expectation in [ 7, 8, '9' ]:\n" +
-                "        2: expected '9' to be a 'number'");
+                "        2: expected '9' to be a number");
         });
     });
 
     describe('to be a map whose keys satisfy assertion', function () {
         it('requires a function or string as the third argument', function () {
             expect(function () {
-                expect([1,2,3], 'to be a map whose keys satisfy');
+                expect([1, 2, 3], 'to be a map whose keys satisfy');
             }, 'to throw', 'Assertions "to be a map whose keys satisfy" expects a functions as argument');
 
             expect(function () {
-                expect([1,2,3], 'to be a map whose keys satisfy', 42);
+                expect([1, 2, 3], 'to be a map whose keys satisfy', 42);
             }, 'to throw', 'Assertions "to be a map whose keys satisfy" expects a functions as argument');
         });
 
         it('only accepts objects as the target', function () {
             expect(function () {
                 expect(42, 'to be a map whose keys satisfy', function (key) {});
-            }, 'to throw', "expected 42 to be an 'object'");
+            }, 'to throw', /expected 42 to be an object/);
         });
 
         it('asserts that the given callback does not throw for any keys in the map', function () {
@@ -993,16 +1001,6 @@ describe('unexpected', function () {
         }, 'to throw exception', 'Unknown assertion "to bee", did you mean: "to be"');
     });
 
-    function sortBy(arr, property) {
-        arr.sort(function (x, y) {
-            var xp = x[property];
-            var yp = y[property];
-            if (xp > yp) { return 1; }
-            if (xp < yp) { return -1; }
-            return 0;
-        });
-    }
-
     describe('addAssertion', function () {
         it('is chainable', function () {
             expect.addAssertion('foo', function () {})
@@ -1011,6 +1009,20 @@ describe('unexpected', function () {
             expect(expect.assertions, 'to have keys',
                    'foo',
                    'bar');
+        });
+
+        it('supports transfering flags from the custom assertion to nested expect', function () {
+            var clonedExpect = expect.clone()
+                .addAssertion('[not] to be sorted', function (expect, subject) {
+                    expect(subject, 'to be an array');
+                    expect(subject, '[not] to equal', [].concat(subject).sort());
+                });
+
+            clonedExpect([1, 2, 3], 'to be sorted');
+            clonedExpect([1, 3, 2], 'not to be sorted');
+            expect(function () {
+                clonedExpect([1, 2, 3], 'not to be sorted');
+            }, 'to throw', 'expected [ 1, 2, 3 ] not to be sorted');
         });
 
         describe('pattern', function () {
@@ -1138,14 +1150,116 @@ describe('unexpected', function () {
                 });
             });
         });
+
+        describe('error modes', function () {
+            var errorMode = 'default';
+            var clonedExpect;
+
+            describe('for synchronous custom assertions', function () {
+                beforeEach(function () {
+                    clonedExpect = expect.clone()
+                        .addAssertion('[not] to be sorted', function (expect, subject) {
+                            this.errorMode = errorMode;
+                            expect(subject, 'to be an array');
+                            expect(subject, '[not] to equal', [].concat(subject).sort());
+                        });
+                });
+
+                it('errorMode=nested nest the error message of expect failures in the assertion under the assertion standard message', function () {
+                    errorMode = 'nested';
+                    expect(function () {
+                        clonedExpect(42, 'to be sorted');
+                    }, 'to throw', 'expected 42 to be sorted\n    expected 42 to be an array');
+                });
+
+                it('errorMode=bubble bubbles uses the error message of expect failures in the assertion', function () {
+                    errorMode = 'bubble';
+                    expect(function () {
+                        clonedExpect(42, 'to be sorted');
+                    }, 'to throw', 'expected 42 to be an array');
+                });
+
+                it('errorMode=default uses the standard error message of the assertion', function () {
+                    errorMode = 'default';
+                    expect(function () {
+                        clonedExpect(42, 'to be sorted');
+                    }, 'to throw', 'expected 42 to be sorted');
+                });
+            });
+
+            describe('for asynchronous custom assertions', function () {
+                beforeEach(function () {
+                    clonedExpect = expect.clone()
+                        .addAssertion('to be sorted after delay', function (expect, subject, delay, done) {
+                            this.errorMode = errorMode;
+                            setTimeout(function () {
+                                try {
+                                    expect(subject, 'to be an array');
+                                    expect(subject, 'to equal', [].concat(subject).sort());
+                                } catch (e) {
+                                    done(e);
+                                }
+                            }, delay);
+                        });
+                });
+
+                it('errorMode=nested nest the error message of expect failures in the assertion under the assertion standard message', function (done) {
+                    errorMode = 'nested';
+                    clonedExpect(42, 'to be sorted after delay', 1, function (err) {
+                        expect(err.message, 'to match', /^expected 42 to be sorted after delay 1.*\n    expected 42 to be an array/);
+                        done();
+                    });
+                });
+
+                it('errorMode=bubble bubbles uses the error message of expect failures in the assertion', function (done) {
+                    errorMode = 'bubble';
+                    clonedExpect(42, 'to be sorted after delay', 1, function (err) {
+                        expect(err.message, 'to match', /^expected 42 to be an array/);
+                        done();
+                    });
+                });
+
+                it('errorMode=default uses the standard error message of the assertion', function (done) {
+                    errorMode = 'default';
+                    clonedExpect(42, 'to be sorted after delay', 1, function (err) {
+                        expect(err.message, 'to match', /^expected 42 to be sorted after delay 1/);
+                        done();
+                    });
+                });
+            });
+        });
+
+        // I can't figure out why this doesn't work in mocha-phantomjs:
+        itSkipInPhantom('truncates the stack when a custom assertion throws a regular assertion error', function () {
+            var clonedExpect = expect.clone().addAssertion('to equal foo', function theCustomAssertion(expect, subject) {
+                expect(subject, 'to equal', 'foo');
+            });
+            expect(function () {
+                clonedExpect('bar', 'to equal foo');
+            }, 'to throw', function (err) {
+                expect(err.stack, 'not to contain', 'theCustomAssertion');
+            });
+        });
+
+        it('does not truncate the stack when the assertion function itself contains an error', function () {
+            var clonedExpect = expect.clone().addAssertion('to equal foo', function theCustomAssertion(expect, subject) {
+                expect(subject, 'to equal', 'foo');
+                this(); // Will throw a TypeError
+            });
+            expect(function () {
+                clonedExpect('foo', 'to equal foo');
+            }, 'to throw', function (err) {
+                expect(err.stack, 'to contain', 'theCustomAssertion');
+            });
+        });
     });
 
     describe('clone', function () {
         var clonedExpect;
         beforeEach(function () {
             clonedExpect = expect.clone();
-            clonedExpect.addAssertion('[not] to be answer to the Ultimate Question of Life, the Universe, and Everything', function () {
-                this.assert(this.obj === 42);
+            clonedExpect.addAssertion('[not] to be answer to the Ultimate Question of Life, the Universe, and Everything', function (expect, subject) {
+                this.assert(subject === 42);
             });
         });
 
@@ -1195,7 +1309,7 @@ describe('unexpected', function () {
     });
 
     describe('installPlugin', function () {
-        it('calls the given plugin with the expect instance as the paramenter', function (done) {
+        it('calls the given plugin with the expect instance as the parameter', function (done) {
             var plugin = function (expectInstance) {
                 expect(expectInstance, 'to be', expect);
                 done();

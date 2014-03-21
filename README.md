@@ -1,6 +1,6 @@
 # Unexpected
 
-Minimalistic BDD assertion toolkit based on
+Minimalistic BDD assertion toolkit inspired by
 [expect.js](https://github.com/LearnBoost/expect.js)
 
 ```js
@@ -43,8 +43,7 @@ var expect = require('unexpected');
 
 ### Browser
 
-Include the `unexpected.js` found at the lib directory of this
-repository.
+Include `unexpected.js`.
 
 ```html
 <script src="unexpected.js"></script>
@@ -61,7 +60,13 @@ var expect = weknowhow.expect;
 Include the library with RequireJS the following way:
 
 ```js
-define(['unexpected/lib/unexpected'], function (expect) {
+require.config({
+    paths: {
+        unexpected: 'path/to/unexpected'
+    }
+});
+
+define(['unexpected'], function (expect) {
    // Your code
 });
 ```
@@ -214,8 +219,8 @@ expect({ a: 'a', b: { c: 'c' }, d: 'd' }, 'to have properties', ['a', 'b']);
 expect({ a: 'a', b: { c: 'c' }, d: 'd' }, 'to have own properties', ['a', 'b']);
 expect({ a: 'a', b: { c: 'c' }, d: 'd' }, 'to not have properties', ['k', 'l']);
 expect({ a: 'a', b: { c: 'c' }, d: 'd' }, 'to have properties', {
-    a: 'a', 
-    b: { c: 'c' } 
+    a: 'a',
+    b: { c: 'c' }
 });
 ```
 
@@ -421,6 +426,136 @@ failed expectation in
     baz: failed expectation in [ 7, 8, '9' ]:
         2: expected '9' to be a 'number'
 ```
+
+## Extending Unexpected with new assertions
+
+### expect.clone()
+
+Before extending the `expect` instance with new assertions it is
+usually a good idea to clone it, so you don't change the global
+instance. You do that by calling the `clone` method on `expect`.
+Adding new assertions to the clone will not affect the original
+instance.
+
+### expect.addAssertion(...assertionString, handler)
+
+Warning: if you were an early adopter and used `addAssertion` before
+it was made public, the API has change slightly to allow more advanced
+assertions.
+
+New assertions can be added to Unexpected to following way.
+
+```js
+expect.addAssertion('[not] to be (sorted|ordered)', function(expect, subject, cmp) {
+    expect(subject, '[not] to equal', [].concat(subject).sort(cmp));
+});
+
+```
+
+The above assertion definition makes the following expects possible:
+
+```js
+expect([1,2,3], 'to be sorted');
+expect([1,2,3], 'to be ordered');
+expect([2,1,3], 'not to be sorted');
+expect([2,1,3], 'not to be ordered');
+expect([3,2,1], 'to be sorted', function (x, y) { return y - x; });
+```
+
+Let's dissect the different parts of the custom assertion we just
+introduced.
+
+The first parameter to `addAssertion` is a string describing the
+different expectation strings this custom assertion should match. A
+word in square brackets represents a flag that can either be there or
+not. If the flag is present `this.flags[flag]` will contain the value
+`true`. In this case `not` is a flag. When a flag it present in a
+nested `expect` it will be inserted is the custom assertion has that
+flag; otherwise it will be removed. Text that is in parentheses with
+vertical bars between them are treated as alternative texts that can
+be used. In this case you can write _ordered_ as an alternative to
+_sorted_.
+
+The last parameter to `addAssertion` is function that will be called
+when `expect` is invoked with one of the expectation strings generated
+from the custom assertion. When the `expect` function is called the
+following way:
+
+```js
+expect(testSubject, expectationString, ...arguments);
+```
+
+The expectation string is used to identify a handler for the
+expectation. The handler is then called with an instance of `expect`
+that can be used inside the custom assertion, the test subject and the
+rest of the arguments.
+
+So in this case when `expect` is called the following way:
+
+```js
+expect([3,2,1], 'to be sorted', reverse);
+```
+
+The handler to our custom assertion will be called with the values
+this way, where the _not_ flag in the nested expect will be removed:
+
+```js
+expect.addAssertion('[not] to be (sorted|ordered)', function(expect, [3,2,1], reverse){
+    expect([3,2,1], '[not] to equal', [].concat([3,2,1]).sort(reverse));
+});
+```
+
+#### Controlling the output of nested expects
+
+When an `expect` fails inside your custom assertion the standard error
+message for the custom assertion will be used. In the case of our
+_sorted_ assertion the output will be something along the lines:
+
+```
+expected [ 4, 3, 1, 2 ] to be sorted
+```
+
+We can control the output of the nested expects by using the `this.errorMode`
+flag.
+
+```js
+expect.addAssertion('[not] to be (sorted|ordered)', function(expect, subject, cmp) {
+    this.errorMode = 'bubble';
+    expect(subject, '[not] to equal', [].concat(subject).sort(cmp));
+});
+
+```
+
+This will change the error output to:
+
+```
+expected [ 4, 3, 1, 2 ] to equal [ 1, 2, 3, 4 ]
+```
+
+If we change the error mode to _nested_, we get the following:
+
+```
+expected [ 4, 3, 1, 2 ] to be sorted
+    expected [ 4, 3, 1, 2 ] to equal [ 1, 2, 3, 4 ]
+```
+
+The best resource for learning more about custom assertions is to look
+at how the predefined assertions are build:
+
+[unexpected-assertions.js](https://github.com/sunesimonsen/unexpected/blob/master/lib/unexpected-assertions.js)
+
+### expect.installPlugin(plugin)
+
+Unexpected plugins are just functions that uses the `addAssertion`
+method to add new custom assertions to the `expect` instance.
+
+```js
+expect.installPlugin(require('unexpected-sinon'));
+```
+
+See the
+[unexpected-sinon](https://github.com/sunesimonsen/unexpected-sinon)
+plugin as an example on how to create a plugin.
 
 ## Print all registered assertions to the console
 

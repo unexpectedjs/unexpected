@@ -1,63 +1,69 @@
 REPORTER = dot
 
+TARGETS ?= unexpected.js unexpected.es5.js
+
 lint:
-	@./node_modules/.bin/jshint src/*
+	@./node_modules/.bin/jshint lib/*.js test/*.js
 
 .PHONY: lint
 
-lib/unexpected.js: lint src/unexpected-license.js src/unexpected-namespace.js src/unexpected-es4-compatible.js src/unexpected-es5-compatible.js src/unexpected-utils.js src/unexpected-equal.js src/unexpected-inspect.js src/unexpected-core.js src/unexpected-assertions.js src/unexpected-module.js
-	@echo "Build unexpected for production"
-	@echo "(function () {" > lib/unexpected.js
+unexpected.js: lint lib/*
+	@echo "(function () {" > $@
 
-	@cat src/unexpected-license.js \
-         src/unexpected-namespace.js \
-         src/unexpected-es4-compatible.js \
-         src/unexpected-es5-compatible.js \
-         src/unexpected-utils.js \
-         src/unexpected-equal.js \
-         src/unexpected-inspect.js \
-         src/unexpected-core.js \
-         src/unexpected-assertions.js \
-         src/unexpected-module.js | sed -e 's/^/    /' | sed -e 's/^\s*$$//' | sed -e 's/\/\*\(global\|exported\).*//' >> lib/unexpected.js
+	@cat lib/unexpected-license.js \
+         lib/unexpected-namespace.js \
+         lib/unexpected-es4-compatible.js \
+         lib/unexpected-es5-compatible.js \
+         lib/unexpected-utils.js \
+         lib/unexpected-equal.js \
+         lib/unexpected-inspect.js \
+         lib/unexpected-core.js \
+         lib/unexpected-assertions.js \
+         lib/unexpected-module.js | sed -e 's/^/    /' | sed -e 's/^\s*$$//' | sed -e 's/\/\*\(global\|exported\).*//' >> $@
 
-	@echo "}());" >> lib/unexpected.js
+	@echo "}());" >> $@
 
-lib/unexpected.es5.js: lint src/unexpected-license.js src/unexpected-namespace.js src/unexpected-es5-compatible.js src/unexpected-utils.js src/unexpected-equal.js src/unexpected-inspect.js src/unexpected-core.js src/unexpected-assertions.js src/unexpected-module.js
-	@echo "Build unexpected for production"
-	@echo "(function () {" > lib/unexpected.es5.js
+unexpected.es5.js: lint lib/*
+	@echo "(function () {" > $@
 
-	@cat src/unexpected-license.js \
-         src/unexpected-namespace.js \
-         src/unexpected-es5-compatible.js \
-         src/unexpected-utils.js \
-         src/unexpected-equal.js \
-         src/unexpected-inspect.js \
-         src/unexpected-core.js \
-         src/unexpected-assertions.js \
-         src/unexpected-module.js | sed -e 's/^/    /' | sed -e 's/^\s*$$//' | sed -e 's/\/\*\(global\|exported\).*//' >> lib/unexpected.es5.js
+	@cat lib/unexpected-license.js \
+         lib/unexpected-namespace.js \
+         lib/unexpected-es5-compatible.js \
+         lib/unexpected-utils.js \
+         lib/unexpected-equal.js \
+         lib/unexpected-inspect.js \
+         lib/unexpected-core.js \
+         lib/unexpected-assertions.js \
+         lib/unexpected-module.js | sed -e 's/^/    /' | sed -e 's/^\s*$$//' | sed -e 's/\/\*\(global\|exported\).*//' >> $@
 
-	@echo "}());" >> lib/unexpected.es5.js
+	@echo "}());" >> $@
+
+test-phantomjs: lint
+	@$(eval QUERY=$(shell node -e "console.log(decodeURIComponent(process.argv.pop()))" "${grep}")) \
+    ./node_modules/.bin/mocha-phantomjs test/tests.html?grep=${QUERY}
 
 test: lint
-	@./node_modules/.bin/mocha-phantomjs test/tests.html
+	mocha -R spec
 
 .PHONY: test
 
-test-production: lint lib/unexpected.js lib/unexpected.es5.js
+test-production: lint ${TARGETS}
 	@./node_modules/.bin/mocha-phantomjs test/tests.production.html
 	@./node_modules/.bin/mocha-phantomjs test/tests.production.es5.html
 
 .PHONY: test-production
 
-coverage: lib/unexpected.js
+lib-cov: lib/*
 	@rm -rf lib-cov
-	@jscoverage lib lib-cov
+	@jscoverage --no-highlight lib $@
+
+lib-cov/index.html: lib-cov
 	@COVERAGE=1 ./node_modules/.bin/mocha \
         --require ./test/common \
-        --reporter html-cov > lib-cov/index.html
-	@echo "Coverage report has been generated to lib-cov/index.html"
+        --reporter html-cov > $@
+	@echo Coverage report has been generated to $@
 
-.PHONY: coverage
+coverage: lib-cov/index.html
 
 test-browser:
 	@./node_modules/.bin/serve .
@@ -77,20 +83,24 @@ git-commit-lib:
 
 .PHONY: git-commit-lib
 
-release-patch: git-dirty-check lib/unexpected.js lib/unexpected.es5.js test-production git-commit-lib
+release-patch: git-dirty-check ${TARGETS} test-production git-commit-lib
 	npm version patch
 	@echo Patch release ready to be publised to NPM
 
 .PHONY: release-patch
 
-release-minor: git-dirty-check lib/unexpected.js lib/unexpected.es5.js test-production git-commit-lib
+release-minor: git-dirty-check ${TARGETS} test-production git-commit-lib
 	npm version minor
 	@echo Minor release ready to be publised to NPM
 
 .PHONY: release-minor
 
-release-major: git-dirty-check lib/unexpected.js lib/unexpected.es5.js test-production git-commit-lib
+release-major: git-dirty-check ${TARGETS} test-production git-commit-lib
 	npm version major
 	@echo Major release ready to be publised to NPM
 
 .PHONY: release-major
+
+.PHONY: clean
+clean:
+	-rm -fr ${TARGETS} lib-cov
