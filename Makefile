@@ -83,6 +83,7 @@ endif
 release-%: git-dirty-check ${TARGETS} test-production
 	npm version $*
 	@echo $* release ready to be publised to NPM
+	@echo Remember to push tags
 
 .PHONY: clean
 clean:
