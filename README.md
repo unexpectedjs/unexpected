@@ -1,6 +1,6 @@
 # Unexpected
 
-Minimalistic BDD assertion toolkit based on
+Minimalistic BDD assertion toolkit inspired by
 [expect.js](https://github.com/LearnBoost/expect.js)
 
 ```js
@@ -43,8 +43,7 @@ var expect = require('unexpected');
 
 ### Browser
 
-Include the `unexpected.js` found at the lib directory of this
-repository.
+Include `unexpected.js`.
 
 ```html
 <script src="unexpected.js"></script>
@@ -61,7 +60,13 @@ var expect = weknowhow.expect;
 Include the library with RequireJS the following way:
 
 ```js
-define(['unexpected/lib/unexpected'], function (expect) {
+require.config({
+    paths: {
+        unexpected: 'path/to/unexpected'
+    }
+});
+
+define(['unexpected'], function (expect) {
    // Your code
 });
 ```
@@ -537,7 +542,7 @@ expected [ 4, 3, 1, 2 ] to be sorted
 The best resource for learning more about custom assertions is to look
 at how the predefined assertions are build:
 
-[unexpected-assertions.js](https://github.com/sunesimonsen/unexpected/blob/master/src/unexpected-assertions.js)
+[unexpected-assertions.js](https://github.com/sunesimonsen/unexpected/blob/master/lib/unexpected-assertions.js)
 
 ### expect.installPlugin(plugin)
 
