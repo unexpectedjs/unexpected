@@ -77,29 +77,12 @@ endif
 
 .PHONY: git-dirty-check
 
-git-commit-lib:
-	git add lib
-	git ci -m "Build unexpected for production"
-
 .PHONY: git-commit-lib
 
-release-patch: git-dirty-check ${TARGETS} test-production git-commit-lib
-	npm version patch
-	@echo Patch release ready to be publised to NPM
-
-.PHONY: release-patch
-
-release-minor: git-dirty-check ${TARGETS} test-production git-commit-lib
-	npm version minor
-	@echo Minor release ready to be publised to NPM
-
-.PHONY: release-minor
-
-release-major: git-dirty-check ${TARGETS} test-production git-commit-lib
-	npm version major
-	@echo Major release ready to be publised to NPM
-
-.PHONY: release-major
+.PHONY: release-%
+release-%: git-dirty-check ${TARGETS} test-production
+	npm version $*
+	@echo $* release ready to be publised to NPM
 
 .PHONY: clean
 clean:
