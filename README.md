@@ -13,7 +13,7 @@ expect(window, 'not to be an', Image);
 
 [![Build Status](https://travis-ci.org/sunesimonsen/unexpected.png)](https://travis-ci.org/sunesimonsen/unexpected)
 
-[Run the test in the browser](http://sunesimonsen.github.io/unexpected/test/tests.html)
+[Run the test in the browser](http://sunesimonsen.github.io/unexpected/test/tests.production.html)
 
 ## Features
 
