@@ -12,16 +12,16 @@
     var isRegExp = utils.isRegExp;
     var isArray = utils.isArray;
 
+    expect.addAssertion('[not] to be (ok|truthy)', function (expect, subject) {
+        this.assert(subject);
+    });
+
     expect.addAssertion('[not] to be', function (expect, subject, value) {
-        this.assert(subject === value);
+        expect(subject === value, '[not] to be truthy');
     });
 
     expect.addAssertion('[not] to be true', function (expect, subject) {
         expect(subject, '[not] to be', true);
-    });
-
-    expect.addAssertion('[not] to be (ok|truthy)', function (expect, subject) {
-        this.assert(subject);
     });
 
     expect.addAssertion('[not] to be false', function (expect, subject) {
