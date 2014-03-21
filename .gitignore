@@ -1,2 +1,4 @@
-node_modules
-lib-cov
+/node_modules/
+/lib-cov/
+/unexpected.es5.js
+/unexpected.js
