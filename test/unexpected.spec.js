@@ -419,6 +419,7 @@ describe('unexpected', function () {
         it('asserts presence of a list of properties', function () {
             expect({a: 'foo', b: 'bar'}, 'to have properties', ['a', 'b']);
         });
+
         it('asserts presence of a list of own properties', function () {
             expect({a: 'foo', b: 'bar'}, 'to have own properties', ['a', 'b']);
             expect(function () {
@@ -481,6 +482,16 @@ describe('unexpected', function () {
             expect(function () {
                 expect({a: 'foo', b: 'bar'}, 'not to have own properties', {a: 'foo', b: 'bar'}); // should fail
             }, 'to throw', "expected { a: 'foo', b: 'bar' } not to have own properties { a: 'foo', b: 'bar' }");
+        });
+
+        it('should add showDiff:true and diffable actual and expected properties to the error instance', function () {
+            expect(function () {
+                expect({a: 123, b: 456, c: 789}, 'to have properties', {a: 123, b: 987});
+            }, 'to throw', function (e) {
+                expect(e.showDiff, 'to be true');
+                expect(e.actual, 'to equal', {a: 123, b: 456, c: 789});
+                expect(e.expected, 'to equal', {a: 123, b: 987, c: 789});
+            });
         });
 
         it('throws when the assertion fails', function () {
