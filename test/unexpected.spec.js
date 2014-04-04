@@ -1334,4 +1334,52 @@ describe('unexpected', function () {
             }, 'to throw', 'Expected first argument given to installPlugin to be a function');
         });
     });
+
+    describe('addType', function () {
+        function box(value) {
+            return {
+                isBox: true,
+                value: value
+            };
+        }
+        var clonedExpect;
+
+        beforeEach(function () {
+            clonedExpect = expect.clone();
+            clonedExpect.addType({
+                identify: function (obj) {
+                    return obj && typeof obj === 'object' && obj.isBox;
+                },
+                equal: function (a, b) {
+                    return expect.equal(a.value, b.value);
+                },
+                inspect: function (obj) {
+                    return '[Box: ' + clonedExpect.inspect(obj.value) + ']';
+                },
+                toJSON: function (obj) {
+                    return {
+                        $box: obj.value
+                    };
+                }
+            });
+        });
+
+        it('should use the equal defined by the type', function () {
+            clonedExpect(box(123), 'to equal', box(123));
+            clonedExpect(box(123), 'not to equal', box(321));
+        });
+
+        it('should call toJSON recursively in case of a mismatch', function () {
+            expect(function () {
+                clonedExpect(box(box(123)), 'to equal', box(box(456)));
+            }, 'to throw', function (err) {
+                expect(err, 'to have properties', {
+                    showDiff: true,
+                    actual: {$box: {$box: 123}},
+                    expected: {$box: {$box: 456}}
+                });
+                expect(err.message, 'to equal', "expected [Box: [Box: 123]] to equal [Box: [Box: 456]]");
+            });
+        });
+    });
 });
