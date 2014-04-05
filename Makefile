@@ -18,6 +18,7 @@ unexpected.js: lint lib/*
          lib/unexpected-equal.js \
          lib/unexpected-inspect.js \
          lib/unexpected-core.js \
+         lib/unexpected-types.js \
          lib/unexpected-assertions.js \
          lib/unexpected-module.js | sed -e 's/^/    /' | sed -e 's/^\s*$$//' | sed -e 's/\/\*\(global\|exported\).*//' >> $@
 
@@ -34,6 +35,7 @@ unexpected.es5.js: lint lib/*
          lib/unexpected-inspect.js \
          lib/unexpected-core.js \
          lib/unexpected-assertions.js \
+         lib/unexpected-types.js \
          lib/unexpected-module.js | sed -e 's/^/    /' | sed -e 's/^\s*$$//' | sed -e 's/\/\*\(global\|exported\).*//' >> $@
 
 	@echo "}());" >> $@
