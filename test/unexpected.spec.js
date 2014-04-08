@@ -191,6 +191,16 @@ describe('unexpected', function () {
             }
         });
 
+        it('fails gracefully when comparing circular structures', function () {
+            var foo = {},
+                bar = {};
+            foo.foo = foo;
+            bar.foo = bar;
+            expect(function () {
+                expect(foo, 'not to equal', bar);
+            }, 'to throw', 'Cannot compare circular structures');
+        });
+
         it('throws when the assertion fails', function () {
             expect(function () {
                 expect({ a: { b: 'c'} }, 'to equal', { a: { b: 'd'} });
