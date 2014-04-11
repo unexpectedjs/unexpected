@@ -8,12 +8,8 @@ function create(o) {
     return new F();
 }
 
-function itSkipInPhantom() { //...
-    if (typeof mochaPhantomJS === 'undefined') {
-        it.apply(it, arguments);
-    } else {
-        it.skip.apply(it, arguments);
-    }
+function itSkipIf(condition) {
+    (condition ? it.skip : it).apply(it, Array.prototype.slice.call(arguments, 1));
 }
 
 describe('unexpected', function () {
@@ -95,10 +91,11 @@ describe('unexpected', function () {
             expect(false, 'to be false');
             expect(true, 'not to be false');
             expect(undefined, 'to be undefined');
-            if (typeof Buffer !== 'undefined') {
-                var buffer = new Buffer([0x45, 0x59]);
-                expect(buffer, 'to be', buffer);
-            }
+        });
+
+        itSkipIf(typeof Buffer === 'undefined', 'asserts === equality for Buffers', function () {
+            var buffer = new Buffer([0x45, 0x59]);
+            expect(buffer, 'to be', buffer);
         });
 
         it('throws when the assertion fails', function () {
@@ -186,10 +183,12 @@ describe('unexpected', function () {
             expect(/foo/gm, 'to equal', /foo/gm);
             expect(/foo/m, 'not to equal', /foo/i);
             expect(/foo/m, 'to equal', new RegExp('foo', 'm'));
-            if (typeof Buffer !== 'undefined') {
-                expect(new Buffer([0x45, 0x59]), 'to equal', new Buffer([0x45, 0x59]));
-            }
         });
+
+        itSkipIf(typeof Buffer === 'undefined', 'asserts equality for Buffer instances', function () {
+            expect(new Buffer([0x45, 0x59]), 'to equal', new Buffer([0x45, 0x59]));
+        });
+
 
         it('fails gracefully when comparing circular structures', function () {
             var foo = {},
@@ -263,35 +262,33 @@ describe('unexpected', function () {
             });
         });
 
-        if (typeof Buffer !== 'undefined') {
-            it('produces a hex-diff in JSON when Buffers differ', function () {
-                expect(function () {
-                    expect(
-                        new Buffer('\x00\x01\x02Here is the thing I was talking about', 'utf-8'),
-                        'to equal',
-                        new Buffer('\x00\x01\x02Here is the thing I was quuxing about', 'utf-8')
-                    );
-                }, 'to throw', function (err) {
-                    expect(err, 'to have properties', {
-                        showDiff: true,
-                        actual: {
-                            $buffer: [
-                                '00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  |...Here is the t|',
-                                '68 69 6E 67 20 49 20 77 61 73 20 74 61 6C 6B 69  |hing I was talki|',
-                                '6E 67 20 61 62 6F 75 74                          |ng about|'
-                            ]
-                        },
-                        expected: {
-                            $buffer: [
-                                '00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  |...Here is the t|',
-                                '68 69 6E 67 20 49 20 77 61 73 20 71 75 75 78 69  |hing I was quuxi|',
-                                '6E 67 20 61 62 6F 75 74                          |ng about|'
-                            ]
-                        }
-                    });
+        itSkipIf(typeof Buffer === 'undefined', 'produces a hex-diff in JSON when Buffers differ', function () {
+            expect(function () {
+                expect(
+                    new Buffer('\x00\x01\x02Here is the thing I was talking about', 'utf-8'),
+                    'to equal',
+                    new Buffer('\x00\x01\x02Here is the thing I was quuxing about', 'utf-8')
+                );
+            }, 'to throw', function (err) {
+                expect(err, 'to have properties', {
+                    showDiff: true,
+                    actual: {
+                        $buffer: [
+                            '00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  |...Here is the t|',
+                            '68 69 6E 67 20 49 20 77 61 73 20 74 61 6C 6B 69  |hing I was talki|',
+                            '6E 67 20 61 62 6F 75 74                          |ng about|'
+                        ]
+                    },
+                    expected: {
+                        $buffer: [
+                            '00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  |...Here is the t|',
+                            '68 69 6E 67 20 49 20 77 61 73 20 71 75 75 78 69  |hing I was quuxi|',
+                            '6E 67 20 61 62 6F 75 74                          |ng about|'
+                        ]
+                    }
                 });
             });
-        }
+        });
     });
 
     describe('exception assertion', function () {
@@ -1281,7 +1278,7 @@ describe('unexpected', function () {
         });
 
         // I can't figure out why this doesn't work in mocha-phantomjs:
-        itSkipInPhantom('truncates the stack when a custom assertion throws a regular assertion error', function () {
+        itSkipIf(typeof mochaPhantomJS !== 'undefined', 'truncates the stack when a custom assertion throws a regular assertion error', function () {
             var clonedExpect = expect.clone().addAssertion('to equal foo', function theCustomAssertion(expect, subject) {
                 expect(subject, 'to equal', 'foo');
             });
