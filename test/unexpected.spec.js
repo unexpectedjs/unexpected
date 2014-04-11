@@ -333,6 +333,42 @@ describe('unexpected', function () {
                 });
             });
         });
+
+        itSkipIf(typeof Uint16Array === 'undefined', 'produces a hex-diff in JSON when Uint16Arrays differ', function () {
+            expect(function () {
+                expect(
+                    new Uint16Array([
+                        0x0001, 0x0248, 0x6572, 0x6520, 0x6973, 0x2074, 0x6865, 0x2074,
+                        0x6869, 0x6E67, 0x2049, 0x2077, 0x6173, 0x2074, 0x616C, 0x6B69,
+                        0x6E67, 0x2061, 0x626F, 0x7574
+                    ]),
+                    'to equal',
+                    new Uint16Array([
+                        0x0001, 0x0248, 0x6572, 0x6520, 0x6973, 0x2074, 0x6865, 0x2074,
+                        0x6869, 0x6E67, 0x2049, 0x2077, 0x6173, 0x2071, 0x7575, 0x7869,
+                        0x6E67, 0x2061, 0x626F, 0x7574
+                    ])
+                );
+            }, 'to throw', function (err) {
+                expect(err, 'to have properties', {
+                    showDiff: true,
+                    actual: {
+                        $Uint16Array: [
+                            '0001 0248 6572 6520 6973 2074 6865 2074',
+                            '6869 6E67 2049 2077 6173 2074 616C 6B69',
+                            '6E67 2061 626F 7574'
+                        ]
+                    },
+                    expected: {
+                        $Uint16Array: [
+                            '0001 0248 6572 6520 6973 2074 6865 2074',
+                            '6869 6E67 2049 2077 6173 2071 7575 7869',
+                            '6E67 2061 626F 7574'
+                        ]
+                    }
+                });
+            });
+        });
     });
 
     describe('exception assertion', function () {
