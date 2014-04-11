@@ -1,4 +1,4 @@
-/*global describe, it, expect, beforeEach, setTimeout*/
+/*global describe, it, expect, beforeEach, setTimeout, Uint8Array, Uint16Array*/
 
 // use this instead of Object.create in order to make the tests run in
 // browsers that are not es5 compatible.
@@ -98,6 +98,11 @@ describe('unexpected', function () {
             expect(buffer, 'to be', buffer);
         });
 
+        itSkipIf(typeof Uint8Array === 'undefined', 'asserts === equality for Uint8Array', function () {
+            var uint8Array = new Uint8Array([0x45, 0x59]);
+            expect(uint8Array, 'to be', uint8Array);
+        });
+
         it('throws when the assertion fails', function () {
             expect(function () {
                 expect('foo', 'to be', 'bar');
@@ -189,6 +194,9 @@ describe('unexpected', function () {
             expect(new Buffer([0x45, 0x59]), 'to equal', new Buffer([0x45, 0x59]));
         });
 
+        itSkipIf(typeof Uint8Array === 'undefined', 'asserts equality for Uint8Array', function () {
+            expect(new Uint8Array([0x45, 0x59]), 'to equal', new Uint8Array([0x45, 0x59]));
+        });
 
         it('fails gracefully when comparing circular structures', function () {
             var foo = {},
@@ -281,6 +289,42 @@ describe('unexpected', function () {
                     },
                     expected: {
                         $buffer: [
+                            '00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  |...Here is the t|',
+                            '68 69 6E 67 20 49 20 77 61 73 20 71 75 75 78 69  |hing I was quuxi|',
+                            '6E 67 20 61 62 6F 75 74                          |ng about|'
+                        ]
+                    }
+                });
+            });
+        });
+
+        itSkipIf(typeof Uint8Array === 'undefined', 'produces a hex-diff in JSON when Uint8Arrays differ', function () {
+            expect(function () {
+                expect(
+                    new Uint8Array([
+                        0x00, 0x01, 0x02, 0x48, 0x65, 0x72, 0x65, 0x20, 0x69, 0x73, 0x20, 0x74, 0x68, 0x65, 0x20, 0x74,
+                        0x68, 0x69, 0x6E, 0x67, 0x20, 0x49, 0x20, 0x77, 0x61, 0x73, 0x20, 0x74, 0x61, 0x6C, 0x6B, 0x69,
+                        0x6E, 0x67, 0x20, 0x61, 0x62, 0x6F, 0x75, 0x74
+                    ]),
+                    'to equal',
+                    new Uint8Array([
+                        0x00, 0x01, 0x02, 0x48, 0x65, 0x72, 0x65, 0x20, 0x69, 0x73, 0x20, 0x74, 0x68, 0x65, 0x20, 0x74,
+                        0x68, 0x69, 0x6E, 0x67, 0x20, 0x49, 0x20, 0x77, 0x61, 0x73, 0x20, 0x71, 0x75, 0x75, 0x78, 0x69,
+                        0x6E, 0x67, 0x20, 0x61, 0x62, 0x6F, 0x75, 0x74
+                    ])
+                );
+            }, 'to throw', function (err) {
+                expect(err, 'to have properties', {
+                    showDiff: true,
+                    actual: {
+                        $uint8Array: [
+                            '00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  |...Here is the t|',
+                            '68 69 6E 67 20 49 20 77 61 73 20 74 61 6C 6B 69  |hing I was talki|',
+                            '6E 67 20 61 62 6F 75 74                          |ng about|'
+                        ]
+                    },
+                    expected: {
+                        $uint8Array: [
                             '00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  |...Here is the t|',
                             '68 69 6E 67 20 49 20 77 61 73 20 71 75 75 78 69  |hing I was quuxi|',
                             '6E 67 20 61 62 6F 75 74                          |ng about|'
