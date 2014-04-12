@@ -222,6 +222,10 @@ expect({ a: 'a', b: { c: 'c' }, d: 'd' }, 'to have properties', {
     a: 'a',
     b: { c: 'c' }
 });
+expect([ 'a', { c: 'c' }, 'd' ], 'to have properties', {
+    1: { c: 'c' }
+    2: 'd',
+});
 ```
 
 **key** / **keys**: asserts the presence of a key. Supports the `only` modifier
