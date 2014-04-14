@@ -1369,7 +1369,7 @@ describe('unexpected', function () {
             });
         });
 
-        it('does not truncate the stack when the assertion function itself contains an error', function () {
+        it('does not truncate the stack or replace the error message when the assertion function itself contains an error', function () {
             var clonedExpect = expect.clone().addAssertion('to equal foo', function theCustomAssertion(expect, subject) {
                 expect(subject, 'to equal', 'foo');
                 this(); // Will throw a TypeError
@@ -1378,6 +1378,22 @@ describe('unexpected', function () {
                 clonedExpect('foo', 'to equal foo');
             }, 'to throw', function (err) {
                 expect(err.stack, 'to contain', 'theCustomAssertion');
+                expect(err.message, 'to equal', 'object is not a function');
+            });
+        });
+
+        it('does not truncate the stack or replace the error message when a nested custom assertion contains an error', function () {
+            var clonedExpect = expect.clone().addAssertion('to equal foo', function theCustomAssertion(expect, subject) {
+                expect(subject, 'to equal', 'foo');
+                this(); // Will throw a TypeError
+            }).addAssertion('to foo', function (expect, subject) {
+                expect(subject, 'to equal foo');
+            });
+            expect(function () {
+                clonedExpect('foo', 'to foo');
+            }, 'to throw', function (err) {
+                expect(err.stack, 'not to contain', "expected 'foo' to foo");
+                expect(err.message, 'not to contain', "expected 'foo' to foo");
             });
         });
     });
