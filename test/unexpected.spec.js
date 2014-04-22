@@ -190,6 +190,11 @@ describe('unexpected', function () {
             expect(/foo/m, 'to equal', new RegExp('foo', 'm'));
         });
 
+        it('should treat properties with a value of undefined as equivalent to missing properties', function () {
+            expect({foo: undefined, bar: 1}, 'to equal', {bar: 1});
+            expect({bar: 1}, 'to equal', {foo: undefined, bar: 1});
+        });
+
         itSkipIf(typeof Buffer === 'undefined', 'asserts equality for Buffer instances', function () {
             expect(new Buffer([0x45, 0x59]), 'to equal', new Buffer([0x45, 0x59]));
         });
