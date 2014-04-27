@@ -1383,7 +1383,7 @@ describe('unexpected', function () {
                 clonedExpect('foo', 'to equal foo');
             }, 'to throw', function (err) {
                 expect(err.stack, 'to contain', 'theCustomAssertion');
-                expect(err.message, 'to equal', 'object is not a function');
+                expect(err.message, 'to match', /is not a function/);
             });
         });
 
