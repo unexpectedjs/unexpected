@@ -303,7 +303,7 @@ describe('unexpected', function () {
             });
         });
 
-        itSkipIf(typeof Uint8Array === 'undefined', 'produces a hex-diff in JSON when Uint8Arrays differ', function () {
+        itSkipIf(typeof Uint8Array === 'undefined' || !Array.prototype.map, 'produces a hex-diff in JSON when Uint8Arrays differ', function () {
             expect(function () {
                 expect(
                     new Uint8Array([
