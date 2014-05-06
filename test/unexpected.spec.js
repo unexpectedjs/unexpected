@@ -60,7 +60,7 @@ describe('unexpected', function () {
         it('formats Error instances correctly when an assertion fails', function () {
             expect(function () {
                 expect(new Error('error message'), 'to be a number');
-            }, 'to throw', "expected [Error: error message] to be a number");
+            }, 'to throw', "expected [Error error message] to be a number");
         });
 
         it('throws with a stack trace that has the calling function as the top frame when the assertion fails (if the environment supports it)', function () {
@@ -193,6 +193,58 @@ describe('unexpected', function () {
         it('should treat properties with a value of undefined as equivalent to missing properties', function () {
             expect({foo: undefined, bar: 1}, 'to equal', {bar: 1});
             expect({bar: 1}, 'to equal', {foo: undefined, bar: 1});
+        });
+
+        describe('with Error instances', function () {
+            it('considers Error instances with different messages to be different', function () {
+                expect(function () {
+                    expect(new Error('foo'), 'to equal', new Error('bar'));
+                }, 'to throw exception', function (err) {
+                    expect(err.message, 'to equal', 'expected [Error foo] to equal [Error bar]');
+                    expect(err.actual, 'to equal', {
+                        $Error: {
+                            message: 'foo'
+                        }
+                    });
+                    expect(err.expected, 'to equal', {
+                        $Error: {
+                            message: 'bar'
+                        }
+                    });
+                });
+            });
+
+            it('considers Error instances with the same message but different stacks to be equal', function () {
+                var err1 = new Error('foo'),
+                    err2 = new Error('foo');
+                expect(err1, 'to equal', err2);
+            });
+
+            it('considers Error instances with the same message and extra properties to be equal', function () {
+                var err1 = new Error('foo'),
+                    err2 = new Error('foo');
+                err1.extra = 'foo';
+                err2.extra = 'foo';
+                expect(err1, 'to equal', err2);
+            });
+
+            it('considers Error instances with the same message but different extra properties to be different', function () {
+                var err1 = new Error('foo'),
+                    err2 = new Error('foo');
+                err1.extra = 'foo';
+                err2.extra = 'bar';
+                expect(function () {
+                    expect(err1, 'to equal', err2);
+                }, 'to throw exception', 'expected [Error foo] to equal [Error foo]');
+            });
+
+            it('considers Error instances with the same message and stack to be equal', function () {
+                var errors = [];
+                for (var i = 0 ; i < 2 ; i += 1) {
+                    errors.push(new Error('foo'));
+                }
+                expect(errors[0], 'to equal', errors[1]);
+            });
         });
 
         itSkipIf(typeof Buffer === 'undefined', 'asserts equality for Buffer instances', function () {
