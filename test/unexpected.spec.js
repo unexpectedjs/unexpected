@@ -421,6 +421,20 @@ describe('unexpected', function () {
             }, 'not to throw exception', /matches the exception message/);
         });
 
+        it('provides actual and expected properties when the exception message does not match the given string', function () {
+            expect(function () {
+                expect(function () {
+                    throw new Error('bar');
+                }, 'to throw exception', 'foo');
+            }, 'to throw exception', function (err) {
+                expect(err.message, 'to equal', "expected 'bar' to equal 'foo'");
+                expect(err, 'to have properties', {
+                    actual: 'bar',
+                    expected: 'foo'
+                });
+            });
+        });
+
         it('exactly matches the message against the given string', function () {
             expect(function () {
                 throw new Error('matches the exception message');
