@@ -899,11 +899,11 @@ describe('unexpected', function () {
         it('requires a function or a string as the third argument', function () {
             expect(function () {
                 expect([1, 2, 3], 'to be an array whose items satisfy');
-            }, 'to throw', 'Assertions "to be an array whose items satisfy" expects a functions as argument');
+            }, 'to throw', 'Assertion "to be an array whose items satisfy" expects a function as argument');
 
             expect(function () {
                 expect([1, 2, 3], 'to be an array whose items satisfy', 42);
-            }, 'to throw', 'Assertions "to be an array whose items satisfy" expects a functions as argument');
+            }, 'to throw', 'Assertion "to be an array whose items satisfy" expects a function as argument');
         });
 
         it('only accepts arrays as the target object', function () {
@@ -994,11 +994,11 @@ describe('unexpected', function () {
         it('requires a function or a string as the third argument', function () {
             expect(function () {
                 expect([1, 2, 3], 'to be a map whose values satisfy');
-            }, 'to throw', 'Assertions "to be a map whose values satisfy" expects a functions as argument');
+            }, 'to throw', 'Assertion "to be a map whose values satisfy" expects a function as argument');
 
             expect(function () {
                 expect([1, 2, 3], 'to be a map whose values satisfy', 42);
-            }, 'to throw', 'Assertions "to be a map whose values satisfy" expects a functions as argument');
+            }, 'to throw', 'Assertion "to be a map whose values satisfy" expects a function as argument');
         });
 
         it('only accepts objects as the target', function () {
@@ -1080,11 +1080,11 @@ describe('unexpected', function () {
         it('requires a function or string as the third argument', function () {
             expect(function () {
                 expect([1, 2, 3], 'to be a map whose keys satisfy');
-            }, 'to throw', 'Assertions "to be a map whose keys satisfy" expects a functions as argument');
+            }, 'to throw', 'Assertion "to be a map whose keys satisfy" expects a function as argument');
 
             expect(function () {
                 expect([1, 2, 3], 'to be a map whose keys satisfy', 42);
-            }, 'to throw', 'Assertions "to be a map whose keys satisfy" expects a functions as argument');
+            }, 'to throw', 'Assertion "to be a map whose keys satisfy" expects a function as argument');
         });
 
         it('only accepts objects as the target', function () {
