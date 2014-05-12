@@ -1415,6 +1415,16 @@ describe('unexpected', function () {
                 expect(err.message, 'not to contain', "expected 'foo' to foo");
             });
         });
+
+        it('nested expects throws if the assertion does not exists', function () {
+            var clonedExpect = expect.clone().addAssertion('to be foo', function theCustomAssertion(expect, subject) {
+                expect(subject, 'to bee', 'foo');
+                this(); // Will throw a TypeError
+            });
+            expect(function () {
+                clonedExpect('foo', 'to be foo');
+            }, 'to throw exception', 'Unknown assertion "to bee", did you mean: "to be"');
+        });
     });
 
     describe('clone', function () {
