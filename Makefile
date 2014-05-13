@@ -15,7 +15,6 @@ unexpected.js: lint lib/*
          lib/unexpected-es4-compatible.js \
          lib/unexpected-es5-compatible.js \
          lib/unexpected-utils.js \
-         lib/unexpected-inspect.js \
          lib/unexpected-core.js \
          lib/unexpected-types.js \
          lib/unexpected-assertions.js \
@@ -30,7 +29,6 @@ unexpected.es5.js: lint lib/*
          lib/unexpected-namespace.js \
          lib/unexpected-es5-compatible.js \
          lib/unexpected-utils.js \
-         lib/unexpected-inspect.js \
          lib/unexpected-core.js \
          lib/unexpected-assertions.js \
          lib/unexpected-types.js \
