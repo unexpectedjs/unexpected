@@ -188,6 +188,7 @@ describe('unexpected', function () {
             expect(/foo/gm, 'to equal', /foo/gm);
             expect(/foo/m, 'not to equal', /foo/i);
             expect(/foo/m, 'to equal', new RegExp('foo', 'm'));
+            expect([], 'not to equal', 0);
         });
 
         it('should treat properties with a value of undefined as equivalent to missing properties', function () {
