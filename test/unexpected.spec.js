@@ -1545,4 +1545,13 @@ describe('unexpected', function () {
             });
         });
     });
+
+    describe('inspect', function () {
+        it('handles cyclic structures', function () {
+            var circular = {};
+            circular.self = circular;
+
+            expect(expect.inspect(circular), 'to equal', '{ self: [Circular] }');
+        });
+    });
 });
