@@ -65,7 +65,7 @@ describe('unexpected', function () {
                 var error = new Error('error message');
                 error.data = 'extra';
                 expect(error, 'to be a number');
-            }, 'to throw', "expected [Error: error message { data: 'extra' }] to be a number");
+            }, 'to throw', "expected [Error: { message: 'error message', data: 'extra' }] to be a number");
         });
 
         it('throws with a stack trace that has the calling function as the top frame when the assertion fails (if the environment supports it)', function () {
@@ -242,7 +242,7 @@ describe('unexpected', function () {
 
             expect(function () {
                 expect(new Error('foo'), 'to equal', new Error('bar'));
-            }, 'to throw exception', "expected [Error: foo {}] to equal [Error: bar {}]");
+            }, 'to throw exception', "expected [Error: { message: 'foo' }] to equal [Error: { message: 'bar' }]");
 
             expect(function () {
                 (function () {
