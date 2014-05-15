@@ -12,6 +12,9 @@ function itSkipIf(condition) {
     (condition ? it.skip : it).apply(it, Array.prototype.slice.call(arguments, 1));
 }
 
+var circular = {};
+circular.self = circular;
+
 describe('unexpected', function () {
     describe('argument validation', function () {
         it('fails when given no parameters', function () {
@@ -59,8 +62,10 @@ describe('unexpected', function () {
 
         it('formats Error instances correctly when an assertion fails', function () {
             expect(function () {
-                expect(new Error('error message'), 'to be a number');
-            }, 'to throw', "expected [Error: error message] to be a number");
+                var error = new Error('error message');
+                error.data = 'extra';
+                expect(error, 'to be a number');
+            }, 'to throw', "expected [Error: error message { data: 'extra' }] to be a number");
         });
 
         it('throws with a stack trace that has the calling function as the top frame when the assertion fails (if the environment supports it)', function () {
@@ -152,6 +157,7 @@ describe('unexpected', function () {
             expect(true, 'to be a boolean');
             expect(expect, 'to be a', 'function');
             expect(expect, 'to be a function');
+            expect(circular, 'to be an object');
         });
 
         it('throws when the assertion fails', function () {
@@ -162,6 +168,10 @@ describe('unexpected', function () {
             expect(function () {
                 expect([], 'not to be an', 'array');
             }, 'to throw exception', "expected [] not to be an 'array'");
+
+            expect(function () {
+                expect(circular, 'not to be an object');
+            }, 'to throw exception', "expected { self: [Circular] } not to be an object");
         });
     });
 
@@ -189,6 +199,13 @@ describe('unexpected', function () {
             expect(/foo/m, 'not to equal', /foo/i);
             expect(/foo/m, 'to equal', new RegExp('foo', 'm'));
             expect([], 'not to equal', 0);
+            expect(new Error('foo'), 'to equal', new Error('foo'));
+        });
+
+        it('handles argument arrays as arrays', function () {
+            (function () {
+                expect(arguments, 'to equal', ['foo', 'bar', 'baz']);
+            }('foo', 'bar', 'baz'));
         });
 
         it('should treat properties with a value of undefined as equivalent to missing properties', function () {
@@ -222,6 +239,16 @@ describe('unexpected', function () {
             expect(function () {
                 expect({ a: 'b' }, 'not to equal', { a: 'b' });
             }, 'to throw exception', "expected { a: 'b' } not to equal { a: 'b' }");
+
+            expect(function () {
+                expect(new Error('foo'), 'to equal', new Error('bar'));
+            }, 'to throw exception', "expected [Error: foo {}] to equal [Error: bar {}]");
+
+            expect(function () {
+                (function () {
+                    expect(arguments, 'to equal', ['foo', 'bar', 'baz']);
+                }('foo', 'bar'));
+            }, 'to throw exception', "expected [ 'foo', 'bar' ] to equal [ 'foo', 'bar', 'baz' ]");
         });
 
         it("throws an error with 'expected' and 'actual' properties when not negated", function () {
@@ -1067,9 +1094,11 @@ describe('unexpected', function () {
                 });
             }, 'to throw',
                 "failed expectation in\n" +
-                "{ foo: [ 0, 1, 2 ],\n" +
+                "{\n" +
+                "  foo: [ 0, 1, 2 ],\n" +
                 "  bar: [ 4, '5', 6 ],\n" +
-                "  baz: [ 7, 8, '9' ] }:\n" +
+                "  baz: [ 7, 8, '9' ]\n" +
+                "}:\n" +
                 "    bar: failed expectation in [ 4, '5', 6 ]:\n" +
                 "        1: expected '5' to be a number\n" +
                 "    baz: failed expectation in [ 7, 8, '9' ]:\n" +
@@ -1513,15 +1542,15 @@ describe('unexpected', function () {
                 identify: function (obj) {
                     return obj && typeof obj === 'object' && obj.isBox;
                 },
-                equal: function (a, b) {
-                    return expect.equal(a.value, b.value);
+                equal: function (a, b, equal) {
+                    return a === b || equal(a.value, b.value);
                 },
-                inspect: function (obj) {
-                    return '[Box: ' + clonedExpect.inspect(obj.value) + ']';
+                inspect: function (obj, inspect) {
+                    return '[Box: ' + inspect(obj.value) + ']';
                 },
-                toJSON: function (obj) {
+                toJSON: function (obj, toJSON) {
                     return {
-                        $box: obj.value
+                        $box: toJSON(obj.value)
                     };
                 }
             });
@@ -1546,12 +1575,169 @@ describe('unexpected', function () {
         });
     });
 
-    describe('inspect', function () {
-        it('handles cyclic structures', function () {
-            var circular = {};
-            circular.self = circular;
+    function Field(val, options) {
+        var value = val;
+        if (options.match(/getter/)) {
+            this.__defineGetter__('value', function () { return value; });
+        }
 
-            expect(expect.inspect(circular), 'to equal', '{ self: [Circular] }');
+        if (options.match(/setter/)) {
+            this.__defineSetter__('value', function (val) { value = val; });
+        }
+    }
+
+    describe('equal', function () {
+        itSkipIf(!Object.prototype.__lookupGetter__, 'handles getters and setters correctly', function () {
+            expect(new Field('VALUE', 'getter'), 'to equal', new Field('VALUE', 'getter'));
+            expect(new Field('VALUE', 'setter'), 'to equal', new Field('VALUE', 'setter'));
+            expect(new Field('VALUE', 'getter and setter'), 'to equal', new Field('VALUE', 'getter and setter'));
+        });
+    });
+
+    describe('inspect', function () {
+        itSkipIf(!Object.prototype.__lookupGetter__, 'handles getters and setters correctly', function () {
+            expect(expect.inspect(new Field('VALUE', 'getter')), 'to equal', "{ value: 'VALUE' [Getter] }");
+            expect(expect.inspect(new Field('VALUE', 'setter')), 'to equal', "{ value: [Setter] }");
+            expect(expect.inspect(new Field('VALUE', 'getter and setter')), 'to equal', "{ value: 'VALUE' [Getter/Setter] }");
+        });
+
+        it('indents correctly', function () {
+            var data = [{
+                "guid": "db550c87-1680-462a-bacc-655cecdd8907",
+                "isActive": false,
+                "age": 38,
+                "email": "huntterry@medalert.com",
+                "phone": "+1 (803) 472-3209",
+                "address": "944 Milton Street, Madrid, Ohio, 1336",
+                "about": "Ea consequat nulla duis incididunt ut irure" +
+                    "irure cupidatat. Est tempor cillum commodo aliqua" +
+                    "consequat esse commodo. Culpa ipsum eu consectetur id" +
+                    "enim quis sint. Aliqua deserunt dolore reprehenderit" +
+                    "id anim exercitation laboris. Eiusmod aute consectetur" +
+                    "excepteur in nulla proident occaecat" +
+                    "consectetur.\r\n",
+                "registered": new Date("Sun Jun 03 1984 11:36:47 GMT+0200 (CEST)"),
+                "latitude": 8.635553,
+                "longitude": -103.382498,
+                "tags": ["tempor", "dolore", "non", "sit", "minim", "aute", "non"],
+                "friends": [
+                    {"id": 0, "name": "Jeanne Hyde"},
+                    {"id": 1, "name": "Chavez Parker"},
+                    {"id": 2, "name": "Orr Rogers"},
+                    {"id": 3, "name": "Etta Glover"},
+                    {"id": 4, "name": "Glenna Aguirre"},
+                    {"id": 5, "name": "Erika England"},
+                    {"id": 6, "name": "Casandra Stanton"},
+                    {"id": 7, "name": "Hooper Cobb"},
+                    {"id": 8, "name": "Gates Todd"},
+                    {"id": 9, "name": "Lesa Chase"},
+                    {"id": 10, "name": "Natasha Frazier"},
+                    {"id": 11, "name": "Lynnette Key"},
+                    {"id": 12, "name": "Linda Mclaughlin"},
+                    {"id": 13, "name": "Harrison Martinez"},
+                    {"id": 14, "name": "Tameka Hebert"},
+                    {"id": 15, "name": "Gena Farley"},
+                    {"id": 16, "name": "Conley Walsh"},
+                    {"id": 17, "name": "Suarez Norman"},
+                    {"id": 18, "name": "Susana Pitts"},
+                    {"id": 19, "name": "Peck Hester"}
+                ]
+            }, {
+                "guid": "904c2f38-071c-4b97-b968-f5c228aaf41a",
+                "isActive": false,
+                "age": 34,
+                "email": "peckhester@medalert.com",
+                "phone": "+1 (848) 599-3447",
+                "address": "323 Legion Street, Caspar, Delaware, 4117",
+                "registered": new Date("Tue Mar 10 1981 18:02:53 GMT+0100 (CET)"),
+                "latitude": -55.321712,
+                "longitude": -100.276818,
+                "tags": ["Lorem", "laboris", "enim", "anim", "sint", "incididunt", "labore"],
+                "friends": [
+                    {"id": 0, "name": "Patterson Meadows"},
+                    {"id": 1, "name": "Velasquez Joseph"},
+                    {"id": 2, "name": "Horn Harrison"},
+                    {"id": 3, "name": "Young Mooney"},
+                    {"id": 4, "name": "Barbara Lynn"},
+                    {"id": 5, "name": "Sharpe Downs"}
+                ],
+                "circular": circular,
+                "this": { "is": { "deeply": { "nested": "This should not be shown", "a list": [ 1, 2, 3 ] }, "a list": [ 1, 2, 3 ] } }
+            }];
+
+            expect(expect.inspect(data, 5), 'to equal',
+                   "[\n" +
+                   "  {\n" +
+                   "    guid: 'db550c87-1680-462a-bacc-655cecdd8907',\n" +
+                   "    isActive: false,\n" +
+                   "    age: 38,\n" +
+                   "    email: 'huntterry@medalert.com',\n" +
+                   "    phone: '+1 (803) 472-3209',\n" +
+                   "    address: '944 Milton Street, Madrid, Ohio, 1336',\n" +
+                   "    about: 'Ea consequat nulla duis incididunt ut irureirure cupidatat. Est tempor cillum commodo aliquaconsequat esse commodo. Culpa ipsum eu consectetur idenim quis sint. Aliqua deserunt dolore reprehenderitid anim exercitation laboris. Eiusmod aute consecteturexcepteur in nulla proident occaecatconsectetur.\\r\\n',\n" +
+                   "    registered: [Date Sun, 03 Jun 1984 09:36:47 GMT],\n" +
+                   "    latitude: 8.635553,\n" +
+                   "    longitude: -103.382498,\n" +
+                   "    tags: [ 'tempor', 'dolore', 'non', 'sit', 'minim', 'aute', 'non' ],\n" +
+                   "    friends: [\n" +
+                   "      { id: 0, name: 'Jeanne Hyde' },\n" +
+                   "      { id: 1, name: 'Chavez Parker' },\n" +
+                   "      { id: 2, name: 'Orr Rogers' },\n" +
+                   "      { id: 3, name: 'Etta Glover' },\n" +
+                   "      { id: 4, name: 'Glenna Aguirre' },\n" +
+                   "      { id: 5, name: 'Erika England' },\n" +
+                   "      { id: 6, name: 'Casandra Stanton' },\n" +
+                   "      { id: 7, name: 'Hooper Cobb' },\n" +
+                   "      { id: 8, name: 'Gates Todd' },\n" +
+                   "      { id: 9, name: 'Lesa Chase' },\n" +
+                   "      { id: 10, name: 'Natasha Frazier' },\n" +
+                   "      { id: 11, name: 'Lynnette Key' },\n" +
+                   "      { id: 12, name: 'Linda Mclaughlin' },\n" +
+                   "      { id: 13, name: 'Harrison Martinez' },\n" +
+                   "      { id: 14, name: 'Tameka Hebert' },\n" +
+                   "      { id: 15, name: 'Gena Farley' },\n" +
+                   "      { id: 16, name: 'Conley Walsh' },\n" +
+                   "      { id: 17, name: 'Suarez Norman' },\n" +
+                   "      { id: 18, name: 'Susana Pitts' },\n" +
+                   "      { id: 19, name: 'Peck Hester' }\n" +
+                   "    ]\n" +
+                   "  },\n" +
+                   "  {\n" +
+                   "    guid: '904c2f38-071c-4b97-b968-f5c228aaf41a',\n" +
+                   "    isActive: false,\n" +
+                   "    age: 34,\n" +
+                   "    email: 'peckhester@medalert.com',\n" +
+                   "    phone: '+1 (848) 599-3447',\n" +
+                   "    address: '323 Legion Street, Caspar, Delaware, 4117',\n" +
+                   "    registered: [Date Tue, 10 Mar 1981 17:02:53 GMT],\n" +
+                   "    latitude: -55.321712,\n" +
+                   "    longitude: -100.276818,\n" +
+                   "    tags: [\n" +
+                   "      'Lorem',\n" +
+                   "      'laboris',\n" +
+                   "      'enim',\n" +
+                   "      'anim',\n" +
+                   "      'sint',\n" +
+                   "      'incididunt',\n" +
+                   "      'labore'\n" +
+                   "    ],\n" +
+                   "    friends: [\n" +
+                   "      { id: 0, name: 'Patterson Meadows' },\n" +
+                   "      { id: 1, name: 'Velasquez Joseph' },\n" +
+                   "      { id: 2, name: 'Horn Harrison' },\n" +
+                   "      { id: 3, name: 'Young Mooney' },\n" +
+                   "      { id: 4, name: 'Barbara Lynn' },\n" +
+                   "      { id: 5, name: 'Sharpe Downs' }\n" +
+                   "    ],\n" +
+                   "    circular: { self: [Circular] },\n" +
+                   "    this: {\n" +
+                   "      is: {\n" +
+                   "        deeply: { nested: ..., 'a list': ... },\n" +
+                   "        'a list': [...]\n" +
+                   "      }\n" +
+                   "    }\n" +
+                   "  }\n" +
+                   "]");
         });
     });
 });
