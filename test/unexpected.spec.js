@@ -1346,21 +1346,31 @@ describe('unexpected', function () {
                     errorMode = 'nested';
                     expect(function () {
                         clonedExpect(42, 'to be sorted');
-                    }, 'to throw', 'expected 42 to be sorted\n    expected 42 to be an array');
+                    }, 'to throw', function (err) {
+                        expect(err.message, 'to equal', 'expected 42 to be sorted\n    expected 42 to be an array');
+                    });
                 });
 
                 it('errorMode=bubble bubbles uses the error message of expect failures in the assertion', function () {
                     errorMode = 'bubble';
                     expect(function () {
                         clonedExpect(42, 'to be sorted');
-                    }, 'to throw', 'expected 42 to be an array');
+                    }, 'to throw', function (err) {
+                        var message = 'expected 42 to be an array';
+                        expect(err.message, 'to equal', message);
+                        expect(err.stack, 'to contain', message);
+                    });
                 });
 
                 it('errorMode=default uses the standard error message of the assertion', function () {
                     errorMode = 'default';
                     expect(function () {
                         clonedExpect(42, 'to be sorted');
-                    }, 'to throw', 'expected 42 to be sorted');
+                    }, 'to throw', function (err) {
+                        var message = 'expected 42 to be sorted';
+                        expect(err.message, 'to equal', message);
+                        expect(err.stack, 'to contain', message);
+                    });
                 });
             });
 
