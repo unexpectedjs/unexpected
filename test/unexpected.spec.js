@@ -413,17 +413,14 @@ describe('unexpected', function () {
             }, 'to throw', 'expected [Function] to throw exception');
 
         });
-        it('fails if expection is throw', function () {
+        it('fails if exception is thrown', function () {
             expect(function () {
-                expect(function () {
-                    throw new Error('The exception message');
-                }, 'not to throw exception');
-            }, 'to throw');
-            expect(function () {
-                expect(function () {
-                    throw new Error('The exception message');
-                }, 'not to throw exception');
-            }, 'to throw', 'expected [Function] not to throw exception');
+                expect(function testFunction() {
+                    throw new Error('The Error');
+                }, 'not to throw');
+            }, 'to throw',
+                   'expected [Function: testFunction] not to throw\n' +
+                   "    threw: 'The Error'");
         });
 
         it('fails if the argument is not a function', function () {
@@ -451,11 +448,13 @@ describe('unexpected', function () {
 
         it('provides actual and expected properties when the exception message does not match the given string', function () {
             expect(function () {
-                expect(function () {
+                expect(function testFunction() {
                     throw new Error('bar');
-                }, 'to throw exception', 'foo');
+                }, 'to throw', 'foo');
             }, 'to throw exception', function (err) {
-                expect(err.message, 'to equal', "expected 'bar' to equal 'foo'");
+                expect(err.message, 'to equal',
+                       "expected [Function: testFunction] to throw 'foo'\n" +
+                       "    expected 'bar' to equal 'foo'");
                 expect(err, 'to have properties', {
                     actual: 'bar',
                     expected: 'foo'
