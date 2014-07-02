@@ -173,6 +173,33 @@ describe('unexpected', function () {
                 expect(circular, 'not to be an object');
             }, 'to throw exception', "expected { self: [Circular] } not to be an object");
         });
+
+        it("throws an error with actual and expected when comparing string and not negated", function () {
+            expect(function () {
+                expect('foo', 'to be', 'bar');
+            }, 'to throw exception', function (e) {
+                expect(e.actual, 'to be', 'foo');
+                expect(e.expected, 'to be', 'bar');
+            });
+        });
+
+        it("throws an error without actual and expected when comparing string and negated", function () {
+            expect(function () {
+                expect('foo', 'not to be', 'foo');
+            }, 'to throw exception', function (e) {
+                expect(e, 'not to have property', 'actual');
+                expect(e, 'not to have property', 'expected');
+            });
+        });
+
+        it("throws an error without actual and expected when not comparing string and not negated", function () {
+            expect(function () {
+                expect('foo', 'to be', {});
+            }, 'to throw exception', function (e) {
+                expect(e, 'not to have property', 'actual');
+                expect(e, 'not to have property', 'expected');
+            });
+        });
     });
 
     describe('equal assertion', function () {
@@ -287,7 +314,25 @@ describe('unexpected', function () {
             });
         });
 
-        it("throws an error with showDiff:true when comparing an object to an array", function () {
+        it("throws an error with actual and expected comparing strings and not negated", function () {
+            expect(function () {
+                expect('foo', 'to equal', 'bar');
+            }, 'to throw exception', function (e) {
+                expect(e.actual, 'to be', 'foo');
+                expect(e.expected, 'to be', 'bar');
+            });
+        });
+
+        it("throws an error without actual and expected comparing strings and negated", function () {
+            expect(function () {
+                expect('foo', 'not to equal', 'foo');
+            }, 'to throw exception', function (e) {
+                expect(e, 'not to have property', 'actual');
+                expect(e, 'not to have property', 'expected');
+            });
+        });
+
+        it("throws an error without showDiff:true when comparing an object to an array", function () {
             expect(function () {
                 expect({foo: 1}, 'to equal', []);
             }, 'to throw exception', function (e) {
