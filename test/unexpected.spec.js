@@ -8,9 +8,9 @@ function create(o) {
     return new F();
 }
 
-function itSkipIf(condition) {
+it.skipIf = function (condition) {
     (condition ? it.skip : it).apply(it, Array.prototype.slice.call(arguments, 1));
-}
+};
 
 var circular = {};
 circular.self = circular;
@@ -98,12 +98,12 @@ describe('unexpected', function () {
             expect(undefined, 'to be undefined');
         });
 
-        itSkipIf(typeof Buffer === 'undefined', 'asserts === equality for Buffers', function () {
+        it.skipIf(typeof Buffer === 'undefined', 'asserts === equality for Buffers', function () {
             var buffer = new Buffer([0x45, 0x59]);
             expect(buffer, 'to be', buffer);
         });
 
-        itSkipIf(typeof Uint8Array === 'undefined', 'asserts === equality for Uint8Array', function () {
+        it.skipIf(typeof Uint8Array === 'undefined', 'asserts === equality for Uint8Array', function () {
             var uint8Array = new Uint8Array([0x45, 0x59]);
             expect(uint8Array, 'to be', uint8Array);
         });
@@ -240,11 +240,11 @@ describe('unexpected', function () {
             expect({bar: 1}, 'to equal', {foo: undefined, bar: 1});
         });
 
-        itSkipIf(typeof Buffer === 'undefined', 'asserts equality for Buffer instances', function () {
+        it.skipIf(typeof Buffer === 'undefined', 'asserts equality for Buffer instances', function () {
             expect(new Buffer([0x45, 0x59]), 'to equal', new Buffer([0x45, 0x59]));
         });
 
-        itSkipIf(typeof Uint8Array === 'undefined', 'asserts equality for Uint8Array', function () {
+        it.skipIf(typeof Uint8Array === 'undefined', 'asserts equality for Uint8Array', function () {
             expect(new Uint8Array([0x45, 0x59]), 'to equal', new Uint8Array([0x45, 0x59]));
         });
 
@@ -348,7 +348,7 @@ describe('unexpected', function () {
             });
         });
 
-        itSkipIf(typeof Buffer === 'undefined', 'produces a hex-diff in JSON when Buffers differ', function () {
+        it.skipIf(typeof Buffer === 'undefined', 'produces a hex-diff in JSON when Buffers differ', function () {
             expect(function () {
                 expect(
                     new Buffer('\x00\x01\x02Here is the thing I was talking about', 'utf-8'),
@@ -376,7 +376,7 @@ describe('unexpected', function () {
             });
         });
 
-        itSkipIf(typeof Uint8Array === 'undefined' || !Array.prototype.map, 'produces a hex-diff in JSON when Uint8Arrays differ', function () {
+        it.skipIf(typeof Uint8Array === 'undefined' || !Array.prototype.map, 'produces a hex-diff in JSON when Uint8Arrays differ', function () {
             expect(function () {
                 expect(
                     new Uint8Array([
@@ -412,7 +412,7 @@ describe('unexpected', function () {
             });
         });
 
-        itSkipIf(typeof Uint16Array === 'undefined', 'produces a hex-diff in JSON when Uint16Arrays differ', function () {
+        it.skipIf(typeof Uint16Array === 'undefined', 'produces a hex-diff in JSON when Uint16Arrays differ', function () {
             expect(function () {
                 expect(
                     new Uint16Array([
@@ -1461,7 +1461,7 @@ describe('unexpected', function () {
         });
 
         // I can't figure out why this doesn't work in mocha-phantomjs:
-        itSkipIf(typeof mochaPhantomJS !== 'undefined', 'truncates the stack when a custom assertion throws a regular assertion error', function () {
+        it.skipIf(typeof mochaPhantomJS !== 'undefined', 'truncates the stack when a custom assertion throws a regular assertion error', function () {
             var clonedExpect = expect.clone().addAssertion('to equal foo', function theCustomAssertion(expect, subject) {
                 expect(subject, 'to equal', 'foo');
             });
@@ -1641,7 +1641,7 @@ describe('unexpected', function () {
     }
 
     describe('equal', function () {
-        itSkipIf(!Object.prototype.__lookupGetter__, 'handles getters and setters correctly', function () {
+        it.skipIf(!Object.prototype.__lookupGetter__, 'handles getters and setters correctly', function () {
             expect(new Field('VALUE', 'getter'), 'to equal', new Field('VALUE', 'getter'));
             expect(new Field('VALUE', 'setter'), 'to equal', new Field('VALUE', 'setter'));
             expect(new Field('VALUE', 'getter and setter'), 'to equal', new Field('VALUE', 'getter and setter'));
@@ -1649,7 +1649,7 @@ describe('unexpected', function () {
     });
 
     describe('inspect', function () {
-        itSkipIf(!Object.prototype.__lookupGetter__, 'handles getters and setters correctly', function () {
+        it.skipIf(!Object.prototype.__lookupGetter__, 'handles getters and setters correctly', function () {
             expect(expect.inspect(new Field('VALUE', 'getter')), 'to equal', "{ value: 'VALUE' [Getter] }");
             expect(expect.inspect(new Field('VALUE', 'setter')), 'to equal', "{ value: [Setter] }");
             expect(expect.inspect(new Field('VALUE', 'getter and setter')), 'to equal', "{ value: 'VALUE' [Getter/Setter] }");
