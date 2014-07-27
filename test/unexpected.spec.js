@@ -1246,6 +1246,28 @@ describe('unexpected', function () {
             }, 'to throw', 'expected [ 1, 2, 3 ] not to be sorted');
         });
 
+        it('throws when attempting to redefine an assertion', function () {
+            var clonedExpect = expect.clone()
+                .addAssertion('to foo', function () {});
+            expect(function () {
+                clonedExpect.addAssertion('to foo', function () {});
+            }, 'to throw', 'Cannot redefine assertion: to foo');
+        });
+
+        it('throws when implicitly attempting to redefine an assertion', function () {
+            var clonedExpect = expect.clone()
+                .addAssertion('to foo [bar]', function () {});
+            expect(function () {
+                clonedExpect.addAssertion('to foo (bar|quux)', function () {});
+            }, 'to throw', 'Cannot redefine assertion: to foo bar');
+        });
+
+        it('allows overlapping patterns within a single addAssertion call', function () {
+            expect(function () {
+                expect.clone().addAssertion('to foo', 'to [really] foo', function () {});
+            }, 'not to throw');
+        });
+
         describe('pattern', function () {
             it("must be a string", function () {
                 expect(function () {
