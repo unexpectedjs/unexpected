@@ -122,6 +122,13 @@ expect(now, 'to equal', new Date(now.getTime()));
 expect({ now: now }, 'to equal', { now: now });
 ```
 
+**canonical**: asserts that an object has its properties defined in sorted order at all levels
+
+```js
+expect({ a: 123, b: 456 }, 'to be canonical');
+expect([456, { a: 123 }], 'to be canonical');
+```
+
 **a** / **an**: asserts `typeof` with support for `array` type and `instanceof`
 
 ```js
