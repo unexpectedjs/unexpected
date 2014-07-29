@@ -1310,6 +1310,21 @@ describe('unexpected', function () {
             }, 'not to throw');
         });
 
+        it('does not break when declaring multiple patterns that do not have the same set of flags defined', function () {
+            var clonedExpect = expect.clone()
+                .addAssertion('[not] to be foo', 'to be foo aliased without the not flag', function (expect, subject) {
+                    expect(subject, '[not] to equal', 'foo');
+                });
+
+            clonedExpect('foo', 'to be foo');
+            clonedExpect('foo', 'to be foo aliased without the not flag');
+
+            clonedExpect('bar', 'not to be foo');
+            clonedExpect(function () {
+                clonedExpect('bar', 'to be foo aliased without the not flag');
+            }, 'to throw', "expected 'bar' to be foo aliased without the not flag");
+        });
+
         describe('pattern', function () {
             it("must be a string", function () {
                 expect(function () {
