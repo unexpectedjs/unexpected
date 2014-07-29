@@ -984,6 +984,34 @@ describe('unexpected', function () {
         });
     });
 
+    describe('ẗo be close to assertion', function () {
+        it('asserts that two numbers differ by at most 1e-9', function () {
+            expect(1.5, 'to be close to', 1.49999999999);
+            expect(1.5, 'to be close to', 1.5000000001);
+            expect(1.5, 'not to be close to', 2);
+        });
+
+        it('fails when the assertion fails', function () {
+            expect(function () {
+                expect(1.5, 'to be close to', 1.4999);
+            }, 'to throw exception', 'expected 1.5 to be close to 1.4999 (epsilon: 1e-9)');
+
+            expect(function () {
+                expect(1.5, 'to be close to', 1.5001);
+            }, 'to throw exception', 'expected 1.5 to be close to 1.5001 (epsilon: 1e-9)');
+        });
+
+        it('accepts a custom epsilon', function () {
+            expect(1.5, 'to be close to', 1.500001, 1e-3);
+
+            expect(1.5, 'not to be close to', 1.51, 1e-3);
+
+            expect(function () {
+                expect(1.5, 'to be close to', 1.51, 1e-3);
+            }, 'to throw exception', 'expected 1.5 to be close to 1.51 (epsilon: 1e-3)');
+        });
+    });
+
     describe('fail assertion', function () {
         it('throws an error', function () {
             expect(function () {
