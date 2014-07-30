@@ -984,6 +984,34 @@ describe('unexpected', function () {
         });
     });
 
+    describe('ẗo be close to assertion', function () {
+        it('asserts that two numbers differ by at most 1e-9', function () {
+            expect(1.5, 'to be close to', 1.49999999999);
+            expect(1.5, 'to be close to', 1.5000000001);
+            expect(1.5, 'not to be close to', 2);
+        });
+
+        it('fails when the assertion fails', function () {
+            expect(function () {
+                expect(1.5, 'to be close to', 1.4999);
+            }, 'to throw exception', 'expected 1.5 to be close to 1.4999 (epsilon: 1e-9)');
+
+            expect(function () {
+                expect(1.5, 'to be close to', 1.5001);
+            }, 'to throw exception', 'expected 1.5 to be close to 1.5001 (epsilon: 1e-9)');
+        });
+
+        it('accepts a custom epsilon', function () {
+            expect(1.5, 'to be close to', 1.500001, 1e-3);
+
+            expect(1.5, 'not to be close to', 1.51, 1e-3);
+
+            expect(function () {
+                expect(1.5, 'to be close to', 1.51, 1e-3);
+            }, 'to throw exception', 'expected 1.5 to be close to 1.51 (epsilon: 1e-3)');
+        });
+    });
+
     describe('fail assertion', function () {
         it('throws an error', function () {
             expect(function () {
@@ -1000,7 +1028,7 @@ describe('unexpected', function () {
         it('supports placeholders', function () {
             expect(function () {
                 expect.fail('{0} was expected to be {1}', 0, 'zero');
-            }, 'to throw exception', "0 was expected to be 'zero'");
+            }, 'to throw exception', "0 was expected to be zero");
 
             expect(function () {
                 expect.fail('{0} was expected to be {1}', 0);
@@ -1330,6 +1358,21 @@ describe('unexpected', function () {
             expect(function () {
                 expect.clone().addAssertion('to foo', 'to [really] foo', function () {});
             }, 'not to throw');
+        });
+
+        it('does not break when declaring multiple patterns that do not have the same set of flags defined', function () {
+            var clonedExpect = expect.clone()
+                .addAssertion('[not] to be foo', 'to be foo aliased without the not flag', function (expect, subject) {
+                    expect(subject, '[not] to equal', 'foo');
+                });
+
+            clonedExpect('foo', 'to be foo');
+            clonedExpect('foo', 'to be foo aliased without the not flag');
+
+            clonedExpect('bar', 'not to be foo');
+            clonedExpect(function () {
+                clonedExpect('bar', 'to be foo aliased without the not flag');
+            }, 'to throw', "expected 'bar' to be foo aliased without the not flag");
         });
 
         describe('pattern', function () {

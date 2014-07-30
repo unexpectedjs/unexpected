@@ -172,6 +172,19 @@ expect(undefined, 'to be NaN');
 expect("String", 'to be NaN');
 ```
 
+**close to**: asserts that the difference between two numbers is <= epsilon
+
+```js
+expect(1.5, 'to be close to', 1.500001, 1e-5);
+expect(1.5, 'not to be close to', 1.499, 1e-4);
+```
+
+epsilon defaults to 1e-9 if omitted:
+
+```js
+expect(1.5, 'to be close to', 1.5000000001);
+```
+
 **match**: asserts `String` regular expression match
 
 ```js
