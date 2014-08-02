@@ -15,6 +15,10 @@ unexpected.js: lint lib/*
          lib/unexpected-es4-compatible.js \
          lib/unexpected-es5-compatible.js \
          lib/unexpected-utils.js \
+         node_modules/magicpen/lib/magicpen-core.js \
+         node_modules/magicpen/lib/magicpen-text-serializer.js \
+         node_modules/magicpen/lib/magicpen-ansi-serializer.js \
+         node_modules/magicpen/lib/magicpen-html-serializer.js \
          lib/unexpected-core.js \
          lib/unexpected-types.js \
          lib/unexpected-assertions.js \
@@ -29,6 +33,10 @@ unexpected.es5.js: lint lib/*
          lib/unexpected-namespace.js \
          lib/unexpected-es5-compatible.js \
          lib/unexpected-utils.js \
+         node_modules/magicpen/lib/magicpen-core.js \
+         node_modules/magicpen/lib/magicpen-text-serializer.js \
+         node_modules/magicpen/lib/magicpen-ansi-serializer.js \
+         node_modules/magicpen/lib/magicpen-html-serializer.js \
          lib/unexpected-core.js \
          lib/unexpected-assertions.js \
          lib/unexpected-types.js \
