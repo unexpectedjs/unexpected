@@ -18,7 +18,9 @@
     "travis": "make test && make test-phantomjs"
   },
   "main": "./lib/index.js",
-  "dependencies": {},
+  "dependencies": {
+      "magicpen": "=0.0.8"
+  },
   "devDependencies": {
     "jshint": "*",
     "mocha": "=1.17.1",
