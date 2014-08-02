@@ -1728,8 +1728,11 @@ describe('unexpected', function () {
                 equal: function (a, b, equal) {
                     return a === b || equal(a.value, b.value);
                 },
-                inspect: function (obj, inspect) {
-                    return '[Box: ' + inspect(obj.value) + ']';
+                inspect: function (output, obj, inspect) {
+                    return output
+                        .text('[Box: ')
+                        .append(inspect(output.clone(), obj.value))
+                        .text(']');
                 },
                 toJSON: function (obj, toJSON) {
                     return {
