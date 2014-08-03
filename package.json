@@ -19,7 +19,7 @@
   },
   "main": "./lib/index.js",
   "dependencies": {
-      "magicpen": "=0.0.8"
+      "magicpen": "=0.1.0"
   },
   "devDependencies": {
     "jshint": "*",
