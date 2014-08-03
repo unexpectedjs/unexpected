@@ -510,7 +510,7 @@ describe('unexpected', function () {
                 }, 'not to throw');
             }, 'to throw',
                    'expected [Function: testFunction] not to throw\n' +
-                   "    threw: 'The Error'");
+                   "  threw: The Error");
         });
 
         it('fails if the argument is not a function', function () {
@@ -544,7 +544,7 @@ describe('unexpected', function () {
             }, 'to throw exception', function (err) {
                 expect(err.message, 'to equal',
                        "expected [Function: testFunction] to throw 'foo'\n" +
-                       "    expected 'bar' to equal 'foo'");
+                       "  expected 'bar' to equal 'foo'");
                 expect(err, 'to have properties', {
                     actual: 'bar',
                     expected: 'foo'
@@ -1523,7 +1523,7 @@ describe('unexpected', function () {
                     expect(function () {
                         clonedExpect(42, 'to be sorted');
                     }, 'to throw', function (err) {
-                        expect(err.message, 'to equal', 'expected 42 to be sorted\n    expected 42 to be an array');
+                        expect(err.message, 'to equal', 'expected 42 to be sorted\n  expected 42 to be an array');
                     });
                 });
 
@@ -1569,7 +1569,7 @@ describe('unexpected', function () {
                 it('errorMode=nested nest the error message of expect failures in the assertion under the assertion standard message', function (done) {
                     errorMode = 'nested';
                     clonedExpect(42, 'to be sorted after delay', 1, function (err) {
-                        expect(err.message, 'to match', /^expected 42 to be sorted after delay 1.*\n    expected 42 to be an array/);
+                        expect(err.message, 'to match', /^expected 42 to be sorted after delay 1.*\n  expected 42 to be an array/);
                         done();
                     });
                 });
@@ -1785,9 +1785,9 @@ describe('unexpected', function () {
 
     describe('inspect', function () {
         it.skipIf(!Object.prototype.__lookupGetter__, 'handles getters and setters correctly', function () {
-            expect(expect.inspect(new Field('VALUE', 'getter')), 'to equal', "{ value: 'VALUE' [Getter] }");
-            expect(expect.inspect(new Field('VALUE', 'setter')), 'to equal', "{ value: [Setter] }");
-            expect(expect.inspect(new Field('VALUE', 'getter and setter')), 'to equal', "{ value: 'VALUE' [Getter/Setter] }");
+            expect(expect.inspect(new Field('VALUE', 'getter')).toString(), 'to equal', "{ value: 'VALUE' [Getter] }");
+            expect(expect.inspect(new Field('VALUE', 'setter')).toString(), 'to equal', "{ value: [Setter] }");
+            expect(expect.inspect(new Field('VALUE', 'getter and setter')).toString(), 'to equal', "{ value: 'VALUE' [Getter/Setter] }");
         });
 
         it('indents correctly', function () {
@@ -1854,7 +1854,7 @@ describe('unexpected', function () {
                 "this": { "is": { "deeply": { "nested": "This should not be shown", "a list": [ 1, 2, 3 ] }, "a list": [ 1, 2, 3 ] } }
             }];
 
-            expect(expect.inspect(data, 5), 'to equal',
+            expect(expect.inspect(data, 5).toString(), 'to equal',
                    "[\n" +
                    "  {\n" +
                    "    guid: 'db550c87-1680-462a-bacc-655cecdd8907',\n" +
