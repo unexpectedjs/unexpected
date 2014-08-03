@@ -1,4 +1,4 @@
-/*global describe, it, expect, beforeEach, setTimeout, Uint8Array, Uint16Array*/
+/*global describe, it, expect, before, beforeEach, setTimeout, Uint8Array, Uint16Array*/
 
 // use this instead of Object.create in order to make the tests run in
 // browsers that are not es5 compatible.
@@ -16,6 +16,9 @@ var circular = {};
 circular.self = circular;
 
 describe('unexpected', function () {
+    before(function () {
+        expect.outputFormat('text');
+    });
     describe('argument validation', function () {
         it('fails when given no parameters', function () {
             expect(function () {
