@@ -12,6 +12,7 @@ expect(window, 'not to be an', Image);
 ```
 
 [![Build Status](https://travis-ci.org/sunesimonsen/unexpected.png)](https://travis-ci.org/sunesimonsen/unexpected)
+[![Coverage Status](https://coveralls.io/repos/sunesimonsen/unexpected/badge.png)](https://coveralls.io/r/sunesimonsen/unexpected)
 
 [Run the test in the browser](http://sunesimonsen.github.io/unexpected/test/tests.production.html)
 
