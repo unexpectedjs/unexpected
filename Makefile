@@ -35,6 +35,9 @@ coverage: lib/*
 test-browser: unexpected.js
 	@./node_modules/.bin/serve .
 
+travis: lint test test-production coverage
+	<coverage/lcov.info ./node_modules/coveralls/bin/coveralls.js
+
 .PHONY: git-dirty-check
 git-dirty-check:
 ifneq ($(shell git describe --always --dirty | grep -- -dirty),)
