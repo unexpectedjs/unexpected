@@ -1,4 +1,6 @@
-/*global describe, it, expect, before, beforeEach, setTimeout, Uint8Array, Uint16Array*/
+/*global weknowhow, describe, it, before, beforeEach, setTimeout, Uint8Array, Uint16Array*/
+
+var expect = typeof weknowhow === 'undefined' ? require('../lib/') : weknowhow.expect;
 
 // use this instead of Object.create in order to make the tests run in
 // browsers that are not es5 compatible.
