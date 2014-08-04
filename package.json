@@ -19,14 +19,14 @@
   },
   "main": "./lib/index.js",
   "dependencies": {
-      "magicpen": "=0.1.2"
+    "magicpen": "=0.1.2"
   },
   "devDependencies": {
     "jshint": "*",
     "mocha": "=1.17.1",
-    "phantomjs": "=1.9.1-0",
     "mocha-phantomjs": "=3.1.0",
     "mocha-slow-reporter": "*",
+    "phantomjs": "=1.9.1-0",
     "serve": "*"
   }
 }
