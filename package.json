@@ -22,6 +22,9 @@
     "magicpen": "=0.1.2"
   },
   "devDependencies": {
+    "browserify": "=5.9.1",
+    "coveralls": "^2.11.1",
+    "istanbul": "^0.3.0",
     "jshint": "*",
     "mocha": "=1.17.1",
     "mocha-phantomjs": "=3.1.0",

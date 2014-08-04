@@ -1,4 +1,4 @@
 /node_modules/
-/lib-cov/
+/coverage/
 /unexpected.es5.js
 /unexpected.js
