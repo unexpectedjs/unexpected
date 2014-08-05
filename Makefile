@@ -8,10 +8,10 @@ lint:
 .PHONY: lint
 
 unexpected.js: lint lib/*
-	./node_modules/.bin/browserify -e lib -s weknowhow.expect lib/index.js > $@
+	./node_modules/.bin/browserify -e lib -s weknowhow.expect > $@
 
 unexpected.es5.js: lint lib/*
-	./node_modules/.bin/browserify -e lib -s weknowhow.expect -u lib/shim-es4.js lib/index.js > $@
+	./node_modules/.bin/browserify -e lib -s weknowhow.expect -u lib/shim-es4.js > $@
 
 test-phantomjs: lint unexpected.js
 	@$(eval QUERY=$(shell node -e "console.log(decodeURIComponent(process.argv.pop()))" "${grep}")) \
