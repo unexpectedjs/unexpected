@@ -864,12 +864,12 @@ describe('unexpected', function () {
             expect(NaN, 'not to be finite');
             expect(null, 'not to be finite');
             expect({}, 'not to be finite');
+        });
 
-            it('throws when the assertion fails', function () {
-                expect(function () {
-                    expect(Infinity, 'to be finite');
-                }, 'to throw exception', 'expected Infinity to be finite');
-            });
+        it('throws when the assertion fails', function () {
+            expect(function () {
+                expect(Infinity, 'to be finite');
+            }, 'to throw exception', 'expected Infinity to be finite');
         });
     });
 
@@ -882,12 +882,12 @@ describe('unexpected', function () {
             expect(NaN, 'not to be infinite');
             expect(null, 'not to be infinite');
             expect({}, 'not to be infinite');
+        });
 
-            it('throws when the assertion fails', function () {
-                expect(function () {
-                    expect(123, 'to be finite');
-                }, 'to throw exception', 'expected 123 to be infinite');
-            });
+        it('throws when the assertion fails', function () {
+            expect(function () {
+                expect(123, 'to be infinite');
+            }, 'to throw exception', 'expected 123 to be infinite');
         });
     });
 
