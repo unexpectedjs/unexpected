@@ -1060,6 +1060,11 @@ describe('unexpected', function () {
             }, 'to throw exception', "0 was expected to be zero");
 
             expect(function () {
+                var output = expect.output.clone().text('zero');
+                expect.fail('{0} was expected to be {1}', 0, output);
+            }, 'to throw exception', "0 was expected to be zero");
+
+            expect(function () {
                 expect.fail('{0} was expected to be {1}', 0);
             }, 'to throw exception', "0 was expected to be {1}");
         });
