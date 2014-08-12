@@ -262,6 +262,7 @@ describe('unexpected', function () {
             expect(false, 'to equal', false);
             expect({ a: { b: 'c' } }, 'to equal', { a: { b: 'c' } });
             expect({ a: { b: 'c' } }, 'not to equal', { a: { b: 'd' } });
+            expect({}, 'to equal', { a: undefined });
             expect(/foo/, 'to equal', /foo/);
             expect(/foo/i, 'not to equal', /foo/);
             expect(/foo/gm, 'to equal', /foo/gm);
@@ -679,6 +680,10 @@ describe('unexpected', function () {
             }, 'to throw', "expected {} to have own properties [ 'a', 'b' ]");
         });
 
+        it('asserts the absence of a property when the RHS object has an undefined value', function () {
+            expect({}, 'to have properties', { a: undefined });
+        });
+
         it('asserts absence of a list of properties', function () {
             expect({a: 'foo', b: 'bar'}, 'not to have properties', ['c', 'd']);
             expect(function () {
@@ -748,6 +753,10 @@ describe('unexpected', function () {
             expect(function () {
                 expect({a: 'foo', b: 'bar'}, 'to have properties', ['c', 'd']);
             }, 'to throw', "expected { a: 'foo', b: 'bar' } to have properties [ 'c', 'd' ]");
+
+            expect(function () {
+                expect({a: 'foo'}, 'to have properties', {a: undefined});
+            }, 'to throw', "expected { a: 'foo' } to have properties { a: undefined }");
         });
 
         it('throws when given invalid input', function () {
