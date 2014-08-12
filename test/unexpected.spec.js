@@ -749,6 +749,21 @@ describe('unexpected', function () {
             });
         });
 
+        it('includes prototype properties in the actual property (#48)', function () {
+            function Foo() {}
+
+            Foo.prototype.doSomething = function () {};
+
+            expect(function () {
+                expect(new Foo(), 'to have properties', {a: 123});
+            }, 'to throw', function (e) {
+                expect(e.expected, 'to have property', 'doSomething');
+                expect(e.actual, 'to have property', 'doSomething');
+                delete e.expected.a;
+                expect(e.actual, 'to equal', e.expected);
+            });
+        });
+
         it('throws when the assertion fails', function () {
             expect(function () {
                 expect({a: 'foo', b: 'bar'}, 'to have properties', ['c', 'd']);
