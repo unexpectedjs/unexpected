@@ -19,7 +19,7 @@
   },
   "main": "./lib/index.js",
   "dependencies": {
-    "magicpen": "=0.3.3"
+    "magicpen": "=0.3.4"
   },
   "devDependencies": {
     "browserify": "=5.9.1",
