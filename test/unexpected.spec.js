@@ -78,7 +78,7 @@ describe('unexpected', function () {
                 expect(function () {
                     expect(new Error('foo'), 'to equal', new Error('bar'));
                 }, 'to throw exception', function (err) {
-                    expect(err.message, 'to equal', "expected [Error: { message: 'foo' }] to equal [Error: { message: 'bar' }]");
+                    expect(err.output.toString(), 'to equal', "expected [Error: { message: 'foo' }] to equal [Error: { message: 'bar' }]");
                 });
             });
 
@@ -545,7 +545,7 @@ describe('unexpected', function () {
                     throw new Error('bar');
                 }, 'to throw', 'foo');
             }, 'to throw exception', function (err) {
-                expect(err.message, 'to equal',
+                expect(err.output.toString(), 'to equal',
                        "expected [Function: testFunction] to throw 'foo'\n" +
                        "  expected 'bar' to equal 'foo'");
                 expect(err, 'to have properties', {
@@ -1146,8 +1146,8 @@ describe('unexpected', function () {
                 });
             }, 'to throw',
                    "failed expectation in [ 0, 1, '2', 3, 4 ]:\n" +
-                   "    2: expected '2' to be a number\n" +
-                   "    4: expected 4 to be less than 4");
+                   "  2: expected '2' to be a number\n" +
+                   "  4: expected 4 to be less than 4");
         });
 
         it('indents failure reports of nested assertions correctly', function () {
@@ -1159,10 +1159,10 @@ describe('unexpected', function () {
                 });
             }, 'to throw',
                 "failed expectation in [ [ 0, 1, 2 ], [ 4, '5', 6 ], [ 7, 8, '9' ] ]:\n" +
-                "    1: failed expectation in [ 4, '5', 6 ]:\n" +
-                "        1: expected '5' to be a number\n" +
-                "    2: failed expectation in [ 7, 8, '9' ]:\n" +
-                "        2: expected '9' to be a number");
+                "  1: failed expectation in [ 4, '5', 6 ]:\n" +
+                "       1: expected '5' to be a number\n" +
+                "  2: failed expectation in [ 7, 8, '9' ]:\n" +
+                "       2: expected '9' to be a number");
         });
     });
 
@@ -1229,8 +1229,8 @@ describe('unexpected', function () {
                 });
             }, 'to throw',
                    "failed expectation in { foo: 0, bar: 1, baz: '2', qux: 3, quux: 4 }:\n" +
-                   "    baz: expected '2' to be a number\n" +
-                   "    quux: expected 4 to be less than 4");
+                   "  baz: expected '2' to be a number\n" +
+                   "  quux: expected 4 to be less than 4");
         });
 
         it('indents failure reports of nested assertions correctly', function () {
@@ -1247,10 +1247,10 @@ describe('unexpected', function () {
                 "  bar: [ 4, '5', 6 ],\n" +
                 "  baz: [ 7, 8, '9' ]\n" +
                 "}:\n" +
-                "    bar: failed expectation in [ 4, '5', 6 ]:\n" +
-                "        1: expected '5' to be a number\n" +
-                "    baz: failed expectation in [ 7, 8, '9' ]:\n" +
-                "        2: expected '9' to be a number");
+                "  bar: failed expectation in [ 4, '5', 6 ]:\n" +
+                "         1: expected '5' to be a number\n" +
+                "  baz: failed expectation in [ 7, 8, '9' ]:\n" +
+                "         2: expected '9' to be a number");
         });
     });
 
@@ -1316,7 +1316,7 @@ describe('unexpected', function () {
                 });
             }, 'to throw',
                    "failed expectation on keys foo, bar, baz, qux, quux:\n" +
-                   "    quux: expected 'quux' to have length 3");
+                   "  quux: expected 'quux' to have length 3");
         });
     });
 
@@ -1554,7 +1554,7 @@ describe('unexpected', function () {
                     expect(function () {
                         clonedExpect(42, 'to be sorted');
                     }, 'to throw', function (err) {
-                        expect(err.message, 'to equal', 'expected 42 to be sorted\n  expected 42 to be an array');
+                        expect(err.output.toString(), 'to equal', 'expected 42 to be sorted\n  expected 42 to be an array');
                     });
                 });
 
@@ -1564,7 +1564,7 @@ describe('unexpected', function () {
                         clonedExpect(42, 'to be sorted');
                     }, 'to throw', function (err) {
                         var message = 'expected 42 to be an array';
-                        expect(err.message, 'to equal', message);
+                        expect(err.output.toString(), 'to equal', message);
                         expect(err.stack, 'to contain', message);
                     });
                 });
@@ -1575,7 +1575,7 @@ describe('unexpected', function () {
                         clonedExpect(42, 'to be sorted');
                     }, 'to throw', function (err) {
                         var message = 'expected 42 to be sorted';
-                        expect(err.message, 'to equal', message);
+                        expect(err.output.toString(), 'to equal', message);
                         expect(err.stack, 'to contain', message);
                     });
                 });
@@ -1600,7 +1600,7 @@ describe('unexpected', function () {
                 it('errorMode=nested nest the error message of expect failures in the assertion under the assertion standard message', function (done) {
                     errorMode = 'nested';
                     clonedExpect(42, 'to be sorted after delay', 1, function (err) {
-                        expect(err.message, 'to match', /^expected 42 to be sorted after delay 1.*\n  expected 42 to be an array/);
+                        expect(err.output.toString(), 'to match', /^expected 42 to be sorted after delay 1.*\n  expected 42 to be an array/);
                         done();
                     });
                 });
@@ -1608,7 +1608,7 @@ describe('unexpected', function () {
                 it('errorMode=bubble bubbles uses the error message of expect failures in the assertion', function (done) {
                     errorMode = 'bubble';
                     clonedExpect(42, 'to be sorted after delay', 1, function (err) {
-                        expect(err.message, 'to match', /^expected 42 to be an array/);
+                        expect(err.output.toString(), 'to match', /^expected 42 to be an array/);
                         done();
                     });
                 });
@@ -1616,7 +1616,7 @@ describe('unexpected', function () {
                 it('errorMode=default uses the standard error message of the assertion', function (done) {
                     errorMode = 'default';
                     clonedExpect(42, 'to be sorted after delay', 1, function (err) {
-                        expect(err.message, 'to match', /^expected 42 to be sorted after delay 1/);
+                        expect(err.output.toString(), 'to match', /^expected 42 to be sorted after delay 1/);
                         done();
                     });
                 });
@@ -1790,7 +1790,7 @@ describe('unexpected', function () {
                     actual: {$box: {$box: 123}},
                     expected: {$box: {$box: 456}}
                 });
-                expect(err.message, 'to equal', "expected [Box: [Box: 123]] to equal [Box: [Box: 456]]");
+                expect(err.output.toString(), 'to equal', "expected [Box: [Box: 123]] to equal [Box: [Box: 456]]");
             });
         });
     });
