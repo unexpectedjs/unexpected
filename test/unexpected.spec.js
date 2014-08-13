@@ -18,9 +18,6 @@ var circular = {};
 circular.self = circular;
 
 describe('unexpected', function () {
-    before(function () {
-        expect.outputFormat('text');
-    });
     describe('argument validation', function () {
         it('fails when given no parameters', function () {
             expect(function () {
@@ -1563,9 +1560,8 @@ describe('unexpected', function () {
                     expect(function () {
                         clonedExpect(42, 'to be sorted');
                     }, 'to throw', function (err) {
-                        var message = 'expected 42 to be an array';
-                        expect(err.output.toString(), 'to equal', message);
-                        expect(err.stack, 'to contain', message);
+                        expect(err.output.toString(), 'to equal', 'expected 42 to be an array');
+                        expect(err.stack, 'to contain', err.message);
                     });
                 });
 
@@ -1574,9 +1570,8 @@ describe('unexpected', function () {
                     expect(function () {
                         clonedExpect(42, 'to be sorted');
                     }, 'to throw', function (err) {
-                        var message = 'expected 42 to be sorted';
-                        expect(err.output.toString(), 'to equal', message);
-                        expect(err.stack, 'to contain', message);
+                        expect(err.output.toString(), 'to equal', 'expected 42 to be sorted');
+                        expect(err.stack, 'to contain', err.message);
                     });
                 });
             });
