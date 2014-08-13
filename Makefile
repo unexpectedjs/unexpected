@@ -8,35 +8,12 @@ lint:
 .PHONY: lint
 
 unexpected.js: lint lib/*
-	@echo "(function () {" > $@
-
-	@cat lib/unexpected-license.js \
-         lib/unexpected-namespace.js \
-         lib/unexpected-es4-compatible.js \
-         lib/unexpected-es5-compatible.js \
-         lib/unexpected-utils.js \
-         lib/unexpected-core.js \
-         lib/unexpected-types.js \
-         lib/unexpected-assertions.js \
-         lib/unexpected-module.js | sed -e 's/^/    /' | sed -e 's/^\s*$$//' | sed -e 's/\/\*\(global\|exported\).*//' >> $@
-
-	@echo "}());" >> $@
+	(echo '/*!' && <LICENSE sed -e's/^/ * /' | sed -e's/\s+$$//' && echo ' */' && ./node_modules/.bin/browserify -p bundle-collapser/plugin -e lib -s weknowhow.expect) > $@
 
 unexpected.es5.js: lint lib/*
-	@echo "(function () {" > $@
+	(echo '/*!' && <LICENSE sed -e's/^/ * /' | sed -e's/\s+$$//' && echo ' */' && ./node_modules/.bin/browserify -p bundle-collapser/plugin -e lib -s weknowhow.expect -u lib/shim-es4.js) > $@
 
-	@cat lib/unexpected-license.js \
-         lib/unexpected-namespace.js \
-         lib/unexpected-es5-compatible.js \
-         lib/unexpected-utils.js \
-         lib/unexpected-core.js \
-         lib/unexpected-assertions.js \
-         lib/unexpected-types.js \
-         lib/unexpected-module.js | sed -e 's/^/    /' | sed -e 's/^\s*$$//' | sed -e 's/\/\*\(global\|exported\).*//' >> $@
-
-	@echo "}());" >> $@
-
-test-phantomjs: lint
+test-phantomjs: lint unexpected.js
 	@$(eval QUERY=$(shell node -e "console.log(decodeURIComponent(process.argv.pop()))" "${grep}")) \
     ./node_modules/.bin/mocha-phantomjs test/tests.html?grep=${QUERY}
 
@@ -51,31 +28,21 @@ test-production: lint ${TARGETS}
 
 .PHONY: test-production
 
-lib-cov: lib/*
-	@rm -rf lib-cov
-	@jscoverage --no-highlight lib $@
-
-lib-cov/index.html: lib-cov
-	@COVERAGE=1 ./node_modules/.bin/mocha \
-        --require ./test/common \
-        --reporter html-cov > $@
-	@echo Coverage report has been generated to $@
-
-coverage: lib-cov/index.html
-
-test-browser:
-	@./node_modules/.bin/serve .
+coverage: lib/*
+	NODE_ENV=development ./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha -- --reporter dot
 
 .PHONY: test-browser
+test-browser: unexpected.js
+	@./node_modules/.bin/serve .
 
+travis: lint test test-production coverage
+	<coverage/lcov.info ./node_modules/coveralls/bin/coveralls.js
+
+.PHONY: git-dirty-check
 git-dirty-check:
 ifneq ($(shell git describe --always --dirty | grep -- -dirty),)
 	$(error Working tree is dirty, please commit or stash your changes, then try again)
 endif
-
-.PHONY: git-dirty-check
-
-.PHONY: git-commit-lib
 
 .PHONY: release-%
 release-%: git-dirty-check ${TARGETS} test-production
@@ -85,4 +52,4 @@ release-%: git-dirty-check ${TARGETS} test-production
 
 .PHONY: clean
 clean:
-	-rm -fr ${TARGETS} lib-cov
+	-rm -fr ${TARGETS} coverage

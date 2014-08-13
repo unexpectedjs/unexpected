@@ -18,13 +18,19 @@
     "travis": "make test && make test-phantomjs"
   },
   "main": "./lib/index.js",
-  "dependencies": {},
+  "dependencies": {
+    "magicpen": "=0.3.2"
+  },
   "devDependencies": {
+    "browserify": "=5.9.1",
+    "bundle-collapser": "^1.1.0",
+    "coveralls": "^2.11.1",
+    "istanbul": "^0.3.0",
     "jshint": "*",
     "mocha": "=1.17.1",
-    "phantomjs": "=1.9.1-0",
     "mocha-phantomjs": "=3.1.0",
     "mocha-slow-reporter": "*",
+    "phantomjs": "=1.9.1-0",
     "serve": "*"
   }
 }

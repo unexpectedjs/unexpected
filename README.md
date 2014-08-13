@@ -11,7 +11,10 @@ expect([], 'to be an', 'array');
 expect(window, 'not to be an', Image);
 ```
 
+[![NPM version](https://badge.fury.io/js/unexpected.png)](http://badge.fury.io/js/unexpected)
 [![Build Status](https://travis-ci.org/sunesimonsen/unexpected.png)](https://travis-ci.org/sunesimonsen/unexpected)
+[![Coverage Status](https://coveralls.io/repos/sunesimonsen/unexpected/badge.png)](https://coveralls.io/r/sunesimonsen/unexpected)
+[![Dependency Status](https://david-dm.org/sunesimonsen/unexpected.png)](https://david-dm.org/sunesimonsen/unexpected)
 
 [Run the test in the browser](http://sunesimonsen.github.io/unexpected/test/tests.production.html)
 
@@ -623,29 +626,7 @@ and shown/processed by the test runner.
 
 ## Credits
 
-(The MIT License)
-
-Copyright (c) 2013 Sune Simonsen &lt;sune@we-knowhow.dk&gt;
-
-Permission is hereby granted, free of charge, to any person
-obtaining a copy of this software and associated documentation
-files (the 'Software'), to deal in the Software without
-restriction, including without limitation the rights to use, copy,
-modify, merge, publish, distribute, sublicense, and/or sell copies
-of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
-BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
-ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+MIT, see the `LICENSE` file for details
 
 ### 3rd-party
 
