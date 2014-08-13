@@ -1732,7 +1732,7 @@ describe('unexpected', function () {
             expect.installPlugin(plugin);
         });
 
-        it('throws if the given arguments in not a function', function () {
+        it('throws if the given arguments is not a function', function () {
             expect(function () {
                 expect.installPlugin({});
             }, 'to throw', 'Expected first argument given to installPlugin to be a function');
