@@ -418,6 +418,7 @@ describe('unexpected', function () {
                         ]
                     }
                 });
+                expect(err.output.toString(), 'to equal', 'expected [Buffer 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74 68 69 6E 67  |...Here is the thing| (+20)] to equal [Buffer 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74 68 69 6E 67  |...Here is the thing| (+20)]');
             });
         });
 
@@ -454,6 +455,7 @@ describe('unexpected', function () {
                         ]
                     }
                 });
+                expect(err.output.toString(), 'to equal', 'expected [Uint8Array 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74 68 69 6E 67  |...Here is the thing| (+20)] to equal [Uint8Array 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74 68 69 6E 67  |...Here is the thing| (+20)]');
             });
         });
 
@@ -490,6 +492,7 @@ describe('unexpected', function () {
                         ]
                     }
                 });
+                expect(err.output.toString(), 'to equal', 'expected [Uint16Array 0001 0248 6572 6520 6973 2074 6865 2074 6869 6E67 2049 2077 6173 2074 616C 6B69 6E67 2061 626F 7574] to equal [Uint16Array 0001 0248 6572 6520 6973 2074 6865 2074 6869 6E67 2049 2077 6173 2071 7575 7869 6E67 2061 626F 7574]');
             });
         });
     });
