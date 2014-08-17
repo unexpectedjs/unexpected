@@ -1082,6 +1082,126 @@ describe('unexpected', function () {
 
     });
 
+    describe.skip('to satisfy assertion', function () {
+        // These are the examples from #40:
+
+        it('should support expect.fn in the RHS object', function () {
+            expect({foo: 'bar'}, 'to satisfy', {
+                foo: expect.fn('to be a string')
+            });
+
+            expect({foo: [123]}, 'to satisfy', {
+                foo: expect.fn('to be an array whose items satisfy', 'to be a number')
+            });
+        });
+
+        it('should support expect.fn in an array', function () {
+            expect({foo: [123]}, 'to satisfy', {
+                foo: [expect.fn('to be a number')]
+            });
+        });
+
+        it('should support directly naming other assertions', function () {
+            expect(123, 'to satisfy', 'to be a number');
+        });
+
+        it('should support delegating to itself as a weird noop', function () {
+            expect(123, 'to satisfy', 'to satisfy', 'to satisfy', 'to be a number');
+        });
+
+        it('should support a regular function in the RHS object (expected to throw an exception if the condition is not met)', function () {
+            expect({foo: 123}, 'to satisfy', function (obj) {
+                expect(obj.foo, 'to equal', 123);
+            });
+        });
+
+        it('should support a chained expect.fn', function () {
+            expect({foo: 123}, 'to satisfy', {
+                foo: expect.fn('to be a number').and('to be greater than', 10)
+            });
+        });
+
+        it('should support asserting on properties that are not defined', function () {
+            expect({foo: 123}, 'to satisfy', {
+                bar: expect.fn('to be undefined')
+            });
+        });
+
+        it('should assert missing properties with undefined in the RHS object', function () {
+            expect({foo: 123}, 'to satisfy', {
+                bar: undefined
+            });
+        });
+
+        it('should support the exhaustively flag', function () {
+            expect({foo: 123}, 'to exhaustively satisfy', {
+                bar: expect.fn('to be undefined')
+            });
+        });
+
+        it('should support delegating to itself with the exhaustively flag', function () {
+            expect({foo: {bar: 123}, baz: 456}, 'to satisfy', {
+                foo: expect.fn('to exhaustively satisfy', {bar: 123})
+            });
+        });
+
+        it('should support delegating to itself without the exhaustively flag', function () {
+            expect({foo: {bar: 123, baz: 456}}, 'to exhaustively satisfy', {
+                foo: expect.fn('to satisfy', {bar: 123})
+            });
+        });
+
+        it('should support custom types', function () {
+            function Box(value) {
+                this.value = value;
+            }
+
+            var clonedExpect = expect.clone()
+                .addType({
+                    identify: function (obj) {
+                        return obj instanceof Box;
+                    },
+                    equal: function (box1, box2, equal) {
+                        return equal(box1.value, box2.value);
+                    },
+                    inspect: function (output, box, inspect) {
+                        output.text('[Box ');
+                        inspect(output, box.value);
+                        output.text(']');
+                    },
+                    // Guesswork:
+                    satisfy: function (box, spec, satisfy) {
+                        return satisfy(box.value, spec);
+                    }
+                });
+            expect({
+                foo: new Box({ baz: 123 }),
+                bar: new Box(456)
+            }, 'to satisfy', {
+                foo: new Box({ baz: clonedExpect.fn('to be a number') }),
+                bar: new Box(456)
+            });
+        });
+
+        it('fails when the assertion fails', function () {
+            expect(function () {
+                expect({foo: 123, bar: 456}, 'to exhaustively satisfy', {foo: 123});
+            }, 'to throw');
+
+            expect(function () {
+                expect({foo: 123}, 'to exhaustively satisfy', {bar: undefined});
+            }, 'to throw');
+
+            expect(function () {
+                expect(123, 'to satisfy', 'to be a string');
+            }, 'to throw');
+
+            expect(function () {
+                expect({foo: 123}, 'to satisfy', {foo: expect.fn('to be a string')});
+            }, 'to throw');
+        });
+    });
+
     describe('to be an array whose items satisfy assertion', function () {
         it('requires a function or a string as the third argument', function () {
             expect(function () {
