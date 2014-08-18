@@ -1754,6 +1754,7 @@ describe('unexpected', function () {
         beforeEach(function () {
             clonedExpect = expect.clone();
             clonedExpect.addType({
+                name: 'box',
                 identify: function (obj) {
                     return obj && typeof obj === 'object' && obj.isBox;
                 },
@@ -1772,6 +1773,12 @@ describe('unexpected', function () {
                     };
                 }
             });
+        });
+
+        it('throws an expection is the type has an empty or undefined name', function () {
+            expect(function () {
+                clonedExpect.addType({});
+            }, 'to throw', 'A custom type must be given a non-empty name');
         });
 
         it('should use the equal defined by the type', function () {
