@@ -27,7 +27,7 @@
     "coveralls": "^2.11.1",
     "istanbul": "^0.3.0",
     "jshint": "*",
-    "mocha": "=1.17.1",
+    "mocha": "=1.21.4",
     "mocha-phantomjs": "=3.1.0",
     "mocha-slow-reporter": "*",
     "phantomjs": "=1.9.1-0",
