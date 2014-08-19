@@ -637,7 +637,7 @@ describe('unexpected', function () {
             expect({a: 'b'}, 'to have property', 'a', 'b');
             expect({a: 'b'}, 'to have property', 'toString');
             expect({a: 'b'}, 'not to have property', 'b');
-            expect({a: 'b'}, 'to have own property', 'a');
+            expect({'"a"': 'b'}, 'to have own property', '"a"');
             expect(create({a: 'b'}), 'not to have own property', 'a');
             expect(1, 'not to have property', 'a');
             expect(null, 'not to have property', 'a');
