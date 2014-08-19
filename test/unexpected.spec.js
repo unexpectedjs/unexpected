@@ -75,6 +75,7 @@ describe('unexpected', function () {
                 expect(function () {
                     expect(new Error('foo'), 'to equal', new Error('bar'));
                 }, 'to throw exception', function (err) {
+                    console.log(err.message);
                     expect(err.output.toString(), 'to equal', "expected [Error: { message: 'foo' }] to equal [Error: { message: 'bar' }]");
                 });
             });

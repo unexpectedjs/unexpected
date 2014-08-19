@@ -17,7 +17,7 @@ test-phantomjs: lint unexpected.js
 	@$(eval QUERY=$(shell node -e "console.log(decodeURIComponent(process.argv.pop()))" "${grep}")) \
     ./node_modules/.bin/mocha-phantomjs test/tests.html?grep=${QUERY}
 
-test: lint
+test:
 	mocha -R spec
 
 .PHONY: test
