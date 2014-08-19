@@ -22,6 +22,7 @@ describe('unexpected', function () {
         it('foobar', function () {
             expect({
                 foo : ['foo', 'bar', 'baz'],
+                multiline: 'Hello world\nfoo\nbar',
                 text: 'Hello world',
                 yy : 6,
                 zz : 5,
@@ -34,6 +35,7 @@ describe('unexpected', function () {
                 b : [5, 6, 7],
                 c : { x : 8, y : 5 },
                 foo : ['foo', 'bar', 'baz'],
+                multiline: 'Hello, world\nqux\nbar',
                 text: 'Hello, world'
             });
         });
