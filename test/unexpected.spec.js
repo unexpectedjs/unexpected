@@ -22,7 +22,7 @@ describe('unexpected', function () {
         it('foobar', function () {
             expect({
                 foo : ['foo', 'bar', 'baz'],
-                multiline: 'Hello world\nfoo\nbar',
+                multiline: 'snaps\nHello world\nfoo\nbar',
                 text: 'Hello world',
                 yy : 6,
                 zz : 5,
@@ -35,30 +35,10 @@ describe('unexpected', function () {
                 b : [5, 6, 7],
                 c : { x : 8, y : 5 },
                 foo : ['foo', 'bar', 'baz'],
-                multiline: 'Hello, world\nqux\nbar',
+                multiline: 'bla\nsnaps\nHello, world\nqux\nbar',
                 text: 'Hello, world'
             });
         });
-
-        it('qux', function () {
-            expect(function () {
-                expect({
-                    foo : ['foo', 'bar', 'baz'],
-                    yy : 6,
-                    zz : 5,
-                    a : [1, 2, 3],
-                    fn : 'beep',
-                    c : { x : 7, z : 3 }
-                }, 'to equal', {
-                    a : [ 1, 2, "z", /beep/],
-                    fn : function qqq() {},
-                    b : [5, 6, 7],
-                    c : { x : 8, y : 5 },
-                    foo : ['foo', 'bar', 'baz']
-                });
-            }, 'to throw', '');
-        });
-
     });
     describe('argument validation', function () {
         it('fails when given no parameters', function () {
