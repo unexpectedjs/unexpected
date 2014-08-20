@@ -18,7 +18,7 @@ test-phantomjs: lint unexpected.js
     ./node_modules/.bin/mocha-phantomjs test/tests.html?grep=${QUERY}
 
 test: lint
-	mocha -R spec
+	mocha
 
 .PHONY: test
 
