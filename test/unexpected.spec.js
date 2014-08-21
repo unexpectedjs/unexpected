@@ -36,7 +36,7 @@ describe('unexpected', function () {
                 c : { x : 8, y : 5 },
                 foo : ['foo', 'bar', 'baz'],
                 multiline: 'bla\nsnaps\nHello, world\nqux\nbar',
-                text: 'Hello, world'
+                text: '        Hello, world'
             });
         });
     });
