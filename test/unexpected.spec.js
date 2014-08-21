@@ -1048,6 +1048,17 @@ describe('unexpected', function () {
             }, 'to throw exception', "explicit failure");
         });
 
+        it('sets the error message', function () {
+            var wasCaught = false;
+            try {
+                expect.fail('fail with error message');
+            } catch (e) {
+                wasCaught = true;
+                expect(e.message, 'to equal', 'fail with error message');
+            }
+            expect(wasCaught, 'to be true');
+        });
+
         it('throws an error with a given message', function () {
             expect(function () {
                 expect.fail('fail with error message');
