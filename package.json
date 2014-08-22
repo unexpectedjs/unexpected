@@ -20,7 +20,7 @@
   "main": "./lib/index.js",
   "dependencies": {
     "diff": "=1.0.8",
-    "magicpen": "=0.3.4"
+    "magicpen": "=0.4.1"
   },
   "devDependencies": {
     "browserify": "=5.9.1",
