@@ -19,6 +19,7 @@
   },
   "main": "./lib/index.js",
   "dependencies": {
+    "arraydiff": "0.1.1",
     "diff": "=1.0.8",
     "magicpen": "=0.4.1"
   },

@@ -26,11 +26,11 @@ describe('unexpected', function () {
                 text: 'Hello world',
                 yy : 6,
                 zz : 5,
-                a : [1, 2, 3],
+                a : [{ foo: 'foo', bar: 'bar' }, 1, 42, 2, 3],
                 fn : 'beep',
                 c : { x : 7, z : 3 }
             }, 'to equal', {
-                a : [ 1, 2, "z", /beep/],
+                a : [{ age: 42, gender: 'male' }, 1, { foo: 'foo', bar: 'baz' }, 2, "z", /beep/],
                 fn : function qqq() {},
                 b : [5, 6, 7],
                 c : { x : 8, y : 5 },
