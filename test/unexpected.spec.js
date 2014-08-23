@@ -1364,7 +1364,7 @@ describe('unexpected', function () {
             expect.addAssertion('foo', function () {})
                   .addAssertion('bar', function () {});
 
-            expect(expect.assertions, 'to have keys',
+            expect(expect.assertions.any, 'to have keys',
                    'foo',
                    'bar');
         });
@@ -1401,13 +1401,13 @@ describe('unexpected', function () {
 
         it('allows overlapping patterns within a single addAssertion call', function () {
             expect(function () {
-                expect.clone().addAssertion('to foo', 'to [really] foo', function () {});
+                expect.clone().addAssertion(['to foo', 'to [really] foo'], function () {});
             }, 'not to throw');
         });
 
         it('does not break when declaring multiple patterns that do not have the same set of flags defined', function () {
             var clonedExpect = expect.clone()
-                .addAssertion('[not] to be foo', 'to be foo aliased without the not flag', function (expect, subject) {
+                .addAssertion(['[not] to be foo', 'to be foo aliased without the not flag'], function (expect, subject) {
                     expect(subject, '[not] to equal', 'foo');
                 });
 
@@ -1699,7 +1699,7 @@ describe('unexpected', function () {
         });
 
         it('assertions can be added to the clone', function () {
-            expect(clonedExpect.assertions, 'to have keys',
+            expect(clonedExpect.assertions.any, 'to have keys',
                    'to be answer to the Ultimate Question of Life, the Universe, and Everything',
                    'not to be answer to the Ultimate Question of Life, the Universe, and Everything');
             clonedExpect(42, 'to be answer to the Ultimate Question of Life, the Universe, and Everything');
