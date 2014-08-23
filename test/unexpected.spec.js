@@ -1082,10 +1082,10 @@ describe('unexpected', function () {
 
     });
 
-    describe.skip('to satisfy assertion', function () {
+    describe('to satisfy assertion', function () {
         // These are the examples from #40:
 
-        it('should support expect.fn in the RHS object', function () {
+        it.skip('should support expect.fn in the RHS object', function () {
             expect({foo: 'bar'}, 'to satisfy', {
                 foo: expect.fn('to be a string')
             });
@@ -1095,63 +1095,63 @@ describe('unexpected', function () {
             });
         });
 
-        it('should support expect.fn in an array', function () {
+        it.skip('should support expect.fn in an array', function () {
             expect({foo: [123]}, 'to satisfy', {
                 foo: [expect.fn('to be a number')]
             });
         });
 
-        it('should support directly naming other assertions', function () {
+        it.skip('should support directly naming other assertions', function () {
             expect(123, 'to satisfy', 'to be a number');
         });
 
-        it('should support delegating to itself as a weird noop', function () {
+        it.skip('should support delegating to itself as a weird noop', function () {
             expect(123, 'to satisfy', 'to satisfy', 'to satisfy', 'to be a number');
         });
 
-        it('should support a regular function in the RHS object (expected to throw an exception if the condition is not met)', function () {
+        it.skip('should support a regular function in the RHS object (expected to throw an exception if the condition is not met)', function () {
             expect({foo: 123}, 'to satisfy', function (obj) {
                 expect(obj.foo, 'to equal', 123);
             });
         });
 
-        it('should support a chained expect.fn', function () {
+        it.skip('should support a chained expect.fn', function () {
             expect({foo: 123}, 'to satisfy', {
                 foo: expect.fn('to be a number').and('to be greater than', 10)
             });
         });
 
-        it('should support asserting on properties that are not defined', function () {
+        it.skip('should support asserting on properties that are not defined', function () {
             expect({foo: 123}, 'to satisfy', {
                 bar: expect.fn('to be undefined')
             });
         });
 
-        it('should assert missing properties with undefined in the RHS object', function () {
+        it.skip('should assert missing properties with undefined in the RHS object', function () {
             expect({foo: 123}, 'to satisfy', {
                 bar: undefined
             });
         });
 
-        it('should support the exhaustively flag', function () {
+        it.skip('should support the exhaustively flag', function () {
             expect({foo: 123}, 'to exhaustively satisfy', {
                 bar: expect.fn('to be undefined')
             });
         });
 
-        it('should support delegating to itself with the exhaustively flag', function () {
+        it.skip('should support delegating to itself with the exhaustively flag', function () {
             expect({foo: {bar: 123}, baz: 456}, 'to satisfy', {
                 foo: expect.fn('to exhaustively satisfy', {bar: 123})
             });
         });
 
-        it('should support delegating to itself without the exhaustively flag', function () {
+        it.skip('should support delegating to itself without the exhaustively flag', function () {
             expect({foo: {bar: 123, baz: 456}}, 'to exhaustively satisfy', {
                 foo: expect.fn('to satisfy', {bar: 123})
             });
         });
 
-        it('should support custom types', function () {
+        it.skip('should support custom types', function () {
             function Box(value) {
                 this.value = value;
             }
@@ -1183,7 +1183,7 @@ describe('unexpected', function () {
             });
         });
 
-        it('fails when the assertion fails', function () {
+        it.skip('fails when the assertion fails', function () {
             expect(function () {
                 expect({foo: 123, bar: 456}, 'to exhaustively satisfy', {foo: 123});
             }, 'to throw');
@@ -1203,14 +1203,10 @@ describe('unexpected', function () {
     });
 
     describe('to be an array whose items satisfy assertion', function () {
-        it('requires a function or a string as the third argument', function () {
+        it('requires a third argument', function () {
             expect(function () {
                 expect([1, 2, 3], 'to be an array whose items satisfy');
-            }, 'to throw', 'Assertion "to be an array whose items satisfy" expects a function as argument');
-
-            expect(function () {
-                expect([1, 2, 3], 'to be an array whose items satisfy', 42);
-            }, 'to throw', 'Assertion "to be an array whose items satisfy" expects a function as argument');
+            }, 'to throw', 'Assertion "to be an array whose items satisfy" expects a third argument');
         });
 
         it('only accepts arrays as the target object', function () {
@@ -1298,14 +1294,10 @@ describe('unexpected', function () {
     });
 
     describe('to be a map whose values satisfy assertion', function () {
-        it('requires a function or a string as the third argument', function () {
+        it('requires a third argument', function () {
             expect(function () {
                 expect([1, 2, 3], 'to be a map whose values satisfy');
-            }, 'to throw', 'Assertion "to be a map whose values satisfy" expects a function as argument');
-
-            expect(function () {
-                expect([1, 2, 3], 'to be a map whose values satisfy', 42);
-            }, 'to throw', 'Assertion "to be a map whose values satisfy" expects a function as argument');
+            }, 'to throw', 'Assertion "to be a map whose values satisfy" expects a third argument');
         });
 
         it('only accepts objects as the target', function () {
@@ -1386,14 +1378,10 @@ describe('unexpected', function () {
     });
 
     describe('to be a map whose keys satisfy assertion', function () {
-        it('requires a function or string as the third argument', function () {
+        it('requires a third argument', function () {
             expect(function () {
                 expect([1, 2, 3], 'to be a map whose keys satisfy');
-            }, 'to throw', 'Assertion "to be a map whose keys satisfy" expects a function as argument');
-
-            expect(function () {
-                expect([1, 2, 3], 'to be a map whose keys satisfy', 42);
-            }, 'to throw', 'Assertion "to be a map whose keys satisfy" expects a function as argument');
+            }, 'to throw', 'Assertion "to be a map whose keys satisfy" expects a third argument');
         });
 
         it('only accepts objects as the target', function () {
