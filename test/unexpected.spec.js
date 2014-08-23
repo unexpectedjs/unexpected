@@ -1095,6 +1095,12 @@ describe('unexpected', function () {
             });
         });
 
+        it('should support regular expressions in the RHS object', function () {
+            expect({foo: 'bar'}, 'to satisfy', {
+                foo: /ba/
+            });
+        });
+
         it('should support expect.fn in an array', function () {
             expect({foo: [123]}, 'to satisfy', {
                 foo: [expect.fn('to be a number')]
@@ -1187,6 +1193,10 @@ describe('unexpected', function () {
             expect(function () {
                 expect(123, 'to satisfy', 'to be a string');
             }, 'to throw');
+
+            expect(function () {
+                expect('foobar', 'to satisfy', /quux/i);
+            }, 'to throw', "expected 'foobar' to satisfy /quux/i");
         });
 
         it.skip('fails when the assertion fails', function () {
