@@ -1085,7 +1085,7 @@ describe('unexpected', function () {
     describe('to satisfy assertion', function () {
         // These are the examples from #40:
 
-        it.skip('should support expect.fn in the RHS object', function () {
+        it('should support expect.fn in the RHS object', function () {
             expect({foo: 'bar'}, 'to satisfy', {
                 foo: expect.fn('to be a string')
             });
@@ -1095,7 +1095,7 @@ describe('unexpected', function () {
             });
         });
 
-        it.skip('should support expect.fn in an array', function () {
+        it('should support expect.fn in an array', function () {
             expect({foo: [123]}, 'to satisfy', {
                 foo: [expect.fn('to be a number')]
             });
@@ -1121,7 +1121,7 @@ describe('unexpected', function () {
             });
         });
 
-        it.skip('should support asserting on properties that are not defined', function () {
+        it('should support asserting on properties that are not defined', function () {
             expect({foo: 123}, 'to satisfy', {
                 bar: expect.fn('to be undefined')
             });
@@ -1183,6 +1183,12 @@ describe('unexpected', function () {
             });
         });
 
+        it('fails when the assertion fails', function () {
+            expect(function () {
+                expect(123, 'to satisfy', 'to be a string');
+            }, 'to throw');
+        });
+
         it.skip('fails when the assertion fails', function () {
             expect(function () {
                 expect({foo: 123, bar: 456}, 'to exhaustively satisfy', {foo: 123});
@@ -1190,10 +1196,6 @@ describe('unexpected', function () {
 
             expect(function () {
                 expect({foo: 123}, 'to exhaustively satisfy', {bar: undefined});
-            }, 'to throw');
-
-            expect(function () {
-                expect(123, 'to satisfy', 'to be a string');
             }, 'to throw');
 
             expect(function () {
