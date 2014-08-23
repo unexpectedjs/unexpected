@@ -19,6 +19,22 @@ circular.self = circular;
 
 describe('unexpected', function () {
     describe('diffs', function () {
+        it('to have properties', function () {
+            expect({
+                foo : ['foo', 'bar', 'baz'],
+                multiline: 'snaps\nHello world\nfoo\nbar',
+                text: 'Hello world',
+                yy : 6,
+                zz : 5,
+                a : [{ foo: 'foo', bar: 'bar' }, 1, 42, 2, 3],
+                fn : 'beep',
+                c : { x : 7, z : 3 }
+            }, 'to have properties', {
+                a : [{ age: 42, gender: 'male' }, 1, { foo: 'foo', bar: 'baz' }, 2, "z", /beep/],
+                b : [5, 6, 7],
+                text: 'Hello, world'
+            });
+        });
         it('buffers', function () {
             expect(new Buffer('\x00\x01\x02Here is the thing I was talking about', 'utf-8'),
                    'to equal',
