@@ -1249,9 +1249,21 @@ describe('unexpected', function () {
             });
         });
 
+        it('can be negated with the "not" flag', function () {
+            expect(123, 'not to satisfy assertion', 'to be a string');
+
+            expect('foobar', 'not to satisfy', /quux/i);
+
+            expect({foo: 123}, 'not to satisfy', {foo: expect.fn('to be a string')});
+
+            expect({foo: 123, bar: 456}, 'not to exhaustively satisfy', {foo: 123});
+
+            expect({foo: 123}, 'not to exhaustively satisfy', {bar: undefined});
+        });
+
         it('fails when the assertion fails', function () {
             expect(function () {
-                expect(123, 'to satisfy', 'to be a string');
+                expect(123, 'to satisfy assertion', 'to be a string');
             }, 'to throw');
 
             expect(function () {
