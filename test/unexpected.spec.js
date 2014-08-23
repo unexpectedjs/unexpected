@@ -1786,6 +1786,45 @@ describe('unexpected', function () {
                         clonedExpect(['fooo'], 'to fooo');
                     }, 'to throw', 'The assertion "to fooo" is not defined for the type "array", but it is defined for these types: "null", "string"');
                 });
+
+                it('prefers to suggest a similarly named assertion for a more specific type', function () {
+                    clonedExpect.addType({
+                        name: 'myType',
+                        baseType: 'string',
+                        identify: function (obj) {
+                            return /^a/.test(obj);
+                        }
+                    }).addType({
+                        name: 'myMoreSpecificType',
+                        baseType: 'myType',
+                        identify: function (obj) {
+                            return /^aa/.test(obj);
+                        }
+                    }).addType({
+                        name: 'myMostSpecificType',
+                        baseType: 'myMoreSpecificType',
+                        identify: function (obj) {
+                            return /^aaa/.test(obj);
+                        }
+                    }).addAssertion('myType', 'to fooa', function () {
+                    }).addAssertion('myMoreSpecificType', 'to foob', function () {
+                    }).addAssertion('myMostSpecificType', 'to fooc', function () {});
+                    expect(function () {
+                        clonedExpect('a', 'to fooo');
+                    }, 'to throw', 'Unknown assertion "to fooo", did you mean: "to fooa"');
+
+                    expect(function () {
+                        clonedExpect('aa', 'to fooo');
+                    }, 'to throw', 'Unknown assertion "to fooo", did you mean: "to foob"');
+
+                    expect(function () {
+                        clonedExpect('aaa', 'to fooo');
+                    }, 'to throw', 'Unknown assertion "to fooo", did you mean: "to fooc"');
+
+                    expect(function () {
+                        clonedExpect('aaa', 'to fooaq');
+                    }, 'to throw', 'Unknown assertion "to fooaq", did you mean: "to fooc"');
+                });
             });
         });
 
