@@ -1101,15 +1101,15 @@ describe('unexpected', function () {
             });
         });
 
-        it.skip('should support directly naming other assertions', function () {
-            expect(123, 'to satisfy', 'to be a number');
+        it('should support directly naming other assertions', function () {
+            expect(123, 'to satisfy assertion', 'to be a number');
         });
 
-        it.skip('should support delegating to itself as a weird noop', function () {
-            expect(123, 'to satisfy', 'to satisfy', 'to satisfy', 'to be a number');
+        it('should support delegating to itself as a weird noop', function () {
+            expect(123, 'to satisfy assertion', 'to satisfy assertion', 'to satisfy assertion', 'to be a number');
         });
 
-        it.skip('should support a regular function in the RHS object (expected to throw an exception if the condition is not met)', function () {
+        it('should support a regular function in the RHS object (expected to throw an exception if the condition is not met)', function () {
             expect({foo: 123}, 'to satisfy', function (obj) {
                 expect(obj.foo, 'to equal', 123);
             });
@@ -1127,7 +1127,7 @@ describe('unexpected', function () {
             });
         });
 
-        it.skip('should assert missing properties with undefined in the RHS object', function () {
+        it('should assert missing properties with undefined in the RHS object', function () {
             expect({foo: 123}, 'to satisfy', {
                 bar: undefined
             });
