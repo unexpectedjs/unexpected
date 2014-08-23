@@ -503,26 +503,14 @@ describe('unexpected', function () {
                     'to equal',
                     new Buffer('\x00\x01\x02Here is the thing I was quuxing about', 'utf-8')
                 );
-            }, 'to throw', function (err) {
-                expect(err, 'to have properties', {
-                    showDiff: true,
-                    actual: {
-                        $Buffer: [
-                            '00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  |...Here is the t|',
-                            '68 69 6E 67 20 49 20 77 61 73 20 74 61 6C 6B 69  |hing I was talki|',
-                            '6E 67 20 61 62 6F 75 74                          |ng about|'
-                        ]
-                    },
-                    expected: {
-                        $Buffer: [
-                            '00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  |...Here is the t|',
-                            '68 69 6E 67 20 49 20 77 61 73 20 71 75 75 78 69  |hing I was quuxi|',
-                            '6E 67 20 61 62 6F 75 74                          |ng about|'
-                        ]
-                    }
-                });
-                expect(err.output.toString(), 'to equal', 'expected [Buffer 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74 68 69 6E 67  |...Here is the thing| (+20)] to equal [Buffer 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74 68 69 6E 67  |...Here is the thing| (+20)]');
-            });
+            }, 'to throw', 'expected [Buffer 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74 68 69 6E 67  |...Here is the thing| (+20)] to equal [Buffer 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74 68 69 6E 67  |...Here is the thing| (+20)]\n' +
+                   "\n" +
+                   "Diff:\n" +
+                   "\n" +
+                   " 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  |...Here is the t|\n" +
+                   "-68 69 6E 67 20 49 20 77 61 73 20 74 61 6C 6B 69  |hing I was talki|\n" +
+                   "+68 69 6E 67 20 49 20 77 61 73 20 71 75 75 78 69  |hing I was quuxi|\n" +
+                   " 6E 67 20 61 62 6F 75 74                          |ng about|");
         });
 
         it.skipIf(typeof Uint8Array === 'undefined' || !Array.prototype.map, 'produces a hex-diff in JSON when Uint8Arrays differ', function () {
@@ -540,26 +528,14 @@ describe('unexpected', function () {
                         0x6E, 0x67, 0x20, 0x61, 0x62, 0x6F, 0x75, 0x74
                     ])
                 );
-            }, 'to throw', function (err) {
-                expect(err, 'to have properties', {
-                    showDiff: true,
-                    actual: {
-                        $Uint8Array: [
-                            '00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  |...Here is the t|',
-                            '68 69 6E 67 20 49 20 77 61 73 20 74 61 6C 6B 69  |hing I was talki|',
-                            '6E 67 20 61 62 6F 75 74                          |ng about|'
-                        ]
-                    },
-                    expected: {
-                        $Uint8Array: [
-                            '00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  |...Here is the t|',
-                            '68 69 6E 67 20 49 20 77 61 73 20 71 75 75 78 69  |hing I was quuxi|',
-                            '6E 67 20 61 62 6F 75 74                          |ng about|'
-                        ]
-                    }
-                });
-                expect(err.output.toString(), 'to equal', 'expected [Uint8Array 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74 68 69 6E 67  |...Here is the thing| (+20)] to equal [Uint8Array 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74 68 69 6E 67  |...Here is the thing| (+20)]');
-            });
+            }, 'to throw', 'expected [Uint8Array 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74 68 69 6E 67  |...Here is the thing| (+20)] to equal [Uint8Array 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74 68 69 6E 67  |...Here is the thing| (+20)]\n' +
+                   "\n" +
+                   "Diff:\n" +
+                   "\n" +
+                   " 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  |...Here is the t|\n" +
+                   "-68 69 6E 67 20 49 20 77 61 73 20 74 61 6C 6B 69  |hing I was talki|\n" +
+                   "+68 69 6E 67 20 49 20 77 61 73 20 71 75 75 78 69  |hing I was quuxi|\n" +
+                   " 6E 67 20 61 62 6F 75 74                          |ng about|");
         });
 
         it.skipIf(typeof Uint16Array === 'undefined', 'produces a hex-diff in JSON when Uint16Arrays differ', function () {
@@ -577,26 +553,13 @@ describe('unexpected', function () {
                         0x6E67, 0x2061, 0x626F, 0x7574
                     ])
                 );
-            }, 'to throw', function (err) {
-                expect(err, 'to have properties', {
-                    showDiff: true,
-                    actual: {
-                        $Uint16Array: [
-                            '0001 0248 6572 6520 6973 2074 6865 2074',
-                            '6869 6E67 2049 2077 6173 2074 616C 6B69',
-                            '6E67 2061 626F 7574'
-                        ]
-                    },
-                    expected: {
-                        $Uint16Array: [
-                            '0001 0248 6572 6520 6973 2074 6865 2074',
-                            '6869 6E67 2049 2077 6173 2071 7575 7869',
-                            '6E67 2061 626F 7574'
-                        ]
-                    }
-                });
-                expect(err.output.toString(), 'to equal', 'expected [Uint16Array 0001 0248 6572 6520 6973 2074 6865 2074 6869 6E67 2049 2077 6173 2074 616C 6B69 6E67 2061 626F 7574] to equal [Uint16Array 0001 0248 6572 6520 6973 2074 6865 2074 6869 6E67 2049 2077 6173 2071 7575 7869 6E67 2061 626F 7574]');
-            });
+            }, 'to throw',  'expected [Uint16Array 0001 0248 6572 6520 6973 2074 6865 2074 6869 6E67 2049 2077 6173 2074 616C 6B69 6E67 2061 626F 7574] to equal [Uint16Array 0001 0248 6572 6520 6973 2074 6865 2074 6869 6E67 2049 2077 6173 2071 7575 7869 6E67 2061 626F 7574]\n' +
+                   "\n" +
+                   "Diff:\n" +
+                   "\n" +
+                   "-01 248 6572 6520 6973 2074 6865 2074 6869 6E67 2049 2077 6173 2074 616C 6B69  |................|\n" +
+                   "+01 248 6572 6520 6973 2074 6865 2074 6869 6E67 2049 2077 6173 2071 7575 7869  |................|\n" +
+                   " 6E67 2061 626F 7574                                      |....|");
         });
     });
 
@@ -642,20 +605,19 @@ describe('unexpected', function () {
             }, 'not to throw exception', /matches the exception message/);
         });
 
-        it('provides actual and expected properties when the exception message does not match the given string', function () {
+        it('provides a diff when the exception message does not match the given string', function () {
             expect(function () {
                 expect(function testFunction() {
                     throw new Error('bar');
                 }, 'to throw', 'foo');
-            }, 'to throw exception', function (err) {
-                expect(err.output.toString(), 'to equal',
-                       "expected [Function: testFunction] to throw 'foo'\n" +
-                       "  expected 'bar' to equal 'foo'");
-                expect(err, 'to have properties', {
-                    actual: 'bar',
-                    expected: 'foo'
-                });
-            });
+            }, 'to throw exception',
+                   "expected [Function: testFunction] to throw 'foo'\n" +
+                   "  expected 'bar' to equal 'foo'\n" +
+                   "  \n" +
+                   "  Diff:\n" +
+                   "  \n" +
+                   "  -bar\n" +
+                   "  +foo");
         });
 
         it('exactly matches the message against the given string', function () {
@@ -816,10 +778,27 @@ describe('unexpected', function () {
             });
             expect(function () {
                 expect({a: 'foo', b: 'bar'}, 'to have properties', {c: 'baz'});
-            }, 'to throw', "expected { a: 'foo', b: 'bar' } to have properties { c: 'baz' }");
+            }, 'to throw', "expected { a: 'foo', b: 'bar' } to have properties { c: 'baz' }\n" +
+                   "\n" +
+                   "Diff:\n" +
+                   "\n" +
+                   "{\n" +
+                   "  a: 'foo',\n" +
+                   "  b: 'bar',\n" +
+                   "  c: undefined  // should be: 'baz'\n" +
+                   "}");
             expect(function () {
                 expect({a: 'foo', b: 'bar'}, 'to have properties', {b: 'baz'});
-            }, 'to throw', "expected { a: 'foo', b: 'bar' } to have properties { b: 'baz' }");
+            }, 'to throw', "expected { a: 'foo', b: 'bar' } to have properties { b: 'baz' }\n" +
+                   "\n" +
+                   "Diff:\n" +
+                   "\n" +
+                   "{\n" +
+                   "  a: 'foo',\n" +
+                   "  b: 'bar'  // should be: 'baz'\n" +
+                   "            // -bar\n" +
+                   "            // +baz\n" +
+                   "}");
         });
 
         it('asserts presence and values of an object of own properties', function () {
@@ -828,7 +807,14 @@ describe('unexpected', function () {
                 var obj = create({a: 'foo', b: 'bar'});
                 expect(obj, 'to have properties', {a: 'foo', b: 'bar'}); // should not fail
                 expect(obj, 'to have own properties', {a: 'foo', b: 'bar'}); // should fail
-            }, 'to throw', "expected {} to have own properties { a: 'foo', b: 'bar' }");
+            }, 'to throw', "expected {} to have own properties { a: 'foo', b: 'bar' }\n" +
+                   "\n" +
+                   "Diff:\n" +
+                   "\n" +
+                   "{\n" +
+                   "  a: undefined, // should be: 'foo'\n" +
+                   "  b: undefined  // should be: 'bar'\n" +
+                   "}");
         });
 
         it('asserts absence and values of an object of properties', function () {
@@ -847,16 +833,6 @@ describe('unexpected', function () {
             }, 'to throw', "expected { a: 'foo', b: 'bar' } not to have own properties { a: 'foo', b: 'bar' }");
         });
 
-        it('should add showDiff:true and diffable actual and expected properties to the error instance', function () {
-            expect(function () {
-                expect({a: 123, b: 456, c: 789}, 'to have properties', {a: 123, b: 987});
-            }, 'to throw', function (e) {
-                expect(e.showDiff, 'to be true');
-                expect(e.actual, 'to equal', {a: 123, b: 456, c: 789});
-                expect(e.expected, 'to equal', {a: 123, b: 987, c: 789});
-            });
-        });
-
         it('includes prototype properties in the actual property (#48)', function () {
             function Foo() {}
 
@@ -864,12 +840,15 @@ describe('unexpected', function () {
 
             expect(function () {
                 expect(new Foo(), 'to have properties', {a: 123});
-            }, 'to throw', function (e) {
-                expect(e.expected, 'to have property', 'doSomething');
-                expect(e.actual, 'to have property', 'doSomething');
-                delete e.expected.a;
-                expect(e.actual, 'to equal', e.expected);
-            });
+            }, 'to throw',
+                   "expected {} to have properties { a: 123 }\n" +
+                   "\n" +
+                   "Diff:\n" +
+                   "\n" +
+                   "{\n" +
+                   "  doSomething: [Function],\n" +
+                   "  a: undefined  // should be: 123\n" +
+                   "}");
         });
 
         it('throws when the assertion fails', function () {
@@ -879,7 +858,13 @@ describe('unexpected', function () {
 
             expect(function () {
                 expect({a: 'foo'}, 'to have properties', {a: undefined});
-            }, 'to throw', "expected { a: 'foo' } to have properties { a: undefined }");
+            }, 'to throw', "expected { a: 'foo' } to have properties { a: undefined }\n" +
+                   "\n" +
+                   "Diff:\n" +
+                   "\n" +
+                   "{\n" +
+                   "  a: 'foo'  // should be: undefined\n" +
+                   "}");
         });
 
         it('throws when given invalid input', function () {
@@ -1870,6 +1855,11 @@ describe('unexpected', function () {
                         .append(inspect(output.clone(), obj.value))
                         .text(']');
                 },
+                diff: function (actual, expected, output, diff) {
+                    var comparison = diff({ value: actual.value }, { value: expected.value });
+                    comparison.diff = output.text('[Box: ').append(comparison.diff).text(']');
+                    return comparison;
+                },
                 toJSON: function (obj, toJSON) {
                     return {
                         $box: toJSON(obj.value)
@@ -1889,17 +1879,18 @@ describe('unexpected', function () {
             clonedExpect(box(123), 'not to equal', box(321));
         });
 
-        it('should call toJSON recursively in case of a mismatch', function () {
+        it('shows a diff in case of a mismatch', function () {
             expect(function () {
                 clonedExpect(box(box(123)), 'to equal', box(box(456)));
-            }, 'to throw', function (err) {
-                expect(err, 'to have properties', {
-                    showDiff: true,
-                    actual: {$box: {$box: 123}},
-                    expected: {$box: {$box: 456}}
-                });
-                expect(err.output.toString(), 'to equal', "expected [Box: [Box: 123]] to equal [Box: [Box: 456]]");
-            });
+            }, 'to throw', "expected [Box: [Box: 123]] to equal [Box: [Box: 456]]\n" +
+                   "\n" +
+                   "Diff:\n" +
+                   "\n" +
+                   "[Box: {\n" +
+                   "  value: [Box: {                        \n" +
+                   "           value: 123  // should be: 456\n" +
+                   "         }] \n" +
+                   "}]");
         });
     });
 
