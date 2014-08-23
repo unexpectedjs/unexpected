@@ -1179,23 +1179,43 @@ describe('unexpected', function () {
                             return output;
                         }
                     })
-                    .addAssertion('mysteryBox', 'to satisfy', function (expect, subject, value) {
+                    .addAssertion('mysteryBox', 'to [exhaustively] satisfy', function (expect, subject, value) {
                         if (value instanceof MysteryBox) {
-                            expect(subject[subject.propertyName], 'to satisfy', value[value.propertyName]);
+                            expect(subject[subject.propertyName], 'to [exhaustively] satisfy', value[value.propertyName]);
                         } else {
-                            expect(subject[subject.propertyName], 'to satisfy', value);
+                            expect(subject[subject.propertyName], 'to [exhaustively] satisfy', value);
                         }
                     });
             });
 
             it('should delegate to the "to satisfies" assertion defined for the custom type', function () {
                 clonedExpect({
-                    foo: new MysteryBox({ baz: 123 }),
+                    foo: new MysteryBox({ baz: 123, quux: 987 }),
                     bar: new MysteryBox(456)
                 }, 'to satisfy', {
                     foo: { baz: clonedExpect.fn('to be a number') },
                     bar: 456
                 });
+            });
+
+            it('should preserve the "exhaustively" flag when matching inside instances of the custom type', function () {
+                expect(function () {
+                    clonedExpect({
+                        foo: new MysteryBox({ baz: 123, quux: 987 })
+                    }, 'to exhaustively satisfy', {
+                        foo: { baz: clonedExpect.fn('to be a number') }
+                    });
+                }, 'to throw', 'expected { foo: [MysteryBox { baz: ..., quux: ... }] } to exhaustively satisfy { foo: { baz: [Function] } }');
+            });
+
+            it('should preserve the "exhaustively" flag when matching instances of the custom type against each other', function () {
+                expect(function () {
+                    clonedExpect({
+                        foo: new MysteryBox({ baz: 123, quux: 987 })
+                    }, 'to exhaustively satisfy', {
+                        foo: new MysteryBox({ baz: clonedExpect.fn('to be a number') })
+                    });
+                }, 'to throw', 'expected { foo: [MysteryBox { baz: ..., quux: ... }] } to exhaustively satisfy { foo: [MysteryBox { baz: ... }] }');
             });
 
             it('should support matching against other instances of the custom type', function () {
