@@ -1945,7 +1945,10 @@ describe('unexpected', function () {
                     {"id": 5, "name": "Sharpe Downs"}
                 ],
                 "circular": circular,
-                "this": { "is": { "deeply": { "nested": "This should not be shown", "a list": [ 1, 2, 3 ] }, "a list": [ 1, 2, 3 ] } }
+                "this": { "is": { "deeply": { "nested": { "object": "This should not be shown" },
+                                              "string": "should be shown",
+                                              "a list": [ 1, 2, 3 ] },
+                                  "a list": [ 1, 2, 3 ] } }
             }];
 
             expect(expect.inspect(data, 5).toString(), 'to equal',
@@ -2015,7 +2018,7 @@ describe('unexpected', function () {
                    "    circular: { self: [Circular] },\n" +
                    "    this: {\n" +
                    "      is: {\n" +
-                   "        deeply: { nested: ..., 'a list': ... },\n" +
+                   "        deeply: { nested: ..., string: 'should be shown', 'a list': ... },\n" +
                    "        'a list': [...]\n" +
                    "      }\n" +
                    "    }\n" +
