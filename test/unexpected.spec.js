@@ -18,7 +18,7 @@ var circular = {};
 circular.self = circular;
 
 describe('unexpected', function () {
-    describe.skip('diffs', function () {
+    describe('diffs', function () {
         it('to have properties', function () {
             expect({
                 foo : ['foo', 'bar', 'baz'],
@@ -134,15 +134,7 @@ describe('unexpected', function () {
                     expect(new Error('foo'), 'to equal', new Error('bar'));
                 }, 'to throw exception', function (err) {
                     expect(err.output.toString(), 'to equal',
-                           "expected [Error: { message: 'foo' }] to equal [Error: { message: 'bar' }]\n" +
-                           "\n" +
-                           "Diff:\n" +
-                           "\n" +
-                           "{\n" +
-                           "  message: 'foo'  // should be: 'bar'\n" +
-                           "                  // -foo\n" +
-                           "                  // +bar\n" +
-                           "}");
+                           "expected [Error: { message: 'foo' }] to equal [Error: { message: 'bar' }]");
                 });
             });
 
@@ -168,16 +160,7 @@ describe('unexpected', function () {
                 expect(function () {
                     expect(err1, 'to equal', err2);
                 }, 'to throw exception',
-                       "expected [Error: { message: 'foo', extra: 'foo' }] to equal [Error: { message: 'foo', extra: 'bar' }]\n" +
-                       "\n" +
-                       "Diff:\n" +
-                       "\n" +
-                       "{\n" +
-                       "  message: 'foo',\n" +
-                       "  extra: 'foo'  // should be: 'bar'\n" +
-                       "                // -foo\n" +
-                       "                // +bar\n" +
-                       "}");
+                       "expected [Error: { message: 'foo', extra: 'foo' }] to equal [Error: { message: 'foo', extra: 'bar' }]");
             });
 
             it('considers Error instances with the same message and stack to be equal', function () {
