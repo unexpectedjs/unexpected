@@ -1748,14 +1748,45 @@ describe('unexpected', function () {
             }, 'to throw');
         });
 
-        it('suggests an assertion if the given assertion does not exists', function () {
-            expect(function () {
-                clonedExpect(1, "to bee", 2);
-            }, 'to throw', 'Unknown assertion "to bee", did you mean: "to be"');
+        describe('when the assertion does not exist', function () {
+            it('it suggests a similarly named assertion', function () {
+                expect(function () {
+                    clonedExpect(1, "to bee", 2);
+                }, 'to throw', 'Unknown assertion "to bee", did you mean: "to be"');
 
-            expect(function () {
-                clonedExpect(1, "to be answer to the ultimate question of life, the universe, and everything");
-            }, 'to throw', 'Unknown assertion "to be answer to the ultimate question of life, the universe, and everything", did you mean: "to be answer to the Ultimate Question of Life, the Universe, and Everything"');
+                expect(function () {
+                    clonedExpect(1, "to be answer to the ultimate question of life, the universe, and everything");
+                }, 'to throw', 'Unknown assertion "to be answer to the ultimate question of life, the universe, and everything", did you mean: "to be answer to the Ultimate Question of Life, the Universe, and Everything"');
+            });
+
+            describe('but exists for another type', function () {
+                it('explains that in the error message', function () {
+                    clonedExpect.addAssertion('array', 'to foobarquux', function (expect, subject) {
+                        expect(subject, 'to equal', ['foobarquux']);
+                    });
+                    clonedExpect(['foobarquux'], 'to foobarquux');
+                    expect(function () {
+                        clonedExpect('foobarquux', 'to foobarquux');
+                    }, 'to throw', 'The assertion "to foobarquux" is not defined for the type "string", but it is defined for the type "array"');
+                });
+
+                it('prefers to suggest a similarly named assertion defined for the correct type over an exact match defined for other types', function () {
+                    clonedExpect.addAssertion('array', 'to foo', function (expect, subject) {
+                        expect(subject, 'to equal', ['foo']);
+                    }).addAssertion('string', 'to fooo', function (expect, subject) {
+                        expect(subject, 'to equal', 'fooo');
+                    });
+                    expect(function (){
+                        clonedExpect(['fooo'], 'to fooo');
+                    }, 'to throw', 'The assertion "to fooo" is not defined for the type "array", but it is defined for the type "string"');
+                    clonedExpect.addAssertion('null', 'to fooo', function (expect, subject) {
+                        expect(subject.message, 'to equal', 'fooo');
+                    });
+                    expect(function (){
+                        clonedExpect(['fooo'], 'to fooo');
+                    }, 'to throw', 'The assertion "to fooo" is not defined for the type "array", but it is defined for these types: "null", "string"');
+                });
+            });
         });
 
         describe('toString', function () {
