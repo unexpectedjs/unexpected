@@ -1546,6 +1546,44 @@ describe('unexpected', function () {
             });
         });
 
+        describe('types', function () {
+            it('allows specifying assertions with overlapping patterns for different types', function () {
+                function Box(value) {
+                    this.value = value;
+                }
+
+                var clonedExpect = expect.clone();
+                clonedExpect.addType({
+                    name: 'box',
+                    base: 'object',
+                    identify: function (obj) {
+                        return obj instanceof Box;
+                    },
+                    inspect: function (output, box, inspect) {
+                        output.text('[Box ').append(inspect(output.clone(), box.value)).text(']');
+                        return output;
+                    }
+                }).addAssertion('box', 'to be foo', function (expect, subject) {
+                    expect(subject.value, 'to be', 'foo');
+                }).addAssertion('string', 'to be foo', function (expect, subject) {
+                    expect(subject, 'to be', 'foo');
+                }).addAssertion('to be foo', function (expect, subject) {
+                    expect(String(subject), 'to equal', 'foo');
+                });
+                expect(clonedExpect.assertions.box['to be foo'], 'to be ok');
+                expect(clonedExpect.assertions.string['to be foo'], 'to be ok');
+                expect(clonedExpect.assertions.any['to be foo'], 'to be ok');
+                clonedExpect('foo', 'to be foo');
+                clonedExpect(new Box('foo'), 'to be foo');
+                expect(function () {
+                    clonedExpect('bar', 'to be foo');
+                }, 'to throw', "expected 'bar' to be foo");
+                expect(function () {
+                    clonedExpect(new Box('bar'), 'to be foo');
+                }, 'to throw', "expected [Box 'bar'] to be foo");
+            });
+        });
+
         describe('error modes', function () {
             var errorMode = 'default';
             var clonedExpect;
