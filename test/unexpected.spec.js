@@ -1139,19 +1139,17 @@ describe('unexpected', function () {
             });
         });
 
-        it.skip('should support the exhaustively flag', function () {
-            expect({foo: 123}, 'to exhaustively satisfy', {
-                bar: expect.fn('to be undefined')
-            });
+        it('should support the exhaustively flag', function () {
+            expect({foo: 123}, 'to exhaustively satisfy', {foo: 123});
         });
 
-        it.skip('should support delegating to itself with the exhaustively flag', function () {
+        it('should support delegating to itself with the exhaustively flag', function () {
             expect({foo: {bar: 123}, baz: 456}, 'to satisfy', {
                 foo: expect.fn('to exhaustively satisfy', {bar: 123})
             });
         });
 
-        it.skip('should support delegating to itself without the exhaustively flag', function () {
+        it('should support delegating to itself without the exhaustively flag', function () {
             expect({foo: {bar: 123, baz: 456}}, 'to exhaustively satisfy', {
                 foo: expect.fn('to satisfy', {bar: 123})
             });
@@ -1197,19 +1195,18 @@ describe('unexpected', function () {
             expect(function () {
                 expect('foobar', 'to satisfy', /quux/i);
             }, 'to throw', "expected 'foobar' to satisfy /quux/i");
-        });
 
-        it.skip('fails when the assertion fails', function () {
+            // FIXME: Could this error message be improved?
+            expect(function () {
+                expect({foo: 123}, 'to satisfy', {foo: expect.fn('to be a string')});
+            }, 'to throw', 'expected { foo: 123 } to satisfy { foo: [Function] }');
+
             expect(function () {
                 expect({foo: 123, bar: 456}, 'to exhaustively satisfy', {foo: 123});
             }, 'to throw');
 
             expect(function () {
                 expect({foo: 123}, 'to exhaustively satisfy', {bar: undefined});
-            }, 'to throw');
-
-            expect(function () {
-                expect({foo: 123}, 'to satisfy', {foo: expect.fn('to be a string')});
             }, 'to throw');
         });
     });
