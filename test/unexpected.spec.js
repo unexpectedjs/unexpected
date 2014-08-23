@@ -1155,35 +1155,77 @@ describe('unexpected', function () {
             });
         });
 
-        it.skip('should support custom types', function () {
-            function Box(value) {
-                this.value = value;
+        describe('with a custom type', function () {
+            function MysteryBox(value) {
+                this.propertyName = 'prop' + Math.floor(1000 * Math.random());
+                this[this.propertyName] = value;
             }
+            var clonedExpect;
 
-            var clonedExpect = expect.clone()
-                .addType({
-                    identify: function (obj) {
-                        return obj instanceof Box;
-                    },
-                    equal: function (box1, box2, equal) {
-                        return equal(box1.value, box2.value);
-                    },
-                    inspect: function (output, box, inspect) {
-                        output.text('[Box ');
-                        inspect(output, box.value);
-                        output.text(']');
-                    },
-                    // Guesswork:
-                    satisfy: function (box, spec, satisfy) {
-                        return satisfy(box.value, spec);
-                    }
+            beforeEach(function () {
+                clonedExpect = expect.clone()
+                    .addType({
+                        name: 'mysteryBox',
+                        identify: function (obj) {
+                            return obj instanceof MysteryBox;
+                        },
+                        equal: function (box1, box2, equal) {
+                            return equal(box1[box1.propertyName], box2[box2.propertyName]);
+                        },
+                        inspect: function (output, box, inspect) {
+                            output.text('[MysteryBox ');
+                            inspect(output, box[box.propertyName]);
+                            output.text(']');
+                            return output;
+                        }
+                    })
+                    .addAssertion('mysteryBox', 'to satisfy', function (expect, subject, value) {
+                        if (value instanceof MysteryBox) {
+                            expect(subject[subject.propertyName], 'to satisfy', value[value.propertyName]);
+                        } else {
+                            expect(subject[subject.propertyName], 'to satisfy', value);
+                        }
+                    });
+            });
+
+            it('should delegate to the "to satisfies" assertion defined for the custom type', function () {
+                clonedExpect({
+                    foo: new MysteryBox({ baz: 123 }),
+                    bar: new MysteryBox(456)
+                }, 'to satisfy', {
+                    foo: { baz: clonedExpect.fn('to be a number') },
+                    bar: 456
                 });
-            expect({
-                foo: new Box({ baz: 123 }),
-                bar: new Box(456)
-            }, 'to satisfy', {
-                foo: new Box({ baz: clonedExpect.fn('to be a number') }),
-                bar: new Box(456)
+            });
+
+            it('should support matching against other instances of the custom type', function () {
+                clonedExpect({
+                    foo: new MysteryBox({ baz: 123 }),
+                    bar: new MysteryBox(456)
+                }, 'to satisfy', {
+                    foo: new MysteryBox({ baz: clonedExpect.fn('to be a number') }),
+                    bar: new MysteryBox(456)
+                });
+            });
+
+            it('should fail to match', function () {
+                expect(function () {
+                    clonedExpect({
+                        foo: new MysteryBox('abc')
+                    }, 'to satisfy', {
+                        foo: 'def'
+                    });
+                }, 'to throw', "expected { foo: [MysteryBox 'abc'] } to satisfy { foo: 'def' }");
+            });
+
+            it('should fail to match unequal instances of the custom type', function () {
+                expect(function () {
+                    clonedExpect({
+                        foo: new MysteryBox('abc')
+                    }, 'to satisfy', {
+                        foo: new MysteryBox('def')
+                    });
+                }, 'to throw', "expected { foo: [MysteryBox 'abc'] } to satisfy { foo: [MysteryBox 'def'] }");
             });
         });
 
