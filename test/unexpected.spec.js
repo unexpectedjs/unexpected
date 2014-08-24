@@ -18,64 +18,6 @@ var circular = {};
 circular.self = circular;
 
 describe('unexpected', function () {
-    describe.skip('diffs', function () {
-        it('to have properties', function () {
-            expect({
-                foo : ['foo', 'bar', 'baz'],
-                multiline: 'snaps\nHello world\nfoo\nbar',
-                text: 'Hello world',
-                yy : 6,
-                zz : 5,
-                a : [{ foo: 'foo', bar: 'bar' }, 1, 42, 2, 3],
-                fn : 'beep',
-                c : { x : 7, z : 3 }
-            }, 'to have properties', {
-                a : [{ age: 42, gender: 'male' }, 1, { foo: 'foo', bar: 'baz' }, 2, "z", /beep/],
-                b : [5, 6, 7],
-                text: 'Hello, world'
-            });
-        });
-        it('buffers', function () {
-            expect(new Buffer('\x00\x01\x02Here is the thing I was talking about', 'utf-8'),
-                   'to equal',
-                   new Buffer('\x00\x01\x02Here is the thing I was quuxing about', 'utf-8'));
-        });
-        it('Uint8Arrays', function () {
-            expect(
-                new Uint8Array([
-                    0x00, 0x01, 0x02, 0x48, 0x65, 0x72, 0x65, 0x20, 0x69, 0x73, 0x20, 0x74, 0x68, 0x65, 0x20, 0x74,
-                    0x68, 0x69, 0x6E, 0x67, 0x20, 0x49, 0x20, 0x77, 0x61, 0x73, 0x20, 0x74, 0x61, 0x6C, 0x6B, 0x69,
-                    0x6E, 0x67, 0x20, 0x61, 0x62, 0x6F, 0x75, 0x74
-                ]),
-                'to equal',
-                new Uint8Array([
-                    0x00, 0x01, 0x02, 0x48, 0x65, 0x72, 0x65, 0x20, 0x69, 0x73, 0x20, 0x74, 0x68, 0x65, 0x20, 0x74,
-                    0x68, 0x69, 0x6E, 0x67, 0x20, 0x49, 0x20, 0x77, 0x61, 0x73, 0x20, 0x71, 0x75, 0x75, 0x78, 0x69,
-                    0x6E, 0x67, 0x20, 0x61, 0x62, 0x6F, 0x75, 0x74
-                ])
-            );
-        });
-        it('foobar', function () {
-            expect({
-                foo : ['foo', 'bar', 'baz'],
-                multiline: 'snaps\nHello world\nfoo\nbar',
-                text: 'Hello world',
-                yy : 6,
-                zz : 5,
-                a : [{ foo: 'foo', bar: 'bar' }, 1, 42, 2, 3],
-                fn : 'beep',
-                c : { x : 7, z : 3 }
-            }, 'to equal', {
-                a : [{ age: 42, gender: 'male' }, 1, { foo: 'foo', bar: 'baz' }, 2, "z", /beep/],
-                fn : function qqq() {},
-                b : [5, 6, 7],
-                c : { x : 8, y : 5 },
-                foo : ['foo', 'bar', 'baz'],
-                multiline: 'bla\nsnaps\nHello, world\nqux\nbar',
-                text: '        Hello, world'
-            });
-        });
-    });
     describe('argument validation', function () {
         it('fails when given no parameters', function () {
             expect(function () {
@@ -445,6 +387,35 @@ describe('unexpected', function () {
                    "[\n" +
                    "  // missing: 2\n" +
                    "  1 // should be removed\n" +
+                   "]");
+
+            expect(function () {
+                expect([0, { foo: 'bar' }, 1, { bar: 'bar'}, [1, 3, 2]],
+                       'to equal',
+                       [0, 1, { foo: 'baz' }, 42, { qux: 'qux' }, [1, 2, 3]]);
+            }, 'to throw exception',
+                   "expected [ 0, { foo: 'bar' }, 1, { bar: 'bar' }, [ 1, 3, 2 ] ] to equal [ 0, 1, { foo: 'baz' }, 42, { qux: 'qux' }, [ 1, 2, 3 ] ]\n" +
+                   "\n" +
+                   "Diff:\n" +
+                   "\n" +
+                   "[\n" +
+                   "  0, \n" +
+                   "  // missing: 1\n" +
+                   "  {\n" +
+                   "    foo: 'bar'  // should be: 'baz'\n" +
+                   "                // -bar\n" +
+                   "                // +baz\n" +
+                   "  }, \n" +
+                   "  1, // should be removed\n" +
+                   "  // missing: 42\n" +
+                   "  // missing: { qux: 'qux' }\n" +
+                   "  { bar: 'bar' }, // should be removed\n" +
+                   "  [\n" +
+                   "    1, \n" +
+                   "    // missing: 2\n" +
+                   "    3, \n" +
+                   "    2 // should be removed\n" +
+                   "  ] \n" +
                    "]");
         });
 
