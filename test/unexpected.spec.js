@@ -1776,13 +1776,13 @@ describe('unexpected', function () {
                     }).addAssertion('string', 'to fooo', function (expect, subject) {
                         expect(subject, 'to equal', 'fooo');
                     });
-                    expect(function (){
+                    expect(function () {
                         clonedExpect(['fooo'], 'to fooo');
                     }, 'to throw', 'The assertion "to fooo" is not defined for the type "array", but it is defined for the type "string"');
                     clonedExpect.addAssertion('null', 'to fooo', function (expect, subject) {
                         expect(subject.message, 'to equal', 'fooo');
                     });
-                    expect(function (){
+                    expect(function () {
                         clonedExpect(['fooo'], 'to fooo');
                     }, 'to throw', 'The assertion "to fooo" is not defined for the type "array", but it is defined for these types: "null", "string"');
                 });
@@ -1792,19 +1792,19 @@ describe('unexpected', function () {
                         name: 'myType',
                         baseType: 'string',
                         identify: function (obj) {
-                            return /^a/.test(obj);
+                            return (/^a/).test(obj);
                         }
                     }).addType({
                         name: 'myMoreSpecificType',
                         baseType: 'myType',
                         identify: function (obj) {
-                            return /^aa/.test(obj);
+                            return (/^aa/).test(obj);
                         }
                     }).addType({
                         name: 'myMostSpecificType',
                         baseType: 'myMoreSpecificType',
                         identify: function (obj) {
-                            return /^aaa/.test(obj);
+                            return (/^aaa/).test(obj);
                         }
                     }).addAssertion('myType', 'to fooa', function () {
                     }).addAssertion('myMoreSpecificType', 'to foob', function () {
