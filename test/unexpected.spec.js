@@ -1141,15 +1141,214 @@ describe('unexpected', function () {
 
     });
 
-    describe('to be an array whose items satisfy assertion', function () {
-        it('requires a function or a string as the third argument', function () {
+    describe('to satisfy assertion', function () {
+        // These are the examples from #40:
+
+        it('should support expect.fn in the RHS object', function () {
+            expect({foo: 'bar'}, 'to satisfy', {
+                foo: expect.fn('to be a string')
+            });
+
+            expect({foo: [123]}, 'to satisfy', {
+                foo: expect.fn('to be an array whose items satisfy', 'to be a number')
+            });
+        });
+
+        it('should support regular expressions in the RHS object', function () {
+            expect({foo: 'bar'}, 'to satisfy', {
+                foo: /ba/
+            });
+        });
+
+        it('should support expect.fn in an array', function () {
+            expect({foo: [123]}, 'to satisfy', {
+                foo: [expect.fn('to be a number')]
+            });
+        });
+
+        it('should support directly naming other assertions', function () {
+            expect(123, 'to satisfy assertion', 'to be a number');
+        });
+
+        it('should support delegating to itself as a weird noop', function () {
+            expect(123, 'to satisfy assertion', 'to satisfy assertion', 'to satisfy assertion', 'to be a number');
+        });
+
+        it('should support a regular function in the RHS object (expected to throw an exception if the condition is not met)', function () {
+            expect({foo: 123}, 'to satisfy', function (obj) {
+                expect(obj.foo, 'to equal', 123);
+            });
+        });
+
+        it.skip('should support a chained expect.fn', function () {
+            expect({foo: 123}, 'to satisfy', {
+                foo: expect.fn('to be a number').and('to be greater than', 10)
+            });
+        });
+
+        it('should support asserting on properties that are not defined', function () {
+            expect({foo: 123}, 'to satisfy', {
+                bar: expect.fn('to be undefined')
+            });
+        });
+
+        it('should assert missing properties with undefined in the RHS object', function () {
+            expect({foo: 123}, 'to satisfy', {
+                bar: undefined
+            });
+        });
+
+        it('should support the exhaustively flag', function () {
+            expect({foo: 123}, 'to exhaustively satisfy', {foo: 123});
+        });
+
+        it('should support delegating to itself with the exhaustively flag', function () {
+            expect({foo: {bar: 123}, baz: 456}, 'to satisfy', {
+                foo: expect.fn('to exhaustively satisfy', {bar: 123})
+            });
+        });
+
+        it('should support delegating to itself without the exhaustively flag', function () {
+            expect({foo: {bar: 123, baz: 456}}, 'to exhaustively satisfy', {
+                foo: expect.fn('to satisfy', {bar: 123})
+            });
+        });
+
+        describe('with a custom type', function () {
+            function MysteryBox(value) {
+                this.propertyName = 'prop' + Math.floor(1000 * Math.random());
+                this[this.propertyName] = value;
+            }
+            var clonedExpect;
+
+            beforeEach(function () {
+                clonedExpect = expect.clone()
+                    .addType({
+                        name: 'mysteryBox',
+                        identify: function (obj) {
+                            return obj instanceof MysteryBox;
+                        },
+                        equal: function (box1, box2, equal) {
+                            return equal(box1[box1.propertyName], box2[box2.propertyName]);
+                        },
+                        inspect: function (output, box, inspect) {
+                            output.text('[MysteryBox ');
+                            inspect(output, box[box.propertyName]);
+                            output.text(']');
+                            return output;
+                        }
+                    })
+                    .addAssertion('mysteryBox', 'to [exhaustively] satisfy', function (expect, subject, value) {
+                        if (value instanceof MysteryBox) {
+                            expect(subject[subject.propertyName], 'to [exhaustively] satisfy', value[value.propertyName]);
+                        } else {
+                            expect(subject[subject.propertyName], 'to [exhaustively] satisfy', value);
+                        }
+                    });
+            });
+
+            it('should delegate to the "to satisfies" assertion defined for the custom type', function () {
+                clonedExpect({
+                    foo: new MysteryBox({ baz: 123, quux: 987 }),
+                    bar: new MysteryBox(456)
+                }, 'to satisfy', {
+                    foo: { baz: clonedExpect.fn('to be a number') },
+                    bar: 456
+                });
+            });
+
+            it('should preserve the "exhaustively" flag when matching inside instances of the custom type', function () {
+                expect(function () {
+                    clonedExpect({
+                        foo: new MysteryBox({ baz: 123, quux: 987 })
+                    }, 'to exhaustively satisfy', {
+                        foo: { baz: clonedExpect.fn('to be a number') }
+                    });
+                }, 'to throw', 'expected { foo: [MysteryBox { baz: 123, quux: 987 }] } to exhaustively satisfy { foo: { baz: [Function] } }');
+            });
+
+            it('should preserve the "exhaustively" flag when matching instances of the custom type against each other', function () {
+                expect(function () {
+                    clonedExpect({
+                        foo: new MysteryBox({ baz: 123, quux: 987 })
+                    }, 'to exhaustively satisfy', {
+                        foo: new MysteryBox({ baz: clonedExpect.fn('to be a number') })
+                    });
+                }, 'to throw', 'expected { foo: [MysteryBox { baz: 123, quux: 987 }] } to exhaustively satisfy { foo: [MysteryBox { baz: [Function] }] }');
+            });
+
+            it('should support matching against other instances of the custom type', function () {
+                clonedExpect({
+                    foo: new MysteryBox({ baz: 123 }),
+                    bar: new MysteryBox(456)
+                }, 'to satisfy', {
+                    foo: new MysteryBox({ baz: clonedExpect.fn('to be a number') }),
+                    bar: new MysteryBox(456)
+                });
+            });
+
+            it('should fail to match', function () {
+                expect(function () {
+                    clonedExpect({
+                        foo: new MysteryBox('abc')
+                    }, 'to satisfy', {
+                        foo: 'def'
+                    });
+                }, 'to throw', "expected { foo: [MysteryBox 'abc'] } to satisfy { foo: 'def' }");
+            });
+
+            it('should fail to match unequal instances of the custom type', function () {
+                expect(function () {
+                    clonedExpect({
+                        foo: new MysteryBox('abc')
+                    }, 'to satisfy', {
+                        foo: new MysteryBox('def')
+                    });
+                }, 'to throw', "expected { foo: [MysteryBox 'abc'] } to satisfy { foo: [MysteryBox 'def'] }");
+            });
+        });
+
+        it('can be negated with the "not" flag', function () {
+            expect(123, 'not to satisfy assertion', 'to be a string');
+
+            expect('foobar', 'not to satisfy', /quux/i);
+
+            expect({foo: 123}, 'not to satisfy', {foo: expect.fn('to be a string')});
+
+            expect({foo: 123, bar: 456}, 'not to exhaustively satisfy', {foo: 123});
+
+            expect({foo: 123}, 'not to exhaustively satisfy', {bar: undefined});
+        });
+
+        it('fails when the assertion fails', function () {
             expect(function () {
-                expect([1, 2, 3], 'to be an array whose items satisfy');
-            }, 'to throw', 'Assertion "to be an array whose items satisfy" expects a function as argument');
+                expect(123, 'to satisfy assertion', 'to be a string');
+            }, 'to throw');
 
             expect(function () {
-                expect([1, 2, 3], 'to be an array whose items satisfy', 42);
-            }, 'to throw', 'Assertion "to be an array whose items satisfy" expects a function as argument');
+                expect('foobar', 'to satisfy', /quux/i);
+            }, 'to throw', "expected 'foobar' to satisfy /quux/i");
+
+            // FIXME: Could this error message be improved?
+            expect(function () {
+                expect({foo: 123}, 'to satisfy', {foo: expect.fn('to be a string')});
+            }, 'to throw', 'expected { foo: 123 } to satisfy { foo: [Function] }');
+
+            expect(function () {
+                expect({foo: 123, bar: 456}, 'to exhaustively satisfy', {foo: 123});
+            }, 'to throw');
+
+            expect(function () {
+                expect({foo: 123}, 'to exhaustively satisfy', {bar: undefined});
+            }, 'to throw');
+        });
+    });
+
+    describe('to be an array whose items satisfy assertion', function () {
+        it('requires a third argument', function () {
+            expect(function () {
+                expect([1, 2, 3], 'to be an array whose items satisfy');
+            }, 'to throw', 'Assertion "to be an array whose items satisfy" expects a third argument');
         });
 
         it('only accepts arrays as the target object', function () {
@@ -1237,14 +1436,10 @@ describe('unexpected', function () {
     });
 
     describe('to be a map whose values satisfy assertion', function () {
-        it('requires a function or a string as the third argument', function () {
+        it('requires a third argument', function () {
             expect(function () {
                 expect([1, 2, 3], 'to be a map whose values satisfy');
-            }, 'to throw', 'Assertion "to be a map whose values satisfy" expects a function as argument');
-
-            expect(function () {
-                expect([1, 2, 3], 'to be a map whose values satisfy', 42);
-            }, 'to throw', 'Assertion "to be a map whose values satisfy" expects a function as argument');
+            }, 'to throw', 'Assertion "to be a map whose values satisfy" expects a third argument');
         });
 
         it('only accepts objects as the target', function () {
@@ -1325,14 +1520,10 @@ describe('unexpected', function () {
     });
 
     describe('to be a map whose keys satisfy assertion', function () {
-        it('requires a function or string as the third argument', function () {
+        it('requires a third argument', function () {
             expect(function () {
                 expect([1, 2, 3], 'to be a map whose keys satisfy');
-            }, 'to throw', 'Assertion "to be a map whose keys satisfy" expects a function as argument');
-
-            expect(function () {
-                expect([1, 2, 3], 'to be a map whose keys satisfy', 42);
-            }, 'to throw', 'Assertion "to be a map whose keys satisfy" expects a function as argument');
+            }, 'to throw', 'Assertion "to be a map whose keys satisfy" expects a third argument');
         });
 
         it('only accepts objects as the target', function () {
