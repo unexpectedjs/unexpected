@@ -1264,7 +1264,7 @@ describe('unexpected', function () {
                     }, 'to exhaustively satisfy', {
                         foo: { baz: clonedExpect.fn('to be a number') }
                     });
-                }, 'to throw', 'expected { foo: [MysteryBox { baz: 123, quux: 987 }] } to exhaustively satisfy { foo: { baz: [Function] } }');
+                }, 'to throw', "expected { foo: [MysteryBox { baz: 123, quux: 987 }] } to exhaustively satisfy { foo: { baz: expect.fn('to be a number') } }");
             });
 
             it('should preserve the "exhaustively" flag when matching instances of the custom type against each other', function () {
@@ -1274,7 +1274,10 @@ describe('unexpected', function () {
                     }, 'to exhaustively satisfy', {
                         foo: new MysteryBox({ baz: clonedExpect.fn('to be a number') })
                     });
-                }, 'to throw', 'expected { foo: [MysteryBox { baz: 123, quux: 987 }] } to exhaustively satisfy { foo: [MysteryBox { baz: [Function] }] }');
+                }, 'to throw',
+                       "expected { foo: [MysteryBox { baz: 123, quux: 987 }] } to exhaustively satisfy {\n" +
+                       "  foo: [MysteryBox { baz: expect.fn('to be a number') }]\n" +
+                       "}");
             });
 
             it('should support matching against other instances of the custom type', function () {
@@ -1332,7 +1335,7 @@ describe('unexpected', function () {
             // FIXME: Could this error message be improved?
             expect(function () {
                 expect({foo: 123}, 'to satisfy', {foo: expect.fn('to be a string')});
-            }, 'to throw', 'expected { foo: 123 } to satisfy { foo: [Function] }');
+            }, 'to throw', "expected { foo: 123 } to satisfy { foo: expect.fn('to be a string') }");
 
             expect(function () {
                 expect({foo: 123, bar: 456}, 'to exhaustively satisfy', {foo: 123});
