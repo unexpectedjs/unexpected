@@ -390,11 +390,11 @@ describe('unexpected', function () {
                    "]");
 
             expect(function () {
-                expect([0, { foo: 'bar' }, 1, { bar: 'bar'}, [1, 3, 2]],
+                expect([0, { foo: 'bar' }, 1, { bar: 'bar'}, [1, 3, 2], 'bar'],
                        'to equal',
-                       [0, 1, { foo: 'baz' }, 42, { qux: 'qux' }, [1, 2, 3]]);
+                       [0, 1, { foo: 'baz' }, 42, { qux: 'qux' }, [1, 2, 3], 'baz']);
             }, 'to throw exception',
-                   "expected [ 0, { foo: 'bar' }, 1, { bar: 'bar' }, [ 1, 3, 2 ] ] to equal [ 0, 1, { foo: 'baz' }, 42, { qux: 'qux' }, [ 1, 2, 3 ] ]\n" +
+                   "expected [ 0, { foo: 'bar' }, 1, { bar: 'bar' }, [ 1, 3, 2 ], 'bar' ] to equal [ 0, 1, { foo: 'baz' }, 42, { qux: 'qux' }, [ 1, 2, 3 ], 'baz' ]\n" +
                    "\n" +
                    "Diff:\n" +
                    "\n" +
@@ -415,7 +415,10 @@ describe('unexpected', function () {
                    "    // missing: 2\n" +
                    "    3, \n" +
                    "    2 // should be removed\n" +
-                   "  ] \n" +
+                   "  ], \n" +
+                   "  'bar'  // should be: 'baz'\n" +
+                   "         // -bar\n" +
+                   "         // +baz\n" +
                    "]");
         });
 
