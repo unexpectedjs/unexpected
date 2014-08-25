@@ -1423,7 +1423,7 @@ describe('unexpected', function () {
             expect.addAssertion('foo', function () {})
                   .addAssertion('bar', function () {});
 
-            expect(expect.assertions, 'to have keys',
+            expect(expect.assertions.any, 'to have keys',
                    'foo',
                    'bar');
         });
@@ -1460,13 +1460,13 @@ describe('unexpected', function () {
 
         it('allows overlapping patterns within a single addAssertion call', function () {
             expect(function () {
-                expect.clone().addAssertion('to foo', 'to [really] foo', function () {});
+                expect.clone().addAssertion(['to foo', 'to [really] foo'], function () {});
             }, 'not to throw');
         });
 
         it('does not break when declaring multiple patterns that do not have the same set of flags defined', function () {
             var clonedExpect = expect.clone()
-                .addAssertion('[not] to be foo', 'to be foo aliased without the not flag', function (expect, subject) {
+                .addAssertion(['[not] to be foo', 'to be foo aliased without the not flag'], function (expect, subject) {
                     expect(subject, '[not] to equal', 'foo');
                 });
 
@@ -1602,6 +1602,44 @@ describe('unexpected', function () {
                         expect.addAssertion('foo ((bar))', function () {});
                     }, 'to throw', "Assertion patterns must not contain alternations with parentheses: 'foo ((bar))'");
                 });
+            });
+        });
+
+        describe('types', function () {
+            it('allows specifying assertions with overlapping patterns for different types', function () {
+                function Box(value) {
+                    this.value = value;
+                }
+
+                var clonedExpect = expect.clone();
+                clonedExpect.addType({
+                    name: 'box',
+                    base: 'object',
+                    identify: function (obj) {
+                        return obj instanceof Box;
+                    },
+                    inspect: function (output, box, inspect) {
+                        output.text('[Box ').append(inspect(output.clone(), box.value)).text(']');
+                        return output;
+                    }
+                }).addAssertion('box', 'to be foo', function (expect, subject) {
+                    expect(subject.value, 'to be', 'foo');
+                }).addAssertion('string', 'to be foo', function (expect, subject) {
+                    expect(subject, 'to be', 'foo');
+                }).addAssertion('to be foo', function (expect, subject) {
+                    expect(String(subject), 'to equal', 'foo');
+                });
+                expect(clonedExpect.assertions.box['to be foo'], 'to be ok');
+                expect(clonedExpect.assertions.string['to be foo'], 'to be ok');
+                expect(clonedExpect.assertions.any['to be foo'], 'to be ok');
+                clonedExpect('foo', 'to be foo');
+                clonedExpect(new Box('foo'), 'to be foo');
+                expect(function () {
+                    clonedExpect('bar', 'to be foo');
+                }, 'to throw', "expected 'bar' to be foo");
+                expect(function () {
+                    clonedExpect(new Box('bar'), 'to be foo');
+                }, 'to throw', "expected [Box 'bar'] to be foo");
             });
         });
 
@@ -1758,7 +1796,7 @@ describe('unexpected', function () {
         });
 
         it('assertions can be added to the clone', function () {
-            expect(clonedExpect.assertions, 'to have keys',
+            expect(clonedExpect.assertions.any, 'to have keys',
                    'to be answer to the Ultimate Question of Life, the Universe, and Everything',
                    'not to be answer to the Ultimate Question of Life, the Universe, and Everything');
             clonedExpect(42, 'to be answer to the Ultimate Question of Life, the Universe, and Everything');
@@ -1769,14 +1807,84 @@ describe('unexpected', function () {
             }, 'to throw');
         });
 
-        it('suggests an assertion if the given assertion does not exists', function () {
-            expect(function () {
-                clonedExpect(1, "to bee", 2);
-            }, 'to throw', 'Unknown assertion "to bee", did you mean: "to be"');
+        describe('when the assertion does not exist', function () {
+            it('it suggests a similarly named assertion', function () {
+                expect(function () {
+                    clonedExpect(1, "to bee", 2);
+                }, 'to throw', 'Unknown assertion "to bee", did you mean: "to be"');
 
-            expect(function () {
-                clonedExpect(1, "to be answer to the ultimate question of life, the universe, and everything");
-            }, 'to throw', 'Unknown assertion "to be answer to the ultimate question of life, the universe, and everything", did you mean: "to be answer to the Ultimate Question of Life, the Universe, and Everything"');
+                expect(function () {
+                    clonedExpect(1, "to be answer to the ultimate question of life, the universe, and everything");
+                }, 'to throw', 'Unknown assertion "to be answer to the ultimate question of life, the universe, and everything", did you mean: "to be answer to the Ultimate Question of Life, the Universe, and Everything"');
+            });
+
+            describe('but exists for another type', function () {
+                it('explains that in the error message', function () {
+                    clonedExpect.addAssertion('array', 'to foobarquux', function (expect, subject) {
+                        expect(subject, 'to equal', ['foobarquux']);
+                    });
+                    clonedExpect(['foobarquux'], 'to foobarquux');
+                    expect(function () {
+                        clonedExpect('foobarquux', 'to foobarquux');
+                    }, 'to throw', 'The assertion "to foobarquux" is not defined for the type "string", but it is defined for the type "array"');
+                });
+
+                it('prefers to suggest a similarly named assertion defined for the correct type over an exact match defined for other types', function () {
+                    clonedExpect.addAssertion('array', 'to foo', function (expect, subject) {
+                        expect(subject, 'to equal', ['foo']);
+                    }).addAssertion('string', 'to fooo', function (expect, subject) {
+                        expect(subject, 'to equal', 'fooo');
+                    });
+                    expect(function () {
+                        clonedExpect(['fooo'], 'to fooo');
+                    }, 'to throw', 'The assertion "to fooo" is not defined for the type "array", but it is defined for the type "string"');
+                    clonedExpect.addAssertion('null', 'to fooo', function (expect, subject) {
+                        expect(subject.message, 'to equal', 'fooo');
+                    });
+                    expect(function () {
+                        clonedExpect(['fooo'], 'to fooo');
+                    }, 'to throw', 'The assertion "to fooo" is not defined for the type "array", but it is defined for these types: "null", "string"');
+                });
+
+                it('prefers to suggest a similarly named assertion for a more specific type', function () {
+                    clonedExpect.addType({
+                        name: 'myType',
+                        baseType: 'string',
+                        identify: function (obj) {
+                            return (/^a/).test(obj);
+                        }
+                    }).addType({
+                        name: 'myMoreSpecificType',
+                        baseType: 'myType',
+                        identify: function (obj) {
+                            return (/^aa/).test(obj);
+                        }
+                    }).addType({
+                        name: 'myMostSpecificType',
+                        baseType: 'myMoreSpecificType',
+                        identify: function (obj) {
+                            return (/^aaa/).test(obj);
+                        }
+                    }).addAssertion('myType', 'to fooa', function () {
+                    }).addAssertion('myMoreSpecificType', 'to foob', function () {
+                    }).addAssertion('myMostSpecificType', 'to fooc', function () {});
+                    expect(function () {
+                        clonedExpect('a', 'to fooo');
+                    }, 'to throw', 'Unknown assertion "to fooo", did you mean: "to fooa"');
+
+                    expect(function () {
+                        clonedExpect('aa', 'to fooo');
+                    }, 'to throw', 'Unknown assertion "to fooo", did you mean: "to foob"');
+
+                    expect(function () {
+                        clonedExpect('aaa', 'to fooo');
+                    }, 'to throw', 'Unknown assertion "to fooo", did you mean: "to fooc"');
+
+                    expect(function () {
+                        clonedExpect('aaa', 'to fooaq');
+                    }, 'to throw', 'Unknown assertion "to fooaq", did you mean: "to fooc"');
+                });
+            });
         });
 
         describe('toString', function () {
@@ -1850,10 +1958,10 @@ describe('unexpected', function () {
             });
         });
 
-        it('throws an expection is the type has an empty or undefined name', function () {
+        it('throws an expection if the type has an empty or undefined name', function () {
             expect(function () {
                 clonedExpect.addType({});
-            }, 'to throw', 'A custom type must be given a non-empty name');
+            }, 'to throw', 'A type must be given a non-empty name');
         });
 
         it('should use the equal defined by the type', function () {
