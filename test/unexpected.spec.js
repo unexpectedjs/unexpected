@@ -2398,6 +2398,32 @@ describe('unexpected', function () {
                        "-foo\n" +
                        "+foo\\n");
             });
+
+            it('highlights unexpected carriage returns', function () {
+                expect(function () {
+                    expect('foo\r\nbar', 'to equal', 'foo\nbar');
+                }, 'to throw',
+                       "expected 'foo\\r\\nbar' to equal 'foo\\nbar'\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "-foo\\r\n" +
+                       "+foo\n" +
+                       " bar");
+            });
+
+            it('highlights unexpected carriage returns', function () {
+                expect(function () {
+                    expect('foo\nbar', 'to equal', 'foo\r\nbar');
+                }, 'to throw',
+                       "expected 'foo\\nbar' to equal 'foo\\r\\nbar'\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "-foo\n" +
+                       "+foo\\r\n" +
+                       " bar");
+            });
         });
 
     });
