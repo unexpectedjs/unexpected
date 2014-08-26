@@ -670,6 +670,11 @@ describe('unexpected', function () {
             expect({ length: 4 }, 'to have length', 4);
         });
 
+        it('asserts string .length', function () {
+            expect('abc', 'to have length', 3);
+            expect('', 'to have length', 0);
+        });
+
         it('throws when the assertion fails', function () {
             expect(function () {
                 expect([1, 2], 'to have length', 3);
