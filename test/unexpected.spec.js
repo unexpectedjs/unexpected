@@ -159,6 +159,9 @@ describe('unexpected', function () {
             expect(false, 'to be false');
             expect(true, 'not to be false');
             expect(undefined, 'to be undefined');
+            expect(false, 'to be defined');
+            expect({}, 'to be defined');
+            expect('', 'to be defined');
         });
 
         it.skipIf(typeof Buffer === 'undefined', 'asserts === equality for Buffers', function () {
@@ -179,6 +182,10 @@ describe('unexpected', function () {
             expect(function () {
                 expect(true, 'not to be', true);
             }, 'to throw exception', "expected true not to be true");
+
+            expect(function () {
+                expect(undefined, 'to be defined');
+            }, 'to throw exception', "expected undefined to be defined");
         });
     });
 
