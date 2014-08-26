@@ -204,6 +204,7 @@ describe('unexpected', function () {
             expect([{}], 'to be an array of objects');
             expect([{}], 'to be a non-empty array of objects');
             expect([/foo/, /bar/], 'to be a non-empty array of regexps');
+            expect([/foo/, /bar/], 'to be a non-empty array of regexes');
             expect([[], [], []], 'to be an array of arrays');
             expect(['abc'], 'to be a non-empty array of strings');
             expect([], 'to be an empty array');
