@@ -618,6 +618,16 @@ describe('unexpected', function () {
             expect(null, 'not to match', /foo/);
         });
 
+        it('does not keep state between invocations', function () {
+            // This tests that the assertion does not depend on the lastIndex
+            // property of the regexp:
+            var regExp = /a/g,
+                str = 'aa';
+            expect(str, 'to match', regExp);
+            expect(str, 'to match', regExp);
+            expect(str, 'to match', regExp);
+        });
+
         it('throws when the assertion fails', function () {
             expect(function () {
                 expect('test', 'to match', /foo/);
