@@ -567,7 +567,7 @@ describe('unexpected', function () {
         it('fails if the argument is not a function', function () {
             expect(function () {
                 expect(1, 'to throw exception');
-            }, 'to throw exception', "Assertion 'to throw exception' only supports functions");
+            }, 'to throw exception', 'The assertion "to throw exception" is not defined for the type "number", but it is defined for the type "function"');
         });
 
         it('given a function the function is called with the exception', function () {
@@ -641,10 +641,13 @@ describe('unexpected', function () {
             expect([1, 2], 'to contain', 1);
             expect([1, 2], 'to contain', 2, 1);
             expect('hello world', 'to contain', 'world');
-            expect(null, 'not to contain', 'world');
         });
 
         it('throws when the assertion fails', function () {
+            expect(function () {
+                expect(null, 'not to contain', 'world');
+            }, 'to throw', 'The assertion "not to contain" is not defined for the type "null", but it is defined for these types: "string", "array"');
+
             expect(function () {
                 expect('hello world', 'to contain', 'foo');
             }, 'to throw exception', "expected 'hello world' to contain 'foo'");
@@ -659,7 +662,7 @@ describe('unexpected', function () {
 
             expect(function () {
                 expect(1, 'to contain', 1);
-            }, 'to throw exception', "Assertion 'to contain' only supports strings and arrays");
+            }, 'to throw exception', 'The assertion "to contain" is not defined for the type "number", but it is defined for these types: "string", "array"');
         });
     });
 
@@ -683,7 +686,7 @@ describe('unexpected', function () {
 
             expect(function () {
                 expect(null, 'to have length', 4);
-            }, 'to throw exception', "Assertion 'to have length' only supports array like objects");
+            }, 'to throw exception', 'The assertion "to have length" is not defined for the type "null", but it is defined for these types: "string", "array", "object"');
 
             expect(function () {
                 expect({ length: 'foo' }, 'to have length', 4);
@@ -701,11 +704,7 @@ describe('unexpected', function () {
             expect({a: 'b'}, 'not to have property', 'b');
             expect({'"a"': 'b'}, 'to have own property', '"a"');
             expect(create({a: 'b'}), 'not to have own property', 'a');
-            expect(1, 'not to have property', 'a');
-            expect(null, 'not to have property', 'a');
-            expect(undefined, 'not to have property', 'a');
-            expect(true, 'not to have property', 'a');
-            expect(false, 'not to have property', 'a');
+            expect(function () {}, 'to have property', 'toString');
         });
 
         it('throws when the assertion fails', function () {
@@ -715,7 +714,7 @@ describe('unexpected', function () {
 
             expect(function () {
                 expect(null, 'to have property', 'b');
-            }, 'to throw exception', "expected null to have property 'b'");
+            }, 'to throw exception', 'The assertion "to have property" is not defined for the type "null", but it is defined for these types: "array", "object"');
 
             expect(function () {
                 expect({a: 'b'}, 'to have property', 'a', 'c');
@@ -724,12 +723,12 @@ describe('unexpected', function () {
             expect(function () {
                 // property expectations ignores value if property
                 expect(null, 'not to have property', 'a', 'b');
-            }, 'to throw exception', "expected null not to have property 'a', 'b'");
+            }, 'to throw exception', 'The assertion "not to have property" is not defined for the type "null", but it is defined for these types: "array", "object"');
 
             expect(function () {
                 // property expectations on value expects the property to be present
                 expect(null, 'not to have own property', 'a', 'b');
-            }, 'to throw exception', "expected null not to have own property 'a', 'b'");
+            }, 'to throw exception', 'The assertion "not to have own property" is not defined for the type "null", but it is defined for these types: "array", "object"');
         });
     });
 
@@ -894,7 +893,7 @@ describe('unexpected', function () {
 
             expect(function () {
                 expect(null, 'to be empty');
-            }, 'to throw exception', "Assertion 'to be empty' only supports strings, arrays and objects");
+            }, 'to throw exception', 'The assertion "to be empty" is not defined for the type "null", but it is defined for these types: "string", "array", "object"');
         });
     });
 
@@ -907,10 +906,6 @@ describe('unexpected', function () {
             expect({ a: 'b', c: 'd' }, 'to only have keys', 'a', 'c');
             expect({ a: 'b', c: 'd' }, 'to only have keys', ['a', 'c']);
             expect({ a: 'b', c: 'd', e: 'f' }, 'to not only have keys', ['a', 'c']);
-            expect(null, 'not to have key', 'a');
-            expect(undefined, 'not to have key', 'a');
-            expect(true, 'not to have key', 'a');
-            expect(false, 'not to have key', 'a');
         });
 
         it('throws when the assertion fails', function () {
@@ -947,8 +942,6 @@ describe('unexpected', function () {
             expect(Infinity, 'not to be finite');
             expect(-Infinity, 'not to be finite');
             expect(NaN, 'not to be finite');
-            expect(null, 'not to be finite');
-            expect({}, 'not to be finite');
         });
 
         it('throws when the assertion fails', function () {
@@ -965,8 +958,6 @@ describe('unexpected', function () {
             expect(Infinity, 'to be infinite');
             expect(-Infinity, 'to be infinite');
             expect(NaN, 'not to be infinite');
-            expect(null, 'not to be infinite');
-            expect({}, 'not to be infinite');
         });
 
         it('throws when the assertion fails', function () {
@@ -991,7 +982,7 @@ describe('unexpected', function () {
             }, 'to throw exception', "expected 4 not to be within '0..4'");
             expect(function () {
                 expect(null, 'not to be within', 0, 4);
-            }, 'to throw exception', "expected null not to be within '0..4'");
+            }, 'to throw exception', 'The assertion "not to be within" is not defined for the type "null", but it is defined for these types: "number", "string"');
         });
     });
 
@@ -1080,11 +1071,7 @@ describe('unexpected', function () {
     describe('to be NaN assertion', function () {
         it('assert that the value is NaN or not', function () {
             expect(NaN, 'to be NaN');
-            expect({}, 'to be NaN');
             expect(2, 'not to be NaN');
-            expect(null, 'not to be NaN');
-            expect(undefined, 'to be NaN');
-            expect("String", 'to be NaN');
         });
 
         it('fails when the assertion fails', function () {
@@ -1383,7 +1370,7 @@ describe('unexpected', function () {
         it('only accepts arrays as the target object', function () {
             expect(function () {
                 expect(42, 'to be an array whose items satisfy', function (item) {});
-            }, 'to throw', /expected 42 to be an array/);
+            }, 'to throw', 'The assertion "to be an array whose items satisfy" is not defined for the type "number", but it is defined for the type "array"');
         });
 
         it('supports the non-empty clause', function () {
@@ -1471,10 +1458,10 @@ describe('unexpected', function () {
             }, 'to throw', 'Assertion "to be a map whose values satisfy" expects a third argument');
         });
 
-        it('only accepts objects as the target', function () {
+        it('only accepts objects and arrays as the target', function () {
             expect(function () {
                 expect(42, 'to be a map whose values satisfy', function (value) {});
-            }, 'to throw', /expected 42 to be an object/);
+            }, 'to throw', 'The assertion "to be a map whose values satisfy" is not defined for the type "number", but it is defined for these types: "array", "object"');
         });
 
         it('asserts that the given callback does not throw for any values in the map', function () {
@@ -1552,13 +1539,13 @@ describe('unexpected', function () {
         it('requires a third argument', function () {
             expect(function () {
                 expect([1, 2, 3], 'to be a map whose keys satisfy');
-            }, 'to throw', 'Assertion "to be a map whose keys satisfy" expects a third argument');
+            }, 'to throw', 'The assertion "to be a map whose keys satisfy" is not defined for the type "array", but it is defined for the type "object"');
         });
 
         it('only accepts objects as the target', function () {
             expect(function () {
                 expect(42, 'to be a map whose keys satisfy', function (key) {});
-            }, 'to throw', /expected 42 to be an object/);
+            }, 'to throw', 'The assertion "to be a map whose keys satisfy" is not defined for the type "number", but it is defined for the type "object"');
         });
 
         it('asserts that the given callback does not throw for any keys in the map', function () {
@@ -1996,7 +1983,7 @@ describe('unexpected', function () {
             });
             expect(function () {
                 clonedExpect('foo', 'to be foo');
-            }, 'to throw exception', 'Unknown assertion "to bee", did you mean: "to be"');
+            }, 'to throw exception', 'Unknown assertion "to bee", did you mean: "to be <"');
         });
     });
 
@@ -2030,7 +2017,7 @@ describe('unexpected', function () {
         describe('when the assertion does not exist', function () {
             it('it suggests a similarly named assertion', function () {
                 expect(function () {
-                    clonedExpect(1, "to bee", 2);
+                    clonedExpect(null, "to bee", null);
                 }, 'to throw', 'Unknown assertion "to bee", did you mean: "to be"');
 
                 expect(function () {
