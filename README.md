@@ -110,6 +110,9 @@ expect(false, 'not to be true');
 expect(false, 'to be false');
 expect(true, 'not to be false');
 expect(undefined, 'to be undefined');
+expect(null, 'to be defined');
+expect(false, 'to be defined');
+expect({}, 'to be defined');
 ```
 
 **equal**: asserts deep equality that works with objects
