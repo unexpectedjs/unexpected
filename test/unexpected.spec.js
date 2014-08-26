@@ -2004,26 +2004,26 @@ describe('unexpected', function () {
         var clonedExpect;
         beforeEach(function () {
             clonedExpect = expect.clone();
-            clonedExpect.addAssertion('[not] to be answer to the Ultimate Question of Life, the Universe, and Everything', function (expect, subject) {
+            clonedExpect.addAssertion('[not] to be the answer to the Ultimate Question of Life, the Universe, and Everything', function (expect, subject) {
                 expect(subject, '[not] to equal', 42);
             });
         });
 
         it('changes to the clone does not affect the original instance', function () {
             expect(expect.assertions, 'not to have keys',
-                   'to be answer to the Ultimate Question of Life, the Universe, and Everything',
-                   'not to be answer to the Ultimate Question of Life, the Universe, and Everything');
+                   'to be the answer to the Ultimate Question of Life, the Universe, and Everything',
+                   'not to be the answer to the Ultimate Question of Life, the Universe, and Everything');
         });
 
         it('assertions can be added to the clone', function () {
             expect(clonedExpect.assertions.any, 'to have keys',
-                   'to be answer to the Ultimate Question of Life, the Universe, and Everything',
-                   'not to be answer to the Ultimate Question of Life, the Universe, and Everything');
-            clonedExpect(42, 'to be answer to the Ultimate Question of Life, the Universe, and Everything');
-            clonedExpect(41, 'not to be answer to the Ultimate Question of Life, the Universe, and Everything');
+                   'to be the answer to the Ultimate Question of Life, the Universe, and Everything',
+                   'not to be the answer to the Ultimate Question of Life, the Universe, and Everything');
+            clonedExpect(42, 'to be the answer to the Ultimate Question of Life, the Universe, and Everything');
+            clonedExpect(41, 'not to be the answer to the Ultimate Question of Life, the Universe, and Everything');
 
             expect(function () {
-                clonedExpect(41, 'to be answer to the Ultimate Question of Life, the Universe, and Everything');
+                clonedExpect(41, 'to be the answer to the Ultimate Question of Life, the Universe, and Everything');
             }, 'to throw');
         });
 
@@ -2034,8 +2034,8 @@ describe('unexpected', function () {
                 }, 'to throw', 'Unknown assertion "to bee", did you mean: "to be"');
 
                 expect(function () {
-                    clonedExpect(1, "to be answer to the ultimate question of life, the universe, and everything");
-                }, 'to throw', 'Unknown assertion "to be answer to the ultimate question of life, the universe, and everything", did you mean: "to be answer to the Ultimate Question of Life, the Universe, and Everything"');
+                    clonedExpect(1, "to be the answer to the ultimate question of life, the universe, and everything");
+                }, 'to throw', 'Unknown assertion "to be the answer to the ultimate question of life, the universe, and everything", did you mean: "to be the answer to the Ultimate Question of Life, the Universe, and Everything"');
             });
 
             describe('but exists for another type', function () {
@@ -2111,8 +2111,8 @@ describe('unexpected', function () {
             it('returns a string containing all the expanded assertions', function () {
                 expect(clonedExpect.toString(), 'to contain', 'to be');
                 expect(clonedExpect.toString(), 'to contain', 'not to be');
-                expect(clonedExpect.toString(), 'to contain', 'to be answer to the Ultimate Question of Life, the Universe, and Everything');
-                expect(clonedExpect.toString(), 'to contain', 'not to be answer to the Ultimate Question of Life, the Universe, and Everything');
+                expect(clonedExpect.toString(), 'to contain', 'to be the answer to the Ultimate Question of Life, the Universe, and Everything');
+                expect(clonedExpect.toString(), 'to contain', 'not to be the answer to the Ultimate Question of Life, the Universe, and Everything');
             });
         });
     });
