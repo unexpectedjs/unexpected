@@ -2005,7 +2005,7 @@ describe('unexpected', function () {
         beforeEach(function () {
             clonedExpect = expect.clone();
             clonedExpect.addAssertion('[not] to be answer to the Ultimate Question of Life, the Universe, and Everything', function (expect, subject) {
-                this.assert(subject === 42);
+                expect(subject, '[not] to equal', 42);
             });
         });
 
