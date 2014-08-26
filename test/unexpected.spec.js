@@ -2424,6 +2424,19 @@ describe('unexpected', function () {
                        "+foo\\r\n" +
                        " bar");
             });
+
+            it('matching carriage returns are not highlighted', function () {
+                expect(function () {
+                    expect('foo\r\nbar', 'to equal', 'foo\r\nbaz');
+                }, 'to throw',
+                       "expected 'foo\\r\\nbar' to equal 'foo\\r\\nbaz'\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       " foo\r\n" +
+                       "-bar\n" +
+                       "+baz");
+            });
         });
 
     });
