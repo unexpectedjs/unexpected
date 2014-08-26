@@ -2371,4 +2371,33 @@ describe('unexpected', function () {
                    "]");
         });
     });
+
+    describe('diffs', function () {
+        describe('on strings', function () {
+            it('highlights unexpected extra newlines after the input', function () {
+                expect(function () {
+                    expect('foo\n', 'to equal', 'foo');
+                }, 'to throw',
+                       "expected 'foo\\n' to equal 'foo'\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "-foo\\n\n" +
+                       "+foo");
+            });
+
+            it('highlights missing newlines after the input', function () {
+                expect(function () {
+                    expect('foo', 'to equal', 'foo\n');
+                }, 'to throw',
+                       "expected 'foo' to equal 'foo\\n'\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "-foo\n" +
+                       "+foo\\n");
+            });
+        });
+
+    });
 });
