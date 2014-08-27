@@ -2410,9 +2410,29 @@ describe('unexpected', function () {
                        "-foo\\r\n" +
                        "+foo\n" +
                        " bar");
+
+                expect(function () {
+                    expect('foo\r\n', 'to equal', 'foo\n');
+                }, 'to throw',
+                       "expected 'foo\\r\\n' to equal 'foo\\n'\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "-foo\\r\n" +
+                       "+foo");
+
+                expect(function () {
+                    expect('foo\r\n', 'to equal', 'foo');
+                }, 'to throw',
+                       "expected 'foo\\r\\n' to equal 'foo'\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "-foo\\r\\n\n" +
+                       "+foo");
             });
 
-            it('highlights unexpected carriage returns', function () {
+            it('highlights missing carriage returns', function () {
                 expect(function () {
                     expect('foo\nbar', 'to equal', 'foo\r\nbar');
                 }, 'to throw',
@@ -2423,6 +2443,26 @@ describe('unexpected', function () {
                        "-foo\n" +
                        "+foo\\r\n" +
                        " bar");
+
+                expect(function () {
+                    expect('foo\n', 'to equal', 'foo\r\n');
+                }, 'to throw',
+                       "expected 'foo\\n' to equal 'foo\\r\\n'\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "-foo\n" +
+                       "+foo\\r");
+
+                expect(function () {
+                    expect('foo', 'to equal', 'foo\r\n');
+                }, 'to throw',
+                       "expected 'foo' to equal 'foo\\r\\n'\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "-foo\n" +
+                       "+foo\\r\\n");
             });
 
             it('matching carriage returns are not highlighted', function () {
