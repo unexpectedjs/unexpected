@@ -1621,7 +1621,7 @@ describe('unexpected', function () {
 
     it('throws if the assertion does not exist', function () {
         expect(function () {
-            expect(1, "to bee", 2);
+            expect({}, "to bee", 2);
         }, 'to throw exception', 'Unknown assertion "to bee", did you mean: "to be"');
     });
 
