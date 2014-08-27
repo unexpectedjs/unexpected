@@ -686,7 +686,7 @@ describe('unexpected', function () {
 
             expect(function () {
                 expect(null, 'to have length', 4);
-            }, 'to throw exception', 'The assertion "to have length" is not defined for the type "null", but it is defined for these types: "string", "array", "object"');
+            }, 'to throw exception', 'The assertion "to have length" is not defined for the type "null", but it is defined for these types: "string", "object"');
 
             expect(function () {
                 expect({ length: 'foo' }, 'to have length', 4);
@@ -714,7 +714,7 @@ describe('unexpected', function () {
 
             expect(function () {
                 expect(null, 'to have property', 'b');
-            }, 'to throw exception', 'The assertion "to have property" is not defined for the type "null", but it is defined for these types: "array", "object"');
+            }, 'to throw exception', 'The assertion "to have property" is not defined for the type "null", but it is defined for the type "object"');
 
             expect(function () {
                 expect({a: 'b'}, 'to have property', 'a', 'c');
@@ -723,12 +723,12 @@ describe('unexpected', function () {
             expect(function () {
                 // property expectations ignores value if property
                 expect(null, 'not to have property', 'a', 'b');
-            }, 'to throw exception', 'The assertion "not to have property" is not defined for the type "null", but it is defined for these types: "array", "object"');
+            }, 'to throw exception', 'The assertion "not to have property" is not defined for the type "null", but it is defined for the type "object"');
 
             expect(function () {
                 // property expectations on value expects the property to be present
                 expect(null, 'not to have own property', 'a', 'b');
-            }, 'to throw exception', 'The assertion "not to have own property" is not defined for the type "null", but it is defined for these types: "array", "object"');
+            }, 'to throw exception', 'The assertion "not to have own property" is not defined for the type "null", but it is defined for the type "object"');
         });
     });
 
@@ -893,7 +893,7 @@ describe('unexpected', function () {
 
             expect(function () {
                 expect(null, 'to be empty');
-            }, 'to throw exception', 'The assertion "to be empty" is not defined for the type "null", but it is defined for these types: "string", "array", "object"');
+            }, 'to throw exception', 'The assertion "to be empty" is not defined for the type "null", but it is defined for these types: "string", "object"');
         });
     });
 
@@ -1461,7 +1461,7 @@ describe('unexpected', function () {
         it('only accepts objects and arrays as the target', function () {
             expect(function () {
                 expect(42, 'to be a map whose values satisfy', function (value) {});
-            }, 'to throw', 'The assertion "to be a map whose values satisfy" is not defined for the type "number", but it is defined for these types: "array", "object"');
+            }, 'to throw', 'The assertion "to be a map whose values satisfy" is not defined for the type "number", but it is defined for the type "object"');
         });
 
         it('asserts that the given callback does not throw for any values in the map', function () {
@@ -1539,7 +1539,7 @@ describe('unexpected', function () {
         it('requires a third argument', function () {
             expect(function () {
                 expect([1, 2, 3], 'to be a map whose keys satisfy');
-            }, 'to throw', 'The assertion "to be a map whose keys satisfy" is not defined for the type "array", but it is defined for the type "object"');
+            }, 'to throw', 'Assertion "to be a map whose keys satisfy" expects a third argument');
         });
 
         it('only accepts objects as the target', function () {
