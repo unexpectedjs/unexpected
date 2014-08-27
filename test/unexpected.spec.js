@@ -1983,7 +1983,7 @@ describe('unexpected', function () {
             });
             expect(function () {
                 clonedExpect('foo', 'to be foo');
-            }, 'to throw exception', 'Unknown assertion "to bee", did you mean: "to be <"');
+            }, 'to throw exception', 'Unknown assertion "to bee", did you mean: "to be"');
         });
     });
 
