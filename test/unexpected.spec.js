@@ -2504,5 +2504,27 @@ describe('unexpected', function () {
                        " bar");
             });
         });
+
+        describe('on objects', function () {
+            it('should not collapse parts containing conflicts', function () {
+                expect(function () {
+                    expect({
+                        bar: {
+                            b: {foo: {bar: 123}}
+                        }
+                    }, 'to equal', {
+                        bar: {}
+                    });
+                }, 'to throw', 'expected { bar: { b: { foo: ... } } } to equal { bar: {} }\n' +
+                       '\n' +
+                       'Diff:\n' +
+                       '\n' +
+                       '{\n' +
+                       '  bar: {                                               \n' +
+                       '         b: { foo: { bar: 123 } }  // should be removed\n' +
+                       '       } \n' +
+                       '}');
+            });
+        });
     });
 });
