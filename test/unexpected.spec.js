@@ -2464,7 +2464,45 @@ describe('unexpected', function () {
                        "-bar\n" +
                        "+baz");
             });
-        });
 
+            it('should show a \\r\\n line as removed', function () {
+                expect(function () {
+                    expect('foo\r\n\r\nbar', 'to equal', 'foo\r\nbar');
+                }, 'to throw',
+                       "expected 'foo\\r\\n\\r\\nbar' to equal 'foo\\r\\nbar'\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       " foo\r\n" +
+                       "-\\r\n" +
+                       " bar");
+            });
+
+            it('should show an empty removed line', function () {
+                expect(function () {
+                    expect('foo\n\nbar', 'to equal', 'foo\nbar');
+                }, 'to throw',
+                       "expected 'foo\\n\\nbar' to equal 'foo\\nbar'\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       " foo\n" +
+                       "-\n" +
+                       " bar");
+            });
+
+            it('should show a missing empty line', function () {
+                expect(function () {
+                    expect('foo\nbar', 'to equal', 'foo\n\nbar');
+                }, 'to throw',
+                       "expected 'foo\\nbar' to equal 'foo\\n\\nbar'\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       " foo\n" +
+                       "+\n" +
+                       " bar");
+            });
+        });
     });
 });
