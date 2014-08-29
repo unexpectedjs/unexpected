@@ -1254,7 +1254,7 @@ describe('unexpected', function () {
                         },
                         inspect: function (output, box, inspect) {
                             output.text('[MysteryBox ');
-                            inspect(output, box[box.propertyName]);
+                            output.append(inspect(box[box.propertyName]));
                             output.text(']');
                             return output;
                         }
@@ -1834,7 +1834,7 @@ describe('unexpected', function () {
                         return obj instanceof Box;
                     },
                     inspect: function (output, box, inspect) {
-                        output.text('[Box ').append(inspect(output.clone(), box.value)).text(']');
+                        output.text('[Box ').append(inspect(box.value)).text(']');
                         return output;
                     }
                 }).addAssertion('box', 'to be foo', function (expect, subject) {
@@ -2157,7 +2157,7 @@ describe('unexpected', function () {
                 inspect: function (output, obj, inspect) {
                     return output
                         .text('[Box: ')
-                        .append(inspect(output.clone(), obj.value))
+                        .append(inspect(obj.value))
                         .text(']');
                 },
                 diff: function (actual, expected, output, diff) {
