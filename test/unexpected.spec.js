@@ -2160,7 +2160,7 @@ describe('unexpected', function () {
                         .append(inspect(obj.value))
                         .text(']');
                 },
-                diff: function (actual, expected, output, diff) {
+                diff: function (output, actual, expected, diff) {
                     var comparison = diff({ value: actual.value }, { value: expected.value });
                     comparison.diff = output.text('[Box: ').append(comparison.diff).text(']');
                     return comparison;
