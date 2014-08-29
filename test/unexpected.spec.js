@@ -364,7 +364,15 @@ describe('unexpected', function () {
                 (function () {
                     expect(arguments, 'to equal', ['foo', 'bar', 'baz']);
                 }('foo', 'bar'));
-            }, 'to throw exception', "expected [ 'foo', 'bar' ] to equal [ 'foo', 'bar', 'baz' ]");
+            }, 'to throw exception', "expected [ 'foo', 'bar' ] to equal [ 'foo', 'bar', 'baz' ]\n" +
+                   "\n" +
+                   "Diff:\n" +
+                   "\n" +
+                   "[\n" +
+                   "  'foo', \n" +
+                   "  'bar' \n" +
+                   "  // missing: 'baz'\n" +
+                   "]");
         });
 
         it("throws an error with a diff when not negated", function () {
