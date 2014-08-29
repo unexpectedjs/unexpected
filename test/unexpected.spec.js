@@ -2511,6 +2511,30 @@ describe('unexpected', function () {
                        "+\n" +
                        " bar");
             });
+
+            it('should show missing content when comparing to the empty string', function () {
+                expect(function () {
+                    expect('', 'to equal', 'foo\nbar');
+                }, 'to throw',
+                       "expected '' to equal 'foo\\nbar'\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "+foo\n" +
+                       "+bar");
+            });
+
+            it('should show unexpected content when comparing to the empty string', function () {
+                expect(function () {
+                    expect('foo\nbar', 'to equal', '');
+                }, 'to throw',
+                       "expected 'foo\\nbar' to equal ''\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "-foo\n" +
+                       "-bar");
+            });
         });
 
         describe('on objects', function () {
