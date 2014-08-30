@@ -81,9 +81,9 @@ describe('unexpected', function () {
                            "Diff:\n" +
                            "\n" +
                            "{\n" +
-                           "  message: 'foo'  // should be: 'bar'\n" +
-                           "                  // -foo\n" +
-                           "                  // +bar\n" +
+                           "  message: 'foo' // should be: 'bar'\n" +
+                           "                 // -foo\n" +
+                           "                 // +bar\n" +
                            "}");
                 });
             });
@@ -116,9 +116,9 @@ describe('unexpected', function () {
                        "\n" +
                        "{\n" +
                        "  message: 'foo',\n" +
-                       "  extra: 'foo'  // should be: 'bar'\n" +
-                       "                // -foo\n" +
-                       "                // +bar\n" +
+                       "  extra: 'foo' // should be: 'bar'\n" +
+                       "               // -foo\n" +
+                       "               // +bar\n" +
                        "}");
             });
 
@@ -337,11 +337,11 @@ describe('unexpected', function () {
                    "Diff:\n" +
                    "\n" +
                    "{\n" +
-                   "  a: {                          \n" +
-                   "       b: 'c'  // should be: 'd'\n" +
-                   "               // -c\n" +
-                   "               // +d\n" +
-                   "     } \n" +
+                   "  a: {\n" +
+                   "    b: 'c' // should be: 'd'\n" +
+                   "           // -c\n" +
+                   "           // +d\n" +
+                   "  }\n" +
                    "}");
 
             expect(function () {
@@ -355,9 +355,9 @@ describe('unexpected', function () {
                    "Diff:\n" +
                    "\n" +
                    "{\n" +
-                   "  message: 'foo'  // should be: 'bar'\n" +
-                   "                  // -foo\n" +
-                   "                  // +bar\n" +
+                   "  message: 'foo' // should be: 'bar'\n" +
+                   "                 // -foo\n" +
+                   "                 // +bar\n" +
                    "}");
 
             expect(function () {
@@ -418,9 +418,9 @@ describe('unexpected', function () {
                    "  0, \n" +
                    "  // missing: 1\n" +
                    "  {\n" +
-                   "    foo: 'bar'  // should be: 'baz'\n" +
-                   "                // -bar\n" +
-                   "                // +baz\n" +
+                   "    foo: 'bar' // should be: 'baz'\n" +
+                   "               // -bar\n" +
+                   "               // +baz\n" +
                    "  }, \n" +
                    "  1, // should be removed\n" +
                    "  // missing: 42\n" +
@@ -446,7 +446,7 @@ describe('unexpected', function () {
                    "Diff:\n" +
                    "\n" +
                    "{\n" +
-                   "  foo: 1  // should be: 2\n" +
+                   "  foo: 1 // should be: 2\n" +
                    "}");
         });
 
@@ -789,7 +789,7 @@ describe('unexpected', function () {
                    "{\n" +
                    "  a: 'foo',\n" +
                    "  b: 'bar',\n" +
-                   "  c: undefined  // should be: 'baz'\n" +
+                   "  c: undefined // should be: 'baz'\n" +
                    "}");
             expect(function () {
                 expect({a: 'foo', b: 'bar'}, 'to have properties', {b: 'baz'});
@@ -799,9 +799,9 @@ describe('unexpected', function () {
                    "\n" +
                    "{\n" +
                    "  a: 'foo',\n" +
-                   "  b: 'bar'  // should be: 'baz'\n" +
-                   "            // -bar\n" +
-                   "            // +baz\n" +
+                   "  b: 'bar' // should be: 'baz'\n" +
+                   "           // -bar\n" +
+                   "           // +baz\n" +
                    "}");
         });
 
@@ -817,7 +817,7 @@ describe('unexpected', function () {
                    "\n" +
                    "{\n" +
                    "  a: undefined, // should be: 'foo'\n" +
-                   "  b: undefined  // should be: 'bar'\n" +
+                   "  b: undefined // should be: 'bar'\n" +
                    "}");
         });
 
@@ -851,7 +851,7 @@ describe('unexpected', function () {
                    "\n" +
                    "{\n" +
                    "  doSomething: [Function],\n" +
-                   "  a: undefined  // should be: 123\n" +
+                   "  a: undefined // should be: 123\n" +
                    "}");
         });
 
@@ -867,7 +867,7 @@ describe('unexpected', function () {
                    "Diff:\n" +
                    "\n" +
                    "{\n" +
-                   "  a: 'foo'  // should be: undefined\n" +
+                   "  a: 'foo' // should be: undefined\n" +
                    "}");
         });
 
@@ -2164,11 +2164,6 @@ describe('unexpected', function () {
                     var comparison = diff({ value: actual.value }, { value: expected.value });
                     comparison.diff = output.text('[Box: ').append(comparison.diff).text(']');
                     return comparison;
-                },
-                toJSON: function (obj, toJSON) {
-                    return {
-                        $box: toJSON(obj.value)
-                    };
                 }
             });
         });
@@ -2192,9 +2187,9 @@ describe('unexpected', function () {
                    "Diff:\n" +
                    "\n" +
                    "[Box: {\n" +
-                   "  value: [Box: {                        \n" +
-                   "           value: 123  // should be: 456\n" +
-                   "         }] \n" +
+                   "  value: [Box: {\n" +
+                   "    value: 123 // should be: 456\n" +
+                   "  }]\n" +
                    "}]");
         });
     });
@@ -2552,9 +2547,9 @@ describe('unexpected', function () {
                        'Diff:\n' +
                        '\n' +
                        '{\n' +
-                       '  bar: {                                               \n' +
-                       '         b: { foo: { bar: 123 } }  // should be removed\n' +
-                       '       } \n' +
+                       '  bar: {\n' +
+                       '    b: { foo: { bar: 123 } } // should be removed\n' +
+                       '  }\n' +
                        '}');
             });
 
@@ -2570,9 +2565,9 @@ describe('unexpected', function () {
                        "Diff:\n" +
                        "\n" +
                        "{\n" +
-                       "  value: 'bar'  // should be: 'baz'\n" +
-                       "                // -bar\n" +
-                       "                // +baz\n" +
+                       "  value: 'bar' // should be: 'baz'\n" +
+                       "               // -bar\n" +
+                       "               // +baz\n" +
                        "}");
             });
 
@@ -2593,7 +2588,7 @@ describe('unexpected', function () {
                        "{\n" +
                        "  foo: 'foo', // should be removed\n" +
                        "  bar: 'bar',\n" +
-                       "  baz: 'baz' \n" +
+                       "  baz: 'baz'\n" +
                        "}");
             });
 
@@ -2614,7 +2609,7 @@ describe('unexpected', function () {
                        "{\n" +
                        "  one: 1,\n" +
                        "  three: 3,\n" +
-                       "  two: undefined  // should be: 2\n" +
+                       "  two: undefined // should be: 2\n" +
                        "}");
             });
 
@@ -2636,7 +2631,27 @@ describe('unexpected', function () {
                        "{\n" +
                        "  one: 1,\n" +
                        "  two: 42, // should be: 2\n" +
-                       "  three: 3 \n" +
+                       "  three: 3\n" +
+                       "}");
+            });
+
+            it('can contain nested object diffs for properties', function () {
+                expect(function () {
+                    expect({
+                        one: { two: { three: 4 } }
+                    }, 'to equal', {
+                        one: { two: { three: 3 } }
+                    });
+                }, 'to throw', "expected { one: { two: { three: 4 } } } to equal { one: { two: { three: 3 } } }\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "{\n" +
+                       "  one: {\n" +
+                       "    two: {\n" +
+                       "      three: 4 // should be: 3\n" +
+                       "    }\n" +
+                       "  }\n" +
                        "}");
             });
         });
