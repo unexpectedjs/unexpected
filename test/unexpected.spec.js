@@ -2574,7 +2574,48 @@ describe('unexpected', function () {
                        "                // -bar\n" +
                        "                // +baz\n" +
                        "}");
+            });
 
+            it('shows properties that has been removed', function () {
+                expect(function () {
+                    expect({
+                        foo: 'foo',
+                        bar: 'bar',
+                        baz: 'baz'
+                    }, 'to equal', {
+                        bar: 'bar',
+                        baz: 'baz'
+                    });
+                }, 'to throw', "expected { foo: 'foo', bar: 'bar', baz: 'baz' } to equal { bar: 'bar', baz: 'baz' }\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "{\n" +
+                       "  foo: 'foo', // should be removed\n" +
+                       "  bar: 'bar',\n" +
+                       "  baz: 'baz' \n" +
+                       "}");
+            });
+
+            it('shows properties that has been added', function () {
+                expect(function () {
+                    expect({
+                        bar: 'bar',
+                        baz: 'baz'
+                    }, 'to equal', {
+                        foo: 'foo',
+                        bar: 'bar',
+                        baz: 'baz'
+                    });
+                }, 'to throw', "expected { bar: 'bar', baz: 'baz' } to equal { foo: 'foo', bar: 'bar', baz: 'baz' }\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "{\n" +
+                       "  bar: 'bar',\n" +
+                       "  baz: 'baz',\n" +
+                       "  foo: undefined  // should be: 'foo'\n" +
+                       "}");
             });
         });
     });
