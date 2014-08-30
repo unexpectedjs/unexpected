@@ -2557,6 +2557,25 @@ describe('unexpected', function () {
                        '       } \n' +
                        '}');
             });
+
+            it('can contain nested string diffs', function () {
+                expect(function () {
+                    expect({
+                        value: 'bar'
+                    }, 'to equal', {
+                        value: 'baz'
+                    });
+                }, 'to throw', "expected { value: 'bar' } to equal { value: 'baz' }\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "{\n" +
+                       "  value: 'bar'  // should be: 'baz'\n" +
+                       "                // -bar\n" +
+                       "                // +baz\n" +
+                       "}");
+
+            });
         });
     });
 });
