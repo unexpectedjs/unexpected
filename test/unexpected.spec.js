@@ -2597,24 +2597,25 @@ describe('unexpected', function () {
                        "}");
             });
 
-            it('shows properties that has been added', function () {
+            it('highlight properties with an unexpected value', function () {
                 expect(function () {
                     expect({
-                        bar: 'bar',
-                        baz: 'baz'
+                        one: 1,
+                        two: 42,
+                        three: 3
                     }, 'to equal', {
-                        foo: 'foo',
-                        bar: 'bar',
-                        baz: 'baz'
+                        one: 1,
+                        two: 2,
+                        three: 3
                     });
-                }, 'to throw', "expected { bar: 'bar', baz: 'baz' } to equal { foo: 'foo', bar: 'bar', baz: 'baz' }\n" +
+                }, 'to throw', "expected { one: 1, two: 42, three: 3 } to equal { one: 1, two: 2, three: 3 }\n" +
                        "\n" +
                        "Diff:\n" +
                        "\n" +
                        "{\n" +
-                       "  bar: 'bar',\n" +
-                       "  baz: 'baz',\n" +
-                       "  foo: undefined  // should be: 'foo'\n" +
+                       "  one: 1,\n" +
+                       "  two: 42, // should be: 2\n" +
+                       "  three: 3 \n" +
                        "}");
             });
         });
