@@ -2576,7 +2576,7 @@ describe('unexpected', function () {
                        "}");
             });
 
-            it('shows properties that has been removed', function () {
+            it('highlights properties that has been removed', function () {
                 expect(function () {
                     expect({
                         foo: 'foo',
@@ -2597,7 +2597,28 @@ describe('unexpected', function () {
                        "}");
             });
 
-            it('highlight properties with an unexpected value', function () {
+            it('highlights missing properties', function () {
+                expect(function () {
+                    expect({
+                        one: 1,
+                        three: 3
+                    }, 'to equal', {
+                        one: 1,
+                        two: 2,
+                        three: 3
+                    });
+                }, 'to throw', "expected { one: 1, three: 3 } to equal { one: 1, two: 2, three: 3 }\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "{\n" +
+                       "  one: 1,\n" +
+                       "  three: 3,\n" +
+                       "  two: undefined  // should be: 2\n" +
+                       "}");
+            });
+
+            it('highlights properties with an unexpected value', function () {
                 expect(function () {
                     expect({
                         one: 1,
