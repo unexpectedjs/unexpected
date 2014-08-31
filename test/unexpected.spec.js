@@ -2654,6 +2654,44 @@ describe('unexpected', function () {
                        "  }\n" +
                        "}");
             });
+
+            it('collapses subtrees without conflicts', function () {
+                expect(function () {
+                    expect({
+                        pill: {
+                            red: "I'll show you how deep the rabbit hole goes",
+                            blue: { ignorance: { of:  'illusion' } }
+                        }
+                    }, 'to equal', {
+                        pill: {
+                            red: "I'll show you how deep the rabbit hole goes.",
+                            blue: { ignorance: { of:  'illusion' } }
+                        }
+                    });
+                }, 'to throw',
+                       "expected {\n" +
+                       "  pill: {\n" +
+                       "    red: 'I\\'ll show you how deep the rabbit hole goes',\n" +
+                       "    blue: { ignorance: ... }\n" +
+                       "  }\n" +
+                       "} to equal {\n" +
+                       "  pill: {\n" +
+                       "    red: 'I\\'ll show you how deep the rabbit hole goes.',\n" +
+                       "    blue: { ignorance: ... }\n" +
+                       "  }\n" +
+                       "}\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "{\n" +
+                       "  pill: {\n" +
+                       "    red: 'I\\'ll show you how deep the rabbit hole goes', // should be: 'I\\'ll show you how deep the rabbit hole goes.'\n" +
+                       "                                                         // -I'll show you how deep the rabbit hole goes\n" +
+                       "                                                         // +I'll show you how deep the rabbit hole goes.\n" +
+                       "    blue: { ignorance: ... }\n" +
+                       "  }\n" +
+                       "}");
+            });
         });
     });
 });
