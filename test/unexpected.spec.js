@@ -1821,11 +1821,11 @@ describe('unexpected', function () {
         });
 
         describe('types', function () {
-            it('allows specifying assertions with overlapping patterns for different types', function () {
-                function Box(value) {
-                    this.value = value;
-                }
+            function Box(value) {
+                this.value = value;
+            }
 
+            it('allows specifying assertions with overlapping patterns for different types', function () {
                 var clonedExpect = expect.clone();
                 clonedExpect.addType({
                     name: 'box',
@@ -1855,6 +1855,24 @@ describe('unexpected', function () {
                 expect(function () {
                     clonedExpect(new Box('bar'), 'to be foo');
                 }, 'to throw', "expected [Box 'bar'] to be foo");
+            });
+
+            it('allows you to control the inspection depth', function () {
+                var clonedExpect = expect.clone().addType({
+                    name: 'box',
+                    base: 'object',
+                    identify: function (obj) {
+                        return obj instanceof Box;
+                    },
+                    inspect: function (output, box, inspect, depth) {
+                        output.text('[Box ').append(inspect(box.value, depth)).text(']');
+                        return output;
+                    }
+                });
+
+                expect(clonedExpect.inspect(new Box({ shown: { hidden: 'secret' }}), 1).toString(),
+                       'to equal',
+                       '[Box { shown: ... }]');
             });
         });
 
