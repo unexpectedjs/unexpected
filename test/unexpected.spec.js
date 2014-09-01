@@ -1615,8 +1615,8 @@ describe('unexpected', function () {
         });
 
         it('works with a circular object', function () {
-            var obj = {a: 123};
-            obj.b = obj;
+            var obj = {a: 123, b: {}};
+            obj.b.a = obj;
             expect(obj, 'to be canonical');
         });
 
@@ -1624,6 +1624,10 @@ describe('unexpected', function () {
             expect(function () {
                 expect({b: 456, a: 123}, 'to be canonical');
             }, 'to throw exception', 'expected { b: 456, a: 123 } to be canonical');
+
+            expect(function () {
+                expect({foo: {b: 456, a: 123}}, 'to be canonical');
+            }, 'to throw exception', 'expected { foo: { b: 456, a: 123 } } to be canonical');
         });
     });
 
