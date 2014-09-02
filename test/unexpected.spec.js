@@ -1570,6 +1570,13 @@ describe('unexpected', function () {
             expect({ foo: 0, bar: 1, baz: 2, qux: 3 }, 'to be a map whose keys satisfy', 'to match', /^[a-z]{3}$/);
         });
 
+        it('receives the key and the value when the third argument is a function', function () {
+            expect({ foo: 123 }, 'to be a map whose keys satisfy', function (key, value) {
+                expect(key, 'to equal', 'foo');
+                expect(value, 'to equal', 123);
+            });
+        });
+
         it('supports the non-empty clause', function () {
             expect({ foo: '0' }, 'to be a non-empty map whose keys satisfy', function (key) {
                 expect(key, 'to match', /^[a-z]{3}$/);
