@@ -369,8 +369,8 @@ describe('unexpected', function () {
                    "Diff:\n" +
                    "\n" +
                    "[\n" +
-                   "  'foo', \n" +
-                   "  'bar' \n" +
+                   "  'foo',\n" +
+                   "  'bar'\n" +
                    "  // missing: 'baz'\n" +
                    "]");
         });
@@ -415,23 +415,23 @@ describe('unexpected', function () {
                    "Diff:\n" +
                    "\n" +
                    "[\n" +
-                   "  0, \n" +
+                   "  0,\n" +
                    "  // missing: 1\n" +
                    "  {\n" +
                    "    foo: 'bar' // should be: 'baz'\n" +
                    "               // -bar\n" +
                    "               // +baz\n" +
-                   "  }, \n" +
+                   "  },\n" +
                    "  1, // should be removed\n" +
                    "  // missing: 42\n" +
                    "  // missing: { qux: 'qux' }\n" +
                    "  { bar: 'bar' }, // should be removed\n" +
                    "  [\n" +
-                   "    1, \n" +
+                   "    1,\n" +
                    "    // missing: 2\n" +
-                   "    3, \n" +
+                   "    3,\n" +
                    "    2 // should be removed\n" +
-                   "  ], \n" +
+                   "  ],\n" +
                    "  'bar'  // should be: 'baz'\n" +
                    "         // -bar\n" +
                    "         // +baz\n" +
@@ -2720,6 +2720,23 @@ describe('unexpected', function () {
                        "    blue: { ignorance: ... }\n" +
                        "  }\n" +
                        "}");
+            });
+        });
+
+        describe('on arrays', function () {
+            it('highlights missing entries', function () {
+                expect(function () {
+                    expect([0, 1, 2], 'to equal', [0, 2]);
+                }, 'to throw', 'expected [ 0, 1, 2 ] to equal [ 0, 2 ]\n' +
+                       '\n' +
+                       'Diff:\n' +
+                       '\n' +
+                       '[\n' +
+                       '  0,\n' +
+                       '  1, // should be removed\n' +
+                       '  2\n' +
+                       ']'
+                      );
             });
         });
     });
