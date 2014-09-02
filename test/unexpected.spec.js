@@ -2724,7 +2724,7 @@ describe('unexpected', function () {
         });
 
         describe('on arrays', function () {
-            it('highlights missing entries', function () {
+            it('highlights unexpected entries', function () {
                 expect(function () {
                     expect([0, 1, 2], 'to equal', [0, 2]);
                 }, 'to throw', 'expected [ 0, 1, 2 ] to equal [ 0, 2 ]\n' +
@@ -2734,6 +2734,21 @@ describe('unexpected', function () {
                        '[\n' +
                        '  0,\n' +
                        '  1, // should be removed\n' +
+                       '  2\n' +
+                       ']'
+                      );
+            });
+
+            it('highlights missing entries', function () {
+                expect(function () {
+                    expect([0, 2], 'to equal', [0, 1, 2]);
+                }, 'to throw', 'expected [ 0, 2 ] to equal [ 0, 1, 2 ]\n' +
+                       '\n' +
+                       'Diff:\n' +
+                       '\n' +
+                       '[\n' +
+                       '  0,\n' +
+                       '  // missing: 1\n' +
                        '  2\n' +
                        ']'
                       );
