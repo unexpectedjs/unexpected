@@ -432,9 +432,9 @@ describe('unexpected', function () {
                    "    3,\n" +
                    "    2 // should be removed\n" +
                    "  ],\n" +
-                   "  'bar'  // should be: 'baz'\n" +
-                   "         // -bar\n" +
-                   "         // +baz\n" +
+                   "  'bar' // should be: 'baz'\n" +
+                   "        // -bar\n" +
+                   "        // +baz\n" +
                    "]");
         });
 
@@ -2751,6 +2751,23 @@ describe('unexpected', function () {
                        '  // missing: 1\n' +
                        '  2\n' +
                        ']'
+                      );
+            });
+
+            it('highlights conflicting entries', function () {
+                expect(function () {
+                    expect([0, 'once', 2], 'to equal', [0, 'one', 2]);
+                }, 'to throw', "expected [ 0, 'once', 2 ] to equal [ 0, 'one', 2 ]\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "[\n" +
+                       "  0,\n" +
+                       "  'once', // should be: 'one'\n" +
+                       "          // -once\n" +
+                       "          // +one\n" +
+                       "  2\n" +
+                       "]"
                       );
             });
         });
