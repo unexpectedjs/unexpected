@@ -2810,6 +2810,22 @@ describe('unexpected', function () {
                        "]"
                       );
             });
+
+            it('does not considers different strings candidates for diffing', function () {
+                expect(function () {
+                    expect([0, 'two', 1], 'to equal', [0, 1, 'three']);
+                }, 'to throw', "expected [ 0, 'two', 1 ] to equal [ 0, 1, 'three' ]\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "[\n" +
+                       "  0,\n" +
+                       "  'two', // should be removed\n" +
+                       "  1\n" +
+                       "  // missing: 'three'\n" +
+                       "]"
+                      );
+            });
         });
     });
 });
