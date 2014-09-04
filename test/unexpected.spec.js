@@ -2770,6 +2770,46 @@ describe('unexpected', function () {
                        "]"
                       );
             });
+
+            it('considers object with a similar structure candidates for diffing', function () {
+                expect(function () {
+                    expect([0, 1, { name: 'John', age: 34 }], 'to equal', [0, { name: 'Jane', age: 24, children: 2 }, 2]);
+                }, 'to throw', "expected [ 0, 1, { name: 'John', age: 34 } ] to equal [ 0, { name: 'Jane', age: 24, children: 2 }, 2 ]\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "[\n" +
+                       "  0,\n" +
+                       "  1, // should be removed\n" +
+                       "  {\n" +
+                       "    name: 'John', // should be: 'Jane'\n" +
+                       "                  // -John\n" +
+                       "                  // +Jane\n" +
+                       "    age: 34, // should be: 24\n" +
+                       "    children: undefined // should be: 2\n" +
+                       "  }\n" +
+                       "  // missing: 2\n" +
+                       "]"
+                      );
+            });
+
+            it('considers similar strings candidates for diffing', function () {
+                expect(function () {
+                    expect([0, 'twoo', 1], 'to equal', [0, 1, 'two']);
+                }, 'to throw', "expected [ 0, 'twoo', 1 ] to equal [ 0, 1, 'two' ]\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "[\n" +
+                       "  0,\n" +
+                       "  // missing: 1\n" +
+                       "  'twoo', // should be: 'two'\n" +
+                       "          // -twoo\n" +
+                       "          // +two\n" +
+                       "  1 // should be removed\n" +
+                       "]"
+                      );
+            });
         });
     });
 });
