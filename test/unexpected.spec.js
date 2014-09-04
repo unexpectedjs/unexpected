@@ -2842,6 +2842,42 @@ describe('unexpected', function () {
                        "]"
                       );
             });
+
+            it('handles similar objects with no diff defined for custom type', function () {
+                function Person(firstName, lastName) {
+                    this.firstName = firstName;
+                    this.lastName = lastName;
+                }
+
+                var clonedExpect = expect.clone()
+                    .addType({
+                        name: 'Person',
+                        identify: function (value) {
+                            return value instanceof Person;
+                        },
+                        equal: function (a, b) {
+                            return a.firstName === b.firstName &&
+                                a.lastName === b.lastName;
+                        },
+                        inspect: function (output, person) {
+                            return output.text("new Person('").text(person.firstName).text("', '").text(person.lastName).text("')");
+                        },
+                        diff: function () {
+                            return null;
+                        }
+                    });
+
+
+                expect(function () {
+                    clonedExpect([new Person('John', 'Doe')], 'to equal', [new Person('Jane', 'Doe')]);
+                }, 'to throw', "expected [ new Person('John', 'Doe') ] to equal [ new Person('Jane', 'Doe') ]\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "[\n" +
+                       "  new Person('John', 'Doe') // should be: new Person('Jane', 'Doe')\n" +
+                       "]");
+            });
         });
     });
 });
