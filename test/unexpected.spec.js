@@ -2793,6 +2793,22 @@ describe('unexpected', function () {
                       );
             });
 
+            it('does not considers object with a different structure candidates for diffing', function () {
+                expect(function () {
+                    expect([0, { name: 'John Doe' }, 2], 'to equal', [0, { firstName: 'John', lastName: 'Doe' }, 2]);
+                }, 'to throw', "expected [ 0, { name: 'John Doe' }, 2 ] to equal [ 0, { firstName: 'John', lastName: 'Doe' }, 2 ]\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "[\n" +
+                       "  0,\n" +
+                       "  // missing: { firstName: 'John', lastName: 'Doe' }\n" +
+                       "  { name: 'John Doe' }, // should be removed\n" +
+                       "  2\n" +
+                       "]"
+                      );
+            });
+
             it('considers similar strings candidates for diffing', function () {
                 expect(function () {
                     expect([0, 'twoo', 1], 'to equal', [0, 1, 'two']);
