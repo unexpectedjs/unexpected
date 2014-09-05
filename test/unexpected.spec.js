@@ -1252,7 +1252,7 @@ describe('unexpected', function () {
                         equal: function (box1, box2, equal) {
                             return equal(box1[box1.propertyName], box2[box2.propertyName]);
                         },
-                        inspect: function (output, box, inspect) {
+                        inspect: function (box, depth, output, inspect) {
                             output.text('[MysteryBox ');
                             output.append(inspect(box[box.propertyName]));
                             output.text(']');
@@ -1844,7 +1844,7 @@ describe('unexpected', function () {
                     identify: function (obj) {
                         return obj instanceof Box;
                     },
-                    inspect: function (output, box, inspect) {
+                    inspect: function (box, depth, output, inspect) {
                         output.text('[Box ').append(inspect(box.value)).text(']');
                         return output;
                     }
@@ -1875,7 +1875,7 @@ describe('unexpected', function () {
                     identify: function (obj) {
                         return obj instanceof Box;
                     },
-                    inspect: function (output, box, inspect, depth) {
+                    inspect: function (box, depth, output, inspect) {
                         output.text('[Box ').append(inspect(box.value, depth)).text(']');
                         return output;
                     }
@@ -2183,13 +2183,13 @@ describe('unexpected', function () {
                 equal: function (a, b, equal) {
                     return a === b || equal(a.value, b.value);
                 },
-                inspect: function (output, obj, inspect) {
+                inspect: function (obj, depth, output, inspect) {
                     return output
                         .text('[Box: ')
                         .append(inspect(obj.value))
                         .text(']');
                 },
-                diff: function (output, actual, expected, diff) {
+                diff: function (actual, expected, output, diff) {
                     var comparison = diff({ value: actual.value }, { value: expected.value });
                     comparison.diff = output.text('[Box: ').append(comparison.diff).text(']');
                     return comparison;
@@ -2859,7 +2859,7 @@ describe('unexpected', function () {
                             return a.firstName === b.firstName &&
                                 a.lastName === b.lastName;
                         },
-                        inspect: function (output, person) {
+                        inspect: function (person, depth, output) {
                             return output.text("new Person('").text(person.firstName).text("', '").text(person.lastName).text("')");
                         },
                         diff: function () {
