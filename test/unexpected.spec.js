@@ -2722,7 +2722,7 @@ describe('unexpected', function () {
                        "}");
             });
 
-            it('highlights mismatching prototypes', function () {
+            it('highlights mismatching constructors', function () {
                 function Foo(text) {
                     this.text = text;
                 }
@@ -2737,7 +2737,7 @@ describe('unexpected', function () {
                        "\n" +
                        "Diff:\n" +
                        "\n" +
-                       "Mismatching prototypes Foo should be Bar");
+                       "Mismatching constructors Foo should be Bar");
             });
         });
 
