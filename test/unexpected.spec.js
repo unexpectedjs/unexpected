@@ -2721,6 +2721,24 @@ describe('unexpected', function () {
                        "  }\n" +
                        "}");
             });
+
+            it('highlights mismatching prototypes', function () {
+                function Foo(text) {
+                    this.text = text;
+                }
+
+                function Bar(text) {
+                    this.text = text;
+                }
+
+                expect(function () {
+                    expect(new Foo('test'), 'to equal', new Bar('test'));
+                }, 'to throw', "expected { text: 'test' } to equal { text: 'test' }\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "Mismatching prototypes Foo should be Bar");
+            });
         });
 
         describe('on arrays', function () {
