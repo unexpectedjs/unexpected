@@ -27,12 +27,13 @@
     "browserify": "=5.9.1",
     "bundle-collapser": "^1.1.0",
     "coveralls": "^2.11.1",
+    "es5-shim": "4.0.3",
     "istanbul": "^0.3.0",
     "jshint": "*",
     "mocha": "=1.21.4",
-    "mocha-phantomjs": "=3.1.0",
+    "mocha-phantomjs": "=3.5.0",
     "mocha-slow-reporter": "*",
-    "phantomjs": "=1.9.1-0",
+    "phantomjs": "=1.9.7-15",
     "serve": "*"
   }
 }

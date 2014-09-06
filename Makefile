@@ -1,6 +1,6 @@
 REPORTER = dot
 
-TARGETS ?= unexpected.js unexpected.es5.js
+TARGETS ?= unexpected.js
 
 lint:
 	@./node_modules/.bin/jshint lib/*.js test/*.js
@@ -9,9 +9,6 @@ lint:
 
 unexpected.js: lint lib/*
 	(echo '/*!' && <LICENSE sed -e's/^/ * /' | sed -e's/\s+$$//' && echo ' */' && ./node_modules/.bin/browserify -p bundle-collapser/plugin -e lib -s weknowhow.expect) > $@
-
-unexpected.es5.js: lint lib/*
-	(echo '/*!' && <LICENSE sed -e's/^/ * /' | sed -e's/\s+$$//' && echo ' */' && ./node_modules/.bin/browserify -p bundle-collapser/plugin -e lib -s weknowhow.expect -u lib/shim-es4.js) > $@
 
 test-phantomjs: lint unexpected.js
 	@$(eval QUERY=$(shell node -e "console.log(decodeURIComponent(process.argv.pop()))" "${grep}")) \
@@ -24,7 +21,6 @@ test: lint
 
 test-production: lint ${TARGETS}
 	@./node_modules/.bin/mocha-phantomjs test/tests.production.html
-	@./node_modules/.bin/mocha-phantomjs test/tests.production.es5.html
 
 .PHONY: test-production
 

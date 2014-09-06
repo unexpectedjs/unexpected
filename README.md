@@ -26,7 +26,8 @@ expect(window, 'not to be an', Image);
 - Compatible with all test frameworks.
 - Node.JS ready (`require('unexpected')`).
 - Single global with no prototype extensions or shims.
-- Cross-browser: works on IE6+, Firefox, Safari, Chrome, Opera.
+- Cross-browser: works on Chrome, Firefox, Safari, Opera, IE6+,
+  (IE6-IE8 with [es5-shim](https://github.com/es-shims/es5-shim)).
 
 ## How to use
 
