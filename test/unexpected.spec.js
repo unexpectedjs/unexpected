@@ -405,9 +405,6 @@ describe('unexpected', function () {
                    "  1 // should be removed\n" +
                    "]");
 
-                expect([0, { foo: 'bar' }, 1, { bar: 'bar'}, [1, 3, 2], 'bar'],
-                       'to equal',
-                       [0, 1, { foo: 'baz' }, 42, { qux: 'qux' }, [1, 2, 3], 'baz']);
             expect(function () {
                 expect([0, { foo: 'bar' }, 1, { bar: 'bar'}, [1, 3, 2], 'bar'],
                        'to equal',
