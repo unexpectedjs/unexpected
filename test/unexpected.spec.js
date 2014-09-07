@@ -687,6 +687,19 @@ describe('unexpected', function () {
             expect('', 'to have length', 0);
         });
 
+        it.skipIf(typeof Buffer === 'undefined', 'asserts Buffer .length', function () {
+            expect(new Buffer('æ', 'utf-8'), 'to have length', 2);
+            expect(new Buffer([]), 'to have length', 0);
+        });
+
+        it.skipIf(typeof Uint8Array === 'undefined', 'asserts length for Uint8Array', function () {
+            expect(new Uint8Array([0x45, 0x59]), 'to have length', 2);
+        });
+
+        it.skipIf(typeof Uint16Array === 'undefined', 'asserts length for Uint16Array', function () {
+            expect(new Uint16Array([0x4545, 0x5945]), 'to have length', 2);
+        });
+
         it('throws when the assertion fails', function () {
             expect(function () {
                 expect([1, 2], 'to have length', 3);
