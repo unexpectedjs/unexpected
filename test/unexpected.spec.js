@@ -410,7 +410,8 @@ describe('unexpected', function () {
                        'to equal',
                        [0, 1, { foo: 'baz' }, 42, { qux: 'qux' }, [1, 2, 3], 'baz']);
             }, 'to throw exception',
-                   "expected [ 0, { foo: 'bar' }, 1, { bar: 'bar' }, [ 1, 3, 2 ], 'bar' ] to equal [ 0, 1, { foo: 'baz' }, 42, { qux: 'qux' }, [ 1, 2, 3 ], 'baz' ]\n" +
+                   "expected [ 0, { foo: 'bar' }, 1, { bar: 'bar' }, [ 1, 3, 2 ], 'bar' ]\n" +
+                   "to equal [ 0, 1, { foo: 'baz' }, 42, { qux: 'qux' }, [ 1, 2, 3 ], 'baz' ]\n" +
                    "\n" +
                    "Diff:\n" +
                    "\n" +
@@ -493,7 +494,9 @@ describe('unexpected', function () {
                     'to equal',
                     new Buffer('\x00\x01\x02Here is the thing I was quuxing about', 'utf-8')
                 );
-            }, 'to throw', 'expected [Buffer 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74 68 69 6E 67  |...Here is the thing| (+20)] to equal [Buffer 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74 68 69 6E 67  |...Here is the thing| (+20)]\n' +
+            }, 'to throw',
+                   'expected [Buffer 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74 68 69 6E 67  |...Here is the thing| (+20)]\n' +
+                   'to equal [Buffer 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74 68 69 6E 67  |...Here is the thing| (+20)]\n' +
                    "\n" +
                    "Diff:\n" +
                    "\n" +
@@ -518,7 +521,9 @@ describe('unexpected', function () {
                         0x6E, 0x67, 0x20, 0x61, 0x62, 0x6F, 0x75, 0x74
                     ])
                 );
-            }, 'to throw', 'expected [Uint8Array 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74 68 69 6E 67  |...Here is the thing| (+20)] to equal [Uint8Array 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74 68 69 6E 67  |...Here is the thing| (+20)]\n' +
+            }, 'to throw',
+                   'expected [Uint8Array 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74 68 69 6E 67  |...Here is the thing| (+20)]\n' +
+                   'to equal [Uint8Array 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74 68 69 6E 67  |...Here is the thing| (+20)]\n' +
                    "\n" +
                    "Diff:\n" +
                    "\n" +
@@ -543,7 +548,9 @@ describe('unexpected', function () {
                         0x6E67, 0x2061, 0x626F, 0x7574
                     ])
                 );
-            }, 'to throw',  'expected [Uint16Array 0001 0248 6572 6520 6973 2074 6865 2074 6869 6E67 2049 2077 6173 2074 616C 6B69 6E67 2061 626F 7574] to equal [Uint16Array 0001 0248 6572 6520 6973 2074 6865 2074 6869 6E67 2049 2077 6173 2071 7575 7869 6E67 2061 626F 7574]\n' +
+            }, 'to throw',
+                   'expected [Uint16Array 0001 0248 6572 6520 6973 2074 6865 2074 6869 6E67 2049 2077 6173 2074 616C 6B69 6E67 2061 626F 7574]\n' +
+                   'to equal [Uint16Array 0001 0248 6572 6520 6973 2074 6865 2074 6869 6E67 2049 2077 6173 2071 7575 7869 6E67 2061 626F 7574]\n' +
                    "\n" +
                    "Diff:\n" +
                    "\n" +
@@ -1298,7 +1305,9 @@ describe('unexpected', function () {
                     }, 'to exhaustively satisfy', {
                         foo: { baz: clonedExpect.fn('to be a number') }
                     });
-                }, 'to throw', "expected { foo: [MysteryBox { baz: 123, quux: 987 }] } to exhaustively satisfy { foo: { baz: expect.fn('to be a number') } }");
+                }, 'to throw',
+                       "expected { foo: [MysteryBox { baz: 123, quux: 987 }] }\n" +
+                       "to exhaustively satisfy { foo: { baz: expect.fn('to be a number') } }");
             });
 
             it('should preserve the "exhaustively" flag when matching instances of the custom type against each other', function () {
@@ -1309,7 +1318,8 @@ describe('unexpected', function () {
                         foo: new MysteryBox({ baz: clonedExpect.fn('to be a number') })
                     });
                 }, 'to throw',
-                       "expected { foo: [MysteryBox { baz: 123, quux: 987 }] } to exhaustively satisfy {\n" +
+                       "expected { foo: [MysteryBox { baz: 123, quux: 987 }] } to exhaustively satisfy\n" +
+                       "{\n" +
                        "  foo: [MysteryBox { baz: expect.fn('to be a number') }]\n" +
                        "}");
             });
@@ -2711,12 +2721,15 @@ describe('unexpected', function () {
                         }
                     });
                 }, 'to throw',
-                       "expected {\n" +
+                       "expected\n" +
+                       "{\n" +
                        "  pill: {\n" +
                        "    red: 'I\\'ll show you how deep the rabbit hole goes',\n" +
                        "    blue: { ignorance: ... }\n" +
                        "  }\n" +
-                       "} to equal {\n" +
+                       "}\n" +
+                       "to equal\n" +
+                       "{\n" +
                        "  pill: {\n" +
                        "    red: 'I\\'ll show you how deep the rabbit hole goes.',\n" +
                        "    blue: { ignorance: ... }\n" +
