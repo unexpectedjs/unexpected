@@ -2503,6 +2503,38 @@ describe('unexpected', function () {
         });
     });
 
+    describe('expect.fn', function () {
+        it('returns an expectation function that when applyed runs the assertion on the given subject', function () {
+            var expectation = expect.fn('to be greater than', 14);
+            expectation(20);
+            expect(function () {
+                expectation(10);
+            }, 'to throw', 'expected 10 to be greater than 14');
+        });
+
+        describe('with changed and', function () {
+            it('all assertions has to be satisfied', function () {
+                var expectation = expect.fn('to be a number')
+                    .and('to be less than', 14)
+                    .and('to be negative');
+                expect(function () {
+                    expectation(20);
+                }, 'to throw',
+                       'expected 20 to be less than 14 and\n' +
+                       'expected 20 to be negative');
+            });
+
+            it('outputs one failing assertion correctly', function () {
+                var expectation = expect.fn('to be a number')
+                    .and('to be less than', 14)
+                    .and('to be negative');
+                expect(function () {
+                    expectation(8);
+                }, 'to throw', 'expected 8 to be negative');
+            });
+        });
+    });
+
     describe('diffs', function () {
         describe('on strings', function () {
             it('highlights unexpected extra newlines after the input', function () {
