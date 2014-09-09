@@ -561,7 +561,14 @@ describe('unexpected', function () {
     });
 
     describe('exception assertion', function () {
-        it('fails if no exception is thrown', function () {
+        var phantomJsErrorWeirdness;
+        try {
+            throw new Error('foo');
+        } catch (e) {
+            phantomJsErrorWeirdness = Object.keys(e).indexOf('sourceURL') >= 0;
+        }
+
+        it.skipIf(phantomJsErrorWeirdness, 'fails if no exception is thrown', function () {
             expect(function () {
                 expect(function () {
                     // Don't throw
@@ -574,7 +581,8 @@ describe('unexpected', function () {
                 'to throw exception');
 
         });
-        it('fails if exception is thrown', function () {
+
+        it.skipIf(phantomJsErrorWeirdness, 'fails if exception is thrown', function () {
             expect(function () {
                 expect(function testFunction() {
                     throw new Error('The Error');
