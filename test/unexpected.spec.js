@@ -1300,6 +1300,10 @@ describe('unexpected', function () {
             });
         });
 
+        it('should not fail when matching an object against a number', function () {
+            expect({foo: {}}, 'not to satisfy', {foo: 123});
+        });
+
         describe('with a custom type', function () {
             function MysteryBox(value) {
                 this.propertyName = 'prop' + Math.floor(1000 * Math.random());
