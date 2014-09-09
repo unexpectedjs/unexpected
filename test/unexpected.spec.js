@@ -1140,7 +1140,7 @@ describe('unexpected', function () {
         });
     });
 
-    describe('ẗo be close to assertion', function () {
+    describe('to be close to assertion', function () {
         it('asserts that two numbers differ by at most 1e-9', function () {
             expect(1.5, 'to be close to', 1.49999999999);
             expect(1.5, 'to be close to', 1.5000000001);
