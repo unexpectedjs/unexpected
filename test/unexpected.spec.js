@@ -2447,8 +2447,8 @@ describe('unexpected', function () {
                 var foo = 'bar';
                 var quux = 'baz';
                 while (foo) {
-                    foo = foo.substr(0, foo.length - 1);
-                    console.log(foo);
+                    foo = foo
+                        .substr(0, foo.length - 1);
                 }
                 return quux;
             }).toString(), 'to equal',
@@ -2457,23 +2457,27 @@ describe('unexpected', function () {
                 '    var quux = \'baz\';\n' +
                 '    while (foo) {\n' +
                 '    // ... lines removed ...\n' +
-                '        console.log(foo);\n' +
+                '            .substr(0, foo.length - 1);\n' +
                 '    }\n' +
                 '    return quux;\n' +
                 '}');
         });
 
         it('should bail out of removing the indentation of functions that use multiline string literals', function () {
+            /*jshint multistr:true*/
             expect(expect.inspect(function () {
                 var foo = 'bar';
                 var quux = 'baz\
                 blah';
+                foo = foo + quux;
             }).toString(), 'to equal',
                 'function () {\n' +
                 '                var foo = \'bar\';\n' +
                 '                var quux = \'baz\\\n' +
                 '                blah\';\n' +
+                '                foo = foo + quux;\n' +
                 '            }');
+            /*jshint multistr:false*/
         });
 
         it('should not show the body of a function with native code', function () {
