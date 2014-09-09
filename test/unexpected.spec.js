@@ -1256,10 +1256,20 @@ describe('unexpected', function () {
             });
         });
 
-        it.skip('should support a chained expect.fn', function () {
+        it('should support a chained expect.fn', function () {
             expect({foo: 123}, 'to satisfy', {
                 foo: expect.fn('to be a number').and('to be greater than', 10)
             });
+
+            expect(function () {
+                expect({foo: 123}, 'to satisfy', {
+                    foo: expect.fn('to be a number').and('to be greater than', 200)
+                });
+            }, 'to throw',
+                   "expected { foo: 123 } to satisfy\n" +
+                   "{\n" +
+                   "  foo: expect.fn('to be a number').and('to be greater than', 200)\n" +
+                   "}");
         });
 
         it('should support asserting on properties that are not defined', function () {
