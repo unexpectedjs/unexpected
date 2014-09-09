@@ -585,7 +585,7 @@ describe('unexpected', function () {
                     '    throw new Error(\'The Error\');\n' +
                     '}\n' +
                     'not to throw\n' +
-                    "  threw: The Error");
+                    "  threw: [Error: { message: 'The Error' }]");
         });
 
         it('fails if the argument is not a function', function () {
@@ -637,6 +637,20 @@ describe('unexpected', function () {
             expect(function () {
                 throw new Error('matches the exception message');
             }, 'not to throw exception', 'the exception message');
+        });
+
+        it('does not break if null is thrown', function () {
+            expect(function () {
+                expect(function () {
+                    throw null;
+                }, 'not to throw');
+            }, 'to throw',
+                'expected\n' +
+                'function () {\n' +
+                '    throw null;\n' +
+                '}\n' +
+                'not to throw\n' +
+              '  threw: null');
         });
     });
 
