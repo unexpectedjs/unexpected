@@ -2512,6 +2512,15 @@ describe('unexpected', function () {
             }, 'to throw', 'expected 10 to be greater than 14');
         });
 
+        it('is inspected as it is written', function () {
+            var expectation = expect.fn('to be a number')
+                .and('to be less than', 14)
+                .and('to be negative');
+            expect(expect.inspect(expectation).toString(), 'to equal',
+                  "expect.fn('to be a number').and('to be less than', 14).and('to be negative')");
+
+        });
+
         describe('with changed and', function () {
             it('all assertions has to be satisfied', function () {
                 var expectation = expect.fn('to be a number')
@@ -2522,6 +2531,17 @@ describe('unexpected', function () {
                 }, 'to throw',
                        'expected 20 to be less than 14 and\n' +
                        'expected 20 to be negative');
+            });
+
+            it('returns a new function', function () {
+                var expectation = expect.fn('to be a number');
+                var compositeExpectation = expectation.and('to be less than', 14);
+                expect(compositeExpectation, 'not to be', expectation);
+
+                expectation(20);
+                expect(function () {
+                    compositeExpectation(20);
+                }, 'to throw', 'expected 20 to be less than 14');
             });
 
             it('outputs one failing assertion correctly', function () {
