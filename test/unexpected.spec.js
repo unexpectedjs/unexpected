@@ -234,7 +234,7 @@ describe('unexpected', function () {
         it('throws when the assertion fails', function () {
             expect(function () {
                 expect(5, 'to be a', Array);
-            }, 'to throw exception', /expected 5 to be a \[Function(: Array)?\]/);
+            }, 'to throw exception', 'expected 5 to be a function Array() { /* native code */ }');
 
             expect(function () {
                 expect([], 'not to be an', 'array');
@@ -566,7 +566,12 @@ describe('unexpected', function () {
                 expect(function () {
                     // Don't throw
                 }, 'to throw exception');
-            }, 'to throw', 'expected [Function] to throw exception');
+            }, 'to throw',
+                'expected\n' +
+                'function () {\n' +
+                '    // Don\'t throw\n' +
+                '}\n' +
+                'to throw exception');
 
         });
         it('fails if exception is thrown', function () {
@@ -575,8 +580,12 @@ describe('unexpected', function () {
                     throw new Error('The Error');
                 }, 'not to throw');
             }, 'to throw',
-                   'expected [Function: testFunction] not to throw\n' +
-                   "  threw: The Error");
+                   'expected\n' +
+                    'function testFunction() {\n' +
+                    '    throw new Error(\'The Error\');\n' +
+                    '}\n' +
+                    'not to throw\n' +
+                    "  threw: The Error");
         });
 
         it('fails if the argument is not a function', function () {
@@ -608,13 +617,17 @@ describe('unexpected', function () {
                     throw new Error('bar');
                 }, 'to throw', 'foo');
             }, 'to throw exception',
-                   "expected [Function: testFunction] to throw 'foo'\n" +
-                   "  expected 'bar' to equal 'foo'\n" +
-                   "  \n" +
-                   "  Diff:\n" +
-                   "  \n" +
-                   "  -bar\n" +
-                   "  +foo");
+                   'expected\n' +
+                    'function testFunction() {\n' +
+                    '    throw new Error(\'bar\');\n' +
+                    '}\n' +
+                    'to throw \'foo\'\n' +
+                    '  expected \'bar\' to equal \'foo\'\n' +
+                    '  \n' +
+                    '  Diff:\n' +
+                    '  \n' +
+                    '  -bar\n' +
+                    '  +foo');
         });
 
         it('exactly matches the message against the given string', function () {
@@ -870,7 +883,7 @@ describe('unexpected', function () {
                    "Diff:\n" +
                    "\n" +
                    "{\n" +
-                   "  doSomething: [Function],\n" +
+                   "  doSomething: function () {},\n" +
                    "  a: undefined // should be: 123\n" +
                    "}");
         });
@@ -1959,6 +1972,7 @@ describe('unexpected', function () {
                     clonedExpect = expect.clone()
                         .addAssertion('to be sorted after delay', function (expect, subject, delay, done) {
                             this.errorMode = errorMode;
+                            this.args.pop(); // Don't let the function be inspected in case of failure
                             setTimeout(function () {
                                 try {
                                     expect(subject, 'to be an array');
@@ -2412,6 +2426,44 @@ describe('unexpected', function () {
                    "    }\n" +
                    "  }\n" +
                    "]");
+        });
+
+        it('should output the body of a function', function () {
+            expect(expect.inspect(function () {
+                var foo = 'bar';
+                var quux = 'baz';
+                while (foo) {
+                    foo = foo.substr(0, foo.length - 1);
+                    console.log(foo);
+                }
+                return quux;
+            }).toString(), 'to equal',
+                'function () {\n' +
+                '    var foo = \'bar\';\n' +
+                '    var quux = \'baz\';\n' +
+                '    while (foo) {\n' +
+                '    // ... lines removed ...\n' +
+                '        console.log(foo);\n' +
+                '    }\n' +
+                '    return quux;\n' +
+                '}');
+        });
+
+        it('should bail out of removing the indentation of functions that use multiline string literals', function () {
+            expect(expect.inspect(function () {
+                var foo = 'bar';
+                var quux = 'baz\
+                blah';
+            }).toString(), 'to equal',
+                'function () {\n' +
+                '                var foo = \'bar\';\n' +
+                '                var quux = \'baz\\\n' +
+                '                blah\';\n' +
+                '            }');
+        });
+
+        it('should not show the body of a function with native code', function () {
+            expect(expect.inspect(Array.prototype.slice).toString(), 'to equal', 'function slice() { /* native code */ }');
         });
     });
 
