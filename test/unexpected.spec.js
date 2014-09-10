@@ -2525,7 +2525,7 @@ describe('unexpected', function () {
 
         });
 
-        describe('with changed and', function () {
+        describe('with chained and', function () {
             it('all assertions has to be satisfied', function () {
                 var expectation = expect.fn('to be a number')
                     .and('to be less than', 14)
