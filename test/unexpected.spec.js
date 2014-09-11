@@ -1220,13 +1220,13 @@ describe('unexpected', function () {
     describe('to satisfy assertion', function () {
         // These are the examples from #40:
 
-        it('should support expect.fn in the RHS object', function () {
+        it('should support expect.it in the RHS object', function () {
             expect({foo: 'bar'}, 'to satisfy', {
-                foo: expect.fn('to be a string')
+                foo: expect.it('to be a string')
             });
 
             expect({foo: [123]}, 'to satisfy', {
-                foo: expect.fn('to be an array whose items satisfy', 'to be a number')
+                foo: expect.it('to be an array whose items satisfy', 'to be a number')
             });
         });
 
@@ -1236,9 +1236,9 @@ describe('unexpected', function () {
             });
         });
 
-        it('should support expect.fn in an array', function () {
+        it('should support expect.it in an array', function () {
             expect({foo: [123]}, 'to satisfy', {
-                foo: [expect.fn('to be a number')]
+                foo: [expect.it('to be a number')]
             });
         });
 
@@ -1256,25 +1256,25 @@ describe('unexpected', function () {
             });
         });
 
-        it('should support a chained expect.fn', function () {
+        it('should support a chained expect.it', function () {
             expect({foo: 123}, 'to satisfy', {
-                foo: expect.fn('to be a number').and('to be greater than', 10)
+                foo: expect.it('to be a number').and('to be greater than', 10)
             });
 
             expect(function () {
                 expect({foo: 123}, 'to satisfy', {
-                    foo: expect.fn('to be a number').and('to be greater than', 200)
+                    foo: expect.it('to be a number').and('to be greater than', 200)
                 });
             }, 'to throw',
                    "expected { foo: 123 } to satisfy\n" +
                    "{\n" +
-                   "  foo: expect.fn('to be a number').and('to be greater than', 200)\n" +
+                   "  foo: expect.it('to be a number').and('to be greater than', 200)\n" +
                    "}");
         });
 
         it('should support asserting on properties that are not defined', function () {
             expect({foo: 123}, 'to satisfy', {
-                bar: expect.fn('to be undefined')
+                bar: expect.it('to be undefined')
             });
         });
 
@@ -1290,13 +1290,13 @@ describe('unexpected', function () {
 
         it('should support delegating to itself with the exhaustively flag', function () {
             expect({foo: {bar: 123}, baz: 456}, 'to satisfy', {
-                foo: expect.fn('to exhaustively satisfy', {bar: 123})
+                foo: expect.it('to exhaustively satisfy', {bar: 123})
             });
         });
 
         it('should support delegating to itself without the exhaustively flag', function () {
             expect({foo: {bar: 123, baz: 456}}, 'to exhaustively satisfy', {
-                foo: expect.fn('to satisfy', {bar: 123})
+                foo: expect.it('to satisfy', {bar: 123})
             });
         });
 
@@ -1342,7 +1342,7 @@ describe('unexpected', function () {
                     foo: new MysteryBox({ baz: 123, quux: 987 }),
                     bar: new MysteryBox(456)
                 }, 'to satisfy', {
-                    foo: { baz: clonedExpect.fn('to be a number') },
+                    foo: { baz: clonedExpect.it('to be a number') },
                     bar: 456
                 });
             });
@@ -1352,11 +1352,11 @@ describe('unexpected', function () {
                     clonedExpect({
                         foo: new MysteryBox({ baz: 123, quux: 987 })
                     }, 'to exhaustively satisfy', {
-                        foo: { baz: clonedExpect.fn('to be a number') }
+                        foo: { baz: clonedExpect.it('to be a number') }
                     });
                 }, 'to throw',
                        "expected { foo: [MysteryBox { baz: 123, quux: 987 }] }\n" +
-                       "to exhaustively satisfy { foo: { baz: expect.fn('to be a number') } }");
+                       "to exhaustively satisfy { foo: { baz: expect.it('to be a number') } }");
             });
 
             it('should preserve the "exhaustively" flag when matching instances of the custom type against each other', function () {
@@ -1364,12 +1364,12 @@ describe('unexpected', function () {
                     clonedExpect({
                         foo: new MysteryBox({ baz: 123, quux: 987 })
                     }, 'to exhaustively satisfy', {
-                        foo: new MysteryBox({ baz: clonedExpect.fn('to be a number') })
+                        foo: new MysteryBox({ baz: clonedExpect.it('to be a number') })
                     });
                 }, 'to throw',
                        "expected { foo: [MysteryBox { baz: 123, quux: 987 }] } to exhaustively satisfy\n" +
                        "{\n" +
-                       "  foo: [MysteryBox { baz: expect.fn('to be a number') }]\n" +
+                       "  foo: [MysteryBox { baz: expect.it('to be a number') }]\n" +
                        "}");
             });
 
@@ -1378,7 +1378,7 @@ describe('unexpected', function () {
                     foo: new MysteryBox({ baz: 123 }),
                     bar: new MysteryBox(456)
                 }, 'to satisfy', {
-                    foo: new MysteryBox({ baz: clonedExpect.fn('to be a number') }),
+                    foo: new MysteryBox({ baz: clonedExpect.it('to be a number') }),
                     bar: new MysteryBox(456)
                 });
             });
@@ -1409,7 +1409,7 @@ describe('unexpected', function () {
 
             expect('foobar', 'not to satisfy', /quux/i);
 
-            expect({foo: 123}, 'not to satisfy', {foo: expect.fn('to be a string')});
+            expect({foo: 123}, 'not to satisfy', {foo: expect.it('to be a string')});
 
             expect({foo: 123, bar: 456}, 'not to exhaustively satisfy', {foo: 123});
 
@@ -1427,8 +1427,8 @@ describe('unexpected', function () {
 
             // FIXME: Could this error message be improved?
             expect(function () {
-                expect({foo: 123}, 'to satisfy', {foo: expect.fn('to be a string')});
-            }, 'to throw', "expected { foo: 123 } to satisfy { foo: expect.fn('to be a string') }");
+                expect({foo: 123}, 'to satisfy', {foo: expect.it('to be a string')});
+            }, 'to throw', "expected { foo: 123 } to satisfy { foo: expect.it('to be a string') }");
 
             expect(function () {
                 expect({foo: 123, bar: 456}, 'to exhaustively satisfy', {foo: 123});
@@ -2507,9 +2507,9 @@ describe('unexpected', function () {
         });
     });
 
-    describe('expect.fn', function () {
+    describe('expect.it', function () {
         it('returns an expectation function that when applyed runs the assertion on the given subject', function () {
-            var expectation = expect.fn('to be greater than', 14);
+            var expectation = expect.it('to be greater than', 14);
             expectation(20);
             expect(function () {
                 expectation(10);
@@ -2517,17 +2517,17 @@ describe('unexpected', function () {
         });
 
         it('is inspected as it is written', function () {
-            var expectation = expect.fn('to be a number')
+            var expectation = expect.it('to be a number')
                 .and('to be less than', 14)
                 .and('to be negative');
             expect(expect.inspect(expectation).toString(), 'to equal',
-                  "expect.fn('to be a number').and('to be less than', 14).and('to be negative')");
+                  "expect.it('to be a number').and('to be less than', 14).and('to be negative')");
 
         });
 
         describe('with chained and', function () {
             it('all assertions has to be satisfied', function () {
-                var expectation = expect.fn('to be a number')
+                var expectation = expect.it('to be a number')
                     .and('to be less than', 14)
                     .and('to be negative');
                 expect(function () {
@@ -2538,7 +2538,7 @@ describe('unexpected', function () {
             });
 
             it('returns a new function', function () {
-                var expectation = expect.fn('to be a number');
+                var expectation = expect.it('to be a number');
                 var compositeExpectation = expectation.and('to be less than', 14);
                 expect(compositeExpectation, 'not to be', expectation);
 
@@ -2549,7 +2549,7 @@ describe('unexpected', function () {
             });
 
             it('outputs one failing assertion correctly', function () {
-                var expectation = expect.fn('to be a number')
+                var expectation = expect.it('to be a number')
                     .and('to be less than', 14)
                     .and('to be negative');
                 expect(function () {
