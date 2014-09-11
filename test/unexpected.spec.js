@@ -500,7 +500,7 @@ describe('unexpected', function () {
                    '\n' +
                    'Diff:\n' +
                    '\n' +
-                   ' 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  │...Here is the t│\n' +
+                   ' 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  │␀␁␂Here is the t│\n' +
                    '-68 69 6E 67 20 49 20 77 61 73 20 74 61 6C 6B 69  │hing I was talki│\n' +
                    '+68 69 6E 67 20 49 20 77 61 73 20 71 75 75 78 69  │hing I was quuxi│\n' +
                    ' 6E 67 20 61 62 6F 75 74                          │ng about│');
@@ -527,7 +527,7 @@ describe('unexpected', function () {
                    '\n' +
                    'Diff:\n' +
                    '\n' +
-                   ' 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  │...Here is the t│\n' +
+                   ' 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  │␀␁␂Here is the t│\n' +
                    '-68 69 6E 67 20 49 20 77 61 73 20 74 61 6C 6B 69  │hing I was talki│\n' +
                    '+68 69 6E 67 20 49 20 77 61 73 20 71 75 75 78 69  │hing I was quuxi│\n' +
                    ' 6E 67 20 61 62 6F 75 74                          │ng about│');
@@ -554,7 +554,7 @@ describe('unexpected', function () {
                    '\n' +
                    'Diff:\n' +
                    '\n' +
-                   ' 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  │...Here is the t│\n' +
+                   ' 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  │␀␁␂Here is the t│\n' +
                    '-68 69 6E 67 20 49 20 77 61 73 20 74 61 6C 6B 69  │hing I was talki│\n' +
                    '+68 69 6E 67 20 49 20 77 61 73 20 71 75 75 78 69  │hing I was quuxi│\n' +
                    ' 6E 67 20 61 62 6F 75 74                          │ng about│');
