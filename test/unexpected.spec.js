@@ -495,15 +495,15 @@ describe('unexpected', function () {
                     new Buffer('\x00\x01\x02Here is the thing I was quuxing about', 'utf-8')
                 );
             }, 'to throw',
-                   'expected [Buffer 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74 68 69 6E 67  |...Here is the thing| (+20)]\n' +
-                   'to equal [Buffer 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74 68 69 6E 67  |...Here is the thing| (+20)]\n' +
-                   "\n" +
-                   "Diff:\n" +
-                   "\n" +
-                   " 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  |...Here is the t|\n" +
-                   "-68 69 6E 67 20 49 20 77 61 73 20 74 61 6C 6B 69  |hing I was talki|\n" +
-                   "+68 69 6E 67 20 49 20 77 61 73 20 71 75 75 78 69  |hing I was quuxi|\n" +
-                   " 6E 67 20 61 62 6F 75 74                          |ng about|");
+                   'expected [Buffer 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  |...Here is the t| (+24)]\n' +
+                   'to equal [Buffer 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  |...Here is the t| (+24)]\n' +
+                   '\n' +
+                   'Diff:\n' +
+                   '\n' +
+                   ' 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  |...Here is the t|\n' +
+                   '-68 69 6E 67 20 49 20 77 61 73 20 74 61 6C 6B 69  |hing I was talki|\n' +
+                   '+68 69 6E 67 20 49 20 77 61 73 20 71 75 75 78 69  |hing I was quuxi|\n' +
+                   ' 6E 67 20 61 62 6F 75 74                          |ng about|');
         });
 
         it.skipIf(typeof Uint8Array === 'undefined' || !Array.prototype.map, 'produces a hex-diff in JSON when Uint8Arrays differ', function () {
@@ -522,15 +522,15 @@ describe('unexpected', function () {
                     ])
                 );
             }, 'to throw',
-                   'expected [Uint8Array 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74 68 69 6E 67  |...Here is the thing| (+20)]\n' +
-                   'to equal [Uint8Array 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74 68 69 6E 67  |...Here is the thing| (+20)]\n' +
-                   "\n" +
-                   "Diff:\n" +
-                   "\n" +
-                   " 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  |...Here is the t|\n" +
-                   "-68 69 6E 67 20 49 20 77 61 73 20 74 61 6C 6B 69  |hing I was talki|\n" +
-                   "+68 69 6E 67 20 49 20 77 61 73 20 71 75 75 78 69  |hing I was quuxi|\n" +
-                   " 6E 67 20 61 62 6F 75 74                          |ng about|");
+                   'expected [Uint8Array 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  |...Here is the t| (+24)]\n' +
+                   'to equal [Uint8Array 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  |...Here is the t| (+24)]\n' +
+                   '\n' +
+                   'Diff:\n' +
+                   '\n' +
+                   ' 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  |...Here is the t|\n' +
+                   '-68 69 6E 67 20 49 20 77 61 73 20 74 61 6C 6B 69  |hing I was talki|\n' +
+                   '+68 69 6E 67 20 49 20 77 61 73 20 71 75 75 78 69  |hing I was quuxi|\n' +
+                   ' 6E 67 20 61 62 6F 75 74                          |ng about|');
         });
 
         it.skipIf(typeof Uint16Array === 'undefined', 'produces a hex-diff in JSON when Uint16Arrays differ', function () {
@@ -549,14 +549,16 @@ describe('unexpected', function () {
                     ])
                 );
             }, 'to throw',
-                   'expected [Uint16Array 0001 0248 6572 6520 6973 2074 6865 2074 6869 6E67 2049 2077 6173 2074 616C 6B69 6E67 2061 626F 7574]\n' +
-                   'to equal [Uint16Array 0001 0248 6572 6520 6973 2074 6865 2074 6869 6E67 2049 2077 6173 2071 7575 7869 6E67 2061 626F 7574]\n' +
-                   "\n" +
-                   "Diff:\n" +
-                   "\n" +
-                   "-0001 0248 6572 6520 6973 2074 6865 2074 6869 6E67 2049 2077 6173 2074 616C 6B69\n" +
-                   "+0001 0248 6572 6520 6973 2074 6865 2074 6869 6E67 2049 2077 6173 2071 7575 7869\n" +
-                   " 6E67 2061 626F 7574");
+                   'expected [Uint16Array 0001 0248 6572 6520 6973 2074 6865 2074 (+12)]\n' +
+                   'to equal [Uint16Array 0001 0248 6572 6520 6973 2074 6865 2074 (+12)]\n' +
+                   '\n' +
+                   'Diff:\n' +
+                   '\n' +
+                   ' 0001 0248 6572 6520 6973 2074 6865 2074\n' +
+                   '-6869 6E67 2049 2077 6173 2074 616C 6B69\n' +
+                   '+6869 6E67 2049 2077 6173 2071 7575 7869\n' +
+                   ' 6E67 2061 626F 7574'
+            );
         });
     });
 
