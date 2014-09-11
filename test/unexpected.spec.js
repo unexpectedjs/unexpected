@@ -1,4 +1,4 @@
-/*global weknowhow, describe, it, beforeEach, setTimeout, Uint8Array, Uint16Array*/
+/*global weknowhow, describe, it, beforeEach, setTimeout, Uint8Array, Uint16Array, Uint32Array*/
 
 var expect = typeof weknowhow === 'undefined' ? require('../lib/') : weknowhow.expect;
 
@@ -558,6 +558,34 @@ describe('unexpected', function () {
                    '-6869 6E67 2049 2077 6173 2074 616C 6B69\n' +
                    '+6869 6E67 2049 2077 6173 2071 7575 7869\n' +
                    ' 6E67 2061 626F 7574'
+            );
+        });
+
+        it.skipIf(typeof Uint32Array === 'undefined', 'produces a hex-diff in JSON when Uint32Arrays differ', function () {
+            expect(function () {
+                expect(
+                    new Uint32Array([
+                        0x00010248, 0x65726520, 0x69732074, 0x68652074,
+                        0x68696E67, 0x20492077, 0x61732074, 0x616C6B69,
+                        0x6E672061, 0x626F7574
+                    ]),
+                    'to equal',
+                    new Uint32Array([
+                        0x00010248, 0x65726520, 0x69732074, 0x68652074,
+                        0x68696E67, 0x20492077, 0x61732071, 0x75757869,
+                        0x6E672061, 0x626F7574
+                    ])
+                );
+            }, 'to throw',
+                   'expected [Uint32Array 00010248 65726520 69732074 68652074 (+6)]\n' +
+                   'to equal [Uint32Array 00010248 65726520 69732074 68652074 (+6)]\n' +
+                   '\n' +
+                   'Diff:\n' +
+                   '\n' +
+                   ' 00010248 65726520 69732074 68652074\n' +
+                   '-68696E67 20492077 61732074 616C6B69\n' +
+                   '+68696E67 20492077 61732071 75757869\n' +
+                   ' 6E672061 626F7574'
             );
         });
     });
