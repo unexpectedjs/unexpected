@@ -1,4 +1,4 @@
-/*global weknowhow, describe, it, beforeEach, setTimeout, Uint8Array, Uint16Array, Uint32Array*/
+/*global weknowhow, describe, it, beforeEach, setTimeout, Int8Array, Uint8Array, Uint16Array, Uint32Array*/
 
 var expect = typeof weknowhow === 'undefined' ? require('../lib/') : weknowhow.expect;
 
@@ -497,6 +497,33 @@ describe('unexpected', function () {
             }, 'to throw',
                    'expected [Buffer 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  |...Here is the t| (+24)]\n' +
                    'to equal [Buffer 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  |...Here is the t| (+24)]\n' +
+                   '\n' +
+                   'Diff:\n' +
+                   '\n' +
+                   ' 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  |...Here is the t|\n' +
+                   '-68 69 6E 67 20 49 20 77 61 73 20 74 61 6C 6B 69  |hing I was talki|\n' +
+                   '+68 69 6E 67 20 49 20 77 61 73 20 71 75 75 78 69  |hing I was quuxi|\n' +
+                   ' 6E 67 20 61 62 6F 75 74                          |ng about|');
+        });
+
+        it.skipIf(typeof Int8Array === 'undefined' || !Array.prototype.map, 'produces a hex-diff in JSON when Int8Arrays differ', function () {
+            expect(function () {
+                expect(
+                    new Int8Array([
+                        0x00, 0x01, 0x02, 0x48, 0x65, 0x72, 0x65, 0x20, 0x69, 0x73, 0x20, 0x74, 0x68, 0x65, 0x20, 0x74,
+                        0x68, 0x69, 0x6E, 0x67, 0x20, 0x49, 0x20, 0x77, 0x61, 0x73, 0x20, 0x74, 0x61, 0x6C, 0x6B, 0x69,
+                        0x6E, 0x67, 0x20, 0x61, 0x62, 0x6F, 0x75, 0x74
+                    ]),
+                    'to equal',
+                    new Int8Array([
+                        0x00, 0x01, 0x02, 0x48, 0x65, 0x72, 0x65, 0x20, 0x69, 0x73, 0x20, 0x74, 0x68, 0x65, 0x20, 0x74,
+                        0x68, 0x69, 0x6E, 0x67, 0x20, 0x49, 0x20, 0x77, 0x61, 0x73, 0x20, 0x71, 0x75, 0x75, 0x78, 0x69,
+                        0x6E, 0x67, 0x20, 0x61, 0x62, 0x6F, 0x75, 0x74
+                    ])
+                );
+            }, 'to throw',
+                   'expected [Int8Array 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  |...Here is the t| (+24)]\n' +
+                   'to equal [Int8Array 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  |...Here is the t| (+24)]\n' +
                    '\n' +
                    'Diff:\n' +
                    '\n' +
