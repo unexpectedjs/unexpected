@@ -1920,22 +1920,12 @@ describe('unexpected', function () {
             });
 
             describe('alternations', function () {
-                it("must not be empty", function () {
-                    expect(function () {
-                        expect.addAssertion('foo ()', function () {});
-                    }, 'to throw', "Assertion patterns must not contain empty alternations: 'foo ()'");
-
-                    expect(function () {
-                        expect.addAssertion('foo (bar|)', function () {});
-                    }, 'to throw', "Assertion patterns must not contain empty alternations: 'foo (bar|)'");
-
-                    expect(function () {
-                        expect.addAssertion('foo (||)', function () {});
-                    }, 'to throw', "Assertion patterns must not contain empty alternations: 'foo (||)'");
-
-                    expect(function () {
-                        expect.addAssertion('foo (|bar|)', function () {});
-                    }, 'to throw', "Assertion patterns must not contain empty alternations: 'foo (|bar|)'");
+                it('can be empty', function () {
+                    var clonedExpect = expect.clone().addAssertion('to foo (|bar)', function (expect, subject) {
+                        expect(subject, 'to equal', 'foo');
+                    });
+                    clonedExpect('foo', 'to foo');
+                    clonedExpect('foo', 'to foo bar');
                 });
 
                 it("must not contain brackets", function () {
