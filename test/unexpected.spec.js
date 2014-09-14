@@ -2796,6 +2796,22 @@ describe('unexpected', function () {
                        '}');
             });
 
+            it('should quote property names that require it', function () {
+                expect(function () {
+                    expect({
+                        'the-\'thing': 123
+                    }, 'to equal', {
+                        'the-\'thing': 456
+                    });
+                }, 'to throw', "expected { 'the-\\'thing': 123 } to equal { 'the-\\'thing': 456 }\n" +
+                       '\n' +
+                       'Diff:\n' +
+                       '\n' +
+                       '{\n' +
+                       "  'the-\\'thing': 123 // should be: 456\n" +
+                       '}');
+            });
+
             it('can contain nested string diffs', function () {
                 expect(function () {
                     expect({
