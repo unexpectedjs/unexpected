@@ -2719,6 +2719,14 @@ describe('unexpected', function () {
             );
         });
 
+        describe('should output ellipsis when the toString method of a function returns something unparsable', function () {
+            function foo () {}
+            foo.toString = function () {
+                return 'quux';
+            };
+            expect(expect.inspect(foo).toString(), 'to equal', 'function foo( /*...*/ ) { /*...*/ }');
+        });
+
         it('should bail out of removing the indentation of functions that use multiline string literals', function () {
             /*jshint multistr:true*/
             expect(expect.inspect(function () {
