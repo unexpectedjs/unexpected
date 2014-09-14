@@ -2724,7 +2724,33 @@ describe('unexpected', function () {
             foo.toString = function () {
                 return 'quux';
             };
-            expect(expect.inspect(foo).toString(), 'to equal', 'function foo( /*...*/ ) { /*...*/ }');
+            expect(expect.inspect(foo).toString(), 'to equal',
+                'function foo( /*...*/ ) { /*...*/ }\n' +
+                'foo.toString = function () {\n' +
+                "    return 'quux';\n" +
+                '};');
+        });
+
+        it('should output extra own properties of a named function', function () {
+            function foo() {}
+            foo.bar = 123;
+            foo.quux = 'abc';
+            expect(expect.inspect(foo).toString(), 'to equal',
+                'function foo() {}\n' +
+                'foo.bar = 123;\n' +
+                "foo.quux = 'abc';");
+        });
+
+        it('should output extra own properties of an anonymous function', function () {
+            var foo = function () {};
+            foo.bar = 123;
+            foo.quux = 'abc';
+            foo['the-thing'] = 'xyz';
+            expect(expect.inspect(foo).toString(), 'to equal',
+                'var f = function () {};\n' +
+                'f.bar = 123;\n' +
+                "f.quux = 'abc';\n" +
+                "f['the-thing'] = 'xyz';");
         });
 
         it('should bail out of removing the indentation of functions that use multiline string literals', function () {
