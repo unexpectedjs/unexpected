@@ -22,19 +22,19 @@ describe('unexpected', function () {
         it('fails when given no parameters', function () {
             expect(function () {
                 expect();
-            }, 'to throw', 'The expect functions requires at least two parameters.');
+            }, 'to throw', 'The expect function requires at least two parameters.');
         });
 
         it('fails when given only one parameter', function () {
             expect(function () {
                 expect({});
-            }, 'to throw', 'The expect functions requires at least two parameters.');
+            }, 'to throw', 'The expect function requires at least two parameters.');
         });
 
         it('fails when the second parameter is not a string', function () {
             expect(function () {
                 expect({}, {});
-            }, 'to throw', 'The expect functions requires second parameter to be a string.');
+            }, 'to throw', 'The expect function requires the second parameter to be a string.');
         });
     });
 
