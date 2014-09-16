@@ -495,15 +495,15 @@ describe('unexpected', function () {
                     new Buffer('\x00\x01\x02Here is the thing I was quuxing about', 'utf-8')
                 );
             }, 'to throw',
-                   'expected [Buffer 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  |...Here is the t| (+24)]\n' +
-                   'to equal [Buffer 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  |...Here is the t| (+24)]\n' +
+                   'expected [Buffer 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  │...Here is the t│ (+24)]\n' +
+                   'to equal [Buffer 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  │...Here is the t│ (+24)]\n' +
                    '\n' +
                    'Diff:\n' +
                    '\n' +
-                   ' 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  |...Here is the t|\n' +
-                   '-68 69 6E 67 20 49 20 77 61 73 20 74 61 6C 6B 69  |hing I was talki|\n' +
-                   '+68 69 6E 67 20 49 20 77 61 73 20 71 75 75 78 69  |hing I was quuxi|\n' +
-                   ' 6E 67 20 61 62 6F 75 74                          |ng about|');
+                   ' 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  │...Here is the t│\n' +
+                   '-68 69 6E 67 20 49 20 77 61 73 20 74 61 6C 6B 69  │hing I was talki│\n' +
+                   '+68 69 6E 67 20 49 20 77 61 73 20 71 75 75 78 69  │hing I was quuxi│\n' +
+                   ' 6E 67 20 61 62 6F 75 74                          │ng about│');
         });
 
         it.skipIf(typeof Int8Array === 'undefined' || !Array.prototype.map, 'produces a hex-diff in JSON when Int8Arrays differ', function () {
@@ -522,15 +522,15 @@ describe('unexpected', function () {
                     ])
                 );
             }, 'to throw',
-                   'expected [Int8Array 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  |...Here is the t| (+24)]\n' +
-                   'to equal [Int8Array 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  |...Here is the t| (+24)]\n' +
+                   'expected [Int8Array 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  │...Here is the t│ (+24)]\n' +
+                   'to equal [Int8Array 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  │...Here is the t│ (+24)]\n' +
                    '\n' +
                    'Diff:\n' +
                    '\n' +
-                   ' 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  |...Here is the t|\n' +
-                   '-68 69 6E 67 20 49 20 77 61 73 20 74 61 6C 6B 69  |hing I was talki|\n' +
-                   '+68 69 6E 67 20 49 20 77 61 73 20 71 75 75 78 69  |hing I was quuxi|\n' +
-                   ' 6E 67 20 61 62 6F 75 74                          |ng about|');
+                   ' 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  │...Here is the t│\n' +
+                   '-68 69 6E 67 20 49 20 77 61 73 20 74 61 6C 6B 69  │hing I was talki│\n' +
+                   '+68 69 6E 67 20 49 20 77 61 73 20 71 75 75 78 69  │hing I was quuxi│\n' +
+                   ' 6E 67 20 61 62 6F 75 74                          │ng about│');
         });
 
         it.skipIf(typeof Uint8Array === 'undefined' || !Array.prototype.map, 'produces a hex-diff in JSON when Uint8Arrays differ', function () {
@@ -549,15 +549,15 @@ describe('unexpected', function () {
                     ])
                 );
             }, 'to throw',
-                   'expected [Uint8Array 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  |...Here is the t| (+24)]\n' +
-                   'to equal [Uint8Array 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  |...Here is the t| (+24)]\n' +
+                   'expected [Uint8Array 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  │...Here is the t│ (+24)]\n' +
+                   'to equal [Uint8Array 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  │...Here is the t│ (+24)]\n' +
                    '\n' +
                    'Diff:\n' +
                    '\n' +
-                   ' 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  |...Here is the t|\n' +
-                   '-68 69 6E 67 20 49 20 77 61 73 20 74 61 6C 6B 69  |hing I was talki|\n' +
-                   '+68 69 6E 67 20 49 20 77 61 73 20 71 75 75 78 69  |hing I was quuxi|\n' +
-                   ' 6E 67 20 61 62 6F 75 74                          |ng about|');
+                   ' 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  │...Here is the t│\n' +
+                   '-68 69 6E 67 20 49 20 77 61 73 20 74 61 6C 6B 69  │hing I was talki│\n' +
+                   '+68 69 6E 67 20 49 20 77 61 73 20 71 75 75 78 69  │hing I was quuxi│\n' +
+                   ' 6E 67 20 61 62 6F 75 74                          │ng about│');
         });
 
         it.skipIf(typeof Uint16Array === 'undefined', 'produces a hex-diff in JSON when Uint16Arrays differ', function () {
