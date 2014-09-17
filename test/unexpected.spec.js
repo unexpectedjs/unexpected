@@ -495,8 +495,8 @@ describe('unexpected', function () {
                     new Buffer('\x00\x01\x02Here is the thing I was quuxing about', 'utf-8')
                 );
             }, 'to throw',
-                   'expected [Buffer 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  │...Here is the t│ (+24)]\n' +
-                   'to equal [Buffer 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  │...Here is the t│ (+24)]\n' +
+                   'expected Buffer([0x00, 0x01, 0x02, 0x48, 0x65, 0x72, 0x65, 0x20, 0x69, 0x73, 0x20, 0x74, 0x68, 0x65, 0x20, 0x74 /* 24 more */ ])\n' +
+                   'to equal Buffer([0x00, 0x01, 0x02, 0x48, 0x65, 0x72, 0x65, 0x20, 0x69, 0x73, 0x20, 0x74, 0x68, 0x65, 0x20, 0x74 /* 24 more */ ])\n' +
                    '\n' +
                    'Diff:\n' +
                    '\n' +
@@ -522,8 +522,8 @@ describe('unexpected', function () {
                     ])
                 );
             }, 'to throw',
-                   'expected [Int8Array 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  │...Here is the t│ (+24)]\n' +
-                   'to equal [Int8Array 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  │...Here is the t│ (+24)]\n' +
+                   'expected Int8Array([0x00, 0x01, 0x02, 0x48, 0x65, 0x72, 0x65, 0x20, 0x69, 0x73, 0x20, 0x74, 0x68, 0x65, 0x20, 0x74 /* 24 more */ ])\n' +
+                   'to equal Int8Array([0x00, 0x01, 0x02, 0x48, 0x65, 0x72, 0x65, 0x20, 0x69, 0x73, 0x20, 0x74, 0x68, 0x65, 0x20, 0x74 /* 24 more */ ])\n' +
                    '\n' +
                    'Diff:\n' +
                    '\n' +
@@ -549,8 +549,8 @@ describe('unexpected', function () {
                     ])
                 );
             }, 'to throw',
-                   'expected [Uint8Array 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  │...Here is the t│ (+24)]\n' +
-                   'to equal [Uint8Array 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  │...Here is the t│ (+24)]\n' +
+                   'expected Uint8Array([0x00, 0x01, 0x02, 0x48, 0x65, 0x72, 0x65, 0x20, 0x69, 0x73, 0x20, 0x74, 0x68, 0x65, 0x20, 0x74 /* 24 more */ ])\n' +
+                   'to equal Uint8Array([0x00, 0x01, 0x02, 0x48, 0x65, 0x72, 0x65, 0x20, 0x69, 0x73, 0x20, 0x74, 0x68, 0x65, 0x20, 0x74 /* 24 more */ ])\n' +
                    '\n' +
                    'Diff:\n' +
                    '\n' +
@@ -576,8 +576,8 @@ describe('unexpected', function () {
                     ])
                 );
             }, 'to throw',
-                   'expected [Uint16Array 0001 0248 6572 6520 6973 2074 6865 2074 (+12)]\n' +
-                   'to equal [Uint16Array 0001 0248 6572 6520 6973 2074 6865 2074 (+12)]\n' +
+                   'expected Uint16Array([0x0001, 0x0248, 0x6572, 0x6520, 0x6973, 0x2074, 0x6865, 0x2074 /* 12 more */ ])\n' +
+                   'to equal Uint16Array([0x0001, 0x0248, 0x6572, 0x6520, 0x6973, 0x2074, 0x6865, 0x2074 /* 12 more */ ])\n' +
                    '\n' +
                    'Diff:\n' +
                    '\n' +
@@ -604,8 +604,8 @@ describe('unexpected', function () {
                     ])
                 );
             }, 'to throw',
-                   'expected [Uint32Array 00010248 65726520 69732074 68652074 (+6)]\n' +
-                   'to equal [Uint32Array 00010248 65726520 69732074 68652074 (+6)]\n' +
+                   'expected Uint32Array([0x00010248, 0x65726520, 0x69732074, 0x68652074 /* 6 more */ ])\n' +
+                   'to equal Uint32Array([0x00010248, 0x65726520, 0x69732074, 0x68652074 /* 6 more */ ])\n' +
                    '\n' +
                    'Diff:\n' +
                    '\n' +
@@ -2530,6 +2530,30 @@ describe('unexpected', function () {
                 '    }\n' +
                 '    return quux;\n' +
                 '}');
+        });
+
+        it.skipIf(typeof Uint8Array === 'undefined', 'should render a hex dump for an Uint8Array instance', function () {
+            console.log(
+                expect.inspect(
+                    new Uint8Array([
+                        0x00, 0x01, 0x02, 0x48, 0x65, 0x72, 0x65, 0x20, 0x69, 0x73, 0x20, 0x74, 0x68, 0x65, 0x20, 0x74,
+                        0x68, 0x69, 0x6E, 0x67, 0x20, 0x49, 0x20, 0x77, 0x61, 0x73, 0x20, 0x74, 0x61, 0x6C, 0x6B, 0x69,
+                        0x6E, 0x67, 0x20, 0x61, 0x62, 0x6F, 0x75, 0x74
+                    ])
+                ).toString('ansi')
+            );
+
+            expect(
+                expect.inspect(
+                    new Uint8Array([
+                        0x00, 0x01, 0x02, 0x48, 0x65, 0x72, 0x65, 0x20, 0x69, 0x73, 0x20, 0x74, 0x68, 0x65, 0x20, 0x74,
+                        0x68, 0x69, 0x6E, 0x67, 0x20, 0x49, 0x20, 0x77, 0x61, 0x73, 0x20, 0x74, 0x61, 0x6C, 0x6B, 0x69,
+                        0x6E, 0x67, 0x20, 0x61, 0x62, 0x6F, 0x75, 0x74
+                    ])
+                ).toString(),
+                'to equal',
+                'Uint8Array([0x00, 0x01, 0x02, 0x48, 0x65, 0x72, 0x65, 0x20, 0x69, 0x73, 0x20, 0x74, 0x68, 0x65, 0x20, 0x74 /* 24 more */ ])'
+            );
         });
 
         it('should bail out of removing the indentation of functions that use multiline string literals', function () {
