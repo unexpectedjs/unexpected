@@ -21,7 +21,7 @@
   "dependencies": {
     "arraydiff": "0.1.1",
     "diff": "=1.0.8",
-    "magicpen": "=1.0.1"
+    "magicpen": "=2.0.0"
   },
   "devDependencies": {
     "browserify": "=5.9.1",
