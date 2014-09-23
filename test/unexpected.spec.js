@@ -801,6 +801,17 @@ describe('unexpected', function () {
                 '  3\n' +
                 ']');
         });
+
+        it('produces a diff when the string case fails and the not flag is on', function () {
+            expect(function () {
+                expect('foobarquuxfoo', 'not to contain', 'foo');
+            }, 'to throw',
+                "expected 'foobarquuxfoo' not to contain 'foo'\n" +
+                '\n' +
+                'Diff:\n' +
+                '\n' +
+                'foobarquuxfoo');
+        });
     });
 
     describe('length assertion', function () {
