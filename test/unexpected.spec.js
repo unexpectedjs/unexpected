@@ -786,6 +786,21 @@ describe('unexpected', function () {
                 expect(1, 'to contain', 1);
             }, 'to throw exception', 'The assertion "to contain" is not defined for the type "number", but it is defined for these types: "string", "array"');
         });
+
+        it('produces a diff when the array case fails and the not flag is on', function () {
+            expect(function () {
+                expect([1, 2, 3], 'not to contain', 2);
+            }, 'to throw',
+                'expected [ 1, 2, 3 ] not to contain 2\n' +
+                '\n' +
+                'Diff:\n' +
+                '\n' +
+                '[\n' +
+                '  1,\n' +
+                '  2, // should be removed\n' +
+                '  3\n' +
+                ']');
+        });
     });
 
     describe('length assertion', function () {
