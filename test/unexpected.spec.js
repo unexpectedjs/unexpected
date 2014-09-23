@@ -744,10 +744,14 @@ describe('unexpected', function () {
     });
 
     describe('contain assertion', function () {
-        it('asserts indexOf for an array or string', function () {
+        it('asserts indexOf for a string', function () {
+            expect('hello world', 'to contain', 'world');
+        });
+
+        it('asserts item equality for an array', function () {
             expect([1, 2], 'to contain', 1);
             expect([1, 2], 'to contain', 2, 1);
-            expect('hello world', 'to contain', 'world');
+            expect([{foo: 123}], 'to contain', {foo: 123});
         });
 
         it('throws when the assertion fails', function () {
@@ -766,6 +770,10 @@ describe('unexpected', function () {
             expect(function () {
                 expect([1, 2], 'to contain', 2, 3);
             }, 'to throw exception', "expected [ 1, 2 ] to contain 2, 3");
+
+            expect(function () {
+                expect([{foo: 123}], 'to contain', {foo: 123}, {bar: 456});
+            }, 'to throw exception', "expected [ { foo: 123 } ] to contain { foo: 123 }, { bar: 456 }");
 
             expect(function () {
                 expect(1, 'to contain', 1);
