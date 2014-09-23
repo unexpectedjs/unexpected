@@ -748,6 +748,13 @@ describe('unexpected', function () {
             expect('hello world', 'to contain', 'world');
         });
 
+        it('should support searching for a non-string inside a string', function () {
+            expect('hello null', 'to contain', null);
+            expect('hello 123', 'to contain', 123);
+            expect('hello false', 'to contain', false);
+            expect('hello Infinity', 'to contain', Infinity);
+        });
+
         it('asserts item equality for an array', function () {
             expect([1, 2], 'to contain', 1);
             expect([1, 2], 'to contain', 2, 1);
