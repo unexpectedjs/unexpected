@@ -753,6 +753,17 @@ describe('unexpected', function () {
                 expect('test', 'to match', /foo/);
             }, 'to throw exception', "expected 'test' to match /foo/");
         });
+
+        it('provides a diff when the not flag is set', function () {
+            expect(function () {
+                expect('barfooquuxfoobaz', 'not to match', /foo/);
+            }, 'to throw',
+                   "expected 'barfooquuxfoobaz' not to match /foo/\n" +
+                   '\n' +
+                   'Diff:\n' +
+                   '\n' +
+                   'barfooquuxfoobaz');
+        });
     });
 
     describe('contain assertion', function () {
