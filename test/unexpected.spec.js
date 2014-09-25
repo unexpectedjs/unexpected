@@ -891,7 +891,13 @@ describe('unexpected', function () {
 
             expect(function () {
                 expect({a: 'b'}, 'to have property', 'a', 'c');
-            }, 'to throw exception', "expected { a: 'b' } to have property 'a', 'c'");
+            }, 'to throw exception',
+                   "expected { a: 'b' } to have property 'a', 'c'\n" +
+                  "\n" +
+                   "Diff:\n" +
+                   "\n" +
+                   "-b\n" +
+                   "+c");
 
             expect(function () {
                 // property expectations ignores value if property
@@ -1500,7 +1506,12 @@ describe('unexpected', function () {
                     }, 'to satisfy', {
                         foo: 'def'
                     });
-                }, 'to throw', "expected { foo: [MysteryBox 'abc'] } to satisfy { foo: 'def' }");
+                }, 'to throw', "expected { foo: [MysteryBox 'abc'] } to satisfy { foo: 'def' }\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "-abc\n" +
+                       "+def");
             });
 
             it('should fail to match unequal instances of the custom type', function () {
@@ -1510,7 +1521,13 @@ describe('unexpected', function () {
                     }, 'to satisfy', {
                         foo: new MysteryBox('def')
                     });
-                }, 'to throw', "expected { foo: [MysteryBox 'abc'] } to satisfy { foo: [MysteryBox 'def'] }");
+                }, 'to throw',
+                       "expected { foo: [MysteryBox 'abc'] } to satisfy { foo: [MysteryBox 'def'] }\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "-abc\n" +
+                       "+def");
             });
         });
 
@@ -1884,7 +1901,13 @@ describe('unexpected', function () {
             clonedExpect('bar', 'not to be foo');
             clonedExpect(function () {
                 clonedExpect('bar', 'to be foo aliased without the not flag');
-            }, 'to throw', "expected 'bar' to be foo aliased without the not flag");
+            }, 'to throw',
+                         "expected 'bar' to be foo aliased without the not flag\n" +
+                         "\n" +
+                         "Diff:\n" +
+                         "\n" +
+                         "-bar\n" +
+                         "+foo");
         });
 
         describe('pattern', function () {
@@ -2034,10 +2057,22 @@ describe('unexpected', function () {
                 clonedExpect(new Box('foo'), 'to be foo');
                 expect(function () {
                     clonedExpect('bar', 'to be foo');
-                }, 'to throw', "expected 'bar' to be foo");
+                }, 'to throw',
+                       "expected 'bar' to be foo\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "-bar\n" +
+                       "+foo");
                 expect(function () {
                     clonedExpect(new Box('bar'), 'to be foo');
-                }, 'to throw', "expected [Box 'bar'] to be foo");
+                }, 'to throw',
+                       "expected [Box 'bar'] to be foo\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "-bar\n" +
+                       "+foo");
             });
 
             it('allows you to control the inspection depth', function () {
