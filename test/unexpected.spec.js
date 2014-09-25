@@ -177,7 +177,13 @@ describe('unexpected', function () {
         it('throws when the assertion fails', function () {
             expect(function () {
                 expect('foo', 'to be', 'bar');
-            }, 'to throw exception', "expected 'foo' to be 'bar'");
+            }, 'to throw exception',
+                   "expected 'foo' to be 'bar'\n" +
+                   "\n" +
+                   "Diff:\n" +
+                   "\n" +
+                   "-foo\n" +
+                   "+bar");
 
             expect(function () {
                 expect(true, 'not to be', true);
@@ -249,7 +255,13 @@ describe('unexpected', function () {
             expect(function () {
                 expect('foo', 'to be', 'bar');
             }, 'to throw exception', function (e) {
-                expect(e.output.toString(), 'to equal', "expected 'foo' to be 'bar'");
+                expect(e.output.toString(), 'to equal',
+                       "expected 'foo' to be 'bar'\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "-foo\n" +
+                       "+bar");
             });
         });
 
