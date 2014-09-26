@@ -177,7 +177,13 @@ describe('unexpected', function () {
         it('throws when the assertion fails', function () {
             expect(function () {
                 expect('foo', 'to be', 'bar');
-            }, 'to throw exception', "expected 'foo' to be 'bar'");
+            }, 'to throw exception',
+                   "expected 'foo' to be 'bar'\n" +
+                   "\n" +
+                   "Diff:\n" +
+                   "\n" +
+                   "-foo\n" +
+                   "+bar");
 
             expect(function () {
                 expect(true, 'not to be', true);
@@ -249,7 +255,13 @@ describe('unexpected', function () {
             expect(function () {
                 expect('foo', 'to be', 'bar');
             }, 'to throw exception', function (e) {
-                expect(e.output.toString(), 'to equal', "expected 'foo' to be 'bar'");
+                expect(e.output.toString(), 'to equal',
+                       "expected 'foo' to be 'bar'\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "-foo\n" +
+                       "+bar");
             });
         });
 
@@ -741,6 +753,17 @@ describe('unexpected', function () {
                 expect('test', 'to match', /foo/);
             }, 'to throw exception', "expected 'test' to match /foo/");
         });
+
+        it('provides a diff when the not flag is set', function () {
+            expect(function () {
+                expect('barfooquuxfoobaz', 'not to match', /foo/);
+            }, 'to throw',
+                   "expected 'barfooquuxfoobaz' not to match /foo/\n" +
+                   '\n' +
+                   'Diff:\n' +
+                   '\n' +
+                   'barfooquuxfoobaz');
+        });
     });
 
     describe('contain assertion', function () {
@@ -785,6 +808,32 @@ describe('unexpected', function () {
             expect(function () {
                 expect(1, 'to contain', 1);
             }, 'to throw exception', 'The assertion "to contain" is not defined for the type "number", but it is defined for these types: "string", "array"');
+        });
+
+        it('produces a diff when the array case fails and the not flag is on', function () {
+            expect(function () {
+                expect([1, 2, 3], 'not to contain', 2);
+            }, 'to throw',
+                'expected [ 1, 2, 3 ] not to contain 2\n' +
+                '\n' +
+                'Diff:\n' +
+                '\n' +
+                '[\n' +
+                '  1,\n' +
+                '  2, // should be removed\n' +
+                '  3\n' +
+                ']');
+        });
+
+        it('produces a diff when the string case fails and the not flag is on', function () {
+            expect(function () {
+                expect('foobarquuxfoo', 'not to contain', 'foo');
+            }, 'to throw',
+                "expected 'foobarquuxfoo' not to contain 'foo'\n" +
+                '\n' +
+                'Diff:\n' +
+                '\n' +
+                'foobarquuxfoo');
         });
     });
 
@@ -853,7 +902,13 @@ describe('unexpected', function () {
 
             expect(function () {
                 expect({a: 'b'}, 'to have property', 'a', 'c');
-            }, 'to throw exception', "expected { a: 'b' } to have property 'a', 'c'");
+            }, 'to throw exception',
+                   "expected { a: 'b' } to have property 'a', 'c'\n" +
+                  "\n" +
+                   "Diff:\n" +
+                   "\n" +
+                   "-b\n" +
+                   "+c");
 
             expect(function () {
                 // property expectations ignores value if property
@@ -1462,7 +1517,12 @@ describe('unexpected', function () {
                     }, 'to satisfy', {
                         foo: 'def'
                     });
-                }, 'to throw', "expected { foo: [MysteryBox 'abc'] } to satisfy { foo: 'def' }");
+                }, 'to throw', "expected { foo: [MysteryBox 'abc'] } to satisfy { foo: 'def' }\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "-abc\n" +
+                       "+def");
             });
 
             it('should fail to match unequal instances of the custom type', function () {
@@ -1472,7 +1532,13 @@ describe('unexpected', function () {
                     }, 'to satisfy', {
                         foo: new MysteryBox('def')
                     });
-                }, 'to throw', "expected { foo: [MysteryBox 'abc'] } to satisfy { foo: [MysteryBox 'def'] }");
+                }, 'to throw',
+                       "expected { foo: [MysteryBox 'abc'] } to satisfy { foo: [MysteryBox 'def'] }\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "-abc\n" +
+                       "+def");
             });
         });
 
@@ -1846,7 +1912,13 @@ describe('unexpected', function () {
             clonedExpect('bar', 'not to be foo');
             clonedExpect(function () {
                 clonedExpect('bar', 'to be foo aliased without the not flag');
-            }, 'to throw', "expected 'bar' to be foo aliased without the not flag");
+            }, 'to throw',
+                         "expected 'bar' to be foo aliased without the not flag\n" +
+                         "\n" +
+                         "Diff:\n" +
+                         "\n" +
+                         "-bar\n" +
+                         "+foo");
         });
 
         describe('pattern', function () {
@@ -1996,10 +2068,22 @@ describe('unexpected', function () {
                 clonedExpect(new Box('foo'), 'to be foo');
                 expect(function () {
                     clonedExpect('bar', 'to be foo');
-                }, 'to throw', "expected 'bar' to be foo");
+                }, 'to throw',
+                       "expected 'bar' to be foo\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "-bar\n" +
+                       "+foo");
                 expect(function () {
                     clonedExpect(new Box('bar'), 'to be foo');
-                }, 'to throw', "expected [Box 'bar'] to be foo");
+                }, 'to throw',
+                       "expected [Box 'bar'] to be foo\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "-bar\n" +
+                       "+foo");
             });
 
             it('allows you to control the inspection depth', function () {
