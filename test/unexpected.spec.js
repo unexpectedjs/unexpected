@@ -1,4 +1,4 @@
-/*global weknowhow, describe, it, beforeEach, setTimeout, Uint8Array, Uint16Array*/
+/*global weknowhow, describe, it, beforeEach, setTimeout, Int8Array, Uint8Array, Uint16Array, Uint32Array*/
 
 var expect = typeof weknowhow === 'undefined' ? require('../lib/') : weknowhow.expect;
 
@@ -22,19 +22,19 @@ describe('unexpected', function () {
         it('fails when given no parameters', function () {
             expect(function () {
                 expect();
-            }, 'to throw', 'The expect functions requires at least two parameters.');
+            }, 'to throw', 'The expect function requires at least two parameters.');
         });
 
         it('fails when given only one parameter', function () {
             expect(function () {
                 expect({});
-            }, 'to throw', 'The expect functions requires at least two parameters.');
+            }, 'to throw', 'The expect function requires at least two parameters.');
         });
 
         it('fails when the second parameter is not a string', function () {
             expect(function () {
                 expect({}, {});
-            }, 'to throw', 'The expect functions requires second parameter to be a string.');
+            }, 'to throw', 'The expect function requires the second parameter to be a string.');
         });
     });
 
@@ -75,7 +75,16 @@ describe('unexpected', function () {
                 expect(function () {
                     expect(new Error('foo'), 'to equal', new Error('bar'));
                 }, 'to throw exception', function (err) {
-                    expect(err.output.toString(), 'to equal', "expected [Error: { message: 'foo' }] to equal [Error: { message: 'bar' }]");
+                    expect(err.output.toString(), 'to equal',
+                           "expected [Error: { message: 'foo' }] to equal [Error: { message: 'bar' }]\n" +
+                           "\n" +
+                           "Diff:\n" +
+                           "\n" +
+                           "{\n" +
+                           "  message: 'foo' // should be: 'bar'\n" +
+                           "                 // -foo\n" +
+                           "                 // +bar\n" +
+                           "}");
                 });
             });
 
@@ -100,7 +109,17 @@ describe('unexpected', function () {
                 err2.extra = 'bar';
                 expect(function () {
                     expect(err1, 'to equal', err2);
-                }, 'to throw exception', "expected [Error: { message: 'foo', extra: 'foo' }] to equal [Error: { message: 'foo', extra: 'bar' }]");
+                }, 'to throw exception',
+                       "expected [Error: { message: 'foo', extra: 'foo' }] to equal [Error: { message: 'foo', extra: 'bar' }]\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "{\n" +
+                       "  message: 'foo',\n" +
+                       "  extra: 'foo' // should be: 'bar'\n" +
+                       "               // -foo\n" +
+                       "               // +bar\n" +
+                       "}");
             });
 
             it('considers Error instances with the same message and stack to be equal', function () {
@@ -158,7 +177,13 @@ describe('unexpected', function () {
         it('throws when the assertion fails', function () {
             expect(function () {
                 expect('foo', 'to be', 'bar');
-            }, 'to throw exception', "expected 'foo' to be 'bar'");
+            }, 'to throw exception',
+                   "expected 'foo' to be 'bar'\n" +
+                   "\n" +
+                   "Diff:\n" +
+                   "\n" +
+                   "-foo\n" +
+                   "+bar");
 
             expect(function () {
                 expect(true, 'not to be', true);
@@ -185,6 +210,7 @@ describe('unexpected', function () {
             expect([{}], 'to be an array of objects');
             expect([{}], 'to be a non-empty array of objects');
             expect([/foo/, /bar/], 'to be a non-empty array of regexps');
+            expect([/foo/, /bar/], 'to be a non-empty array of regexes');
             expect([[], [], []], 'to be an array of arrays');
             expect(['abc'], 'to be a non-empty array of strings');
             expect([], 'to be an empty array');
@@ -214,7 +240,7 @@ describe('unexpected', function () {
         it('throws when the assertion fails', function () {
             expect(function () {
                 expect(5, 'to be a', Array);
-            }, 'to throw exception', /expected 5 to be a \[Function(: Array)?\]/);
+            }, 'to throw exception', 'expected 5 to be a function Array() { /* native code */ }');
 
             expect(function () {
                 expect([], 'not to be an', 'array');
@@ -225,12 +251,17 @@ describe('unexpected', function () {
             }, 'to throw exception', "expected { self: [Circular] } not to be an object");
         });
 
-        it("throws an error with actual and expected when comparing string and not negated", function () {
+        it("throws an error a diff when comparing string and not negated", function () {
             expect(function () {
                 expect('foo', 'to be', 'bar');
             }, 'to throw exception', function (e) {
-                expect(e.actual, 'to be', 'foo');
-                expect(e.expected, 'to be', 'bar');
+                expect(e.output.toString(), 'to equal',
+                       "expected 'foo' to be 'bar'\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "-foo\n" +
+                       "+bar");
             });
         });
 
@@ -313,7 +344,17 @@ describe('unexpected', function () {
         it('throws when the assertion fails', function () {
             expect(function () {
                 expect({ a: { b: 'c'} }, 'to equal', { a: { b: 'd'} });
-            }, 'to throw exception', "expected { a: { b: 'c' } } to equal { a: { b: 'd' } }");
+            }, 'to throw exception', "expected { a: { b: 'c' } } to equal { a: { b: 'd' } }\n" +
+                   "\n" +
+                   "Diff:\n" +
+                   "\n" +
+                   "{\n" +
+                   "  a: {\n" +
+                   "    b: 'c' // should be: 'd'\n" +
+                   "           // -c\n" +
+                   "           // +d\n" +
+                   "  }\n" +
+                   "}");
 
             expect(function () {
                 expect({ a: 'b' }, 'not to equal', { a: 'b' });
@@ -321,58 +362,116 @@ describe('unexpected', function () {
 
             expect(function () {
                 expect(new Error('foo'), 'to equal', new Error('bar'));
-            }, 'to throw exception', "expected [Error: { message: 'foo' }] to equal [Error: { message: 'bar' }]");
+            }, 'to throw exception', "expected [Error: { message: 'foo' }] to equal [Error: { message: 'bar' }]\n" +
+                   "\n" +
+                   "Diff:\n" +
+                   "\n" +
+                   "{\n" +
+                   "  message: 'foo' // should be: 'bar'\n" +
+                   "                 // -foo\n" +
+                   "                 // +bar\n" +
+                   "}");
 
             expect(function () {
                 (function () {
                     expect(arguments, 'to equal', ['foo', 'bar', 'baz']);
                 }('foo', 'bar'));
-            }, 'to throw exception', "expected [ 'foo', 'bar' ] to equal [ 'foo', 'bar', 'baz' ]");
+            }, 'to throw exception', "expected [ 'foo', 'bar' ] to equal [ 'foo', 'bar', 'baz' ]\n" +
+                   "\n" +
+                   "Diff:\n" +
+                   "\n" +
+                   "[\n" +
+                   "  'foo',\n" +
+                   "  'bar'\n" +
+                   "  // missing: 'baz'\n" +
+                   "]");
         });
 
-        it("throws an error with 'expected' and 'actual' properties when not negated", function () {
-            var expected = 123,
-                actual = 456;
+        it("throws an error with a diff when not negated", function () {
             expect(function () {
-                expect(actual, 'to equal', expected);
-            }, 'to throw exception', function (e) {
-                expect(e.expected, 'to equal', expected);
-                expect(e.actual, 'to equal', actual);
-            });
+                expect('123', 'to equal', '456');
+            }, 'to throw exception',
+                   "expected '123' to equal '456'\n" +
+                   "\n" +
+                   "Diff:\n" +
+                   "\n" +
+                   "-123\n" +
+                   "+456");
         });
 
-        it("throws an error without 'expected' and 'actual' properties when negated", function () {
+        it("throws an error without a diff when negated", function () {
             expect(function () {
-                expect(123, 'not to equal', 123);
-            }, 'to throw exception', function (e) {
-                expect(e.expected, 'not to be ok');
-                expect(e.actual, 'not to be ok');
-            });
+                expect('123', 'not to equal', '123');
+            }, 'to throw exception', "expected '123' not to equal '123'");
         });
 
-        it("throws an error with showDiff:true when comparing arrays and not negated", function () {
+        it("throws an error with a diff when comparing arrays and not negated", function () {
             expect(function () {
                 expect([1], 'to equal', [2]);
-            }, 'to throw exception', function (e) {
-                expect(e.showDiff, 'to be ok');
-            });
+            }, 'to throw exception', "expected [ 1 ] to equal [ 2 ]\n" +
+                   "\n" +
+                   "Diff:\n" +
+                   "\n" +
+                   "[\n" +
+                   "  // missing: 2\n" +
+                   "  1 // should be removed\n" +
+                   "]");
+
+            expect(function () {
+                expect([0, { foo: 'bar' }, 1, { bar: 'bar'}, [1, 3, 2], 'bar'],
+                       'to equal',
+                       [0, 1, { foo: 'baz' }, 42, { qux: 'qux' }, [1, 2, 3], 'baz']);
+            }, 'to throw exception',
+                   "expected [ 0, { foo: 'bar' }, 1, { bar: 'bar' }, [ 1, 3, 2 ], 'bar' ]\n" +
+                   "to equal [ 0, 1, { foo: 'baz' }, 42, { qux: 'qux' }, [ 1, 2, 3 ], 'baz' ]\n" +
+                   "\n" +
+                   "Diff:\n" +
+                   "\n" +
+                   "[\n" +
+                   "  0,\n" +
+                   "  // missing: 1\n" +
+                   "  {\n" +
+                   "    foo: 'bar' // should be: 'baz'\n" +
+                   "               // -bar\n" +
+                   "               // +baz\n" +
+                   "  },\n" +
+                   "  1, // should be removed\n" +
+                   "  // missing: 42\n" +
+                   "  // missing: { qux: 'qux' }\n" +
+                   "  { bar: 'bar' }, // should be removed\n" +
+                   "  [\n" +
+                   "    1,\n" +
+                   "    // missing: 2\n" +
+                   "    3,\n" +
+                   "    2 // should be removed\n" +
+                   "  ],\n" +
+                   "  'bar' // should be: 'baz'\n" +
+                   "        // -bar\n" +
+                   "        // +baz\n" +
+                   "]");
         });
 
-        it("throws an error with showDiff:true when comparing objects and not negated", function () {
+        it("throws an error with a diff when comparing objects and not negated", function () {
             expect(function () {
                 expect({foo: 1}, 'to equal', {foo: 2});
-            }, 'to throw exception', function (e) {
-                expect(e.showDiff, 'to be ok');
-            });
+            }, 'to throw exception', "expected { foo: 1 } to equal { foo: 2 }\n" +
+                   "\n" +
+                   "Diff:\n" +
+                   "\n" +
+                   "{\n" +
+                   "  foo: 1 // should be: 2\n" +
+                   "}");
         });
 
-        it("throws an error with actual and expected comparing strings and not negated", function () {
+        it("throws an error with a diff when comparing strings and not negated", function () {
             expect(function () {
                 expect('foo', 'to equal', 'bar');
-            }, 'to throw exception', function (e) {
-                expect(e.actual, 'to be', 'foo');
-                expect(e.expected, 'to be', 'bar');
-            });
+            }, 'to throw exception', "expected 'foo' to equal 'bar'\n" +
+                   "\n" +
+                   "Diff:\n" +
+                   "\n" +
+                   "-foo\n" +
+                   "+bar");
         });
 
         it("throws an error without actual and expected comparing strings and negated", function () {
@@ -407,26 +506,43 @@ describe('unexpected', function () {
                     'to equal',
                     new Buffer('\x00\x01\x02Here is the thing I was quuxing about', 'utf-8')
                 );
-            }, 'to throw', function (err) {
-                expect(err, 'to have properties', {
-                    showDiff: true,
-                    actual: {
-                        $Buffer: [
-                            '00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  |...Here is the t|',
-                            '68 69 6E 67 20 49 20 77 61 73 20 74 61 6C 6B 69  |hing I was talki|',
-                            '6E 67 20 61 62 6F 75 74                          |ng about|'
-                        ]
-                    },
-                    expected: {
-                        $Buffer: [
-                            '00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  |...Here is the t|',
-                            '68 69 6E 67 20 49 20 77 61 73 20 71 75 75 78 69  |hing I was quuxi|',
-                            '6E 67 20 61 62 6F 75 74                          |ng about|'
-                        ]
-                    }
-                });
-                expect(err.output.toString(), 'to equal', 'expected [Buffer 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74 68 69 6E 67  |...Here is the thing| (+20)] to equal [Buffer 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74 68 69 6E 67  |...Here is the thing| (+20)]');
-            });
+            }, 'to throw',
+                   'expected Buffer([0x00, 0x01, 0x02, 0x48, 0x65, 0x72, 0x65, 0x20, 0x69, 0x73, 0x20, 0x74, 0x68, 0x65, 0x20, 0x74 /* 24 more */ ])\n' +
+                   'to equal Buffer([0x00, 0x01, 0x02, 0x48, 0x65, 0x72, 0x65, 0x20, 0x69, 0x73, 0x20, 0x74, 0x68, 0x65, 0x20, 0x74 /* 24 more */ ])\n' +
+                   '\n' +
+                   'Diff:\n' +
+                   '\n' +
+                   ' 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  │...Here is the t│\n' +
+                   '-68 69 6E 67 20 49 20 77 61 73 20 74 61 6C 6B 69  │hing I was talki│\n' +
+                   '+68 69 6E 67 20 49 20 77 61 73 20 71 75 75 78 69  │hing I was quuxi│\n' +
+                   ' 6E 67 20 61 62 6F 75 74                          │ng about│');
+        });
+
+        it.skipIf(typeof Int8Array === 'undefined' || !Array.prototype.map, 'produces a hex-diff in JSON when Int8Arrays differ', function () {
+            expect(function () {
+                expect(
+                    new Int8Array([
+                        0x00, 0x01, 0x02, 0x48, 0x65, 0x72, 0x65, 0x20, 0x69, 0x73, 0x20, 0x74, 0x68, 0x65, 0x20, 0x74,
+                        0x68, 0x69, 0x6E, 0x67, 0x20, 0x49, 0x20, 0x77, 0x61, 0x73, 0x20, 0x74, 0x61, 0x6C, 0x6B, 0x69,
+                        0x6E, 0x67, 0x20, 0x61, 0x62, 0x6F, 0x75, 0x74
+                    ]),
+                    'to equal',
+                    new Int8Array([
+                        0x00, 0x01, 0x02, 0x48, 0x65, 0x72, 0x65, 0x20, 0x69, 0x73, 0x20, 0x74, 0x68, 0x65, 0x20, 0x74,
+                        0x68, 0x69, 0x6E, 0x67, 0x20, 0x49, 0x20, 0x77, 0x61, 0x73, 0x20, 0x71, 0x75, 0x75, 0x78, 0x69,
+                        0x6E, 0x67, 0x20, 0x61, 0x62, 0x6F, 0x75, 0x74
+                    ])
+                );
+            }, 'to throw',
+                   'expected Int8Array([0x00, 0x01, 0x02, 0x48, 0x65, 0x72, 0x65, 0x20, 0x69, 0x73, 0x20, 0x74, 0x68, 0x65, 0x20, 0x74 /* 24 more */ ])\n' +
+                   'to equal Int8Array([0x00, 0x01, 0x02, 0x48, 0x65, 0x72, 0x65, 0x20, 0x69, 0x73, 0x20, 0x74, 0x68, 0x65, 0x20, 0x74 /* 24 more */ ])\n' +
+                   '\n' +
+                   'Diff:\n' +
+                   '\n' +
+                   ' 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  │...Here is the t│\n' +
+                   '-68 69 6E 67 20 49 20 77 61 73 20 74 61 6C 6B 69  │hing I was talki│\n' +
+                   '+68 69 6E 67 20 49 20 77 61 73 20 71 75 75 78 69  │hing I was quuxi│\n' +
+                   ' 6E 67 20 61 62 6F 75 74                          │ng about│');
         });
 
         it.skipIf(typeof Uint8Array === 'undefined' || !Array.prototype.map, 'produces a hex-diff in JSON when Uint8Arrays differ', function () {
@@ -444,26 +560,16 @@ describe('unexpected', function () {
                         0x6E, 0x67, 0x20, 0x61, 0x62, 0x6F, 0x75, 0x74
                     ])
                 );
-            }, 'to throw', function (err) {
-                expect(err, 'to have properties', {
-                    showDiff: true,
-                    actual: {
-                        $Uint8Array: [
-                            '00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  |...Here is the t|',
-                            '68 69 6E 67 20 49 20 77 61 73 20 74 61 6C 6B 69  |hing I was talki|',
-                            '6E 67 20 61 62 6F 75 74                          |ng about|'
-                        ]
-                    },
-                    expected: {
-                        $Uint8Array: [
-                            '00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  |...Here is the t|',
-                            '68 69 6E 67 20 49 20 77 61 73 20 71 75 75 78 69  |hing I was quuxi|',
-                            '6E 67 20 61 62 6F 75 74                          |ng about|'
-                        ]
-                    }
-                });
-                expect(err.output.toString(), 'to equal', 'expected [Uint8Array 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74 68 69 6E 67  |...Here is the thing| (+20)] to equal [Uint8Array 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74 68 69 6E 67  |...Here is the thing| (+20)]');
-            });
+            }, 'to throw',
+                   'expected Uint8Array([0x00, 0x01, 0x02, 0x48, 0x65, 0x72, 0x65, 0x20, 0x69, 0x73, 0x20, 0x74, 0x68, 0x65, 0x20, 0x74 /* 24 more */ ])\n' +
+                   'to equal Uint8Array([0x00, 0x01, 0x02, 0x48, 0x65, 0x72, 0x65, 0x20, 0x69, 0x73, 0x20, 0x74, 0x68, 0x65, 0x20, 0x74 /* 24 more */ ])\n' +
+                   '\n' +
+                   'Diff:\n' +
+                   '\n' +
+                   ' 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  │...Here is the t│\n' +
+                   '-68 69 6E 67 20 49 20 77 61 73 20 74 61 6C 6B 69  │hing I was talki│\n' +
+                   '+68 69 6E 67 20 49 20 77 61 73 20 71 75 75 78 69  │hing I was quuxi│\n' +
+                   ' 6E 67 20 61 62 6F 75 74                          │ng about│');
         });
 
         it.skipIf(typeof Uint16Array === 'undefined', 'produces a hex-diff in JSON when Uint16Arrays differ', function () {
@@ -481,52 +587,88 @@ describe('unexpected', function () {
                         0x6E67, 0x2061, 0x626F, 0x7574
                     ])
                 );
-            }, 'to throw', function (err) {
-                expect(err, 'to have properties', {
-                    showDiff: true,
-                    actual: {
-                        $Uint16Array: [
-                            '0001 0248 6572 6520 6973 2074 6865 2074',
-                            '6869 6E67 2049 2077 6173 2074 616C 6B69',
-                            '6E67 2061 626F 7574'
-                        ]
-                    },
-                    expected: {
-                        $Uint16Array: [
-                            '0001 0248 6572 6520 6973 2074 6865 2074',
-                            '6869 6E67 2049 2077 6173 2071 7575 7869',
-                            '6E67 2061 626F 7574'
-                        ]
-                    }
-                });
-                expect(err.output.toString(), 'to equal', 'expected [Uint16Array 0001 0248 6572 6520 6973 2074 6865 2074 6869 6E67 2049 2077 6173 2074 616C 6B69 6E67 2061 626F 7574] to equal [Uint16Array 0001 0248 6572 6520 6973 2074 6865 2074 6869 6E67 2049 2077 6173 2071 7575 7869 6E67 2061 626F 7574]');
-            });
+            }, 'to throw',
+                   'expected Uint16Array([0x0001, 0x0248, 0x6572, 0x6520, 0x6973, 0x2074, 0x6865, 0x2074 /* 12 more */ ])\n' +
+                   'to equal Uint16Array([0x0001, 0x0248, 0x6572, 0x6520, 0x6973, 0x2074, 0x6865, 0x2074 /* 12 more */ ])\n' +
+                   '\n' +
+                   'Diff:\n' +
+                   '\n' +
+                   ' 0001 0248 6572 6520 6973 2074 6865 2074\n' +
+                   '-6869 6E67 2049 2077 6173 2074 616C 6B69\n' +
+                   '+6869 6E67 2049 2077 6173 2071 7575 7869\n' +
+                   ' 6E67 2061 626F 7574'
+            );
+        });
+
+        it.skipIf(typeof Uint32Array === 'undefined', 'produces a hex-diff in JSON when Uint32Arrays differ', function () {
+            expect(function () {
+                expect(
+                    new Uint32Array([
+                        0x00010248, 0x65726520, 0x69732074, 0x68652074,
+                        0x68696E67, 0x20492077, 0x61732074, 0x616C6B69,
+                        0x6E672061, 0x626F7574
+                    ]),
+                    'to equal',
+                    new Uint32Array([
+                        0x00010248, 0x65726520, 0x69732074, 0x68652074,
+                        0x68696E67, 0x20492077, 0x61732071, 0x75757869,
+                        0x6E672061, 0x626F7574
+                    ])
+                );
+            }, 'to throw',
+                   'expected Uint32Array([0x00010248, 0x65726520, 0x69732074, 0x68652074 /* 6 more */ ])\n' +
+                   'to equal Uint32Array([0x00010248, 0x65726520, 0x69732074, 0x68652074 /* 6 more */ ])\n' +
+                   '\n' +
+                   'Diff:\n' +
+                   '\n' +
+                   ' 00010248 65726520 69732074 68652074\n' +
+                   '-68696E67 20492077 61732074 616C6B69\n' +
+                   '+68696E67 20492077 61732071 75757869\n' +
+                   ' 6E672061 626F7574'
+            );
         });
     });
 
     describe('exception assertion', function () {
-        it('fails if no exception is thrown', function () {
+        var phantomJsErrorWeirdness;
+        try {
+            throw new Error('foo');
+        } catch (e) {
+            phantomJsErrorWeirdness = Object.keys(e).indexOf('sourceURL') >= 0;
+        }
+
+        it.skipIf(phantomJsErrorWeirdness, 'fails if no exception is thrown', function () {
             expect(function () {
                 expect(function () {
                     // Don't throw
                 }, 'to throw exception');
-            }, 'to throw', 'expected [Function] to throw exception');
+            }, 'to throw',
+                'expected\n' +
+                'function () {\n' +
+                '    // Don\'t throw\n' +
+                '}\n' +
+                'to throw exception');
 
         });
-        it('fails if exception is thrown', function () {
+
+        it.skipIf(phantomJsErrorWeirdness, 'fails if exception is thrown', function () {
             expect(function () {
                 expect(function testFunction() {
                     throw new Error('The Error');
                 }, 'not to throw');
             }, 'to throw',
-                   'expected [Function: testFunction] not to throw\n' +
-                   "  threw: The Error");
+                   'expected\n' +
+                    'function testFunction() {\n' +
+                    '    throw new Error(\'The Error\');\n' +
+                    '}\n' +
+                    'not to throw\n' +
+                    "  threw: [Error: { message: 'The Error' }]");
         });
 
         it('fails if the argument is not a function', function () {
             expect(function () {
                 expect(1, 'to throw exception');
-            }, 'to throw exception', "Assertion 'to throw exception' only supports functions");
+            }, 'to throw exception', 'The assertion "to throw exception" is not defined for the type "number", but it is defined for the type "function"');
         });
 
         it('given a function the function is called with the exception', function () {
@@ -546,20 +688,23 @@ describe('unexpected', function () {
             }, 'not to throw exception', /matches the exception message/);
         });
 
-        it('provides actual and expected properties when the exception message does not match the given string', function () {
+        it('provides a diff when the exception message does not match the given string', function () {
             expect(function () {
                 expect(function testFunction() {
                     throw new Error('bar');
                 }, 'to throw', 'foo');
-            }, 'to throw exception', function (err) {
-                expect(err.output.toString(), 'to equal',
-                       "expected [Function: testFunction] to throw 'foo'\n" +
-                       "  expected 'bar' to equal 'foo'");
-                expect(err, 'to have properties', {
-                    actual: 'bar',
-                    expected: 'foo'
-                });
-            });
+            }, 'to throw exception',
+                   'expected\n' +
+                    'function testFunction() {\n' +
+                    '    throw new Error(\'bar\');\n' +
+                    '}\n' +
+                    'to throw \'foo\'\n' +
+                    '  expected \'bar\' to equal \'foo\'\n' +
+                    '  \n' +
+                    '  Diff:\n' +
+                    '  \n' +
+                    '  -bar\n' +
+                    '  +foo');
         });
 
         it('exactly matches the message against the given string', function () {
@@ -570,6 +715,20 @@ describe('unexpected', function () {
                 throw new Error('matches the exception message');
             }, 'not to throw exception', 'the exception message');
         });
+
+        it('does not break if null is thrown', function () {
+            expect(function () {
+                expect(function () {
+                    throw null;
+                }, 'not to throw');
+            }, 'to throw',
+                'expected\n' +
+                'function () {\n' +
+                '    throw null;\n' +
+                '}\n' +
+                'not to throw\n' +
+              '  threw: null');
+        });
     });
 
     describe('match assertion', function () {
@@ -579,22 +738,57 @@ describe('unexpected', function () {
             expect(null, 'not to match', /foo/);
         });
 
+        it('does not keep state between invocations', function () {
+            // This tests that the assertion does not depend on the lastIndex
+            // property of the regexp:
+            var regExp = /a/g,
+                str = 'aa';
+            expect(str, 'to match', regExp);
+            expect(str, 'to match', regExp);
+            expect(str, 'to match', regExp);
+        });
+
         it('throws when the assertion fails', function () {
             expect(function () {
                 expect('test', 'to match', /foo/);
             }, 'to throw exception', "expected 'test' to match /foo/");
         });
+
+        it('provides a diff when the not flag is set', function () {
+            expect(function () {
+                expect('barfooquuxfoobaz', 'not to match', /foo/);
+            }, 'to throw',
+                   "expected 'barfooquuxfoobaz' not to match /foo/\n" +
+                   '\n' +
+                   'Diff:\n' +
+                   '\n' +
+                   'barfooquuxfoobaz');
+        });
     });
 
     describe('contain assertion', function () {
-        it('asserts indexOf for an array or string', function () {
+        it('asserts indexOf for a string', function () {
+            expect('hello world', 'to contain', 'world');
+        });
+
+        it('should support searching for a non-string inside a string', function () {
+            expect('hello null', 'to contain', null);
+            expect('hello 123', 'to contain', 123);
+            expect('hello false', 'to contain', false);
+            expect('hello Infinity', 'to contain', Infinity);
+        });
+
+        it('asserts item equality for an array', function () {
             expect([1, 2], 'to contain', 1);
             expect([1, 2], 'to contain', 2, 1);
-            expect('hello world', 'to contain', 'world');
-            expect(null, 'not to contain', 'world');
+            expect([{foo: 123}], 'to contain', {foo: 123});
         });
 
         it('throws when the assertion fails', function () {
+            expect(function () {
+                expect(null, 'not to contain', 'world');
+            }, 'to throw', 'The assertion "not to contain" is not defined for the type "null", but it is defined for these types: "string", "array"');
+
             expect(function () {
                 expect('hello world', 'to contain', 'foo');
             }, 'to throw exception', "expected 'hello world' to contain 'foo'");
@@ -608,8 +802,38 @@ describe('unexpected', function () {
             }, 'to throw exception', "expected [ 1, 2 ] to contain 2, 3");
 
             expect(function () {
+                expect([{foo: 123}], 'to contain', {foo: 123}, {bar: 456});
+            }, 'to throw exception', "expected [ { foo: 123 } ] to contain { foo: 123 }, { bar: 456 }");
+
+            expect(function () {
                 expect(1, 'to contain', 1);
-            }, 'to throw exception', "Assertion 'to contain' only supports strings and arrays");
+            }, 'to throw exception', 'The assertion "to contain" is not defined for the type "number", but it is defined for these types: "string", "array"');
+        });
+
+        it('produces a diff when the array case fails and the not flag is on', function () {
+            expect(function () {
+                expect([1, 2, 3], 'not to contain', 2);
+            }, 'to throw',
+                'expected [ 1, 2, 3 ] not to contain 2\n' +
+                '\n' +
+                'Diff:\n' +
+                '\n' +
+                '[\n' +
+                '  1,\n' +
+                '  2, // should be removed\n' +
+                '  3\n' +
+                ']');
+        });
+
+        it('produces a diff when the string case fails and the not flag is on', function () {
+            expect(function () {
+                expect('foobarquuxfoo', 'not to contain', 'foo');
+            }, 'to throw',
+                "expected 'foobarquuxfoo' not to contain 'foo'\n" +
+                '\n' +
+                'Diff:\n' +
+                '\n' +
+                'foobarquuxfoo');
         });
     });
 
@@ -621,6 +845,24 @@ describe('unexpected', function () {
             expect({ length: 4 }, 'to have length', 4);
         });
 
+        it('asserts string .length', function () {
+            expect('abc', 'to have length', 3);
+            expect('', 'to have length', 0);
+        });
+
+        it.skipIf(typeof Buffer === 'undefined', 'asserts Buffer .length', function () {
+            expect(new Buffer('æ', 'utf-8'), 'to have length', 2);
+            expect(new Buffer([]), 'to have length', 0);
+        });
+
+        it.skipIf(typeof Uint8Array === 'undefined', 'asserts length for Uint8Array', function () {
+            expect(new Uint8Array([0x45, 0x59]), 'to have length', 2);
+        });
+
+        it.skipIf(typeof Uint16Array === 'undefined', 'asserts length for Uint16Array', function () {
+            expect(new Uint16Array([0x4545, 0x5945]), 'to have length', 2);
+        });
+
         it('throws when the assertion fails', function () {
             expect(function () {
                 expect([1, 2], 'to have length', 3);
@@ -628,7 +870,7 @@ describe('unexpected', function () {
 
             expect(function () {
                 expect(null, 'to have length', 4);
-            }, 'to throw exception', "Assertion 'to have length' only supports array like objects");
+            }, 'to throw exception', 'The assertion "to have length" is not defined for the type "null", but it is defined for these types: "string", "object"');
 
             expect(function () {
                 expect({ length: 'foo' }, 'to have length', 4);
@@ -646,11 +888,7 @@ describe('unexpected', function () {
             expect({a: 'b'}, 'not to have property', 'b');
             expect({'"a"': 'b'}, 'to have own property', '"a"');
             expect(create({a: 'b'}), 'not to have own property', 'a');
-            expect(1, 'not to have property', 'a');
-            expect(null, 'not to have property', 'a');
-            expect(undefined, 'not to have property', 'a');
-            expect(true, 'not to have property', 'a');
-            expect(false, 'not to have property', 'a');
+            expect(function () {}, 'to have property', 'toString');
         });
 
         it('throws when the assertion fails', function () {
@@ -660,21 +898,27 @@ describe('unexpected', function () {
 
             expect(function () {
                 expect(null, 'to have property', 'b');
-            }, 'to throw exception', "expected null to have property 'b'");
+            }, 'to throw exception', 'The assertion "to have property" is not defined for the type "null", but it is defined for the type "object"');
 
             expect(function () {
                 expect({a: 'b'}, 'to have property', 'a', 'c');
-            }, 'to throw exception', "expected { a: 'b' } to have property 'a', 'c'");
+            }, 'to throw exception',
+                   "expected { a: 'b' } to have property 'a', 'c'\n" +
+                  "\n" +
+                   "Diff:\n" +
+                   "\n" +
+                   "-b\n" +
+                   "+c");
 
             expect(function () {
                 // property expectations ignores value if property
                 expect(null, 'not to have property', 'a', 'b');
-            }, 'to throw exception', "expected null not to have property 'a', 'b'");
+            }, 'to throw exception', 'The assertion "not to have property" is not defined for the type "null", but it is defined for the type "object"');
 
             expect(function () {
                 // property expectations on value expects the property to be present
                 expect(null, 'not to have own property', 'a', 'b');
-            }, 'to throw exception', "expected null not to have own property 'a', 'b'");
+            }, 'to throw exception', 'The assertion "not to have own property" is not defined for the type "null", but it is defined for the type "object"');
         });
     });
 
@@ -720,10 +964,27 @@ describe('unexpected', function () {
             });
             expect(function () {
                 expect({a: 'foo', b: 'bar'}, 'to have properties', {c: 'baz'});
-            }, 'to throw', "expected { a: 'foo', b: 'bar' } to have properties { c: 'baz' }");
+            }, 'to throw', "expected { a: 'foo', b: 'bar' } to have properties { c: 'baz' }\n" +
+                   "\n" +
+                   "Diff:\n" +
+                   "\n" +
+                   "{\n" +
+                   "  a: 'foo',\n" +
+                   "  b: 'bar',\n" +
+                   "  c: undefined // should be: 'baz'\n" +
+                   "}");
             expect(function () {
                 expect({a: 'foo', b: 'bar'}, 'to have properties', {b: 'baz'});
-            }, 'to throw', "expected { a: 'foo', b: 'bar' } to have properties { b: 'baz' }");
+            }, 'to throw', "expected { a: 'foo', b: 'bar' } to have properties { b: 'baz' }\n" +
+                   "\n" +
+                   "Diff:\n" +
+                   "\n" +
+                   "{\n" +
+                   "  a: 'foo',\n" +
+                   "  b: 'bar' // should be: 'baz'\n" +
+                   "           // -bar\n" +
+                   "           // +baz\n" +
+                   "}");
         });
 
         it('asserts presence and values of an object of own properties', function () {
@@ -732,7 +993,14 @@ describe('unexpected', function () {
                 var obj = create({a: 'foo', b: 'bar'});
                 expect(obj, 'to have properties', {a: 'foo', b: 'bar'}); // should not fail
                 expect(obj, 'to have own properties', {a: 'foo', b: 'bar'}); // should fail
-            }, 'to throw', "expected {} to have own properties { a: 'foo', b: 'bar' }");
+            }, 'to throw', "expected {} to have own properties { a: 'foo', b: 'bar' }\n" +
+                   "\n" +
+                   "Diff:\n" +
+                   "\n" +
+                   "{\n" +
+                   "  a: undefined, // should be: 'foo'\n" +
+                   "  b: undefined // should be: 'bar'\n" +
+                   "}");
         });
 
         it('asserts absence and values of an object of properties', function () {
@@ -751,16 +1019,6 @@ describe('unexpected', function () {
             }, 'to throw', "expected { a: 'foo', b: 'bar' } not to have own properties { a: 'foo', b: 'bar' }");
         });
 
-        it('should add showDiff:true and diffable actual and expected properties to the error instance', function () {
-            expect(function () {
-                expect({a: 123, b: 456, c: 789}, 'to have properties', {a: 123, b: 987});
-            }, 'to throw', function (e) {
-                expect(e.showDiff, 'to be true');
-                expect(e.actual, 'to equal', {a: 123, b: 456, c: 789});
-                expect(e.expected, 'to equal', {a: 123, b: 987, c: 789});
-            });
-        });
-
         it('includes prototype properties in the actual property (#48)', function () {
             function Foo() {}
 
@@ -768,12 +1026,15 @@ describe('unexpected', function () {
 
             expect(function () {
                 expect(new Foo(), 'to have properties', {a: 123});
-            }, 'to throw', function (e) {
-                expect(e.expected, 'to have property', 'doSomething');
-                expect(e.actual, 'to have property', 'doSomething');
-                delete e.expected.a;
-                expect(e.actual, 'to equal', e.expected);
-            });
+            }, 'to throw',
+                   "expected {} to have properties { a: 123 }\n" +
+                   "\n" +
+                   "Diff:\n" +
+                   "\n" +
+                   "{\n" +
+                   "  doSomething: function () {},\n" +
+                   "  a: undefined // should be: 123\n" +
+                   "}");
         });
 
         it('throws when the assertion fails', function () {
@@ -783,7 +1044,13 @@ describe('unexpected', function () {
 
             expect(function () {
                 expect({a: 'foo'}, 'to have properties', {a: undefined});
-            }, 'to throw', "expected { a: 'foo' } to have properties { a: undefined }");
+            }, 'to throw', "expected { a: 'foo' } to have properties { a: undefined }\n" +
+                   "\n" +
+                   "Diff:\n" +
+                   "\n" +
+                   "{\n" +
+                   "  a: 'foo' // should be: undefined\n" +
+                   "}");
         });
 
         it('throws when given invalid input', function () {
@@ -816,7 +1083,7 @@ describe('unexpected', function () {
 
             expect(function () {
                 expect(null, 'to be empty');
-            }, 'to throw exception', "Assertion 'to be empty' only supports strings, arrays and objects");
+            }, 'to throw exception', 'The assertion "to be empty" is not defined for the type "null", but it is defined for these types: "string", "object"');
         });
     });
 
@@ -829,10 +1096,6 @@ describe('unexpected', function () {
             expect({ a: 'b', c: 'd' }, 'to only have keys', 'a', 'c');
             expect({ a: 'b', c: 'd' }, 'to only have keys', ['a', 'c']);
             expect({ a: 'b', c: 'd', e: 'f' }, 'to not only have keys', ['a', 'c']);
-            expect(null, 'not to have key', 'a');
-            expect(undefined, 'not to have key', 'a');
-            expect(true, 'not to have key', 'a');
-            expect(false, 'not to have key', 'a');
         });
 
         it('throws when the assertion fails', function () {
@@ -869,8 +1132,6 @@ describe('unexpected', function () {
             expect(Infinity, 'not to be finite');
             expect(-Infinity, 'not to be finite');
             expect(NaN, 'not to be finite');
-            expect(null, 'not to be finite');
-            expect({}, 'not to be finite');
         });
 
         it('throws when the assertion fails', function () {
@@ -887,8 +1148,6 @@ describe('unexpected', function () {
             expect(Infinity, 'to be infinite');
             expect(-Infinity, 'to be infinite');
             expect(NaN, 'not to be infinite');
-            expect(null, 'not to be infinite');
-            expect({}, 'not to be infinite');
         });
 
         it('throws when the assertion fails', function () {
@@ -913,7 +1172,7 @@ describe('unexpected', function () {
             }, 'to throw exception', "expected 4 not to be within '0..4'");
             expect(function () {
                 expect(null, 'not to be within', 0, 4);
-            }, 'to throw exception', "expected null not to be within '0..4'");
+            }, 'to throw exception', 'The assertion "not to be within" is not defined for the type "null", but it is defined for these types: "number", "string"');
         });
     });
 
@@ -1002,11 +1261,7 @@ describe('unexpected', function () {
     describe('to be NaN assertion', function () {
         it('assert that the value is NaN or not', function () {
             expect(NaN, 'to be NaN');
-            expect({}, 'to be NaN');
             expect(2, 'not to be NaN');
-            expect(null, 'not to be NaN');
-            expect(undefined, 'to be NaN');
-            expect("String", 'to be NaN');
         });
 
         it('fails when the assertion fails', function () {
@@ -1020,7 +1275,7 @@ describe('unexpected', function () {
         });
     });
 
-    describe('ẗo be close to assertion', function () {
+    describe('to be close to assertion', function () {
         it('asserts that two numbers differ by at most 1e-9', function () {
             expect(1.5, 'to be close to', 1.49999999999);
             expect(1.5, 'to be close to', 1.5000000001);
@@ -1061,7 +1316,7 @@ describe('unexpected', function () {
                 expect.fail('fail with error message');
             } catch (e) {
                 wasCaught = true;
-                expect(e.message, 'to equal', 'fail with error message');
+                expect(e.message, 'to equal', '\nfail with error message');
             }
             expect(wasCaught, 'to be true');
         });
@@ -1089,21 +1344,251 @@ describe('unexpected', function () {
 
     });
 
-    describe('to be an array whose items satisfy assertion', function () {
-        it('requires a function or a string as the third argument', function () {
-            expect(function () {
-                expect([1, 2, 3], 'to be an array whose items satisfy');
-            }, 'to throw', 'Assertion "to be an array whose items satisfy" expects a function as argument');
+    describe('to satisfy assertion', function () {
+        // These are the examples from #40:
+
+        it('should support expect.it in the RHS object', function () {
+            expect({foo: 'bar'}, 'to satisfy', {
+                foo: expect.it('to be a string')
+            });
+
+            expect({foo: [123]}, 'to satisfy', {
+                foo: expect.it('to be an array whose items satisfy', 'to be a number')
+            });
+        });
+
+        it('should support regular expressions in the RHS object', function () {
+            expect({foo: 'bar'}, 'to satisfy', {
+                foo: /ba/
+            });
+        });
+
+        it('should support expect.it in an array', function () {
+            expect({foo: [123]}, 'to satisfy', {
+                foo: [expect.it('to be a number')]
+            });
+        });
+
+        it('should support directly naming other assertions', function () {
+            expect(123, 'to satisfy assertion', 'to be a number');
+        });
+
+        it('should support delegating to itself as a weird noop', function () {
+            expect(123, 'to satisfy assertion', 'to satisfy assertion', 'to satisfy assertion', 'to be a number');
+        });
+
+        it('should support a regular function in the RHS object (expected to throw an exception if the condition is not met)', function () {
+            expect({foo: 123}, 'to satisfy', function (obj) {
+                expect(obj.foo, 'to equal', 123);
+            });
+        });
+
+        it('should support a chained expect.it', function () {
+            expect({foo: 123}, 'to satisfy', {
+                foo: expect.it('to be a number').and('to be greater than', 10)
+            });
 
             expect(function () {
-                expect([1, 2, 3], 'to be an array whose items satisfy', 42);
-            }, 'to throw', 'Assertion "to be an array whose items satisfy" expects a function as argument');
+                expect({foo: 123}, 'to satisfy', {
+                    foo: expect.it('to be a number').and('to be greater than', 200)
+                });
+            }, 'to throw',
+                   "expected { foo: 123 } to satisfy\n" +
+                   "{\n" +
+                   "  foo: expect.it('to be a number').and('to be greater than', 200)\n" +
+                   "}");
+        });
+
+        it('should support asserting on properties that are not defined', function () {
+            expect({foo: 123}, 'to satisfy', {
+                bar: expect.it('to be undefined')
+            });
+        });
+
+        it('should assert missing properties with undefined in the RHS object', function () {
+            expect({foo: 123}, 'to satisfy', {
+                bar: undefined
+            });
+        });
+
+        it('should support the exhaustively flag', function () {
+            expect({foo: 123}, 'to exhaustively satisfy', {foo: 123});
+        });
+
+        it('should support delegating to itself with the exhaustively flag', function () {
+            expect({foo: {bar: 123}, baz: 456}, 'to satisfy', {
+                foo: expect.it('to exhaustively satisfy', {bar: 123})
+            });
+        });
+
+        it('should support delegating to itself without the exhaustively flag', function () {
+            expect({foo: {bar: 123, baz: 456}}, 'to exhaustively satisfy', {
+                foo: expect.it('to satisfy', {bar: 123})
+            });
+        });
+
+        it('should not fail when matching an object against a number', function () {
+            expect({foo: {}}, 'not to satisfy', {foo: 123});
+        });
+
+        describe('with a custom type', function () {
+            function MysteryBox(value) {
+                this.propertyName = 'prop' + Math.floor(1000 * Math.random());
+                this[this.propertyName] = value;
+            }
+            var clonedExpect;
+
+            beforeEach(function () {
+                clonedExpect = expect.clone()
+                    .addType({
+                        name: 'mysteryBox',
+                        identify: function (obj) {
+                            return obj instanceof MysteryBox;
+                        },
+                        equal: function (box1, box2, equal) {
+                            return equal(box1[box1.propertyName], box2[box2.propertyName]);
+                        },
+                        inspect: function (box, depth, output, inspect) {
+                            output.text('[MysteryBox ');
+                            output.append(inspect(box[box.propertyName]));
+                            output.text(']');
+                            return output;
+                        }
+                    })
+                    .addAssertion('mysteryBox', 'to [exhaustively] satisfy', function (expect, subject, value) {
+                        if (value instanceof MysteryBox) {
+                            expect(subject[subject.propertyName], 'to [exhaustively] satisfy', value[value.propertyName]);
+                        } else {
+                            expect(subject[subject.propertyName], 'to [exhaustively] satisfy', value);
+                        }
+                    });
+            });
+
+            it('should delegate to the "to satisfies" assertion defined for the custom type', function () {
+                clonedExpect({
+                    foo: new MysteryBox({ baz: 123, quux: 987 }),
+                    bar: new MysteryBox(456)
+                }, 'to satisfy', {
+                    foo: { baz: clonedExpect.it('to be a number') },
+                    bar: 456
+                });
+            });
+
+            it('should preserve the "exhaustively" flag when matching inside instances of the custom type', function () {
+                expect(function () {
+                    clonedExpect({
+                        foo: new MysteryBox({ baz: 123, quux: 987 })
+                    }, 'to exhaustively satisfy', {
+                        foo: { baz: clonedExpect.it('to be a number') }
+                    });
+                }, 'to throw',
+                       "expected { foo: [MysteryBox { baz: 123, quux: 987 }] }\n" +
+                       "to exhaustively satisfy { foo: { baz: expect.it('to be a number') } }");
+            });
+
+            it('should preserve the "exhaustively" flag when matching instances of the custom type against each other', function () {
+                expect(function () {
+                    clonedExpect({
+                        foo: new MysteryBox({ baz: 123, quux: 987 })
+                    }, 'to exhaustively satisfy', {
+                        foo: new MysteryBox({ baz: clonedExpect.it('to be a number') })
+                    });
+                }, 'to throw',
+                       "expected { foo: [MysteryBox { baz: 123, quux: 987 }] } to exhaustively satisfy\n" +
+                       "{\n" +
+                       "  foo: [MysteryBox { baz: expect.it('to be a number') }]\n" +
+                       "}");
+            });
+
+            it('should support matching against other instances of the custom type', function () {
+                clonedExpect({
+                    foo: new MysteryBox({ baz: 123 }),
+                    bar: new MysteryBox(456)
+                }, 'to satisfy', {
+                    foo: new MysteryBox({ baz: clonedExpect.it('to be a number') }),
+                    bar: new MysteryBox(456)
+                });
+            });
+
+            it('should fail to match', function () {
+                expect(function () {
+                    clonedExpect({
+                        foo: new MysteryBox('abc')
+                    }, 'to satisfy', {
+                        foo: 'def'
+                    });
+                }, 'to throw', "expected { foo: [MysteryBox 'abc'] } to satisfy { foo: 'def' }\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "-abc\n" +
+                       "+def");
+            });
+
+            it('should fail to match unequal instances of the custom type', function () {
+                expect(function () {
+                    clonedExpect({
+                        foo: new MysteryBox('abc')
+                    }, 'to satisfy', {
+                        foo: new MysteryBox('def')
+                    });
+                }, 'to throw',
+                       "expected { foo: [MysteryBox 'abc'] } to satisfy { foo: [MysteryBox 'def'] }\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "-abc\n" +
+                       "+def");
+            });
+        });
+
+        it('can be negated with the "not" flag', function () {
+            expect(123, 'not to satisfy assertion', 'to be a string');
+
+            expect('foobar', 'not to satisfy', /quux/i);
+
+            expect({foo: 123}, 'not to satisfy', {foo: expect.it('to be a string')});
+
+            expect({foo: 123, bar: 456}, 'not to exhaustively satisfy', {foo: 123});
+
+            expect({foo: 123}, 'not to exhaustively satisfy', {bar: undefined});
+        });
+
+        it('fails when the assertion fails', function () {
+            expect(function () {
+                expect(123, 'to satisfy assertion', 'to be a string');
+            }, 'to throw');
+
+            expect(function () {
+                expect('foobar', 'to satisfy', /quux/i);
+            }, 'to throw', "expected 'foobar' to satisfy /quux/i");
+
+            // FIXME: Could this error message be improved?
+            expect(function () {
+                expect({foo: 123}, 'to satisfy', {foo: expect.it('to be a string')});
+            }, 'to throw', "expected { foo: 123 } to satisfy { foo: expect.it('to be a string') }");
+
+            expect(function () {
+                expect({foo: 123, bar: 456}, 'to exhaustively satisfy', {foo: 123});
+            }, 'to throw');
+
+            expect(function () {
+                expect({foo: 123}, 'to exhaustively satisfy', {bar: undefined});
+            }, 'to throw');
+        });
+    });
+
+    describe('to be an array whose items satisfy assertion', function () {
+        it('requires a third argument', function () {
+            expect(function () {
+                expect([1, 2, 3], 'to be an array whose items satisfy');
+            }, 'to throw', 'Assertion "to be an array whose items satisfy" expects a third argument');
         });
 
         it('only accepts arrays as the target object', function () {
             expect(function () {
                 expect(42, 'to be an array whose items satisfy', function (item) {});
-            }, 'to throw', /expected 42 to be an array/);
+            }, 'to throw', 'The assertion "to be an array whose items satisfy" is not defined for the type "number", but it is defined for the type "array"');
         });
 
         it('supports the non-empty clause', function () {
@@ -1185,20 +1670,16 @@ describe('unexpected', function () {
     });
 
     describe('to be a map whose values satisfy assertion', function () {
-        it('requires a function or a string as the third argument', function () {
+        it('requires a third argument', function () {
             expect(function () {
                 expect([1, 2, 3], 'to be a map whose values satisfy');
-            }, 'to throw', 'Assertion "to be a map whose values satisfy" expects a function as argument');
-
-            expect(function () {
-                expect([1, 2, 3], 'to be a map whose values satisfy', 42);
-            }, 'to throw', 'Assertion "to be a map whose values satisfy" expects a function as argument');
+            }, 'to throw', 'Assertion "to be a map whose values satisfy" expects a third argument');
         });
 
-        it('only accepts objects as the target', function () {
+        it('only accepts objects and arrays as the target', function () {
             expect(function () {
                 expect(42, 'to be a map whose values satisfy', function (value) {});
-            }, 'to throw', /expected 42 to be an object/);
+            }, 'to throw', 'The assertion "to be a map whose values satisfy" is not defined for the type "number", but it is defined for the type "object"');
         });
 
         it('asserts that the given callback does not throw for any values in the map', function () {
@@ -1273,20 +1754,16 @@ describe('unexpected', function () {
     });
 
     describe('to be a map whose keys satisfy assertion', function () {
-        it('requires a function or string as the third argument', function () {
+        it('requires a third argument', function () {
             expect(function () {
                 expect([1, 2, 3], 'to be a map whose keys satisfy');
-            }, 'to throw', 'Assertion "to be a map whose keys satisfy" expects a function as argument');
-
-            expect(function () {
-                expect([1, 2, 3], 'to be a map whose keys satisfy', 42);
-            }, 'to throw', 'Assertion "to be a map whose keys satisfy" expects a function as argument');
+            }, 'to throw', 'Assertion "to be a map whose keys satisfy" expects a third argument');
         });
 
         it('only accepts objects as the target', function () {
             expect(function () {
                 expect(42, 'to be a map whose keys satisfy', function (key) {});
-            }, 'to throw', /expected 42 to be an object/);
+            }, 'to throw', 'The assertion "to be a map whose keys satisfy" is not defined for the type "number", but it is defined for the type "object"');
         });
 
         it('asserts that the given callback does not throw for any keys in the map', function () {
@@ -1301,6 +1778,13 @@ describe('unexpected', function () {
             expect({ foo: 0, bar: 1, baz: 2, qux: 3 }, 'to be a map whose keys satisfy', 'not to be empty');
 
             expect({ foo: 0, bar: 1, baz: 2, qux: 3 }, 'to be a map whose keys satisfy', 'to match', /^[a-z]{3}$/);
+        });
+
+        it('receives the key and the value when the third argument is a function', function () {
+            expect({ foo: 123 }, 'to be a map whose keys satisfy', function (key, value) {
+                expect(key, 'to equal', 'foo');
+                expect(value, 'to equal', 123);
+            });
         });
 
         it('supports the non-empty clause', function () {
@@ -1348,8 +1832,8 @@ describe('unexpected', function () {
         });
 
         it('works with a circular object', function () {
-            var obj = {a: 123};
-            obj.b = obj;
+            var obj = {a: 123, b: {}};
+            obj.b.a = obj;
             expect(obj, 'to be canonical');
         });
 
@@ -1357,12 +1841,16 @@ describe('unexpected', function () {
             expect(function () {
                 expect({b: 456, a: 123}, 'to be canonical');
             }, 'to throw exception', 'expected { b: 456, a: 123 } to be canonical');
+
+            expect(function () {
+                expect({foo: {b: 456, a: 123}}, 'to be canonical');
+            }, 'to throw exception', 'expected { foo: { b: 456, a: 123 } } to be canonical');
         });
     });
 
     it('throws if the assertion does not exist', function () {
         expect(function () {
-            expect(1, "to bee", 2);
+            expect({}, "to bee", 2);
         }, 'to throw exception', 'Unknown assertion "to bee", did you mean: "to be"');
     });
 
@@ -1371,7 +1859,7 @@ describe('unexpected', function () {
             expect.addAssertion('foo', function () {})
                   .addAssertion('bar', function () {});
 
-            expect(expect.assertions, 'to have keys',
+            expect(expect.assertions.any, 'to have keys',
                    'foo',
                    'bar');
         });
@@ -1408,13 +1896,13 @@ describe('unexpected', function () {
 
         it('allows overlapping patterns within a single addAssertion call', function () {
             expect(function () {
-                expect.clone().addAssertion('to foo', 'to [really] foo', function () {});
+                expect.clone().addAssertion(['to foo', 'to [really] foo'], function () {});
             }, 'not to throw');
         });
 
         it('does not break when declaring multiple patterns that do not have the same set of flags defined', function () {
             var clonedExpect = expect.clone()
-                .addAssertion('[not] to be foo', 'to be foo aliased without the not flag', function (expect, subject) {
+                .addAssertion(['[not] to be foo', 'to be foo aliased without the not flag'], function (expect, subject) {
                     expect(subject, '[not] to equal', 'foo');
                 });
 
@@ -1424,7 +1912,13 @@ describe('unexpected', function () {
             clonedExpect('bar', 'not to be foo');
             clonedExpect(function () {
                 clonedExpect('bar', 'to be foo aliased without the not flag');
-            }, 'to throw', "expected 'bar' to be foo aliased without the not flag");
+            }, 'to throw',
+                         "expected 'bar' to be foo aliased without the not flag\n" +
+                         "\n" +
+                         "Diff:\n" +
+                         "\n" +
+                         "-bar\n" +
+                         "+foo");
         });
 
         describe('pattern', function () {
@@ -1513,22 +2007,12 @@ describe('unexpected', function () {
             });
 
             describe('alternations', function () {
-                it("must not be empty", function () {
-                    expect(function () {
-                        expect.addAssertion('foo ()', function () {});
-                    }, 'to throw', "Assertion patterns must not contain empty alternations: 'foo ()'");
-
-                    expect(function () {
-                        expect.addAssertion('foo (bar|)', function () {});
-                    }, 'to throw', "Assertion patterns must not contain empty alternations: 'foo (bar|)'");
-
-                    expect(function () {
-                        expect.addAssertion('foo (||)', function () {});
-                    }, 'to throw', "Assertion patterns must not contain empty alternations: 'foo (||)'");
-
-                    expect(function () {
-                        expect.addAssertion('foo (|bar|)', function () {});
-                    }, 'to throw', "Assertion patterns must not contain empty alternations: 'foo (|bar|)'");
+                it('can be empty', function () {
+                    var clonedExpect = expect.clone().addAssertion('to foo (|bar)', function (expect, subject) {
+                        expect(subject, 'to equal', 'foo');
+                    });
+                    clonedExpect('foo', 'to foo');
+                    clonedExpect('foo', 'to foo bar');
                 });
 
                 it("must not contain brackets", function () {
@@ -1550,6 +2034,74 @@ describe('unexpected', function () {
                         expect.addAssertion('foo ((bar))', function () {});
                     }, 'to throw', "Assertion patterns must not contain alternations with parentheses: 'foo ((bar))'");
                 });
+            });
+        });
+
+        describe('types', function () {
+            function Box(value) {
+                this.value = value;
+            }
+
+            it('allows specifying assertions with overlapping patterns for different types', function () {
+                var clonedExpect = expect.clone();
+                clonedExpect.addType({
+                    name: 'box',
+                    base: 'object',
+                    identify: function (obj) {
+                        return obj instanceof Box;
+                    },
+                    inspect: function (box, depth, output, inspect) {
+                        output.text('[Box ').append(inspect(box.value)).text(']');
+                        return output;
+                    }
+                }).addAssertion('box', 'to be foo', function (expect, subject) {
+                    expect(subject.value, 'to be', 'foo');
+                }).addAssertion('string', 'to be foo', function (expect, subject) {
+                    expect(subject, 'to be', 'foo');
+                }).addAssertion('to be foo', function (expect, subject) {
+                    expect(String(subject), 'to equal', 'foo');
+                });
+                expect(clonedExpect.assertions.box['to be foo'], 'to be ok');
+                expect(clonedExpect.assertions.string['to be foo'], 'to be ok');
+                expect(clonedExpect.assertions.any['to be foo'], 'to be ok');
+                clonedExpect('foo', 'to be foo');
+                clonedExpect(new Box('foo'), 'to be foo');
+                expect(function () {
+                    clonedExpect('bar', 'to be foo');
+                }, 'to throw',
+                       "expected 'bar' to be foo\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "-bar\n" +
+                       "+foo");
+                expect(function () {
+                    clonedExpect(new Box('bar'), 'to be foo');
+                }, 'to throw',
+                       "expected [Box 'bar'] to be foo\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "-bar\n" +
+                       "+foo");
+            });
+
+            it('allows you to control the inspection depth', function () {
+                var clonedExpect = expect.clone().addType({
+                    name: 'box',
+                    base: 'object',
+                    identify: function (obj) {
+                        return obj instanceof Box;
+                    },
+                    inspect: function (box, depth, output, inspect) {
+                        output.text('[Box ').append(inspect(box.value, depth)).text(']');
+                        return output;
+                    }
+                });
+
+                expect(clonedExpect.inspect(new Box({ shown: { hidden: 'secret' }}), 1).toString(),
+                       'to equal',
+                       '[Box { shown: ... }]');
             });
         });
 
@@ -1602,6 +2154,7 @@ describe('unexpected', function () {
                     clonedExpect = expect.clone()
                         .addAssertion('to be sorted after delay', function (expect, subject, delay, done) {
                             this.errorMode = errorMode;
+                            this.args.pop(); // Don't let the function be inspected in case of failure
                             setTimeout(function () {
                                 try {
                                     expect(subject, 'to be an array');
@@ -1694,45 +2247,115 @@ describe('unexpected', function () {
         var clonedExpect;
         beforeEach(function () {
             clonedExpect = expect.clone();
-            clonedExpect.addAssertion('[not] to be answer to the Ultimate Question of Life, the Universe, and Everything', function (expect, subject) {
-                this.assert(subject === 42);
+            clonedExpect.addAssertion('[not] to be the answer to the Ultimate Question of Life, the Universe, and Everything', function (expect, subject) {
+                expect(subject, '[not] to equal', 42);
             });
         });
 
         it('changes to the clone does not affect the original instance', function () {
             expect(expect.assertions, 'not to have keys',
-                   'to be answer to the Ultimate Question of Life, the Universe, and Everything',
-                   'not to be answer to the Ultimate Question of Life, the Universe, and Everything');
+                   'to be the answer to the Ultimate Question of Life, the Universe, and Everything',
+                   'not to be the answer to the Ultimate Question of Life, the Universe, and Everything');
         });
 
         it('assertions can be added to the clone', function () {
-            expect(clonedExpect.assertions, 'to have keys',
-                   'to be answer to the Ultimate Question of Life, the Universe, and Everything',
-                   'not to be answer to the Ultimate Question of Life, the Universe, and Everything');
-            clonedExpect(42, 'to be answer to the Ultimate Question of Life, the Universe, and Everything');
-            clonedExpect(41, 'not to be answer to the Ultimate Question of Life, the Universe, and Everything');
+            expect(clonedExpect.assertions.any, 'to have keys',
+                   'to be the answer to the Ultimate Question of Life, the Universe, and Everything',
+                   'not to be the answer to the Ultimate Question of Life, the Universe, and Everything');
+            clonedExpect(42, 'to be the answer to the Ultimate Question of Life, the Universe, and Everything');
+            clonedExpect(41, 'not to be the answer to the Ultimate Question of Life, the Universe, and Everything');
 
             expect(function () {
-                clonedExpect(41, 'to be answer to the Ultimate Question of Life, the Universe, and Everything');
+                clonedExpect(41, 'to be the answer to the Ultimate Question of Life, the Universe, and Everything');
             }, 'to throw');
         });
 
-        it('suggests an assertion if the given assertion does not exists', function () {
-            expect(function () {
-                clonedExpect(1, "to bee", 2);
-            }, 'to throw', 'Unknown assertion "to bee", did you mean: "to be"');
+        describe('when the assertion does not exist', function () {
+            it('it suggests a similarly named assertion', function () {
+                expect(function () {
+                    clonedExpect(null, "to bee", null);
+                }, 'to throw', 'Unknown assertion "to bee", did you mean: "to be"');
 
-            expect(function () {
-                clonedExpect(1, "to be answer to the ultimate question of life, the universe, and everything");
-            }, 'to throw', 'Unknown assertion "to be answer to the ultimate question of life, the universe, and everything", did you mean: "to be answer to the Ultimate Question of Life, the Universe, and Everything"');
+                expect(function () {
+                    clonedExpect(1, "to be the answer to the ultimate question of life, the universe, and everything");
+                }, 'to throw', 'Unknown assertion "to be the answer to the ultimate question of life, the universe, and everything", did you mean: "to be the answer to the Ultimate Question of Life, the Universe, and Everything"');
+            });
+
+            describe('but exists for another type', function () {
+                it('explains that in the error message', function () {
+                    clonedExpect.addAssertion('array', 'to foobarquux', function (expect, subject) {
+                        expect(subject, 'to equal', ['foobarquux']);
+                    });
+                    clonedExpect(['foobarquux'], 'to foobarquux');
+                    expect(function () {
+                        clonedExpect('foobarquux', 'to foobarquux');
+                    }, 'to throw', 'The assertion "to foobarquux" is not defined for the type "string", but it is defined for the type "array"');
+                });
+
+                it('prefers to suggest a similarly named assertion defined for the correct type over an exact match defined for other types', function () {
+                    clonedExpect.addAssertion('array', 'to foo', function (expect, subject) {
+                        expect(subject, 'to equal', ['foo']);
+                    }).addAssertion('string', 'to fooo', function (expect, subject) {
+                        expect(subject, 'to equal', 'fooo');
+                    });
+                    expect(function () {
+                        clonedExpect(['fooo'], 'to fooo');
+                    }, 'to throw', 'The assertion "to fooo" is not defined for the type "array", but it is defined for the type "string"');
+                    clonedExpect.addAssertion('null', 'to fooo', function (expect, subject) {
+                        expect(subject.message, 'to equal', 'fooo');
+                    });
+                    expect(function () {
+                        clonedExpect(['fooo'], 'to fooo');
+                    }, 'to throw', 'The assertion "to fooo" is not defined for the type "array", but it is defined for these types: "null", "string"');
+                });
+
+                it('prefers to suggest a similarly named assertion for a more specific type', function () {
+                    clonedExpect.addType({
+                        name: 'myType',
+                        baseType: 'string',
+                        identify: function (obj) {
+                            return (/^a/).test(obj);
+                        }
+                    }).addType({
+                        name: 'myMoreSpecificType',
+                        baseType: 'myType',
+                        identify: function (obj) {
+                            return (/^aa/).test(obj);
+                        }
+                    }).addType({
+                        name: 'myMostSpecificType',
+                        baseType: 'myMoreSpecificType',
+                        identify: function (obj) {
+                            return (/^aaa/).test(obj);
+                        }
+                    }).addAssertion('myType', 'to fooa', function () {
+                    }).addAssertion('myMoreSpecificType', 'to foob', function () {
+                    }).addAssertion('myMostSpecificType', 'to fooc', function () {});
+                    expect(function () {
+                        clonedExpect('a', 'to fooo');
+                    }, 'to throw', 'Unknown assertion "to fooo", did you mean: "to fooa"');
+
+                    expect(function () {
+                        clonedExpect('aa', 'to fooo');
+                    }, 'to throw', 'Unknown assertion "to fooo", did you mean: "to foob"');
+
+                    expect(function () {
+                        clonedExpect('aaa', 'to fooo');
+                    }, 'to throw', 'Unknown assertion "to fooo", did you mean: "to fooc"');
+
+                    expect(function () {
+                        clonedExpect('aaa', 'to fooaq');
+                    }, 'to throw', 'Unknown assertion "to fooaq", did you mean: "to fooc"');
+                });
+            });
         });
 
         describe('toString', function () {
             it('returns a string containing all the expanded assertions', function () {
                 expect(clonedExpect.toString(), 'to contain', 'to be');
                 expect(clonedExpect.toString(), 'to contain', 'not to be');
-                expect(clonedExpect.toString(), 'to contain', 'to be answer to the Ultimate Question of Life, the Universe, and Everything');
-                expect(clonedExpect.toString(), 'to contain', 'not to be answer to the Ultimate Question of Life, the Universe, and Everything');
+                expect(clonedExpect.toString(), 'to contain', 'to be the answer to the Ultimate Question of Life, the Universe, and Everything');
+                expect(clonedExpect.toString(), 'to contain', 'not to be the answer to the Ultimate Question of Life, the Universe, and Everything');
             });
         });
     });
@@ -1779,24 +2402,24 @@ describe('unexpected', function () {
                 equal: function (a, b, equal) {
                     return a === b || equal(a.value, b.value);
                 },
-                inspect: function (output, obj, inspect) {
+                inspect: function (obj, depth, output, inspect) {
                     return output
                         .text('[Box: ')
-                        .append(inspect(output.clone(), obj.value))
+                        .append(inspect(obj.value))
                         .text(']');
                 },
-                toJSON: function (obj, toJSON) {
-                    return {
-                        $box: toJSON(obj.value)
-                    };
+                diff: function (actual, expected, output, diff) {
+                    var comparison = diff({ value: actual.value }, { value: expected.value });
+                    comparison.diff = output.text('[Box: ').append(comparison.diff).text(']');
+                    return comparison;
                 }
             });
         });
 
-        it('throws an expection is the type has an empty or undefined name', function () {
+        it('throws an expection if the type has an empty or undefined name', function () {
             expect(function () {
                 clonedExpect.addType({});
-            }, 'to throw', 'A custom type must be given a non-empty name');
+            }, 'to throw', 'A type must be given a non-empty name');
         });
 
         it('should use the equal defined by the type', function () {
@@ -1804,17 +2427,18 @@ describe('unexpected', function () {
             clonedExpect(box(123), 'not to equal', box(321));
         });
 
-        it('should call toJSON recursively in case of a mismatch', function () {
+        it('shows a diff in case of a mismatch', function () {
             expect(function () {
                 clonedExpect(box(box(123)), 'to equal', box(box(456)));
-            }, 'to throw', function (err) {
-                expect(err, 'to have properties', {
-                    showDiff: true,
-                    actual: {$box: {$box: 123}},
-                    expected: {$box: {$box: 456}}
-                });
-                expect(err.output.toString(), 'to equal', "expected [Box: [Box: 123]] to equal [Box: [Box: 456]]");
-            });
+            }, 'to throw', "expected [Box: [Box: 123]] to equal [Box: [Box: 456]]\n" +
+                   "\n" +
+                   "Diff:\n" +
+                   "\n" +
+                   "[Box: {\n" +
+                   "  value: [Box: {\n" +
+                   "    value: 123 // should be: 456\n" +
+                   "  }]\n" +
+                   "}]");
         });
     });
 
@@ -1905,7 +2529,10 @@ describe('unexpected', function () {
                     {"id": 5, "name": "Sharpe Downs"}
                 ],
                 "circular": circular,
-                "this": { "is": { "deeply": { "nested": "This should not be shown", "a list": [ 1, 2, 3 ] }, "a list": [ 1, 2, 3 ] } }
+                "this": { "is": { "deeply": { "nested": { "object": "This should not be shown" },
+                                              "string": "should be shown",
+                                              "a list": [ 1, 2, 3 ] },
+                                  "a list": [ 1, 2, 3 ] } }
             }];
 
             expect(expect.inspect(data, 5).toString(), 'to equal',
@@ -1975,12 +2602,646 @@ describe('unexpected', function () {
                    "    circular: { self: [Circular] },\n" +
                    "    this: {\n" +
                    "      is: {\n" +
-                   "        deeply: { nested: ..., 'a list': ... },\n" +
+                   "        deeply: { nested: ..., string: 'should be shown', 'a list': ... },\n" +
                    "        'a list': [...]\n" +
                    "      }\n" +
                    "    }\n" +
                    "  }\n" +
                    "]");
+        });
+
+        it('should output the body of a function', function () {
+            expect(expect.inspect(function () {
+                var foo = 'bar';
+                var quux = 'baz';
+                while (foo) {
+                    foo = foo
+                        .substr(0, foo.length - 1);
+                }
+                return quux;
+            }).toString(), 'to equal',
+                'function () {\n' +
+                '    var foo = \'bar\';\n' +
+                '    var quux = \'baz\';\n' +
+                '    while (foo) {\n' +
+                '    // ... lines removed ...\n' +
+                '            .substr(0, foo.length - 1);\n' +
+                '    }\n' +
+                '    return quux;\n' +
+                '}');
+        });
+
+        it.skipIf(typeof Uint8Array === 'undefined', 'should render a hex dump for an Uint8Array instance', function () {
+            expect(
+                expect.inspect(
+                    new Uint8Array([
+                        0x00, 0x01, 0x02, 0x48, 0x65, 0x72, 0x65, 0x20, 0x69, 0x73, 0x20, 0x74, 0x68, 0x65, 0x20, 0x74,
+                        0x68, 0x69, 0x6E, 0x67, 0x20, 0x49, 0x20, 0x77, 0x61, 0x73, 0x20, 0x74, 0x61, 0x6C, 0x6B, 0x69,
+                        0x6E, 0x67, 0x20, 0x61, 0x62, 0x6F, 0x75, 0x74
+                    ])
+                ).toString(),
+                'to equal',
+                'Uint8Array([0x00, 0x01, 0x02, 0x48, 0x65, 0x72, 0x65, 0x20, 0x69, 0x73, 0x20, 0x74, 0x68, 0x65, 0x20, 0x74 /* 24 more */ ])'
+            );
+        });
+
+        it('should bail out of removing the indentation of functions that use multiline string literals', function () {
+            /*jshint multistr:true*/
+            expect(expect.inspect(function () {
+                var foo = 'bar';
+                var quux = 'baz\
+                blah';
+                foo = foo + quux;
+            }).toString(), 'to equal',
+                'function () {\n' +
+                '                var foo = \'bar\';\n' +
+                '                var quux = \'baz\\\n' +
+                '                blah\';\n' +
+                '                foo = foo + quux;\n' +
+                '            }');
+            /*jshint multistr:false*/
+        });
+
+        it('should not show the body of a function with native code', function () {
+            expect(expect.inspect(Array.prototype.slice).toString(), 'to equal', 'function slice() { /* native code */ }');
+        });
+    });
+
+    describe('expect.it', function () {
+        it('returns an expectation function that when applyed runs the assertion on the given subject', function () {
+            var expectation = expect.it('to be greater than', 14);
+            expectation(20);
+            expect(function () {
+                expectation(10);
+            }, 'to throw', 'expected 10 to be greater than 14');
+        });
+
+        it('is inspected as it is written', function () {
+            var expectation = expect.it('to be a number')
+                .and('to be less than', 14)
+                .and('to be negative');
+            expect(expect.inspect(expectation).toString(), 'to equal',
+                  "expect.it('to be a number').and('to be less than', 14).and('to be negative')");
+
+        });
+
+        describe('with chained and', function () {
+            it('all assertions has to be satisfied', function () {
+                var expectation = expect.it('to be a number')
+                    .and('to be less than', 14)
+                    .and('to be negative');
+                expect(function () {
+                    expectation(20);
+                }, 'to throw',
+                       'expected 20 to be less than 14 and\n' +
+                       'expected 20 to be negative');
+            });
+
+            it('returns a new function', function () {
+                var expectation = expect.it('to be a number');
+                var compositeExpectation = expectation.and('to be less than', 14);
+                expect(compositeExpectation, 'not to be', expectation);
+
+                expectation(20);
+                expect(function () {
+                    compositeExpectation(20);
+                }, 'to throw', 'expected 20 to be less than 14');
+            });
+
+            it('outputs one failing assertion correctly', function () {
+                var expectation = expect.it('to be a number')
+                    .and('to be less than', 14)
+                    .and('to be negative');
+                expect(function () {
+                    expectation(8);
+                }, 'to throw', 'expected 8 to be negative');
+            });
+        });
+    });
+
+    describe('diffs', function () {
+        describe('on strings', function () {
+            it('highlights unexpected extra newlines after the input', function () {
+                expect(function () {
+                    expect('foo\n', 'to equal', 'foo');
+                }, 'to throw',
+                       "expected 'foo\\n' to equal 'foo'\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "-foo\\n\n" +
+                       "+foo");
+            });
+
+            it('highlights missing newlines after the input', function () {
+                expect(function () {
+                    expect('foo', 'to equal', 'foo\n');
+                }, 'to throw',
+                       "expected 'foo' to equal 'foo\\n'\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "-foo\n" +
+                       "+foo\\n");
+            });
+
+            it('highlights unexpected carriage returns', function () {
+                expect(function () {
+                    expect('foo\r\nbar', 'to equal', 'foo\nbar');
+                }, 'to throw',
+                       "expected 'foo\\r\\nbar' to equal 'foo\\nbar'\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "-foo\\r\n" +
+                       "+foo\n" +
+                       " bar");
+
+                expect(function () {
+                    expect('foo\r\n', 'to equal', 'foo\n');
+                }, 'to throw',
+                       "expected 'foo\\r\\n' to equal 'foo\\n'\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "-foo\\r\n" +
+                       "+foo");
+
+                expect(function () {
+                    expect('foo\r\n', 'to equal', 'foo');
+                }, 'to throw',
+                       "expected 'foo\\r\\n' to equal 'foo'\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "-foo\\r\\n\n" +
+                       "+foo");
+            });
+
+            it('highlights missing carriage returns', function () {
+                expect(function () {
+                    expect('foo\nbar', 'to equal', 'foo\r\nbar');
+                }, 'to throw',
+                       "expected 'foo\\nbar' to equal 'foo\\r\\nbar'\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "-foo\n" +
+                       "+foo\\r\n" +
+                       " bar");
+
+                expect(function () {
+                    expect('foo\n', 'to equal', 'foo\r\n');
+                }, 'to throw',
+                       "expected 'foo\\n' to equal 'foo\\r\\n'\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "-foo\n" +
+                       "+foo\\r");
+
+                expect(function () {
+                    expect('foo', 'to equal', 'foo\r\n');
+                }, 'to throw',
+                       "expected 'foo' to equal 'foo\\r\\n'\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "-foo\n" +
+                       "+foo\\r\\n");
+            });
+
+            it('matching carriage returns are not highlighted', function () {
+                expect(function () {
+                    expect('foo\r\nbar', 'to equal', 'foo\r\nbaz');
+                }, 'to throw',
+                       "expected 'foo\\r\\nbar' to equal 'foo\\r\\nbaz'\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       " foo\r\n" +
+                       "-bar\n" +
+                       "+baz");
+            });
+
+            it('should show a \\r\\n line as removed', function () {
+                expect(function () {
+                    expect('foo\r\n\r\nbar', 'to equal', 'foo\r\nbar');
+                }, 'to throw',
+                       "expected 'foo\\r\\n\\r\\nbar' to equal 'foo\\r\\nbar'\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       " foo\r\n" +
+                       "-\\r\n" +
+                       " bar");
+            });
+
+            it('should show an empty removed line', function () {
+                expect(function () {
+                    expect('foo\n\nbar', 'to equal', 'foo\nbar');
+                }, 'to throw',
+                       "expected 'foo\\n\\nbar' to equal 'foo\\nbar'\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       " foo\n" +
+                       "-\n" +
+                       " bar");
+            });
+
+            it('should show a missing empty line', function () {
+                expect(function () {
+                    expect('foo\nbar', 'to equal', 'foo\n\nbar');
+                }, 'to throw',
+                       "expected 'foo\\nbar' to equal 'foo\\n\\nbar'\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       " foo\n" +
+                       "+\n" +
+                       " bar");
+            });
+
+            it('should show missing content when comparing to the empty string', function () {
+                expect(function () {
+                    expect('', 'to equal', 'foo\nbar');
+                }, 'to throw',
+                       "expected '' to equal 'foo\\nbar'\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "+foo\n" +
+                       "+bar");
+            });
+
+            it('should show unexpected content when comparing to the empty string', function () {
+                expect(function () {
+                    expect('foo\nbar', 'to equal', '');
+                }, 'to throw',
+                       "expected 'foo\\nbar' to equal ''\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "-foo\n" +
+                       "-bar");
+            });
+        });
+
+        describe('on objects', function () {
+            it('should not collapse parts containing conflicts', function () {
+                expect(function () {
+                    expect({
+                        bar: {
+                            b: {foo: {bar: 123}}
+                        }
+                    }, 'to equal', {
+                        bar: {}
+                    });
+                }, 'to throw', 'expected { bar: { b: { foo: ... } } } to equal { bar: {} }\n' +
+                       '\n' +
+                       'Diff:\n' +
+                       '\n' +
+                       '{\n' +
+                       '  bar: {\n' +
+                       '    b: { foo: { bar: 123 } } // should be removed\n' +
+                       '  }\n' +
+                       '}');
+            });
+
+            it('should quote property names that require it', function () {
+                expect(function () {
+                    expect({
+                        'the-\'thing': 123
+                    }, 'to equal', {
+                        'the-\'thing': 456
+                    });
+                }, 'to throw', "expected { 'the-\\'thing': 123 } to equal { 'the-\\'thing': 456 }\n" +
+                       '\n' +
+                       'Diff:\n' +
+                       '\n' +
+                       '{\n' +
+                       "  'the-\\'thing': 123 // should be: 456\n" +
+                       '}');
+            });
+
+            it('can contain nested string diffs', function () {
+                expect(function () {
+                    expect({
+                        value: 'bar'
+                    }, 'to equal', {
+                        value: 'baz'
+                    });
+                }, 'to throw', "expected { value: 'bar' } to equal { value: 'baz' }\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "{\n" +
+                       "  value: 'bar' // should be: 'baz'\n" +
+                       "               // -bar\n" +
+                       "               // +baz\n" +
+                       "}");
+            });
+
+            it('highlights properties that has been removed', function () {
+                expect(function () {
+                    expect({
+                        foo: 'foo',
+                        bar: 'bar',
+                        baz: 'baz'
+                    }, 'to equal', {
+                        bar: 'bar',
+                        baz: 'baz'
+                    });
+                }, 'to throw', "expected { foo: 'foo', bar: 'bar', baz: 'baz' } to equal { bar: 'bar', baz: 'baz' }\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "{\n" +
+                       "  foo: 'foo', // should be removed\n" +
+                       "  bar: 'bar',\n" +
+                       "  baz: 'baz'\n" +
+                       "}");
+            });
+
+            it('highlights missing properties', function () {
+                expect(function () {
+                    expect({
+                        one: 1,
+                        three: 3
+                    }, 'to equal', {
+                        one: 1,
+                        two: 2,
+                        three: 3
+                    });
+                }, 'to throw', "expected { one: 1, three: 3 } to equal { one: 1, two: 2, three: 3 }\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "{\n" +
+                       "  one: 1,\n" +
+                       "  three: 3,\n" +
+                       "  two: undefined // should be: 2\n" +
+                       "}");
+            });
+
+            it('highlights properties with an unexpected value', function () {
+                expect(function () {
+                    expect({
+                        one: 1,
+                        two: 42,
+                        three: 3
+                    }, 'to equal', {
+                        one: 1,
+                        two: 2,
+                        three: 3
+                    });
+                }, 'to throw', "expected { one: 1, two: 42, three: 3 } to equal { one: 1, two: 2, three: 3 }\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "{\n" +
+                       "  one: 1,\n" +
+                       "  two: 42, // should be: 2\n" +
+                       "  three: 3\n" +
+                       "}");
+            });
+
+            it('can contain nested object diffs for properties', function () {
+                expect(function () {
+                    expect({
+                        one: { two: { three: 4 } }
+                    }, 'to equal', {
+                        one: { two: { three: 3 } }
+                    });
+                }, 'to throw', "expected { one: { two: { three: 4 } } } to equal { one: { two: { three: 3 } } }\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "{\n" +
+                       "  one: {\n" +
+                       "    two: {\n" +
+                       "      three: 4 // should be: 3\n" +
+                       "    }\n" +
+                       "  }\n" +
+                       "}");
+            });
+
+            it('collapses subtrees without conflicts', function () {
+                expect(function () {
+                    expect({
+                        pill: {
+                            red: "I'll show you how deep the rabbit hole goes",
+                            blue: { ignorance: { of:  'illusion' } }
+                        }
+                    }, 'to equal', {
+                        pill: {
+                            red: "I'll show you how deep the rabbit hole goes.",
+                            blue: { ignorance: { of:  'illusion' } }
+                        }
+                    });
+                }, 'to throw',
+                       "expected\n" +
+                       "{\n" +
+                       "  pill: {\n" +
+                       "    red: 'I\\'ll show you how deep the rabbit hole goes',\n" +
+                       "    blue: { ignorance: ... }\n" +
+                       "  }\n" +
+                       "}\n" +
+                       "to equal\n" +
+                       "{\n" +
+                       "  pill: {\n" +
+                       "    red: 'I\\'ll show you how deep the rabbit hole goes.',\n" +
+                       "    blue: { ignorance: ... }\n" +
+                       "  }\n" +
+                       "}\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "{\n" +
+                       "  pill: {\n" +
+                       "    red: 'I\\'ll show you how deep the rabbit hole goes', // should be: 'I\\'ll show you how deep the rabbit hole goes.'\n" +
+                       "                                                         // -I'll show you how deep the rabbit hole goes\n" +
+                       "                                                         // +I'll show you how deep the rabbit hole goes.\n" +
+                       "    blue: { ignorance: ... }\n" +
+                       "  }\n" +
+                       "}");
+            });
+
+            it('highlights mismatching constructors', function () {
+                function Foo(text) {
+                    this.text = text;
+                }
+
+                function Bar(text) {
+                    this.text = text;
+                }
+
+                expect(function () {
+                    expect(new Foo('test'), 'to equal', new Bar('test'));
+                }, 'to throw', "expected { text: 'test' } to equal { text: 'test' }\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "Mismatching constructors Foo should be Bar");
+            });
+        });
+
+        describe('on arrays', function () {
+            it('highlights unexpected entries', function () {
+                expect(function () {
+                    expect([0, 1, 2], 'to equal', [0, 2]);
+                }, 'to throw', 'expected [ 0, 1, 2 ] to equal [ 0, 2 ]\n' +
+                       '\n' +
+                       'Diff:\n' +
+                       '\n' +
+                       '[\n' +
+                       '  0,\n' +
+                       '  1, // should be removed\n' +
+                       '  2\n' +
+                       ']'
+                      );
+            });
+
+            it('highlights missing entries', function () {
+                expect(function () {
+                    expect([0, 2], 'to equal', [0, 1, 2]);
+                }, 'to throw', 'expected [ 0, 2 ] to equal [ 0, 1, 2 ]\n' +
+                       '\n' +
+                       'Diff:\n' +
+                       '\n' +
+                       '[\n' +
+                       '  0,\n' +
+                       '  // missing: 1\n' +
+                       '  2\n' +
+                       ']'
+                      );
+            });
+
+            it('highlights conflicting entries', function () {
+                expect(function () {
+                    expect([0, 'once', 2], 'to equal', [0, 'one', 2]);
+                }, 'to throw', "expected [ 0, 'once', 2 ] to equal [ 0, 'one', 2 ]\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "[\n" +
+                       "  0,\n" +
+                       "  'once', // should be: 'one'\n" +
+                       "          // -once\n" +
+                       "          // +one\n" +
+                       "  2\n" +
+                       "]"
+                      );
+            });
+
+            it('considers object with a similar structure candidates for diffing', function () {
+                expect(function () {
+                    expect([0, 1, { name: 'John', age: 34 }], 'to equal', [0, { name: 'Jane', age: 24, children: 2 }, 2]);
+                }, 'to throw', "expected [ 0, 1, { name: 'John', age: 34 } ] to equal [ 0, { name: 'Jane', age: 24, children: 2 }, 2 ]\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "[\n" +
+                       "  0,\n" +
+                       "  1, // should be removed\n" +
+                       "  {\n" +
+                       "    name: 'John', // should be: 'Jane'\n" +
+                       "                  // -John\n" +
+                       "                  // +Jane\n" +
+                       "    age: 34, // should be: 24\n" +
+                       "    children: undefined // should be: 2\n" +
+                       "  }\n" +
+                       "  // missing: 2\n" +
+                       "]"
+                      );
+            });
+
+            it('does not considers object with a different structure candidates for diffing', function () {
+                expect(function () {
+                    expect([0, { name: 'John Doe' }, 2], 'to equal', [0, { firstName: 'John', lastName: 'Doe' }, 2]);
+                }, 'to throw', "expected [ 0, { name: 'John Doe' }, 2 ] to equal [ 0, { firstName: 'John', lastName: 'Doe' }, 2 ]\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "[\n" +
+                       "  0,\n" +
+                       "  // missing: { firstName: 'John', lastName: 'Doe' }\n" +
+                       "  { name: 'John Doe' }, // should be removed\n" +
+                       "  2\n" +
+                       "]"
+                      );
+            });
+
+            it('considers similar strings candidates for diffing', function () {
+                expect(function () {
+                    expect([0, 'twoo', 1], 'to equal', [0, 1, 'two']);
+                }, 'to throw', "expected [ 0, 'twoo', 1 ] to equal [ 0, 1, 'two' ]\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "[\n" +
+                       "  0,\n" +
+                       "  // missing: 1\n" +
+                       "  'twoo', // should be: 'two'\n" +
+                       "          // -twoo\n" +
+                       "          // +two\n" +
+                       "  1 // should be removed\n" +
+                       "]"
+                      );
+            });
+
+            it('does not considers different strings candidates for diffing', function () {
+                expect(function () {
+                    expect([0, 'two', 1], 'to equal', [0, 1, 'three']);
+                }, 'to throw', "expected [ 0, 'two', 1 ] to equal [ 0, 1, 'three' ]\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "[\n" +
+                       "  0,\n" +
+                       "  'two', // should be removed\n" +
+                       "  1\n" +
+                       "  // missing: 'three'\n" +
+                       "]"
+                      );
+            });
+
+            it('handles similar objects with no diff defined for custom type', function () {
+                function Person(firstName, lastName) {
+                    this.firstName = firstName;
+                    this.lastName = lastName;
+                }
+
+                var clonedExpect = expect.clone()
+                    .addType({
+                        name: 'Person',
+                        identify: function (value) {
+                            return value instanceof Person;
+                        },
+                        equal: function (a, b) {
+                            return a.firstName === b.firstName &&
+                                a.lastName === b.lastName;
+                        },
+                        inspect: function (person, depth, output) {
+                            return output.text("new Person('").text(person.firstName).text("', '").text(person.lastName).text("')");
+                        },
+                        diff: function () {
+                            return null;
+                        }
+                    });
+
+
+                expect(function () {
+                    clonedExpect([new Person('John', 'Doe')], 'to equal', [new Person('Jane', 'Doe')]);
+                }, 'to throw', "expected [ new Person('John', 'Doe') ] to equal [ new Person('Jane', 'Doe') ]\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "[\n" +
+                       "  new Person('John', 'Doe') // should be: new Person('Jane', 'Doe')\n" +
+                       "]");
+            });
         });
     });
 });
