@@ -1396,6 +1396,12 @@ describe('unexpected', function () {
                    "expected { foo: 123 } to satisfy\n" +
                    "{\n" +
                    "  foo: expect.it('to be a number').and('to be greater than', 200)\n" +
+                   "}\n" +
+                   "\n" +
+                   "Diff:\n" +
+                   "\n" +
+                   "{\n" +
+                   "  foo: 123 // should satisfy: expect.it('to be a number').and('to be greater than', 200)\n" +
                    "}");
         });
 
@@ -1429,6 +1435,47 @@ describe('unexpected', function () {
 
         it('should not fail when matching an object against a number', function () {
             expect({foo: {}}, 'not to satisfy', {foo: 123});
+        });
+
+        it('collapses subtrees without conflicts', function () {
+            expect(function () {
+                expect({
+                    pill: {
+                        red: "I'll show you how deep the rabbit hole goes",
+                        blue: { ignorance: { of: 'illusion' } }
+                    }
+                }, 'to satisfy', {
+                    pill: {
+                        red: "I'll show you how deep the rabbit hole goes.",
+                        blue: { ignorance: { of: 'illusion' } }
+                    }
+                });
+            }, 'to throw',
+                   "expected\n" +
+                   "{\n" +
+                   "  pill: {\n" +
+                   "    red: 'I\\'ll show you how deep the rabbit hole goes',\n" +
+                   "    blue: { ignorance: ... }\n" +
+                   "  }\n" +
+                   "}\n" +
+                   "to satisfy\n" +
+                   "{\n" +
+                   "  pill: {\n" +
+                   "    red: 'I\\'ll show you how deep the rabbit hole goes.',\n" +
+                   "    blue: { ignorance: ... }\n" +
+                   "  }\n" +
+                   "}\n" +
+                   "\n" +
+                   "Diff:\n" +
+                   "\n" +
+                   "{\n" +
+                   "  pill: {\n" +
+                   "    red: 'I\\'ll show you how deep the rabbit hole goes', // should satisfy: 'I\\'ll show you how deep the rabbit hole goes.'\n" +
+                   "                                                         // -I'll show you how deep the rabbit hole goes\n" +
+                   "                                                         // +I'll show you how deep the rabbit hole goes.\n" +
+                   "    blue: { ignorance: ... }\n" +
+                   "  }\n" +
+                   "}");
         });
 
         describe('with a custom type', function () {
@@ -1483,7 +1530,16 @@ describe('unexpected', function () {
                     });
                 }, 'to throw',
                        "expected { foo: [MysteryBox { baz: 123, quux: 987 }] }\n" +
-                       "to exhaustively satisfy { foo: { baz: expect.it('to be a number') } }");
+                       "to exhaustively satisfy { foo: { baz: expect.it('to be a number') } }\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "{\n" +
+                       "  foo: {\n" +
+                       "    baz: 123,\n" +
+                       "    quux: 987 // should be removed\n" +
+                       "  }\n" +
+                       "}");
             });
 
             it('should preserve the "exhaustively" flag when matching instances of the custom type against each other', function () {
@@ -1497,6 +1553,15 @@ describe('unexpected', function () {
                        "expected { foo: [MysteryBox { baz: 123, quux: 987 }] } to exhaustively satisfy\n" +
                        "{\n" +
                        "  foo: [MysteryBox { baz: expect.it('to be a number') }]\n" +
+                       "}\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "{\n" +
+                       "  foo: {\n" +
+                       "    baz: 123,\n" +
+                       "    quux: 987 // should be removed\n" +
+                       "  }\n" +
                        "}");
             });
 
@@ -1521,8 +1586,11 @@ describe('unexpected', function () {
                        "\n" +
                        "Diff:\n" +
                        "\n" +
-                       "-abc\n" +
-                       "+def");
+                       "{\n" +
+                       "  foo: [MysteryBox 'abc'] // should satisfy: 'def'\n" +
+                       "                          // -abc\n" +
+                       "                          // +def\n" +
+                       "}");
             });
 
             it('should fail to match unequal instances of the custom type', function () {
@@ -1537,8 +1605,11 @@ describe('unexpected', function () {
                        "\n" +
                        "Diff:\n" +
                        "\n" +
-                       "-abc\n" +
-                       "+def");
+                       "{\n" +
+                       "  foo: [MysteryBox 'abc'] // should satisfy: [MysteryBox 'def']\n" +
+                       "                          // -abc\n" +
+                       "                          // +def\n" +
+                       "}");
             });
         });
 
@@ -1566,7 +1637,14 @@ describe('unexpected', function () {
             // FIXME: Could this error message be improved?
             expect(function () {
                 expect({foo: 123}, 'to satisfy', {foo: expect.it('to be a string')});
-            }, 'to throw', "expected { foo: 123 } to satisfy { foo: expect.it('to be a string') }");
+            }, 'to throw',
+                "expected { foo: 123 } to satisfy { foo: expect.it('to be a string') }\n" +
+                "\n" +
+                "Diff:\n" +
+                "\n" +
+                "{\n" +
+                "  foo: 123 // should satisfy: expect.it('to be a string')\n" +
+                "}");
 
             expect(function () {
                 expect({foo: 123, bar: 456}, 'to exhaustively satisfy', {foo: 123});
