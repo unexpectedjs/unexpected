@@ -1437,6 +1437,47 @@ describe('unexpected', function () {
             expect({foo: {}}, 'not to satisfy', {foo: 123});
         });
 
+        it('collapses subtrees without conflicts', function () {
+            expect(function () {
+                expect({
+                    pill: {
+                        red: "I'll show you how deep the rabbit hole goes",
+                        blue: { ignorance: { of: 'illusion' } }
+                    }
+                }, 'to satisfy', {
+                    pill: {
+                        red: "I'll show you how deep the rabbit hole goes.",
+                        blue: { ignorance: { of: 'illusion' } }
+                    }
+                });
+            }, 'to throw',
+                   "expected\n" +
+                   "{\n" +
+                   "  pill: {\n" +
+                   "    red: 'I\\'ll show you how deep the rabbit hole goes',\n" +
+                   "    blue: { ignorance: ... }\n" +
+                   "  }\n" +
+                   "}\n" +
+                   "to satisfy\n" +
+                   "{\n" +
+                   "  pill: {\n" +
+                   "    red: 'I\\'ll show you how deep the rabbit hole goes.',\n" +
+                   "    blue: { ignorance: ... }\n" +
+                   "  }\n" +
+                   "}\n" +
+                   "\n" +
+                   "Diff:\n" +
+                   "\n" +
+                   "{\n" +
+                   "  pill: {\n" +
+                   "    red: 'I\\'ll show you how deep the rabbit hole goes', // should satisfy: 'I\\'ll show you how deep the rabbit hole goes.'\n" +
+                   "                                                         // -I'll show you how deep the rabbit hole goes\n" +
+                   "                                                         // +I'll show you how deep the rabbit hole goes.\n" +
+                   "    blue: { ignorance: ... }\n" +
+                   "  }\n" +
+                   "}");
+        });
+
         describe('with a custom type', function () {
             function MysteryBox(value) {
                 this.propertyName = 'prop' + Math.floor(1000 * Math.random());
