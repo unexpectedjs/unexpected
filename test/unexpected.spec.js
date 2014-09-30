@@ -2515,6 +2515,45 @@ describe('unexpected', function () {
                    "  }]\n" +
                    "}]");
         });
+
+        describe('with base type wrapperObject', function () {
+            beforeEach(function () {
+                clonedExpect = expect.clone();
+                clonedExpect.addType({
+                    name: 'box',
+                    base: 'wrapperObject',
+                    identify: function (obj) {
+                        return obj && typeof obj === 'object' && obj.isBox;
+                    },
+                    unwrap: function (box) {
+                        return box.value;
+                    },
+                    prefix: function () {
+                        this.text('[Box: ');
+                    },
+                    suffix: function () {
+                        this.text(']');
+                    }
+                });
+            });
+
+            it('should use the equal defined by the type', function () {
+                clonedExpect(box(123), 'to equal', box(123));
+                clonedExpect(box(123), 'not to equal', box(321));
+            });
+
+            it('shows a diff in case of a mismatch', function () {
+                expect(function () {
+                    clonedExpect(box(box(123)), 'to equal', box(box(456)));
+                }, 'to throw', "expected [Box: [Box: 123]] to equal [Box: [Box: 456]]\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "[Box: [Box: \n" +
+                       "  123 // should be: 456\n" +
+                       "]]");
+            });
+        });
     });
 
     function Field(val, options) {
