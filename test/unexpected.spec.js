@@ -312,9 +312,9 @@ describe('unexpected', function () {
             expect(new Error('foo'), 'to equal', new Error('foo'));
         });
 
-        it('handles argument arrays as arrays', function () {
+        it('treats an arguments object as different from an array', function () {
             (function () {
-                expect(arguments, 'to equal', ['foo', 'bar', 'baz']);
+                expect(arguments, 'not to equal', ['foo', 'bar', 'baz']);
             }('foo', 'bar', 'baz'));
         });
 
@@ -380,11 +380,7 @@ describe('unexpected', function () {
                    "\n" +
                    "Diff:\n" +
                    "\n" +
-                   "[\n" +
-                   "  'foo',\n" +
-                   "  'bar'\n" +
-                   "  // missing: 'baz'\n" +
-                   "]");
+                   "Mismatching constructors Object should be Array");
         });
 
         it("throws an error with a diff when not negated", function () {
@@ -787,7 +783,7 @@ describe('unexpected', function () {
         it('throws when the assertion fails', function () {
             expect(function () {
                 expect(null, 'not to contain', 'world');
-            }, 'to throw', 'The assertion "not to contain" is not defined for the type "null", but it is defined for these types: "string", "array"');
+            }, 'to throw', 'The assertion "not to contain" is not defined for the type "null", but it is defined for these types: "string", "array-like"');
 
             expect(function () {
                 expect('hello world', 'to contain', 'foo');
@@ -807,7 +803,7 @@ describe('unexpected', function () {
 
             expect(function () {
                 expect(1, 'to contain', 1);
-            }, 'to throw exception', 'The assertion "to contain" is not defined for the type "number", but it is defined for these types: "string", "array"');
+            }, 'to throw exception', 'The assertion "to contain" is not defined for the type "number", but it is defined for these types: "string", "array-like"');
         });
 
         it('produces a diff when the array case fails and the not flag is on', function () {
@@ -1666,7 +1662,7 @@ describe('unexpected', function () {
         it('only accepts arrays as the target object', function () {
             expect(function () {
                 expect(42, 'to be an array whose items satisfy', function (item) {});
-            }, 'to throw', 'The assertion "to be an array whose items satisfy" is not defined for the type "number", but it is defined for the type "array"');
+            }, 'to throw', 'The assertion "to be an array whose items satisfy" is not defined for the type "number", but it is defined for the type "array-like"');
         });
 
         it('supports the non-empty clause', function () {
