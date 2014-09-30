@@ -1484,18 +1484,19 @@ describe('unexpected', function () {
             beforeEach(function () {
                 clonedExpect = expect.clone()
                     .addType({
+                        base: 'wrapperObject',
                         name: 'mysteryBox',
                         identify: function (obj) {
                             return obj instanceof MysteryBox;
                         },
-                        equal: function (box1, box2, equal) {
-                            return equal(box1[box1.propertyName], box2[box2.propertyName]);
+                        unwrap: function (box) {
+                            return box[box.propertyName];
                         },
-                        inspect: function (box, depth, output, inspect) {
-                            output.text('[MysteryBox ');
-                            output.append(inspect(box[box.propertyName]));
-                            output.text(']');
-                            return output;
+                        prefix: function () {
+                            this.text('[MysteryBox ');
+                        },
+                        suffix: function () {
+                            this.text(']');
                         }
                     })
                     .addAssertion('mysteryBox', 'to [exhaustively] satisfy', function (expect, subject, value) {
