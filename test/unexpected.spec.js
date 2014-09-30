@@ -2719,16 +2719,32 @@ describe('unexpected', function () {
             );
         });
 
-        describe('should output ellipsis when the toString method of a function returns something unparsable', function () {
+        it('should output ellipsis when the toString method of a function returns something unparsable', function () {
             function foo () {}
             foo.toString = function () {
                 return 'quux';
             };
             expect(expect.inspect(foo).toString(), 'to equal',
                 'function foo( /*...*/ ) { /*...*/ }\n' +
-                'foo.toString = function () {\n' +
-                "    return 'quux';\n" +
-                '};');
+                '// foo.toString = function () {\n' +
+                "//     return 'quux';\n" +
+                '// };');
+        });
+
+        it('should render a function within a nested structure ellipsis when the toString method of a function returns something unparsable', function () {
+            function foo () {}
+            foo.toString = function () {
+                return 'quux';
+            };
+            expect(expect.inspect({ bar: { quux: foo } }).toString(), 'to equal',
+                '{\n' +
+                '  bar: {\n' +
+                '    quux: function foo( /*...*/ ) { /*...*/ }\n' +
+                '    // foo.toString = function () {\n' +
+                "    //     return 'quux';\n" +
+                '    // };\n' +
+                '  }\n' +
+                '}');
         });
 
         it('should output extra own properties of a named function', function () {
@@ -2737,8 +2753,8 @@ describe('unexpected', function () {
             foo.quux = 'abc';
             expect(expect.inspect(foo).toString(), 'to equal',
                 'function foo() {}\n' +
-                'foo.bar = 123;\n' +
-                "foo.quux = 'abc';");
+                '// foo.bar = 123;\n' +
+                "// foo.quux = 'abc';");
         });
 
         it('should output extra own properties of an anonymous function', function () {
@@ -2747,10 +2763,10 @@ describe('unexpected', function () {
             foo.quux = 'abc';
             foo['the-thing'] = 'xyz';
             expect(expect.inspect(foo).toString(), 'to equal',
-                'var f = function () {};\n' +
-                'f.bar = 123;\n' +
-                "f.quux = 'abc';\n" +
-                "f['the-thing'] = 'xyz';");
+                'function f() {}\n' +
+                '// f.bar = 123;\n' +
+                "// f.quux = 'abc';\n" +
+                "// f['the-thing'] = 'xyz';");
         });
 
         it('should bail out of removing the indentation of functions that use multiline string literals', function () {
