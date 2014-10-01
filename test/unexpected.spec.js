@@ -1498,13 +1498,6 @@ describe('unexpected', function () {
                         suffix: function (output) {
                             return output.text(']');
                         }
-                    })
-                    .addAssertion('mysteryBox', 'to [exhaustively] satisfy', function (expect, subject, value) {
-                        if (value instanceof MysteryBox) {
-                            expect(subject[subject.propertyName], 'to [exhaustively] satisfy', value[value.propertyName]);
-                        } else {
-                            expect(subject[subject.propertyName], 'to [exhaustively] satisfy', value);
-                        }
                     });
             });
 
@@ -2479,13 +2472,13 @@ describe('unexpected', function () {
                 },
                 inspect: function (obj, depth, output, inspect) {
                     return output
-                        .text('[Box: ')
+                        .text('box(')
                         .append(inspect(obj.value))
-                        .text(']');
+                        .text(')');
                 },
                 diff: function (actual, expected, output, diff) {
                     var comparison = diff({ value: actual.value }, { value: expected.value });
-                    comparison.diff = output.text('[Box: ').append(comparison.diff).text(']');
+                    comparison.diff = output.text('box(').append(comparison.diff).text(')');
                     return comparison;
                 }
             });
@@ -2505,15 +2498,15 @@ describe('unexpected', function () {
         it('shows a diff in case of a mismatch', function () {
             expect(function () {
                 clonedExpect(box(box(123)), 'to equal', box(box(456)));
-            }, 'to throw', "expected [Box: [Box: 123]] to equal [Box: [Box: 456]]\n" +
+            }, 'to throw', "expected box(box(123)) to equal box(box(456))\n" +
                    "\n" +
                    "Diff:\n" +
                    "\n" +
-                   "[Box: {\n" +
-                   "  value: [Box: {\n" +
+                   "box({\n" +
+                   "  value: box({\n" +
                    "    value: 123 // should be: 456\n" +
-                   "  }]\n" +
-                   "}]");
+                   "  })\n" +
+                   "})");
         });
 
         describe('with base type wrapperObject', function () {
@@ -2529,10 +2522,10 @@ describe('unexpected', function () {
                         return box.value;
                     },
                     prefix: function (output) {
-                        return output.text('[Box: ');
+                        return output.text('box(');
                     },
                     suffix: function (output) {
-                        return output.text(']');
+                        return output.text(')');
                     }
                 });
             });
@@ -2545,13 +2538,13 @@ describe('unexpected', function () {
             it('shows a diff in case of a mismatch', function () {
                 expect(function () {
                     clonedExpect(box(box(123)), 'to equal', box(box(456)));
-                }, 'to throw', "expected [Box: [Box: 123]] to equal [Box: [Box: 456]]\n" +
+                }, 'to throw', "expected box(box(123)) to equal box(box(456))\n" +
                        "\n" +
                        "Diff:\n" +
                        "\n" +
-                       "[Box: [Box: \n" +
+                       "box(box(\n" +
                        "  123 // should be: 456\n" +
-                       "]]");
+                       "))");
             });
         });
     });
