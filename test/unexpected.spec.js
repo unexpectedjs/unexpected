@@ -1493,10 +1493,10 @@ describe('unexpected', function () {
                             return box[box.propertyName];
                         },
                         prefix: function (output) {
-                            return output.text('[MysteryBox ');
+                            return output.text('MysteryBox(');
                         },
                         suffix: function (output) {
-                            return output.text(']');
+                            return output.text(')');
                         }
                     });
             });
@@ -1519,20 +1519,20 @@ describe('unexpected', function () {
                         foo: { baz: clonedExpect.it('to be a number') }
                     });
                 }, 'to throw',
-                       "expected { foo: [MysteryBox { baz: 123, quux: 987 }] }\n" +
+                       "expected { foo: MysteryBox({ baz: 123, quux: 987 }) } " +
                        "to exhaustively satisfy { foo: { baz: expect.it('to be a number') } }\n" +
                        "\n" +
                        "Diff:\n" +
                        "\n" +
                        "{\n" +
-                       "  foo: {\n" +
+                       "  foo: MysteryBox({\n" +
                        "    baz: 123,\n" +
                        "    quux: 987 // should be removed\n" +
-                       "  }\n" +
+                       "  })\n" +
                        "}");
             });
 
-            it.skip('should include wrapper object type information in diff', function () {
+            it('should include wrapper object type information in diff', function () {
                 expect(function () {
                     clonedExpect({
                         foo: new MysteryBox({ baz: 123, quux: 987 })
@@ -1540,16 +1540,16 @@ describe('unexpected', function () {
                         foo: { baz: clonedExpect.it('not to be a number') }
                     });
                 }, 'to throw',
-                       "expected { foo: [MysteryBox { baz: 123, quux: 987 }] }\n" +
+                       "expected { foo: MysteryBox({ baz: 123, quux: 987 }) } " +
                        "to satisfy { foo: { baz: expect.it('not to be a number') } }\n" +
                        "\n" +
                        "Diff:\n" +
                        "\n" +
                        "{\n" +
-                       "  foo: [MysteryBox {\n" +
+                       "  foo: MysteryBox({\n" +
                        "    baz: 123, // should satisfy: expect.it('not to be a number')\n" +
                        "    quux: 987\n" +
-                       "  }]\n" +
+                       "  })\n" +
                        "}");
             });
 
@@ -1561,18 +1561,18 @@ describe('unexpected', function () {
                         foo: new MysteryBox({ baz: clonedExpect.it('to be a number') })
                     });
                 }, 'to throw',
-                       "expected { foo: [MysteryBox { baz: 123, quux: 987 }] } to exhaustively satisfy\n" +
+                       "expected { foo: MysteryBox({ baz: 123, quux: 987 }) } to exhaustively satisfy\n" +
                        "{\n" +
-                       "  foo: [MysteryBox { baz: expect.it('to be a number') }]\n" +
+                       "  foo: MysteryBox({ baz: expect.it('to be a number') })\n" +
                        "}\n" +
                        "\n" +
                        "Diff:\n" +
                        "\n" +
                        "{\n" +
-                       "  foo: {\n" +
+                       "  foo: MysteryBox({\n" +
                        "    baz: 123,\n" +
                        "    quux: 987 // should be removed\n" +
-                       "  }\n" +
+                       "  })\n" +
                        "}");
             });
 
@@ -1593,14 +1593,14 @@ describe('unexpected', function () {
                     }, 'to satisfy', {
                         foo: 'def'
                     });
-                }, 'to throw', "expected { foo: [MysteryBox 'abc'] } to satisfy { foo: 'def' }\n" +
+                }, 'to throw', "expected { foo: MysteryBox('abc') } to satisfy { foo: 'def' }\n" +
                        "\n" +
                        "Diff:\n" +
                        "\n" +
                        "{\n" +
-                       "  foo: [MysteryBox 'abc'] // should satisfy: 'def'\n" +
-                       "                          // -abc\n" +
-                       "                          // +def\n" +
+                       "  foo: MysteryBox('abc') // should satisfy: 'def'\n" +
+                       "                         // -abc\n" +
+                       "                         // +def\n" +
                        "}");
             });
 
@@ -1612,14 +1612,14 @@ describe('unexpected', function () {
                         foo: new MysteryBox('def')
                     });
                 }, 'to throw',
-                       "expected { foo: [MysteryBox 'abc'] } to satisfy { foo: [MysteryBox 'def'] }\n" +
+                       "expected { foo: MysteryBox('abc') } to satisfy { foo: MysteryBox('def') }\n" +
                        "\n" +
                        "Diff:\n" +
                        "\n" +
                        "{\n" +
-                       "  foo: [MysteryBox 'abc'] // should satisfy: [MysteryBox 'def']\n" +
-                       "                          // -abc\n" +
-                       "                          // +def\n" +
+                       "  foo: MysteryBox('abc') // should satisfy: MysteryBox('def')\n" +
+                       "                         // -abc\n" +
+                       "                         // +def\n" +
                        "}");
             });
         });
