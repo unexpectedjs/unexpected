@@ -2720,7 +2720,7 @@ describe('unexpected', function () {
         });
 
         it('should output ellipsis when the toString method of a function returns something unparsable', function () {
-            function foo () {}
+            function foo() {}
             foo.toString = function () {
                 return 'quux';
             };
@@ -2732,7 +2732,7 @@ describe('unexpected', function () {
         });
 
         it('should render a function within a nested structure ellipsis when the toString method of a function returns something unparsable', function () {
-            function foo () {}
+            function foo() {}
             foo.toString = function () {
                 return 'quux';
             };
@@ -2740,9 +2740,9 @@ describe('unexpected', function () {
                 '{\n' +
                 '  bar: {\n' +
                 '    quux: function foo( /*...*/ ) { /*...*/ }\n' +
-                '    // foo.toString = function () {\n' +
-                "    //     return 'quux';\n" +
-                '    // };\n' +
+                '          // foo.toString = function () {\n' +
+                "          //     return 'quux';\n" +
+                '          // };\n' +
                 '  }\n' +
                 '}');
         });
