@@ -1532,6 +1532,27 @@ describe('unexpected', function () {
                        "}");
             });
 
+            it.skip('should include wrapper object type information in diff', function () {
+                expect(function () {
+                    clonedExpect({
+                        foo: new MysteryBox({ baz: 123, quux: 987 })
+                    }, 'to satisfy', {
+                        foo: { baz: clonedExpect.it('not to be a number') }
+                    });
+                }, 'to throw',
+                       "expected { foo: [MysteryBox { baz: 123, quux: 987 }] }\n" +
+                       "to satisfy { foo: { baz: expect.it('not to be a number') } }\n" +
+                       "\n" +
+                       "Diff:\n" +
+                       "\n" +
+                       "{\n" +
+                       "  foo: [MysteryBox {\n" +
+                       "    baz: 123, // should satisfy: expect.it('not to be a number')\n" +
+                       "    quux: 987\n" +
+                       "  }]\n" +
+                       "}");
+            });
+
             it('should preserve the "exhaustively" flag when matching instances of the custom type against each other', function () {
                 expect(function () {
                     clonedExpect({
