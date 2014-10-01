@@ -1492,11 +1492,11 @@ describe('unexpected', function () {
                         unwrap: function (box) {
                             return box[box.propertyName];
                         },
-                        prefix: function () {
-                            this.text('[MysteryBox ');
+                        prefix: function (output) {
+                            return output.text('[MysteryBox ');
                         },
-                        suffix: function () {
-                            this.text(']');
+                        suffix: function (output) {
+                            return output.text(']');
                         }
                     })
                     .addAssertion('mysteryBox', 'to [exhaustively] satisfy', function (expect, subject, value) {
@@ -2528,11 +2528,11 @@ describe('unexpected', function () {
                     unwrap: function (box) {
                         return box.value;
                     },
-                    prefix: function () {
-                        this.text('[Box: ');
+                    prefix: function (output) {
+                        return output.text('[Box: ');
                     },
-                    suffix: function () {
-                        this.text(']');
+                    suffix: function (output) {
+                        return output.text(']');
                     }
                 });
             });
