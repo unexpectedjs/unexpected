@@ -136,7 +136,7 @@ describe('unexpected', function () {
                 expect(function TheCallingFunction() {
                     expect(4 < 4, 'to be ok');
                 }, 'to throw exception', function (err) {
-                    expect(err.stack.split('\n')[1], 'to match', /TheCallingFunction/);
+                    expect(err.stack.split('\n')[2], 'to match', /TheCallingFunction/);
                 });
             }
         });
