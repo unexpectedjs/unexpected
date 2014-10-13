@@ -514,6 +514,21 @@ describe('unexpected', function () {
                    ' 6E 67 20 61 62 6F 75 74                          │ng about│');
         });
 
+
+        it.skipIf(typeof Buffer === 'undefined', 'regression test for infinite loop in buffer diff code', function () {
+            expect(function () {
+                expect(
+                    new Buffer([0x63, 0x74, 0x3D, 0x54, 0x3B, 0xD4, 0x8C, 0x3B, 0x66, 0x6F, 0x6F, 0x3D, 0x62, 0x61, 0x72, 0x3B]),
+                    'to equal',
+                    Buffer.concat([
+                        new Buffer('ct=T;;'),
+                        new Buffer([0xa3, 0x3b]),
+                        new Buffer(';foo=bar;')
+                    ])
+                );
+            }, 'to throw');
+        });
+
         it.skipIf(typeof Int8Array === 'undefined' || !Array.prototype.map, 'produces a hex-diff in JSON when Int8Arrays differ', function () {
             expect(function () {
                 expect(
