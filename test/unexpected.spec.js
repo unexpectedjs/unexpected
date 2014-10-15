@@ -1394,6 +1394,20 @@ describe('unexpected', function () {
             });
         });
 
+        describe('on error instances', function () {
+            it('should support satisfying against a error instance', function () {
+                expect(new Error('foo'), 'to satisfy', new Error('foo'));
+            });
+
+            it('should support satisfying against an object', function () {
+                expect(new Error('foo'), 'to satisfy', { message: 'foo' });
+            });
+
+            it('should support satisfying against a regexp', function () {
+                expect(new Error('foo'), 'to satisfy', /foo/);
+            });
+        });
+
         it('should support a chained expect.it', function () {
             expect({foo: 123}, 'to satisfy', {
                 foo: expect.it('to be a number').and('to be greater than', 10)
@@ -1446,6 +1460,39 @@ describe('unexpected', function () {
 
         it('should not fail when matching an object against a number', function () {
             expect({foo: {}}, 'not to satisfy', {foo: 123});
+        });
+
+        it('fails when comparing errors that do not have the same message', function () {
+            expect(function () {
+                expect(new Error('foo'), 'to satisfy', new Error('bar'));
+            }, 'to throw exception',
+                   "expected [Error: { message: 'foo' }] to satisfy [Error: { message: 'bar' }]\n" +
+                   "\n" +
+                   "Diff:\n" +
+                   "\n" +
+                   "{\n" +
+                   "  message: 'foo' // should be: 'bar'\n" +
+                   "                 // -foo\n" +
+                   "                 // +bar\n" +
+                   "}");
+        });
+
+        it('fails when error message does not match given regexp', function () {
+            expect(function () {
+                expect(new Error('foo'), 'to satisfy', /bar/);
+            }, 'to throw exception', "expected [Error: { message: 'foo' }] to satisfy /bar/");
+        });
+
+        it('fails is error does not satisfy properties of given object', function () {
+            expect(function () {
+                expect(new Error('foo'), 'to satisfy', { message: 'bar' });
+            }, 'to throw exception',
+                   "expected [Error: { message: \'foo\' }] to satisfy { message: \'bar\' }\n" +
+                   "\n" +
+                   "Diff:\n" +
+                   "\n" +
+                   "-foo\n" +
+                   "+bar");
         });
 
         it('collapses subtrees without conflicts', function () {
