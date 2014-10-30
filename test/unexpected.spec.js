@@ -1427,8 +1427,8 @@ describe('unexpected', function () {
                    "Diff:\n" +
                    "\n" +
                    "{\n" +
-                   "  foo: 123 // should satisfy: expect.it('to be a number')\n" +
-                   "           //                         .and('to be greater than', 200)\n" +
+                   "  foo: 123 // ✓ expected 123 to be a number and\n" +
+                   "           // ⨯ expected 123 to be greater than 200\n" +
                    "}");
         });
 
@@ -1611,7 +1611,7 @@ describe('unexpected', function () {
                        "\n" +
                        "{\n" +
                        "  foo: MysteryBox({\n" +
-                       "    baz: 123, // should satisfy: expect.it('not to be a number')\n" +
+                       "    baz: 123, // ⨯ expected 123 not to be a number\n" +
                        "    quux: 987\n" +
                        "  })\n" +
                        "}");
@@ -1718,7 +1718,7 @@ describe('unexpected', function () {
                 "Diff:\n" +
                 "\n" +
                 "{\n" +
-                "  foo: 123 // should satisfy: expect.it('to be a string')\n" +
+                "  foo: 123 // ⨯ expected 123 to be a string\n" +
                 "}");
 
             expect(function () {
