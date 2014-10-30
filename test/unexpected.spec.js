@@ -2881,7 +2881,7 @@ describe('unexpected', function () {
             expectation(20);
             expect(function () {
                 expectation(10);
-            }, 'to throw', 'expected 10 to be greater than 14');
+            }, 'to throw', '⨯ expected 10 to be greater than 14');
         });
 
         it('is inspected as it is written', function () {
@@ -2901,8 +2901,9 @@ describe('unexpected', function () {
                 expect(function () {
                     expectation(20);
                 }, 'to throw',
-                       'expected 20 to be less than 14 and\n' +
-                       'expected 20 to be negative');
+                       "✓ expected 20 to be a number and\n" +
+                       "⨯ expected 20 to be less than 14 and\n" +
+                       "  expected 20 to be negative");
             });
 
             it('returns a new function', function () {
@@ -2913,7 +2914,9 @@ describe('unexpected', function () {
                 expectation(20);
                 expect(function () {
                     compositeExpectation(20);
-                }, 'to throw', 'expected 20 to be less than 14');
+                }, 'to throw',
+                       '✓ expected 20 to be a number and\n' +
+                       '⨯ expected 20 to be less than 14');
             });
 
             it('outputs one failing assertion correctly', function () {
@@ -2922,7 +2925,10 @@ describe('unexpected', function () {
                     .and('to be negative');
                 expect(function () {
                     expectation(8);
-                }, 'to throw', 'expected 8 to be negative');
+                }, 'to throw',
+                       '✓ expected 8 to be a number and\n' +
+                       '✓ expected 8 to be less than 14 and\n' +
+                       '⨯ expected 8 to be negative');
             });
         });
     });
