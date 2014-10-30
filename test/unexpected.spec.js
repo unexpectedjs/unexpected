@@ -1420,13 +1420,15 @@ describe('unexpected', function () {
             }, 'to throw',
                    "expected { foo: 123 } to satisfy\n" +
                    "{\n" +
-                   "  foo: expect.it('to be a number').and('to be greater than', 200)\n" +
+                   "  foo: expect.it('to be a number')\n" +
+                   "               .and('to be greater than', 200)\n" +
                    "}\n" +
                    "\n" +
                    "Diff:\n" +
                    "\n" +
                    "{\n" +
-                   "  foo: 123 // should satisfy: expect.it('to be a number').and('to be greater than', 200)\n" +
+                   "  foo: 123 // should satisfy: expect.it('to be a number')\n" +
+                   "           //                         .and('to be greater than', 200)\n" +
                    "}");
         });
 
@@ -2889,7 +2891,9 @@ describe('unexpected', function () {
                 .and('to be less than', 14)
                 .and('to be negative');
             expect(expect.inspect(expectation).toString(), 'to equal',
-                  "expect.it('to be a number').and('to be less than', 14).and('to be negative')");
+                   "expect.it('to be a number')\n" +
+                   "        .and('to be less than', 14)\n" +
+                   "        .and('to be negative')");
 
         });
 
