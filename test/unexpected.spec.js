@@ -1372,6 +1372,36 @@ describe('unexpected', function () {
             expect({foo: 'bar'}, 'to satisfy', {
                 foo: /ba/
             });
+
+            expect(function () {
+                expect({foo: 'foo'}, 'to satisfy', {
+                    foo: /f00/
+                });
+            }, 'to throw',
+                   "expected { foo: 'foo' } to satisfy { foo: /f00/ }\n" +
+                   "\n" +
+                   "Diff:\n" +
+                   "\n" +
+                   "{\n" +
+                   "  foo: 'foo' // should match: /f00/\n" +
+                   "}");
+
+            expect(function () {
+                expect({foo: 'foo'}, 'to satisfy', {
+                    foo: expect.it('not to match', /oo/)
+                });
+            }, 'to throw',
+                   "expected { foo: 'foo' } to satisfy { foo: expect.it('not to match', /oo/) }\n" +
+                   "\n" +
+                   "Diff:\n" +
+                   "\n" +
+                   "{\n" +
+                   "  foo: 'foo' // ⨯ expected 'foo' not to match /oo/\n" +
+                   "             // \n" +
+                   "             // Diff:\n" +
+                   "             // \n" +
+                   "             // foo\n" +
+                   "}");
         });
 
         it('should support expect.it in an array', function () {
