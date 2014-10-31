@@ -503,6 +503,20 @@ describe('unexpected', function () {
             }, 'to throw');
         });
 
+        it.skipIf(typeof Buffer === 'undefined', 'suppresses Buffer diff for large buffers', function () {
+            expect(function () {
+                var a = new Buffer(1024),
+                    b = new Buffer(1024);
+                a[0] = 1;
+                b[0] = 2;
+                expect(
+                    a,
+                    'to equal',
+                    b
+                );
+            }, 'to throw', /Diff suppressed due to size > 512/);
+        });
+
         it.skipIf(typeof Int8Array === 'undefined' || !Array.prototype.map, 'produces a hex-diff in JSON when Int8Arrays differ', function () {
             expect(function () {
                 expect(
