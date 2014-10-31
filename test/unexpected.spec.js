@@ -78,8 +78,6 @@ describe('unexpected', function () {
                     expect(err.output.toString(), 'to equal',
                            "expected [Error: { message: 'foo' }] to equal [Error: { message: 'bar' }]\n" +
                            "\n" +
-                           "Diff:\n" +
-                           "\n" +
                            "{\n" +
                            "  message: 'foo' // should be: 'bar'\n" +
                            "                 // -foo\n" +
@@ -111,8 +109,6 @@ describe('unexpected', function () {
                     expect(err1, 'to equal', err2);
                 }, 'to throw exception',
                        "expected [Error: { message: 'foo', extra: 'foo' }] to equal [Error: { message: 'foo', extra: 'bar' }]\n" +
-                       "\n" +
-                       "Diff:\n" +
                        "\n" +
                        "{\n" +
                        "  message: 'foo',\n" +
@@ -179,8 +175,6 @@ describe('unexpected', function () {
                 expect('foo', 'to be', 'bar');
             }, 'to throw exception',
                    "expected 'foo' to be 'bar'\n" +
-                   "\n" +
-                   "Diff:\n" +
                    "\n" +
                    "-foo\n" +
                    "+bar");
@@ -257,8 +251,6 @@ describe('unexpected', function () {
             }, 'to throw exception', function (e) {
                 expect(e.output.toString(), 'to equal',
                        "expected 'foo' to be 'bar'\n" +
-                       "\n" +
-                       "Diff:\n" +
                        "\n" +
                        "-foo\n" +
                        "+bar");
@@ -346,8 +338,6 @@ describe('unexpected', function () {
                 expect({ a: { b: 'c'} }, 'to equal', { a: { b: 'd'} });
             }, 'to throw exception', "expected { a: { b: 'c' } } to equal { a: { b: 'd' } }\n" +
                    "\n" +
-                   "Diff:\n" +
-                   "\n" +
                    "{\n" +
                    "  a: {\n" +
                    "    b: 'c' // should be: 'd'\n" +
@@ -364,8 +354,6 @@ describe('unexpected', function () {
                 expect(new Error('foo'), 'to equal', new Error('bar'));
             }, 'to throw exception', "expected [Error: { message: 'foo' }] to equal [Error: { message: 'bar' }]\n" +
                    "\n" +
-                   "Diff:\n" +
-                   "\n" +
                    "{\n" +
                    "  message: 'foo' // should be: 'bar'\n" +
                    "                 // -foo\n" +
@@ -378,8 +366,6 @@ describe('unexpected', function () {
                 }('foo', 'bar'));
             }, 'to throw exception', "expected [ 'foo', 'bar' ] to equal [ 'foo', 'bar', 'baz' ]\n" +
                    "\n" +
-                   "Diff:\n" +
-                   "\n" +
                    "Mismatching constructors Object should be Array");
         });
 
@@ -388,8 +374,6 @@ describe('unexpected', function () {
                 expect('123', 'to equal', '456');
             }, 'to throw exception',
                    "expected '123' to equal '456'\n" +
-                   "\n" +
-                   "Diff:\n" +
                    "\n" +
                    "-123\n" +
                    "+456");
@@ -406,8 +390,6 @@ describe('unexpected', function () {
                 expect([1], 'to equal', [2]);
             }, 'to throw exception', "expected [ 1 ] to equal [ 2 ]\n" +
                    "\n" +
-                   "Diff:\n" +
-                   "\n" +
                    "[\n" +
                    "  // missing: 2\n" +
                    "  1 // should be removed\n" +
@@ -420,8 +402,6 @@ describe('unexpected', function () {
             }, 'to throw exception',
                    "expected [ 0, { foo: 'bar' }, 1, { bar: 'bar' }, [ 1, 3, 2 ], 'bar' ]\n" +
                    "to equal [ 0, 1, { foo: 'baz' }, 42, { qux: 'qux' }, [ 1, 2, 3 ], 'baz' ]\n" +
-                   "\n" +
-                   "Diff:\n" +
                    "\n" +
                    "[\n" +
                    "  0,\n" +
@@ -452,8 +432,6 @@ describe('unexpected', function () {
                 expect({foo: 1}, 'to equal', {foo: 2});
             }, 'to throw exception', "expected { foo: 1 } to equal { foo: 2 }\n" +
                    "\n" +
-                   "Diff:\n" +
-                   "\n" +
                    "{\n" +
                    "  foo: 1 // should be: 2\n" +
                    "}");
@@ -463,8 +441,6 @@ describe('unexpected', function () {
             expect(function () {
                 expect('foo', 'to equal', 'bar');
             }, 'to throw exception', "expected 'foo' to equal 'bar'\n" +
-                   "\n" +
-                   "Diff:\n" +
                    "\n" +
                    "-foo\n" +
                    "+bar");
@@ -506,8 +482,6 @@ describe('unexpected', function () {
                    'expected Buffer([0x00, 0x01, 0x02, 0x48, 0x65, 0x72, 0x65, 0x20, 0x69, 0x73, 0x20, 0x74, 0x68, 0x65, 0x20, 0x74 /* 24 more */ ])\n' +
                    'to equal Buffer([0x00, 0x01, 0x02, 0x48, 0x65, 0x72, 0x65, 0x20, 0x69, 0x73, 0x20, 0x74, 0x68, 0x65, 0x20, 0x74 /* 24 more */ ])\n' +
                    '\n' +
-                   'Diff:\n' +
-                   '\n' +
                    ' 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  │...Here is the t│\n' +
                    '-68 69 6E 67 20 49 20 77 61 73 20 74 61 6C 6B 69  │hing I was talki│\n' +
                    '+68 69 6E 67 20 49 20 77 61 73 20 71 75 75 78 69  │hing I was quuxi│\n' +
@@ -548,8 +522,6 @@ describe('unexpected', function () {
                    'expected Int8Array([0x00, 0x01, 0x02, 0x48, 0x65, 0x72, 0x65, 0x20, 0x69, 0x73, 0x20, 0x74, 0x68, 0x65, 0x20, 0x74 /* 24 more */ ])\n' +
                    'to equal Int8Array([0x00, 0x01, 0x02, 0x48, 0x65, 0x72, 0x65, 0x20, 0x69, 0x73, 0x20, 0x74, 0x68, 0x65, 0x20, 0x74 /* 24 more */ ])\n' +
                    '\n' +
-                   'Diff:\n' +
-                   '\n' +
                    ' 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  │...Here is the t│\n' +
                    '-68 69 6E 67 20 49 20 77 61 73 20 74 61 6C 6B 69  │hing I was talki│\n' +
                    '+68 69 6E 67 20 49 20 77 61 73 20 71 75 75 78 69  │hing I was quuxi│\n' +
@@ -574,8 +546,6 @@ describe('unexpected', function () {
             }, 'to throw',
                    'expected Uint8Array([0x00, 0x01, 0x02, 0x48, 0x65, 0x72, 0x65, 0x20, 0x69, 0x73, 0x20, 0x74, 0x68, 0x65, 0x20, 0x74 /* 24 more */ ])\n' +
                    'to equal Uint8Array([0x00, 0x01, 0x02, 0x48, 0x65, 0x72, 0x65, 0x20, 0x69, 0x73, 0x20, 0x74, 0x68, 0x65, 0x20, 0x74 /* 24 more */ ])\n' +
-                   '\n' +
-                   'Diff:\n' +
                    '\n' +
                    ' 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  │...Here is the t│\n' +
                    '-68 69 6E 67 20 49 20 77 61 73 20 74 61 6C 6B 69  │hing I was talki│\n' +
@@ -602,8 +572,6 @@ describe('unexpected', function () {
                    'expected Uint16Array([0x0001, 0x0248, 0x6572, 0x6520, 0x6973, 0x2074, 0x6865, 0x2074 /* 12 more */ ])\n' +
                    'to equal Uint16Array([0x0001, 0x0248, 0x6572, 0x6520, 0x6973, 0x2074, 0x6865, 0x2074 /* 12 more */ ])\n' +
                    '\n' +
-                   'Diff:\n' +
-                   '\n' +
                    ' 0001 0248 6572 6520 6973 2074 6865 2074\n' +
                    '-6869 6E67 2049 2077 6173 2074 616C 6B69\n' +
                    '+6869 6E67 2049 2077 6173 2071 7575 7869\n' +
@@ -629,8 +597,6 @@ describe('unexpected', function () {
             }, 'to throw',
                    'expected Uint32Array([0x00010248, 0x65726520, 0x69732074, 0x68652074 /* 6 more */ ])\n' +
                    'to equal Uint32Array([0x00010248, 0x65726520, 0x69732074, 0x68652074 /* 6 more */ ])\n' +
-                   '\n' +
-                   'Diff:\n' +
                    '\n' +
                    ' 00010248 65726520 69732074 68652074\n' +
                    '-68696E67 20492077 61732074 616C6B69\n' +
@@ -712,8 +678,6 @@ describe('unexpected', function () {
                     'to throw \'foo\'\n' +
                     '  expected \'bar\' to equal \'foo\'\n' +
                     '  \n' +
-                    '  Diff:\n' +
-                    '  \n' +
                     '  -bar\n' +
                     '  +foo');
         });
@@ -771,8 +735,6 @@ describe('unexpected', function () {
             }, 'to throw',
                    "expected 'barfooquuxfoobaz' not to match /foo/\n" +
                    '\n' +
-                   'Diff:\n' +
-                   '\n' +
                    'barfooquuxfoobaz');
         });
     });
@@ -827,8 +789,6 @@ describe('unexpected', function () {
             }, 'to throw',
                 'expected [ 1, 2, 3 ] not to contain 2\n' +
                 '\n' +
-                'Diff:\n' +
-                '\n' +
                 '[\n' +
                 '  1,\n' +
                 '  2, // should be removed\n' +
@@ -841,8 +801,6 @@ describe('unexpected', function () {
                 expect('foobarquuxfoo', 'not to contain', 'foo');
             }, 'to throw',
                 "expected 'foobarquuxfoo' not to contain 'foo'\n" +
-                '\n' +
-                'Diff:\n' +
                 '\n' +
                 'foobarquuxfoo');
         });
@@ -916,8 +874,6 @@ describe('unexpected', function () {
             }, 'to throw exception',
                    "expected { a: 'b' } to have property 'a', 'c'\n" +
                   "\n" +
-                   "Diff:\n" +
-                   "\n" +
                    "-b\n" +
                    "+c");
 
@@ -977,8 +933,6 @@ describe('unexpected', function () {
                 expect({a: 'foo', b: 'bar'}, 'to have properties', {c: 'baz'});
             }, 'to throw', "expected { a: 'foo', b: 'bar' } to have properties { c: 'baz' }\n" +
                    "\n" +
-                   "Diff:\n" +
-                   "\n" +
                    "{\n" +
                    "  a: 'foo',\n" +
                    "  b: 'bar',\n" +
@@ -987,8 +941,6 @@ describe('unexpected', function () {
             expect(function () {
                 expect({a: 'foo', b: 'bar'}, 'to have properties', {b: 'baz'});
             }, 'to throw', "expected { a: 'foo', b: 'bar' } to have properties { b: 'baz' }\n" +
-                   "\n" +
-                   "Diff:\n" +
                    "\n" +
                    "{\n" +
                    "  a: 'foo',\n" +
@@ -1005,8 +957,6 @@ describe('unexpected', function () {
                 expect(obj, 'to have properties', {a: 'foo', b: 'bar'}); // should not fail
                 expect(obj, 'to have own properties', {a: 'foo', b: 'bar'}); // should fail
             }, 'to throw', "expected {} to have own properties { a: 'foo', b: 'bar' }\n" +
-                   "\n" +
-                   "Diff:\n" +
                    "\n" +
                    "{\n" +
                    "  a: undefined, // should be: 'foo'\n" +
@@ -1040,8 +990,6 @@ describe('unexpected', function () {
             }, 'to throw',
                    "expected {} to have properties { a: 123 }\n" +
                    "\n" +
-                   "Diff:\n" +
-                   "\n" +
                    "{\n" +
                    "  doSomething: function () {},\n" +
                    "  a: undefined // should be: 123\n" +
@@ -1056,8 +1004,6 @@ describe('unexpected', function () {
             expect(function () {
                 expect({a: 'foo'}, 'to have properties', {a: undefined});
             }, 'to throw', "expected { a: 'foo' } to have properties { a: undefined }\n" +
-                   "\n" +
-                   "Diff:\n" +
                    "\n" +
                    "{\n" +
                    "  a: 'foo' // should be: undefined\n" +
@@ -1380,8 +1326,6 @@ describe('unexpected', function () {
             }, 'to throw',
                    "expected { foo: 'foo' } to satisfy { foo: /f00/ }\n" +
                    "\n" +
-                   "Diff:\n" +
-                   "\n" +
                    "{\n" +
                    "  foo: 'foo' // should match: /f00/\n" +
                    "}");
@@ -1393,12 +1337,8 @@ describe('unexpected', function () {
             }, 'to throw',
                    "expected { foo: 'foo' } to satisfy { foo: expect.it('not to match', /oo/) }\n" +
                    "\n" +
-                   "Diff:\n" +
-                   "\n" +
                    "{\n" +
                    "  foo: 'foo' // ⨯ expected 'foo' not to match /oo/\n" +
-                   "             // \n" +
-                   "             // Diff:\n" +
                    "             // \n" +
                    "             // foo\n" +
                    "}");
@@ -1454,8 +1394,6 @@ describe('unexpected', function () {
                    "               .and('to be greater than', 200)\n" +
                    "}\n" +
                    "\n" +
-                   "Diff:\n" +
-                   "\n" +
                    "{\n" +
                    "  foo: 123 // ✓ expected 123 to be a number and\n" +
                    "           // ⨯ expected 123 to be greater than 200\n" +
@@ -1500,8 +1438,6 @@ describe('unexpected', function () {
             }, 'to throw exception',
                    "expected [Error: { message: 'foo' }] to satisfy [Error: { message: 'bar' }]\n" +
                    "\n" +
-                   "Diff:\n" +
-                   "\n" +
                    "{\n" +
                    "  message: 'foo' // should be: 'bar'\n" +
                    "                 // -foo\n" +
@@ -1520,8 +1456,6 @@ describe('unexpected', function () {
                 expect(new Error('foo'), 'to satisfy', { message: 'bar' });
             }, 'to throw exception',
                    "expected [Error: { message: \'foo\' }] to satisfy { message: \'bar\' }\n" +
-                   "\n" +
-                   "Diff:\n" +
                    "\n" +
                    "-foo\n" +
                    "+bar");
@@ -1555,8 +1489,6 @@ describe('unexpected', function () {
                    "    blue: { ignorance: ... }\n" +
                    "  }\n" +
                    "}\n" +
-                   "\n" +
-                   "Diff:\n" +
                    "\n" +
                    "{\n" +
                    "  pill: {\n" +
@@ -1616,8 +1548,6 @@ describe('unexpected', function () {
                        "expected { foo: MysteryBox({ baz: 123, quux: 987 }) } " +
                        "to exhaustively satisfy { foo: { baz: expect.it('to be a number') } }\n" +
                        "\n" +
-                       "Diff:\n" +
-                       "\n" +
                        "{\n" +
                        "  foo: MysteryBox({\n" +
                        "    baz: 123,\n" +
@@ -1636,8 +1566,6 @@ describe('unexpected', function () {
                 }, 'to throw',
                        "expected { foo: MysteryBox({ baz: 123, quux: 987 }) } " +
                        "to satisfy { foo: { baz: expect.it('not to be a number') } }\n" +
-                       "\n" +
-                       "Diff:\n" +
                        "\n" +
                        "{\n" +
                        "  foo: MysteryBox({\n" +
@@ -1659,8 +1587,6 @@ describe('unexpected', function () {
                        "{\n" +
                        "  foo: MysteryBox({ baz: expect.it('to be a number') })\n" +
                        "}\n" +
-                       "\n" +
-                       "Diff:\n" +
                        "\n" +
                        "{\n" +
                        "  foo: MysteryBox({\n" +
@@ -1689,8 +1615,6 @@ describe('unexpected', function () {
                     });
                 }, 'to throw', "expected { foo: MysteryBox('abc') } to satisfy { foo: 'def' }\n" +
                        "\n" +
-                       "Diff:\n" +
-                       "\n" +
                        "{\n" +
                        "  foo: MysteryBox('abc') // should satisfy: 'def'\n" +
                        "                         // -abc\n" +
@@ -1707,8 +1631,6 @@ describe('unexpected', function () {
                     });
                 }, 'to throw',
                        "expected { foo: MysteryBox('abc') } to satisfy { foo: MysteryBox('def') }\n" +
-                       "\n" +
-                       "Diff:\n" +
                        "\n" +
                        "{\n" +
                        "  foo: MysteryBox('abc') // should equal: MysteryBox('def')\n" +
@@ -1744,8 +1666,6 @@ describe('unexpected', function () {
                 expect({foo: 123}, 'to satisfy', {foo: expect.it('to be a string')});
             }, 'to throw',
                 "expected { foo: 123 } to satisfy { foo: expect.it('to be a string') }\n" +
-                "\n" +
-                "Diff:\n" +
                 "\n" +
                 "{\n" +
                 "  foo: 123 // ⨯ expected 123 to be a string\n" +
@@ -2098,8 +2018,6 @@ describe('unexpected', function () {
             }, 'to throw',
                          "expected 'bar' to be foo aliased without the not flag\n" +
                          "\n" +
-                         "Diff:\n" +
-                         "\n" +
                          "-bar\n" +
                          "+foo");
         });
@@ -2254,16 +2172,12 @@ describe('unexpected', function () {
                 }, 'to throw',
                        "expected 'bar' to be foo\n" +
                        "\n" +
-                       "Diff:\n" +
-                       "\n" +
                        "-bar\n" +
                        "+foo");
                 expect(function () {
                     clonedExpect(new Box('bar'), 'to be foo');
                 }, 'to throw',
                        "expected [Box 'bar'] to be foo\n" +
-                       "\n" +
-                       "Diff:\n" +
                        "\n" +
                        "-bar\n" +
                        "+foo");
@@ -2615,8 +2529,6 @@ describe('unexpected', function () {
                 clonedExpect(box(box(123)), 'to equal', box(box(456)));
             }, 'to throw', "expected box(box(123)) to equal box(box(456))\n" +
                    "\n" +
-                   "Diff:\n" +
-                   "\n" +
                    "box({\n" +
                    "  value: box({\n" +
                    "    value: 123 // should be: 456\n" +
@@ -2654,8 +2566,6 @@ describe('unexpected', function () {
                 expect(function () {
                     clonedExpect(box(box(123)), 'to equal', box(box(456)));
                 }, 'to throw', "expected box(box(123)) to equal box(box(456))\n" +
-                       "\n" +
-                       "Diff:\n" +
                        "\n" +
                        "box(box(\n" +
                        "  123 // should be: 456\n" +
@@ -2975,8 +2885,6 @@ describe('unexpected', function () {
                 }, 'to throw',
                        "expected 'foo\\n' to equal 'foo'\n" +
                        "\n" +
-                       "Diff:\n" +
-                       "\n" +
                        "-foo\\n\n" +
                        "+foo");
             });
@@ -2986,8 +2894,6 @@ describe('unexpected', function () {
                     expect('foo', 'to equal', 'foo\n');
                 }, 'to throw',
                        "expected 'foo' to equal 'foo\\n'\n" +
-                       "\n" +
-                       "Diff:\n" +
                        "\n" +
                        "-foo\n" +
                        "+foo\\n");
@@ -2999,8 +2905,6 @@ describe('unexpected', function () {
                 }, 'to throw',
                        "expected 'foo\\r\\nbar' to equal 'foo\\nbar'\n" +
                        "\n" +
-                       "Diff:\n" +
-                       "\n" +
                        "-foo\\r\n" +
                        "+foo\n" +
                        " bar");
@@ -3010,8 +2914,6 @@ describe('unexpected', function () {
                 }, 'to throw',
                        "expected 'foo\\r\\n' to equal 'foo\\n'\n" +
                        "\n" +
-                       "Diff:\n" +
-                       "\n" +
                        "-foo\\r\n" +
                        "+foo");
 
@@ -3019,8 +2921,6 @@ describe('unexpected', function () {
                     expect('foo\r\n', 'to equal', 'foo');
                 }, 'to throw',
                        "expected 'foo\\r\\n' to equal 'foo'\n" +
-                       "\n" +
-                       "Diff:\n" +
                        "\n" +
                        "-foo\\r\\n\n" +
                        "+foo");
@@ -3032,8 +2932,6 @@ describe('unexpected', function () {
                 }, 'to throw',
                        "expected 'foo\\nbar' to equal 'foo\\r\\nbar'\n" +
                        "\n" +
-                       "Diff:\n" +
-                       "\n" +
                        "-foo\n" +
                        "+foo\\r\n" +
                        " bar");
@@ -3043,8 +2941,6 @@ describe('unexpected', function () {
                 }, 'to throw',
                        "expected 'foo\\n' to equal 'foo\\r\\n'\n" +
                        "\n" +
-                       "Diff:\n" +
-                       "\n" +
                        "-foo\n" +
                        "+foo\\r");
 
@@ -3052,8 +2948,6 @@ describe('unexpected', function () {
                     expect('foo', 'to equal', 'foo\r\n');
                 }, 'to throw',
                        "expected 'foo' to equal 'foo\\r\\n'\n" +
-                       "\n" +
-                       "Diff:\n" +
                        "\n" +
                        "-foo\n" +
                        "+foo\\r\\n");
@@ -3064,8 +2958,6 @@ describe('unexpected', function () {
                     expect('foo\r\nbar', 'to equal', 'foo\r\nbaz');
                 }, 'to throw',
                        "expected 'foo\\r\\nbar' to equal 'foo\\r\\nbaz'\n" +
-                       "\n" +
-                       "Diff:\n" +
                        "\n" +
                        " foo\r\n" +
                        "-bar\n" +
@@ -3078,8 +2970,6 @@ describe('unexpected', function () {
                 }, 'to throw',
                        "expected 'foo\\r\\n\\r\\nbar' to equal 'foo\\r\\nbar'\n" +
                        "\n" +
-                       "Diff:\n" +
-                       "\n" +
                        " foo\r\n" +
                        "-\\r\n" +
                        " bar");
@@ -3090,8 +2980,6 @@ describe('unexpected', function () {
                     expect('foo\n\nbar', 'to equal', 'foo\nbar');
                 }, 'to throw',
                        "expected 'foo\\n\\nbar' to equal 'foo\\nbar'\n" +
-                       "\n" +
-                       "Diff:\n" +
                        "\n" +
                        " foo\n" +
                        "-\n" +
@@ -3104,8 +2992,6 @@ describe('unexpected', function () {
                 }, 'to throw',
                        "expected 'foo\\nbar' to equal 'foo\\n\\nbar'\n" +
                        "\n" +
-                       "Diff:\n" +
-                       "\n" +
                        " foo\n" +
                        "+\n" +
                        " bar");
@@ -3117,8 +3003,6 @@ describe('unexpected', function () {
                 }, 'to throw',
                        "expected '' to equal 'foo\\nbar'\n" +
                        "\n" +
-                       "Diff:\n" +
-                       "\n" +
                        "+foo\n" +
                        "+bar");
             });
@@ -3128,8 +3012,6 @@ describe('unexpected', function () {
                     expect('foo\nbar', 'to equal', '');
                 }, 'to throw',
                        "expected 'foo\\nbar' to equal ''\n" +
-                       "\n" +
-                       "Diff:\n" +
                        "\n" +
                        "-foo\n" +
                        "-bar");
@@ -3148,8 +3030,6 @@ describe('unexpected', function () {
                     });
                 }, 'to throw', 'expected { bar: { b: { foo: ... } } } to equal { bar: {} }\n' +
                        '\n' +
-                       'Diff:\n' +
-                       '\n' +
                        '{\n' +
                        '  bar: {\n' +
                        '    b: { foo: { bar: 123 } } // should be removed\n' +
@@ -3166,8 +3046,6 @@ describe('unexpected', function () {
                     });
                 }, 'to throw', "expected { 'the-\\'thing': 123 } to equal { 'the-\\'thing': 456 }\n" +
                        '\n' +
-                       'Diff:\n' +
-                       '\n' +
                        '{\n' +
                        "  'the-\\'thing': 123 // should be: 456\n" +
                        '}');
@@ -3181,8 +3059,6 @@ describe('unexpected', function () {
                         value: 'baz'
                     });
                 }, 'to throw', "expected { value: 'bar' } to equal { value: 'baz' }\n" +
-                       "\n" +
-                       "Diff:\n" +
                        "\n" +
                        "{\n" +
                        "  value: 'bar' // should be: 'baz'\n" +
@@ -3203,8 +3079,6 @@ describe('unexpected', function () {
                     });
                 }, 'to throw', "expected { foo: 'foo', bar: 'bar', baz: 'baz' } to equal { bar: 'bar', baz: 'baz' }\n" +
                        "\n" +
-                       "Diff:\n" +
-                       "\n" +
                        "{\n" +
                        "  foo: 'foo', // should be removed\n" +
                        "  bar: 'bar',\n" +
@@ -3223,8 +3097,6 @@ describe('unexpected', function () {
                         three: 3
                     });
                 }, 'to throw', "expected { one: 1, three: 3 } to equal { one: 1, two: 2, three: 3 }\n" +
-                       "\n" +
-                       "Diff:\n" +
                        "\n" +
                        "{\n" +
                        "  one: 1,\n" +
@@ -3246,8 +3118,6 @@ describe('unexpected', function () {
                     });
                 }, 'to throw', "expected { one: 1, two: 42, three: 3 } to equal { one: 1, two: 2, three: 3 }\n" +
                        "\n" +
-                       "Diff:\n" +
-                       "\n" +
                        "{\n" +
                        "  one: 1,\n" +
                        "  two: 42, // should be: 2\n" +
@@ -3263,8 +3133,6 @@ describe('unexpected', function () {
                         one: { two: { three: 3 } }
                     });
                 }, 'to throw', "expected { one: { two: { three: 4 } } } to equal { one: { two: { three: 3 } } }\n" +
-                       "\n" +
-                       "Diff:\n" +
                        "\n" +
                        "{\n" +
                        "  one: {\n" +
@@ -3304,8 +3172,6 @@ describe('unexpected', function () {
                        "  }\n" +
                        "}\n" +
                        "\n" +
-                       "Diff:\n" +
-                       "\n" +
                        "{\n" +
                        "  pill: {\n" +
                        "    red: 'I\\'ll show you how deep the rabbit hole goes', // should be: 'I\\'ll show you how deep the rabbit hole goes.'\n" +
@@ -3329,8 +3195,6 @@ describe('unexpected', function () {
                     expect(new Foo('test'), 'to equal', new Bar('test'));
                 }, 'to throw', "expected { text: 'test' } to equal { text: 'test' }\n" +
                        "\n" +
-                       "Diff:\n" +
-                       "\n" +
                        "Mismatching constructors Foo should be Bar");
             });
         });
@@ -3340,8 +3204,6 @@ describe('unexpected', function () {
                 expect(function () {
                     expect([0, 1, 2], 'to equal', [0, 2]);
                 }, 'to throw', 'expected [ 0, 1, 2 ] to equal [ 0, 2 ]\n' +
-                       '\n' +
-                       'Diff:\n' +
                        '\n' +
                        '[\n' +
                        '  0,\n' +
@@ -3356,8 +3218,6 @@ describe('unexpected', function () {
                     expect([0, 2], 'to equal', [0, 1, 2]);
                 }, 'to throw', 'expected [ 0, 2 ] to equal [ 0, 1, 2 ]\n' +
                        '\n' +
-                       'Diff:\n' +
-                       '\n' +
                        '[\n' +
                        '  0,\n' +
                        '  // missing: 1\n' +
@@ -3370,8 +3230,6 @@ describe('unexpected', function () {
                 expect(function () {
                     expect([0, 'once', 2], 'to equal', [0, 'one', 2]);
                 }, 'to throw', "expected [ 0, 'once', 2 ] to equal [ 0, 'one', 2 ]\n" +
-                       "\n" +
-                       "Diff:\n" +
                        "\n" +
                        "[\n" +
                        "  0,\n" +
@@ -3387,8 +3245,6 @@ describe('unexpected', function () {
                 expect(function () {
                     expect([0, 1, { name: 'John', age: 34 }], 'to equal', [0, { name: 'Jane', age: 24, children: 2 }, 2]);
                 }, 'to throw', "expected [ 0, 1, { name: 'John', age: 34 } ] to equal [ 0, { name: 'Jane', age: 24, children: 2 }, 2 ]\n" +
-                       "\n" +
-                       "Diff:\n" +
                        "\n" +
                        "[\n" +
                        "  0,\n" +
@@ -3410,8 +3266,6 @@ describe('unexpected', function () {
                     expect([0, { name: 'John Doe' }, 2], 'to equal', [0, { firstName: 'John', lastName: 'Doe' }, 2]);
                 }, 'to throw', "expected [ 0, { name: 'John Doe' }, 2 ] to equal [ 0, { firstName: 'John', lastName: 'Doe' }, 2 ]\n" +
                        "\n" +
-                       "Diff:\n" +
-                       "\n" +
                        "[\n" +
                        "  0,\n" +
                        "  // missing: { firstName: 'John', lastName: 'Doe' }\n" +
@@ -3425,8 +3279,6 @@ describe('unexpected', function () {
                 expect(function () {
                     expect([0, 'twoo', 1], 'to equal', [0, 1, 'two']);
                 }, 'to throw', "expected [ 0, 'twoo', 1 ] to equal [ 0, 1, 'two' ]\n" +
-                       "\n" +
-                       "Diff:\n" +
                        "\n" +
                        "[\n" +
                        "  0,\n" +
@@ -3443,8 +3295,6 @@ describe('unexpected', function () {
                 expect(function () {
                     expect([0, 'two', 1], 'to equal', [0, 1, 'three']);
                 }, 'to throw', "expected [ 0, 'two', 1 ] to equal [ 0, 1, 'three' ]\n" +
-                       "\n" +
-                       "Diff:\n" +
                        "\n" +
                        "[\n" +
                        "  0,\n" +
@@ -3483,8 +3333,6 @@ describe('unexpected', function () {
                 expect(function () {
                     clonedExpect([new Person('John', 'Doe')], 'to equal', [new Person('Jane', 'Doe')]);
                 }, 'to throw', "expected [ new Person('John', 'Doe') ] to equal [ new Person('Jane', 'Doe') ]\n" +
-                       "\n" +
-                       "Diff:\n" +
                        "\n" +
                        "[\n" +
                        "  new Person('John', 'Doe') // should be: new Person('Jane', 'Doe')\n" +
