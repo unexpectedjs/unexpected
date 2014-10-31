@@ -1530,7 +1530,7 @@ describe('unexpected', function () {
                    "\n" +
                    "{\n" +
                    "  pill: {\n" +
-                   "    red: 'I\\'ll show you how deep the rabbit hole goes', // should satisfy: 'I\\'ll show you how deep the rabbit hole goes.'\n" +
+                   "    red: 'I\\'ll show you how deep the rabbit hole goes', // should equal: 'I\\'ll show you how deep the rabbit hole goes.'\n" +
                    "                                                         // -I'll show you how deep the rabbit hole goes\n" +
                    "                                                         // +I'll show you how deep the rabbit hole goes.\n" +
                    "    blue: { ignorance: ... }\n" +
@@ -1681,7 +1681,7 @@ describe('unexpected', function () {
                        "Diff:\n" +
                        "\n" +
                        "{\n" +
-                       "  foo: MysteryBox('abc') // should satisfy: MysteryBox('def')\n" +
+                       "  foo: MysteryBox('abc') // should equal: MysteryBox('def')\n" +
                        "                         // -abc\n" +
                        "                         // +def\n" +
                        "}");
