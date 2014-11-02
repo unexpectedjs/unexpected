@@ -1352,7 +1352,7 @@ describe('unexpected', function () {
                    "expected { foo: 'foo' } to satisfy { foo: expect.it('not to match', /oo/) }\n" +
                    "\n" +
                    "{\n" +
-                   "  foo: 'foo' // ⨯ expected 'foo' not to match /oo/\n" +
+                   "  foo: 'foo' // expected 'foo' not to match /oo/\n" +
                    "             // \n" +
                    "             // foo\n" +
                    "}");
@@ -1583,7 +1583,7 @@ describe('unexpected', function () {
                        "\n" +
                        "{\n" +
                        "  foo: MysteryBox({\n" +
-                       "    baz: 123, // ⨯ expected 123 not to be a number\n" +
+                       "    baz: 123, // expected 123 not to be a number\n" +
                        "    quux: 987\n" +
                        "  })\n" +
                        "}");
@@ -1682,7 +1682,7 @@ describe('unexpected', function () {
                 "expected { foo: 123 } to satisfy { foo: expect.it('to be a string') }\n" +
                 "\n" +
                 "{\n" +
-                "  foo: 123 // ⨯ expected 123 to be a string\n" +
+                "  foo: 123 // expected 123 to be a string\n" +
                 "}");
 
             expect(function () {
@@ -2837,18 +2837,30 @@ describe('unexpected', function () {
             expectation(20);
             expect(function () {
                 expectation(10);
-            }, 'to throw', '⨯ expected 10 to be greater than 14');
+            }, 'to throw', 'expected 10 to be greater than 14');
         });
 
         it('is inspected as it is written', function () {
             var expectation = expect.it('to be a number')
-                .and('to be less than', 14)
-                .and('to be negative');
+                                        .and('to be less than', 14)
+                                        .and('to be negative')
+                                    .or('to be a string')
+                                        .and('to have length', 6);
             expect(expect.inspect(expectation).toString(), 'to equal',
                    "expect.it('to be a number')\n" +
                    "        .and('to be less than', 14)\n" +
-                   "        .and('to be negative')");
+                   "        .and('to be negative')\n" +
+                   "      .or('to be a string')\n" +
+                   "        .and('to have length', 6)");
 
+        });
+
+        it('does not catch errors that are not thrown by unexpected', function () {
+            var clonedExpect = expect.clone().addAssertion('explode', function (expect, subject) {
+                throw new Error('Explosion');
+            });
+
+            expect(clonedExpect.it('explode'), 'to throw', 'Explosion');
         });
 
         describe('with chained and', function () {
@@ -2888,6 +2900,62 @@ describe('unexpected', function () {
                        '✓ expected 8 to be less than 14 and\n' +
                        '⨯ expected 8 to be negative');
             });
+        });
+
+        describe('with chained or', function () {
+            it('succeeds if any expectations succeeds', function () {
+                var expectation = expect.it('to be a number')
+                    .or('to be a string')
+                    .or('to be an array');
+                expect(function () {
+                    expectation('success');
+                }, 'not to throw');
+            });
+
+            it('fails if all the expectations fails', function () {
+                var expectation = expect.it('to be a number')
+                      .and('to be greater than', 6)
+                    .or('to be a string')
+                      .and('to have length', 6)
+                    .or('to be an array');
+                expect(function () {
+                    expectation('foobarbaz');
+                }, 'to throw',
+                       "⨯ expected 'foobarbaz' to be a number and\n" +
+                       "  expected 'foobarbaz' to be greater than 6\n" +
+                       "or\n" +
+                       "✓ expected 'foobarbaz' to be a string and\n" +
+                       "⨯ expected 'foobarbaz' to have length 6\n" +
+                       "or\n" +
+                       "⨯ expected 'foobarbaz' to be an array");
+            });
+
+            it('if there are only no and-clauses it writes the failure output more compactly', function () {
+                var expectation = expect.it('to be a number')
+                    .or('to be a string')
+                    .or('to be an array');
+                expect(function () {
+                    expectation(true);
+                }, 'to throw',
+                       "⨯ expected true to be a number or\n" +
+                       "⨯ expected true to be a string or\n" +
+                       "⨯ expected true to be an array");
+            });
+
+            it('returns a new function', function () {
+                var expectation = expect.it('to be a number');
+                var compositeExpectation = expectation.or('to be a string');
+                expect(compositeExpectation, 'not to be', expectation);
+
+                expectation(20);
+                expect(function () {
+                    compositeExpectation(20);
+                    compositeExpectation(true);
+                }, 'to throw',
+                       '⨯ expected true to be a number or\n' +
+                       '⨯ expected true to be a string');
+            });
+
         });
     });
 
