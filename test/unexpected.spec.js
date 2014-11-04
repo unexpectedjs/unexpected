@@ -751,6 +751,15 @@ describe('unexpected', function () {
                    '\n' +
                    'barfooquuxfoobaz');
         });
+
+        it('does not fail when building a diff and the subject is not a string', function () {
+            expect(function () {
+                expect(123, 'not to match', /^12/);
+            }, 'to throw',
+                   "expected 123 not to match /^12/\n" +
+                   '\n' +
+                   '123');
+        });
     });
 
     describe('contain assertion', function () {
