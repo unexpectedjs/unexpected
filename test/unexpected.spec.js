@@ -1335,6 +1335,10 @@ describe('unexpected', function () {
             expect({foo: [123]}, 'to satisfy', {
                 foo: expect.it('to be an array whose items satisfy', 'to be a number')
             });
+
+            expect({foo: function () { throw new Error('Explosion'); } }, 'to satisfy', {
+                foo: expect.it('to be a function')
+            });
         });
 
         it('should support regular expressions in the RHS object', function () {
