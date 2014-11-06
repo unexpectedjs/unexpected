@@ -364,7 +364,7 @@ describe('unexpected', function () {
                 (function () {
                     expect(arguments, 'to equal', ['foo', 'bar', 'baz']);
                 }('foo', 'bar'));
-            }, 'to throw exception', "expected [ 'foo', 'bar' ] to equal [ 'foo', 'bar', 'baz' ]\n" +
+            }, 'to throw exception', "expected arguments( 'foo', 'bar' ) to equal [ 'foo', 'bar', 'baz' ]\n" +
                    "\n" +
                    "Mismatching constructors Object should be Array");
         });
@@ -2767,6 +2767,14 @@ describe('unexpected', function () {
                    "    }\n" +
                    "  }\n" +
                    "]");
+        });
+
+        it('should inspect an arguments object differently from an array', function () {
+            var args;
+            (function () {
+                args = arguments;
+            }('a', 123));
+            expect(expect.inspect(args).toString(), 'to equal', "arguments( 'a', 123 )");
         });
 
         it('should output the body of a function', function () {
