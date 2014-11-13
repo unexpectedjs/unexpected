@@ -10,7 +10,7 @@ lint:
 unexpected.js: lint lib/*
 	(echo '/*!' && <LICENSE sed -e's/^/ * /' | sed -e's/\s+$$//' && echo ' */' && ./node_modules/.bin/browserify -p bundle-collapser/plugin -e lib -s weknowhow.expect) > $@
 
-test-phantomjs: lint unexpected.js
+test-phantomjs: lint ${TARGETS}
 	@$(eval QUERY=$(shell node -e "console.log(decodeURIComponent(process.argv.pop()))" "${grep}")) \
     ./node_modules/.bin/mocha-phantomjs test/tests.html?grep=${QUERY}
 
@@ -19,11 +19,6 @@ test: lint
 
 .PHONY: test
 
-test-production: lint ${TARGETS}
-	@./node_modules/.bin/mocha-phantomjs test/tests.production.html
-
-.PHONY: test-production
-
 coverage: lib/*
 	NODE_ENV=development ./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha -- --reporter dot
 
@@ -31,7 +26,7 @@ coverage: lib/*
 test-browser: unexpected.js
 	@./node_modules/.bin/serve .
 
-travis: lint test test-production coverage
+travis: lint test coverage
 	<coverage/lcov.info ./node_modules/coveralls/bin/coveralls.js
 
 .PHONY: git-dirty-check
@@ -41,7 +36,7 @@ ifneq ($(shell git describe --always --dirty | grep -- -dirty),)
 endif
 
 .PHONY: release-%
-release-%: git-dirty-check ${TARGETS} test-production
+release-%: git-dirty-check ${TARGETS} test-phantomjs
 	npm version $*
 	@echo $* release ready to be publised to NPM
 	@echo Remember to push tags

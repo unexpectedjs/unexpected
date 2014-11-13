@@ -30,7 +30,7 @@ cd unexpected && npm install
 
 ```
 make test
-make test-production
+make test-phantomjs
 ```
 
 ## Running tests in the browser
