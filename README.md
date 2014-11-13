@@ -1,6 +1,6 @@
 # Unexpected
 
-Minimalistic BDD assertion toolkit inspired by
+Extensible BDD assertion toolkit inspired by
 [expect.js](https://github.com/LearnBoost/expect.js)
 
 ```js
