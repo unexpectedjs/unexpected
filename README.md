@@ -610,13 +610,15 @@ function add (a, b) { return a + b; };
 Our test file would look like this:
 
 ```js
-describe('test suite', function () {
-  it('should expose a function', function () {
-    expect(add, 'to be a', 'function');
-  });
-
-  it('should do math', function () {
-    expect(add(1, 3), 'to be', 4);
+describe('math.js', function () {
+  describe('add', function () {
+    it('is a function', function () {
+      expect(add, 'to be a', 'function');
+    });
+  
+    it('does addition on numbers', function () {
+      expect(add(1, 3), 'to be', 4);
+    });
   });
 });
 ```
