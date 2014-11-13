@@ -11,24 +11,20 @@ cd unexpected && npm install
 
 ## Source files
 
-* *src/unexpected-license.js*:<br>
-  The license file
-* *src/unexpected-namespace.js*:<br>
-  The internal namespace definition
-* *src/unexpected-es4-compatible.js*:<br>
-  ES5 functions shimmed to work in a ES4 compatible environment
-* *src/unexpected-utils.js*:<br>
+* *lib/index.js*:<br>
+  The entry point for the library.
+* *lib/Unexpected.js*:<br>
+  The core of the library.
+* *lib/Assertion.js*:<br>
+  The class that assertions are instantiated from.
+* *lib/utils.js*:<br>
   Utility functions
-* *src/unexpected-equal.js*:<br>
-  Deep-equality
-* *src/unexpected-inspect.js*:<br>
-  Object inspect
-* *src/unexpected-core.js*:<br>
-  The core part of Unexpected
-* *src/unexpected-assertions.js*:<br>
-  The core assertions provided by Unexpected
-* *src/unexpected-module.js*:<br>
-  The module definitions
+* *lib/styles.js*:<br>
+  MagicPen styles for controling the output.
+* *lib/types.js*:<br>
+  Type definitions for every type Unexpected understands.
+* *lib/assertions.js*:<br>
+  All assertions that is included in the core library.
 
 ## Running tests in the console
 
