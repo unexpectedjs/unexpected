@@ -172,11 +172,7 @@ expect(expect, 'to be a function');
 
 ```js
 expect(NaN, 'to be NaN');
-expect({}, 'to be NaN');
 expect(2, 'not to be NaN');
-expect(null, 'not to be NaN');
-expect(undefined, 'to be NaN');
-expect("String", 'to be NaN');
 ```
 
 **close to**: asserts that the difference between two numbers is <= epsilon
@@ -205,7 +201,6 @@ expect(null, 'not to match', /foo/);
 ```js
 expect([1, 2], 'to contain', 1);
 expect('hello world', 'to contain', 'world');
-expect(null, 'not to contain', 'world');
 ```
 
 **length**: asserts array `.length`
@@ -244,7 +239,7 @@ expect(Object.create({a: 'b'}), 'not to have own property', 'a');
 ```js
 expect({ a: 'a', b: { c: 'c' }, d: 'd' }, 'to have properties', ['a', 'b']);
 expect({ a: 'a', b: { c: 'c' }, d: 'd' }, 'to have own properties', ['a', 'b']);
-expect({ a: 'a', b: { c: 'c' }, d: 'd' }, 'to not have properties', ['k', 'l']);
+expect({ a: 'a', b: { c: 'c' }, d: 'd' }, 'not to have properties', ['k', 'l']);
 expect({ a: 'a', b: { c: 'c' }, d: 'd' }, 'to have properties', {
     a: 'a',
     b: { c: 'c' }
@@ -258,7 +253,6 @@ expect([ 'a', { c: 'c' }, 'd' ], 'to have properties', {
 **key** / **keys**: asserts the presence of a key. Supports the `only` modifier
 
 ```js
-expect(null, 'not to have key', 'a');
 expect({ a: 'b' }, 'to have key', 'a');
 expect({ a: 'b' }, 'not to have key', 'b');
 expect({ a: 'b', c: 'd' }, 'to not only have key', 'a');
@@ -286,7 +280,6 @@ expect(fn2, 'not to throw error');
 expect(123, 'to be finite');
 expect(Infinity, 'not to be finite');
 expect(Infinity, 'to be infinite');
-expect(false, 'not to be infinite');
 ```
 
 **within**: asserts a number within a range
@@ -385,10 +378,10 @@ will output:
 
 ```
 failed expectation in [ [ 0, 1, 2 ], [ 4, '5', 6 ], [ 7, 8, '9' ] ]:
-    1: failed expectation in [ 4, '5', 6 ]:
-        1: expected '5' to be a 'number'
-    2: failed expectation in [ 7, 8, '9' ]:
-        2: expected '9' to be a 'number'
+  1: failed expectation in [ 4, '5', 6 ]:
+       1: expected '5' to be a number
+  2: failed expectation in [ 7, 8, '9' ]:
+       2: expected '9' to be a number
 ```
 
 **map whose keys satify**: will run an assertion function for each key in a map
@@ -418,7 +411,7 @@ will output:
 
 ```
 failed expectation on keys foo, bar, baz, qux, quux:
-    quux: expected 'quux' to have length 3
+  quux: expected 'quux' to have length 3
 ```
 
 **map whose values satify**: will run an assertion function for each value in a map
@@ -449,13 +442,15 @@ will output:
 
 ```
 failed expectation in
-{ foo: [ 0, 1, 2 ],
+{
+  foo: [ 0, 1, 2 ],
   bar: [ 4, '5', 6 ],
-  baz: [ 7, 8, '9' ] }:
-    bar: failed expectation in [ 4, '5', 6 ]:
-        1: expected '5' to be a 'number'
-    baz: failed expectation in [ 7, 8, '9' ]:
-        2: expected '9' to be a 'number'
+  baz: [ 7, 8, '9' ]
+}:
+  bar: failed expectation in [ 4, '5', 6 ]:
+         1: expected '5' to be a number
+  baz: failed expectation in [ 7, 8, '9' ]:
+         2: expected '9' to be a number
 ```
 
 ## Extending Unexpected with new assertions
@@ -567,7 +562,7 @@ If we change the error mode to _nested_, we get the following:
 
 ```
 expected [ 4, 3, 1, 2 ] to be sorted
-    expected [ 4, 3, 1, 2 ] to equal [ 1, 2, 3, 4 ]
+  expected [ 4, 3, 1, 2 ] to equal [ 1, 2, 3, 4 ]
 ```
 
 The best resource for learning more about custom assertions is to look
