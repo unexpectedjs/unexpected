@@ -3329,6 +3329,52 @@ describe('unexpected', function () {
                       );
             });
 
+            it('handles complicated similarities', function () {
+                expect(function () {
+                    expect([4, 3, 1, 2], 'to equal', [1, 2, 3, 4]);
+                }, 'to throw', 'expected [ 4, 3, 1, 2 ] to equal [ 1, 2, 3, 4 ]\n' +
+                       '\n' +
+                       '[\n' +
+                       "  // missing 1\n" +
+                       "  // missing 2\n" +
+                       "  // missing 3\n" +
+                       "  4,\n" +
+                       "  3, // should be removed\n" +
+                       "  1, // should be removed\n" +
+                       "  2 // should be removed\n" +
+                       ']'
+                      );
+
+                expect(function () {
+                    expect([4, 1, 2, 3], 'to equal', [1, 2, 3, 4]);
+                }, 'to throw', 'expected [ 4, 1, 2, 3 ] to equal [ 1, 2, 3, 4 ]\n' +
+                       '\n' +
+                       '[\n' +
+                       "  // missing 1\n" +
+                       "  // missing 2\n" +
+                       "  // missing 3\n" +
+                       "  4,\n" +
+                       "  1, // should be removed\n" +
+                       "  2, // should be removed\n" +
+                       "  3 // should be removed\n" +
+                       ']'
+                      );
+
+                expect(function () {
+                    expect([4, 3, 1, 2], 'to equal', [3, 4]);
+                }, 'to throw', 'expected [ 4, 3, 1, 2 ] to equal [ 3, 4 ]\n' +
+                       '\n' +
+                       '[\n' +
+                       '  // missing 3\n' +
+                       '  4,\n' +
+                       '  3, // should be removed\n' +
+                       '  1, // should be removed\n' +
+                       '  2 // should be removed\n' +
+                       ']'
+                      );
+            });
+
+
             it('highlights conflicting entries', function () {
                 expect(function () {
                     expect([0, 'once', 2], 'to equal', [0, 'one', 2]);
