@@ -209,12 +209,9 @@ describe('unexpected', function () {
             expect(['abc'], 'to be a non-empty array of strings');
             expect([], 'to be an empty array');
             expect({}, 'to be an', Object);
-            expect({}, 'to be an empty object');
-            expect({foo: 123}, 'to be a non-empty object');
             expect([123], 'to be a non-empty array');
             expect([], 'to be an', 'object');
             expect([], 'to be an object');
-            expect([], 'to be an empty object');
             expect([], 'to be an', Array);
             expect(/ab/, 'to be a', RegExp);
             expect(/ab/, 'to be a regexp');
@@ -1046,8 +1043,6 @@ describe('unexpected', function () {
             expect('', 'to be empty');
             expect({}, 'to be empty');
             expect({ length: 0, duck: 'typing' }, 'to be empty');
-            expect({ my: 'object' }, 'not to be empty');
-            expect({ my: 'object' }, 'to be non-empty');
             expect([1, 2, 3], 'not to be empty');
             expect([1, 2, 3], 'to be non-empty');
         });

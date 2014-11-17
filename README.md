@@ -211,20 +211,13 @@ expect([1,2,3], 'to have length', 3);
 expect([1,2,3], 'not to have length', 4);
 ```
 
-**empty**: asserts that an array or object is empty
+**empty**: asserts that an array or array-like object (identified by the presence of a `length` property) is empty
 
 ```js
 expect([], 'to be empty');
 expect('', 'to be empty');
-expect({}, 'to be empty');
 expect({ my: 'object' }, 'not to be empty');
 expect([1,2,3], 'not to be empty');
-```
-
-For array-like objects, identified by the presence of a `length` property, it
-asserts that `length` is 0:
-
-```js
 expect({ length: 0, duck: 'typing' }, 'to be empty');
 ```
 
