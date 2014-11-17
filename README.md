@@ -345,7 +345,7 @@ expect.fail('Custom failure message')
 expect.fail('{0} was expected to be {1}', 0, 'zero');
 ```
 
-**array whose items satify**: will run an assertion function for each items in an array
+**array whose items satisfy**: will run an assertion function for each items in an array
 
 ```js
 expect([0, 1, 2, 3, 4], 'to be an array whose items satisfy', function (item, index) {
@@ -383,7 +383,7 @@ failed expectation in [ [ 0, 1, 2 ], [ 4, '5', 6 ], [ 7, 8, '9' ] ]:
        2: expected '9' to be a number
 ```
 
-**map whose keys satify**: will run an assertion function for each key in a map
+**map whose keys satisfy**: will run an assertion function for each key in a map
 
 
 ```js
@@ -413,7 +413,7 @@ failed expectation on keys foo, bar, baz, qux, quux:
   quux: expected 'quux' to have length 3
 ```
 
-**map whose values satify**: will run an assertion function for each value in a map
+**map whose values satisfy**: will run an assertion function for each value in a map
 
 ```js
 expect({ foo: 0, bar: 1, baz: 2, qux: 3 },
