@@ -362,7 +362,7 @@ expect([[], []], 'to be a non-empty array whose items satisfy', function (item) 
 });
 ```
 
-Using this assertion result in very detailed error reporting show in the below example:
+Using this assertion result in very detailed error reporting as shown in the below example:
 
 ```js
 expect([[0, 1, 2], [4, '5', 6], [7, 8, '9']],
@@ -397,7 +397,7 @@ expect({ foo: 0, bar: 1, baz: 2, qux: 3 },
        'to match', /^[a-z]{3}$/);
 ```
 
-Using this assertion result in very detailed error reporting show in the below example:
+Using this assertion result in very detailed error reporting as shown in the below example:
 
 ```js
 expect({ foo: 0, bar: 1, baz: 2, qux: 3, quux: 4 },
@@ -426,7 +426,7 @@ expect({ foo: 0, bar: 1, baz: 2, qux: 3 },
        'to be a number');
 ```
 
-Using this assertion result in very detailed error reporting show in the below example:
+Using this assertion result in very detailed error reporting as shown in the below example:
 
 ```js
 expect({ foo: [0, 1, 2], bar: [4, '5', 6], baz: [7, 8, '9'] },
