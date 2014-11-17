@@ -383,6 +383,38 @@ failed expectation in [ [ 0, 1, 2 ], [ 4, '5', 6 ], [ 7, 8, '9' ] ]:
        2: expected '9' to be a number
 ```
 
+**satisfy**: match against a spec
+
+All properties and nested objects mentioned in the right-hand side object are
+required to be present. Primitive values are compared with `to equal` semantics:
+
+```js
+expect({ hey: { there: true } }, 'to satisfy', { hey: {} });
+```
+
+To disallow additional properties in the subject, use `to exhaustively satisfy`:
+
+```js
+expect({ hey: { there: true } }, 'to exhaustively satisfy', { hey: { there: true } });
+```
+
+Regular expressions and functions in the right-hand side object will be run
+against the corresponding values in the subject:
+
+```js
+expect({ bar: 'quux', baz: true }, 'to satisfy', { bar: /QU*X/i });
+```
+
+Can be combined with `expect.it` to create complex specifications that delegate to
+existing assertions:
+
+```js
+expect({foo: 123, baz: 'bogus'}, 'to satisfy', {
+    foo: expect.it('to be a number').and('to be greater than', 10),
+    baz: expect.it('not to match', /^boh/)
+});
+```
+
 **map whose keys satisfy**: will run an assertion function for each key in a map
 
 
