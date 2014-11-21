@@ -3516,20 +3516,20 @@ describe('unexpected', function () {
             function add(a, b) {
                 return a + b;
             }
-            expect(add, 'when called with', [3, 4], 'to return result satisfying', 7);
+            expect(add, 'when called with', [3, 4], 'to equal', 7);
 
-            expect([3, 4], 'when passed as parameters to', add, 'to return result satisfying', 7);
+            expect([3, 4], 'when passed as parameters to', add, 'to equal', 7);
 
-            expect([[1, 2], [3, 4]], 'to be an array whose items satisfy', 'when passed as parameters to', add, 'to return result satisfying', 'to be a number');
+            expect([[1, 2], [3, 4]], 'to be an array whose items satisfy', 'when passed as parameters to', add, 'to be a number');
 
             expect(function () {
-                expect(add, 'when called with', [3, 4], 'to return result satisfying', 9);
+                expect(add, 'when called with', [3, 4], 'to equal', 9);
             }, 'to throw',
                    'expected\n' +
                     'function add(a, b) {\n' +
                     '    return a + b;\n' +
                     '}\n' +
-                    'when called with [ 3, 4 ], \'to return result satisfying\', 9');
+                    'when called with [ 3, 4 ], \'to equal\', 9');
 
         });
     });
