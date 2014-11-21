@@ -3484,4 +3484,19 @@ describe('unexpected', function () {
             });
         });
     });
+
+    it('makes expect.it available inside a custom assertion', function () {
+        var clonedExpect = expect.clone();
+        clonedExpect.addAssertion('to foo', function (expect, subject) {
+            expect.it('to equal', 'foo')(subject);
+        });
+        clonedExpect('foo', 'to foo');
+        expect(function () {
+            clonedExpect('bar', 'to foo');
+        }, 'to throw',
+               "expected 'bar' to equal 'foo'\n" +
+               '\n' +
+               '-bar\n' +
+               '+foo');
+    });
 });
