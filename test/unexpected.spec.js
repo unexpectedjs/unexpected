@@ -717,6 +717,15 @@ describe('unexpected', function () {
         });
     });
 
+    describe('arity assertion', function () {
+        it('tests that the subject function has the given arity', function () {
+            expect(function () {}, 'to have arity', 0);
+            expect(function (a) {}, 'to have arity', 1);
+            expect(function (a, b) {}, 'to have arity', 2);
+            expect(new Function('a', 'return 1'), 'to have arity', 1);
+        });
+    });
+
     describe('match assertion', function () {
         it('tests that the subject matches the given regular expression', function () {
             expect('test', 'to match', /.*st/);

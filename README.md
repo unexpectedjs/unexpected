@@ -273,6 +273,12 @@ expect(fn, 'to throw error', 'matches the exact exception message');
 expect(fn2, 'not to throw error');
 ```
 
+**arity**: asserts that the `Function` takes the given number of arguments
+
+```js
+expect(Math.max, 'to have arity', 2);
+```
+
 **finite/infinite**: asserts a finite or infinite number
 
 ```js
