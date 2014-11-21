@@ -3511,19 +3511,19 @@ describe('unexpected', function () {
                '+foo');
     });
 
-    describe('to produce output assertion', function () {
+    describe('to return result assertion', function () {
         it('should assert that the function invocation produces the correct output', function () {
             function add(a, b) {
                 return a + b;
             }
-            expect([add, 3, 4], 'to produce output satisfying', 7);
+            expect([add, 3, 4], 'to return result satisfying', 7);
 
             expect(function () {
-                expect([add, 3, 4], 'to produce output satisfying', 9);
+                expect([add, 3, 4], 'to return result satisfying', 9);
             }, 'to throw',
-                   'expected add( 3, 4 ) to produce output satisfying 9');
+                   'expected add( 3, 4 ) to return result satisfying 9');
 
-            expect([[add, 1, 2], [add, 3, 4]], 'to be an array whose items satisfy', 'to produce output satisfying', 'to be a number');
+            expect([[add, 1, 2], [add, 3, 4]], 'to be an array whose items satisfy', 'to return result satisfying', 'to be a number');
         });
     });
 });
