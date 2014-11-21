@@ -3529,7 +3529,16 @@ describe('unexpected', function () {
                     'function add(a, b) {\n' +
                     '    return a + b;\n' +
                     '}\n' +
-                    'when called with [ 3, 4 ], \'to equal\', 9');
+                    'when called with [ 3, 4 ] to equal 9');
+
+            expect(function () {
+                expect(add, 'when called with', [3, 4], 'to satisfy', 'to equal', 9);
+            }, 'to throw',
+                   'expected\n' +
+                    'function add(a, b) {\n' +
+                    '    return a + b;\n' +
+                    '}\n' +
+                    "when called with [ 3, 4 ] to satisfy 'to equal', 9"); // DAMN
 
         });
     });
