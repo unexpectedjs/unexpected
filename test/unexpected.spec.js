@@ -3510,4 +3510,20 @@ describe('unexpected', function () {
                '-bar\n' +
                '+foo');
     });
+
+    describe('to produce output assertion', function () {
+        it('should assert that the function invocation produces the correct output', function () {
+            function add(a, b) {
+                return a + b;
+            }
+            expect([add, 3, 4], 'to produce output satisfying', 7);
+
+            expect(function () {
+                expect([add, 3, 4], 'to produce output satisfying', 9);
+            }, 'to throw',
+                   'expected add( 3, 4 ) to produce output satisfying 9');
+
+            expect([[add, 1, 2], [add, 3, 4]], 'to be an array whose items satisfy', 'to produce output satisfying', 'to be a number');
+        });
+    });
 });
