@@ -3511,17 +3511,16 @@ describe('unexpected', function () {
                '+foo');
     });
 
-    describe('to return result assertion', function () {
+    function add(a, b) {
+        return a + b;
+    }
+
+    describe('was called with assertion', function () {
         it('should assert that the function invocation produces the correct output', function () {
-            function add(a, b) {
-                return a + b;
-            }
             expect(add, 'when called with', [3, 4], 'to equal', 7);
+        });
 
-            expect([3, 4], 'when passed as parameters to', add, 'to equal', 7);
-
-            expect([[1, 2], [3, 4]], 'to be an array whose items satisfy', 'when passed as parameters to', add, 'to be a number');
-
+        it('should combine with other assertions (showcase)', function () {
             expect(function () {
                 expect(add, 'when called with', [3, 4], 'to equal', 9);
             }, 'to throw',
@@ -3538,8 +3537,17 @@ describe('unexpected', function () {
                     'function add(a, b) {\n' +
                     '    return a + b;\n' +
                     '}\n' +
-                    "when called with [ 3, 4 ] to satisfy 'to equal', 9"); // DAMN
+                    "when called with [ 3, 4 ] to satisfy 'to equal', 9"); // DAMN, fix me
+        });
+    });
 
+    describe('when passed as parameters to assertion', function () {
+        it('should assert that the function invocation produces the correct output', function () {
+            expect([3, 4], 'when passed as parameters to', add, 'to equal', 7);
+        });
+
+        it('should combine with other assertions (showcase)', function () {
+            expect([[1, 2], [3, 4]], 'to be an array whose items satisfy', 'when passed as parameters to', add, 'to be a number');
         });
     });
 });
