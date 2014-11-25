@@ -20,7 +20,7 @@
   "main": "./lib/index.js",
   "dependencies": {
     "arraydiff": "0.1.1",
-    "diff": "=1.0.8",
+    "diff": "1.1.0",
     "leven": "1.0.0",
     "magicpen": "=3.0.0"
   },
