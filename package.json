@@ -22,19 +22,19 @@
     "arraydiff": "0.1.1",
     "diff": "1.1.0",
     "leven": "1.0.0",
-    "magicpen": "=3.0.0"
+    "magicpen": "3.0.0"
   },
   "devDependencies": {
-    "browserify": "=5.9.1",
+    "browserify": "5.9.1",
     "bundle-collapser": "^1.1.0",
     "coveralls": "^2.11.1",
     "es5-shim": "4.0.3",
     "istanbul": "^0.3.0",
     "jshint": "2.5.6",
-    "mocha": "=1.21.4",
-    "mocha-phantomjs": "=3.5.0",
+    "mocha": "1.21.4",
+    "mocha-phantomjs": "3.5.0",
     "mocha-slow-reporter": "*",
-    "phantomjs": "=1.9.7-15",
+    "phantomjs": "1.9.7-15",
     "serve": "*"
   }
 }
