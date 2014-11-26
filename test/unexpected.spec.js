@@ -2268,6 +2268,22 @@ describe('unexpected', function () {
                     });
                 });
 
+                it('errorMode=bubble only includes the diff once', function () {
+                    errorMode = 'bubble';
+                    expect(function () {
+                        clonedExpect([3, 2, 1], 'to be sorted');
+                    }, 'to throw',
+                           'expected [ 3, 2, 1 ] to equal [ 1, 2, 3 ]\n' +
+                           '\n' +
+                           '[\n' +
+                           '  // missing 1\n' +
+                           '  // missing 2\n' +
+                           '  3,\n' +
+                           '  2, // should be removed\n' +
+                           '  1 // should be removed\n' +
+                           ']');
+                });
+
                 it('errorMode=default uses the standard error message of the assertion', function () {
                     errorMode = 'default';
                     expect(function () {
