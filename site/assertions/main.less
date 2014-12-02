@@ -1,0 +1,42 @@
+@headerHeight: 80px;
+@navWidth: 300px;
+
+header {
+    box-sizing: border-box;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: @headerHeight;
+}
+
+nav {
+    box-sizing: border-box;
+    position: fixed;
+    top: @headerHeight;
+    left: 0;
+    right: auto;
+    width: @navWidth;
+    bottom: 0;
+    padding: 0 20px;
+    overflow-y: auto;
+}
+
+#content {
+    box-sizing: border-box;
+    position: fixed;
+    top: @headerHeight;
+    left: @navWidth;
+    right: 0;
+    bottom: 0;
+    padding: 0 20px;
+    overflow-y: auto;
+}
+
+.evaluation {
+    background-color: rgb(13, 13, 13);
+    padding: 16px;
+    margin-top: -11px;
+    border-radius: 0 0 0.3em 0.3em;
+    border-top: solid thin rgb(60, 60, 60);
+}

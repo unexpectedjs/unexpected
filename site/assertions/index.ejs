@@ -1,6 +1,9 @@
 <assertions>
 <section>
-    <h1>Assertions</h1>
+    <header>
+        <h1>Assertions</h1>
+    </header>
+
     <nav>
         <h2>by type</h2>
         <ul>
@@ -16,14 +19,16 @@
         </ul>
     </nav>
 
-    <% Object.keys(public.assertions._data).forEach(function (type) { %>
-    <a name="<%= type.replace(/ /g, '-') %>"></a>
-    <h2><%= type %></h2>
-        <% public.assertions._data[type].forEach(function (assertion) { %>
-        <a name="<%=(type + ' ' + assertion).replace(/ /g, '-')%>"></a>
-        <h3><%= assertion %></h3>
-        <%- partial((type + ' ' + assertion).replace(/ /g, '-')) %>
+    <div id="content">
+        <% Object.keys(public.assertions._data).forEach(function (type) { %>
+        <a name="<%= type.replace(/ /g, '-') %>"></a>
+        <h2><%= type %></h2>
+            <% public.assertions._data[type].forEach(function (assertion) { %>
+            <a name="<%=(type + ' ' + assertion).replace(/ /g, '-')%>"></a>
+            <h3><%= assertion %></h3>
+            <%- partial((type + ' ' + assertion).replace(/ /g, '-')) %>
+            <% }) %>
         <% }) %>
-    <% }) %>
+    </div>
 
 </section>
