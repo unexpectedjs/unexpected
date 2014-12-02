@@ -1,13 +1,18 @@
 @headerHeight: 80px;
 @navWidth: 300px;
 
+body {
+    color: white;
+    background-color: #393A32;
+}
+
 header {
     box-sizing: border-box;
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    bottom: @headerHeight;
+    height: @headerHeight;
 }
 
 nav {
@@ -20,6 +25,16 @@ nav {
     bottom: 0;
     padding: 0 20px;
     overflow-y: auto;
+    ul {
+        padding: 10px;
+    }
+    li {
+        list-style: none;
+    }
+    a {
+        color: white;
+        text-decoration: none;
+    }
 }
 
 #content {
