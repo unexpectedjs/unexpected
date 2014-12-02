@@ -1,0 +1,11 @@
+{
+    "any": [
+        "to be defined",
+        "not to be undefined",
+        "to be undefined"
+    ],
+    "string": [
+        "to have length",
+        "not to have length"
+    ]
+}
