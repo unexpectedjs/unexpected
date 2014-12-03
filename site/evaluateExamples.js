@@ -1,4 +1,4 @@
-var elements = document.querySelectorAll('code.language-javascript');
+var elements = document.querySelectorAll('code.language-javascript-evaluate');
 expect = weknowhow.expect;
 Array.prototype.forEach.call(elements, function (element) {
     try {

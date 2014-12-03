@@ -1,5 +1,20 @@
-@headerHeight: 80px;
-@navWidth: 300px;
+@headerColor: #591858;
+@headerHeight: 40px;
+@navWidth: 250px;
+
+.layout() {
+    box-sizing: border-box;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.layout-element() {
+    .layout();
+    position: absolute;
+}
 
 body {
     color: #333;
@@ -8,35 +23,19 @@ body {
 }
 
 h1, h2, h3, h4 {
-    font-weight: normal;
-}
-
-header {
-    box-sizing: border-box;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: @headerHeight;
-    padding: 0 20px;
+    font-weight: bold;
 }
 
 nav {
-    box-sizing: border-box;
-    position: fixed;
-    top: @headerHeight;
-    left: 0;
-    right: auto;
-    width: @navWidth;
-    bottom: 0;
-    padding: 0 20px;
-    overflow-y: auto;
     ul {
         padding: 10px;
     }
     li {
         list-style: none;
     }
+    li.active {
+    }
+
     a {
         color: #333;
         text-decoration: none;
@@ -46,15 +45,62 @@ nav {
     }
 }
 
-#content {
-    box-sizing: border-box;
-    position: fixed;
+header {
+    .layout();
+    height: @headerHeight;
+    padding: 0;
+    bottom: auto;
+    color: white;
+    background-color: @headerColor;
+    z-index: 1;
+
+    nav {
+        padding: 0 20px;
+        .layout-element();
+        ul {
+            width: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        li {
+            display: block;
+            float: left;
+            margin: 0;
+            padding: 10px;
+
+            a {
+                color: white;
+                text-decoration: none;
+            }
+            a:hover {
+                text-decoration: none;
+            }
+        }
+        li:hover,
+        li.active {
+            background-color: lighten(@headerColor, 7%);
+        }
+    }
+}
+
+#assertion-menu {
+    .layout();
     top: @headerHeight;
-    left: @navWidth;
-    right: 0;
-    bottom: 0;
+    right: auto;
+    width: @navWidth;
     padding: 0 20px;
     overflow-y: auto;
+}
+
+.content {
+    .layout();
+    top: @headerHeight;
+    padding: 0 20px;
+    overflow-y: auto;
+}
+
+#assertions .content {
+    left: @navWidth;
 }
 
 .evaluation {

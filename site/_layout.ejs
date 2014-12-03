@@ -1,10 +1,24 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <link rel="stylesheet" href="/vendor/prism.css" type="text/css" media="screen" />
         <link rel="stylesheet" href="/normalize.css" type="text/css" media="screen" />
         <link rel="stylesheet" href="/main.css" type="text/css" media="screen" />
+        <title>Unexpected</title>
     </head>
     <body>
+        <header>
+            <nav>
+
+                <ul>
+                    <li class="<%- current.path[0] === 'index' ? 'active' : '' %>"><a href="/">Unexpected</a></li>
+                    <li class="<%- current.path[0] === 'assertions' ? 'active' : '' %>"><a href="/assertions">Assertions</a></li>
+                </ul>
+            </nav>
+        </header>
         <%- yield %>
+        <script type="text/javascript" src="/vendor/unexpected.js"></script>
+        <script type="text/javascript" src="/evaluateExamples.js"></script>
+        <script type="text/javascript" src="/vendor/prism.js"></script>
     </body>
 </html>

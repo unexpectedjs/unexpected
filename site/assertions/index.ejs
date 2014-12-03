@@ -1,11 +1,5 @@
-<assertions>
-<section>
-    <header>
-        <h1>Assertions</h1>
-    </header>
-
-    <nav>
-        <h2>by type</h2>
+<section id="assertions">
+    <nav id="assertion-menu">
         <ul>
             <% Object.keys(public.assertions._data).forEach(function (type) { %>
             <li><a href="#<%= type.replace(/ /g, '-') %>"><%= type %></a>
@@ -19,7 +13,7 @@
         </ul>
     </nav>
 
-    <div id="content">
+    <div class="content">
         <% Object.keys(public.assertions._data).forEach(function (type) { %>
         <a name="<%= type.replace(/ /g, '-') %>"></a>
         <h2><%= type %></h2>

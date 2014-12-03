@@ -1,8 +1,9 @@
 {
     "any": [
         "to be defined",
+        "to be undefined",
         "not to be undefined",
-        "to be undefined"
+        "to equal"
     ],
     "string": [
         "to have length",
