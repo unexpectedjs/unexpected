@@ -5,4 +5,4 @@ expect('Hello world!', 'to be defined');
 expect({ foo: { bar: 'baz' } }, 'to be defined');
 ```
 
-Alias for [not to be undefined](#any-not-to-be-undefined).
+Alias for [not to be undefined](/assertions/any/not-to-be-undefined).

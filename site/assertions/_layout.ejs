@@ -25,7 +25,26 @@ function titleToId(title) {
                 </ul>
             </nav>
         </header>
-        <%- yield %>
+        <section id="assertions">
+            <nav id="assertion-menu">
+                <ul>
+                    <% Object.keys(public.assertions._data).forEach(function (type) { %>
+                    <li><%= type %>
+                        <ul>
+                            <% public.assertions._data[type].forEach(function (assertion) { %>
+                            <li class="<%= (current.path[1] === type && current.source === titleToId(assertion)) ? 'active' : ''%>">
+                                <a href="/assertions/<%=type%>/<%=titleToId(assertion)%>"><%= assertion %></a>
+                            </li>
+                            <% }) %>
+                        </ul>
+                    </li>
+                    <% }) %>
+                </ul>
+            </nav>
+            <div class="content">
+                <%- yield %>
+            </div>
+        </section>
         <script type="text/javascript" src="/vendor/unexpected.js"></script>
         <script type="text/javascript" src="/evaluateExamples.js"></script>
         <script type="text/javascript" src="/vendor/prism.js"></script>

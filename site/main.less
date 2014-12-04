@@ -33,9 +33,6 @@ nav {
     li {
         list-style: none;
     }
-    li.active {
-    }
-
     a {
         color: #333;
         text-decoration: none;
@@ -97,6 +94,12 @@ header {
     top: @headerHeight;
     padding: 0 20px;
     overflow-y: auto;
+}
+
+#assertions nav {
+    li.active a {
+        text-decoration: underline;
+    }
 }
 
 #assertions .content {
