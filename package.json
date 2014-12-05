@@ -15,7 +15,8 @@
   },
   "scripts": {
     "test": "make test",
-    "travis": "make test && make test-phantomjs"
+    "travis": "make test && make test-phantomjs",
+    "generate-docs": "make site-build"
   },
   "main": "./lib/index.js",
   "dependencies": {
@@ -28,13 +29,21 @@
     "browserify": "5.9.1",
     "bundle-collapser": "^1.1.0",
     "coveralls": "^2.11.1",
+    "ejs": "1.0.0",
     "es5-shim": "4.0.5",
     "istanbul": "0.3.5",
     "jshint": "2.5.6",
+    "metalsmith": "1.0.1",
+    "metalsmith-collections": "0.6.0",
+    "metalsmith-less": "1.0.2",
+    "metalsmith-markdown": "0.2.1",
+    "metalsmith-permalinks": "0.4.0",
+    "metalsmith-static": "0.0.5",
+    "metalsmith-templates": "0.6.0",
     "mocha": "2.0.1",
     "mocha-phantomjs": "3.5.1",
     "mocha-slow-reporter": "*",
-    "normalize.css": "^3.0.2",
+    "normalize.css": "3.0.2",
     "phantomjs": "1.9.12",
     "serve": "*"
   }
