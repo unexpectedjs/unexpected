@@ -23,7 +23,7 @@
                 <li><%= type %>
                     <ul>
                         <% assertions[type].forEach(function (assertion) { %>
-                        <li class="<%= (path[1] === type && source === titleToId(assertion)) ? 'active' : ''%>">
+                        <li class="<%= isActiveAssertion(path, type, assertion) ? 'active' : '' %>">
                             <a href="/assertions/<%=type%>/<%=titleToId(assertion)%>"><%= assertion %></a>
                         </li>
                         <% }) %>
