@@ -23,6 +23,8 @@ coverage: lib/*
 	NODE_ENV=development ./node_modules/.bin/istanbul cover \
 		-x unexpected.js \
 		-x **/vendor/** \
+		-x **/site/** \
+		-x **/documentation/** \
 	--include-all-sources ./node_modules/mocha/bin/_mocha -- --reporter dot
 
 .PHONY: test-browser
