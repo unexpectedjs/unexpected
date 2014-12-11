@@ -3531,7 +3531,7 @@ describe('unexpected', function () {
         return a + b;
     }
 
-    describe('was called with assertion', function () {
+    describe('when called with assertion', function () {
         it('should assert that the function invocation produces the correct output', function () {
             expect(add, 'when called with', [3, 4], 'to equal', 7);
         });
