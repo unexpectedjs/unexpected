@@ -7,10 +7,10 @@ lint:
 
 .PHONY: lint
 
-unexpected.js: lint lib/*
+unexpected.js: lib/*
 	(echo '/*!' && <LICENSE sed -e's/^/ * /' | sed -e's/\s+$$//' && echo ' */' && ./node_modules/.bin/browserify -p bundle-collapser/plugin -e lib -s weknowhow.expect) > $@
 
-test-phantomjs: lint ${TARGETS}
+test-phantomjs: ${TARGETS}
 	@$(eval QUERY=$(shell node -e "console.log(decodeURIComponent(process.argv.pop()))" "${grep}")) \
     ./node_modules/.bin/mocha-phantomjs test/tests.html?grep=${QUERY}
 
@@ -36,7 +36,7 @@ ifneq ($(shell git describe --always --dirty | grep -- -dirty),)
 endif
 
 .PHONY: release-%
-release-%: git-dirty-check ${TARGETS} test-phantomjs
+release-%: git-dirty-check lint ${TARGETS} test-phantomjs
 	npm version $*
 	@echo $* release ready to be publised to NPM
 	@echo Remember to push tags
