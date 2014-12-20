@@ -2514,18 +2514,95 @@ describe('unexpected', function () {
     });
 
     describe('installPlugin', function () {
+        var _expect = expect;
+        beforeEach(function () {
+            expect = _expect.clone();
+        });
         it('calls the given plugin with the expect instance as the parameter', function (done) {
-            var plugin = function (expectInstance) {
-                expect(expectInstance, 'to be', expect);
-                done();
+            var plugin = {
+                name: 'test',
+                installInto: function (expectInstance) {
+                    expect(expectInstance, 'to be', expect);
+                    done();
+                }
             };
             expect.installPlugin(plugin);
         });
 
-        it('throws if the given arguments is not a function', function () {
+        it('throws if the given arguments does not adhere to the plugin interface', function () {
             expect(function () {
                 expect.installPlugin({});
-            }, 'to throw', 'Expected first argument given to installPlugin to be a function');
+            }, 'to throw', 'Plugins must adhere to the following interface\n' +
+                   '{\n' +
+                   '  name: <plugin name>,\n' +
+                   '  dependencies: <an optional list of dependencies>,\n' +
+                   '  installInto: <a function that will update the given expect instance>\n' +
+                   '}');
+        });
+
+        it('does not fail if all plugin dependencies has been fulfilled', function (done) {
+            var pluginA = {
+                name: 'PluginA',
+                installInto: function (expect) {}
+            };
+            var pluginB = {
+                name: 'PluginB',
+                dependencies: ['PluginA'],
+                installInto: function (expect) {
+                    done();
+                }
+            };
+            expect.installPlugin(pluginA);
+            expect.installPlugin(pluginB);
+        });
+
+        it('throws if the plugin has unfulfilled plugin dependencies', function () {
+            var pluginB = {
+                name: 'PluginB',
+                dependencies: ['PluginA'],
+                installInto: function (expect) {}
+            };
+
+            expect(function () {
+                expect.installPlugin(pluginB);
+            }, 'to throw', 'PluginB requires plugin PluginA');
+
+            var pluginC = {
+                name: 'PluginC',
+                dependencies: ['PluginA', 'PluginB'],
+                installInto: function (expect) {}
+            };
+
+            expect(function () {
+                expect.installPlugin(pluginC);
+            }, 'to throw', 'PluginC requires plugins PluginA and PluginB');
+
+            var pluginD = {
+                name: 'PluginD',
+                dependencies: ['PluginA', 'PluginB', 'PluginC'],
+                installInto: function (expect) {}
+            };
+
+            expect(function () {
+                expect.installPlugin(pluginD);
+            }, 'to throw', 'PluginD requires plugins PluginA, PluginB and PluginC');
+        });
+
+        it('dependencies can be fulfilled across clones', function (done) {
+            var pluginA = {
+                name: 'PluginA',
+                installInto: function (expect) {}
+            };
+            var pluginB = {
+                name: 'PluginB',
+                dependencies: ['PluginA'],
+                installInto: function (expect) {
+                    done();
+                }
+            };
+            expect.installPlugin(pluginA);
+            var clonedExpect = expect.clone();
+            clonedExpect.installPlugin(pluginB);
         });
     });
 
