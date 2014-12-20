@@ -2604,6 +2604,20 @@ describe('unexpected', function () {
             var clonedExpect = expect.clone();
             clonedExpect.installPlugin(pluginB);
         });
+
+        it('installing a plugin more than once is a no-op', function () {
+            var callCount = 0;
+            var plugin = {
+                name: 'plugin',
+                installInto: function () {
+                    callCount += 1;
+                }
+            };
+            expect.installPlugin(plugin);
+            expect.installPlugin(plugin);
+            expect.installPlugin(plugin);
+            expect(callCount, 'to be', 1);
+        });
     });
 
     describe('addType', function () {
