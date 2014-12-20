@@ -609,8 +609,25 @@ at how the predefined assertions are build:
 
 ### expect.installPlugin(plugin)
 
-Unexpected plugins are just functions that uses the `addAssertion`
-method to add new custom assertions to the `expect` instance.
+Unexpected plugins are objects that adhere to the following interface:
+
+```js
+{
+  name: <plugin name>,
+  dependencies: <an optional list of dependencies>,
+  installInto: <a function that will update the given expect instance>
+}
+```
+The name of the plugin should be the same at the NPM package name.
+
+A plugin can require a list of other plugins to be installed prior to
+installation of the plugin. If the dependency list is not fulfilled
+the installation will fail. The idea is that you manage your plugin
+versions using NPM. If you install a plugin that is already installed
+nothing will happen.
+
+The `installInto` function receives an instance of unexpected and uses
+uses the `addAssertion` method to add new custom assertions instance.
 
 ```js
 expect.installPlugin(require('unexpected-sinon'));
