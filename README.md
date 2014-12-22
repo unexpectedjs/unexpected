@@ -352,6 +352,32 @@ expect.fail('Custom failure message')
 expect.fail('{0} was expected to be {1}', 0, 'zero');
 ```
 
+I case you want to rethrow an error, you should always use
+`expect.fail`, as it ensures that the error message will be correct
+for the different error modes.
+
+```js
+var error = new Error('throw me');
+expect.fail(new Error(error));
+```
+
+When you want to build a completely custom output, you can call
+`expect.fail` with a callback and receive a
+[magicpen](https://github.com/sunesimonsen/magicpen) instance that the
+output can be written to.
+
+```js
+expect.fail(function (output) {
+    'You have been a very bad boy!'.split(/ /).forEach(function (word, index) {
+        if (index > 0) { output.sp(); }
+        var style = index % 2 === 0 ? 'cyan' : 'magenta';
+        output[style](word);
+    });
+});
+```
+
+<img src="./images/fail-custom.png" alt="Custom error output using expect.fail">
+
 **array whose items satisfy**: will run an assertion function for each items in an array
 
 ```js
