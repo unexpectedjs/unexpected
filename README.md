@@ -442,9 +442,13 @@ Can be combined with `expect.it` to create complex specifications that delegate 
 existing assertions:
 
 ```js
-expect({foo: 123, baz: 'bogus'}, 'to satisfy', {
+expect({foo: 123, bar: 'bar', baz: 'bogus', qux: 42}, 'to satisfy', {
     foo: expect.it('to be a number').and('to be greater than', 10),
-    baz: expect.it('not to match', /^boh/)
+    baz: expect.it('not to match', /^boh/),
+    qux: expect.it('to be a string')
+                  .and('not to be empty')
+               .or('to be a number')
+                  .and('to be positive')
 });
 ```
 
