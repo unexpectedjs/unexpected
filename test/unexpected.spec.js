@@ -388,9 +388,9 @@ describe('unexpected', function () {
             }, 'to throw exception', "expected [ 1 ] to equal [ 2 ]\n" +
                    "\n" +
                    "[\n" +
-                   "  // missing 2\n" +
-                   "  1 // should be removed\n" +
+                   "  1 // should be 2\n" +
                    "]");
+
 
             expect(function () {
                 expect([0, { foo: 'bar' }, 1, { bar: 'bar'}, [1, 3, 2], 'bar'],
@@ -414,9 +414,8 @@ describe('unexpected', function () {
                    "  { bar: 'bar' }, // should be removed\n" +
                    "  [\n" +
                    "    1,\n" +
-                   "    // missing 2\n" +
-                   "    3,\n" +
-                   "    2 // should be removed\n" +
+                   "    3, // should be 2\n" +
+                   "    2 // should be 3\n" +
                    "  ],\n" +
                    "  'bar' // should be 'baz'\n" +
                    "        // -bar\n" +
@@ -2276,11 +2275,9 @@ describe('unexpected', function () {
                            'expected [ 3, 2, 1 ] to equal [ 1, 2, 3 ]\n' +
                            '\n' +
                            '[\n' +
-                           '  // missing 1\n' +
-                           '  // missing 2\n' +
-                           '  3,\n' +
-                           '  2, // should be removed\n' +
-                           '  1 // should be removed\n' +
+                           "  3, // should be 1\n" +
+                           "  2,\n" +
+                           "  1 // should be 3\n" +
                            ']');
                 });
 
@@ -3416,6 +3413,20 @@ describe('unexpected', function () {
         });
 
         describe('on arrays', function () {
+            it('suppresses array diff for large arrays', function () {
+                expect(function () {
+                    var a = new Array(1024),
+                    b = new Array(1024);
+                    a[0] = 1;
+                    b[0] = 2;
+                    expect(
+                        a,
+                        'to equal',
+                        b
+                    );
+                }, 'to throw', /Diff suppressed due to size > 512/);
+            });
+
             it('highlights unexpected entries', function () {
                 expect(function () {
                     expect([0, 1, 2], 'to equal', [0, 2]);
@@ -3448,13 +3459,10 @@ describe('unexpected', function () {
                 }, 'to throw', 'expected [ 4, 3, 1, 2 ] to equal [ 1, 2, 3, 4 ]\n' +
                        '\n' +
                        '[\n' +
-                       "  // missing 1\n" +
-                       "  // missing 2\n" +
-                       "  // missing 3\n" +
-                       "  4,\n" +
-                       "  3, // should be removed\n" +
-                       "  1, // should be removed\n" +
-                       "  2 // should be removed\n" +
+                       "  4, // should be 1\n" +
+                       "  3, // should be 2\n" +
+                       "  1, // should be 3\n" +
+                       "  2 // should be 4\n" +
                        ']'
                       );
 
@@ -3463,13 +3471,10 @@ describe('unexpected', function () {
                 }, 'to throw', 'expected [ 4, 1, 2, 3 ] to equal [ 1, 2, 3, 4 ]\n' +
                        '\n' +
                        '[\n' +
-                       "  // missing 1\n" +
-                       "  // missing 2\n" +
-                       "  // missing 3\n" +
-                       "  4,\n" +
-                       "  1, // should be removed\n" +
-                       "  2, // should be removed\n" +
-                       "  3 // should be removed\n" +
+                       "  4, // should be 1\n" +
+                       "  1, // should be 2\n" +
+                       "  2, // should be 3\n" +
+                       "  3 // should be 4\n" +
                        ']'
                       );
 
@@ -3478,9 +3483,8 @@ describe('unexpected', function () {
                 }, 'to throw', 'expected [ 4, 3, 1, 2 ] to equal [ 3, 4 ]\n' +
                        '\n' +
                        '[\n' +
-                       '  // missing 3\n' +
-                       '  4,\n' +
-                       '  3, // should be removed\n' +
+                       '  4, // should be 3\n' +
+                       '  3, // should be 4\n' +
                        '  1, // should be removed\n' +
                        '  2 // should be removed\n' +
                        ']'
@@ -3510,15 +3514,8 @@ describe('unexpected', function () {
                        "\n" +
                        "[\n" +
                        "  0,\n" +
-                       "  1, // should be removed\n" +
-                       "  {\n" +
-                       "    name: 'John', // should be 'Jane'\n" +
-                       "                  // -John\n" +
-                       "                  // +Jane\n" +
-                       "    age: 34, // should be 24\n" +
-                       "    children: undefined // should be 2\n" +
-                       "  }\n" +
-                       "  // missing 2\n" +
+                       "  1, // should be { name: 'Jane', age: 24, children: 2 }\n" +
+                       "  { name: 'John', age: 34 } // should be 2\n" +
                        "]"
                       );
             });
@@ -3530,8 +3527,11 @@ describe('unexpected', function () {
                        "\n" +
                        "[\n" +
                        "  0,\n" +
-                       "  // missing { firstName: 'John', lastName: 'Doe' }\n" +
-                       "  { name: 'John Doe' }, // should be removed\n" +
+                       "  {\n" +
+                       "    name: 'John Doe', // should be removed\n" +
+                       "    firstName: undefined, // should be 'John'\n" +
+                       "    lastName: undefined // should be 'Doe'\n" +
+                       "  },\n" +
                        "  2\n" +
                        "]"
                       );
@@ -3544,11 +3544,8 @@ describe('unexpected', function () {
                        "\n" +
                        "[\n" +
                        "  0,\n" +
-                       "  // missing 1\n" +
-                       "  'twoo', // should be 'two'\n" +
-                       "          // -twoo\n" +
-                       "          // +two\n" +
-                       "  1 // should be removed\n" +
+                       "  'twoo', // should be 1\n" +
+                       "  1 // should be 'two'\n" +
                        "]"
                       );
             });
@@ -3560,9 +3557,8 @@ describe('unexpected', function () {
                        "\n" +
                        "[\n" +
                        "  0,\n" +
-                       "  'two', // should be removed\n" +
-                       "  1\n" +
-                       "  // missing 'three'\n" +
+                       "  'two', // should be 1\n" +
+                       "  1 // should be 'three'\n" +
                        "]"
                       );
             });
