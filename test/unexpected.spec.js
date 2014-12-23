@@ -3509,58 +3509,75 @@ describe('unexpected', function () {
 
             it('considers object with a similar structure candidates for diffing', function () {
                 expect(function () {
-                    expect([0, 1, { name: 'John', age: 34 }], 'to equal', [0, { name: 'Jane', age: 24, children: 2 }, 2]);
-                }, 'to throw', "expected [ 0, 1, { name: 'John', age: 34 } ] to equal [ 0, { name: 'Jane', age: 24, children: 2 }, 2 ]\n" +
+                    expect([0, 1, { name: 'John', age: 34 }, 3, 2], 'to equal', [0, { name: 'Jane', age: 24, children: 2 }, 3, 2]);
+                }, 'to throw',
+                       "expected [ 0, 1, { name: 'John', age: 34 }, 3, 2 ] to equal [ 0, { name: 'Jane', age: 24, children: 2 }, 3, 2 ]\n" +
                        "\n" +
                        "[\n" +
                        "  0,\n" +
-                       "  1, // should be { name: 'Jane', age: 24, children: 2 }\n" +
-                       "  { name: 'John', age: 34 } // should be 2\n" +
-                       "]"
-                      );
+                       "  1, // should be removed\n" +
+                       "  {\n" +
+                       "    name: 'John', // should be 'Jane'\n" +
+                       "                  // -John\n" +
+                       "                  // +Jane\n" +
+                       "    age: 34, // should be 24\n" +
+                       "    children: undefined // should be 2\n" +
+                       "  },\n" +
+                       "  3,\n" +
+                       "  2\n" +
+                       "]");
             });
 
             it('does not considers object with a different structure candidates for diffing', function () {
                 expect(function () {
-                    expect([0, { name: 'John Doe' }, 2], 'to equal', [0, { firstName: 'John', lastName: 'Doe' }, 2]);
-                }, 'to throw', "expected [ 0, { name: 'John Doe' }, 2 ] to equal [ 0, { firstName: 'John', lastName: 'Doe' }, 2 ]\n" +
+                    expect([0, 1, { name: 'John'}, 3, 2], 'to equal', [0, { firstName: 'John', lastName: 'Doe' }, 3, 2]);
+                }, 'to throw',
+                       "expected [ 0, 1, { name: 'John' }, 3, 2 ] to equal [ 0, { firstName: 'John', lastName: 'Doe' }, 3, 2 ]\n" +
                        "\n" +
                        "[\n" +
                        "  0,\n" +
-                       "  {\n" +
-                       "    name: 'John Doe', // should be removed\n" +
-                       "    firstName: undefined, // should be 'John'\n" +
-                       "    lastName: undefined // should be 'Doe'\n" +
-                       "  },\n" +
+                       "  // missing { firstName: 'John', lastName: 'Doe' }\n" +
+                       "  1, // should be removed\n" +
+                       "  { name: 'John' }, // should be removed\n" +
+                       "  3,\n" +
                        "  2\n" +
-                       "]"
-                      );
+                       "]");
             });
 
             it('considers similar strings candidates for diffing', function () {
                 expect(function () {
-                    expect([0, 'twoo', 1], 'to equal', [0, 1, 'two']);
-                }, 'to throw', "expected [ 0, 'twoo', 1 ] to equal [ 0, 1, 'two' ]\n" +
+                    expect(['twoo', 1, 3, 4, 5], 'to equal', [0, 1, 'two', 3, 4, 5]);
+                }, 'to throw',
+                       "expected [ 'twoo', 1, 3, 4, 5 ] to equal [ 0, 1, 'two', 3, 4, 5 ]\n" +
                        "\n" +
                        "[\n" +
-                       "  0,\n" +
-                       "  'twoo', // should be 1\n" +
-                       "  1 // should be 'two'\n" +
-                       "]"
-                      );
+                       "  // missing 0\n" +
+                       "  // missing 1\n" +
+                       "  'twoo', // should be 'two'\n" +
+                       "          // -twoo\n" +
+                       "          // +two\n" +
+                       "  1, // should be removed\n" +
+                       "  3,\n" +
+                       "  4,\n" +
+                       "  5\n" +
+                       "]");
             });
 
             it('does not considers different strings candidates for diffing', function () {
                 expect(function () {
-                    expect([0, 'two', 1], 'to equal', [0, 1, 'three']);
-                }, 'to throw', "expected [ 0, 'two', 1 ] to equal [ 0, 1, 'three' ]\n" +
+                    expect(['tw00', 1, 3, 4, 5], 'to equal', [0, 1, 'two', 3, 4, 5]);
+                }, 'to throw',
+                       "expected [ 'tw00', 1, 3, 4, 5 ] to equal [ 0, 1, 'two', 3, 4, 5 ]\n" +
                        "\n" +
                        "[\n" +
-                       "  0,\n" +
-                       "  'two', // should be 1\n" +
-                       "  1 // should be 'three'\n" +
-                       "]"
-                      );
+                       "  // missing 0\n" +
+                       "  'tw00', // should be removed\n" +
+                       "  1,\n" +
+                       "  // missing 'two'\n" +
+                       "  3,\n" +
+                       "  4,\n" +
+                       "  5\n" +
+                       "]");
             });
 
             it('handles similar objects with no diff defined for custom type', function () {
