@@ -20,7 +20,10 @@ test: lint
 .PHONY: test
 
 coverage: lib/*
-	NODE_ENV=development ./node_modules/.bin/istanbul cover -x unexpected.js -x --include-all-sources ./node_modules/mocha/bin/_mocha -- --reporter dot
+	NODE_ENV=development ./node_modules/.bin/istanbul cover \
+		-x unexpected.js \
+		-x **/vendor/** \
+	--include-all-sources ./node_modules/mocha/bin/_mocha -- --reporter dot
 
 .PHONY: test-browser
 test-browser: unexpected.js
