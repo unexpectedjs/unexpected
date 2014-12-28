@@ -78,6 +78,7 @@ metalSmith(__dirname)
         });
         next();
     })
+    .use(require('./syntax-highlight'))
     .use(require('metalsmith-markdown')())
     // permalinks with no options will just make pretty urls...
     .use(require('metalsmith-permalinks')())
