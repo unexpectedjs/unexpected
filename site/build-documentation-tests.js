@@ -20,10 +20,10 @@ module.exports = function buildDocumentationTests(files, metalsmith, next) {
 	            var cleaned = match.replace(/^<!-- ?\/?evaluate ?-->/gm, '')
 	                               .replace(/^[\n]+|[\n]+$/g, '');
 
-	            return (cleaned.match(/```[\s\S]*?```/gm) || []).map(function (part) {
+	            return (cleaned.match(/```[\s\S]*?```/gm) || []).map(function (part) {
             		var result = {};
             		result.type = part.match(/^```[a-z]+/);
-            		
+
             		if (result.type) {
             			result.type = result.type[0].substr(3);
             		}
@@ -34,7 +34,7 @@ module.exports = function buildDocumentationTests(files, metalsmith, next) {
             		return result;
 	            });
 	        })
-        }
+        };
     });
 
     tests = tests.filter(function (test) {
@@ -94,7 +94,7 @@ module.exports = function buildDocumentationTests(files, metalsmith, next) {
     			throw new Error('Invalid test case');
     		}
 
-    		result.push("    });")
+    		result.push("    });");
     	});
 
     	result.push('});');
