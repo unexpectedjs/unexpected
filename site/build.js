@@ -70,6 +70,7 @@ metalSmith(__dirname)
             next();
         });
     })
+    .use(require('./evaluate-examples'))
     .use(function (files, metalsmith, next) {
         Object.keys(files).forEach(function(file){
             var data = files[file];
