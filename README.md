@@ -993,11 +993,11 @@ and shown/processed by the test runner.
 
 [Everything you need to know to contribute to unexpected.](Development.md)
 
-## Credits
+## License
 
 MIT, see the `LICENSE` file for details
 
-### 3rd-party
+### Credits
 
 Heavily borrows from [expect.js](https://github.com/LearnBoost/expect.js) by
 Guillermo Rauch - MIT.
