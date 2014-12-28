@@ -27,8 +27,8 @@ expected { a: { b: 'c' } } to equal { a: { b: 'd' } }
 {
   a: {
     b: 'c' // should be 'd'
-           // -
-           // +
+           // -c
+           // +d
   }
 }
 ```

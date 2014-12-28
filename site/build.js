@@ -21,6 +21,8 @@ metalSmith(__dirname)
         src: 'static',
         dest: 'static'
     }))
+    // Build documentation tests
+    .use(require('./build-documentation-tests'))
     // Dynamicly generate metadata for assertion files
     .use(function (files, metalsmith, next) {
         Object.keys(files).forEach(function (file) {
