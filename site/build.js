@@ -81,7 +81,7 @@ metalSmith(__dirname)
     .use(require('./syntax-highlight'))
     .use(require('metalsmith-markdown')())
     // permalinks with no options will just make pretty urls...
-    .use(require('metalsmith-permalinks')())
+    .use(require('metalsmith-permalinks')({ relative: false }))
     .use(function (files, metalsmith, next) {
         // Useful for debugging ;-)
         // require('uninspected').log(files);
