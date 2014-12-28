@@ -3,7 +3,7 @@ REPORTER = dot
 TARGETS ?= unexpected.js
 
 lint:
-	@./node_modules/.bin/jshint lib/*.js test/*.js
+	@./node_modules/.bin/jshint --exclude test/documentation.spec.js lib/*.js test/*.js
 
 .PHONY: lint
 
