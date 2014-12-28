@@ -1,5 +1,7 @@
 # Unexpected
 
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/sunesimonsen/unexpected?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Extensible BDD assertion toolkit inspired by
 [expect.js](https://github.com/LearnBoost/expect.js)
 
