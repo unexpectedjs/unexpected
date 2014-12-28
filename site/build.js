@@ -70,6 +70,14 @@ metalSmith(__dirname)
             next();
         });
     })
+    .use(function (files, metalsmith, next) {
+        Object.keys(files).forEach(function(file){
+            var data = files[file];
+            var cleaned = data.contents.toString().replace(/^<!-- ?\/?evaluate ?-->\n?/gm, '');
+            data.contents = new Buffer(cleaned);
+        });
+        next();
+    })
     .use(require('metalsmith-markdown')())
     // permalinks with no options will just make pretty urls...
     .use(require('metalsmith-permalinks')())
