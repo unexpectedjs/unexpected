@@ -86,7 +86,7 @@ module.exports = function buildDocumentationTests(files, metalsmith, next) {
     			}
 
     			result.push("        expect(function () {");
-    			result.push("            " + testSubject);
+    			result.push(testSubject);
     			result.push("        }, 'to throw', [");
     			result.push(testValue);
     			result.push("        ].join('\\n'));");

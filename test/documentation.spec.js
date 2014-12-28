@@ -17,7 +17,7 @@ describe('assertions/any/to-equal.md', function () {
     });
     it('#2', function () {
         expect(function () {
-                        expect({ a: { b: 'c'} }, 'to equal', { a: { b: 'd'} });
+            expect({ a: { b: 'c'} }, 'to equal', { a: { b: 'd'} });
         }, 'to throw', [
             'expected { a: { b: \'c\' } } to equal { a: { b: \'d\' } }',
             '',
