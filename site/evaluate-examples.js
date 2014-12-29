@@ -1,4 +1,20 @@
-var expect = require('../lib/');
+var expect = require('../lib/').clone();
+
+expect.output.addStyle('strings', function (content) {
+    this.text(content, '#df5000');
+}, true);
+expect.output.addStyle('key', function (content) {
+    this.text(content, 'black');
+}, true);
+expect.output.addStyle('number', function (content) {
+    this.text(content, '#0086b3');
+}, true);
+expect.output.addStyle('comment', function (content) {
+    this.gray(content, '#969896');
+}, true);
+expect.output.addStyle('regexp', function (content) {
+    this.text(content, '#df5000');
+}, true);
 
 module.exports = function evaluateExamples(files, metalsmith, next) {
     // Find assertions files and file names.
