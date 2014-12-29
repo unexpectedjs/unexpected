@@ -2,7 +2,7 @@ var magicpen = require('magicpen');
 var pen = magicpen().clone()
     .installPlugin(require('magicpen-prism'));
 
-module.exports = function buildDocumentationTests(files, metalsmith, next) {
+module.exports = function syntaxHighlight(files, metalsmith, next) {
     // Find assertions files and file names.
     Object.keys(files).filter(function (file) {
         return /^assertions\//.test(file) ? file : false;

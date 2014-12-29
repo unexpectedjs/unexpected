@@ -1,6 +1,6 @@
 var expect = require('../lib/');
 
-module.exports = function buildDocumentationTests(files, metalsmith, next) {
+module.exports = function evaluateExamples(files, metalsmith, next) {
     // Find assertions files and file names.
     Object.keys(files).filter(function (file) {
         return /^assertions\//.test(file) ? file : false;
