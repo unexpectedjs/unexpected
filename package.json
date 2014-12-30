@@ -40,6 +40,7 @@
     "metalsmith-less": "1.0.2",
     "metalsmith-markdown": "0.2.1",
     "metalsmith-permalinks": "0.4.0",
+    "metalsmith-static": "0.0.5",
     "metalsmith-templates": "0.6.0",
     "mocha": "2.0.1",
     "mocha-phantomjs": "3.5.1",
