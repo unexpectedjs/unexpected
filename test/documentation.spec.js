@@ -2,6 +2,18 @@
 // It is built based on the examples in the documentation folder
 // when the documentation site gets build by running "make site-build".
 var expect = require('../');
+describe('assertions/any/to-be-undefined.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect('Hello world', 'to be undefined');
+        }, 'to throw', [
+            'expected \'Hello world\' to be undefined',
+            '',
+            '-string',
+            '+undefined'
+        ].join('\n'));
+    });
+});
 describe('assertions/any/to-equal.md', function () {
     it('#1', function () {
         expect(function () {

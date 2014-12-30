@@ -6,6 +6,15 @@ expect(undefined, 'to be undefined');
 
 We will get the following error if we make an incorrect assumption:
 
-```javascript-evaluate
+<!-- evaluate -->
+```javascript
 expect('Hello world', 'to be undefined');
 ```
+
+```
+expected 'Hello world' to be undefined
+
+-string
++undefined
+```
+<!-- /evaluate -->
