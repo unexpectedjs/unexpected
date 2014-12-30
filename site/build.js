@@ -1,6 +1,7 @@
 var metalSmith = require('metalsmith');
 var Path = require('path');
 var fs = require('fs');
+var stripJsonComments = require('strip-json-comments');
 
 function titleToId(title) {
     return title.replace(/ /g, '-');
@@ -62,11 +63,11 @@ metalSmith(__dirname)
             var currentAssertionName = path.match(/([^\/]+)\/?$/);
             return currentType && currentAssertionName && titleToId(type) === currentType[1] && titleToId(assertionName) === currentAssertionName[1];
         };
-        fs.readFile(Path.resolve(__dirname, 'src','_data.json'), 'utf-8', function (err, data) {
+        fs.readFile(Path.resolve(__dirname, 'src','assertion-menu.cjson'), 'utf-8', function (err, data) {
             if (err) {
                 return next(err);
             }
-            metadata.assertions = JSON.parse(data);
+            metadata.assertions = JSON.parse(stripJsonComments(data));
             next();
         });
     })
