@@ -244,9 +244,6 @@ describe('assertions/any/to-equal.md', function () {
     it('#1', function () {
         expect(function () {
             expect({ a: 'b' }, 'to equal', { a: 'b' });
-            expect(1, 'not to equal', '1');
-            expect({ one: 1 }, 'not to equal', { one: '1' });
-            expect(null, 'not to equal', '1');
             var now = new Date();
             expect(now, 'to equal', now);
             expect(now, 'to equal', new Date(now.getTime()));
@@ -266,6 +263,24 @@ describe('assertions/any/to-equal.md', function () {
             '           // +d',
             '  }',
             '}'
+        ].join('\n'));
+    });
+    it('#3', function () {
+        expect(function () {
+            expect(1, 'not to equal', '1');
+            expect({ one: 1 }, 'not to equal', { one: '1' });
+            expect(null, 'not to equal', '1');
+            var now = new Date();
+            var later = new Date(now.getTime() + 42);
+            expect(now, 'not to equal', later);
+            expect({ time: now }, 'not to equal', { time: later });
+        }, 'not to throw');
+    });
+    it('#4', function () {
+        expect(function () {
+            expect({ a: { b: 'd'} }, 'not to equal', { a: { b: 'd'} });
+        }, 'to throw', [
+            'expected { a: { b: \'d\' } } not to equal { a: { b: \'d\' } }'
         ].join('\n'));
     });
 });
