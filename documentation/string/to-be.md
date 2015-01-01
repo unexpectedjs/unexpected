@@ -14,9 +14,9 @@ expect('Hello beautiful!', 'to be', 'Hello world!');
 ```
 
 ```
-expected 'Hello' to be 'Hello world!'
+expected 'Hello beautiful!' to be 'Hello world!'
 
--Hello
+-Hello beautiful!
 +Hello world!
 ```
 <!-- /evaluate -->
