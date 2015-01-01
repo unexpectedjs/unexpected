@@ -26,11 +26,13 @@
     "magicpen": "4.0.0"
   },
   "devDependencies": {
+    "async": "0.9.0",
     "browserify": "5.9.1",
     "bundle-collapser": "^1.1.0",
     "coveralls": "^2.11.1",
     "ejs": "1.0.0",
     "es5-shim": "4.0.5",
+    "glob": "4.3.2",
     "istanbul": "0.3.5",
     "jshint": "2.5.6",
     "magicpen": "^4.0.0",
@@ -46,6 +48,7 @@
     "mocha-phantomjs": "3.5.1",
     "mocha-slow-reporter": "*",
     "normalize.css": "3.0.2",
+    "passerror": "1.1.0",
     "phantomjs": "1.9.12",
     "serve": "*",
     "strip-json-comments": "^1.0.2"
