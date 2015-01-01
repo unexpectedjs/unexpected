@@ -2,6 +2,21 @@
 // It is built based on the examples in the documentation folder
 // when the documentation site gets build by running "make site-build".
 var expect = require('../');
+describe('assertions/string/not-to-be.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect('Hello', 'not to be', 'Hello world!');
+            expect('1', 'not to be', 1);
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect('Hello world!', 'not to be', 'Hello world!');
+        }, 'to throw', [
+            'expected \'Hello world!\' not to be \'Hello world!\''
+        ].join('\n'));
+    });
+});
 describe('assertions/string/not-to-have-length.md', function () {
     it('#1', function () {
         expect(function () {
@@ -13,6 +28,23 @@ describe('assertions/string/not-to-have-length.md', function () {
             expect('Hello world', 'not to have length', 11);
         }, 'to throw', [
             'expected \'Hello world\' not to have length 11'
+        ].join('\n'));
+    });
+});
+describe('assertions/string/to-be.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect('Hello', 'to be', 'Hello');
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect('Hello beautiful!', 'to be', 'Hello world!');
+        }, 'to throw', [
+            'expected \'Hello\' to be \'Hello world!\'',
+            '',
+            '-Hello',
+            '+Hello world!'
         ].join('\n'));
     });
 });
@@ -99,6 +131,27 @@ describe('assertions/any/not-to-be-undefined.md', function () {
         ].join('\n'));
     });
 });
+describe('assertions/any/not-to-be.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect({}, 'not to be', {});
+            expect(1, 'not to be', true);
+            expect('1', 'not to be', 1);
+            expect(null, 'not to be', undefined);
+            expect(0, 'not to be', 'null');
+            expect(undefined, 'not to be', 'null');
+            expect(false, 'not to be', 'true');
+            expect(true, 'not to be', 'false');
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect(1, 'not to be', 1);
+        }, 'to throw', [
+            'expected 1 not to be 1'
+        ].join('\n'));
+    });
+});
 describe('assertions/any/to-be-defined.md', function () {
     it('#1', function () {
         expect(function () {
@@ -179,6 +232,25 @@ describe('assertions/any/to-be-undefined.md', function () {
             expect('Hello world', 'to be undefined');
         }, 'to throw', [
             'expected \'Hello world\' to be undefined'
+        ].join('\n'));
+    });
+});
+describe('assertions/any/to-be.md', function () {
+    it('#1', function () {
+        expect(function () {
+            var obj = {};
+            expect(obj, 'to be', obj);
+            expect(1, 'to be', 1);
+            expect(null, 'to be', null);
+            expect(undefined, 'to be', obj.foo);
+            expect(true, 'to be', !false);
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect('1', 'to be', 1);
+        }, 'to throw', [
+            'expected \'1\' to be 1'
         ].join('\n'));
     });
 });
