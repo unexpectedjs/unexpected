@@ -1,8 +1,10 @@
 Asserts that the value is `undefined`.
 
+<!-- evaluate -->
 ```javascript
 expect(undefined, 'to be undefined');
 ```
+<!-- /evaluate -->
 
 We will get the following error if we make an incorrect assumption:
 

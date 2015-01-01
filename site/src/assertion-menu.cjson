@@ -1,5 +1,6 @@
 {
     "any": [
+        "to be truthy",
         "to be defined",
         "to be undefined",
         "not to be undefined",

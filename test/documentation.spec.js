@@ -2,8 +2,61 @@
 // It is built based on the examples in the documentation folder
 // when the documentation site gets build by running "make site-build".
 var expect = require('../');
+describe('assertions/string/not-to-have-length.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect('Hello world', 'not to have length', 12);
+        }, 'not to throw');
+    });
+});
+describe('assertions/string/to-have-length.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect('Hello world', 'to have length', 11);
+        }, 'not to throw');
+    });
+});
+describe('assertions/any/not-to-be-undefined.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect('Hello world!', 'not to be undefined');
+            expect({ foo: { bar: 'baz' } }, 'not to be undefined');
+        }, 'not to throw');
+    });
+});
+describe('assertions/any/to-be-defined.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect('Hello world!', 'to be defined');
+            expect({ foo: { bar: 'baz' } }, 'to be defined');
+        }, 'not to throw');
+    });
+});
+describe('assertions/any/to-be-truthy.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect(1, 'to be truthy');
+            expect(true, 'to be truthy');
+            expect({}, 'to be truthy');
+            expect("foo", 'to be truthy');
+            expect(/foo/, 'to be truthy');
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect('', 'to be truthy');
+        }, 'to throw', [
+            'expected \'\' to be truthy'
+        ].join('\n'));
+    });
+});
 describe('assertions/any/to-be-undefined.md', function () {
     it('#1', function () {
+        expect(function () {
+            expect(undefined, 'to be undefined');
+        }, 'not to throw');
+    });
+    it('#2', function () {
         expect(function () {
             expect('Hello world', 'to be undefined');
         }, 'to throw', [
