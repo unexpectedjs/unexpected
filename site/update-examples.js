@@ -72,11 +72,25 @@ async.waterfall([
         async.eachSeries(examplesToUpdate, function (example, callback) {
             var textOutput = example.output.body;
 
+            var testFailed = false;
+
             try {
                 eval(example.code.body);
             } catch (e) {
+                testFailed = true;
                 textOutput = e.output.toString('text');
             }
+
+            if (!testFailed) {
+                return callback(new Error([
+                    'No errors were thrown when evaluating example in: ',
+                    '       ' + example.filename,
+                    '',
+                    example.code.body,
+                    ''
+                ].join('\n')));
+            }
+
 
             if (textOutput !== example.output.body) {
                 var replacement = example.fullText.replace(example.output.body, textOutput);
