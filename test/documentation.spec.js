@@ -135,11 +135,25 @@ describe('assertions/string/not-to-have-length.md', function () {
             expect('Hello world', 'not to have length', 12);
         }, 'not to throw');
     });
+    it('#2', function () {
+        expect(function () {
+            expect('Hello world', 'not to have length', 11);
+        }, 'to throw', [
+            'expected \'Hello world\' not to have length 11'
+        ].join('\n'));
+    });
 });
 describe('assertions/string/to-have-length.md', function () {
     it('#1', function () {
         expect(function () {
             expect('Hello world', 'to have length', 11);
         }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect('Hello world', 'to have length', 12);
+        }, 'to throw', [
+            'expected \'Hello world\' to have length 12'
+        ].join('\n'));
     });
 });
