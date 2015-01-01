@@ -15,8 +15,5 @@ expect('Hello world', 'to be undefined');
 
 ```
 expected 'Hello world' to be undefined
-
--string
-+undefined
 ```
 <!-- /evaluate -->

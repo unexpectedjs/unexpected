@@ -60,10 +60,7 @@ describe('assertions/any/to-be-undefined.md', function () {
         expect(function () {
             expect('Hello world', 'to be undefined');
         }, 'to throw', [
-            'expected \'Hello world\' to be undefined',
-            '',
-            '-string',
-            '+undefined'
+            'expected \'Hello world\' to be undefined'
         ].join('\n'));
     });
 });
