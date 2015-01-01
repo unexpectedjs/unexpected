@@ -4,11 +4,11 @@ Asserts that the value is _truthy_.
 
 <!-- evaluate -->
 ```javascript
-expect(1, 'to be ok');
-expect(true, 'to be ok');
-expect({}, 'to be ok');
-expect('foo', 'to be ok');
-expect(/foo/, 'to be ok');
+expect(1, 'not to be falsy');
+expect(true, 'not to be falsy');
+expect({}, 'not to be falsy');
+expect('foo', 'not to be falsy');
+expect(/foo/, 'not to be falsy');
 ```
 <!-- /evaluate -->
 
@@ -16,10 +16,10 @@ In case of a failing expectation you get the following output:
 
 <!-- evaluate -->
 ```javascript
-expect('', 'to be ok');
+expect('', 'not to be falsy');
 ```
 
 ```
-expected '' to be ok
+expected '' not to be falsy
 ```
 <!-- /evaluate -->

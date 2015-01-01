@@ -2,6 +2,88 @@
 // It is built based on the examples in the documentation folder
 // when the documentation site gets build by running "make site-build".
 var expect = require('../');
+describe('assertions/string/not-to-have-length.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect('Hello world', 'not to have length', 12);
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect('Hello world', 'not to have length', 11);
+        }, 'to throw', [
+            'expected \'Hello world\' not to have length 11'
+        ].join('\n'));
+    });
+});
+describe('assertions/string/to-have-length.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect('Hello world', 'to have length', 11);
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect('Hello world', 'to have length', 12);
+        }, 'to throw', [
+            'expected \'Hello world\' to have length 12'
+        ].join('\n'));
+    });
+});
+describe('assertions/any/not-to-be-falsy.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect(1, 'not to be falsy');
+            expect(true, 'not to be falsy');
+            expect({}, 'not to be falsy');
+            expect('foo', 'not to be falsy');
+            expect(/foo/, 'not to be falsy');
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect('', 'not to be falsy');
+        }, 'to throw', [
+            'expected \'\' not to be falsy'
+        ].join('\n'));
+    });
+});
+describe('assertions/any/not-to-be-ok.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect(0, 'not to be ok');
+            expect(false, 'not to be ok');
+            expect('', 'not to be ok');
+            expect(undefined, 'not to be ok');
+            expect(null, 'not to be ok');
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect({}, 'not to be ok');
+        }, 'to throw', [
+            'expected {} not to be ok'
+        ].join('\n'));
+    });
+});
+describe('assertions/any/not-to-be-truthy.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect(0, 'not to be truthy');
+            expect(false, 'not to be truthy');
+            expect('', 'not to be truthy');
+            expect(undefined, 'not to be truthy');
+            expect(null, 'not to be truthy');
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect({}, 'not to be truthy');
+        }, 'to throw', [
+            'expected {} not to be truthy'
+        ].join('\n'));
+    });
+});
 describe('assertions/any/not-to-be-undefined.md', function () {
     it('#1', function () {
         expect(function () {
@@ -126,34 +208,6 @@ describe('assertions/any/to-equal.md', function () {
             '           // +d',
             '  }',
             '}'
-        ].join('\n'));
-    });
-});
-describe('assertions/string/not-to-have-length.md', function () {
-    it('#1', function () {
-        expect(function () {
-            expect('Hello world', 'not to have length', 12);
-        }, 'not to throw');
-    });
-    it('#2', function () {
-        expect(function () {
-            expect('Hello world', 'not to have length', 11);
-        }, 'to throw', [
-            'expected \'Hello world\' not to have length 11'
-        ].join('\n'));
-    });
-});
-describe('assertions/string/to-have-length.md', function () {
-    it('#1', function () {
-        expect(function () {
-            expect('Hello world', 'to have length', 11);
-        }, 'not to throw');
-    });
-    it('#2', function () {
-        expect(function () {
-            expect('Hello world', 'to have length', 12);
-        }, 'to throw', [
-            'expected \'Hello world\' to have length 12'
         ].join('\n'));
     });
 });

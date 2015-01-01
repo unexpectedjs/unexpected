@@ -18,5 +18,3 @@ expect(undefined, 'to be defined');
 expected undefined to be defined
 ```
 <!-- /evaluate -->
-
-Alias for [not to be undefined](/assertions/any/not-to-be-undefined).

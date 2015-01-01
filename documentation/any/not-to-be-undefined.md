@@ -1,4 +1,6 @@
-Asserts that the value is not the undefined value.
+Alias for [to be defined](/assertions/any/to-be-defined).
+
+Asserts that the value is not undefined.
 
 <!-- evaluate -->
 ```javascript
