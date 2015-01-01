@@ -2,62 +2,6 @@
 // It is built based on the examples in the documentation folder
 // when the documentation site gets build by running "make site-build".
 var expect = require('../');
-describe('assertions/string/to-have-length.md', function () {
-    it('#1', function () {
-        expect(function () {
-            expect('Hello world', 'to have length', 11);
-        }, 'not to throw');
-    });
-    it('#2', function () {
-        expect(function () {
-            expect('Hello world', 'to have length', 12);
-        }, 'to throw', [
-            'expected \'Hello world\' to have length 12'
-        ].join('\n'));
-    });
-    it('#3', function () {
-        expect(function () {
-            expect('Hello world', 'not to have length', 12);
-        }, 'not to throw');
-    });
-    it('#4', function () {
-        expect(function () {
-            expect('Hello world', 'not to have length', 11);
-        }, 'to throw', [
-            'expected \'Hello world\' not to have length 11'
-        ].join('\n'));
-    });
-});
-describe('assertions/string/to-be.md', function () {
-    it('#1', function () {
-        expect(function () {
-            expect('Hello', 'to be', 'Hello');
-        }, 'not to throw');
-    });
-    it('#2', function () {
-        expect(function () {
-            expect('Hello beautiful!', 'to be', 'Hello world!');
-        }, 'to throw', [
-            'expected \'Hello beautiful!\' to be \'Hello world!\'',
-            '',
-            '-Hello beautiful!',
-            '+Hello world!'
-        ].join('\n'));
-    });
-    it('#3', function () {
-        expect(function () {
-            expect('Hello', 'not to be', 'Hello world!');
-            expect('1', 'not to be', 1);
-        }, 'not to throw');
-    });
-    it('#4', function () {
-        expect(function () {
-            expect('Hello world!', 'not to be', 'Hello world!');
-        }, 'to throw', [
-            'expected \'Hello world!\' not to be \'Hello world!\''
-        ].join('\n'));
-    });
-});
 describe('assertions/any/to-be-defined.md', function () {
     it('#1', function () {
         expect(function () {
@@ -252,20 +196,66 @@ describe('assertions/any/to-equal.md', function () {
     });
     it('#2', function () {
         expect(function () {
-            expect({ a: { b: 'c'} }, 'to equal', { a: { b: 'd'} });
+            expect({ text: 'foo!' }, 'to equal', { text: 'f00!' });
         }, 'to throw', [
-            'expected { a: { b: \'c\' } } to equal { a: { b: \'d\' } }',
+            'expected { text: \'foo!\' } to equal { text: \'f00!\' }',
             '',
             '{',
-            '  a: {',
-            '    b: \'c\' // should be \'d\'',
-            '           // -c',
-            '           // +d',
-            '  }',
+            '  text: \'foo!\' // should be \'f00!\'',
+            '               // -foo!',
+            '               // +f00!',
             '}'
         ].join('\n'));
     });
     it('#3', function () {
+        expect(function () {
+            expect({ one: 1, two: 2, four: 4, five: 5 }, 'to equal', { one: 1, two: 2, three: 3, four: 4 });
+        }, 'to throw', [
+            'expected { one: 1, two: 2, four: 4, five: 5 } to equal { one: 1, two: 2, three: 3, four: 4 }',
+            '',
+            '{',
+            '  one: 1,',
+            '  two: 2,',
+            '  four: 4,',
+            '  five: 5, // should be removed',
+            '  three: undefined // should be 3',
+            '}'
+        ].join('\n'));
+    });
+    it('#4', function () {
+        expect(function () {
+            expect([ 0, 1, 2, 4, 5], 'to equal', [ 1, 2, 3, 4]);
+        }, 'to throw', [
+            'expected [ 0, 1, 2, 4, 5 ] to equal [ 1, 2, 3, 4 ]',
+            '',
+            '[',
+            '  0, // should be removed',
+            '  1,',
+            '  2,',
+            '  // missing 3',
+            '  4,',
+            '  5 // should be removed',
+            ']'
+        ].join('\n'));
+    });
+    it('#5', function () {
+        expect(function () {
+            expect(
+                new Buffer('\x00\x01\x02Here is the thing I was talking about', 'utf-8'),
+                'to equal',
+                new Buffer('\x00\x01\x02Here is the thing I was quuxing about', 'utf-8')
+            );
+        }, 'to throw', [
+            'expected Buffer([0x00, 0x01, 0x02, 0x48, 0x65, 0x72, 0x65, 0x20, 0x69, 0x73, 0x20, 0x74, 0x68, 0x65, 0x20, 0x74 /* 24 more */ ])',
+            'to equal Buffer([0x00, 0x01, 0x02, 0x48, 0x65, 0x72, 0x65, 0x20, 0x69, 0x73, 0x20, 0x74, 0x68, 0x65, 0x20, 0x74 /* 24 more */ ])',
+            '',
+            ' 00 01 02 48 65 72 65 20 69 73 20 74 68 65 20 74  │...Here is the t│',
+            '-68 69 6E 67 20 49 20 77 61 73 20 74 61 6C 6B 69  │hing I was talki│',
+            '+68 69 6E 67 20 49 20 77 61 73 20 71 75 75 78 69  │hing I was quuxi│',
+            ' 6E 67 20 61 62 6F 75 74                          │ng about│'
+        ].join('\n'));
+    });
+    it('#6', function () {
         expect(function () {
             expect(1, 'not to equal', '1');
             expect({ one: 1 }, 'not to equal', { one: '1' });
@@ -276,11 +266,67 @@ describe('assertions/any/to-equal.md', function () {
             expect({ time: now }, 'not to equal', { time: later });
         }, 'not to throw');
     });
-    it('#4', function () {
+    it('#7', function () {
         expect(function () {
             expect({ a: { b: 'd'} }, 'not to equal', { a: { b: 'd'} });
         }, 'to throw', [
             'expected { a: { b: \'d\' } } not to equal { a: { b: \'d\' } }'
+        ].join('\n'));
+    });
+});
+describe('assertions/string/to-be.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect('Hello', 'to be', 'Hello');
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect('Hello beautiful!', 'to be', 'Hello world!');
+        }, 'to throw', [
+            'expected \'Hello beautiful!\' to be \'Hello world!\'',
+            '',
+            '-Hello beautiful!',
+            '+Hello world!'
+        ].join('\n'));
+    });
+    it('#3', function () {
+        expect(function () {
+            expect('Hello', 'not to be', 'Hello world!');
+            expect('1', 'not to be', 1);
+        }, 'not to throw');
+    });
+    it('#4', function () {
+        expect(function () {
+            expect('Hello world!', 'not to be', 'Hello world!');
+        }, 'to throw', [
+            'expected \'Hello world!\' not to be \'Hello world!\''
+        ].join('\n'));
+    });
+});
+describe('assertions/string/to-have-length.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect('Hello world', 'to have length', 11);
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect('Hello world', 'to have length', 12);
+        }, 'to throw', [
+            'expected \'Hello world\' to have length 12'
+        ].join('\n'));
+    });
+    it('#3', function () {
+        expect(function () {
+            expect('Hello world', 'not to have length', 12);
+        }, 'not to throw');
+    });
+    it('#4', function () {
+        expect(function () {
+            expect('Hello world', 'not to have length', 11);
+        }, 'to throw', [
+            'expected \'Hello world\' not to have length 11'
         ].join('\n'));
     });
 });
