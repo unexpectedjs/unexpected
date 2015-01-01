@@ -1,22 +1,15 @@
 {
     "any": [
         "to be truthy",
-        "not to be truthy",
         "to be ok",
-        "not to be ok",
         "to be falsy",
-        "not to be falsy",
         "to be",
-        "not to be",
         "to be defined",
         "to be undefined",
-        "not to be undefined",
         "to equal"
     ],
     "string": [
         "to be",
-        "not to be",
-        "to have length",
-        "not to have length"
+        "to have length"
     ]
 }
