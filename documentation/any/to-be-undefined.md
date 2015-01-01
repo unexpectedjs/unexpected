@@ -6,7 +6,7 @@ expect(undefined, 'to be undefined');
 ```
 <!-- /evaluate -->
 
-We will get the following error if we make an incorrect assumption:
+In case of a failing expectation you get the following output:
 
 <!-- evaluate -->
 ```javascript
