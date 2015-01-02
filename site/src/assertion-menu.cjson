@@ -12,5 +12,9 @@
     "string": [
         "to be",
         "to have length"
+    ],
+    "boolean": [
+        "to be true",
+        "to be false"
     ]
 }

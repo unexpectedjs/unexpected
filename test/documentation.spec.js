@@ -301,6 +301,34 @@ describe('assertions/any/to-equal.md', function () {
         ].join('\n'));
     });
 });
+describe('assertions/boolean/to-be-false.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect(false, 'to be false');
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect(true, 'to be false');
+        }, 'to throw', [
+            'expected true to be false'
+        ].join('\n'));
+    });
+});
+describe('assertions/boolean/to-be-true.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect(true, 'to be true');
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect(false, 'to be true');
+        }, 'to throw', [
+            'expected false to be true'
+        ].join('\n'));
+    });
+});
 describe('assertions/string/to-be.md', function () {
     it('#1', function () {
         expect(function () {

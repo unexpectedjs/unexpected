@@ -15,6 +15,9 @@ expect.output.addStyle('comment', function (content) {
 expect.output.addStyle('regexp', function (content) {
     this.text(content, '#df5000');
 }, true);
+expect.output.addStyle('keyword', function (content) {
+    this.text(content, '#0086b3');
+}, true);
 
 module.exports = function evaluateExamples(files, metalsmith, next) {
     // Find assertions files and file names.
@@ -27,12 +30,16 @@ module.exports = function evaluateExamples(files, metalsmith, next) {
                     eval(example);
                     return $0;
                 } catch (e) {
+                    var errorMessage = e._isUnexpected ?
+                         e.output :
+                         expect.output.clone().error(e.message);
+
                     return before +
                         '```javascript\n' +
                         example +
                         '\n```' +
                         middle +
-                        e.output.toString('html').replace(/style=".*?"/, 'class="output"') +
+                        errorMessage.toString('html').replace(/style=".*?"/, 'class="output"') +
                         after;
                 }
             });
