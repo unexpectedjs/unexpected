@@ -2,6 +2,62 @@
 // It is built based on the examples in the documentation folder
 // when the documentation site gets build by running "make site-build".
 var expect = require('../');
+describe('assertions/string/to-be.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect('Hello', 'to be', 'Hello');
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect('Hello beautiful!', 'to be', 'Hello world!');
+        }, 'to throw', [
+            'expected \'Hello beautiful!\' to be \'Hello world!\'',
+            '',
+            '-Hello beautiful!',
+            '+Hello world!'
+        ].join('\n'));
+    });
+    it('#3', function () {
+        expect(function () {
+            expect('Hello', 'not to be', 'Hello world!');
+            expect('1', 'not to be', 1);
+        }, 'not to throw');
+    });
+    it('#4', function () {
+        expect(function () {
+            expect('Hello world!', 'not to be', 'Hello world!');
+        }, 'to throw', [
+            'expected \'Hello world!\' not to be \'Hello world!\''
+        ].join('\n'));
+    });
+});
+describe('assertions/string/to-have-length.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect('Hello world', 'to have length', 11);
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect('Hello world', 'to have length', 12);
+        }, 'to throw', [
+            'expected \'Hello world\' to have length 12'
+        ].join('\n'));
+    });
+    it('#3', function () {
+        expect(function () {
+            expect('Hello world', 'not to have length', 12);
+        }, 'not to throw');
+    });
+    it('#4', function () {
+        expect(function () {
+            expect('Hello world', 'not to have length', 11);
+        }, 'to throw', [
+            'expected \'Hello world\' not to have length 11'
+        ].join('\n'));
+    });
+});
 describe('assertions/any/to-be-defined.md', function () {
     it('#1', function () {
         expect(function () {
@@ -271,62 +327,6 @@ describe('assertions/any/to-equal.md', function () {
             expect({ a: { b: 'd'} }, 'not to equal', { a: { b: 'd'} });
         }, 'to throw', [
             'expected { a: { b: \'d\' } } not to equal { a: { b: \'d\' } }'
-        ].join('\n'));
-    });
-});
-describe('assertions/string/to-be.md', function () {
-    it('#1', function () {
-        expect(function () {
-            expect('Hello', 'to be', 'Hello');
-        }, 'not to throw');
-    });
-    it('#2', function () {
-        expect(function () {
-            expect('Hello beautiful!', 'to be', 'Hello world!');
-        }, 'to throw', [
-            'expected \'Hello beautiful!\' to be \'Hello world!\'',
-            '',
-            '-Hello beautiful!',
-            '+Hello world!'
-        ].join('\n'));
-    });
-    it('#3', function () {
-        expect(function () {
-            expect('Hello', 'not to be', 'Hello world!');
-            expect('1', 'not to be', 1);
-        }, 'not to throw');
-    });
-    it('#4', function () {
-        expect(function () {
-            expect('Hello world!', 'not to be', 'Hello world!');
-        }, 'to throw', [
-            'expected \'Hello world!\' not to be \'Hello world!\''
-        ].join('\n'));
-    });
-});
-describe('assertions/string/to-have-length.md', function () {
-    it('#1', function () {
-        expect(function () {
-            expect('Hello world', 'to have length', 11);
-        }, 'not to throw');
-    });
-    it('#2', function () {
-        expect(function () {
-            expect('Hello world', 'to have length', 12);
-        }, 'to throw', [
-            'expected \'Hello world\' to have length 12'
-        ].join('\n'));
-    });
-    it('#3', function () {
-        expect(function () {
-            expect('Hello world', 'not to have length', 12);
-        }, 'not to throw');
-    });
-    it('#4', function () {
-        expect(function () {
-            expect('Hello world', 'not to have length', 11);
-        }, 'to throw', [
-            'expected \'Hello world\' not to have length 11'
         ].join('\n'));
     });
 });
