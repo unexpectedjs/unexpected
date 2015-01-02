@@ -10,8 +10,8 @@
     <header>
         <nav>
             <ul>
-                <li class="<%- path[0] === 'index' ? 'active' : '' %>"><a href="/">Unexpected</a></li>
-                <li class="<%- path[0] === 'assertions' ? 'active' : '' %>"><a href="/assertions">Assertions</a></li>
+                <li class="<%- path === '' ? 'active' : '' %>"><a href="/">Unexpected</a></li>
+                <li class="<%- path.match(/^assertions\/?/) ? 'active' : '' %>"><a href="/assertions">Assertions</a></li>
             </ul>
         </nav>
     </header>
