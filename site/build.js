@@ -89,6 +89,7 @@ metalSmith(__dirname)
         // require('uninspected').log(files);
         next();
     })
+    .use(require('metalsmith-less')())
     .use(require('metalsmith-templates')('ejs'))
     .build(function (err) {
         if (err) { throw err; }
