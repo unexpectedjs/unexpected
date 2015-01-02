@@ -23,7 +23,7 @@ expected '1' to be 1
 ```
 <!-- /evaluate -->
 
-The assertion can be negated using the `not` flag:
+This assertion can be negated using the `not` flag:
 
 <!-- evaluate -->
 ```javascript

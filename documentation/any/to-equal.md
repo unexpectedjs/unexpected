@@ -94,7 +94,7 @@ to equal Buffer([0x00, 0x01, 0x02, 0x48, 0x65, 0x72, 0x65, 0x20, 0x69, 0x73, 0x2
 ```
 <!-- /evaluate -->
 
-The assertion can be negated using the `not` flag:
+This assertion can be negated using the `not` flag:
 
 <!-- evaluate -->
 ```javascript

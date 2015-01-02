@@ -18,7 +18,7 @@ expected 'Hello world' to have length 12
 ```
 <!-- /evaluate -->
 
-The assertion can be negated using the `not` flag:
+This assertion can be negated using the `not` flag:
 
 <!-- evaluate -->
 ```javascript

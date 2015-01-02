@@ -21,7 +21,7 @@ expected 'Hello beautiful!' to be 'Hello world!'
 ```
 <!-- /evaluate -->
 
-The assertion can be negated using the `not` flag:
+This assertion can be negated using the `not` flag:
 
 <!-- evaluate -->
 ```javascript
