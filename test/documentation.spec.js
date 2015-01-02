@@ -51,6 +51,33 @@ describe('assertions/any/to-be-falsy.md', function () {
         ].join('\n'));
     });
 });
+describe('assertions/any/to-be-null.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect(null, 'to be null');
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect({ foo: { bar: 'baz' } }, 'to be null');
+        }, 'to throw', [
+            'expected { foo: { bar: \'baz\' } } to be null'
+        ].join('\n'));
+    });
+    it('#3', function () {
+        expect(function () {
+            expect({ foo: { bar: 'baz' } }, 'not to be null');
+            expect('Hello world!', 'not to be null');
+        }, 'not to throw');
+    });
+    it('#4', function () {
+        expect(function () {
+            expect(null, 'not to be null');
+        }, 'to throw', [
+            'expected null not to be null'
+        ].join('\n'));
+    });
+});
 describe('assertions/any/to-be-ok.md', function () {
     it('#1', function () {
         expect(function () {
