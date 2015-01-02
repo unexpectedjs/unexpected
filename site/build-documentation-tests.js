@@ -5,7 +5,7 @@ module.exports = function buildDocumentationTests(files, metalsmith, next) {
     // Find assertions files and file names.
     var assertions = Object.keys(files).filter(function (file) {
         return /^assertions\//.test(file) ? file : false;
-    }).map(function (file) {
+    }).sort().map(function (file) {
         var obj = {};
         obj.content = files[file].contents.toString();
         obj.filename = file;
