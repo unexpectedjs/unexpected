@@ -301,6 +301,34 @@ describe('assertions/any/to-equal.md', function () {
         ].join('\n'));
     });
 });
+describe('assertions/any/to-match.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect('Hello beautiful world!', 'to match', /bea.t.*/);
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect('Hello world!', 'to match', /beautiful/);
+        }, 'to throw', [
+            'expected \'Hello world!\' to match /beautiful/'
+        ].join('\n'));
+    });
+    it('#3', function () {
+        expect(function () {
+            expect('Hello world!', 'not to match', /beautiful/);
+        }, 'not to throw');
+    });
+    it('#4', function () {
+        expect(function () {
+            expect('Hello beautiful world!', 'not to match', /beautiful/);
+        }, 'to throw', [
+            'expected \'Hello beautiful world!\' not to match /beautiful/',
+            '',
+            'Hello beautiful world!'
+        ].join('\n'));
+    });
+});
 describe('assertions/boolean/to-be-false.md', function () {
     it('#1', function () {
         expect(function () {
