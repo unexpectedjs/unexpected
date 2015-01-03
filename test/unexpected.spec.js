@@ -865,7 +865,9 @@ describe('unexpected', function () {
         it('throws when the assertion fails', function () {
             expect(function () {
                 expect([1, 2], 'to have length', 3);
-            }, 'to throw exception', "expected [ 1, 2 ] to have length 3");
+            }, 'to throw exception',
+                   "expected [ 1, 2 ] to have length 3\n" +
+                   "  expected 2 to be 3");
 
             expect(function () {
                 expect(null, 'to have length', 4);
@@ -1953,7 +1955,8 @@ describe('unexpected', function () {
                 });
             }, 'to throw',
                    "failed expectation on keys foo, bar, baz, qux, quux:\n" +
-                   "  quux: expected 'quux' to have length 3");
+                   "  quux: expected 'quux' to have length 3\n" +
+                   "          expected 4 to be 3");
         });
     });
 
@@ -3057,6 +3060,7 @@ describe('unexpected', function () {
                        "or\n" +
                        "✓ expected 'foobarbaz' to be a string and\n" +
                        "⨯ expected 'foobarbaz' to have length 6\n" +
+                       "    expected 9 to be 6\n" +
                        "or\n" +
                        "⨯ expected 'foobarbaz' to be an array");
             });

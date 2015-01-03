@@ -301,6 +301,33 @@ describe('assertions/any/to-equal.md', function () {
         ].join('\n'));
     });
 });
+describe('assertions/arrayLike/to-have-length.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect([1,2,3], 'to have length', 3);
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect([1,2,3], 'to have length', 4);
+        }, 'to throw', [
+            'expected [ 1, 2, 3 ] to have length 4',
+            '  expected 3 to be 4'
+        ].join('\n'));
+    });
+    it('#3', function () {
+        expect(function () {
+            expect([1,2,3], 'not to have length', 4);
+        }, 'not to throw');
+    });
+    it('#4', function () {
+        expect(function () {
+            expect([1,2,3], 'not to have length', 3);
+        }, 'to throw', [
+            'expected [ 1, 2, 3 ] not to have length 3'
+        ].join('\n'));
+    });
+});
 describe('assertions/boolean/to-be-false.md', function () {
     it('#1', function () {
         expect(function () {
@@ -369,7 +396,8 @@ describe('assertions/string/to-have-length.md', function () {
         expect(function () {
             expect('Hello world', 'to have length', 12);
         }, 'to throw', [
-            'expected \'Hello world\' to have length 12'
+            'expected \'Hello world\' to have length 12',
+            '  expected 11 to be 12'
         ].join('\n'));
     });
     it('#3', function () {

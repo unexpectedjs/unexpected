@@ -14,6 +14,9 @@
         "to have length",
         "to match"
     ],
+    "arrayLike": [
+        "to have length"
+    ],
     "boolean": [
         "to be true",
         "to be false"
