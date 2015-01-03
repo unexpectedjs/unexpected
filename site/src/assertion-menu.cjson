@@ -7,12 +7,12 @@
         "to be defined",
         "to be undefined",
         "to be null",
-        "to equal",
-        "to match"
+        "to equal"
     ],
     "string": [
         "to be",
-        "to have length"
+        "to have length",
+        "to match"
     ],
     "boolean": [
         "to be true",
