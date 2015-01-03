@@ -322,6 +322,8 @@ describe('assertions/any/to-match.md', function () {
     it('#4', function () {
         expect(function () {
             expect('Hello beautiful world!', 'not to match', /beautiful/);
+            expect({ foo: 'foo' }, 'not to match', /foo/);
+            expect(null, 'not to match', /foo/);
         }, 'to throw', [
             'expected \'Hello beautiful world!\' not to match /beautiful/',
             '',

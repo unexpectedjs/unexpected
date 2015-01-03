@@ -31,6 +31,8 @@ In case of a failing expectation you get the following output:
 <!-- evaluate -->
 ```javascript
 expect('Hello beautiful world!', 'not to match', /beautiful/);
+expect({ foo: 'foo' }, 'not to match', /foo/);
+expect(null, 'not to match', /foo/);
 ```
 
 ```
