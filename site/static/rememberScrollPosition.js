@@ -7,7 +7,7 @@ function rememberScrollPosition() {
             scrollTimer = setTimeout(function () {
                 localStorage.setItem(id + ' scrollTop', element.scrollTop);
                 localStorage.setItem(id + ' scrollLeft', element.scrollLeft);
-            }, 1000);
+            }, 300);
         };
     }
     function retrieveScrollPositionForElement(element) {
