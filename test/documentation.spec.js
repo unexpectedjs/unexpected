@@ -305,6 +305,10 @@ describe('assertions/arrayLike/to-have-length.md', function () {
     it('#1', function () {
         expect(function () {
             expect([1,2,3], 'to have length', 3);
+            expect({ length: 42 }, 'to have length', 42);
+            ((function () {
+              expect(arguments, 'to have length', 3);
+            })(1,2,3));
         }, 'not to throw');
     });
     it('#2', function () {

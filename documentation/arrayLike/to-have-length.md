@@ -3,6 +3,11 @@ Asserts that the string has the specified length.
 <!-- evaluate -->
 ```javascript
 expect([1,2,3], 'to have length', 3);
+expect({ length: 42 }, 'to have length', 42);
+
+((function () {
+  expect(arguments, 'to have length', 3);
+})(1,2,3));
 ```
 <!-- /evaluate -->
 
