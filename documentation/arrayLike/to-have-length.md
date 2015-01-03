@@ -1,4 +1,4 @@
-Asserts that the string has the specified length.
+Asserts that the array-like object has the specified length.
 
 <!-- evaluate -->
 ```javascript
