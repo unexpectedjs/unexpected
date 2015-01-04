@@ -5,19 +5,21 @@ function rememberScrollPosition() {
         element.onscroll = function (e) {
             clearTimeout(scrollTimer);
             scrollTimer = setTimeout(function () {
-                localStorage.setItem(id + ' scrollTop', element.scrollTop);
-                localStorage.setItem(id + ' scrollLeft', element.scrollLeft);
+                try {
+                    localStorage.setItem(id + ' scrollTop', element.scrollTop);
+                    localStorage.setItem(id + ' scrollLeft', element.scrollLeft);
+                } catch (e) {
+                    // ignore
+                }
             }, 300);
         };
     }
     function retrieveScrollPositionForElement(element) {
         var id = element.getAttribute('id');
-        var scrollTop = localStorage.getItem(id + ' scrollTop');
-        var scrollLeft = localStorage.getItem(id + ' scrollLeft');
-        if (typeof scrollTop === 'string') {
-            element.scrollTop = parseInt(scrollTop, 10);
-            element.scrollLeft = parseInt(scrollLeft, 10);
-        }
+        var scrollTop = localStorage.getItem(id + ' scrollTop') || 0;
+        var scrollLeft = localStorage.getItem(id + ' scrollLeft') || 0;
+        element.scrollTop = parseInt(scrollTop, 10);
+        element.scrollLeft = parseInt(scrollLeft, 10);
     }
 
     var elements = document.querySelectorAll('.js-remember-scroll-position');
