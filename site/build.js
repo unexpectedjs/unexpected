@@ -46,7 +46,7 @@ metalSmith(__dirname)
     .use(function (files, metalsmith, next) {
         Object.keys(files).forEach(function (file) {
             console.log(file);
-            if (/^assertions-[a-z]*\.md$/.test(file)) {
+            if (/^assertions-[a-z]*\.md$/i.test(file)) {
                 files[file.replace('assertions-', 'assertions/')] = files[file];
                 delete files[file];
             }

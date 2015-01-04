@@ -19,7 +19,8 @@
         <nav id="assertion-menu" class="js-remember-scroll-position">
             <ul>
                 <% Object.keys(assertions).forEach(function (type) { %>
-                <li><%= type %>
+                <li>
+                    <a href="/assertions/<%= type %>/"><%= type %></a>
                     <ul>
                         <% assertions[type].forEach(function (assertion) { %>
                         <li class="<%= isActiveAssertion(path, type, assertion) ? 'active' : '' %>">
