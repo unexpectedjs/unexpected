@@ -1528,7 +1528,8 @@ describe('unexpected', function () {
                 expect({
                     pill: {
                         red: "I'll show you how deep the rabbit hole goes",
-                        blue: { ignorance: { of: 'illusion' } }
+                        blue: { ignorance: { of: 'illusion' } },
+                        purple: { you: 'wat there is another pill', them: 'there is always more choices' }
                     }
                 }, 'to satisfy', {
                     pill: {
@@ -1541,7 +1542,11 @@ describe('unexpected', function () {
                    "{\n" +
                    "  pill: {\n" +
                    "    red: 'I\\'ll show you how deep the rabbit hole goes',\n" +
-                   "    blue: { ignorance: ... }\n" +
+                   "    blue: { ignorance: ... },\n" +
+                   "    purple: {\n" +
+                   "      you: 'wat there is another pill',\n" +
+                   "      them: 'there is always more choices'\n" +
+                   "    }\n" +
                    "  }\n" +
                    "}\n" +
                    "to satisfy\n" +
@@ -1557,7 +1562,11 @@ describe('unexpected', function () {
                    "    red: 'I\\'ll show you how deep the rabbit hole goes', // should equal 'I\\'ll show you how deep the rabbit hole goes.'\n" +
                    "                                                         // -I'll show you how deep the rabbit hole goes\n" +
                    "                                                         // +I'll show you how deep the rabbit hole goes.\n" +
-                   "    blue: { ignorance: ... }\n" +
+                   "    blue: { ignorance: ... },\n" +
+                   "    purple: {\n" +
+                   "      you: 'wat there is another pill',\n" +
+                   "      them: 'there is always more choices'\n" +
+                   "    }\n" +
                    "  }\n" +
                    "}");
         });
