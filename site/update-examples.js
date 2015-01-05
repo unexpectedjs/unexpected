@@ -37,7 +37,7 @@ async.waterfall([
                     }
 
                     partResult.body = part.replace(/^```.*[\n]/m, '')
-            							  .replace(/\n```$/m, '');
+            							  .replace(/\n?```$/m, '');
 
                     return partResult;
                 });
@@ -93,7 +93,18 @@ async.waterfall([
 
 
             if (textOutput !== example.output.body) {
-                var replacement = example.fullText.replace(example.output.body, textOutput);
+                var replacement;
+                if (example.output.body === '') {
+                    replacement = [
+                        '```' + (example.type || ''),
+                        textOutput,
+                        '```'
+                    ].join('\n');
+                    replacement = example.fullText.replace(example.output.fullText, replacement);
+                } else {
+                    replacement = example.fullText.replace(example.output.body, textOutput);
+                }
+
                 return fs.readFile(example.filename, passError(callback, function (data) {
                     data = data.toString().replace(example.fullText, replacement);
                     fs.writeFile(example.filename, data, passError(callback, function () {
