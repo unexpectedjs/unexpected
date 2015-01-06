@@ -386,6 +386,21 @@ describe('assertions/number/to-be-NaN.md', function () {
         ].join('\n'));
     });
 });
+describe('assertions/object/to-be-canonical.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect({ a: 123, b: 456 }, 'to be canonical');
+            expect([456, { a: 123 }], 'to be canonical');
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect([456, { b: 456, a: 123 }], 'to be canonical');
+        }, 'to throw', [
+            'expected [ 456, { b: 456, a: 123 } ] to be canonical'
+        ].join('\n'));
+    });
+});
 describe('assertions/string/to-be.md', function () {
     it('#1', function () {
         expect(function () {
