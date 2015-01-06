@@ -386,6 +386,33 @@ describe('assertions/number/to-be-NaN.md', function () {
         ].join('\n'));
     });
 });
+describe('assertions/number/to-be-close-to.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect(1.5, 'to be close to', 1.500001, 1e-5);
+            expect(1.5, 'to be close to', 1.5000000001)
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect(1.5, 'to be close to', 1.50001, 1e-5);
+        }, 'to throw', [
+            'expected 1.5 to be close to 1.50001 (epsilon: 1e-5)'
+        ].join('\n'));
+    });
+    it('#3', function () {
+        expect(function () {
+            expect(1.5, 'not to be close to', 1.499, 1e-4);
+        }, 'not to throw');
+    });
+    it('#4', function () {
+        expect(function () {
+            expect(1.5, 'not to be close to', 1.5000000001)
+        }, 'to throw', [
+            'expected 1.5 not to be close to 1.5000000001 (epsilon: 1e-9)'
+        ].join('\n'));
+    });
+});
 describe('assertions/object/to-be-canonical.md', function () {
     it('#1', function () {
         expect(function () {

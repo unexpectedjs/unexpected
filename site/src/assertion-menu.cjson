@@ -25,6 +25,7 @@
         "to be false"
     ],
     "number": [
+        "to be close to",
         "to be NaN"
     ]
 }
