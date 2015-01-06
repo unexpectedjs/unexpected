@@ -360,6 +360,32 @@ describe('assertions/boolean/to-be-true.md', function () {
         ].join('\n'));
     });
 });
+describe('assertions/number/to-be-NaN.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect(NaN, 'to be NaN');
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect(2, 'to be NaN');
+        }, 'to throw', [
+            'expected 2 to be NaN'
+        ].join('\n'));
+    });
+    it('#3', function () {
+        expect(function () {
+            expect(2, 'not to be NaN');
+        }, 'not to throw');
+    });
+    it('#4', function () {
+        expect(function () {
+            expect(NaN, 'not to be NaN');
+        }, 'to throw', [
+            'expected NaN not to be NaN'
+        ].join('\n'));
+    });
+});
 describe('assertions/string/to-be.md', function () {
     it('#1', function () {
         expect(function () {

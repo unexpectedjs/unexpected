@@ -20,5 +20,8 @@
     "boolean": [
         "to be true",
         "to be false"
+    ],
+    "number": [
+        "to be NaN"
     ]
 }
