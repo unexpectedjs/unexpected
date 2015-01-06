@@ -17,6 +17,28 @@ it.skipIf = function (condition) {
 var circular = {};
 circular.self = circular;
 
+expect.addType({
+    name: 'magicpen',
+    identify: function (obj) {
+        return obj && obj.isMagicPen;
+    },
+    inspect: function (pen, depth, output) {
+        return output.append(pen);
+    },
+    equal: function (a, b) {
+        return a.toString() === b.toString() &&
+            a.toString('ansi') === b.toString('ansi') &&
+            a.toString('html') === b.toString('html');
+    }
+});
+
+expect.addAssertion('to have message', function (expect, subject, value) {
+    // Copied from https://github.com/sindresorhus/ansi-regex
+    var ansiRegex = /(?:(?:\u001b\[)|\u009b)(?:(?:[0-9]{1,3})?(?:(?:;[0-9]{0,3})*)?[A-M|f-m])|\u001b[A-M]/g;
+    expect(subject.output.toString(), 'to equal', value);
+    expect(subject.message.replace(ansiRegex, ''), 'to equal', '\n' + value);
+});
+
 describe('unexpected', function () {
     describe('argument validation', function () {
         it('fails when given no parameters', function () {
@@ -2351,13 +2373,16 @@ describe('unexpected', function () {
                                     done(e);
                                 }
                             }, delay);
+                        })
+                        .addAssertion('to be sorted after a while', function (expect, subject, done) {
+                            expect(subject, 'to be sorted after delay', 10, done);
                         });
                 });
 
                 it('errorMode=nested nest the error message of expect failures in the assertion under the assertion standard message', function (done) {
                     errorMode = 'nested';
                     clonedExpect(42, 'to be sorted after delay', 1, function (err) {
-                        expect(err.output.toString(), 'to match', /^expected 42 to be sorted after delay 1.*\n  expected 42 to be an array/);
+                        expect(err, 'to have message', 'expected 42 to be sorted after delay 1\n  expected 42 to be an array');
                         done();
                     });
                 });
@@ -2365,7 +2390,7 @@ describe('unexpected', function () {
                 it('errorMode=bubble bubbles uses the error message of expect failures in the assertion', function (done) {
                     errorMode = 'bubble';
                     clonedExpect(42, 'to be sorted after delay', 1, function (err) {
-                        expect(err.output.toString(), 'to match', /^expected 42 to be an array/);
+                        expect(err, 'to have message', 'expected 42 to be an array');
                         done();
                     });
                 });
@@ -2373,8 +2398,36 @@ describe('unexpected', function () {
                 it('errorMode=default uses the standard error message of the assertion', function (done) {
                     errorMode = 'default';
                     clonedExpect(42, 'to be sorted after delay', 1, function (err) {
-                        expect(err.output.toString(), 'to match', /^expected 42 to be sorted after delay 1/);
+                        expect(err, 'to have message', 'expected 42 to be sorted after delay 1');
                         done();
+                    });
+                });
+
+                describe('nested inside another custom assertion', function () {
+                    // TODO async assertions does not handle error message wrapping correctly
+
+                    it('errorMode=nested nest the error message of expect failures in the assertion under the assertion standard message', function (done) {
+                        errorMode = 'nested';
+                        clonedExpect(42, 'to be sorted after delay', 1, function (err) {
+                            expect(err, 'to have message', 'expected 42 to be sorted after delay 1\n  expected 42 to be an array');
+                            done();
+                        });
+                    });
+
+                    it('errorMode=bubble bubbles uses the error message of expect failures in the assertion', function (done) {
+                        errorMode = 'bubble';
+                        clonedExpect(42, 'to be sorted after delay', 1, function (err) {
+                            expect(err, 'to have message', 'expected 42 to be an array');
+                            done();
+                        });
+                    });
+
+                    it('errorMode=default uses the standard error message of the assertion', function (done) {
+                        errorMode = 'default';
+                        clonedExpect(42, 'to be sorted after delay', 1, function (err) {
+                            expect(err, 'to have message', 'expected 42 to be sorted after delay 1');
+                            done();
+                        });
                     });
                 });
             });
