@@ -1078,6 +1078,7 @@ describe('unexpected', function () {
         it('asserts the presence of a key', function () {
             expect({ a: 'b' }, 'to have key', 'a');
             expect({ a: 'b' }, 'not to have key', 'b');
+            expect({ a: 'b' }, 'not to have key', []);
             expect({ a: 'b', c: 'd' }, 'not to have key', 'b');
             expect({ a: 'b', c: 'd' }, 'to not only have key', 'a');
             expect({ a: 'b', c: 'd' }, 'to only have keys', 'a', 'c');
