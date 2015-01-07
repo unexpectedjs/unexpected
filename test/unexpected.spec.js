@@ -252,12 +252,12 @@ describe('unexpected', function () {
 
         it('throws when the assertion fails', function () {
             expect(function () {
-                expect(5, 'to be a', Array);
-            }, 'to throw exception', 'expected 5 to be a function Array() { /* native code */ }');
+                expect(5, 'to be an', Array);
+            }, 'to throw exception', 'expected 5 to be an Array');
 
             expect(function () {
                 expect([], 'not to be an', 'array');
-            }, 'to throw exception', "expected [] not to be an 'array'");
+            }, 'to throw exception', "expected [] not to be an array");
 
             expect(function () {
                 expect(circular, 'not to be an object');
