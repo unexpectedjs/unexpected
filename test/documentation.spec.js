@@ -2,6 +2,71 @@
 // It is built based on the examples in the documentation folder
 // when the documentation site gets build by running "make site-build".
 var expect = require('../');
+describe('assertions/any/to-be-a.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect(true, 'to be a', 'boolean');
+            expect(5, 'to be a', 'number');
+            expect('abc', 'to be a', 'string');
+            expect(expect, 'to be a', 'function');
+            expect({foo: 123}, 'to be an', 'object');
+            expect([123], 'to be an', 'array');
+            expect(/regex/, 'to be a', 'regexp');
+            expect(/regex/, 'to be a', 'regex');
+            expect(/regex/, 'to be a', 'regular expression');
+            expect(new Error(), 'to be an', 'Error');
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect(expect, 'to be a', 'function');
+            expect(expect, 'to be an', 'object');
+        }, 'not to throw');
+    });
+    it('#3', function () {
+        expect(function () {
+            expect(true, 'to be a boolean');
+            expect(5, 'to be a number');
+            expect('abc', 'to be a string');
+            expect(expect, 'to be a function');
+            expect({foo: 123}, 'to be an object');
+            expect([123], 'to be an array');
+            expect(/regex/, 'to be a regexp');
+            expect(/regex/, 'to be a regex');
+            expect(/regex/, 'to be a regular expression');
+        }, 'not to throw');
+    });
+    it('#4', function () {
+        expect(function () {
+            function Person(name) {
+                this.name = name;
+            }
+            expect(new Person('John Doe'), 'to be a', Person);
+            expect(new Person('John Doe'), 'to be an', Object);
+        }, 'not to throw');
+    });
+    it('#5', function () {
+        expect(function () {
+            expect({ 0: 'foo', 1: 'bar', 2: 'baz' }, 'to be an array');
+        }, 'to throw', [
+            'expected { \'0\': \'foo\', \'1\': \'bar\', \'2\': \'baz\' } to be an array'
+        ].join('\n'));
+    });
+    it('#6', function () {
+        expect(function () {
+            expect(true, 'not to be an object');
+            expect('5', 'not to be a', 'number');
+            expect('abc', 'not to be an', Object);
+        }, 'not to throw');
+    });
+    it('#7', function () {
+        expect(function () {
+            expect(function () { return 'wat'; }, 'not to be an', Object);
+        }, 'to throw', [
+            'expected function () { return \'wat\'; } not to be an Object'
+        ].join('\n'));
+    });
+});
 describe('assertions/any/to-be-defined.md', function () {
     it('#1', function () {
         expect(function () {
