@@ -19,6 +19,9 @@ expect.output.addStyle('keyword', function (content) {
     this.text(content, '#0086b3');
 }, true);
 
+expect.installPlugin(require('magicpen-prism'))
+    .installPlugin(require('./magicpen-github-syntax-theme'));
+
 module.exports = function evaluateExamples(files, metalsmith, next) {
     // Find assertions files and file names.
     Object.keys(files).filter(function (file) {
