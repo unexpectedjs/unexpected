@@ -3753,22 +3753,36 @@ describe('unexpected', function () {
                     'function add(a, b) {\n' +
                     '    return a + b;\n' +
                     '}\n' +
-                    'when called with [ 3, 4 ] to equal 9');
+                    'when called with [ 3, 4 ] to equal 9\n' +
+                    '  expected 7 to equal 9');
 
             expect(function () {
                 expect(add, 'when called with', [3, 4], 'to satisfy', 'to equal', 9);
             }, 'to throw',
                    'expected\n' +
-                    'function add(a, b) {\n' +
-                    '    return a + b;\n' +
-                    '}\n' +
-                    "when called with [ 3, 4 ] to satisfy 'to equal', 9"); // DAMN, fix me
+                   'function add(a, b) {\n' +
+                   '    return a + b;\n' +
+                   '}\n' +
+                   "when called with [ 3, 4 ] to satisfy 'to equal', 9\n" + // DAMN, fix me
+                   "  expected 7 to satisfy 'to equal', 9"); // DAMN, fix me
         });
     });
 
     describe('when passed as parameters to assertion', function () {
         it('should assert that the function invocation produces the correct output', function () {
             expect([3, 4], 'when passed as parameters to', add, 'to equal', 7);
+        });
+
+        it('should produce a nested error message when the assertion fails', function () {
+            expect(function () {
+                expect([3, 4], 'when passed as parameters to', add, 'to equal', 8);
+            }, 'to throw',
+                   'expected [ 3, 4 ] when passed as parameters to\n' +
+                   'function add(a, b) {\n' +
+                   '    return a + b;\n' +
+                   '} to equal 8\n' +
+                   '  expected 7 to equal 8');
+
         });
 
         it('should combine with other assertions (showcase)', function () {
