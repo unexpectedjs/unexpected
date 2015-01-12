@@ -2963,7 +2963,7 @@ describe('unexpected', function () {
                    "    phone: '+1 (803) 472-3209',\n" +
                    "    address: '944 Milton Street, Madrid, Ohio, 1336',\n" +
                    "    about: 'Ea consequat nulla duis incididunt ut irureirure cupidatat. Est tempor cillum commodo aliquaconsequat esse commodo. Culpa ipsum eu consectetur idenim quis sint. Aliqua deserunt dolore reprehenderitid anim exercitation laboris. Eiusmod aute consecteturexcepteur in nulla proident occaecatconsectetur.\\r\\n',\n" +
-                   "    registered: [Date Sun, 03 Jun 1984 09:36:47 GMT],\n" +
+                   "    registered: new Date('Sun, 03 Jun 1984 09:36:47 GMT'),\n" +
                    "    latitude: 8.635553,\n" +
                    "    longitude: -103.382498,\n" +
                    "    tags: [ 'tempor', 'dolore', 'non', 'sit', 'minim', 'aute', 'non' ],\n" +
@@ -2997,7 +2997,7 @@ describe('unexpected', function () {
                    "    email: 'peckhester@medalert.com',\n" +
                    "    phone: '+1 (848) 599-3447',\n" +
                    "    address: '323 Legion Street, Caspar, Delaware, 4117',\n" +
-                   "    registered: [Date Tue, 10 Mar 1981 17:02:53 GMT],\n" +
+                   "    registered: new Date('Tue, 10 Mar 1981 17:02:53 GMT'),\n" +
                    "    latitude: -55.321712,\n" +
                    "    longitude: -100.276818,\n" +
                    "    tags: [\n" +
