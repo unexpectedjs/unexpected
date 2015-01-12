@@ -2859,9 +2859,9 @@ describe('unexpected', function () {
         });
 
         it.skipIf(!Object.prototype.__lookupGetter__, 'handles getters and setters correctly', function () {
-            expect(new Field('VALUE', 'getter'), 'to inspect as', "{ value: 'VALUE' [Getter] }");
-            expect(new Field('VALUE', 'setter'), 'to inspect as', "{ value: [Setter] }");
-            expect(new Field('VALUE', 'getter and setter'), 'to inspect as', "{ value: 'VALUE' [Getter/Setter] }");
+            expect(new Field('VALUE', 'getter'), 'to inspect as', "{ value: 'VALUE' /* getter */ }");
+            expect(new Field('VALUE', 'setter'), 'to inspect as', "{ set value: function (val) {value = val; } }");
+            expect(new Field('VALUE', 'getter and setter'), 'to inspect as', "{ value: 'VALUE' /* getter/setter */ }");
         });
 
         describe('with various special values', function () {
