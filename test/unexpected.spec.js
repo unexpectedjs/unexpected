@@ -2854,10 +2854,36 @@ describe('unexpected', function () {
     });
 
     describe('inspect', function () {
+        expect.addAssertion('to inspect as', function (expect, subject, value) {
+            expect(expect.inspect(subject).toString(), 'to equal', value);
+        });
+
         it.skipIf(!Object.prototype.__lookupGetter__, 'handles getters and setters correctly', function () {
-            expect(expect.inspect(new Field('VALUE', 'getter')).toString(), 'to equal', "{ value: 'VALUE' [Getter] }");
-            expect(expect.inspect(new Field('VALUE', 'setter')).toString(), 'to equal', "{ value: [Setter] }");
-            expect(expect.inspect(new Field('VALUE', 'getter and setter')).toString(), 'to equal', "{ value: 'VALUE' [Getter/Setter] }");
+            expect(new Field('VALUE', 'getter'), 'to inspect as', "{ value: 'VALUE' [Getter] }");
+            expect(new Field('VALUE', 'setter'), 'to inspect as', "{ value: [Setter] }");
+            expect(new Field('VALUE', 'getter and setter'), 'to inspect as', "{ value: 'VALUE' [Getter/Setter] }");
+        });
+
+        describe('with various special values', function () {
+            it('renders null correctly', function () {
+                expect(null, 'to inspect as', 'null');
+            });
+
+            it('renders undefined correctly', function () {
+                expect(undefined, 'to inspect as', 'undefined');
+            });
+
+            it('renders NaN correctly', function () {
+                expect(NaN, 'to inspect as', 'NaN');
+            });
+
+            it('renders Infinity correctly', function () {
+                expect(Infinity, 'to inspect as', 'Infinity');
+            });
+
+            it('renders -Infinity correctly', function () {
+                expect(-Infinity, 'to inspect as', '-Infinity');
+            });
         });
 
         it('indents correctly', function () {
