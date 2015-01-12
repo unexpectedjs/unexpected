@@ -2860,7 +2860,7 @@ describe('unexpected', function () {
 
         it.skipIf(!Object.prototype.__lookupGetter__, 'handles getters and setters correctly', function () {
             expect(new Field('VALUE', 'getter'), 'to inspect as', "{ value: 'VALUE' /* getter */ }");
-            expect(new Field('VALUE', 'setter'), 'to inspect as', "{ set value: function (val) {value = val; } }");
+            expect(new Field('VALUE', 'setter'), 'to inspect as', "{ set value: function (val) { value = val; } }");
             expect(new Field('VALUE', 'getter and setter'), 'to inspect as', "{ value: 'VALUE' /* getter/setter */ }");
         });
 
@@ -3104,6 +3104,10 @@ describe('unexpected', function () {
                 '                foo = foo + quux;\n' +
                 '            }');
             /*jshint multistr:false*/
+        });
+
+        it('should bail out of removing the indentation of one-liner functions', function () {
+            expect(function () {  var foo = 123; return foo; }, 'to inspect as', 'function () {  var foo = 123; return foo; }');
         });
 
         it('should not show the body of a function with native code', function () {
