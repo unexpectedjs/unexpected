@@ -329,6 +329,24 @@ describe('unexpected', function () {
             }('foo', 'bar', 'baz'));
         });
 
+        it('should handle objects with no prototype', function () {
+            expect(Object.create(null), 'to equal', Object.create(null));
+
+            expect(function () {
+                expect(Object.create(null), 'to equal', {});
+            }, 'to throw',
+                   "expected {} to equal {}\n" +
+                   "\n" +
+                   "Mismatching constructors undefined should be Object");
+
+            expect(function () {
+                expect({}, 'to equal', Object.create(null));
+            }, 'to throw',
+                   "expected {} to equal {}\n" +
+                   "\n" +
+                   "Mismatching constructors Object should be undefined");
+        });
+
         it('should treat properties with a value of undefined as equivalent to missing properties', function () {
             expect({foo: undefined, bar: 1}, 'to equal', {bar: 1});
             expect({bar: 1}, 'to equal', {foo: undefined, bar: 1});
