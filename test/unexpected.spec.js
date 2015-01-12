@@ -2859,9 +2859,9 @@ describe('unexpected', function () {
         });
 
         it.skipIf(!Object.prototype.__lookupGetter__, 'handles getters and setters correctly', function () {
-            expect(new Field('VALUE', 'getter'), 'to inspect as', "{ value: 'VALUE' [Getter] }");
-            expect(new Field('VALUE', 'setter'), 'to inspect as', "{ value: [Setter] }");
-            expect(new Field('VALUE', 'getter and setter'), 'to inspect as', "{ value: 'VALUE' [Getter/Setter] }");
+            expect(new Field('VALUE', 'getter'), 'to inspect as', "{ value: 'VALUE' /* getter */ }");
+            expect(new Field('VALUE', 'setter'), 'to inspect as', "{ set value: function (val) { value = val; } }");
+            expect(new Field('VALUE', 'getter and setter'), 'to inspect as', "{ value: 'VALUE' /* getter/setter */ }");
         });
 
         describe('with various special values', function () {
@@ -3033,11 +3033,11 @@ describe('unexpected', function () {
             (function () {
                 args = arguments;
             }('a', 123));
-            expect(expect.inspect(args).toString(), 'to equal', "arguments( 'a', 123 )");
+            expect(args, 'to inspect as', "arguments( 'a', 123 )");
         });
 
         it('should output the body of a function', function () {
-            expect(expect.inspect(function () {
+            expect(function () {
                 var foo = 'bar';
                 var quux = 'baz';
                 while (foo) {
@@ -3045,7 +3045,7 @@ describe('unexpected', function () {
                         .substr(0, foo.length - 1);
                 }
                 return quux;
-            }).toString(), 'to equal',
+            }, 'to inspect as',
                 'function () {\n' +
                 '    var foo = \'bar\';\n' +
                 '    var quux = \'baz\';\n' +
@@ -3059,14 +3059,12 @@ describe('unexpected', function () {
 
         it.skipIf(typeof Uint8Array === 'undefined', 'should render a hex dump for an Uint8Array instance', function () {
             expect(
-                expect.inspect(
-                    new Uint8Array([
-                        0x00, 0x01, 0x02, 0x48, 0x65, 0x72, 0x65, 0x20, 0x69, 0x73, 0x20, 0x74, 0x68, 0x65, 0x20, 0x74,
-                        0x68, 0x69, 0x6E, 0x67, 0x20, 0x49, 0x20, 0x77, 0x61, 0x73, 0x20, 0x74, 0x61, 0x6C, 0x6B, 0x69,
-                        0x6E, 0x67, 0x20, 0x61, 0x62, 0x6F, 0x75, 0x74
-                    ])
-                ).toString(),
-                'to equal',
+                new Uint8Array([
+                    0x00, 0x01, 0x02, 0x48, 0x65, 0x72, 0x65, 0x20, 0x69, 0x73, 0x20, 0x74, 0x68, 0x65, 0x20, 0x74,
+                    0x68, 0x69, 0x6E, 0x67, 0x20, 0x49, 0x20, 0x77, 0x61, 0x73, 0x20, 0x74, 0x61, 0x6C, 0x6B, 0x69,
+                    0x6E, 0x67, 0x20, 0x61, 0x62, 0x6F, 0x75, 0x74
+                ]),
+                'to inspect as',
                 'Uint8Array([0x00, 0x01, 0x02, 0x48, 0x65, 0x72, 0x65, 0x20, 0x69, 0x73, 0x20, 0x74, 0x68, 0x65, 0x20, 0x74 /* 24 more */ ])'
             );
         });
@@ -3076,8 +3074,7 @@ describe('unexpected', function () {
             foo.toString = function () {
                 return 'quux';
             };
-            expect(expect.inspect(foo).toString(), 'to equal',
-                'function foo( /*...*/ ) { /*...*/ }');
+            expect(foo, 'to inspect as', 'function foo( /*...*/ ) { /*...*/ }');
         });
 
         it('should render a function within a nested structure ellipsis when the toString method of a function returns something unparsable', function () {
@@ -3085,18 +3082,18 @@ describe('unexpected', function () {
             foo.toString = function () {
                 return 'quux';
             };
-            expect(expect.inspect({ bar: { quux: foo } }).toString(), 'to equal',
+            expect({ bar: { quux: foo } }, 'to inspect as',
                 '{ bar: { quux: function foo( /*...*/ ) { /*...*/ } } }');
         });
 
         it('should bail out of removing the indentation of functions that use multiline string literals', function () {
             /*jshint multistr:true*/
-            expect(expect.inspect(function () {
+            expect(function () {
                 var foo = 'bar';
                 var quux = 'baz\
                 blah';
                 foo = foo + quux;
-            }).toString(), 'to equal',
+            }, 'to inspect as',
                 'function () {\n' +
                 '                var foo = \'bar\';\n' +
                 '                var quux = \'baz\\\n' +
@@ -3106,8 +3103,12 @@ describe('unexpected', function () {
             /*jshint multistr:false*/
         });
 
+        it('should bail out of removing the indentation of one-liner functions', function () {
+            expect(function () {  var foo = 123; return foo; }, 'to inspect as', 'function () {  var foo = 123; return foo; }');
+        });
+
         it('should not show the body of a function with native code', function () {
-            expect(expect.inspect(Array.prototype.slice).toString(), 'to equal', 'function slice() { /* native code */ }');
+            expect(Array.prototype.slice, 'to inspect as', 'function slice() { /* native code */ }');
         });
     });
 
