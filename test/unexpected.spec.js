@@ -329,6 +329,24 @@ describe('unexpected', function () {
             }('foo', 'bar', 'baz'));
         });
 
+        it('should handle objects with no prototype', function () {
+            expect(Object.create(null), 'to equal', Object.create(null));
+
+            expect(function () {
+                expect(Object.create(null), 'to equal', {});
+            }, 'to throw',
+                   "expected {} to equal {}\n" +
+                   "\n" +
+                   "Mismatching constructors undefined should be Object");
+
+            expect(function () {
+                expect({}, 'to equal', Object.create(null));
+            }, 'to throw',
+                   "expected {} to equal {}\n" +
+                   "\n" +
+                   "Mismatching constructors Object should be undefined");
+        });
+
         it('should treat properties with a value of undefined as equivalent to missing properties', function () {
             expect({foo: undefined, bar: 1}, 'to equal', {bar: 1});
             expect({bar: 1}, 'to equal', {foo: undefined, bar: 1});
@@ -2839,10 +2857,36 @@ describe('unexpected', function () {
     });
 
     describe('inspect', function () {
+        expect.addAssertion('to inspect as', function (expect, subject, value) {
+            expect(expect.inspect(subject).toString(), 'to equal', value);
+        });
+
         it.skipIf(!Object.prototype.__lookupGetter__, 'handles getters and setters correctly', function () {
-            expect(expect.inspect(new Field('VALUE', 'getter')).toString(), 'to equal', "{ value: 'VALUE' [Getter] }");
-            expect(expect.inspect(new Field('VALUE', 'setter')).toString(), 'to equal', "{ value: [Setter] }");
-            expect(expect.inspect(new Field('VALUE', 'getter and setter')).toString(), 'to equal', "{ value: 'VALUE' [Getter/Setter] }");
+            expect(new Field('VALUE', 'getter'), 'to inspect as', "{ value: 'VALUE' /* getter */ }");
+            expect(new Field('VALUE', 'setter'), 'to inspect as', "{ set value: function (val) { value = val; } }");
+            expect(new Field('VALUE', 'getter and setter'), 'to inspect as', "{ value: 'VALUE' /* getter/setter */ }");
+        });
+
+        describe('with various special values', function () {
+            it('renders null correctly', function () {
+                expect(null, 'to inspect as', 'null');
+            });
+
+            it('renders undefined correctly', function () {
+                expect(undefined, 'to inspect as', 'undefined');
+            });
+
+            it('renders NaN correctly', function () {
+                expect(NaN, 'to inspect as', 'NaN');
+            });
+
+            it('renders Infinity correctly', function () {
+                expect(Infinity, 'to inspect as', 'Infinity');
+            });
+
+            it('renders -Infinity correctly', function () {
+                expect(-Infinity, 'to inspect as', '-Infinity');
+            });
         });
 
         it('indents correctly', function () {
@@ -2922,7 +2966,7 @@ describe('unexpected', function () {
                    "    phone: '+1 (803) 472-3209',\n" +
                    "    address: '944 Milton Street, Madrid, Ohio, 1336',\n" +
                    "    about: 'Ea consequat nulla duis incididunt ut irureirure cupidatat. Est tempor cillum commodo aliquaconsequat esse commodo. Culpa ipsum eu consectetur idenim quis sint. Aliqua deserunt dolore reprehenderitid anim exercitation laboris. Eiusmod aute consecteturexcepteur in nulla proident occaecatconsectetur.\\r\\n',\n" +
-                   "    registered: [Date Sun, 03 Jun 1984 09:36:47 GMT],\n" +
+                   "    registered: new Date('Sun, 03 Jun 1984 09:36:47 GMT'),\n" +
                    "    latitude: 8.635553,\n" +
                    "    longitude: -103.382498,\n" +
                    "    tags: [ 'tempor', 'dolore', 'non', 'sit', 'minim', 'aute', 'non' ],\n" +
@@ -2956,7 +3000,7 @@ describe('unexpected', function () {
                    "    email: 'peckhester@medalert.com',\n" +
                    "    phone: '+1 (848) 599-3447',\n" +
                    "    address: '323 Legion Street, Caspar, Delaware, 4117',\n" +
-                   "    registered: [Date Tue, 10 Mar 1981 17:02:53 GMT],\n" +
+                   "    registered: new Date('Tue, 10 Mar 1981 17:02:53 GMT'),\n" +
                    "    latitude: -55.321712,\n" +
                    "    longitude: -100.276818,\n" +
                    "    tags: [\n" +
@@ -2992,11 +3036,11 @@ describe('unexpected', function () {
             (function () {
                 args = arguments;
             }('a', 123));
-            expect(expect.inspect(args).toString(), 'to equal', "arguments( 'a', 123 )");
+            expect(args, 'to inspect as', "arguments( 'a', 123 )");
         });
 
         it('should output the body of a function', function () {
-            expect(expect.inspect(function () {
+            expect(function () {
                 var foo = 'bar';
                 var quux = 'baz';
                 while (foo) {
@@ -3004,7 +3048,7 @@ describe('unexpected', function () {
                         .substr(0, foo.length - 1);
                 }
                 return quux;
-            }).toString(), 'to equal',
+            }, 'to inspect as',
                 'function () {\n' +
                 '    var foo = \'bar\';\n' +
                 '    var quux = \'baz\';\n' +
@@ -3018,14 +3062,12 @@ describe('unexpected', function () {
 
         it.skipIf(typeof Uint8Array === 'undefined', 'should render a hex dump for an Uint8Array instance', function () {
             expect(
-                expect.inspect(
-                    new Uint8Array([
-                        0x00, 0x01, 0x02, 0x48, 0x65, 0x72, 0x65, 0x20, 0x69, 0x73, 0x20, 0x74, 0x68, 0x65, 0x20, 0x74,
-                        0x68, 0x69, 0x6E, 0x67, 0x20, 0x49, 0x20, 0x77, 0x61, 0x73, 0x20, 0x74, 0x61, 0x6C, 0x6B, 0x69,
-                        0x6E, 0x67, 0x20, 0x61, 0x62, 0x6F, 0x75, 0x74
-                    ])
-                ).toString(),
-                'to equal',
+                new Uint8Array([
+                    0x00, 0x01, 0x02, 0x48, 0x65, 0x72, 0x65, 0x20, 0x69, 0x73, 0x20, 0x74, 0x68, 0x65, 0x20, 0x74,
+                    0x68, 0x69, 0x6E, 0x67, 0x20, 0x49, 0x20, 0x77, 0x61, 0x73, 0x20, 0x74, 0x61, 0x6C, 0x6B, 0x69,
+                    0x6E, 0x67, 0x20, 0x61, 0x62, 0x6F, 0x75, 0x74
+                ]),
+                'to inspect as',
                 'Uint8Array([0x00, 0x01, 0x02, 0x48, 0x65, 0x72, 0x65, 0x20, 0x69, 0x73, 0x20, 0x74, 0x68, 0x65, 0x20, 0x74 /* 24 more */ ])'
             );
         });
@@ -3035,8 +3077,7 @@ describe('unexpected', function () {
             foo.toString = function () {
                 return 'quux';
             };
-            expect(expect.inspect(foo).toString(), 'to equal',
-                'function foo( /*...*/ ) { /*...*/ }');
+            expect(foo, 'to inspect as', 'function foo( /*...*/ ) { /*...*/ }');
         });
 
         it('should render a function within a nested structure ellipsis when the toString method of a function returns something unparsable', function () {
@@ -3044,18 +3085,18 @@ describe('unexpected', function () {
             foo.toString = function () {
                 return 'quux';
             };
-            expect(expect.inspect({ bar: { quux: foo } }).toString(), 'to equal',
+            expect({ bar: { quux: foo } }, 'to inspect as',
                 '{ bar: { quux: function foo( /*...*/ ) { /*...*/ } } }');
         });
 
         it('should bail out of removing the indentation of functions that use multiline string literals', function () {
             /*jshint multistr:true*/
-            expect(expect.inspect(function () {
+            expect(function () {
                 var foo = 'bar';
                 var quux = 'baz\
                 blah';
                 foo = foo + quux;
-            }).toString(), 'to equal',
+            }, 'to inspect as',
                 'function () {\n' +
                 '                var foo = \'bar\';\n' +
                 '                var quux = \'baz\\\n' +
@@ -3065,8 +3106,12 @@ describe('unexpected', function () {
             /*jshint multistr:false*/
         });
 
+        it('should bail out of removing the indentation of one-liner functions', function () {
+            expect(function () {  var foo = 123; return foo; }, 'to inspect as', 'function () {  var foo = 123; return foo; }');
+        });
+
         it('should not show the body of a function with native code', function () {
-            expect(expect.inspect(Array.prototype.slice).toString(), 'to equal', 'function slice() { /* native code */ }');
+            expect(Array.prototype.slice, 'to inspect as', 'function slice() { /* native code */ }');
         });
     });
 
@@ -3757,22 +3802,36 @@ describe('unexpected', function () {
                     'function add(a, b) {\n' +
                     '    return a + b;\n' +
                     '}\n' +
-                    'when called with [ 3, 4 ] to equal 9');
+                    'when called with [ 3, 4 ] to equal 9\n' +
+                    '  expected 7 to equal 9');
 
             expect(function () {
                 expect(add, 'when called with', [3, 4], 'to satisfy', 'to equal', 9);
             }, 'to throw',
                    'expected\n' +
-                    'function add(a, b) {\n' +
-                    '    return a + b;\n' +
-                    '}\n' +
-                    "when called with [ 3, 4 ] to satisfy 'to equal', 9"); // DAMN, fix me
+                   'function add(a, b) {\n' +
+                   '    return a + b;\n' +
+                   '}\n' +
+                   "when called with [ 3, 4 ] to satisfy 'to equal', 9\n" + // DAMN, fix me
+                   "  expected 7 to satisfy 'to equal', 9"); // DAMN, fix me
         });
     });
 
     describe('when passed as parameters to assertion', function () {
         it('should assert that the function invocation produces the correct output', function () {
             expect([3, 4], 'when passed as parameters to', add, 'to equal', 7);
+        });
+
+        it('should produce a nested error message when the assertion fails', function () {
+            expect(function () {
+                expect([3, 4], 'when passed as parameters to', add, 'to equal', 8);
+            }, 'to throw',
+                   'expected [ 3, 4 ] when passed as parameters to\n' +
+                   'function add(a, b) {\n' +
+                   '    return a + b;\n' +
+                   '} to equal 8\n' +
+                   '  expected 7 to equal 8');
+
         });
 
         it('should combine with other assertions (showcase)', function () {
