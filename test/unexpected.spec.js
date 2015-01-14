@@ -1173,7 +1173,14 @@ describe('unexpected', function () {
             expect(0, 'to be finite');
             expect(Infinity, 'not to be finite');
             expect(-Infinity, 'not to be finite');
-            expect(NaN, 'not to be finite');
+        });
+
+        it('refuses to work on NaN', function () {
+            expect(function () {
+                expect(NaN, 'not to be finite');
+            }, 'to throw',
+                   'The assertion "not to be finite" is not defined for the type "NaN",\n' +
+                   'but it is defined for the type "number"');
         });
 
         it('throws when the assertion fails', function () {
@@ -1183,13 +1190,20 @@ describe('unexpected', function () {
         });
     });
 
-    describe('finite assertion', function () {
+    describe('infinite assertion', function () {
         it('asserts a infinite number', function () {
             expect(123, 'not to be infinite');
             expect(0, 'not to be infinite');
             expect(Infinity, 'to be infinite');
             expect(-Infinity, 'to be infinite');
-            expect(NaN, 'not to be infinite');
+        });
+
+        it('refuses to work on NaN', function () {
+            expect(function () {
+                expect(NaN, 'not to be infinite');
+            }, 'to throw',
+                   'The assertion "not to be infinite" is not defined for the type "NaN",\n' +
+                   'but it is defined for the type "number"');
         });
 
         it('throws when the assertion fails', function () {
@@ -1261,6 +1275,14 @@ describe('unexpected', function () {
             expect(function () {
                 expect(0, 'to be greater than', 0);
             }, 'to throw exception', "expected 0 to be greater than 0");
+        });
+
+        it('refuses to compare NaN to a number', function () {
+            expect(function () {
+                expect(NaN, 'not to be greater than', 1);
+            }, 'to throw',
+                   'The assertion "not to be greater than" is not defined for the type "NaN",\n' +
+                   'but it is defined for these types: "number", "string"');
         });
     });
 
