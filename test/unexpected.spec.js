@@ -209,6 +209,13 @@ describe('unexpected', function () {
                 expect(undefined, 'to be defined');
             }, 'to throw exception', "expected undefined to be defined");
         });
+
+
+        it('does not provide a diff when comparing against undefined', function () {
+            expect(function () {
+                expect('blabla', 'to be undefined');
+            }, 'to throw', "expected 'blabla' to be undefined");
+        });
     });
 
     describe('a/an assertion', function () {
