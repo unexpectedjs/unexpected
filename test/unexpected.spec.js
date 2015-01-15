@@ -2372,6 +2372,15 @@ describe('unexpected', function () {
                     });
                 });
 
+                it('errorMode=nested does not hoist the label of the leaf assertion', function () {
+                    errorMode = 'nested';
+                    expect(function () {
+                        clonedExpect([3, 2, 1], 'to be sorted');
+                    }, 'to throw', function (err) {
+                        expect(err.label, 'to be undefined');
+                    });
+                });
+
                 it('errorMode=bubble bubbles uses the error message of expect failures in the assertion', function () {
                     errorMode = 'bubble';
                     expect(function () {
