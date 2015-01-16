@@ -366,11 +366,39 @@ describe('assertions/any/to-equal.md', function () {
         ].join('\n'));
     });
 });
+describe('assertions/arrayLike/to-contain.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect('Hello beautiful world!', 'to contain', 'beautiful');
+            expect('Hello beautiful world!', 'to contain', 'Hello', 'world');
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect('Hello world!', 'to contain', 'beautiful');
+        }, 'to throw', [
+            'expected \'Hello world!\' to contain \'beautiful\''
+        ].join('\n'));
+    });
+    it('#3', function () {
+        expect(function () {
+            expect('Hello world!', 'not to contain', 'beautiful', 'ugly');
+        }, 'not to throw');
+    });
+    it('#4', function () {
+        expect(function () {
+            expect('Hello beautiful world!', 'not to contain', 'beautiful', 'ugly');
+        }, 'to throw', [
+            'expected \'Hello beautiful world!\' not to contain \'beautiful\', \'ugly\'',
+            '',
+            'Hello beautiful world!'
+        ].join('\n'));
+    });
+});
 describe('assertions/arrayLike/to-have-length.md', function () {
     it('#1', function () {
         expect(function () {
             expect([1,2,3], 'to have length', 3);
-            expect({ length: 42 }, 'to have length', 42);
             ((function () {
               expect(arguments, 'to have length', 3);
             })(1,2,3));

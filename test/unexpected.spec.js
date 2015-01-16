@@ -894,7 +894,9 @@ describe('unexpected', function () {
             expect([], 'to have length', 0);
             expect([1, 2, 3], 'to have length', 3);
             expect([1, 2, 3], 'not to have length', 4);
-            expect({ length: 4 }, 'to have length', 4);
+            expect((function () {
+                return arguments;
+            }(1,2,3,4)), 'to have length', 4);
         });
 
         it('asserts string .length', function () {
@@ -926,11 +928,13 @@ describe('unexpected', function () {
                 expect(null, 'to have length', 4);
             }, 'to throw exception',
                    'The assertion "to have length" is not defined for the type "null",\n' +
-                   'but it is defined for these types: "string", "object"');
+                   'but it is defined for these types: "string", "arrayLike"');
 
             expect(function () {
-                expect({ length: 'foo' }, 'to have length', 4);
-            }, 'to throw exception', "Assertion 'to have length' only supports array like objects");
+                expect({ length: 4 }, 'to have length', 4);
+            }, 'to throw exception',
+                   'The assertion "to have length" is not defined for the type "object",\n' +
+                   'but it is defined for these types: "string", "arrayLike"');
         });
     });
 
