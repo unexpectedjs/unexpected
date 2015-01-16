@@ -13,7 +13,8 @@
     "string": [
         "to be",
         "to have length",
-        "to match"
+        "to match",
+        "to contain"
     ],
     "object": [
         "to be canonical"

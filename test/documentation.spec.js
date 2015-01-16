@@ -49,7 +49,7 @@ describe('assertions/any/to-be-a.md', function () {
         expect(function () {
             expect({ 0: 'foo', 1: 'bar', 2: 'baz' }, 'to be an array');
         }, 'to throw', [
-            'expected { \'0\': \'foo\', \'1\': \'bar\', \'2\': \'baz\' } to be an array'
+            'expected { 0: \'foo\', 1: \'bar\', 2: \'baz\' } to be an array'
         ].join('\n'));
     });
     it('#6', function () {
@@ -520,6 +520,35 @@ describe('assertions/string/to-be.md', function () {
             expect('Hello world!', 'not to be', 'Hello world!');
         }, 'to throw', [
             'expected \'Hello world!\' not to be \'Hello world!\''
+        ].join('\n'));
+    });
+});
+describe('assertions/string/to-contain.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect('Hello beautiful world!', 'to contain', 'beautiful');
+            expect('Hello beautiful world!', 'to contain', 'Hello', 'world');
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect('Hello world!', 'to contain', 'beautiful');
+        }, 'to throw', [
+            'expected \'Hello world!\' to contain \'beautiful\''
+        ].join('\n'));
+    });
+    it('#3', function () {
+        expect(function () {
+            expect('Hello world!', 'not to contain', 'beautiful', 'ugly');
+        }, 'not to throw');
+    });
+    it('#4', function () {
+        expect(function () {
+            expect('Hello beautiful world!', 'not to contain', 'beautiful', 'ugly');
+        }, 'to throw', [
+            'expected \'Hello beautiful world!\' not to contain \'beautiful\', \'ugly\'',
+            '',
+            'Hello beautiful world!'
         ].join('\n'));
     });
 });

@@ -67,7 +67,7 @@ expect({ 0: 'foo', 1: 'bar', 2: 'baz' }, 'to be an array');
 ```
 
 ```
-expected { '0': 'foo', '1': 'bar', '2': 'baz' } to be an array
+expected { 0: 'foo', 1: 'bar', 2: 'baz' } to be an array
 ```
 <!-- /evaluate -->
 
