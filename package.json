@@ -14,8 +14,9 @@
     "url": "https://github.com/sunesimonsen/unexpected"
   },
   "scripts": {
-    "test": "make test",
-    "travis": "make test && make test-phantomjs"
+    "test": "make test && make test-phantomjs",
+    "travis": "npm test",
+    "prepublish": "npm test && make unexpected.js"
   },
   "main": "./lib/index.js",
   "dependencies": {
