@@ -1542,9 +1542,9 @@ describe('unexpected', function () {
                     'expected [ 1, 2, 3 ] to satisfy [ 1, 2 ]\n' +
                     '\n' +
                     '{\n' +
-                    "  '0': 1,\n" +
-                    "  '1': 2,\n" +
-                    "  '2': 3 // should be removed\n" +
+                    '  0: 1,\n' +
+                    '  1: 2,\n' +
+                    '  2: 3 // should be removed\n' +
                     '}');
             });
 
@@ -1555,10 +1555,10 @@ describe('unexpected', function () {
                     'expected [ 1, 2, 3 ] to satisfy [ 1, 2, 3, 4 ]\n' +
                     '\n' +
                     '{\n' +
-                    "  '0': 1,\n" +
-                    "  '1': 2,\n" +
-                    "  '2': 3,\n" +
-                    "  '3': undefined // should equal 4\n" +
+                    '  0: 1,\n' +
+                    '  1: 2,\n' +
+                    '  2: 3,\n' +
+                    '  3: undefined // should equal 4\n' +
                     '}');
             });
         });
