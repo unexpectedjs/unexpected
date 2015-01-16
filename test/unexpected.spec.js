@@ -1530,6 +1530,39 @@ describe('unexpected', function () {
             });
         });
 
+        describe('on arrays', function () {
+            it('should require all indices to be present in the subject', function () {
+                expect([1, 2, 3], 'to satisfy', [1, 2, 3]);
+            });
+
+            it('should fail if the value does not include all the indices of the subject', function () {
+                expect(function () {
+                    expect([1, 2, 3], 'to satisfy', [1, 2]);
+                }, 'to throw',
+                    'expected [ 1, 2, 3 ] to satisfy [ 1, 2 ]\n' +
+                    '\n' +
+                    '{\n' +
+                    "  '0': 1,\n" +
+                    "  '1': 2,\n" +
+                    "  '2': 3 // should be removed\n" +
+                    '}');
+            });
+
+            it('should fail if the value includes more indices than the subject', function () {
+                expect(function () {
+                    expect([1, 2, 3], 'to satisfy', [1, 2, 3, 4]);
+                }, 'to throw',
+                    'expected [ 1, 2, 3 ] to satisfy [ 1, 2, 3, 4 ]\n' +
+                    '\n' +
+                    '{\n' +
+                    "  '0': 1,\n" +
+                    "  '1': 2,\n" +
+                    "  '2': 3,\n" +
+                    "  '3': undefined // should equal 4\n" +
+                    '}');
+            });
+        });
+
         it('should support a chained expect.it', function () {
             expect({foo: 123}, 'to satisfy', {
                 foo: expect.it('to be a number').and('to be greater than', 10)
