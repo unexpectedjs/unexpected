@@ -19,7 +19,7 @@
     "object": [
         "to be canonical"
     ],
-    "arrayLike": [
+    "array": [
         "to have length"
     ],
     "boolean": [
