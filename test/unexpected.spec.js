@@ -1484,8 +1484,8 @@ describe('unexpected', function () {
             });
         });
 
-        describe('on error instances', function () {
-            it('should support satisfying against a error instance', function () {
+        describe('on Error instances', function () {
+            it('should support satisfying against an Error instance', function () {
                 expect(new Error('foo'), 'to satisfy', new Error('foo'));
             });
 
@@ -1495,6 +1495,38 @@ describe('unexpected', function () {
 
             it('should support satisfying against a regexp', function () {
                 expect(new Error('foo'), 'to satisfy', /foo/);
+            });
+        });
+
+        describe('on Buffer instances', function () {
+            it.skipIf(typeof Buffer === 'undefined', 'should assert equality', function () {
+                expect(new Buffer([1, 2, 3]), 'to satisfy', new Buffer([1, 2, 3]));
+            });
+
+            it.skipIf(typeof Buffer === 'undefined', 'fail with a binary diff when the assertion fails', function () {
+                expect(function () {
+                    expect(new Buffer([1, 2, 3]), 'to satisfy', new Buffer([1, 2, 4]));
+                }, 'to throw',
+                    'expected Buffer([0x01, 0x02, 0x03]) to satisfy Buffer([0x01, 0x02, 0x04])\n' +
+                    '\n' +
+                    '-01 02 03                                         │...│\n' +
+                    '+01 02 04                                         │...│');
+            });
+        });
+
+        describe('on Uint8Array instances', function () {
+            it.skipIf(typeof Uint8Array === 'undefined', 'should assert equality', function () {
+                expect(new Uint8Array([1, 2, 3]), 'to satisfy', new Uint8Array([1, 2, 3]));
+            });
+
+            it.skipIf(typeof Uint8Array === 'undefined', 'fail with a binary diff when the assertion fails', function () {
+                expect(function () {
+                    expect(new Uint8Array([1, 2, 3]), 'to satisfy', new Uint8Array([1, 2, 4]));
+                }, 'to throw',
+                    'expected Uint8Array([0x01, 0x02, 0x03]) to satisfy Uint8Array([0x01, 0x02, 0x04])\n' +
+                    '\n' +
+                    '-01 02 03                                         │...│\n' +
+                    '+01 02 04                                         │...│');
             });
         });
 
