@@ -366,6 +366,32 @@ describe('assertions/any/to-equal.md', function () {
         ].join('\n'));
     });
 });
+describe('assertions/array/to-be-empty.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect([], 'to be empty');
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect([1,2,3], 'to be empty');
+        }, 'to throw', [
+            'expected [ 1, 2, 3 ] to be empty'
+        ].join('\n'));
+    });
+    it('#3', function () {
+        expect(function () {
+            expect([1,2,3], 'not to be empty');
+        }, 'not to throw');
+    });
+    it('#4', function () {
+        expect(function () {
+            expect([], 'not to be empty');
+        }, 'to throw', [
+            'expected [] not to be empty'
+        ].join('\n'));
+    });
+});
 describe('assertions/array/to-contain.md', function () {
     it('#1', function () {
         expect(function () {
@@ -519,6 +545,32 @@ describe('assertions/object/to-be-canonical.md', function () {
             expect([456, { b: 456, a: 123 }], 'to be canonical');
         }, 'to throw', [
             'expected [ 456, { b: 456, a: 123 } ] to be canonical'
+        ].join('\n'));
+    });
+});
+describe('assertions/string/to-be-empty.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect('', 'to be empty');
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect('Hello world', 'to be empty');
+        }, 'to throw', [
+            'expected \'Hello world\' to be empty'
+        ].join('\n'));
+    });
+    it('#3', function () {
+        expect(function () {
+            expect('Hello world', 'not to be empty');
+        }, 'not to throw');
+    });
+    it('#4', function () {
+        expect(function () {
+            expect('', 'not to be empty');
+        }, 'to throw', [
+            'expected \'\' not to be empty'
         ].join('\n'));
     });
 });

@@ -12,6 +12,7 @@
     ],
     "string": [
         "to be",
+        "to be empty",
         "to have length",
         "to match",
         "to contain"
@@ -20,6 +21,7 @@
         "to be canonical"
     ],
     "array": [
+        "to be empty",
         "to have length",
         "to contain"
     ],
