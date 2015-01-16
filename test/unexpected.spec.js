@@ -1115,12 +1115,11 @@ describe('unexpected', function () {
     });
 
     describe('empty assertion', function () {
-        it('asserts presence of an own property (and value optionally)', function () {
+        it('asserts the array-like objects have a non-zero length', function () {
             expect([], 'to be empty');
             expect('', 'to be empty');
-            expect({}, 'to be empty');
-            expect({ length: 0, duck: 'typing' }, 'to be empty');
             expect([1, 2, 3], 'not to be empty');
+            expect('foobar', 'not to be empty');
             expect([1, 2, 3], 'to be non-empty');
         });
 
@@ -1137,7 +1136,7 @@ describe('unexpected', function () {
                 expect(null, 'to be empty');
             }, 'to throw exception',
                    'The assertion "to be empty" is not defined for the type "null",\n' +
-                   'but it is defined for these types: "string", "object"');
+                   'but it is defined for these types: "string", "arrayLike"');
         });
     });
 
