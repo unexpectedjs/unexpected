@@ -4,7 +4,7 @@ Asserts an array contains one or more items.
 ```javascript
 expect([0, 1, 2], 'to contain', 1);
 expect([ { name: 'John Doe' }, { name: 'Jane Doe' } ], 'to contain', { name: 'Jane Doe' });
-expect([1, 2], 'to contain', 0, 2);
+expect([0, 1, 2], 'to contain', 0, 2);
 ```
 <!-- /evaluate -->
 

@@ -17,7 +17,7 @@
     "test": "make test && make test-phantomjs",
     "travis": "npm test",
     "generate-docs": "make site-build",
-    "prepublish": "npm generate-docs && npm test && make unexpected.js"
+    "prepublish": "npm run generate-docs && npm test && make unexpected.js"
   },
   "main": "./lib/index.js",
   "dependencies": {

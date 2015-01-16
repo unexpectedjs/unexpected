@@ -371,7 +371,7 @@ describe('assertions/array/to-contain.md', function () {
         expect(function () {
             expect([0, 1, 2], 'to contain', 1);
             expect([ { name: 'John Doe' }, { name: 'Jane Doe' } ], 'to contain', { name: 'Jane Doe' });
-            expect([1, 2], 'to contain', 0, 2);
+            expect([0, 1, 2], 'to contain', 0, 2);
         }, 'not to throw');
     });
     it('#2', function () {
@@ -403,9 +403,6 @@ describe('assertions/array/to-have-length.md', function () {
     it('#1', function () {
         expect(function () {
             expect([1,2,3], 'to have length', 3);
-            ((function () {
-              expect(arguments, 'to have length', 3);
-            })(1,2,3));
         }, 'not to throw');
     });
     it('#2', function () {
