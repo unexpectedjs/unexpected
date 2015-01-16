@@ -20,7 +20,8 @@
         "to be canonical"
     ],
     "array": [
-        "to have length"
+        "to have length",
+        "to contain"
     ],
     "boolean": [
         "to be true",

@@ -3,9 +3,6 @@ Asserts that an array has the specified length.
 <!-- evaluate -->
 ```javascript
 expect([1,2,3], 'to have length', 3);
-((function () {
-  expect(arguments, 'to have length', 3);
-})(1,2,3));
 ```
 <!-- /evaluate -->
 

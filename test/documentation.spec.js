@@ -366,36 +366,40 @@ describe('assertions/any/to-equal.md', function () {
         ].join('\n'));
     });
 });
-describe('assertions/arrayLike/to-contain.md', function () {
+describe('assertions/array/to-contain.md', function () {
     it('#1', function () {
         expect(function () {
-            expect('Hello beautiful world!', 'to contain', 'beautiful');
-            expect('Hello beautiful world!', 'to contain', 'Hello', 'world');
+            expect([0, 1, 2], 'to contain', 1);
+            expect([ { name: 'John Doe' }, { name: 'Jane Doe' } ], 'to contain', { name: 'Jane Doe' });
+            expect([1, 2], 'to contain', 0, 2);
         }, 'not to throw');
     });
     it('#2', function () {
         expect(function () {
-            expect('Hello world!', 'to contain', 'beautiful');
+            expect([ { name: 'John Doe' }, { name: 'Jane Doe' } ], 'to contain', { name: 'Jonnie Doe' });
         }, 'to throw', [
-            'expected \'Hello world!\' to contain \'beautiful\''
+            'expected [ { name: \'John Doe\' }, { name: \'Jane Doe\' } ] to contain { name: \'Jonnie Doe\' }'
         ].join('\n'));
     });
     it('#3', function () {
         expect(function () {
-            expect('Hello world!', 'not to contain', 'beautiful', 'ugly');
+            expect([ { name: 'John Doe' }, { name: 'Jane Doe' } ], 'not to contain', { name: 'Jonnie Doe' });
         }, 'not to throw');
     });
     it('#4', function () {
         expect(function () {
-            expect('Hello beautiful world!', 'not to contain', 'beautiful', 'ugly');
+            expect([ { name: 'John Doe' }, { name: 'Jane Doe' } ], 'not to contain', { name: 'Jane Doe' });
         }, 'to throw', [
-            'expected \'Hello beautiful world!\' not to contain \'beautiful\', \'ugly\'',
+            'expected [ { name: \'John Doe\' }, { name: \'Jane Doe\' } ] not to contain { name: \'Jane Doe\' }',
             '',
-            'Hello beautiful world!'
+            '[',
+            '  { name: \'John Doe\' },',
+            '  { name: \'Jane Doe\' } // should be removed',
+            ']'
         ].join('\n'));
     });
 });
-describe('assertions/arrayLike/to-have-length.md', function () {
+describe('assertions/array/to-have-length.md', function () {
     it('#1', function () {
         expect(function () {
             expect([1,2,3], 'to have length', 3);
