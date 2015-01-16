@@ -209,6 +209,13 @@ describe('unexpected', function () {
                 expect(undefined, 'to be defined');
             }, 'to throw exception', "expected undefined to be defined");
         });
+
+
+        it('does not provide a diff when comparing against undefined', function () {
+            expect(function () {
+                expect('blabla', 'to be undefined');
+            }, 'to throw', "expected 'blabla' to be undefined");
+        });
     });
 
     describe('a/an assertion', function () {
@@ -1175,7 +1182,14 @@ describe('unexpected', function () {
             expect(0, 'to be finite');
             expect(Infinity, 'not to be finite');
             expect(-Infinity, 'not to be finite');
-            expect(NaN, 'not to be finite');
+        });
+
+        it('refuses to work on NaN', function () {
+            expect(function () {
+                expect(NaN, 'not to be finite');
+            }, 'to throw',
+                   'The assertion "not to be finite" is not defined for the type "NaN",\n' +
+                   'but it is defined for the type "number"');
         });
 
         it('throws when the assertion fails', function () {
@@ -1185,13 +1199,20 @@ describe('unexpected', function () {
         });
     });
 
-    describe('finite assertion', function () {
+    describe('infinite assertion', function () {
         it('asserts a infinite number', function () {
             expect(123, 'not to be infinite');
             expect(0, 'not to be infinite');
             expect(Infinity, 'to be infinite');
             expect(-Infinity, 'to be infinite');
-            expect(NaN, 'not to be infinite');
+        });
+
+        it('refuses to work on NaN', function () {
+            expect(function () {
+                expect(NaN, 'not to be infinite');
+            }, 'to throw',
+                   'The assertion "not to be infinite" is not defined for the type "NaN",\n' +
+                   'but it is defined for the type "number"');
         });
 
         it('throws when the assertion fails', function () {
@@ -1263,6 +1284,14 @@ describe('unexpected', function () {
             expect(function () {
                 expect(0, 'to be greater than', 0);
             }, 'to throw exception', "expected 0 to be greater than 0");
+        });
+
+        it('refuses to compare NaN to a number', function () {
+            expect(function () {
+                expect(NaN, 'not to be greater than', 1);
+            }, 'to throw',
+                   'The assertion "not to be greater than" is not defined for the type "NaN",\n' +
+                   'but it is defined for these types: "number", "string"');
         });
     });
 
@@ -1457,8 +1486,8 @@ describe('unexpected', function () {
             });
         });
 
-        describe('on error instances', function () {
-            it('should support satisfying against a error instance', function () {
+        describe('on Error instances', function () {
+            it('should support satisfying against an Error instance', function () {
                 expect(new Error('foo'), 'to satisfy', new Error('foo'));
             });
 
@@ -1468,6 +1497,71 @@ describe('unexpected', function () {
 
             it('should support satisfying against a regexp', function () {
                 expect(new Error('foo'), 'to satisfy', /foo/);
+            });
+        });
+
+        describe('on Buffer instances', function () {
+            it.skipIf(typeof Buffer === 'undefined', 'should assert equality', function () {
+                expect(new Buffer([1, 2, 3]), 'to satisfy', new Buffer([1, 2, 3]));
+            });
+
+            it.skipIf(typeof Buffer === 'undefined', 'fail with a binary diff when the assertion fails', function () {
+                expect(function () {
+                    expect(new Buffer([1, 2, 3]), 'to satisfy', new Buffer([1, 2, 4]));
+                }, 'to throw',
+                    'expected Buffer([0x01, 0x02, 0x03]) to satisfy Buffer([0x01, 0x02, 0x04])\n' +
+                    '\n' +
+                    '-01 02 03                                         │...│\n' +
+                    '+01 02 04                                         │...│');
+            });
+        });
+
+        describe('on Uint8Array instances', function () {
+            it.skipIf(typeof Uint8Array === 'undefined', 'should assert equality', function () {
+                expect(new Uint8Array([1, 2, 3]), 'to satisfy', new Uint8Array([1, 2, 3]));
+            });
+
+            it.skipIf(typeof Uint8Array === 'undefined', 'fail with a binary diff when the assertion fails', function () {
+                expect(function () {
+                    expect(new Uint8Array([1, 2, 3]), 'to satisfy', new Uint8Array([1, 2, 4]));
+                }, 'to throw',
+                    'expected Uint8Array([0x01, 0x02, 0x03]) to satisfy Uint8Array([0x01, 0x02, 0x04])\n' +
+                    '\n' +
+                    '-01 02 03                                         │...│\n' +
+                    '+01 02 04                                         │...│');
+            });
+        });
+
+        describe('on arrays', function () {
+            it('should require all indices to be present in the subject', function () {
+                expect([1, 2, 3], 'to satisfy', [1, 2, 3]);
+            });
+
+            it('should fail if the value does not include all the indices of the subject', function () {
+                expect(function () {
+                    expect([1, 2, 3], 'to satisfy', [1, 2]);
+                }, 'to throw',
+                    'expected [ 1, 2, 3 ] to satisfy [ 1, 2 ]\n' +
+                    '\n' +
+                    '{\n' +
+                    '  0: 1,\n' +
+                    '  1: 2,\n' +
+                    '  2: 3 // should be removed\n' +
+                    '}');
+            });
+
+            it('should fail if the value includes more indices than the subject', function () {
+                expect(function () {
+                    expect([1, 2, 3], 'to satisfy', [1, 2, 3, 4]);
+                }, 'to throw',
+                    'expected [ 1, 2, 3 ] to satisfy [ 1, 2, 3, 4 ]\n' +
+                    '\n' +
+                    '{\n' +
+                    '  0: 1,\n' +
+                    '  1: 2,\n' +
+                    '  2: 3,\n' +
+                    '  3: undefined // should equal 4\n' +
+                    '}');
             });
         });
 
@@ -2343,6 +2437,15 @@ describe('unexpected', function () {
                         clonedExpect(42, 'to be sorted');
                     }, 'to throw', function (err) {
                         expect(err.output.toString(), 'to equal', 'expected 42 to be sorted\n  expected 42 to be an array');
+                    });
+                });
+
+                it('errorMode=nested does not hoist the label of the leaf assertion', function () {
+                    errorMode = 'nested';
+                    expect(function () {
+                        clonedExpect([3, 2, 1], 'to be sorted');
+                    }, 'to throw', function (err) {
+                        expect(err.label, 'to be undefined');
                     });
                 });
 
