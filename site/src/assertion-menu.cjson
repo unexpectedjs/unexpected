@@ -15,7 +15,8 @@
         "to be empty",
         "to have length",
         "to match",
-        "to contain"
+        "to contain",
+        "to be within"
     ],
     "object": [
         "to be canonical"

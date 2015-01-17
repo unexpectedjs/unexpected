@@ -658,6 +658,36 @@ describe('assertions/string/to-be-empty.md', function () {
         ].join('\n'));
     });
 });
+describe('assertions/string/to-be-within.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect('a', 'to be within', 'a', 'd');
+            expect('b', 'to be within', 'a', 'd');
+            expect('aabbcc', 'to be within', 'aaa', 'aaz');
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect('abbbcc', 'to be within', 'aaa', 'aaz');
+        }, 'to throw', [
+            'expected \'abbbcc\' to be within \'aaa..aaz\''
+        ].join('\n'));
+    });
+    it('#3', function () {
+        expect(function () {
+            expect('bar', 'not to be within', 'foo', 'baz');
+            expect('e', 'not to be within', 'a', 'd');
+            expect('abbbcc', 'not to be within', 'aaa', 'aaz');
+        }, 'not to throw');
+    });
+    it('#4', function () {
+        expect(function () {
+            expect('c', 'not to be within', 'a', 'd');
+        }, 'to throw', [
+            'expected \'c\' not to be within \'a..d\''
+        ].join('\n'));
+    });
+});
 describe('assertions/string/to-be.md', function () {
     it('#1', function () {
         expect(function () {
