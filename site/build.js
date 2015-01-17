@@ -67,7 +67,18 @@ metalSmith(__dirname)
             if (err) {
                 return next(err);
             }
-            metadata.assertions = JSON.parse(stripJsonComments(data));
+            var assertionsByType = JSON.parse(stripJsonComments(data));
+            Object.keys(assertionsByType).forEach(function (type) {
+                assertionsByType[type] = assertionsByType[type].map(function (assertion) {
+                    var id = titleToId(assertion);
+                    return {
+                        id: id,
+                        title: assertion,
+                        href: '/assertions/' + type + '/' + id + '/'
+                    };
+                });
+            });
+            metadata.assertionsByType = assertionsByType;
             next();
         });
     })

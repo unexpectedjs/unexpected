@@ -4,14 +4,14 @@
 
 <% if (filter !== 'all') { %>
     <h3><%= filter %></h3>
-    <% assertions[filter].forEach(function (assertion) { %>
-        <p><a href="/assertions/<%= filter.replace(/ /g, '-') %>/<%= assertion.replace(/ /g, '-') %>/"><%= assertion %></a></p>
+    <% assertionsByType[filter].forEach(function (assertion) { %>
+        <p><a href="<%= assertion.href %>"><%= assertion.title %></a></p>
     <% }) %>
 <% } else { %>
-   <% Object.keys(assertions).forEach(function (type) { %>
+   <% Object.keys(assertionsByType).forEach(function (type) { %>
        <h3><a href="/assertions/<%= type.replace(/ /g, '-') %>/"><%= type %></a></h3>
-       <% assertions[type].forEach(function (assertion) { %>
-           <p><a href="/assertions/<%= type.replace(/ /g, '-') %>/<%= assertion.replace(/ /g, '-') %>/"><%= assertion %></a></p>
+       <% assertionsByType[type].forEach(function (assertion) { %>
+           <p><a href="<%= assertion.href %>"><%= assertion.title %></a></p>
        <% }) %>
    <% }) %>
 <% } %>

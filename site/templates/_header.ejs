@@ -18,13 +18,13 @@
     <section id="assertions">
         <nav id="assertion-menu" class="js-remember-scroll-position">
             <ul>
-                <% Object.keys(assertions).forEach(function (type) { %>
+                <% Object.keys(assertionsByType).forEach(function (type) { %>
                 <li>
                     <a href="/assertions/<%= type %>/"><%= type %></a>
                     <ul>
-                        <% assertions[type].forEach(function (assertion) { %>
-                        <li class="<%= isActiveAssertion(path, type, assertion) ? 'active' : '' %>">
-                            <a href="/assertions/<%=type%>/<%=titleToId(assertion)%>"><%= assertion %></a>
+                        <% assertionsByType[type].forEach(function (assertion) { %>
+                        <li class="<%= isActiveAssertion(path, type, assertion.title) ? 'active' : '' %>">
+                            <a href="<%= assertion.href %>"><%= assertion.title %></a>
                         </li>
                         <% }) %>
                     </ul>
