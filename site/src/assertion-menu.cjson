@@ -16,7 +16,8 @@
         "to have length",
         "to match",
         "to contain",
-        "to be within"
+        "to be within",
+        "to be greater than"
     ],
     "object": [
         "to be canonical"
@@ -35,6 +36,7 @@
         "to be NaN",
         "to be finite",
         "to be infinite",
-        "to be within"
+        "to be within",
+        "to be greater than"
     ]
 }

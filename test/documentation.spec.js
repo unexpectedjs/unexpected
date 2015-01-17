@@ -560,6 +560,37 @@ describe('assertions/number/to-be-finite.md', function () {
         ].join('\n'));
     });
 });
+describe('assertions/number/to-be-greater-than.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect(3, 'to be greater than', 2);
+            expect(1, 'to be above', 0);
+            expect(4, 'to be >', 3);
+            expect(4, '>', 3);
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect(2, 'to be greater than', 2);
+        }, 'to throw', [
+            'expected 2 to be greater than 2'
+        ].join('\n'));
+    });
+    it('#3', function () {
+        expect(function () {
+            expect(2, 'not to be greater than', 2);
+            expect(0, 'not to be above', 1);
+            expect(3, 'not to be >', 4);
+        }, 'not to throw');
+    });
+    it('#4', function () {
+        expect(function () {
+            expect(3, 'not to be greater than', 2);
+        }, 'to throw', [
+            'expected 3 not to be greater than 2'
+        ].join('\n'));
+    });
+});
 describe('assertions/number/to-be-infinite.md', function () {
     it('#1', function () {
         expect(function () {
@@ -655,6 +686,37 @@ describe('assertions/string/to-be-empty.md', function () {
             expect('', 'not to be empty');
         }, 'to throw', [
             'expected \'\' not to be empty'
+        ].join('\n'));
+    });
+});
+describe('assertions/string/to-be-greater-than.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect('b', 'to be greater than', 'a');
+            expect('b', 'to be above', 'a');
+            expect('b', 'to be >', 'a');
+            expect('b', '>', 'a');
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect('a', 'to be greater than', 'a');
+        }, 'to throw', [
+            'expected \'a\' to be greater than \'a\''
+        ].join('\n'));
+    });
+    it('#3', function () {
+        expect(function () {
+            expect('a', 'not to be greater than', 'a');
+            expect('a', 'not to be above', 'a');
+            expect('a', 'not to be >', 'a');
+        }, 'not to throw');
+    });
+    it('#4', function () {
+        expect(function () {
+            expect('b', 'not to be above', 'a');
+        }, 'to throw', [
+            'expected \'b\' not to be above \'a\''
         ].join('\n'));
     });
 });
