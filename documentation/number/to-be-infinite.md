@@ -1,4 +1,4 @@
-Asserts that a value is infinite.
+Asserts that a number is infinite.
 
 <!-- evaluate -->
 ```javascript

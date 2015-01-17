@@ -1,4 +1,4 @@
-Asserts that a value is finite.
+Asserts that a number is finite.
 
 <!-- evaluate -->
 ```javascript
