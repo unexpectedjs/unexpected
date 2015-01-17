@@ -533,6 +533,32 @@ describe('assertions/number/to-be-close-to.md', function () {
         ].join('\n'));
     });
 });
+describe('assertions/number/to-be-finite.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect(123, 'to be finite');
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect(Infinity, 'to be finite');
+        }, 'to throw', [
+            'expected Infinity to be finite'
+        ].join('\n'));
+    });
+    it('#3', function () {
+        expect(function () {
+            expect(Infinity, 'not to be finite');
+        }, 'not to throw');
+    });
+    it('#4', function () {
+        expect(function () {
+            expect(123, 'not to be finite');
+        }, 'to throw', [
+            'expected 123 not to be finite'
+        ].join('\n'));
+    });
+});
 describe('assertions/object/to-be-canonical.md', function () {
     it('#1', function () {
         expect(function () {
