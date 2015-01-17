@@ -549,6 +549,7 @@ describe('assertions/number/to-be-finite.md', function () {
     it('#3', function () {
         expect(function () {
             expect(Infinity, 'not to be finite');
+            expect(-Infinity, 'not to be finite');
         }, 'not to throw');
     });
     it('#4', function () {
@@ -556,6 +557,33 @@ describe('assertions/number/to-be-finite.md', function () {
             expect(123, 'not to be finite');
         }, 'to throw', [
             'expected 123 not to be finite'
+        ].join('\n'));
+    });
+});
+describe('assertions/number/to-be-infinite.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect(Infinity, 'to be infinite');
+            expect(-Infinity, 'to be infinite');
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect(123, 'to be infinite');
+        }, 'to throw', [
+            'expected 123 to be infinite'
+        ].join('\n'));
+    });
+    it('#3', function () {
+        expect(function () {
+            expect(123, 'not to be infinite');
+        }, 'not to throw');
+    });
+    it('#4', function () {
+        expect(function () {
+            expect(Infinity, 'not to be infinite');
+        }, 'to throw', [
+            'expected Infinity not to be infinite'
         ].join('\n'));
     });
 });

@@ -1,8 +1,9 @@
-Asserts that a value is finite.
+Asserts that a value is infinite.
 
 <!-- evaluate -->
 ```javascript
-expect(123, 'to be finite');
+expect(Infinity, 'to be infinite');
+expect(-Infinity, 'to be infinite');
 ```
 <!-- /evaluate -->
 
@@ -10,11 +11,11 @@ In case of a failing expectation you get the following output:
 
 <!-- evaluate -->
 ```javascript
-expect(Infinity, 'to be finite');
+expect(123, 'to be infinite');
 ```
 
 ```
-expected Infinity to be finite
+expected 123 to be infinite
 ```
 <!-- /evaluate -->
 
@@ -22,8 +23,7 @@ This assertion can be negated using the `not` flag:
 
 <!-- evaluate -->
 ```javascript
-expect(Infinity, 'not to be finite');
-expect(-Infinity, 'not to be finite');
+expect(123, 'not to be infinite');
 ```
 <!-- /evaluate -->
 
@@ -31,10 +31,10 @@ In case of a failing expectation you get the following output:
 
 <!-- evaluate -->
 ```javascript
-expect(123, 'not to be finite');
+expect(Infinity, 'not to be infinite');
 ```
 
 ```
-expected 123 not to be finite
+expected Infinity not to be infinite
 ```
 <!-- /evaluate -->

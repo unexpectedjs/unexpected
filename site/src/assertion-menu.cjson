@@ -32,6 +32,7 @@
     "number": [
         "to be close to",
         "to be NaN",
-        "to be finite"
+        "to be finite",
+        "to be infinite"
     ]
 }
