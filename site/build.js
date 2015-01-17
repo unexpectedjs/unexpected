@@ -36,8 +36,10 @@ metalSmith(__dirname)
 
                 files[file].template = 'assertion.ejs';
                 files[file].name = assertionName;
-                files[file].title = type + ' - ' + assertionName;
+                files[file].windowTitle = type + ' - ' + assertionName;
                 files[file].type = type;
+            } else {
+                files[file].windowTitle = files[file].title;
             }
         });
         next();
@@ -71,10 +73,13 @@ metalSmith(__dirname)
             Object.keys(assertionsByType).forEach(function (type) {
                 assertionsByType[type] = assertionsByType[type].map(function (assertion) {
                     var id = titleToId(assertion);
+                    var filePath = 'assertions/' + titleToId(type) + '/' + id + '.md';
+                    var href = '/' + filePath.replace(/\.md$/, '') + '/';
                     return {
                         id: id,
-                        title: assertion,
-                        href: '/assertions/' + type + '/' + id + '/'
+                        title: files[filePath].title || assertion,
+                        filePath: filePath,
+                        href: href
                     };
                 });
             });
