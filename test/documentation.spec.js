@@ -587,6 +587,36 @@ describe('assertions/number/to-be-infinite.md', function () {
         ].join('\n'));
     });
 });
+describe('assertions/number/to-be-within.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect(0, 'to be within', 0, 4);
+            expect(1, 'to be within', 0, 4);
+            expect(2.5, 'to be within', 0, 4);
+            expect(4, 'to be within', 0, 4);
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect(-1, 'to be within', 0, 4);
+        }, 'to throw', [
+            'expected -1 to be within \'0..4\''
+        ].join('\n'));
+    });
+    it('#3', function () {
+        expect(function () {
+            expect(-1, 'not to be within', 0, 4);
+            expect(5, 'not to be within', 0, 4);
+        }, 'not to throw');
+    });
+    it('#4', function () {
+        expect(function () {
+            expect(0, 'not to be within', 0, 4);
+        }, 'to throw', [
+            'expected 0 not to be within \'0..4\''
+        ].join('\n'));
+    });
+});
 describe('assertions/object/to-be-canonical.md', function () {
     it('#1', function () {
         expect(function () {

@@ -33,6 +33,7 @@
         "to be close to",
         "to be NaN",
         "to be finite",
-        "to be infinite"
+        "to be infinite",
+        "to be within"
     ]
 }
