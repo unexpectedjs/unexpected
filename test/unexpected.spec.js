@@ -1079,7 +1079,7 @@ describe('unexpected', function () {
             expect(function () {
                 expect(new Foo(), 'to have properties', {a: 123});
             }, 'to throw',
-                   "expected {} to have properties { a: 123 }\n" +
+                   "expected Foo({}) to have properties { a: 123 }\n" +
                    "\n" +
                    "{\n" +
                    "  doSomething: function () {},\n" +
@@ -2968,9 +2968,9 @@ describe('unexpected', function () {
         });
 
         it.skipIf(!Object.prototype.__lookupGetter__, 'handles getters and setters correctly', function () {
-            expect(new Field('VALUE', 'getter'), 'to inspect as', "{ value: 'VALUE' /* getter */ }");
-            expect(new Field('VALUE', 'setter'), 'to inspect as', "{ set value: function (val) { value = val; } }");
-            expect(new Field('VALUE', 'getter and setter'), 'to inspect as', "{ value: 'VALUE' /* getter/setter */ }");
+            expect(new Field('VALUE', 'getter'), 'to inspect as', "Field({ value: 'VALUE' /* getter */ })");
+            expect(new Field('VALUE', 'setter'), 'to inspect as', "Field({ set value: function (val) { value = val; } })");
+            expect(new Field('VALUE', 'getter and setter'), 'to inspect as', "Field({ value: 'VALUE' /* getter/setter */ })");
         });
 
         describe('with various special values', function () {
@@ -3665,7 +3665,7 @@ describe('unexpected', function () {
 
                 expect(function () {
                     expect(new Foo('test'), 'to equal', new Bar('test'));
-                }, 'to throw', "expected { text: 'test' } to equal { text: 'test' }\n" +
+                }, 'to throw', "expected Foo({ text: 'test' }) to equal Bar({ text: 'test' })\n" +
                        "\n" +
                        "Mismatching constructors Foo should be Bar");
             });
