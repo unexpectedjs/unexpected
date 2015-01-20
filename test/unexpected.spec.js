@@ -1081,10 +1081,10 @@ describe('unexpected', function () {
             }, 'to throw',
                    "expected Foo({}) to have properties { a: 123 }\n" +
                    "\n" +
-                   "{\n" +
+                   "Foo({\n" +
                    "  doSomething: function () {},\n" +
                    "  a: undefined // should be 123\n" +
-                   "}");
+                   "})");
         });
 
         it('throws when the assertion fails', function () {
@@ -1547,11 +1547,11 @@ describe('unexpected', function () {
                 }, 'to throw',
                     'expected [ 1, 2, 3 ] to satisfy [ 1, 2 ]\n' +
                     '\n' +
-                    '{\n' +
+                    'Array({\n' +
                     '  0: 1,\n' +
                     '  1: 2,\n' +
                     '  2: 3 // should be removed\n' +
-                    '}');
+                    '})');
             });
 
             it('should fail if the value includes more indices than the subject', function () {
@@ -1560,12 +1560,12 @@ describe('unexpected', function () {
                 }, 'to throw',
                     'expected [ 1, 2, 3 ] to satisfy [ 1, 2, 3, 4 ]\n' +
                     '\n' +
-                    '{\n' +
+                    'Array({\n' +
                     '  0: 1,\n' +
                     '  1: 2,\n' +
                     '  2: 3,\n' +
                     '  3: undefined // should equal 4\n' +
-                    '}');
+                    '})');
             });
         });
 
@@ -1662,6 +1662,22 @@ describe('unexpected', function () {
                    "\n" +
                    "-foo\n" +
                    "+bar");
+        });
+
+        it('includes the constructor name in the diff', function () {
+            function Foo(value) {
+                this.value = value;
+            }
+            expect(function () {
+                expect(new Foo('bar'), 'to satisfy', { value: 'quux' });
+            }, 'to throw exception',
+                   "expected Foo({ value: 'bar' }) to satisfy { value: 'quux' }\n" +
+                   "\n" +
+                   "Foo({\n" +
+                   "  value: 'bar' // should equal 'quux'\n" +
+                   '               // -bar\n' +
+                   '               // +quux\n' +
+                   '})');
         });
 
         it('collapses subtrees without conflicts', function () {
