@@ -1232,7 +1232,7 @@ describe('unexpected', function () {
         it('throws when the assertion fails', function () {
             expect(function () {
                 expect(4, 'not to be within', 0, 4);
-            }, 'to throw exception', "expected 4 not to be within '0..4'");
+            }, 'to throw exception', "expected 4 not to be within 0..4");
             expect(function () {
                 expect(null, 'not to be within', 0, 4);
             }, 'to throw exception',
