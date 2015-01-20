@@ -1232,12 +1232,18 @@ describe('unexpected', function () {
         it('throws when the assertion fails', function () {
             expect(function () {
                 expect(4, 'not to be within', 0, 4);
-            }, 'to throw exception', "expected 4 not to be within 0..4");
+            }, 'to throw exception', 'expected 4 not to be within 0..4');
             expect(function () {
                 expect(null, 'not to be within', 0, 4);
             }, 'to throw exception',
                    'The assertion "not to be within" is not defined for the type "null",\n' +
                    'but it is defined for these types: "number", "string"');
+        });
+
+        it('throws with the correct error message when the end points are strings', function () {
+            expect(function () {
+                expect('a', 'to be within', 'c', 'd');
+            }, 'to throw exception', "expected 'a' to be within 'c'..'d'");
         });
     });
 
