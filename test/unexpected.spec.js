@@ -1728,6 +1728,34 @@ describe('unexpected', function () {
                    "}");
         });
 
+        it('indents removed objects correctly', function () {
+            var str = 'abcdefghijklmnopqrstuvwxyz';
+            expect(function () {
+                expect({foo: {a: str, b: str, c: str, d: str, e: str}}, 'to equal', {});
+            }, 'to throw',
+                'expected\n' +
+                '{\n' +
+                '  foo: {\n' +
+                "    a: 'abcdefghijklmnopqrstuvwxyz',\n" +
+                "    b: 'abcdefghijklmnopqrstuvwxyz',\n" +
+                "    c: 'abcdefghijklmnopqrstuvwxyz',\n" +
+                "    d: 'abcdefghijklmnopqrstuvwxyz',\n" +
+                "    e: 'abcdefghijklmnopqrstuvwxyz'\n" +
+                '  }\n' +
+                '}\n' +
+                'to equal {}\n' +
+                '\n' +
+                '{\n' +
+                '  foo: {\n' +
+                "    a: 'abcdefghijklmnopqrstuvwxyz',\n" +
+                "    b: 'abcdefghijklmnopqrstuvwxyz',\n" +
+                "    c: 'abcdefghijklmnopqrstuvwxyz',\n" +
+                "    d: 'abcdefghijklmnopqrstuvwxyz',\n" +
+                "    e: 'abcdefghijklmnopqrstuvwxyz'\n" +
+                '  } // should be removed\n' +
+                '}');
+        });
+
         describe('with a custom type', function () {
             function MysteryBox(value) {
                 this.propertyName = 'prop' + Math.floor(1000 * Math.random());
