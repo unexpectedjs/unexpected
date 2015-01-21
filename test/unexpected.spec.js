@@ -1756,6 +1756,45 @@ describe('unexpected', function () {
                 '}');
         });
 
+        it('indents unchanged objects correctly', function () {
+            var str = 'abcdefghijklmnopqrstuvwxyz';
+            expect(function () {
+                expect({foo: {a: str, b: str, c: str, d: str, e: str}, bar: 1}, 'to equal', {foo: {a: str, b: str, c: str, d: str, e: str}});
+            }, 'to throw',
+                'expected\n' +
+                '{\n' +
+                '  foo: {\n' +
+                "    a: 'abcdefghijklmnopqrstuvwxyz',\n" +
+                "    b: 'abcdefghijklmnopqrstuvwxyz',\n" +
+                "    c: 'abcdefghijklmnopqrstuvwxyz',\n" +
+                "    d: 'abcdefghijklmnopqrstuvwxyz',\n" +
+                "    e: 'abcdefghijklmnopqrstuvwxyz'\n" +
+                '  },\n' +
+                '  bar: 1\n' +
+                '}\n' +
+                'to equal\n' +
+                '{\n' +
+                '  foo: {\n' +
+                "    a: 'abcdefghijklmnopqrstuvwxyz',\n" +
+                "    b: 'abcdefghijklmnopqrstuvwxyz',\n" +
+                "    c: 'abcdefghijklmnopqrstuvwxyz',\n" +
+                "    d: 'abcdefghijklmnopqrstuvwxyz',\n" +
+                "    e: 'abcdefghijklmnopqrstuvwxyz'\n" +
+                '  }\n' +
+                '}\n' +
+                '\n' +
+                '{\n' +
+                '  foo: {\n' +
+                "    a: 'abcdefghijklmnopqrstuvwxyz',\n" +
+                "    b: 'abcdefghijklmnopqrstuvwxyz',\n" +
+                "    c: 'abcdefghijklmnopqrstuvwxyz',\n" +
+                "    d: 'abcdefghijklmnopqrstuvwxyz',\n" +
+                "    e: 'abcdefghijklmnopqrstuvwxyz'\n" +
+                '  },\n' +
+                '  bar: 1 // should be removed\n' +
+                '}');
+        });
+
         describe('with a custom type', function () {
             function MysteryBox(value) {
                 this.propertyName = 'prop' + Math.floor(1000 * Math.random());
