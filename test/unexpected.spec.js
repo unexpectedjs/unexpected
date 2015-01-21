@@ -1518,6 +1518,10 @@ describe('unexpected', function () {
                     '-01 02 03                                         │...│\n' +
                     '+01 02 04                                         │...│');
             });
+
+            it.skipIf(typeof Buffer === 'undefined', 'to satisfy it to equal buffer instance', function () {
+                expect(new Buffer('bar'), 'to satisfy', expect.it('to equal', new Buffer('bar')));
+            });
         });
 
         describe('on Uint8Array instances', function () {
