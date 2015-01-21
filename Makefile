@@ -40,6 +40,7 @@ endif
 
 .PHONY: release-%
 release-%: git-dirty-check lint ${TARGETS} test-phantomjs
+	git add unexpected.js && git commit -m "Build unexpected.js"
 	npm version $*
 	@echo $* release ready to be publised to NPM
 	@echo Remember to push tags
