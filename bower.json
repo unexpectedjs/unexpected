@@ -1,0 +1,37 @@
+{
+  "name": "unexpected",
+  "authors": [
+    "Sune Simonsen <sune@we-knowhow.dk>"
+  ],
+  "description": "Minimalistic BDD assertion toolkit",
+  "main": "unexpected.js",
+  "moduleType": [
+    "amd",
+    "globals",
+    "node"
+  ],
+  "keywords": [
+    "assert",
+    "expect",
+    "bdd",
+    "tdd",
+    "assertion",
+    "unexpected",
+    "test"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "site-build",
+    "lib",
+    "images",
+    "vendor",
+    "Development.md",
+    "Makefile",
+    "coverage"
+  ]
+}
