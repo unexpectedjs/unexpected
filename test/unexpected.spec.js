@@ -336,6 +336,19 @@ describe('unexpected', function () {
             }('foo', 'bar', 'baz'));
         });
 
+        it('array should not equal sparse array', function () {
+            expect(function () {
+                var sparse = [];
+                sparse[1] = 2;
+                expect(sparse, 'to equal', [1, 2]);
+            }, 'to throw');
+            expect(function () {
+                var sparse = [];
+                sparse[1] = 2;
+                expect([1, 2], 'to equal', sparse);
+            }, 'to throw');
+        });
+
         it('should handle objects with no prototype', function () {
             expect(Object.create(null), 'to equal', Object.create(null));
 
@@ -900,6 +913,14 @@ describe('unexpected', function () {
         it('asserts string .length', function () {
             expect('abc', 'to have length', 3);
             expect('', 'to have length', 0);
+        });
+
+        it('assert sparse array length', function () {
+            var sparse = [];
+            sparse[1] = 'foo';
+            expect(function () {
+                expect(sparse, 'to have length', 2);
+            }, 'not to throw');
         });
 
         it.skipIf(typeof Buffer === 'undefined', 'asserts Buffer .length', function () {
@@ -3080,6 +3101,16 @@ describe('unexpected', function () {
             it('renders -Infinity correctly', function () {
                 expect(-Infinity, 'to inspect as', '-Infinity');
             });
+            it('sparse array', function () {
+                var sparse = [];
+                sparse[1] = 'foo';
+                expect(sparse, 'to inspect as', "[ , 'foo' ]");
+            });
+            it('sparse array with explicit undefined', function () {
+                var sparse = [];
+                sparse[1] = undefined;
+                expect(sparse, 'to inspect as', "[ , undefined ]");
+            });
         });
 
         it('indents correctly', function () {
@@ -3761,8 +3792,8 @@ describe('unexpected', function () {
         describe('on arrays', function () {
             it('suppresses array diff for large arrays', function () {
                 expect(function () {
-                    var a = new Array(1024),
-                    b = new Array(1024);
+                    var a = new Array(513),
+                    b = new Array(513);
                     a[0] = 1;
                     b[0] = 2;
                     expect(
@@ -3958,6 +3989,37 @@ describe('unexpected', function () {
                        "[\n" +
                        "  new Person('John', 'Doe') // should be new Person('Jane', 'Doe')\n" +
                        "]");
+            });
+
+            describe('sparse arrays', function () {
+                it('elem was sparse', function () {
+                    expect(function () {
+                        var sparse = [];
+                        sparse[1] = 2;
+                        sparse[2] = 3;
+                        expect(sparse, 'to equal', [1, 2, 3]);
+                    }, 'to throw', 'expected [ , 2, 3 ] to equal [ 1, 2, 3 ]\n' +
+                           '\n' +
+                           '[\n' +
+                           '  undefined, // should be 1\n' +
+                           '  2,\n' +
+                           '  3\n' +
+                           ']');
+                });
+                it('elem should be sparse', function () {
+                    expect(function () {
+                        var sparse = [];
+                        sparse[1] = 2;
+                        sparse[2] = 3;
+                        expect([1, 2, 3], 'to equal', sparse);
+                    }, 'to throw', 'expected [ 1, 2, 3 ] to equal [ , 2, 3 ]\n' +
+                           '\n' +
+                           '[\n' +
+                           '  1, // should be undefined\n' +
+                           '  2,\n' +
+                           '  3\n' +
+                           ']');
+                });
             });
         });
     });
