@@ -884,6 +884,37 @@ describe('assertions/string/to-be-greater-than.md', function () {
         ].join('\n'));
     });
 });
+describe('assertions/string/to-be-less-than.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect('a', 'to be less than', 'b');
+            expect('a', 'to be below', 'b');
+            expect('a', 'to be <', 'b');
+            expect('a', '<', 'b');
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect('a', 'to be less than', 'a');
+        }, 'to throw', [
+            'expected \'a\' to be less than \'a\''
+        ].join('\n'));
+    });
+    it('#3', function () {
+        expect(function () {
+            expect('a', 'not to be less than', 'a');
+            expect('a', 'not to be below', 'a');
+            expect('a', 'not to be <', 'a');
+        }, 'not to throw');
+    });
+    it('#4', function () {
+        expect(function () {
+            expect('a', 'not to be below', 'b');
+        }, 'to throw', [
+            'expected \'a\' not to be below \'b\''
+        ].join('\n'));
+    });
+});
 describe('assertions/string/to-be-within.md', function () {
     it('#1', function () {
         expect(function () {

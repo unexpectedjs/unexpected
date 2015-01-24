@@ -18,7 +18,8 @@
         "to contain",
         "to be within",
         "to be greater than",
-        "to be greater than or equal to"
+        "to be greater than or equal to",
+        "to be less than"
     ],
     "object": [
         "to be canonical"
