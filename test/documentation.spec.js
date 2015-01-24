@@ -581,6 +581,35 @@ describe('assertions/number/to-be-finite.md', function () {
         ].join('\n'));
     });
 });
+describe('assertions/number/to-be-greater-than-or-equal-to.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect(3, 'to be greater than or equal to', 3);
+            expect(4, 'to be >=', 3);
+            expect(4, '>=', 4);
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect(1, 'to be greater than or equal to', 2);
+        }, 'to throw', [
+            'expected 1 to be greater than or equal to 2'
+        ].join('\n'));
+    });
+    it('#3', function () {
+        expect(function () {
+            expect(1, 'not to be greater than or equal to', 2);
+            expect(3, 'not to be >=', 4);
+        }, 'not to throw');
+    });
+    it('#4', function () {
+        expect(function () {
+            expect(2, 'not to be greater than or equal to', 2);
+        }, 'to throw', [
+            'expected 2 not to be greater than or equal to 2'
+        ].join('\n'));
+    });
+});
 describe('assertions/number/to-be-greater-than.md', function () {
     it('#1', function () {
         expect(function () {
