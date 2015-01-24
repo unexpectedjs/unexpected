@@ -307,7 +307,7 @@ expect(4, 'to be >', 3);
 expect(4, '>', 3);
 ```
 
-**greater than or equal to**: asserts `>`
+**greater than or equal to**: asserts `>=`
 
 ```js
 expect(3, 'to be greater than or equal to', 2);
@@ -324,7 +324,7 @@ expect(3, 'to be <', 4);
 expect(3, '<', 4);
 ```
 
-**less than or equal to**: asserts `>`
+**less than or equal to**: asserts `<=`
 
 ```js
 expect(0, 'to be less than or equal to', 4);
@@ -639,7 +639,7 @@ expected [ 4, 3, 1, 2 ] to be sorted
 ```
 
 The best resource for learning more about custom assertions is to look
-at how the predefined assertions are build:
+at how the predefined assertions are built:
 
 [lib/assertions.js](https://github.com/sunesimonsen/unexpected/blob/master/lib/assertions.js)
 

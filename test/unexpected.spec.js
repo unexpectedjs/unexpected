@@ -89,7 +89,7 @@ describe('unexpected', function () {
                 var error = new Error('error message');
                 error.data = 'extra';
                 expect(error, 'to be a number');
-            }, 'to throw', "expected [Error: { message: 'error message', data: 'extra' }] to be a number");
+            }, 'to throw', "expected Error({ message: 'error message', data: 'extra' }) to be a number");
         });
 
         describe('with Error instances', function () {
@@ -98,13 +98,13 @@ describe('unexpected', function () {
                     expect(new Error('foo'), 'to equal', new Error('bar'));
                 }, 'to throw exception', function (err) {
                     expect(err.output.toString(), 'to equal',
-                           "expected [Error: { message: 'foo' }] to equal [Error: { message: 'bar' }]\n" +
+                           "expected Error({ message: 'foo' }) to equal Error({ message: 'bar' })\n" +
                            "\n" +
-                           "{\n" +
+                           "Error({\n" +
                            "  message: 'foo' // should be 'bar'\n" +
                            "                 // -foo\n" +
                            "                 // +bar\n" +
-                           "}");
+                           "})");
                 });
             });
 
@@ -130,14 +130,14 @@ describe('unexpected', function () {
                 expect(function () {
                     expect(err1, 'to equal', err2);
                 }, 'to throw exception',
-                       "expected [Error: { message: 'foo', extra: 'foo' }] to equal [Error: { message: 'foo', extra: 'bar' }]\n" +
+                       "expected Error({ message: 'foo', extra: 'foo' }) to equal Error({ message: 'foo', extra: 'bar' })\n" +
                        "\n" +
-                       "{\n" +
+                       "Error({\n" +
                        "  message: 'foo',\n" +
                        "  extra: 'foo' // should be 'bar'\n" +
                        "               // -foo\n" +
                        "               // +bar\n" +
-                       "}");
+                       "})");
             });
 
             it('considers Error instances with the same message and stack to be equal', function () {
@@ -336,6 +336,19 @@ describe('unexpected', function () {
             }('foo', 'bar', 'baz'));
         });
 
+        it('array should not equal sparse array', function () {
+            expect(function () {
+                var sparse = [];
+                sparse[1] = 2;
+                expect(sparse, 'to equal', [1, 2]);
+            }, 'to throw');
+            expect(function () {
+                var sparse = [];
+                sparse[1] = 2;
+                expect([1, 2], 'to equal', sparse);
+            }, 'to throw');
+        });
+
         it('should handle objects with no prototype', function () {
             expect(Object.create(null), 'to equal', Object.create(null));
 
@@ -396,13 +409,13 @@ describe('unexpected', function () {
 
             expect(function () {
                 expect(new Error('foo'), 'to equal', new Error('bar'));
-            }, 'to throw exception', "expected [Error: { message: 'foo' }] to equal [Error: { message: 'bar' }]\n" +
+            }, 'to throw exception', "expected Error({ message: 'foo' }) to equal Error({ message: 'bar' })\n" +
                    "\n" +
-                   "{\n" +
+                   "Error({\n" +
                    "  message: 'foo' // should be 'bar'\n" +
                    "                 // -foo\n" +
                    "                 // +bar\n" +
-                   "}");
+                   "})");
 
             expect(function () {
                 (function () {
@@ -696,7 +709,7 @@ describe('unexpected', function () {
                     '    throw new Error(\'The Error\');\n' +
                     '}\n' +
                     'not to throw\n' +
-                    "  threw: [Error: { message: 'The Error' }]");
+                    "  threw: Error({ message: 'The Error' })");
         });
 
         it('fails if the argument is not a function', function () {
@@ -904,6 +917,14 @@ describe('unexpected', function () {
             expect('', 'to have length', 0);
         });
 
+        it('assert sparse array length', function () {
+            var sparse = [];
+            sparse[1] = 'foo';
+            expect(function () {
+                expect(sparse, 'to have length', 2);
+            }, 'not to throw');
+        });
+
         it.skipIf(typeof Buffer === 'undefined', 'asserts Buffer .length', function () {
             expect(new Buffer('æ', 'utf-8'), 'to have length', 2);
             expect(new Buffer([]), 'to have length', 0);
@@ -1085,12 +1106,12 @@ describe('unexpected', function () {
             expect(function () {
                 expect(new Foo(), 'to have properties', {a: 123});
             }, 'to throw',
-                   "expected {} to have properties { a: 123 }\n" +
+                   "expected Foo({}) to have properties { a: 123 }\n" +
                    "\n" +
-                   "{\n" +
+                   "Foo({\n" +
                    "  doSomething: function () {},\n" +
                    "  a: undefined // should be 123\n" +
-                   "}");
+                   "})");
         });
 
         it('throws when the assertion fails', function () {
@@ -1237,12 +1258,18 @@ describe('unexpected', function () {
         it('throws when the assertion fails', function () {
             expect(function () {
                 expect(4, 'not to be within', 0, 4);
-            }, 'to throw exception', "expected 4 not to be within '0..4'");
+            }, 'to throw exception', 'expected 4 not to be within 0..4');
             expect(function () {
                 expect(null, 'not to be within', 0, 4);
             }, 'to throw exception',
                    'The assertion "not to be within" is not defined for the type "null",\n' +
                    'but it is defined for these types: "number", "string"');
+        });
+
+        it('throws with the correct error message when the end points are strings', function () {
+            expect(function () {
+                expect('a', 'to be within', 'c', 'd');
+            }, 'to throw exception', "expected 'a' to be within 'c'..'d'");
         });
     });
 
@@ -1517,6 +1544,10 @@ describe('unexpected', function () {
                     '-01 02 03                                         │...│\n' +
                     '+01 02 04                                         │...│');
             });
+
+            it.skipIf(typeof Buffer === 'undefined', 'to satisfy it to equal buffer instance', function () {
+                expect(new Buffer('bar'), 'to satisfy', expect.it('to equal', new Buffer('bar')));
+            });
         });
 
         describe('on Uint8Array instances', function () {
@@ -1546,11 +1577,11 @@ describe('unexpected', function () {
                 }, 'to throw',
                     'expected [ 1, 2, 3 ] to satisfy [ 1, 2 ]\n' +
                     '\n' +
-                    '{\n' +
+                    'Array({\n' +
                     '  0: 1,\n' +
                     '  1: 2,\n' +
                     '  2: 3 // should be removed\n' +
-                    '}');
+                    '})');
             });
 
             it('should fail if the value includes more indices than the subject', function () {
@@ -1559,12 +1590,12 @@ describe('unexpected', function () {
                 }, 'to throw',
                     'expected [ 1, 2, 3 ] to satisfy [ 1, 2, 3, 4 ]\n' +
                     '\n' +
-                    '{\n' +
+                    'Array({\n' +
                     '  0: 1,\n' +
                     '  1: 2,\n' +
                     '  2: 3,\n' +
                     '  3: undefined // should equal 4\n' +
-                    '}');
+                    '})');
             });
         });
 
@@ -1626,19 +1657,19 @@ describe('unexpected', function () {
             expect(function () {
                 expect(new Error('foo'), 'to satisfy', new Error('bar'));
             }, 'to throw exception',
-                   "expected [Error: { message: 'foo' }] to satisfy [Error: { message: 'bar' }]\n" +
+                   "expected Error({ message: 'foo' }) to satisfy Error({ message: 'bar' })\n" +
                    "\n" +
-                   "{\n" +
+                   "Error({\n" +
                    "  message: 'foo' // should be 'bar'\n" +
                    "                 // -foo\n" +
                    "                 // +bar\n" +
-                   "}");
+                   "})");
         });
 
         it('fails when error message does not match given regexp', function () {
             expect(function () {
                 expect(new Error('foo'), 'to satisfy', /bar/);
-            }, 'to throw exception', "expected [Error: { message: 'foo' }] to satisfy /bar/");
+            }, 'to throw exception', "expected Error({ message: 'foo' }) to satisfy /bar/");
         });
 
         it('fails when using an unknown assertion', function () {
@@ -1657,10 +1688,26 @@ describe('unexpected', function () {
             expect(function () {
                 expect(new Error('foo'), 'to satisfy', { message: 'bar' });
             }, 'to throw exception',
-                   "expected [Error: { message: \'foo\' }] to satisfy { message: \'bar\' }\n" +
+                   "expected Error({ message: \'foo\' }) to satisfy { message: \'bar\' }\n" +
                    "\n" +
                    "-foo\n" +
                    "+bar");
+        });
+
+        it('includes the constructor name in the diff', function () {
+            function Foo(value) {
+                this.value = value;
+            }
+            expect(function () {
+                expect(new Foo('bar'), 'to satisfy', { value: 'quux' });
+            }, 'to throw exception',
+                   "expected Foo({ value: 'bar' }) to satisfy { value: 'quux' }\n" +
+                   "\n" +
+                   "Foo({\n" +
+                   "  value: 'bar' // should equal 'quux'\n" +
+                   '               // -bar\n' +
+                   '               // +quux\n' +
+                   '})');
         });
 
         it('collapses subtrees without conflicts', function () {
@@ -1709,6 +1756,73 @@ describe('unexpected', function () {
                    "    }\n" +
                    "  }\n" +
                    "}");
+        });
+
+        it('indents removed objects correctly', function () {
+            var str = 'abcdefghijklmnopqrstuvwxyz';
+            expect(function () {
+                expect({foo: {a: str, b: str, c: str, d: str, e: str}}, 'to equal', {});
+            }, 'to throw',
+                'expected\n' +
+                '{\n' +
+                '  foo: {\n' +
+                "    a: 'abcdefghijklmnopqrstuvwxyz',\n" +
+                "    b: 'abcdefghijklmnopqrstuvwxyz',\n" +
+                "    c: 'abcdefghijklmnopqrstuvwxyz',\n" +
+                "    d: 'abcdefghijklmnopqrstuvwxyz',\n" +
+                "    e: 'abcdefghijklmnopqrstuvwxyz'\n" +
+                '  }\n' +
+                '}\n' +
+                'to equal {}\n' +
+                '\n' +
+                '{\n' +
+                '  foo: {\n' +
+                "    a: 'abcdefghijklmnopqrstuvwxyz',\n" +
+                "    b: 'abcdefghijklmnopqrstuvwxyz',\n" +
+                "    c: 'abcdefghijklmnopqrstuvwxyz',\n" +
+                "    d: 'abcdefghijklmnopqrstuvwxyz',\n" +
+                "    e: 'abcdefghijklmnopqrstuvwxyz'\n" +
+                '  } // should be removed\n' +
+                '}');
+        });
+
+        it('indents unchanged objects correctly', function () {
+            var str = 'abcdefghijklmnopqrstuvwxyz';
+            expect(function () {
+                expect({foo: {a: str, b: str, c: str, d: str, e: str}, bar: 1}, 'to equal', {foo: {a: str, b: str, c: str, d: str, e: str}});
+            }, 'to throw',
+                'expected\n' +
+                '{\n' +
+                '  foo: {\n' +
+                "    a: 'abcdefghijklmnopqrstuvwxyz',\n" +
+                "    b: 'abcdefghijklmnopqrstuvwxyz',\n" +
+                "    c: 'abcdefghijklmnopqrstuvwxyz',\n" +
+                "    d: 'abcdefghijklmnopqrstuvwxyz',\n" +
+                "    e: 'abcdefghijklmnopqrstuvwxyz'\n" +
+                '  },\n' +
+                '  bar: 1\n' +
+                '}\n' +
+                'to equal\n' +
+                '{\n' +
+                '  foo: {\n' +
+                "    a: 'abcdefghijklmnopqrstuvwxyz',\n" +
+                "    b: 'abcdefghijklmnopqrstuvwxyz',\n" +
+                "    c: 'abcdefghijklmnopqrstuvwxyz',\n" +
+                "    d: 'abcdefghijklmnopqrstuvwxyz',\n" +
+                "    e: 'abcdefghijklmnopqrstuvwxyz'\n" +
+                '  }\n' +
+                '}\n' +
+                '\n' +
+                '{\n' +
+                '  foo: {\n' +
+                "    a: 'abcdefghijklmnopqrstuvwxyz',\n" +
+                "    b: 'abcdefghijklmnopqrstuvwxyz',\n" +
+                "    c: 'abcdefghijklmnopqrstuvwxyz',\n" +
+                "    d: 'abcdefghijklmnopqrstuvwxyz',\n" +
+                "    e: 'abcdefghijklmnopqrstuvwxyz'\n" +
+                '  },\n' +
+                '  bar: 1 // should be removed\n' +
+                '}');
         });
 
         describe('with a custom type', function () {
@@ -2968,9 +3082,9 @@ describe('unexpected', function () {
         });
 
         it.skipIf(!Object.prototype.__lookupGetter__, 'handles getters and setters correctly', function () {
-            expect(new Field('VALUE', 'getter'), 'to inspect as', "{ value: 'VALUE' /* getter */ }");
-            expect(new Field('VALUE', 'setter'), 'to inspect as', "{ set value: function (val) { value = val; } }");
-            expect(new Field('VALUE', 'getter and setter'), 'to inspect as', "{ value: 'VALUE' /* getter/setter */ }");
+            expect(new Field('VALUE', 'getter'), 'to inspect as', "Field({ value: 'VALUE' /* getter */ })");
+            expect(new Field('VALUE', 'setter'), 'to inspect as', "Field({ set value: function (val) { value = val; } })");
+            expect(new Field('VALUE', 'getter and setter'), 'to inspect as', "Field({ value: 'VALUE' /* getter/setter */ })");
         });
 
         describe('with various special values', function () {
@@ -2992,6 +3106,16 @@ describe('unexpected', function () {
 
             it('renders -Infinity correctly', function () {
                 expect(-Infinity, 'to inspect as', '-Infinity');
+            });
+            it('sparse array', function () {
+                var sparse = [];
+                sparse[1] = 'foo';
+                expect(sparse, 'to inspect as', "[ , 'foo' ]");
+            });
+            it('sparse array with explicit undefined', function () {
+                var sparse = [];
+                sparse[1] = undefined;
+                expect(sparse, 'to inspect as', "[ , undefined ]");
             });
         });
 
@@ -3666,7 +3790,7 @@ describe('unexpected', function () {
 
                 expect(function () {
                     expect(new Foo('test'), 'to equal', new Bar('test'));
-                }, 'to throw', "expected { text: 'test' } to equal { text: 'test' }\n" +
+                }, 'to throw', "expected Foo({ text: 'test' }) to equal Bar({ text: 'test' })\n" +
                        "\n" +
                        "Mismatching constructors Foo should be Bar");
             });
@@ -3675,8 +3799,8 @@ describe('unexpected', function () {
         describe('on arrays', function () {
             it('suppresses array diff for large arrays', function () {
                 expect(function () {
-                    var a = new Array(1024),
-                    b = new Array(1024);
+                    var a = new Array(513),
+                    b = new Array(513);
                     a[0] = 1;
                     b[0] = 2;
                     expect(
@@ -3872,6 +3996,37 @@ describe('unexpected', function () {
                        "[\n" +
                        "  new Person('John', 'Doe') // should be new Person('Jane', 'Doe')\n" +
                        "]");
+            });
+
+            describe('sparse arrays', function () {
+                it('elem was sparse', function () {
+                    expect(function () {
+                        var sparse = [];
+                        sparse[1] = 2;
+                        sparse[2] = 3;
+                        expect(sparse, 'to equal', [1, 2, 3]);
+                    }, 'to throw', 'expected [ , 2, 3 ] to equal [ 1, 2, 3 ]\n' +
+                           '\n' +
+                           '[\n' +
+                           '  undefined, // should be 1\n' +
+                           '  2,\n' +
+                           '  3\n' +
+                           ']');
+                });
+                it('elem should be sparse', function () {
+                    expect(function () {
+                        var sparse = [];
+                        sparse[1] = 2;
+                        sparse[2] = 3;
+                        expect([1, 2, 3], 'to equal', sparse);
+                    }, 'to throw', 'expected [ 1, 2, 3 ] to equal [ , 2, 3 ]\n' +
+                           '\n' +
+                           '[\n' +
+                           '  1, // should be undefined\n' +
+                           '  2,\n' +
+                           '  3\n' +
+                           ']');
+                });
             });
         });
     });
