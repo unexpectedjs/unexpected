@@ -37,7 +37,8 @@
         "to be finite",
         "to be infinite",
         "to be within",
-        "to be greater than"
+        "to be greater than",
+        "to be positive"
     ],
     "function": [
         "to have arity"

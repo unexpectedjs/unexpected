@@ -639,6 +639,33 @@ describe('assertions/number/to-be-infinite.md', function () {
         ].join('\n'));
     });
 });
+describe('assertions/number/to-be-positive.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect(42, 'to be positive');
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect(0, 'to be positive');
+        }, 'to throw', [
+            'expected 0 to be positive'
+        ].join('\n'));
+    });
+    it('#3', function () {
+        expect(function () {
+            expect(0, 'not to be positive');
+            expect(-42, 'not to be positive');
+        }, 'not to throw');
+    });
+    it('#4', function () {
+        expect(function () {
+            expect(1, 'not to be positive');
+        }, 'to throw', [
+            'expected 1 not to be positive'
+        ].join('\n'));
+    });
+});
 describe('assertions/number/to-be-within.md', function () {
     it('#1', function () {
         expect(function () {
