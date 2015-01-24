@@ -480,6 +480,27 @@ describe('assertions/boolean/to-be-true.md', function () {
         ].join('\n'));
     });
 });
+describe('assertions/function/to-have-arity.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect(Math.max, 'to have arity', 2);
+            expect('wat'.substring, 'to have arity', 2);
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect(function wat(foo, bar) {
+              return foo + bar;
+            }, 'to have arity', 3);
+        }, 'to throw', [
+            'expected',
+            'function wat(foo, bar) {',
+            '  return foo + bar;',
+            '}',
+            'to have arity 3'
+        ].join('\n'));
+    });
+});
 describe('assertions/number/to-be-NaN.md', function () {
     it('#1', function () {
         expect(function () {
