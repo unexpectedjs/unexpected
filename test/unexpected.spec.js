@@ -986,6 +986,14 @@ describe('unexpected', function () {
                    "+c");
 
             expect(function () {
+                expect({a: 'b'}, 'to have own property', 'a', 'c');
+            }, 'to throw exception',
+                   "expected { a: 'b' } to have own property 'a', 'c'\n" +
+                  "\n" +
+                   "-b\n" +
+                   "+c");
+
+            expect(function () {
                 // property expectations ignores value if property
                 expect(null, 'not to have property', 'a', 'b');
             }, 'to throw exception',
@@ -1073,6 +1081,17 @@ describe('unexpected', function () {
                    "{\n" +
                    "  a: undefined, // should be 'foo'\n" +
                    "  b: undefined // should be 'bar'\n" +
+                   "}");
+
+            expect(function () {
+                expect({a: 'f00', b: 'bar'}, 'to have own properties', {a: 'foo', b: 'bar'}); // should fail
+            }, 'to throw', "expected { a: 'f00', b: 'bar' } to have own properties { a: 'foo', b: 'bar' }\n" +
+                   "\n" +
+                   "{\n" +
+                   "  a: 'f00', // should be 'foo'\n" +
+                   "            // -f00\n" +
+                   "            // +foo\n" +
+                   "  b: 'bar'\n" +
                    "}");
         });
 
