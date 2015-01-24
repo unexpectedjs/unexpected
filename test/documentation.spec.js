@@ -853,16 +853,18 @@ describe('assertions/object/to-have-properties.md', function () {
     it('#3', function () {
         expect(function () {
             expect({ a: 'f00', b: 'bar' }, 'to have own properties', {
-              a: 'foo'
+              a: 'foo',
+              c: 'baz'
             });
         }, 'to throw', [
-            'expected { a: \'f00\', b: \'bar\' } to have own properties { a: \'foo\' }',
+            'expected { a: \'f00\', b: \'bar\' } to have own properties { a: \'foo\', c: \'baz\' }',
             '',
             '{',
             '  a: \'f00\', // should be \'foo\'',
             '            // -f00',
             '            // +foo',
-            '  b: \'bar\'',
+            '  b: \'bar\',',
+            '  c: undefined // should be \'baz\'',
             '}'
         ].join('\n'));
     });
