@@ -23,6 +23,7 @@
         "to be less than or equal to"
     ],
     "object": [
+        "to have property",
         "to be canonical"
     ],
     "array": [

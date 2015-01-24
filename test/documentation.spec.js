@@ -827,6 +827,53 @@ describe('assertions/object/to-be-canonical.md', function () {
         ].join('\n'));
     });
 });
+describe('assertions/object/to-have-property.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect([1, 2], 'to have property', 'length');
+            expect({ a: 'b' }, 'to have property', 'a');
+            expect({ a: 'b' }, 'to have property', 'toString');
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect([1, 2], 'to have property', 'length', 2);
+            expect({ a: 'b' }, 'to have property', 'a', 'b');
+            expect({ a: { b: 'c' } }, 'to have property', 'a', { b: 'c' });
+        }, 'not to throw');
+    });
+    it('#3', function () {
+        expect(function () {
+            expect({ a: 'b' }, 'to have own property', 'a');
+            expect({ a: 'b' }, 'to have own property', 'a', 'b');
+        }, 'not to throw');
+    });
+    it('#4', function () {
+        expect(function () {
+            expect(Object.create({ a: 'b' }), 'to have own property', 'a');
+        }, 'to throw', [
+            'expected {} to have own property \'a\''
+        ].join('\n'));
+    });
+    it('#5', function () {
+        expect(function () {
+            expect({ a: 'b' }, 'not to have property', 'b');
+            expect(Object.create({ a: 'b' }), 'not to have own property', 'a');
+        }, 'not to throw');
+    });
+    it('#6', function () {
+        expect(function () {
+            expect({ a: 'b' }, 'not to have property', 'a', 'foo');
+        }, 'not to throw');
+    });
+    it('#7', function () {
+        expect(function () {
+            expect({ a: 'b' }, 'not to have property', 'a');
+        }, 'to throw', [
+            'expected { a: \'b\' } not to have property \'a\''
+        ].join('\n'));
+    });
+});
 describe('assertions/string/to-be-empty.md', function () {
     it('#1', function () {
         expect(function () {
