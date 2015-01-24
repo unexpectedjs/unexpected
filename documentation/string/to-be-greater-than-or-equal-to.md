@@ -14,11 +14,11 @@ In case of a failing expectation you get the following output:
 
 <!-- evaluate -->
 ```javascript
-expect(1, 'to be greater than or equal to', 'a');
+expect('a', 'to be greater than or equal to', 'b');
 ```
 
 ```
-expected 1 to be greater than or equal to 'a'
+expected 'a' to be greater than or equal to 'b'
 ```
 <!-- /evaluate -->
 

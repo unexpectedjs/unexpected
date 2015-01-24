@@ -668,6 +668,35 @@ describe('assertions/number/to-be-infinite.md', function () {
         ].join('\n'));
     });
 });
+describe('assertions/number/to-be-less-than-or-equal-to.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect(3, 'to be less than or equal to', 3);
+            expect(3, 'to be <=', 4);
+            expect(4, '<=', 4);
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect(2, 'to be less than or equal to', 1);
+        }, 'to throw', [
+            'expected 2 to be less than or equal to 1'
+        ].join('\n'));
+    });
+    it('#3', function () {
+        expect(function () {
+            expect(2, 'not to be less than or equal to', 1);
+            expect(4, 'not to be <=', 3);
+        }, 'not to throw');
+    });
+    it('#4', function () {
+        expect(function () {
+            expect(2, 'not to be less than or equal to', 2);
+        }, 'to throw', [
+            'expected 2 not to be less than or equal to 2'
+        ].join('\n'));
+    });
+});
 describe('assertions/number/to-be-less-than.md', function () {
     it('#1', function () {
         expect(function () {
@@ -834,9 +863,9 @@ describe('assertions/string/to-be-greater-than-or-equal-to.md', function () {
     });
     it('#2', function () {
         expect(function () {
-            expect(1, 'to be greater than or equal to', 'a');
+            expect('a', 'to be greater than or equal to', 'b');
         }, 'to throw', [
-            'expected 1 to be greater than or equal to \'a\''
+            'expected \'a\' to be greater than or equal to \'b\''
         ].join('\n'));
     });
     it('#3', function () {
@@ -881,6 +910,35 @@ describe('assertions/string/to-be-greater-than.md', function () {
             expect('b', 'not to be above', 'a');
         }, 'to throw', [
             'expected \'b\' not to be above \'a\''
+        ].join('\n'));
+    });
+});
+describe('assertions/string/to-be-less-than-or-equal-to.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect('b', 'to be less than or equal to', 'b');
+            expect('b', 'to be <=', 'c');
+            expect('c', '<=', 'c');
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect('b', 'to be less than or equal to', 'a');
+        }, 'to throw', [
+            'expected \'b\' to be less than or equal to \'a\''
+        ].join('\n'));
+    });
+    it('#3', function () {
+        expect(function () {
+            expect('b', 'not to be less than or equal to', 'a');
+            expect('c', 'not to be <=', 'b');
+        }, 'not to throw');
+    });
+    it('#4', function () {
+        expect(function () {
+            expect('a', 'not to be less than or equal to', 'a');
+        }, 'to throw', [
+            'expected \'a\' not to be less than or equal to \'a\''
         ].join('\n'));
     });
 });
