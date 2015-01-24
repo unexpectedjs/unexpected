@@ -793,6 +793,35 @@ describe('assertions/string/to-be-empty.md', function () {
         ].join('\n'));
     });
 });
+describe('assertions/string/to-be-greater-than-or-equal-to.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect('b', 'to be greater than or equal to', 'b');
+            expect('c', 'to be >=', 'b');
+            expect('c', '>=', 'c');
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect(1, 'to be greater than or equal to', 'a');
+        }, 'to throw', [
+            'expected 1 to be greater than or equal to \'a\''
+        ].join('\n'));
+    });
+    it('#3', function () {
+        expect(function () {
+            expect('a', 'not to be greater than or equal to', 'b');
+            expect('b', 'not to be >=', 'c');
+        }, 'not to throw');
+    });
+    it('#4', function () {
+        expect(function () {
+            expect('a', 'not to be greater than or equal to', 'a');
+        }, 'to throw', [
+            'expected \'a\' not to be greater than or equal to \'a\''
+        ].join('\n'));
+    });
+});
 describe('assertions/string/to-be-greater-than.md', function () {
     it('#1', function () {
         expect(function () {

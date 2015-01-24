@@ -17,7 +17,8 @@
         "to match",
         "to contain",
         "to be within",
-        "to be greater than"
+        "to be greater than",
+        "to be greater than or equal to"
     ],
     "object": [
         "to be canonical"
