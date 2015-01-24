@@ -631,7 +631,7 @@ describe('assertions/number/to-be-within.md', function () {
         expect(function () {
             expect(-1, 'to be within', 0, 4);
         }, 'to throw', [
-            'expected -1 to be within \'0..4\''
+            'expected -1 to be within 0..4'
         ].join('\n'));
     });
     it('#3', function () {
@@ -644,7 +644,7 @@ describe('assertions/number/to-be-within.md', function () {
         expect(function () {
             expect(0, 'not to be within', 0, 4);
         }, 'to throw', [
-            'expected 0 not to be within \'0..4\''
+            'expected 0 not to be within 0..4'
         ].join('\n'));
     });
 });
@@ -732,7 +732,7 @@ describe('assertions/string/to-be-within.md', function () {
         expect(function () {
             expect('abbbcc', 'to be within', 'aaa', 'aaz');
         }, 'to throw', [
-            'expected \'abbbcc\' to be within \'aaa..aaz\''
+            'expected \'abbbcc\' to be within \'aaa\'..\'aaz\''
         ].join('\n'));
     });
     it('#3', function () {
@@ -746,7 +746,7 @@ describe('assertions/string/to-be-within.md', function () {
         expect(function () {
             expect('c', 'not to be within', 'a', 'd');
         }, 'to throw', [
-            'expected \'c\' not to be within \'a..d\''
+            'expected \'c\' not to be within \'a\'..\'d\''
         ].join('\n'));
     });
 });

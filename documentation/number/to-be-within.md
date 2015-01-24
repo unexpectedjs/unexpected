@@ -17,7 +17,7 @@ expect(-1, 'to be within', 0, 4);
 ```
 
 ```
-expected -1 to be within '0..4'
+expected -1 to be within 0..4
 ```
 <!-- /evaluate -->
 
@@ -38,6 +38,6 @@ expect(0, 'not to be within', 0, 4);
 ```
 
 ```
-expected 0 not to be within '0..4'
+expected 0 not to be within 0..4
 ```
 <!-- /evaluate -->

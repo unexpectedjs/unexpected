@@ -16,7 +16,7 @@ expect('abbbcc', 'to be within', 'aaa', 'aaz');
 ```
 
 ```
-expected 'abbbcc' to be within 'aaa..aaz'
+expected 'abbbcc' to be within 'aaa'..'aaz'
 ```
 <!-- /evaluate -->
 
@@ -38,6 +38,6 @@ expect('c', 'not to be within', 'a', 'd');
 ```
 
 ```
-expected 'c' not to be within 'a..d'
+expected 'c' not to be within 'a'..'d'
 ```
 <!-- /evaluate -->
