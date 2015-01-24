@@ -1082,20 +1082,13 @@ describe('unexpected', function () {
                    "}");
         });
 
-        it('asserts absence and values of an object of properties', function () {
-            expect({a: 'foo', b: 'bar'}, 'not to have properties', {c: 'baz', d: 'qux'});
-            expect(function () {
-                expect({a: 'foo', b: 'bar'}, 'not to have properties', {a: 'foo', c: 'baz'});
-            }, 'to throw', "expected { a: 'foo', b: 'bar' } not to have properties { a: 'foo', c: 'baz' }");
-        });
-
         it('asserts absence and values of an object of own properties', function () {
             var obj = create({a: 'foo', b: 'bar'});
             expect(obj, 'to have properties', {a: 'foo', b: 'bar'});
-            expect(obj, 'not to have own properties', {a: 'foo', b: 'bar'});
+            expect(obj, 'not to have own properties', ['a', 'b']);
             expect(function () {
-                expect({a: 'foo', b: 'bar'}, 'not to have own properties', {a: 'foo', b: 'bar'}); // should fail
-            }, 'to throw', "expected { a: 'foo', b: 'bar' } not to have own properties { a: 'foo', b: 'bar' }");
+                expect({a: 'foo', b: 'bar'}, 'not to have own properties', ['a', 'b']); // should fail
+            }, 'to throw', "expected { a: 'foo', b: 'bar' } not to have own properties [ 'a', 'b' ]");
         });
 
         it('includes prototype properties in the actual property (#48)', function () {
@@ -1132,6 +1125,10 @@ describe('unexpected', function () {
             expect(function () {
                 expect({a: 'foo', b: 'bar'}, 'to have properties', 'a', 'b');
             }, 'to throw', "Assertion 'to have properties' only supports input in the form of an Array or an Object.");
+
+            expect(function () {
+                expect({a: 'foo', b: 'bar'}, 'not to have properties', {a: 'foo', b: 'bar'});
+            }, 'to throw', "Assertion 'not to have properties' only supports input in the form of an Array.");
         });
     });
 
