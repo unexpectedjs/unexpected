@@ -668,6 +668,37 @@ describe('assertions/number/to-be-infinite.md', function () {
         ].join('\n'));
     });
 });
+describe('assertions/number/to-be-less-than.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect(2, 'to be less than', 3);
+            expect(0, 'to be below', 1);
+            expect(3, 'to be <', 4);
+            expect(3, '<', 4);
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect(2, 'to be less than', 2);
+        }, 'to throw', [
+            'expected 2 to be less than 2'
+        ].join('\n'));
+    });
+    it('#3', function () {
+        expect(function () {
+            expect(2, 'not to be less than', 2);
+            expect(1, 'not to be below', 0);
+            expect(4, 'not to be <', 3);
+        }, 'not to throw');
+    });
+    it('#4', function () {
+        expect(function () {
+            expect(2, 'not to be less than', 3);
+        }, 'to throw', [
+            'expected 2 not to be less than 3'
+        ].join('\n'));
+    });
+});
 describe('assertions/number/to-be-negative.md', function () {
     it('#1', function () {
         expect(function () {

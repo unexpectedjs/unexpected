@@ -40,6 +40,7 @@
         "to be within",
         "to be greater than",
         "to be greater than or equal to",
+        "to be less than",
         "to be positive",
         "to be negative"
     ],
