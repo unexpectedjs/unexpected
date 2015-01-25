@@ -827,6 +827,44 @@ describe('assertions/object/to-be-canonical.md', function () {
         ].join('\n'));
     });
 });
+describe('assertions/object/to-have-keys.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect({ a: 'a', b: 'b', c: 'c' }, 'to have keys', 'a', 'c');
+            expect({ a: 'a', b: 'b', c: 'c' }, 'to have keys', ['a', 'c']);
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect({ a: 'a', b: 'b', c: 'c' }, 'to only have keys', ['a', 'c', 'b']);
+        }, 'not to throw');
+    });
+    it('#3', function () {
+        expect(function () {
+            expect({ a: 'a', b: 'b', c: 'c' }, 'to have keys', 'c', 'd');
+        }, 'to throw', [
+            'expected { a: \'a\', b: \'b\', c: \'c\' } to have keys \'c\', \'d\''
+        ].join('\n'));
+    });
+    it('#4', function () {
+        expect(function () {
+            expect({ a: 'a', b: 'b', c: 'c' }, 'not to have keys', 'd', 'e');
+            expect(Object.create({ a: 'a', b: 'b', c: 'c' }), 'not to have keys', 'a', 'b');
+        }, 'not to throw');
+    });
+    it('#5', function () {
+        expect(function () {
+            expect({ a: 'a', b: 'b', c: 'c' }, 'to not only have keys', 'a', 'b');
+        }, 'not to throw');
+    });
+    it('#6', function () {
+        expect(function () {
+            expect({ a: 'a', b: 'b', c: 'c' }, 'to not only have keys', 'a', 'b', 'c');
+        }, 'to throw', [
+            'expected { a: \'a\', b: \'b\', c: \'c\' } to not only have keys \'a\', \'b\', \'c\''
+        ].join('\n'));
+    });
+});
 describe('assertions/object/to-have-properties.md', function () {
     it('#1', function () {
         expect(function () {

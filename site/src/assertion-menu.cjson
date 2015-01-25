@@ -23,6 +23,7 @@
         "to be less than or equal to"
     ],
     "object": [
+        "to have keys",
         "to have property",
         "to have properties",
         "to be canonical"
