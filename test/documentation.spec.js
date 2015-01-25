@@ -827,6 +827,43 @@ describe('assertions/object/to-be-canonical.md', function () {
         ].join('\n'));
     });
 });
+describe('assertions/object/to-have-key.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect({ a: 'a', b: 'b', c: 'c' }, 'to have key', 'a');
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect({ a: 'a' }, 'to only have key', 'a');
+        }, 'not to throw');
+    });
+    it('#3', function () {
+        expect(function () {
+            expect({ a: 'a', b: 'b' }, 'to have key', 'c');
+        }, 'to throw', [
+            'expected { a: \'a\', b: \'b\' } to have key \'c\''
+        ].join('\n'));
+    });
+    it('#4', function () {
+        expect(function () {
+            expect({ a: 'a', b: 'b' }, 'not to have key', 'c');
+            expect(Object.create({ a: 'a', b: 'b' }), 'not to have key', 'a');
+        }, 'not to throw');
+    });
+    it('#5', function () {
+        expect(function () {
+            expect({ a: 'a', b: 'b' }, 'to not only have key', 'a');
+        }, 'not to throw');
+    });
+    it('#6', function () {
+        expect(function () {
+            expect({ a: 'a', b: 'b' }, 'to not have key', 'a');
+        }, 'to throw', [
+            'expected { a: \'a\', b: \'b\' } to not have key \'a\''
+        ].join('\n'));
+    });
+});
 describe('assertions/object/to-have-keys.md', function () {
     it('#1', function () {
         expect(function () {

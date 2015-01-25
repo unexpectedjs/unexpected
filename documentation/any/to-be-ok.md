@@ -1,6 +1,6 @@
-Alias for [to be truthy](/assertions/any/to-be-truthy).
-
 Asserts that the value is _truthy_.
+
+Alias for [to be truthy](/assertions/any/to-be-truthy).
 
 <!-- evaluate -->
 ```javascript
