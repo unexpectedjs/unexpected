@@ -27,15 +27,15 @@
         "to have keys",
         "to have property",
         "to have properties",
+        "to be a map whose keys satisfy",
+        "to be a map whose values satisfy",
         "to be canonical"
     ],
     "array": [
         "to be empty",
         "to have length",
         "to contain",
-        "to be an array whose items satisfy",
-        "to be a map whose keys satisfy",
-        "to be a map whose values satisfy"
+        "to be an array whose items satisfy"
     ],
     "boolean": [
         "to be true",

@@ -366,60 +366,6 @@ describe('assertions/any/to-equal.md', function () {
         ].join('\n'));
     });
 });
-describe('assertions/array/to-be-a-map-whose-keys-satisfy.md', function () {
-    it('#1', function () {
-        expect(function () {
-            expect({ foo: 0, bar: 1, baz: 2, qux: 3 },
-                   'to be a map whose keys satisfy', function (key, value) {
-                expect(key, 'to match', /^[a-z]{3}$/);
-            });
-            expect({ foo: 0, bar: 1, baz: 2, qux: 3 },
-                   'to be a map whose keys satisfy',
-                   'to match', /^[a-z]{3}$/);
-            expect(['foo', 'bar', 'baz', 'qux'],
-                   'to be a non-empty map whose keys satisfy',
-                   'to match', /^\d+$/);
-        }, 'not to throw');
-    });
-    it('#2', function () {
-        expect(function () {
-            expect({ foo: 0, bar: 1, baz: 2, qux: 3, quux: 4 },
-                   'to be a map whose keys satisfy',
-                   'to match', /^[a-z]{3}$/);
-        }, 'to throw', [
-            'failed expectation on keys foo, bar, baz, qux, quux:',
-            '  quux: expected \'quux\' to match /^[a-z]{3}$/'
-        ].join('\n'));
-    });
-});
-describe('assertions/array/to-be-a-map-whose-values-satisfy.md', function () {
-    it('#1', function () {
-        expect(function () {
-            expect({ foo: 0, bar: 1, baz: 2, qux: 3 },
-                   'to be a map whose values satisfy', function (value, index) {
-                expect(value, 'to be a number');
-            });
-            expect({ foo: 0, bar: 1, baz: 2, qux: 3 },
-                   'to be a non-empty map whose values satisfy',
-                   'to be a number');
-        }, 'not to throw');
-    });
-    it('#2', function () {
-        expect(function () {
-            expect({ foo: [0, 1, 2], bar: [4, 5, 6], baz: [7, 8, 9] },
-                   'to be a map whose values satisfy',
-                   'to be an array whose items satisfy',
-                   expect.it('to be a number').and('to be below', 8));
-        }, 'to throw', [
-            'failed expectation in { foo: [ 0, 1, 2 ], bar: [ 4, 5, 6 ], baz: [ 7, 8, 9 ] }:',
-            '  baz: failed expectation in [ 7, 8, 9 ]:',
-            '         1: ✓ expected 8 to be a number and',
-            '            ⨯ expected 8 to be below 8',
-            '         2: ✓ expected 9 to be a number and',
-            '            ⨯ expected 9 to be below 8'
-        ].join('\n'));
-    });
-});
 describe('assertions/array/to-be-an-array-whose-items-satisfy.md', function () {
     it('#1', function () {
         expect(function () {
@@ -1033,6 +979,60 @@ describe('assertions/number/to-be-within.md', function () {
             expect(0, 'not to be within', 0, 4);
         }, 'to throw', [
             'expected 0 not to be within 0..4'
+        ].join('\n'));
+    });
+});
+describe('assertions/object/to-be-a-map-whose-keys-satisfy.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect({ foo: 0, bar: 1, baz: 2, qux: 3 },
+                   'to be a map whose keys satisfy', function (key, value) {
+                expect(key, 'to match', /^[a-z]{3}$/);
+            });
+            expect({ foo: 0, bar: 1, baz: 2, qux: 3 },
+                   'to be a map whose keys satisfy',
+                   'to match', /^[a-z]{3}$/);
+            expect(['foo', 'bar', 'baz', 'qux'],
+                   'to be a non-empty map whose keys satisfy',
+                   'to match', /^\d+$/);
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect({ foo: 0, bar: 1, baz: 2, qux: 3, quux: 4 },
+                   'to be a map whose keys satisfy',
+                   'to match', /^[a-z]{3}$/);
+        }, 'to throw', [
+            'failed expectation on keys foo, bar, baz, qux, quux:',
+            '  quux: expected \'quux\' to match /^[a-z]{3}$/'
+        ].join('\n'));
+    });
+});
+describe('assertions/object/to-be-a-map-whose-values-satisfy.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect({ foo: 0, bar: 1, baz: 2, qux: 3 },
+                   'to be a map whose values satisfy', function (value, index) {
+                expect(value, 'to be a number');
+            });
+            expect({ foo: 0, bar: 1, baz: 2, qux: 3 },
+                   'to be a non-empty map whose values satisfy',
+                   'to be a number');
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect({ foo: [0, 1, 2], bar: [4, 5, 6], baz: [7, 8, 9] },
+                   'to be a map whose values satisfy',
+                   'to be an array whose items satisfy',
+                   expect.it('to be a number').and('to be below', 8));
+        }, 'to throw', [
+            'failed expectation in { foo: [ 0, 1, 2 ], bar: [ 4, 5, 6 ], baz: [ 7, 8, 9 ] }:',
+            '  baz: failed expectation in [ 7, 8, 9 ]:',
+            '         1: ✓ expected 8 to be a number and',
+            '            ⨯ expected 8 to be below 8',
+            '         2: ✓ expected 9 to be a number and',
+            '            ⨯ expected 9 to be below 8'
         ].join('\n'));
     });
 });
