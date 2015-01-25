@@ -33,7 +33,8 @@
         "to be empty",
         "to have length",
         "to contain",
-        "to be an array whose items satisfy"
+        "to be an array whose items satisfy",
+        "to be a map whose keys satisfy"
     ],
     "boolean": [
         "to be true",

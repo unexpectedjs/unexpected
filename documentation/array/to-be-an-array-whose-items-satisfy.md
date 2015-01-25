@@ -1,4 +1,4 @@
-Asserts all items of an array satisfies a given function.
+Asserts that all items of an array satisfies a given function.
 
 <!-- evaluate -->
 ```javascript

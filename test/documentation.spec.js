@@ -366,6 +366,32 @@ describe('assertions/any/to-equal.md', function () {
         ].join('\n'));
     });
 });
+describe('assertions/array/to-be-a-map-whose-keys-satisfy.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect({ foo: 0, bar: 1, baz: 2, qux: 3 },
+                   'to be a map whose keys satisfy', function (key) {
+                expect(key, 'to match', /^[a-z]{3}$/);
+            });
+            expect({ foo: 0, bar: 1, baz: 2, qux: 3 },
+                   'to be a map whose keys satisfy',
+                   'to match', /^[a-z]{3}$/);
+            expect(['foo', 'bar', 'baz', 'qux'],
+                   'to be a map whose keys satisfy',
+                   'to match', /^\d+$/);
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect({ foo: 0, bar: 1, baz: 2, qux: 3, quux: 4 },
+                   'to be a map whose keys satisfy',
+                   'to match', /^[a-z]{3}$/);
+        }, 'to throw', [
+            'failed expectation on keys foo, bar, baz, qux, quux:',
+            '  quux: expected \'quux\' to match /^[a-z]{3}$/'
+        ].join('\n'));
+    });
+});
 describe('assertions/array/to-be-an-array-whose-items-satisfy.md', function () {
     it('#1', function () {
         expect(function () {
