@@ -3,7 +3,7 @@ Asserts that all keys of a map satisfies a given function.
 <!-- evaluate -->
 ```javascript
 expect({ foo: 0, bar: 1, baz: 2, qux: 3 },
-       'to be a map whose keys satisfy', function (key) {
+       'to be a map whose keys satisfy', function (key, value) {
     expect(key, 'to match', /^[a-z]{3}$/);
 });
 
