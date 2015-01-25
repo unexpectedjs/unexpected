@@ -8,7 +8,8 @@
         "to be undefined",
         "to be null",
         "to be a",
-        "to equal"
+        "to equal",
+        "to satisfy"
     ],
     "string": [
         "to be",

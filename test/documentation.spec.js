@@ -366,6 +366,68 @@ describe('assertions/any/to-equal.md', function () {
         ].join('\n'));
     });
 });
+describe('assertions/any/to-satisfy.md', function () {
+    it('#1', function () {
+        expect(function () {
+            expect({ hey: { there: true } }, 'to satisfy', { hey: {} });
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect({ hey: { there: true } }, 'to exhaustively satisfy', { hey: { there: true } });
+        }, 'not to throw');
+    });
+    it('#3', function () {
+        expect(function () {
+            expect({ bar: 'quux', baz: true }, 'to satisfy', { bar: /QU*X/i });
+        }, 'not to throw');
+    });
+    it('#4', function () {
+        expect(function () {
+            expect({foo: 123, bar: 'bar', baz: 'bogus', qux: 42}, 'to satisfy', {
+                foo: expect.it('to be a number').and('to be greater than', 10),
+                baz: expect.it('not to match', /^boh/),
+                qux: expect.it('to be a string')
+                              .and('not to be empty')
+                           .or('to be a number')
+                              .and('to be positive')
+            });
+        }, 'not to throw');
+    });
+    it('#5', function () {
+        expect(function () {
+            expect({foo: 9, bar: 'bar', baz: 'bogus', qux: 42}, 'to satisfy', {
+                foo: expect.it('to be a number').and('to be greater than', 10),
+                baz: expect.it('not to match', /^bog/),
+                qux: expect.it('to be a string')
+                              .and('not to be empty')
+                           .or('to be a number')
+                              .and('to be positive')
+            });
+        }, 'to throw', [
+            'expected { foo: 9, bar: \'bar\', baz: \'bogus\', qux: 42 } to satisfy',
+            '{',
+            '  foo: expect.it(\'to be a number\')           ,',
+            '               .and(\'to be greater than\', 10)',
+            '  baz: expect.it(\'not to match\', /^bog/),',
+            '  qux: expect.it(\'to be a string\')',
+            '               .and(\'not to be empty\')',
+            '             .or(\'to be a number\')',
+            '               .and(\'to be positive\')',
+            '}',
+            '',
+            '{',
+            '  foo: 9, // ✓ expected 9 to be a number and',
+            '          // ⨯ expected 9 to be greater than 10',
+            '  bar: \'bar\',',
+            '  baz: \'bogus\', // expected \'bogus\' not to match /^bog/',
+            '                //',
+            '                // bogus',
+            '  qux: 42',
+            '}'
+        ].join('\n'));
+    });
+});
 describe('assertions/array/to-be-an-array-whose-items-satisfy.md', function () {
     it('#1', function () {
         expect(function () {
