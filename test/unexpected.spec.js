@@ -3269,7 +3269,11 @@ describe('unexpected', function () {
                    "    circular: { self: [Circular] },\n" +
                    "    this: {\n" +
                    "      is: {\n" +
-                   "        deeply: { nested: ..., string: 'should be shown', 'a list': ... },\n" +
+                   "        deeply: {\n" +
+                   "          nested: ...,\n" +
+                   "          string: 'should be shown',\n" +
+                   "          'a list': ...\n" +
+                   "        },\n" +
                    "        'a list': [...]\n" +
                    "      }\n" +
                    "    }\n" +

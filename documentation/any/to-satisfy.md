@@ -59,8 +59,8 @@ expect({foo: 9, bar: 'bar', baz: 'bogus', qux: 42}, 'to satisfy', {
 ```
 expected { foo: 9, bar: 'bar', baz: 'bogus', qux: 42 } to satisfy
 {
-  foo: expect.it('to be a number')           ,
-               .and('to be greater than', 10)
+  foo: expect.it('to be a number')
+               .and('to be greater than', 10),
   baz: expect.it('not to match', /^bog/),
   qux: expect.it('to be a string')
                .and('not to be empty')
@@ -73,7 +73,7 @@ expected { foo: 9, bar: 'bar', baz: 'bogus', qux: 42 } to satisfy
           // ⨯ expected 9 to be greater than 10
   bar: 'bar',
   baz: 'bogus', // expected 'bogus' not to match /^bog/
-                //
+                // 
                 // bogus
   qux: 42
 }
