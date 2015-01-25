@@ -12,7 +12,7 @@ expect({ foo: 0, bar: 1, baz: 2, qux: 3 },
        'to match', /^[a-z]{3}$/);
 
 expect(['foo', 'bar', 'baz', 'qux'],
-       'to be a map whose keys satisfy',
+       'to be a non-empty map whose keys satisfy',
        'to match', /^\d+$/);
 ```
 <!-- /evaluate -->
