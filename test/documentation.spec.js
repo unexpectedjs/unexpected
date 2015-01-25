@@ -501,6 +501,134 @@ describe('assertions/function/to-have-arity.md', function () {
         ].join('\n'));
     });
 });
+describe('assertions/function/to-throw.md', function () {
+    it('#1', function () {
+        expect(function () {
+            function willThrow() {
+              throw new Error('The error message');
+            }
+            expect(willThrow, 'to throw');
+            expect(willThrow, 'to throw error');
+            expect(willThrow, 'to throw exception');
+        }, 'not to throw');
+    });
+    it('#2', function () {
+        expect(function () {
+            expect(function willNotThrow() {}, 'to throw');
+        }, 'to throw', [
+            'expected function willNotThrow() {} to throw'
+        ].join('\n'));
+    });
+    it('#3', function () {
+        expect(function () {
+            expect(function () {
+              throw new Error('The error message');
+            }, 'to throw', 'The error message');
+        }, 'not to throw');
+    });
+    it('#4', function () {
+        expect(function () {
+            expect(function () {
+              throw new Error('The error message!');
+            }, 'to throw', 'The error message');
+        }, 'to throw', [
+            'expected',
+            'function () {',
+            '  throw new Error(\'The error message!\');',
+            '}',
+            'to throw \'The error message\'',
+            '  expected \'The error message!\' to equal \'The error message\'',
+            '  ',
+            '  -The error message!',
+            '  +The error message'
+        ].join('\n'));
+    });
+    it('#5', function () {
+        expect(function () {
+            expect(function () {
+              throw new Error('The error message');
+            }, 'to throw', /error message/);
+        }, 'not to throw');
+    });
+    it('#6', function () {
+        expect(function () {
+            expect(function () {
+              throw new Error('The error message!');
+            }, 'to throw', /catastrophic failure/);
+        }, 'to throw', [
+            'expected',
+            'function () {',
+            '  throw new Error(\'The error message!\');',
+            '}',
+            'to throw /catastrophic failure/',
+            '  expected \'The error message!\' to match /catastrophic failure/'
+        ].join('\n'));
+    });
+    it('#7', function () {
+        expect(function () {
+            expect(function () {
+              this.foo.bar();
+            }, 'to throw', function (e) {
+              expect(e, 'to be a', TypeError);
+            });
+        }, 'not to throw');
+    });
+    it('#8', function () {
+        expect(function () {
+            expect(function () {
+              throw new Error('Another error');
+            }, 'to throw', function (e) {
+              expect(e, 'to be a', TypeError);
+            });
+        }, 'to throw', [
+            'expected Error({ message: \'Another error\' }) to be a TypeError'
+        ].join('\n'));
+    });
+    it('#9', function () {
+        expect(function () {
+            expect(function () {
+              // Do some work that should not throw
+            }, 'not to throw');
+        }, 'not to throw');
+    });
+    it('#10', function () {
+        expect(function () {
+            expect(function () {
+              throw new Error('threw anyway');
+            }, 'not to throw');
+        }, 'to throw', [
+            'expected',
+            'function () {',
+            '  throw new Error(\'threw anyway\');',
+            '}',
+            'not to throw',
+            '  threw: Error({ message: \'threw anyway\' })'
+        ].join('\n'));
+    });
+    it('#11', function () {
+        expect(function () {
+            expect(function () {
+              throw new Error('The correct error message');
+            }, 'not to throw', /great success/);
+        }, 'not to throw');
+    });
+    it('#12', function () {
+        expect(function () {
+            expect(function () {
+              throw new Error('The correct error message');
+            }, 'not to throw', /error/);
+        }, 'to throw', [
+            'expected',
+            'function () {',
+            '  throw new Error(\'The correct error message\');',
+            '}',
+            'not to throw /error/',
+            '  expected \'The correct error message\' not to match /error/',
+            '  ',
+            '  The correct error message'
+        ].join('\n'));
+    });
+});
 describe('assertions/number/to-be-NaN.md', function () {
     it('#1', function () {
         expect(function () {
