@@ -749,7 +749,7 @@ describe('unexpected', function () {
                     '}\n' +
                     'to throw \'foo\'\n' +
                     '  expected \'bar\' to equal \'foo\'\n' +
-                    '  \n' +
+                    '\n' +
                     '  -bar\n' +
                     '  +foo');
         });
