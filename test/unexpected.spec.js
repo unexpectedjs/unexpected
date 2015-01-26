@@ -749,7 +749,7 @@ describe('unexpected', function () {
                     '}\n' +
                     'to throw \'foo\'\n' +
                     '  expected \'bar\' to equal \'foo\'\n' +
-                    '  \n' +
+                    '\n' +
                     '  -bar\n' +
                     '  +foo');
         });
@@ -1579,6 +1579,22 @@ describe('unexpected', function () {
                     '\n' +
                     '-01 02 03                                         │...│\n' +
                     '+01 02 04                                         │...│');
+            });
+        });
+
+        describe('on object with getters', function () {
+            it('should satisfy on the value returned by the getter', function () {
+                var subject = { nextLevel: {} };
+                Object.defineProperty(subject.nextLevel, 'getMe', {
+                    get: function () { return 'got me'; },
+                    enumerable: false
+                });
+
+                expect(subject, 'to satisfy', {
+                    nextLevel: {
+                        getMe: 'got me'
+                    }
+                });
             });
         });
 

@@ -642,7 +642,7 @@ describe('assertions/function/to-throw.md', function () {
             '}',
             'to throw \'The error message\'',
             '  expected \'The error message!\' to equal \'The error message\'',
-            '  ',
+            '',
             '  -The error message!',
             '  +The error message'
         ].join('\n'));
@@ -728,7 +728,7 @@ describe('assertions/function/to-throw.md', function () {
             '}',
             'not to throw /error/',
             '  expected \'The correct error message\' not to match /error/',
-            '  ',
+            '',
             '  The correct error message'
         ].join('\n'));
     });

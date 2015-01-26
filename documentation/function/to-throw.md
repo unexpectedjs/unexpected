@@ -50,7 +50,7 @@ function () {
 }
 to throw 'The error message'
   expected 'The error message!' to equal 'The error message'
-  
+
   -The error message!
   +The error message
 ```
@@ -171,7 +171,7 @@ function () {
 }
 not to throw /error/
   expected 'The correct error message' not to match /error/
-  
+
   The correct error message
 ```
 <!-- /evaluate -->
