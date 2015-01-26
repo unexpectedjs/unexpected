@@ -23,7 +23,7 @@
     "arraydiff": "0.1.1",
     "diff": "1.1.0",
     "leven": "1.0.0",
-    "magicpen": "4.2.1"
+    "magicpen": "4.2.2"
   },
   "devDependencies": {
     "browserify": "5.9.1",
