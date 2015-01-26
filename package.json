@@ -36,8 +36,7 @@
     "glob": "4.3.2",
     "istanbul": "0.3.5",
     "jshint": "2.5.6",
-    "magicpen": "^4.0.0",
-    "magicpen-prism": "^1.0.0",
+    "magicpen-prism": "1.0.0",
     "metalsmith": "1.0.1",
     "metalsmith-collections": "0.6.0",
     "metalsmith-less": "1.0.2",
@@ -52,6 +51,6 @@
     "passerror": "1.1.0",
     "phantomjs": "1.9.12",
     "serve": "*",
-    "strip-json-comments": "^1.0.2"
+    "strip-json-comments": "1.0.2"
   }
 }
