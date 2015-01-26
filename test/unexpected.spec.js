@@ -1580,6 +1580,22 @@ describe('unexpected', function () {
             });
         });
 
+        describe('on object with getters', function () {
+            it('should satisfy on the value returned by the getter', function () {
+                var subject = { nextLevel: {} };
+                Object.defineProperty(subject.nextLevel, 'getMe', {
+                    get: function () { return 'got me'; },
+                    enumerable: false
+                });
+
+                expect(subject, 'to satisfy', {
+                    nextLevel: {
+                        getMe: 'got me'
+                    }
+                });
+            });
+        });
+
         describe('on arrays', function () {
             it('should require all indices to be present in the subject', function () {
                 expect([1, 2, 3], 'to satisfy', [1, 2, 3]);
