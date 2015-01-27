@@ -1,23 +1,13 @@
 var expect = require('../lib/').clone();
 
-expect.output.addStyle('strings', function (content) {
-    this.text(content, '#df5000');
-}, true);
-expect.output.addStyle('key', function (content) {
-    this.text(content, 'black');
-}, true);
-expect.output.addStyle('number', function (content) {
-    this.text(content, '#0086b3');
-}, true);
-expect.output.addStyle('comment', function (content) {
-    this.gray(content, '#969896');
-}, true);
-expect.output.addStyle('regexp', function (content) {
-    this.text(content, '#df5000');
-}, true);
-expect.output.addStyle('keyword', function (content) {
-    this.text(content, '#0086b3');
-}, true);
+expect.installTheme('html', {
+    strings: '#df5000',
+    key: 'black',
+    number: '#0086b3',
+    comment: '#969896',
+    regexp: '#df5000',
+    keyword: '#0086b3'
+});
 
 expect.installPlugin(require('magicpen-prism'))
     .installPlugin(require('./magicpen-github-syntax-theme'));
