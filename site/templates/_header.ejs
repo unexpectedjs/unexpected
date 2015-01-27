@@ -11,7 +11,7 @@
         <nav>
             <ul>
                 <li class="<%- path === '' ? 'active' : '' %>"><a href="/">Unexpected</a></li>
-                <li class="<%- path.match(/^assertions\/?/) ? 'active' : '' %>"><a href="/assertions">Assertions</a></li>
+                <li class="<%- path.match(/^assertions\/?/) ? 'active' : '' %>"><a href="<%= assertionsByType.any[0].href%>">Assertions</a></li>
             </ul>
         </nav>
     </header>
@@ -20,7 +20,7 @@
             <ul>
                 <% Object.keys(assertionsByType).forEach(function (type) { %>
                 <li>
-                    <a href="/assertions/<%= type %>/"><%= type %></a>
+                    <%= type %>
                     <ul>
                         <% assertionsByType[type].forEach(function (assertion) { %>
                         <li class="<%= isActiveAssertion(path, type, assertion.title) ? 'active' : '' %>">
