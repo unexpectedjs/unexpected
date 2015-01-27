@@ -1,50 +1,34 @@
 module.exports = {
     name: 'github-syntax-theme',
     installInto: function (pen) {
-        var colorByTokenType = {
+        pen.installTheme({
             // Mimic github theme
-            comment: '#969896',
-            prolog: '#969896',
-            doctype: '#969896',
-            cdata: '#708090',
+            'prism:comment': '#969896',
+            'prism:cdata': '#708090',
 
-            punctuation: '#000000',
+            'prism:punctuation': '#000000',
 
-            property: '#0086b3',
-            tag: '#63a35c',
-            'boolean': '#0086b3',
-            number: '#0086b3',
-            constant: '#0086b3',
-            symbol: '#0086b3',
-            deleted: '#0086b3',
+            'prism:tag': '#63a35c',
+            'prism:symbol': '#0086b3',
 
-            selector: '#df5000',
-            'attr-name': '#795da3',
-            string: '#df5000',
-            'char': '#df5000',
-            builtin: '#df5000',
-            inserted: '#df5000',
+            'prism:attr-name': '#795da3',
 
-            operator: '#a71d5d',
-            entity: '#df5000',
-            url: '#df5000',
-            'css:string': '#df5000',
-            variable: '#a67f59',
+            'prism:operator': '#a71d5d',
+            'prism:variable': '#a67f59',
 
-            atrule: '#df5000',
-            'attr-value': '#df5000',
-            keyword: '#0086b3',
+            'prism:string': '#df5000',
+            'prism:url': 'prism:string',
+            'css:string': 'prism:string',
+            'prism:entity': 'prism:string',
+            'prism:atrule': 'prism:string',
+            'attr-value': 'prism:string',
+            'prism:regex': 'prism:string',
 
-            'function': '#000000',
+            'prism:keyword': '#0086b3',
 
-            regex: '#df5000',
-            important: '#0086b3 bold'
-        };
+            'prism:function': '#000000',
 
-        Object.keys(colorByTokenType).forEach(function (tokenType) {
-            pen.addStyle('prism:' + tokenType, function (content) {
-                this.text(content, colorByTokenType[tokenType]);
-            }, true);
+            'prism:important': ['#0086b3', 'bold']
         });
     }
 };
