@@ -1,7 +1,7 @@
 module.exports = {
     name: 'github-syntax-theme',
     installInto: function (pen) {
-        pen.installTheme({
+        pen.installTheme('html', {
             // Mimic github theme
             'prism:comment': '#969896',
             'prism:cdata': '#708090',

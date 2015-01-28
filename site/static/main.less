@@ -141,6 +141,18 @@ code {
     background-color: #f3f3f3;
 }
 
+.theme-dark {
+    .code,
+    .output {
+        background-color: black;
+        color: white;
+    }
+
+    .code + .output {
+        border-top: thin solid #333;
+    }
+}
+
 .code + .output {
     border-top: thin solid #ddd;
     margin-top: -0.5em;
