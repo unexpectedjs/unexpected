@@ -19,7 +19,7 @@ module.exports = function syntaxHighlight(files, metalsmith, next) {
 
     // Find assertions files and file names.
     Object.keys(files).filter(function (file) {
-        return /^index.md/.test(file) ||
+        return /^\w+.md/.test(file) ||
             /^assertions\//.test(file);
     }).forEach(syntaxHighlightFile);
 
