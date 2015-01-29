@@ -12,6 +12,7 @@
             <ul>
                 <li class="<%- path === '' ? 'active' : '' %>"><a href="/">Unexpected</a></li>
                 <li class="<%- path.match(/^assertions\/?/) ? 'active' : '' %>"><a href="<%= assertionsByType.any[0].href%>">Assertions</a></li>
+                <li class="<%- path.match(/^types\/?/) ? 'active' : '' %>"><a href="/types">Types</a></li>
             </ul>
         </nav>
     </header>
