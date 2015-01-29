@@ -90,10 +90,9 @@ header {
     overflow-y: auto;
 }
 
-.content {
+.main {
     .layout();
     top: @headerHeight;
-    padding: 30px 25%;
     overflow-y: auto;
 }
 
@@ -103,9 +102,19 @@ header {
     }
 }
 
-#assertions .content {
+.content {
+    margin-top: 27px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 790px;
+}
+
+#assertions .main {
     left: @navWidth;
-    padding: 10px 20px;
+    .content {
+        margin: 27px 30px;
+        width: auto;
+    }
 }
 
 .evaluation {

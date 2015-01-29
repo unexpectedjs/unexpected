@@ -1,5 +1,7 @@
 <% include _header.ejs %>
-<div class="content<%=typeof theme !== 'undefined' ? ' theme-' + theme : '' %>">
-    <%- contents %>
+<div class="main<%=typeof theme !== 'undefined' ? ' theme-' + theme : '' %>">
+    <div class="content">
+        <%- contents %>
+    </div>
 </div>
 <% include _footer.ejs %>
