@@ -63,11 +63,12 @@ header {
             display: block;
             float: left;
             margin: 0;
-            padding: 10px;
 
             a {
                 color: white;
                 text-decoration: none;
+                padding: 10px;
+                display: inline-block;
             }
             a:hover {
                 text-decoration: none;
@@ -92,7 +93,7 @@ header {
 .content {
     .layout();
     top: @headerHeight;
-    padding: 10px 20px;
+    padding: 30px 25%;
     overflow-y: auto;
 }
 
@@ -104,6 +105,7 @@ header {
 
 #assertions .content {
     left: @navWidth;
+    padding: 10px 20px;
 }
 
 .evaluation {
