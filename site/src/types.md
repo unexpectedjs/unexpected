@@ -45,7 +45,7 @@ say we wanted to add first class support for a `Person` type:
 
 <!-- evaluate -->
 ```javascript
-Person = function (name, age) {
+function Person(name, age) {
     this.name = name;
     this.age = age;
 }
