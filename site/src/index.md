@@ -6,12 +6,11 @@ theme: dark
 # Welcome to Unexpected
 ### The extensible BDD assertion toolkit
 
-<!-- evaluate -->
 ```javascript
 expect({ text: 'foo!' }, 'to equal', { text: 'f00!' });
 ```
 
-```
+```output
 expected { text: 'foo!' } to equal { text: 'f00!' }
 
 {
@@ -20,4 +19,3 @@ expected { text: 'foo!' } to equal { text: 'f00!' }
                // +f00!
 }
 ```
-<!-- /evaluate -->

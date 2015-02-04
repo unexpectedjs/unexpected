@@ -43,21 +43,18 @@ Optional members:
 Adding new types to the system is best explained by an example. Let's
 say we wanted to add first class support for a `Person` type:
 
-<!-- evaluate -->
 ```javascript
 function Person(name, age) {
     this.name = name;
     this.age = age;
 }
 ```
-<!-- /evaluate -->
 
 We start out by creating a basic type for handling `Person`
 instances. The name of the type should be `Person` and it should
 inherit from the build in `object` type. Furthermore we add an
 `identify` method that will recognize `Person` instances.
 
-<!-- evaluate -->
 ```javascript
 expect.addType({
     name: 'Person',
@@ -67,7 +64,6 @@ expect.addType({
     }
 });
 ```
-<!-- /evaluate -->
 
 When you specify a base type, you inherit the optional members you
 didn't implement. In this case we inherited the methods `equal`,
@@ -75,21 +71,25 @@ didn't implement. In this case we inherited the methods `equal`,
 
 Imagine that we make a failing expectation on a person instance:
 
-<!-- evaluate -->
 ```javascript
 expect(new Person('John Doe', 42), 'to equal', new Person('Jane Doe', 24));
 ```
 
+```output
+expected Person({ name: 'John Doe', age: 42 }) to equal Person({ name: 'Jane Doe', age: 24 })
+
+Person({
+  name: 'John Doe', // should be 'Jane Doe'
+                    // -John Doe
+                    // +Jane Doe
+  age: 42 // should be 24
+})
 ```
-TODO
-```
-<!-- /evaluate -->
 
 That is already quite helpful, but the output misses the information
 that it is `Person` instances we are comparing. We can fix that by
 implementing an `inspect` method on the type.
 
-<!-- evaluate -->
 ```javascript
 expect.addType({
     name: 'Person',
@@ -106,19 +106,23 @@ expect.addType({
     }
 });
 ```
-<!-- /evaluate -->
 
 Now we get the following output:
 
-<!-- evaluate -->
 ```javascript
 expect(new Person('John Doe', 42), 'to equal', new Person('Jane Doe', 24));
 ```
 
+```output
+expected new Person('John Doe', 42) to equal new Person('Jane Doe', 24)
+
+Person({
+  name: 'John Doe', // should be 'Jane Doe'
+                    // -John Doe
+                    // +Jane Doe
+  age: 42 // should be 24
+})
 ```
-TODO
-```
-<!-- /evaluate -->
 
 That is a bit better, let me explain how it works. The `inspect`
 method is called with the value to be inspected, the depth this type
@@ -138,7 +142,6 @@ same depth to the `inspect` function.
 Let's say we wanted persons only to be compared by name and not by
 age. Then we need to override the `equal` method:
 
-<!-- evaluate -->
 ```javascript
 expect.addType({
     name: 'Person',
@@ -158,13 +161,11 @@ expect.addType({
     }
 });
 ```
-<!-- /evaluate -->
 
 This will produce the same output as above, but that means the diff if
 wrong. It states that the age should be changed. We can fix that the
 following way:
 
-<!-- evaluate -->
 ```javascript
 expect.addType({
     name: 'Person',
@@ -187,17 +188,20 @@ expect.addType({
     }
 });
 ```
-<!-- /evaluate -->
 
-<!-- evaluate -->
 ```javascript
 expect(new Person('John Doe', 42), 'to equal', new Person('Jane Doe', 24));
 ```
 
+```output
+expected new Person('John Doe', 42) to equal new Person('Jane Doe', 24)
+
+{
+  name: 'John Doe' // should be 'Jane Doe'
+                   // -John Doe
+                   // +Jane Doe
+}
 ```
-TODO
-```
-<!-- /evaluate -->
 
 The above `diff` method just calls the `diff` method on the base type
 with objects that only contain the name. The `object` diff will take
@@ -208,9 +212,8 @@ on the base directly when you know it is the one you need.
 
 You could also do something really custom as seen below:
 
-<!-- evaluate -->
 ```javascript
-inlineDiff = true; // used to change inlining in a later example
+var inlineDiff = true; // used to change inlining in a later example
 
 expect.addType({
     name: 'Person',
@@ -260,19 +263,23 @@ expect.addType({
     }
 });
 ```
-<!-- /evaluate -->
 
 That would produce the following output.
 
-<!-- evaluate -->
 ```javascript
 expect(new Person('John Doe', 42), 'to equal', new Person('Jane Doe', 24));
 ```
 
+```output
+expected new Person('John Doe', 42) to equal new Person('Jane Doe', 24)
+
+new Person(
+  'John Doe', // should be 'Jane Doe'
+              // -John Doe
+              // +Jane Doe
+  42
+)
 ```
-TODO
-```
-<!-- /evaluate -->
 
 This is a rather complicated example and I wont go though the details,
 but I would like to comment on the `inline` flag. When we diff objects
@@ -284,7 +291,6 @@ into the parent; otherwise the diff will be inserted in an annotation
 block. The outputs below shows the contrast between setting the
 `Person` diff to inline or not.
 
-<!-- evaluate -->
 ```javascript
 inlineDiff = true;
 expect(
@@ -294,12 +300,29 @@ expect(
 );
 ```
 
-```
-TODO
-```
-<!-- /evaluate -->
+```output
+expected
+{
+  'John Doe': new Person('John Doe', 42),
+  'Jane Doe': new Person('Janie Doe', 24)
+}
+to equal
+{
+  'John Doe': new Person('John Doe', 42),
+  'Jane Doe': new Person('Jane Doe', 24)
+}
 
-<!-- evaluate -->
+{
+  'John Doe': new Person('John Doe', 42),
+  'Jane Doe': new Person(
+    'Janie Doe', // should be 'Jane Doe'
+                 // -Janie Doe
+                 // +Jane Doe
+    24
+  )
+}
+```
+
 ```javascript
 inlineDiff = false;
 expect(
@@ -309,16 +332,34 @@ expect(
 );
 ```
 
+```output
+expected
+{
+  'John Doe': new Person('John Doe', 42),
+  'Jane Doe': new Person('Janie Doe', 24)
+}
+to equal
+{
+  'John Doe': new Person('John Doe', 42),
+  'Jane Doe': new Person('Jane Doe', 24)
+}
+
+{
+  'John Doe': new Person('John Doe', 42),
+  'Jane Doe': new Person('Janie Doe', 24) // should be new Person('Jane Doe', 24)
+                                          // new Person(
+                                          //   'Janie Doe', // should be 'Jane Doe'
+                                          //                // -Janie Doe
+                                          //                // +Jane Doe
+                                          //   24
+                                          // )
+}
 ```
-TODO
-```
-<!-- /evaluate -->
 
 Now that we have implemented a type, we can start adding assertions to
 it. These assertions will only work on this type or types inheriting
 from the type.
 
-<!-- evaluate -->
 ```javascript
 expect.addAssertion('Person', 'to be above legal age', function (expect, subject) {
     expect(subject.age, 'to be greater than or equal to', 18);
@@ -326,12 +367,10 @@ expect.addAssertion('Person', 'to be above legal age', function (expect, subject
 
 expect(new Person('Jane Doe', 24), 'to be above legal age');
 ```
-<!-- /evaluate -->
 
 Because `Person` inherits from `object` you can use all assertion
 defined for `object` or any of it's ancestors. Here is an example:
 
-<!-- evaluate -->
 ```javascript
 expect(new Person('Jane Doe', 24), 'to have keys', 'name', 'age');
 expect(new Person('Jane Doe', 24), 'to satisfy', {
@@ -339,7 +378,6 @@ expect(new Person('Jane Doe', 24), 'to satisfy', {
     age: expect.it('to be a number').and('not to be negative')
 });
 ```
-<!-- /evaluate -->
 
 The best resource for learning more about custom types is to look at
 how the predefined types are build:
