@@ -335,6 +335,224 @@ describe("documentation tests", function () {
         });
     });
 
+    it("assertions/boolean/to-be-false.md contains correct examples", function () {
+        expect(false, 'to be false');
+
+        try {
+            expect(true, 'to be false');
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect(true, 'to be false');").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected true to be false"
+            );
+        }
+    });
+
+    it("assertions/boolean/to-be-true.md contains correct examples", function () {
+        expect(true, 'to be true');
+
+        try {
+            expect(false, 'to be true');
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect(false, 'to be true');").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected false to be true"
+            );
+        }
+    });
+
+    it("assertions/function/to-have-arity.md contains correct examples", function () {
+        expect(Math.max, 'to have arity', 2);
+        expect('wat'.substring, 'to have arity', 2);
+
+        try {
+            expect(function wat(foo, bar) {
+              return foo + bar;
+            }, 'to have arity', 3);
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect(function wat(foo, bar) {").nl();
+                output.code("  return foo + bar;").nl();
+                output.code("}, 'to have arity', 3);").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected\n" +
+                "function wat(foo, bar) {\n" +
+                "  return foo + bar;\n" +
+                "}\n" +
+                "to have arity 3"
+            );
+        }
+    });
+
+    it("assertions/function/to-throw.md contains correct examples", function () {
+        function willThrow() {
+          throw new Error('The error message');
+        }
+        expect(willThrow, 'to throw');
+        expect(willThrow, 'to throw error');
+        expect(willThrow, 'to throw exception');
+
+        try {
+            expect(function willNotThrow() {}, 'to throw');
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect(function willNotThrow() {}, 'to throw');").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected function willNotThrow() {} to throw"
+            );
+        }
+
+        expect(function () {
+          throw new Error('The error message');
+        }, 'to throw', 'The error message');
+
+        try {
+            expect(function () {
+              throw new Error('The error message!');
+            }, 'to throw', 'The error message');
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect(function () {").nl();
+                output.code("  throw new Error('The error message!');").nl();
+                output.code("}, 'to throw', 'The error message');").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected\n" +
+                "function () {\n" +
+                "  throw new Error('The error message!');\n" +
+                "}\n" +
+                "to throw 'The error message'\n" +
+                "  expected 'The error message!' to equal 'The error message'\n" +
+                "\n" +
+                "  -The error message!\n" +
+                "  +The error message"
+            );
+        }
+
+        expect(function () {
+          throw new Error('The error message');
+        }, 'to throw', /error message/);
+
+        try {
+            expect(function () {
+              throw new Error('The error message!');
+            }, 'to throw', /catastrophic failure/);
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect(function () {").nl();
+                output.code("  throw new Error('The error message!');").nl();
+                output.code("}, 'to throw', /catastrophic failure/);").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected\n" +
+                "function () {\n" +
+                "  throw new Error('The error message!');\n" +
+                "}\n" +
+                "to throw /catastrophic failure/\n" +
+                "  expected 'The error message!' to match /catastrophic failure/"
+            );
+        }
+
+        expect(function () {
+          this.foo.bar();
+        }, 'to throw', function (e) {
+          expect(e, 'to be a', TypeError);
+        });
+
+        try {
+            expect(function () {
+              throw new Error('Another error');
+            }, 'to throw', function (e) {
+              expect(e, 'to be a', TypeError);
+            });
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect(function () {").nl();
+                output.code("  throw new Error('Another error');").nl();
+                output.code("}, 'to throw', function (e) {").nl();
+                output.code("  expect(e, 'to be a', TypeError);").nl();
+                output.code("});").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected Error({ message: 'Another error' }) to be a TypeError"
+            );
+        }
+
+        expect(function () {
+          // Do some work that should not throw
+        }, 'not to throw');
+
+        try {
+            expect(function () {
+              throw new Error('threw anyway');
+            }, 'not to throw');
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect(function () {").nl();
+                output.code("  throw new Error('threw anyway');").nl();
+                output.code("}, 'not to throw');").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected\n" +
+                "function () {\n" +
+                "  throw new Error('threw anyway');\n" +
+                "}\n" +
+                "not to throw\n" +
+                "  threw: Error({ message: 'threw anyway' })"
+            );
+        }
+
+        expect(function () {
+          throw new Error('The correct error message');
+        }, 'not to throw', /great success/);
+
+        try {
+            expect(function () {
+              throw new Error('The correct error message');
+            }, 'not to throw', /error/);
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect(function () {").nl();
+                output.code("  throw new Error('The correct error message');").nl();
+                output.code("}, 'not to throw', /error/);").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected\n" +
+                "function () {\n" +
+                "  throw new Error('The correct error message');\n" +
+                "}\n" +
+                "not to throw /error/\n" +
+                "  expected 'The correct error message' not to match /error/\n" +
+                "\n" +
+                "  The correct error message"
+            );
+        }
+    });
+
     it("assertions/any/to-be-a.md contains correct examples", function () {
         expect(true, 'to be a', 'boolean');
         expect(5, 'to be a', 'number');
@@ -985,224 +1203,6 @@ describe("documentation tests", function () {
         } catch (e) {
             expect(e, "to have message",
                 "expected [ 1, 2, 3 ] not to have length 3"
-            );
-        }
-    });
-
-    it("assertions/boolean/to-be-false.md contains correct examples", function () {
-        expect(false, 'to be false');
-
-        try {
-            expect(true, 'to be false');
-            expect.fail(function (output) {
-                output.error("expected:").nl();
-                output.code("expect(true, 'to be false');").nl();
-                output.error("to throw");
-            });
-        } catch (e) {
-            expect(e, "to have message",
-                "expected true to be false"
-            );
-        }
-    });
-
-    it("assertions/boolean/to-be-true.md contains correct examples", function () {
-        expect(true, 'to be true');
-
-        try {
-            expect(false, 'to be true');
-            expect.fail(function (output) {
-                output.error("expected:").nl();
-                output.code("expect(false, 'to be true');").nl();
-                output.error("to throw");
-            });
-        } catch (e) {
-            expect(e, "to have message",
-                "expected false to be true"
-            );
-        }
-    });
-
-    it("assertions/function/to-have-arity.md contains correct examples", function () {
-        expect(Math.max, 'to have arity', 2);
-        expect('wat'.substring, 'to have arity', 2);
-
-        try {
-            expect(function wat(foo, bar) {
-              return foo + bar;
-            }, 'to have arity', 3);
-            expect.fail(function (output) {
-                output.error("expected:").nl();
-                output.code("expect(function wat(foo, bar) {").nl();
-                output.code("  return foo + bar;").nl();
-                output.code("}, 'to have arity', 3);").nl();
-                output.error("to throw");
-            });
-        } catch (e) {
-            expect(e, "to have message",
-                "expected\n" +
-                "function wat(foo, bar) {\n" +
-                "  return foo + bar;\n" +
-                "}\n" +
-                "to have arity 3"
-            );
-        }
-    });
-
-    it("assertions/function/to-throw.md contains correct examples", function () {
-        function willThrow() {
-          throw new Error('The error message');
-        }
-        expect(willThrow, 'to throw');
-        expect(willThrow, 'to throw error');
-        expect(willThrow, 'to throw exception');
-
-        try {
-            expect(function willNotThrow() {}, 'to throw');
-            expect.fail(function (output) {
-                output.error("expected:").nl();
-                output.code("expect(function willNotThrow() {}, 'to throw');").nl();
-                output.error("to throw");
-            });
-        } catch (e) {
-            expect(e, "to have message",
-                "expected function willNotThrow() {} to throw"
-            );
-        }
-
-        expect(function () {
-          throw new Error('The error message');
-        }, 'to throw', 'The error message');
-
-        try {
-            expect(function () {
-              throw new Error('The error message!');
-            }, 'to throw', 'The error message');
-            expect.fail(function (output) {
-                output.error("expected:").nl();
-                output.code("expect(function () {").nl();
-                output.code("  throw new Error('The error message!');").nl();
-                output.code("}, 'to throw', 'The error message');").nl();
-                output.error("to throw");
-            });
-        } catch (e) {
-            expect(e, "to have message",
-                "expected\n" +
-                "function () {\n" +
-                "  throw new Error('The error message!');\n" +
-                "}\n" +
-                "to throw 'The error message'\n" +
-                "  expected 'The error message!' to equal 'The error message'\n" +
-                "\n" +
-                "  -The error message!\n" +
-                "  +The error message"
-            );
-        }
-
-        expect(function () {
-          throw new Error('The error message');
-        }, 'to throw', /error message/);
-
-        try {
-            expect(function () {
-              throw new Error('The error message!');
-            }, 'to throw', /catastrophic failure/);
-            expect.fail(function (output) {
-                output.error("expected:").nl();
-                output.code("expect(function () {").nl();
-                output.code("  throw new Error('The error message!');").nl();
-                output.code("}, 'to throw', /catastrophic failure/);").nl();
-                output.error("to throw");
-            });
-        } catch (e) {
-            expect(e, "to have message",
-                "expected\n" +
-                "function () {\n" +
-                "  throw new Error('The error message!');\n" +
-                "}\n" +
-                "to throw /catastrophic failure/\n" +
-                "  expected 'The error message!' to match /catastrophic failure/"
-            );
-        }
-
-        expect(function () {
-          this.foo.bar();
-        }, 'to throw', function (e) {
-          expect(e, 'to be a', TypeError);
-        });
-
-        try {
-            expect(function () {
-              throw new Error('Another error');
-            }, 'to throw', function (e) {
-              expect(e, 'to be a', TypeError);
-            });
-            expect.fail(function (output) {
-                output.error("expected:").nl();
-                output.code("expect(function () {").nl();
-                output.code("  throw new Error('Another error');").nl();
-                output.code("}, 'to throw', function (e) {").nl();
-                output.code("  expect(e, 'to be a', TypeError);").nl();
-                output.code("});").nl();
-                output.error("to throw");
-            });
-        } catch (e) {
-            expect(e, "to have message",
-                "expected Error({ message: 'Another error' }) to be a TypeError"
-            );
-        }
-
-        expect(function () {
-          // Do some work that should not throw
-        }, 'not to throw');
-
-        try {
-            expect(function () {
-              throw new Error('threw anyway');
-            }, 'not to throw');
-            expect.fail(function (output) {
-                output.error("expected:").nl();
-                output.code("expect(function () {").nl();
-                output.code("  throw new Error('threw anyway');").nl();
-                output.code("}, 'not to throw');").nl();
-                output.error("to throw");
-            });
-        } catch (e) {
-            expect(e, "to have message",
-                "expected\n" +
-                "function () {\n" +
-                "  throw new Error('threw anyway');\n" +
-                "}\n" +
-                "not to throw\n" +
-                "  threw: Error({ message: 'threw anyway' })"
-            );
-        }
-
-        expect(function () {
-          throw new Error('The correct error message');
-        }, 'not to throw', /great success/);
-
-        try {
-            expect(function () {
-              throw new Error('The correct error message');
-            }, 'not to throw', /error/);
-            expect.fail(function (output) {
-                output.error("expected:").nl();
-                output.code("expect(function () {").nl();
-                output.code("  throw new Error('The correct error message');").nl();
-                output.code("}, 'not to throw', /error/);").nl();
-                output.error("to throw");
-            });
-        } catch (e) {
-            expect(e, "to have message",
-                "expected\n" +
-                "function () {\n" +
-                "  throw new Error('The correct error message');\n" +
-                "}\n" +
-                "not to throw /error/\n" +
-                "  expected 'The correct error message' not to match /error/\n" +
-                "\n" +
-                "  The correct error message"
             );
         }
     });
