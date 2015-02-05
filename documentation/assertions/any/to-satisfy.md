@@ -64,7 +64,7 @@ expected { foo: 9, bar: 'bar', baz: 'bogus', qux: 42 } to satisfy
           // ⨯ expected 9 to be greater than 10
   bar: 'bar',
   baz: 'bogus', // expected 'bogus' not to match /^bog/
-                //
+                // 
                 // bogus
   qux: 42
 }
