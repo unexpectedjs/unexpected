@@ -4,13 +4,12 @@ var glob = require('glob');
 var fs = require('fs');
 var Path = require('path');
 var expect = require('../lib/');
-
-var examplesToEvaluateRegex = /(?:<!-- ?evaluate ?-->)[\s\S]*?<!-- ?\/evaluate ?-->/gm;
+var vm = require('vm');
 
 var assertionsPath = Path.resolve(__dirname, '..', 'documentation');
 
 async.waterfall([
-    glob.bind(null, assertionsPath + '/*/*.md'),
+    glob.bind(null, assertionsPath + '/**/*.md'),
     function (files, callback) {
         async.map(files, function (file, callback) {
             fs.readFile(file, passError(callback, function (data) {
@@ -22,99 +21,47 @@ async.waterfall([
         }, callback);
     },
     function (files, callback) {
-        var examplesToUpdate = [];
         files.forEach(function (file) {
-            var examples = file.content.match(examplesToEvaluateRegex) || [];
-        	examples.forEach(function (example) {
-                var parts = (example.match(/```[\s\S]*?```/gm) || []).map(function (part) {
-                    var partResult = {
-                        fullText: part
-                    };
+            console.log('Updating', file.name);
+        });
+        callback(null, files);
+    },
+    function (files, callback) {
+        callback(null, files.map(function (file) {
+            var context = vm.createContext({
+                expect: expect.clone(),
+                Buffer: Buffer
+            });
 
-                    partResult.type = part.match(/^```([a-z]+)/);
-                    if (partResult.type) {
-                        partResult.type = partResult.type.pop();
+            var lastError;
+            var updateContent = file.content.replace(/```(output|js|javascript)([\s\S]*?)```/gm, function ($0, lang, code) {
+                switch (lang) {
+                case 'js':
+                case 'javascript':
+                    try {
+                        vm.runInContext(code, context);
+                        lastError = null;
+                    } catch (e) {
+                        var errorMessage = e._isUnexpected ?
+                            e.output.toString() :
+                            e.message;
+
+                        lastError = errorMessage;
                     }
-
-                    partResult.body = part.replace(/^```.*[\n]/m, '')
-            							  .replace(/\n?```$/m, '');
-
-                    return partResult;
-                });
-
-                if (
-                    parts.length === 2 &&
-                    (parts[0].type === 'javascript' && parts[1].type === null) ||
-                    (parts[0].type === null && parts[1].type === 'javascript')
-                ) {
-                    var code, output;
-                    if (parts[0].type === 'javascript') {
-                        code = parts[0];
-                        output = parts[1];
-                    } else {
-                        code = parts[1];
-                        output = parts[0];
-                    }
-
-                    examplesToUpdate.push({
-                        filename: file.name,
-                        fullText: example,
-                        output: output,
-                        code: code
-                    });
+                    return $0;
+                case 'output':
+                    return '```output\n' + (lastError || '') + '\n```';
+                default:
+                    return $0;
                 }
             });
-        });
 
-        callback(null, examplesToUpdate);
+            return { name: file.name, content: updateContent };
+        }));
     },
-    function (examplesToUpdate, callback) {
-        async.eachSeries(examplesToUpdate, function (example, callback) {
-            var textOutput = example.output.body;
-
-            var testFailed = false;
-
-            try {
-                eval(example.code.body);
-            } catch (e) {
-                testFailed = true;
-                textOutput = e.output.toString('text');
-            }
-
-            if (!testFailed) {
-                return callback(new Error([
-                    'No errors were thrown when evaluating example in: ',
-                    '       ' + example.filename,
-                    '',
-                    example.code.body,
-                    ''
-                ].join('\n')));
-            }
-
-
-            if (textOutput !== example.output.body) {
-                var replacement;
-                if (example.output.body === '') {
-                    replacement = [
-                        '```' + (example.type || ''),
-                        textOutput,
-                        '```'
-                    ].join('\n');
-                    replacement = example.fullText.replace(example.output.fullText, replacement);
-                } else {
-                    replacement = example.fullText.replace(example.output.body, textOutput);
-                }
-
-                return fs.readFile(example.filename, passError(callback, function (data) {
-                    data = data.toString().replace(example.fullText, replacement);
-                    fs.writeFile(example.filename, data, passError(callback, function () {
-                        console.log('Updated example in', example.filename);
-                        callback();
-                    }));
-                }));
-            } else {
-                return callback();
-            }
+    function (files, callback) {
+        async.each(files, function (file, cb) {
+            fs.writeFile(file.name, file.content, 'utf8', cb);
         }, callback);
     }
 ], function (err) {
