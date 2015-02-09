@@ -1,3 +1,4 @@
+/* global global */
 var async = require('async');
 var passError = require('passerror');
 var glob = require('glob');
@@ -5,7 +6,7 @@ var fs = require('fs');
 var Path = require('path');
 var expect = require('../lib/');
 var vm = require('vm');
-var createTestContext = require('./createTestContext');
+var extend = require('../lib/utils').extend;
 
 var assertionsPath = Path.resolve(__dirname, '..', 'documentation');
 
@@ -23,9 +24,8 @@ async.waterfall([
     },
     function (files, callback) {
         callback(null, files.map(function (file) {
-            var context = createTestContext({
-                expect: expect.clone()
-            });
+            var oldGlobal = extend({}, global);
+            global.expect = expect;
 
             var lastError;
             var updateContent = file.content.replace(/```(output|js|javascript)([\s\S]*?)```/gm, function ($0, lang, code) {
@@ -33,7 +33,7 @@ async.waterfall([
                 case 'js':
                 case 'javascript':
                     try {
-                        vm.runInContext(code, context);
+                        vm.runInThisContext(code);
                         lastError = null;
                     } catch (e) {
                         var errorMessage = e._isUnexpected ?
@@ -49,6 +49,13 @@ async.waterfall([
                     return $0;
                 }
             });
+
+            Object.keys(global).forEach(function (key) {
+                if (!(key in oldGlobal)) {
+                    delete global[key];
+                }
+            });
+            extend(global, oldGlobal);
 
             return { name: file.name, content: updateContent };
         }));
