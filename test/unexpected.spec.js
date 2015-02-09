@@ -1516,7 +1516,7 @@ describe('unexpected', function () {
                    "\n" +
                    "{\n" +
                    "  foo: 'foo' // expected 'foo' not to match /oo/\n" +
-                   "             // \n" +
+                   "             //\n" +
                    "             // foo\n" +
                    "}");
         });

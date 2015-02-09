@@ -506,7 +506,7 @@ describe("documentation tests", function () {
                 "          // ⨯ expected 9 to be greater than 10\n" +
                 "  bar: 'bar',\n" +
                 "  baz: 'bogus', // expected 'bogus' not to match /^bog/\n" +
-                "                // \n" +
+                "                //\n" +
                 "                // bogus\n" +
                 "  qux: 42\n" +
                 "}"
