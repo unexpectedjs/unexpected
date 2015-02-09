@@ -5,6 +5,7 @@ var fs = require('fs');
 var Path = require('path');
 var expect = require('../lib/');
 var vm = require('vm');
+var createTestContext = require('./createTestContext');
 
 var assertionsPath = Path.resolve(__dirname, '..', 'documentation');
 
@@ -21,16 +22,9 @@ async.waterfall([
         }, callback);
     },
     function (files, callback) {
-        files.forEach(function (file) {
-            console.log('Updating', file.name);
-        });
-        callback(null, files);
-    },
-    function (files, callback) {
         callback(null, files.map(function (file) {
-            var context = vm.createContext({
-                expect: expect.clone(),
-                Buffer: Buffer
+            var context = createTestContext({
+                expect: expect.clone()
             });
 
             var lastError;

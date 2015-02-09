@@ -5,6 +5,7 @@ var extname = require('path').extname;
 var resolve = require('path').resolve;
 var marked = require('marked');
 var fs = require('fs');
+var createTestContext = require('./createTestContext');
 
 var vm = require('vm');
 
@@ -34,7 +35,7 @@ module.exports = function plugin(options) {
             if ('.' !== dir) html = dir + '/' + html;
 
             var exampleExpect = (files[file].theme === 'dark' ? darkExpect : lightExpect).clone();
-            var context = vm.createContext({
+            var context = createTestContext({
                 expect: exampleExpect
             });
 
@@ -54,6 +55,7 @@ module.exports = function plugin(options) {
                             .replace(styleRegex, 'class="code ' + this.options.langPrefix + 'javascript"');
                     try {
                         vm.runInContext(code, context);
+                        lastError = '<div class="output"></div>';
                     } catch (e) {
                         var errorMessage = e._isUnexpected ?
                             e.output :

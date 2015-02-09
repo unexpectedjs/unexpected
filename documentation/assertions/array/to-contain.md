@@ -32,8 +32,5 @@ expect([ { name: 'John Doe' }, { name: 'Jane Doe' } ], 'not to contain', { name:
 ```output
 expected [ { name: 'John Doe' }, { name: 'Jane Doe' } ] not to contain { name: 'Jane Doe' }
 
-[
-  { name: 'John Doe' },
-  { name: 'Jane Doe' } // should be removed
-]
+Mismatching constructors Array should be Array
 ```
