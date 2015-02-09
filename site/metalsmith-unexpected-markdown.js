@@ -1,3 +1,4 @@
+/* global global */
 var basename = require('path').basename;
 var debug = require('debug')('metalsmith-unexpected-markdown');
 var dirname = require('path').dirname;
@@ -5,6 +6,7 @@ var extname = require('path').extname;
 var resolve = require('path').resolve;
 var marked = require('marked');
 var fs = require('fs');
+var extend = require('../lib/utils').extend;
 
 var vm = require('vm');
 
@@ -34,11 +36,10 @@ module.exports = function plugin(options) {
             if ('.' !== dir) html = dir + '/' + html;
 
             var exampleExpect = (files[file].theme === 'dark' ? darkExpect : lightExpect).clone();
-            var context = vm.createContext({
-                expect: exampleExpect
-            });
-
             var lastError = '';
+
+            var oldGlobal = extend({}, global);
+            global.expect = exampleExpect;
 
             var tests = exampleTests[file] = [];
             options.renderer = new marked.Renderer();
@@ -49,11 +50,12 @@ module.exports = function plugin(options) {
                 case 'javascript':
                     tests.push({ code: code });
                     var pen = exampleExpect.output.clone();
-                    var syntaxHighlighed =
+                    var syntaxHighlighted =
                         pen.code(code, 'javascript').toString('html')
                             .replace(styleRegex, 'class="code ' + this.options.langPrefix + 'javascript"');
                     try {
-                        vm.runInContext(code, context);
+                        vm.runInThisContext(code);
+                        lastError = '<div class="output"></div>';
                     } catch (e) {
                         var errorMessage = e._isUnexpected ?
                             e.output :
@@ -62,15 +64,24 @@ module.exports = function plugin(options) {
                         lastError = errorMessage.toString('html')
                             .replace(styleRegex, 'class="output"');
                     }
-                    return syntaxHighlighed;
+                    return syntaxHighlighted;
                 case 'output':
                     tests[tests.length - 1].output = code;
                     return lastError;
                 default: return originalCodeRenderer.call(this, code, lang, escaped);
                 }
             };
+
             debug('converting file: %s', file);
             var str = marked(data.contents.toString(), options);
+
+            Object.keys(global).forEach(function (key) {
+                if (!(key in oldGlobal)) {
+                    delete global[key];
+                }
+            });
+            extend(global, oldGlobal);
+
             data.contents = new Buffer(str);
             keys.forEach(function(key) {
                 data[key] = marked(data[key], options);
