@@ -5332,7 +5332,7 @@ function MagicPen(options) {
 }
 
 if (typeof window !== 'undefined' && typeof window.navigator !== 'undefined') {
-    if (window.mochaPhantomJS) {
+    if (window.mochaPhantomJS || (window.__karma__ && window.__karma__.config.captureConsole)) {
         MagicPen.defaultFormat = 'ansi'; // colored console
     } else {
         MagicPen.defaultFormat = 'html'; // Browser
