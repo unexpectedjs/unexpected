@@ -52,7 +52,6 @@
     "normalize.css": "3.0.2",
     "passerror": "1.1.0",
     "phantomjs": "1.9.12",
-    "serve": "*",
-    "strip-json-comments": "1.0.2"
+    "serve": "*"
   }
 }

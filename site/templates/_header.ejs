@@ -4,14 +4,14 @@
     <meta charset="utf-8">
     <link rel="stylesheet" href="/static/normalize.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="/static/main.css" type="text/css" media="screen" />
-    <title><%= typeof title !== 'undefined' ? windowTitle + ' | Unexpected.js' : 'Unexpected.js' %></title>
+    <title><%= windowTitle %></title>
 </head>
 <body>
     <header>
         <nav>
             <ul>
                 <li class="<%- path === '' ? 'active' : '' %>"><a href="/">Unexpected</a></li>
-                <li class="<%- path.match(/^assertions\/?/) ? 'active' : '' %>"><a href="<%= assertionsByType.any[0].href%>">Assertions</a></li>
+                <li class="<%- path.match(/^assertions\/?/) ? 'active' : '' %>"><a href="<%= assertionsByType.any[0].url%>">Assertions</a></li>
                 <li class="<%- path.match(/^types\/?/) ? 'active' : '' %>"><a href="/types">Types</a></li>
             </ul>
         </nav>

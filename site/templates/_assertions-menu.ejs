@@ -1,12 +1,12 @@
 <nav id="assertion-menu" class="js-remember-scroll-position">
     <ul>
-        <% Object.keys(assertionsByType).forEach(function (type) { %>
+        <% Object.keys(assertionsByType).sort().forEach(function (type) { %>
         <li>
             <%= type %>
             <ul>
                 <% assertionsByType[type].forEach(function (assertion) { %>
-                <li class="<%= isActiveAssertion(path, type, assertion.title) ? 'active' : '' %>">
-                    <a href="<%= assertion.href %>"><%= assertion.title %></a>
+                <li class="<%= '/' + path + '/' === assertion.url ? 'active' : '' %>">
+                    <a href="<%= assertion.url %>"><%= assertion.title %></a>
                 </li>
                 <% }) %>
             </ul>

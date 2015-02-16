@@ -1,7 +1,4 @@
 var metalSmith = require('metalsmith');
-var Path = require('path');
-var fs = require('fs');
-var stripJsonComments = require('strip-json-comments');
 
 function titleToId(title) {
     return title.replace(/ /g, '-');
@@ -36,6 +33,11 @@ metalSmith(__dirname)
                 files[file].name = assertionName;
                 files[file].windowTitle = type + ' - ' + assertionName;
                 files[file].type = type;
+
+                if (!files[file].title) {
+                    files[file].title = assertionName;
+                }
+                files[file].url = '/' + file.replace(/\.md$/, '/');
             } else {
                 files[file].windowTitle = files[file].title;
             }
@@ -44,35 +46,21 @@ metalSmith(__dirname)
     })
     .use(function (files, metalsmith, next) {
         var metadata = metalsmith.metadata();
-        // Set globally available meta data here
-        // metadata.title = 'Unexpected.js';
-        metadata.titleToId = titleToId;
-        metadata.isActiveAssertion = function (path, type, assertionName) {
-            var currentType = path.match(/^assertions\/([^\/]+)/);
-            var currentAssertionName = path.match(/([^\/]+)\/?$/);
-            return currentType && currentAssertionName && titleToId(type) === currentType[1] && titleToId(assertionName) === currentAssertionName[1];
-        };
-        fs.readFile(Path.resolve(__dirname, 'src','assertion-menu.cjson'), 'utf-8', function (err, data) {
-            if (err) {
-                return next(err);
-            }
-            var assertionsByType = JSON.parse(stripJsonComments(data));
-            Object.keys(assertionsByType).forEach(function (type) {
-                assertionsByType[type] = assertionsByType[type].map(function (assertion) {
-                    var id = titleToId(assertion);
-                    var filePath = 'assertions/' + titleToId(type) + '/' + id + '.md';
-                    var href = '/' + filePath.replace(/\.md$/, '') + '/';
-                    return {
-                        id: id,
-                        title: files[filePath].title || assertion,
-                        filePath: filePath,
-                        href: href
-                    };
-                });
-            });
-            metadata.assertionsByType = assertionsByType;
-            next();
+
+        var assertionsByType = {};
+        metadata.collections.assertions.forEach(function (assertion) {
+            assertionsByType[assertion.type] = assertionsByType[assertion.type] || [];
+            assertionsByType[assertion.type].push(assertion);
         });
+        Object.keys(assertionsByType).forEach(function (type) {
+            assertionsByType[type].sort(function (a, b) {
+                if (a.name < b.name) return -1;
+                if (a.name > b.name) return 1;
+                return 0;
+            });
+        });
+        metadata.assertionsByType = assertionsByType;
+        next();
     })
     .use(require('./metalsmith-unexpected-markdown')())
     // permalinks with no options will just make pretty urls...

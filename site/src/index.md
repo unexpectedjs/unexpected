@@ -1,6 +1,7 @@
 ---
 template: default.ejs
 theme: dark
+title: Unexpected.js
 ---
 
 # Welcome to Unexpected

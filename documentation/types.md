@@ -1,5 +1,6 @@
 ---
 template: default.ejs
+title: Types
 ---
 
 # Types
