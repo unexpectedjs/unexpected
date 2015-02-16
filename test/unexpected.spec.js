@@ -1437,7 +1437,7 @@ describe('unexpected', function () {
         it('throws an error', function () {
             expect(function () {
                 expect.fail();
-            }, 'to throw exception', "explicit failure");
+            }, 'to throw exception', "Explicit failure");
         });
 
         it('sets the error message', function () {
