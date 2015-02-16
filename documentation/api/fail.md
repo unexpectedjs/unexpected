@@ -28,6 +28,16 @@ expect.fail('{0} was expected to be {1}', 0, 'zero');
 0 was expected to be zero
 ```
 
+```js
+expect.fail('You can even output inspected objects {0}',
+  expect.inspect({ one: 1, two: 2, three: 3 })
+);
+```
+
+```output
+You can even output inspected objects { one: 1, two: 2, three: 3 }
+```
+
 I case you want to rethrow an error, you should always use
 `expect.fail`, as it ensures that the error message will be correct
 for the different error modes.

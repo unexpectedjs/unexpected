@@ -64,6 +64,23 @@ describe("documentation tests", function () {
         }
 
         try {
+            expect.fail('You can even output inspected objects {0}',
+              expect.inspect({ one: 1, two: 2, three: 3 })
+            );
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect.fail('You can even output inspected objects {0}',").nl();
+                output.code("  expect.inspect({ one: 1, two: 2, three: 3 })").nl();
+                output.code(");").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "You can even output inspected objects { one: 1, two: 2, three: 3 }"
+            );
+        }
+
+        try {
             var error = new Error('throw me');
             expect.fail(new Error(error));
             expect.fail(function (output) {
