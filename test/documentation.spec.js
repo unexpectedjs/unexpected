@@ -59,24 +59,7 @@ describe("documentation tests", function () {
             });
         } catch (e) {
             expect(e, "to have message",
-                "0 was expected to be zero"
-            );
-        }
-
-        try {
-            expect.fail('You can even output inspected objects {0}',
-              expect.inspect({ one: 1, two: 2, three: 3 })
-            );
-            expect.fail(function (output) {
-                output.error("expected:").nl();
-                output.code("expect.fail('You can even output inspected objects {0}',").nl();
-                output.code("  expect.inspect({ one: 1, two: 2, three: 3 })").nl();
-                output.code(");").nl();
-                output.error("to throw");
-            });
-        } catch (e) {
-            expect(e, "to have message",
-                "You can even output inspected objects { one: 1, two: 2, three: 3 }"
+                "0 was expected to be 'zero'"
             );
         }
 

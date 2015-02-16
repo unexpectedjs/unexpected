@@ -1446,7 +1446,7 @@ describe('unexpected', function () {
                 expect.fail('fail with error message');
             } catch (e) {
                 wasCaught = true;
-                expect(e.message, 'to equal', '\nfail with error message');
+                expect(e.message, 'to contain', 'fail with error message');
             }
             expect(wasCaught, 'to be true');
         });
@@ -1460,7 +1460,7 @@ describe('unexpected', function () {
         it('supports placeholders', function () {
             expect(function () {
                 expect.fail('{0} was expected to be {1}', 0, 'zero');
-            }, 'to throw exception', "0 was expected to be zero");
+            }, 'to throw exception', "0 was expected to be 'zero'");
 
             expect(function () {
                 var output = expect.output.clone().text('zero');
