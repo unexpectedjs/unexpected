@@ -4,8 +4,7 @@ This assertion make use of the type system in Unexpected. That means
 you can assertion that a value is an instance of a type specified by
 it's name.
 
-For more information abort the type system see:<br>
-__TODO__ link to the type documentation.
+For more information abort the type system see: [Types](/types/)
 
 ```javascript
 expect(true, 'to be a', 'boolean');
