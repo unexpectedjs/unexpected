@@ -22,8 +22,6 @@ metalSmith(__dirname)
         src: 'static',
         dest: 'static'
     }))
-    // Build documentation tests
-    // .use(require('./build-documentation-tests'))
     // Dynamicly generate metadata for assertion files
     .use(function (files, metalsmith, next) {
         Object.keys(files).forEach(function (file) {
@@ -44,17 +42,6 @@ metalSmith(__dirname)
         });
         next();
     })
-    // // Put type index pages in place
-    // .use(function (files, metalsmith, next) {
-    //     Object.keys(files).forEach(function (file) {
-    //         console.log(file);
-    //         if (/^assertions-[a-z]*\.md$/i.test(file)) {
-    //             files[file.replace('assertions-', 'assertions/')] = files[file];
-    //             delete files[file];
-    //         }
-    //     });
-    //     next();
-    // })
     .use(function (files, metalsmith, next) {
         var metadata = metalsmith.metadata();
         // Set globally available meta data here
@@ -87,17 +74,6 @@ metalSmith(__dirname)
             next();
         });
     })
-    // .use(require('./evaluate-examples'))
-    // .use(function (files, metalsmith, next) {
-    //     Object.keys(files).forEach(function(file){
-    //         var data = files[file];
-    //         var cleaned = data.contents.toString().replace(/^<!-- ?\/?evaluate ?-->\n?/gm, '');
-    //         data.contents = new Buffer(cleaned);
-    //     });
-    //     next();
-    // })
-    // .use(require('./syntax-highlight'))
-    // .use(require('metalsmith-markdown')())
     .use(require('./metalsmith-unexpected-markdown')())
     // permalinks with no options will just make pretty urls...
     .use(require('metalsmith-permalinks')({ relative: false }))
