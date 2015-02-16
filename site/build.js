@@ -11,6 +11,9 @@ metalSmith(__dirname)
         assertions: {
             pattern: 'assertions/*/*.md'
         },
+        apiPages: {
+            pattern: 'api/*.md'
+        },
         pages: {
             pattern: '*.md'
         }
@@ -22,7 +25,9 @@ metalSmith(__dirname)
     // Dynamicly generate metadata for assertion files
     .use(function (files, metalsmith, next) {
         Object.keys(files).forEach(function (file) {
-            if (files[file].collection.indexOf('assertions') !== -1) {
+            if (files[file].collection.indexOf('apiPages') !== -1) {
+                files[file].template = 'api.ejs';
+            } else if (files[file].collection.indexOf('assertions') !== -1) {
                 // Set the template of all documents in the assertion collection
 
                 var type = file.match(/^assertions\/([^\/]+)/)[1];
@@ -30,17 +35,19 @@ metalSmith(__dirname)
                 assertionName = titleToId(assertionName);
 
                 files[file].template = 'assertion.ejs';
-                files[file].name = assertionName;
                 files[file].windowTitle = type + ' - ' + assertionName;
                 files[file].type = type;
 
                 if (!files[file].title) {
                     files[file].title = assertionName;
                 }
-                files[file].url = '/' + file.replace(/\.md$/, '/');
-            } else {
+            }
+
+            if (!files[file].windowTitle) {
                 files[file].windowTitle = files[file].title;
             }
+
+            files[file].url = '/' + file.replace(/\.md$/, '/');
         });
         next();
     })

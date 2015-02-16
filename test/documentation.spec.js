@@ -23,6 +23,87 @@ describe("documentation tests", function () {
         expect = expect.clone();
     });
 
+    it("api/fail.md contains correct examples", function () {
+        try {
+            expect.fail()
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect.fail()").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "Explicit failure"
+            );
+        }
+
+        try {
+            expect.fail('Custom failure message')
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect.fail('Custom failure message')").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "Custom failure message"
+            );
+        }
+
+        try {
+            expect.fail('{0} was expected to be {1}', 0, 'zero');
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect.fail('{0} was expected to be {1}', 0, 'zero');").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "0 was expected to be zero"
+            );
+        }
+
+        try {
+            var error = new Error('throw me');
+            expect.fail(new Error(error));
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("var error = new Error('throw me');").nl();
+                output.code("expect.fail(new Error(error));").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "Error: throw me"
+            );
+        }
+
+        try {
+            expect.fail(function (output) {
+                'You have been a very bad boy!'.split(/ /).forEach(function (word, index) {
+                    if (index > 0) { output.sp(); }
+                    var style = index % 2 === 0 ? 'jsPrimitive' : 'jsString';
+                    output[style](word);
+                });
+            });
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect.fail(function (output) {").nl();
+                output.code("    'You have been a very bad boy!'.split(/ /).forEach(function (word, index) {").nl();
+                output.code("        if (index > 0) { output.sp(); }").nl();
+                output.code("        var style = index % 2 === 0 ? 'jsPrimitive' : 'jsString';").nl();
+                output.code("        output[style](word);").nl();
+                output.code("    });").nl();
+                output.code("});").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "You have been a very bad boy!"
+            );
+        }
+    });
+
     it("assertions/any/to-be-a.md contains correct examples", function () {
         expect(true, 'to be a', 'boolean');
         expect(5, 'to be a', 'number');
