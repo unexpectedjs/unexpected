@@ -15,8 +15,7 @@
   },
   "scripts": {
     "test": "make test && make test-phantomjs",
-    "travis": "npm test",
-    "prepublish": "npm test && make unexpected.js"
+    "travis": "npm test"
   },
   "main": "./lib/index.js",
   "dependencies": {
