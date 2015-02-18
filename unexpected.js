@@ -1,6 +1,6 @@
 /*!
  * Copyright (c) 2013 Sune Simonsen <sune@we-knowhow.dk>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the 'Software'), to deal in the Software without
@@ -8,10 +8,10 @@
  * modify, merge, publish, distribute, sublicense, and/or sell copies
  * of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
  * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -3102,7 +3102,7 @@ function arrayDiff(before, after, equalFn) {
   // as moves. Many of these "moves" may end up being discarded in the last
   // pass if they are from an index to the same index, but we don't know this
   // up front, since we haven't yet offset the indices.
-  // 
+  //
   // Also keep a map of all the indicies accounted for in the before and after
   // arrays. These maps are used next to create insert and remove diffs.
   var beforeLength = before.length;
@@ -5129,6 +5129,9 @@ AnsiSerializer.prototype.text = function () {
                 var isBackgroundColor = styleName.substring(0, 2) === 'bg';
                 var colorName = isBackgroundColor ? styleName.substring(2) : styleName;
 
+                console.log(styleName,
+                            convertColorToObject(colorName),
+                            diffPalettes[isBackgroundColor ? 'bg16' : 16].map(toHexColor));
                 var color16Hex = toHexColor(colorDiff.closest(convertColorToObject(colorName),
                                                               diffPalettes[isBackgroundColor ? 'bg16' : 16]));
                 var closestColor16 = colorPalettes[16][color16Hex];
