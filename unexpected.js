@@ -6128,9 +6128,9 @@ Object.keys(styles).forEach(function (groupName) {
 
 },{}],28:[function(require,module,exports){
 /**
- * @author Markus Näsman
- * @copyright 2012 (c) Markus Näsman <markus at botten dot org >
- * @license Copyright (c) 2012, Markus Näsman
+ * @author Markus Ekholm
+ * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
+ * @license Copyright (c) 2012-2015, Markus Ekholm
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -6146,7 +6146,7 @@ Object.keys(styles).forEach(function (groupName) {
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL MARKUS NÄSMAN BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL MARKUS EKHOLM BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -6243,9 +6243,9 @@ function xyz_to_lab(c)
 
 },{}],29:[function(require,module,exports){
 /**
- * @author Markus Näsman
- * @copyright 2012 (c) Markus Näsman <markus at botten dot org >
- * @license Copyright (c) 2012, Markus Näsman
+ * @author Markus Ekholm
+ * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
+ * @license Copyright (c) 2012-2015, Markus Ekholm
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -6261,7 +6261,7 @@ function xyz_to_lab(c)
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL MARKUS NÄSMAN BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL MARKUS EKHOLM BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -6424,15 +6424,24 @@ color.palette_map_key  = palette.palette_map_key;
 color.closest = function(target, relative) {
     var key = color.palette_map_key(target);
 
-    var result = color.map_palette([target], relative);    
+    var result = color.map_palette([target], relative, 'closest');
 
     return result[key];
 };
+
+color.furthest = function(target, relative) {
+    var key = color.palette_map_key(target);
+
+    var result = color.map_palette([target], relative, 'furthest');
+
+    return result[key];
+};
+
 },{}],31:[function(require,module,exports){
 /**
- * @author Markus Näsman
- * @copyright 2012 (c) Markus Näsman <markus at botten dot org >
- * @license Copyright (c) 2012, Markus Näsman
+ * @author Markus Ekholm
+ * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
+ * @license Copyright (c) 2012-2015, Markus Ekholm
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -6448,7 +6457,7 @@ color.closest = function(target, relative) {
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL MARKUS NÄSMAN BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL MARKUS EKHOLM BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -6487,11 +6496,13 @@ function palette_map_key(c)
 * Returns a mapping from each color in a to the closest color in b
 * @param [{rgbcolor}] a each element should have fields R,G,B
 * @param [{rgbcolor}] b each element should have fields R,G,B
+* @param 'type' should be the string 'closest' or 'furthest'
 * @return {palettemap}
 */
-function map_palette(a, b)
+function map_palette(a, b, type)
 {
   var c = {};
+  type = type || 'closest';
   for (var idx1 in a){
     var color1 = a[idx1];
     var best_color      = undefined;
@@ -6500,10 +6511,18 @@ function map_palette(a, b)
     {
       var color2 = b[idx2];
       var current_color_diff = diff(color1,color2);
-      if((best_color == undefined) || (current_color_diff < best_color_diff))
+
+      if((best_color == undefined) || ((type === 'closest') && (current_color_diff < best_color_diff)))
       {
         best_color      = color2;
         best_color_diff = current_color_diff;
+        continue;
+      }
+      if((type === 'furthest') && (current_color_diff > best_color_diff))
+      {
+        best_color      = color2;
+        best_color_diff = current_color_diff;
+        continue;
       }
     }
     c[palette_map_key(color1)] = best_color;
