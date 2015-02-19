@@ -25,6 +25,15 @@ module.exports = function plugin(options) {
     options = options || {};
     var keys = options.keys || [];
 
+    function parseFlags(flagsString) {
+        var flags = {};
+        flagsString.split(/,/).forEach(function (flagString) {
+            var m = /(\w+):(\w+)/.exec(flagString);
+            flags[m[1]] = m[2] === 'true';
+        });
+        return flags;
+    }
+
     return function(files, metalsmith, done){
         var exampleTests = {};
         Object.keys(files).forEach(function(file){
@@ -45,25 +54,33 @@ module.exports = function plugin(options) {
             options.renderer = new marked.Renderer();
             var originalCodeRenderer = options.renderer.code;
             options.renderer.code = function(code, lang, escaped) {
+                var m = /^(\w+)#(\w+:\w+(,\w+:\w+)*)/.exec(lang);
+                var flags = { evaluate: true };
+                if (m) {
+                    lang = m[1];
+                    extend(flags, parseFlags(m[2]));
+                }
                 switch (lang) {
                 case 'js':
                 case 'javascript':
-                    tests.push({ code: code });
+                    if (flags.evaluate) {
+                        tests.push({ code: code });
+                        try {
+                            vm.runInThisContext(code);
+                            lastError = '<div class="output"></div>';
+                        } catch (e) {
+                            var errorMessage = e._isUnexpected ?
+                                e.output :
+                                exampleExpect.output.clone().error(e.message);
+
+                            lastError = errorMessage.toString('html')
+                                .replace(styleRegex, 'class="output"');
+                        }
+                    }
                     var pen = exampleExpect.output.clone();
                     var syntaxHighlighted =
                         pen.code(code, 'javascript').toString('html')
                             .replace(styleRegex, 'class="code ' + this.options.langPrefix + 'javascript"');
-                    try {
-                        vm.runInThisContext(code);
-                        lastError = '<div class="output"></div>';
-                    } catch (e) {
-                        var errorMessage = e._isUnexpected ?
-                            e.output :
-                            exampleExpect.output.clone().error(e.message);
-
-                        lastError = errorMessage.toString('html')
-                            .replace(styleRegex, 'class="output"');
-                    }
                     return syntaxHighlighted;
                 case 'output':
                     tests[tests.length - 1].output = code;
@@ -130,11 +147,15 @@ module.exports = function plugin(options) {
         pen.i().text('});').nl(2);
 
         Object.keys(exampleTests).sort().forEach(function (file, index) {
+            var tests = exampleTests[file];
+            if (tests.length === 0) {
+                return;
+            }
+
             if (index > 0) {
                 pen.nl();
             }
 
-            var tests = exampleTests[file];
             pen.i().text('it("').text(file).text(' contains correct examples", function () {').nl();
             pen.indentLines();
 
