@@ -318,6 +318,30 @@ describe("documentation tests", function () {
         });
     });
 
+    it("api/clone.md contains correct examples", function () {
+        var originalExpect = expect;
+
+        expect = expect.clone().addAssertion('to be an integer', function (expect, subject) {
+          expect(subject, 'to be a number');
+          expect(Math.round(subject), 'to be', subject);
+        });
+
+        expect(42, 'to be an integer');
+
+        try {
+            originalExpect(42, 'to be an integer');
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("originalExpect(42, 'to be an integer');").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "Unknown assertion \"to be an integer\", did you mean: \"to be an number\""
+            );
+        }
+    });
+
     it("api/fail.md contains correct examples", function () {
         try {
             expect.fail()

@@ -1,3 +1,5 @@
+## expect.fail(...)
+
 Explicitly forces failure.
 
 ```js

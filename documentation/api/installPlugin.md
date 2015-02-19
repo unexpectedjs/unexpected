@@ -1,4 +1,4 @@
-# Plugins
+## Plugins
 
 Unexpected is build on an extensible core. Every assertion, type and
 output style provided by the core library is implemented by extending
@@ -33,6 +33,9 @@ to extend the instance.
 ```js#evaluate:false
 expect.installPlugin(require('unexpected-sinon'));
 ```
+
+Notice that it is usually a good idea to [clone](/api/clone) the instance before
+extending it.
 
 ## Example
 

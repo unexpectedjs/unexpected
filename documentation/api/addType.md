@@ -1,4 +1,4 @@
-# Types
+## Types
 
 Unexpected comes with a type system that is used to explain how
 different types are compared, diffed, inspected and is also used to
