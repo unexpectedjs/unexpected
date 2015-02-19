@@ -1,8 +1,3 @@
----
-template: default.ejs
-title: Types
----
-
 # Types
 
 Unexpected comes with a type system that is used to explain how

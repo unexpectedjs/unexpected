@@ -23,6 +23,301 @@ describe("documentation tests", function () {
         expect = expect.clone();
     });
 
+    it("api/addType.md contains correct examples", function () {
+        function Person(name, age) {
+            this.name = name;
+            this.age = age;
+        }
+
+        expect.addType({
+            name: 'Person',
+            base: 'object',
+            identify: function (value) {
+                return value instanceof Person;
+            }
+        });
+
+        try {
+            expect(new Person('John Doe', 42), 'to equal', new Person('Jane Doe', 24));
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect(new Person('John Doe', 42), 'to equal', new Person('Jane Doe', 24));").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected Person({ name: 'John Doe', age: 42 }) to equal Person({ name: 'Jane Doe', age: 24 })\n" +
+                "\n" +
+                "Person({\n" +
+                "  name: 'John Doe', // should be 'Jane Doe'\n" +
+                "                    // -John Doe\n" +
+                "                    // +Jane Doe\n" +
+                "  age: 42 // should be 24\n" +
+                "})"
+            );
+        }
+
+        expect.addType({
+            name: 'Person',
+            base: 'object',
+            identify: function (value) {
+                return value instanceof Person;
+            },
+            inspect: function (person, depth, output, inspect) {
+               output.text('new Person(')
+                     .append(inspect(person.name, depth))
+                     .text(', ')
+                     .append(inspect(person.age, depth))
+                     .text(')');
+            }
+        });
+
+        try {
+            expect(new Person('John Doe', 42), 'to equal', new Person('Jane Doe', 24));
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect(new Person('John Doe', 42), 'to equal', new Person('Jane Doe', 24));").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected new Person('John Doe', 42) to equal new Person('Jane Doe', 24)\n" +
+                "\n" +
+                "Person({\n" +
+                "  name: 'John Doe', // should be 'Jane Doe'\n" +
+                "                    // -John Doe\n" +
+                "                    // +Jane Doe\n" +
+                "  age: 42 // should be 24\n" +
+                "})"
+            );
+        }
+
+        expect.addType({
+            name: 'Person',
+            base: 'object',
+            identify: function (value) {
+                return value instanceof Person;
+            },
+            inspect: function (person, depth, output, inspect) {
+               output.text('new Person(')
+                     .append(inspect(person.name, depth))
+                     .text(', ')
+                     .append(inspect(person.age, depth))
+                     .text(')');
+            },
+            equal: function (a, b, equal) {
+                return a === b || equal(a.name, b.name);
+            }
+        });
+
+        expect.addType({
+            name: 'Person',
+            base: 'object',
+            identify: function (value) {
+                return value instanceof Person;
+            },
+            inspect: function (person, depth, output, inspect) {
+               output.text('new Person(')
+                     .append(inspect(person.name, depth))
+                     .text(', ')
+                     .append(inspect(person.age, depth))
+                     .text(')');
+            },
+            equal: function (a, b, equal) {
+                return a === b || equal(a.name, b.name);
+            },
+            diff: function (actual, expected, output, diff, inspect) {
+                return this.baseType.diff({name: actual.name}, {name: expected.name});
+            }
+        });
+
+        try {
+            expect(new Person('John Doe', 42), 'to equal', new Person('Jane Doe', 24));
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect(new Person('John Doe', 42), 'to equal', new Person('Jane Doe', 24));").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected new Person('John Doe', 42) to equal new Person('Jane Doe', 24)\n" +
+                "\n" +
+                "{\n" +
+                "  name: 'John Doe' // should be 'Jane Doe'\n" +
+                "                   // -John Doe\n" +
+                "                   // +Jane Doe\n" +
+                "}"
+            );
+        }
+
+        var inlineDiff = true; // used to change inlining in a later example
+
+        expect.addType({
+            name: 'Person',
+            base: 'object',
+            identify: function (value) {
+                return value instanceof Person;
+            },
+            inspect: function (person, depth, output, inspect) {
+               output.text('new Person(')
+                     .append(inspect(person.name, depth))
+                     .text(', ')
+                     .append(inspect(person.age, depth))
+                     .text(')');
+            },
+            equal: function (a, b, equal) {
+                return a === b || equal(a.name, b.name);
+            },
+            diff: function (actual, expected, output, diff, inspect) {
+                var nameDiff = diff(actual.name, expected.name);
+
+                output.text('new Person(')
+                      .nl()
+                      .indentLines();
+
+                if (nameDiff && nameDiff.inline) {
+                    output.append(nameDiff.diff);
+                } else {
+                    output.i().append(inspect(actual.name)).text(',').sp()
+                          .annotationBlock(function () {
+                              this.error('should be ').append(inspect(expected.name));
+                              if (nameDiff) {
+                                  this.nl().append(nameDiff.diff);
+                              }
+                          })
+                          .nl();
+                }
+
+                output.i().append(inspect(actual.age))
+                      .outdentLines()
+                      .nl()
+                      .text(')');
+
+                return {
+                    inline: inlineDiff,
+                    diff: output
+                };
+            }
+        });
+
+        try {
+            expect(new Person('John Doe', 42), 'to equal', new Person('Jane Doe', 24));
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect(new Person('John Doe', 42), 'to equal', new Person('Jane Doe', 24));").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected new Person('John Doe', 42) to equal new Person('Jane Doe', 24)\n" +
+                "\n" +
+                "new Person(\n" +
+                "  'John Doe', // should be 'Jane Doe'\n" +
+                "              // -John Doe\n" +
+                "              // +Jane Doe\n" +
+                "  42\n" +
+                ")"
+            );
+        }
+
+        try {
+            inlineDiff = true;
+            expect(
+              {'John Doe': new Person('John Doe', 42), 'Jane Doe': new Person('Janie Doe', 24)},
+              'to equal',
+              {'John Doe': new Person('John Doe', 42), 'Jane Doe': new Person('Jane Doe', 24)}
+            );
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("inlineDiff = true;").nl();
+                output.code("expect(").nl();
+                output.code("  {'John Doe': new Person('John Doe', 42), 'Jane Doe': new Person('Janie Doe', 24)},").nl();
+                output.code("  'to equal',").nl();
+                output.code("  {'John Doe': new Person('John Doe', 42), 'Jane Doe': new Person('Jane Doe', 24)}").nl();
+                output.code(");").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected\n" +
+                "{\n" +
+                "  'John Doe': new Person('John Doe', 42),\n" +
+                "  'Jane Doe': new Person('Janie Doe', 24)\n" +
+                "}\n" +
+                "to equal\n" +
+                "{\n" +
+                "  'John Doe': new Person('John Doe', 42),\n" +
+                "  'Jane Doe': new Person('Jane Doe', 24)\n" +
+                "}\n" +
+                "\n" +
+                "{\n" +
+                "  'John Doe': new Person('John Doe', 42),\n" +
+                "  'Jane Doe': new Person(\n" +
+                "    'Janie Doe', // should be 'Jane Doe'\n" +
+                "                 // -Janie Doe\n" +
+                "                 // +Jane Doe\n" +
+                "    24\n" +
+                "  )\n" +
+                "}"
+            );
+        }
+
+        try {
+            inlineDiff = false;
+            expect(
+              {'John Doe': new Person('John Doe', 42), 'Jane Doe': new Person('Janie Doe', 24)},
+              'to equal',
+              {'John Doe': new Person('John Doe', 42), 'Jane Doe': new Person('Jane Doe', 24)}
+            );
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("inlineDiff = false;").nl();
+                output.code("expect(").nl();
+                output.code("  {'John Doe': new Person('John Doe', 42), 'Jane Doe': new Person('Janie Doe', 24)},").nl();
+                output.code("  'to equal',").nl();
+                output.code("  {'John Doe': new Person('John Doe', 42), 'Jane Doe': new Person('Jane Doe', 24)}").nl();
+                output.code(");").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected\n" +
+                "{\n" +
+                "  'John Doe': new Person('John Doe', 42),\n" +
+                "  'Jane Doe': new Person('Janie Doe', 24)\n" +
+                "}\n" +
+                "to equal\n" +
+                "{\n" +
+                "  'John Doe': new Person('John Doe', 42),\n" +
+                "  'Jane Doe': new Person('Jane Doe', 24)\n" +
+                "}\n" +
+                "\n" +
+                "{\n" +
+                "  'John Doe': new Person('John Doe', 42),\n" +
+                "  'Jane Doe': new Person('Janie Doe', 24) // should be new Person('Jane Doe', 24)\n" +
+                "                                          // new Person(\n" +
+                "                                          //   'Janie Doe', // should be 'Jane Doe'\n" +
+                "                                          //                // -Janie Doe\n" +
+                "                                          //                // +Jane Doe\n" +
+                "                                          //   24\n" +
+                "                                          // )\n" +
+                "}"
+            );
+        }
+
+        expect.addAssertion('Person', 'to be above legal age', function (expect, subject) {
+            expect(subject.age, 'to be greater than or equal to', 18);
+        });
+
+        expect(new Person('Jane Doe', 24), 'to be above legal age');
+
+        expect(new Person('Jane Doe', 24), 'to have keys', 'name', 'age');
+        expect(new Person('Jane Doe', 24), 'to satisfy', {
+            name: expect.it('to be a string').and('not to be empty'),
+            age: expect.it('to be a number').and('not to be negative')
+        });
+    });
+
     it("api/fail.md contains correct examples", function () {
         try {
             expect.fail()
@@ -100,6 +395,48 @@ describe("documentation tests", function () {
         } catch (e) {
             expect(e, "to have message",
                 "You have been a very bad boy!"
+            );
+        }
+    });
+
+    it("api/installPlugin.md contains correct examples", function () {
+        function IntegerInterval(from, to) {
+          this.from = from;
+          this.to = to;
+        }
+
+        expect.installPlugin({
+          name: 'unexpected-integer-intervals',
+          installInto: function (expect) {
+              expect.addType({
+                name: 'IntegerInterval',
+                base: 'object',
+                identify: function (value) {
+                  return value && value instanceof IntegerInterval;
+                },
+                inspect: function (value, depth, output) {
+                  output.text('[').jsNumber(value.from).text(',').jsNumber(value.to).text(']');
+                }
+              });
+
+             expect.addAssertion('[not] to contain', function (expect, subject, value) {
+               expect(value, '[not] to be within', subject.from, subject.to);
+             });
+          }
+        })
+
+        expect(new IntegerInterval(7, 13), 'to contain', 9);
+
+        try {
+            expect(new IntegerInterval(7, 13), 'to contain', 27);
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect(new IntegerInterval(7, 13), 'to contain', 27);").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected [7,13] to contain 27"
             );
         }
     });
@@ -1988,300 +2325,5 @@ describe("documentation tests", function () {
                 "}"
             );
         }
-    });
-
-    it("types.md contains correct examples", function () {
-        function Person(name, age) {
-            this.name = name;
-            this.age = age;
-        }
-
-        expect.addType({
-            name: 'Person',
-            base: 'object',
-            identify: function (value) {
-                return value instanceof Person;
-            }
-        });
-
-        try {
-            expect(new Person('John Doe', 42), 'to equal', new Person('Jane Doe', 24));
-            expect.fail(function (output) {
-                output.error("expected:").nl();
-                output.code("expect(new Person('John Doe', 42), 'to equal', new Person('Jane Doe', 24));").nl();
-                output.error("to throw");
-            });
-        } catch (e) {
-            expect(e, "to have message",
-                "expected Person({ name: 'John Doe', age: 42 }) to equal Person({ name: 'Jane Doe', age: 24 })\n" +
-                "\n" +
-                "Person({\n" +
-                "  name: 'John Doe', // should be 'Jane Doe'\n" +
-                "                    // -John Doe\n" +
-                "                    // +Jane Doe\n" +
-                "  age: 42 // should be 24\n" +
-                "})"
-            );
-        }
-
-        expect.addType({
-            name: 'Person',
-            base: 'object',
-            identify: function (value) {
-                return value instanceof Person;
-            },
-            inspect: function (person, depth, output, inspect) {
-               output.text('new Person(')
-                     .append(inspect(person.name, depth))
-                     .text(', ')
-                     .append(inspect(person.age, depth))
-                     .text(')');
-            }
-        });
-
-        try {
-            expect(new Person('John Doe', 42), 'to equal', new Person('Jane Doe', 24));
-            expect.fail(function (output) {
-                output.error("expected:").nl();
-                output.code("expect(new Person('John Doe', 42), 'to equal', new Person('Jane Doe', 24));").nl();
-                output.error("to throw");
-            });
-        } catch (e) {
-            expect(e, "to have message",
-                "expected new Person('John Doe', 42) to equal new Person('Jane Doe', 24)\n" +
-                "\n" +
-                "Person({\n" +
-                "  name: 'John Doe', // should be 'Jane Doe'\n" +
-                "                    // -John Doe\n" +
-                "                    // +Jane Doe\n" +
-                "  age: 42 // should be 24\n" +
-                "})"
-            );
-        }
-
-        expect.addType({
-            name: 'Person',
-            base: 'object',
-            identify: function (value) {
-                return value instanceof Person;
-            },
-            inspect: function (person, depth, output, inspect) {
-               output.text('new Person(')
-                     .append(inspect(person.name, depth))
-                     .text(', ')
-                     .append(inspect(person.age, depth))
-                     .text(')');
-            },
-            equal: function (a, b, equal) {
-                return a === b || equal(a.name, b.name);
-            }
-        });
-
-        expect.addType({
-            name: 'Person',
-            base: 'object',
-            identify: function (value) {
-                return value instanceof Person;
-            },
-            inspect: function (person, depth, output, inspect) {
-               output.text('new Person(')
-                     .append(inspect(person.name, depth))
-                     .text(', ')
-                     .append(inspect(person.age, depth))
-                     .text(')');
-            },
-            equal: function (a, b, equal) {
-                return a === b || equal(a.name, b.name);
-            },
-            diff: function (actual, expected, output, diff, inspect) {
-                return this.baseType.diff({name: actual.name}, {name: expected.name});
-            }
-        });
-
-        try {
-            expect(new Person('John Doe', 42), 'to equal', new Person('Jane Doe', 24));
-            expect.fail(function (output) {
-                output.error("expected:").nl();
-                output.code("expect(new Person('John Doe', 42), 'to equal', new Person('Jane Doe', 24));").nl();
-                output.error("to throw");
-            });
-        } catch (e) {
-            expect(e, "to have message",
-                "expected new Person('John Doe', 42) to equal new Person('Jane Doe', 24)\n" +
-                "\n" +
-                "{\n" +
-                "  name: 'John Doe' // should be 'Jane Doe'\n" +
-                "                   // -John Doe\n" +
-                "                   // +Jane Doe\n" +
-                "}"
-            );
-        }
-
-        var inlineDiff = true; // used to change inlining in a later example
-
-        expect.addType({
-            name: 'Person',
-            base: 'object',
-            identify: function (value) {
-                return value instanceof Person;
-            },
-            inspect: function (person, depth, output, inspect) {
-               output.text('new Person(')
-                     .append(inspect(person.name, depth))
-                     .text(', ')
-                     .append(inspect(person.age, depth))
-                     .text(')');
-            },
-            equal: function (a, b, equal) {
-                return a === b || equal(a.name, b.name);
-            },
-            diff: function (actual, expected, output, diff, inspect) {
-                var nameDiff = diff(actual.name, expected.name);
-
-                output.text('new Person(')
-                      .nl()
-                      .indentLines();
-
-                if (nameDiff && nameDiff.inline) {
-                    output.append(nameDiff.diff);
-                } else {
-                    output.i().append(inspect(actual.name)).text(',').sp()
-                          .annotationBlock(function () {
-                              this.error('should be ').append(inspect(expected.name));
-                              if (nameDiff) {
-                                  this.nl().append(nameDiff.diff);
-                              }
-                          })
-                          .nl();
-                }
-
-                output.i().append(inspect(actual.age))
-                      .outdentLines()
-                      .nl()
-                      .text(')');
-
-                return {
-                    inline: inlineDiff,
-                    diff: output
-                };
-            }
-        });
-
-        try {
-            expect(new Person('John Doe', 42), 'to equal', new Person('Jane Doe', 24));
-            expect.fail(function (output) {
-                output.error("expected:").nl();
-                output.code("expect(new Person('John Doe', 42), 'to equal', new Person('Jane Doe', 24));").nl();
-                output.error("to throw");
-            });
-        } catch (e) {
-            expect(e, "to have message",
-                "expected new Person('John Doe', 42) to equal new Person('Jane Doe', 24)\n" +
-                "\n" +
-                "new Person(\n" +
-                "  'John Doe', // should be 'Jane Doe'\n" +
-                "              // -John Doe\n" +
-                "              // +Jane Doe\n" +
-                "  42\n" +
-                ")"
-            );
-        }
-
-        try {
-            inlineDiff = true;
-            expect(
-              {'John Doe': new Person('John Doe', 42), 'Jane Doe': new Person('Janie Doe', 24)},
-              'to equal',
-              {'John Doe': new Person('John Doe', 42), 'Jane Doe': new Person('Jane Doe', 24)}
-            );
-            expect.fail(function (output) {
-                output.error("expected:").nl();
-                output.code("inlineDiff = true;").nl();
-                output.code("expect(").nl();
-                output.code("  {'John Doe': new Person('John Doe', 42), 'Jane Doe': new Person('Janie Doe', 24)},").nl();
-                output.code("  'to equal',").nl();
-                output.code("  {'John Doe': new Person('John Doe', 42), 'Jane Doe': new Person('Jane Doe', 24)}").nl();
-                output.code(");").nl();
-                output.error("to throw");
-            });
-        } catch (e) {
-            expect(e, "to have message",
-                "expected\n" +
-                "{\n" +
-                "  'John Doe': new Person('John Doe', 42),\n" +
-                "  'Jane Doe': new Person('Janie Doe', 24)\n" +
-                "}\n" +
-                "to equal\n" +
-                "{\n" +
-                "  'John Doe': new Person('John Doe', 42),\n" +
-                "  'Jane Doe': new Person('Jane Doe', 24)\n" +
-                "}\n" +
-                "\n" +
-                "{\n" +
-                "  'John Doe': new Person('John Doe', 42),\n" +
-                "  'Jane Doe': new Person(\n" +
-                "    'Janie Doe', // should be 'Jane Doe'\n" +
-                "                 // -Janie Doe\n" +
-                "                 // +Jane Doe\n" +
-                "    24\n" +
-                "  )\n" +
-                "}"
-            );
-        }
-
-        try {
-            inlineDiff = false;
-            expect(
-              {'John Doe': new Person('John Doe', 42), 'Jane Doe': new Person('Janie Doe', 24)},
-              'to equal',
-              {'John Doe': new Person('John Doe', 42), 'Jane Doe': new Person('Jane Doe', 24)}
-            );
-            expect.fail(function (output) {
-                output.error("expected:").nl();
-                output.code("inlineDiff = false;").nl();
-                output.code("expect(").nl();
-                output.code("  {'John Doe': new Person('John Doe', 42), 'Jane Doe': new Person('Janie Doe', 24)},").nl();
-                output.code("  'to equal',").nl();
-                output.code("  {'John Doe': new Person('John Doe', 42), 'Jane Doe': new Person('Jane Doe', 24)}").nl();
-                output.code(");").nl();
-                output.error("to throw");
-            });
-        } catch (e) {
-            expect(e, "to have message",
-                "expected\n" +
-                "{\n" +
-                "  'John Doe': new Person('John Doe', 42),\n" +
-                "  'Jane Doe': new Person('Janie Doe', 24)\n" +
-                "}\n" +
-                "to equal\n" +
-                "{\n" +
-                "  'John Doe': new Person('John Doe', 42),\n" +
-                "  'Jane Doe': new Person('Jane Doe', 24)\n" +
-                "}\n" +
-                "\n" +
-                "{\n" +
-                "  'John Doe': new Person('John Doe', 42),\n" +
-                "  'Jane Doe': new Person('Janie Doe', 24) // should be new Person('Jane Doe', 24)\n" +
-                "                                          // new Person(\n" +
-                "                                          //   'Janie Doe', // should be 'Jane Doe'\n" +
-                "                                          //                // -Janie Doe\n" +
-                "                                          //                // +Jane Doe\n" +
-                "                                          //   24\n" +
-                "                                          // )\n" +
-                "}"
-            );
-        }
-
-        expect.addAssertion('Person', 'to be above legal age', function (expect, subject) {
-            expect(subject.age, 'to be greater than or equal to', 18);
-        });
-
-        expect(new Person('Jane Doe', 24), 'to be above legal age');
-
-        expect(new Person('Jane Doe', 24), 'to have keys', 'name', 'age');
-        expect(new Person('Jane Doe', 24), 'to satisfy', {
-            name: expect.it('to be a string').and('not to be empty'),
-            age: expect.it('to be a number').and('not to be negative')
-        });
     });
 });
