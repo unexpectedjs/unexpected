@@ -1,7 +1,7 @@
 var metalSmith = require('metalsmith');
 
-function titleToId(title) {
-    return title.replace(/ /g, '-');
+function idToName(id) {
+    return id.replace(/-/g, ' ');
 }
 
 metalSmith(__dirname)
@@ -24,23 +24,24 @@ metalSmith(__dirname)
     }))
     // Dynamicly generate metadata for assertion files
     .use(function (files, metalsmith, next) {
-        Object.keys(files).forEach(function (file) {
+        Object.keys(files).filter(function (file) {
+            return /\.md$/.test(file);
+        }).forEach(function (file) {
+            var id = file.match(/([^\/]+)\.md$/)[1];
+            var name = idToName(id);
+
+            if (!files[file].title) {
+                files[file].title = name;
+            }
+
             if (files[file].collection.indexOf('apiPages') !== -1) {
                 files[file].template = 'api.ejs';
             } else if (files[file].collection.indexOf('assertions') !== -1) {
-                // Set the template of all documents in the assertion collection
-
                 var type = file.match(/^assertions\/([^\/]+)/)[1];
-                var assertionName = file.match(/([^\/]+)\.md$/)[1];
-                assertionName = titleToId(assertionName);
 
                 files[file].template = 'assertion.ejs';
-                files[file].windowTitle = type + ' - ' + assertionName;
+                files[file].windowTitle = type + ' - ' + name;
                 files[file].type = type;
-
-                if (!files[file].title) {
-                    files[file].title = assertionName;
-                }
             }
 
             if (!files[file].windowTitle) {
