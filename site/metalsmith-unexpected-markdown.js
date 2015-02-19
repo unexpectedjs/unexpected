@@ -36,7 +36,7 @@ module.exports = function plugin(options) {
 
     return function(files, metalsmith, done){
         var exampleTests = {};
-        Object.keys(files).forEach(function(file){
+        Object.keys(files).sort().forEach(function(file){
             debug('checking file: %s', file);
             if (!markdown(file)) return;
             var data = files[file];

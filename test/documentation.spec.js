@@ -23,6 +23,85 @@ describe("documentation tests", function () {
         expect = expect.clone();
     });
 
+    it("api/addAssertion.md contains correct examples", function () {
+        var errorMode = 'default'; // use to control the error mode later in the example
+        expect.addAssertion('array', '[not] to be (sorted|ordered)', function(expect, subject, cmp) {
+          this.errorMode = errorMode;
+          expect(subject, '[not] to equal', [].concat(subject).sort(cmp));
+        });
+
+        expect([1,2,3], 'to be sorted');
+        expect([1,2,3], 'to be ordered');
+        expect([2,1,3], 'not to be sorted');
+        expect([2,1,3], 'not to be ordered');
+        expect([3,2,1], 'to be sorted', function (x, y) { return y - x; });
+
+        try {
+            expect([ 1, 3, 2, 4 ], 'to be sorted');
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect([ 1, 3, 2, 4 ], 'to be sorted');").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected [ 1, 3, 2, 4 ] to be sorted\n" +
+                "\n" +
+                "[\n" +
+                "  1,\n" +
+                "  3, // should be 2\n" +
+                "  2, // should be 3\n" +
+                "  4\n" +
+                "]"
+            );
+        }
+
+        try {
+            errorMode = 'bubble';
+            expect([ 1, 3, 2, 4 ], 'to be sorted');
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("errorMode = 'bubble';").nl();
+                output.code("expect([ 1, 3, 2, 4 ], 'to be sorted');").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected [ 1, 3, 2, 4 ] to equal [ 1, 2, 3, 4 ]\n" +
+                "\n" +
+                "[\n" +
+                "  1,\n" +
+                "  3, // should be 2\n" +
+                "  2, // should be 3\n" +
+                "  4\n" +
+                "]"
+            );
+        }
+
+        try {
+            errorMode = 'nested';
+            expect([ 1, 3, 2, 4 ], 'to be sorted');
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("errorMode = 'nested';").nl();
+                output.code("expect([ 1, 3, 2, 4 ], 'to be sorted');").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected [ 1, 3, 2, 4 ] to be sorted\n" +
+                "  expected [ 1, 3, 2, 4 ] to equal [ 1, 2, 3, 4 ]\n" +
+                "\n" +
+                "  [\n" +
+                "    1,\n" +
+                "    3, // should be 2\n" +
+                "    2, // should be 3\n" +
+                "    4\n" +
+                "  ]"
+            );
+        }
+    });
+
     it("api/addType.md contains correct examples", function () {
         function Person(name, age) {
             this.name = name;
