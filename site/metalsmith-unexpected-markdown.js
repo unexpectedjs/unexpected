@@ -52,7 +52,6 @@ module.exports = function plugin(options) {
 
             var tests = exampleTests[file] = [];
             options.renderer = new marked.Renderer();
-            var originalCodeRenderer = options.renderer.code;
             options.renderer.code = function(code, lang, escaped) {
                 var m = /^(\w+)#(\w+:\w+(,\w+:\w+)*)/.exec(lang);
                 var flags = { evaluate: true };
@@ -60,8 +59,12 @@ module.exports = function plugin(options) {
                     lang = m[1];
                     extend(flags, parseFlags(m[2]));
                 }
+
+                if (lang === 'js') {
+                    lang = 'javascript';
+                }
+
                 switch (lang) {
-                case 'js':
                 case 'javascript':
                     if (flags.evaluate) {
                         tests.push({ code: code });
@@ -77,16 +80,14 @@ module.exports = function plugin(options) {
                                 .replace(styleRegex, 'class="output"');
                         }
                     }
-                    var pen = exampleExpect.output.clone();
-                    var syntaxHighlighted =
-                        pen.code(code, 'javascript').toString('html')
-                            .replace(styleRegex, 'class="code ' + this.options.langPrefix + 'javascript"');
-                    return syntaxHighlighted;
+                    break;
                 case 'output':
                     tests[tests.length - 1].output = code;
                     return lastError;
-                default: return originalCodeRenderer.call(this, code, lang, escaped);
                 }
+
+                return exampleExpect.output.clone().code(code, 'javascript').toString('html')
+                    .replace(styleRegex, 'class="code ' + this.options.langPrefix + 'javascript"');
             };
 
             debug('converting file: %s', file);

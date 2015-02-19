@@ -2411,20 +2411,20 @@ describe("documentation tests", function () {
 
     it("index.md contains correct examples", function () {
         try {
-            expect({ text: 'foo!' }, 'to equal', { text: 'f00!' });
+            expect({ text: 'f00!' }, 'to equal', { text: 'foo!' });
             expect.fail(function (output) {
                 output.error("expected:").nl();
-                output.code("expect({ text: 'foo!' }, 'to equal', { text: 'f00!' });").nl();
+                output.code("expect({ text: 'f00!' }, 'to equal', { text: 'foo!' });").nl();
                 output.error("to throw");
             });
         } catch (e) {
             expect(e, "to have message",
-                "expected { text: 'foo!' } to equal { text: 'f00!' }\n" +
+                "expected { text: 'f00!' } to equal { text: 'foo!' }\n" +
                 "\n" +
                 "{\n" +
-                "  text: 'foo!' // should be 'f00!'\n" +
-                "               // -foo!\n" +
-                "               // +f00!\n" +
+                "  text: 'f00!' // should be 'foo!'\n" +
+                "               // -f00!\n" +
+                "               // +foo!\n" +
                 "}"
             );
         }
