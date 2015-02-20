@@ -5030,6 +5030,9 @@ var colorDiff = require(30);
 var rgbRegexp = require(24);
 var themeMapper = require(25);
 
+var cacheSize = 0;
+var maxColorCacheSize = 1024;
+
 var ansiStyles = utils.extend({}, require(27));
 Object.keys(ansiStyles).forEach(function (styleName) {
     ansiStyles[styleName.toLowerCase()] = ansiStyles[styleName];
@@ -5147,7 +5150,11 @@ AnsiSerializer.prototype.text = function () {
                 if (color16Hex !== color256Hex) {
                     open += '\x1b[' + (isBackgroundColor ? 48 : 38) + ';5;' + closest256ColorIndex + 'm';
                 }
-                ansiStyles[originalStyleName] = {open: open, close: close};
+                if (cacheSize < maxColorCacheSize) {
+                    ansiStyles[originalStyleName] = {open: open, close: close};
+                    cacheSize += 1;
+                }
+
                 content = open + content + close;
             }
         }
@@ -6503,11 +6510,11 @@ function map_palette(a, b, type)
 {
   var c = {};
   type = type || 'closest';
-  for (var idx1 in a){
+  for (var idx1 = 0; idx1 < a.length; idx1 += 1){
     var color1 = a[idx1];
     var best_color      = undefined;
     var best_color_diff = undefined;
-    for (var idx2 in b)
+    for (var idx2 = 0; idx2 < b.length; idx2 += 1)
     {
       var color2 = b[idx2];
       var current_color_diff = diff(color1,color2);
