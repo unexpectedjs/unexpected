@@ -85,12 +85,14 @@ header {
 }
 
 .has-menu {
-    .layout();
-    top: @headerHeight;
-    right: auto;
-    width: @navWidth;
-    padding: 0 20px;
-    overflow-y: auto;
+    > nav {
+        .layout();
+        top: @headerHeight;
+        right: auto;
+        width: @navWidth;
+        padding: 0 20px;
+        overflow-y: auto;
+    }
 }
 
 .main {
@@ -145,6 +147,7 @@ code {
     line-height: 1.45;
     margin: 0.5em 0;
     padding: 16px;
+    overflow-x: auto;
 }
 
 .code {
