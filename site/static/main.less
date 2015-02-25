@@ -174,3 +174,34 @@ code {
     border-top: thin solid #ddd;
     margin-top: -0.5em;
 }
+
+.menu-toggle { display: none }
+
+@media only screen and (max-device-width : 667px) {
+    .menu-toggle {
+        .layout-element();
+        display: inline-block;
+        border: none;
+        width: @headerHeight;
+        height: @headerHeight;
+        background-image: url(/static/menu-icon.svg);
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-color: transparent;
+        padding: 0;
+        margin: 0;
+    }
+
+    header nav {
+        left: 24px;
+    }
+
+    .has-menu {
+        > nav {
+            transform: translateX(-100%);
+        }
+        .main {
+            left: 0;
+        }
+    }
+}

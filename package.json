@@ -40,6 +40,7 @@
     "magicpen-prism": "1.1.1",
     "marked": "^0.3.3",
     "metalsmith": "1.0.1",
+    "metalsmith-autoprefixer": "^0.1.2",
     "metalsmith-collections": "0.6.0",
     "metalsmith-less": "1.0.2",
     "metalsmith-markdown": "0.2.1",

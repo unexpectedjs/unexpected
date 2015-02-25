@@ -80,6 +80,7 @@ metalSmith(__dirname)
     })
     .use(require('metalsmith-less')())
     .use(require('metalsmith-templates')('ejs'))
+    .use(require('metalsmith-autoprefixer')())
     .build(function (err) {
         if (err) { throw err; }
         console.log('wrote site to site-build');
