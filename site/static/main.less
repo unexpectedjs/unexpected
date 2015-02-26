@@ -190,18 +190,41 @@ code {
         background-color: transparent;
         padding: 0;
         margin: 0;
+        left: -10px;
+        z-index: 1;
+        outline: none;
     }
 
     header nav {
-        left: 24px;
+        left: 10px;
     }
 
     .has-menu {
         > nav {
-            transform: translateX(-100%);
+            background-color: darken(white, 5%);
+            border-right: solid 5px @headerColor;
         }
         .main {
             left: 0;
+        }
+    }
+
+    .sidebar-hidden {
+        .has-menu {
+            > nav {
+                transform: translateX(-100%);
+            }
+        }
+    }
+
+    .sidebar-visible {
+        .has-menu {
+            > nav {
+                transform: translateX(0%);
+            }
+            .main {
+                transform: translateX(@navWidth);
+            }
         }
     }
 }
