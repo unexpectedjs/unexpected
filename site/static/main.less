@@ -177,7 +177,7 @@ code {
 
 .menu-toggle { display: none }
 
-@media only screen and (max-device-width : 667px) {
+@media only screen and (max-width : 800px) {
     .menu-toggle {
         .layout-element();
         display: inline-block;
@@ -201,7 +201,6 @@ code {
 
     .has-menu {
         > nav {
-            background-color: darken(white, 5%);
             border-right: solid 5px @headerColor;
         }
         .main {
@@ -212,7 +211,12 @@ code {
     .sidebar-hidden {
         .has-menu {
             > nav {
+                transition: all 200ms;
                 transform: translateX(-100%);
+            }
+            .main {
+                transition: all 200ms;
+                transform: translateX(0);
             }
         }
     }
@@ -220,9 +224,11 @@ code {
     .sidebar-visible {
         .has-menu {
             > nav {
+                transition: all 200ms;
                 transform: translateX(0%);
             }
             .main {
+                transition: all 200ms;
                 transform: translateX(@navWidth);
             }
         }
