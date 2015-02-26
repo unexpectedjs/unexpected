@@ -1545,6 +1545,12 @@ describe('unexpected', function () {
                 expect(new Error('foo'), 'to satisfy', new Error('foo'));
             });
 
+            it('should support satisfying against an Error instance when the subject has additional properties', function () {
+                var err = new Error('foo');
+                err.bar = 123;
+                expect(err, 'to satisfy', new Error('foo'));
+            });
+
             it('should support satisfying against an object', function () {
                 expect(new Error('foo'), 'to satisfy', { message: 'foo' });
             });
