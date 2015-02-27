@@ -1181,14 +1181,19 @@ module.exports = function (expect) {
                         e.createDiff = function (output, diff) {
                             var expected = extend({}, properties);
                             var actual = {};
+                            var propertyNames = expect.findTypeOf(subject).getKeys(subject);
+                            // Might put duplicates into propertyNames, but that does not matter:
                             for (var propertyName in subject) {
+                                propertyNames.push(propertyName);
+                            }
+                            propertyNames.forEach(function (propertyName) {
                                 if ((!flags.own || subject.hasOwnProperty(propertyName)) && !(propertyName in properties)) {
                                     expected[propertyName] = subject[propertyName];
                                 }
                                 if ((!flags.own || subject.hasOwnProperty(propertyName)) && !(propertyName in actual)) {
                                     actual[propertyName] = subject[propertyName];
                                 }
-                            }
+                            });
                             var result = diff(actual, expected);
                             result.diff = utils.wrapConstructorNameAroundOutput(result.diff, subject);
                             return result;
@@ -1551,7 +1556,7 @@ module.exports = function (expect) {
     expect.addAssertion('Error', 'to [exhaustively] satisfy [assertion]', function (expect, subject, value) {
         var valueType = expect.findTypeOf(value);
         if (valueType.is('Error')) {
-            expect(subject, 'to equal', value);
+            expect(subject, 'to have properties', valueType.unwrap(value));
         } else if (valueType.is('object')) {
             var keys = valueType.getKeys(value);
             keys.forEach(function (key) {
@@ -1624,7 +1629,8 @@ module.exports = function (expect) {
         } else if (isRegExp(value)) {
             expect(subject, 'to match', value);
         } else {
-            var type = expect.findTypeOf(subject, value);
+            var type = expect.findTypeOf(subject, value),
+                bothAreArrays = type.is('array');
             if (type.is('arrayLike') || type.is('object')) {
                 try {
                     expect(subject, 'to be an object');
@@ -1653,7 +1659,7 @@ module.exports = function (expect) {
 
                             var keys = Object.keys(keyIndex);
 
-                            output.text('{').nl().indentLines();
+                            output.text(bothAreArrays ? '[' : '{').nl().indentLines();
 
                             keys.forEach(function (key, index) {
                                 output.i().block(function () {
@@ -1708,8 +1714,9 @@ module.exports = function (expect) {
                                         valueOutput = inspect(subject[key], conflicting ? Infinity : 1);
                                     }
 
-                                    this.key(key);
-                                    this.text(':').sp();
+                                    if (!bothAreArrays) {
+                                        this.key(key).text(':').sp();
+                                    }
                                     valueOutput.text(last ? '' : ',');
 
                                     if (isInlineDiff) {
@@ -1723,9 +1730,11 @@ module.exports = function (expect) {
                                 }).nl();
                             });
 
-                            output.outdentLines().text('}');
+                            output.outdentLines().text(bothAreArrays ? ']' : '}');
 
-                            result.diff = utils.wrapConstructorNameAroundOutput(result.diff, subject);
+                            if (!bothAreArrays) {
+                                result.diff = utils.wrapConstructorNameAroundOutput(result.diff, subject);
+                            }
 
                             return result;
                         };
@@ -1843,6 +1852,9 @@ module.exports = function (expect) {
         }
     });
 
+    expect.addStyle('shouldEqualError', function (expected, inspect) {
+        this.error(typeof expected === 'undefined' ? 'should be' : 'should equal').sp().block(inspect(expected));
+    });
 };
 
 },{}],5:[function(require,module,exports){
@@ -1884,7 +1896,7 @@ module.exports = function (expect) {
                         .indentLines()
                         .i().block(function () {
                             this.append(inspect(actual)).sp().annotationBlock(function () {
-                                this.error('should be ').block(inspect(expected));
+                                this.shouldEqualError(expected, inspect);
                                 if (comparison) {
                                     this.nl().append(comparison.diff);
                                 }
@@ -2047,8 +2059,7 @@ module.exports = function (expect) {
                         } else {
                             var keyDiff = diff(actual[key], expected[key]);
                             if (!keyDiff || (keyDiff && !keyDiff.inline)) {
-                                annotation.error('should be ')
-                                    .block(inspect(expected[key]));
+                                annotation.shouldEqualError(expected[key], inspect);
 
                                 if (keyDiff) {
                                     annotation.nl().append(keyDiff.diff);
@@ -2387,12 +2398,11 @@ module.exports = function (expect) {
                             this.block(valueDiff.diff.text(last ? '' : ','));
                         } else if (valueDiff) {
                             this.block(inspect(diffItem.value).text(last ? ' ' : ', ')).annotationBlock(function () {
-                                this.error('should be ').block(inspect(diffItem.expected)).nl()
-                                    .append(valueDiff.diff);
+                                this.shouldEqualError(diffItem.expected, inspect).nl().append(valueDiff.diff);
                             });
                         } else {
                             this.block(inspect(diffItem.value).text(last ? ' ' : ', ')).annotationBlock(function () {
-                                this.error('should be ').block(inspect(diffItem.expected));
+                                this.shouldEqualError(diffItem.expected, inspect);
                             });
                         }
                     }
@@ -2433,14 +2443,22 @@ module.exports = function (expect) {
         identify: function (value) {
             return utils.isError(value);
         },
+        getKeys: function (value) {
+            var keys = this.baseType.getKeys(value);
+            keys.push('message');
+            return keys;
+        },
+        unwrap: function (value) {
+            return extend({
+                message: value.message
+            }, value);
+        },
         equal: function (a, b, equal) {
             return a === b ||
                 (equal(a.message, b.message) && this.baseType.equal(a, b));
         },
         inspect: function (value, depth, output, inspect) {
-            var errorObject = extend({
-                message: value.message
-            }, value);
+            var errorObject = this.unwrap(value);
             // TODO: Inspect Error as a built-in once we have the styles defined:
             output.text('Error(').append(inspect(errorObject, depth)).text(')');
         },
@@ -3574,7 +3592,7 @@ function base64Write (buf, string, offset, length) {
 }
 
 function utf16leWrite (buf, string, offset, length) {
-  var charsWritten = blitBuffer(utf16leToBytes(string), buf, offset, length, 2)
+  var charsWritten = blitBuffer(utf16leToBytes(string), buf, offset, length)
   return charsWritten
 }
 
@@ -4258,8 +4276,7 @@ function base64ToBytes (str) {
   return base64.toByteArray(str)
 }
 
-function blitBuffer (src, dst, offset, length, unitSize) {
-  if (unitSize) length -= length % unitSize;
+function blitBuffer (src, dst, offset, length) {
   for (var i = 0; i < length; i++) {
     if ((i + offset >= dst.length) || (i >= src.length))
       break
@@ -6135,9 +6152,9 @@ Object.keys(styles).forEach(function (groupName) {
 
 },{}],28:[function(require,module,exports){
 /**
- * @author Markus Ekholm
- * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
- * @license Copyright (c) 2012-2015, Markus Ekholm
+ * @author Markus Näsman
+ * @copyright 2012 (c) Markus Näsman <markus at botten dot org >
+ * @license Copyright (c) 2012, Markus Näsman
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -6153,7 +6170,7 @@ Object.keys(styles).forEach(function (groupName) {
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL MARKUS EKHOLM BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL MARKUS NÄSMAN BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -6250,9 +6267,9 @@ function xyz_to_lab(c)
 
 },{}],29:[function(require,module,exports){
 /**
- * @author Markus Ekholm
- * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
- * @license Copyright (c) 2012-2015, Markus Ekholm
+ * @author Markus Näsman
+ * @copyright 2012 (c) Markus Näsman <markus at botten dot org >
+ * @license Copyright (c) 2012, Markus Näsman
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -6268,7 +6285,7 @@ function xyz_to_lab(c)
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL MARKUS EKHOLM BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL MARKUS NÄSMAN BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -6431,24 +6448,15 @@ color.palette_map_key  = palette.palette_map_key;
 color.closest = function(target, relative) {
     var key = color.palette_map_key(target);
 
-    var result = color.map_palette([target], relative, 'closest');
+    var result = color.map_palette([target], relative);    
 
     return result[key];
 };
-
-color.furthest = function(target, relative) {
-    var key = color.palette_map_key(target);
-
-    var result = color.map_palette([target], relative, 'furthest');
-
-    return result[key];
-};
-
 },{}],31:[function(require,module,exports){
 /**
- * @author Markus Ekholm
- * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
- * @license Copyright (c) 2012-2015, Markus Ekholm
+ * @author Markus Näsman
+ * @copyright 2012 (c) Markus Näsman <markus at botten dot org >
+ * @license Copyright (c) 2012, Markus Näsman
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -6464,7 +6472,7 @@ color.furthest = function(target, relative) {
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL MARKUS EKHOLM BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL MARKUS NÄSMAN BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -6503,33 +6511,23 @@ function palette_map_key(c)
 * Returns a mapping from each color in a to the closest color in b
 * @param [{rgbcolor}] a each element should have fields R,G,B
 * @param [{rgbcolor}] b each element should have fields R,G,B
-* @param 'type' should be the string 'closest' or 'furthest'
 * @return {palettemap}
 */
-function map_palette(a, b, type)
+function map_palette(a, b)
 {
   var c = {};
-  type = type || 'closest';
-  for (var idx1 = 0; idx1 < a.length; idx1 += 1){
+  for (var idx1 in a){
     var color1 = a[idx1];
     var best_color      = undefined;
     var best_color_diff = undefined;
-    for (var idx2 = 0; idx2 < b.length; idx2 += 1)
+    for (var idx2 in b)
     {
       var color2 = b[idx2];
       var current_color_diff = diff(color1,color2);
-
-      if((best_color == undefined) || ((type === 'closest') && (current_color_diff < best_color_diff)))
+      if((best_color == undefined) || (current_color_diff < best_color_diff))
       {
         best_color      = color2;
         best_color_diff = current_color_diff;
-        continue;
-      }
-      if((type === 'furthest') && (current_color_diff > best_color_diff))
-      {
-        best_color      = color2;
-        best_color_diff = current_color_diff;
-        continue;
       }
     }
     c[palette_map_key(color1)] = best_color;
