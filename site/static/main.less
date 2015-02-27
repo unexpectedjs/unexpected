@@ -52,7 +52,7 @@ header {
     z-index: 1;
 
     nav {
-        padding: 0 20px;
+        padding-left: @headerHeight;
         .layout-element();
         ul {
             width: 100%;
@@ -177,34 +177,39 @@ code {
     margin-top: -0.5em;
 }
 
-.menu-toggle { display: none }
-
-.when-has-sidebar {
-    display: none;
+.icon(@url) {
+    display: inline-block;
+    border: none;
+    background-image: url(@url);
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-color: transparent;
+    outline: none;
+    padding: 0;
+    margin: 0;
 }
 
-.has-sidebar {
-    .when-has-sidebar {
-        display: initial;
-    }
+.logo-icon {
+    width: @headerHeight;
+    height: @headerHeight;
+    .icon('/static/bug-icon.svg');
 }
 
 @media only screen and (max-width : 800px) {
-    .menu-toggle {
-        display: inline-block;
-        border: none;
-        width: @headerHeight;
-        height: @headerHeight;
-        background-repeat: no-repeat;
-        background-position: center center;
-        background-color: transparent;
-        padding: 0;
-        margin: 0;
-        z-index: 1;
-        outline: none;
-    }
-
     .has-sidebar {
+        .menu-toggle {
+            width: @headerHeight;
+            height: @headerHeight;
+            .icon('/static/menu-icon.svg');
+        }
+        .bug-icon {
+            display: none;
+        }
+
+        header nav {
+            padding-left: 0;
+        }
+
         .sidebar {
             border-right: solid 5px @headerColor;
         }
