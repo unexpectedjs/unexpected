@@ -9,16 +9,12 @@
 </head>
 <body class="sidebar-hidden<%=typeof hasSidebar !== 'undefined' ? ' has-sidebar' : ''%>">
     <header>
-        <% if (typeof hasSidebar === 'undefined') { %>
         <div class="logo-icon"></div>
-        <% } %>
         <nav>
             <ul>
-                <% if (typeof hasSidebar !== 'undefined') { %>
-                <li>
+                <li class="menu-toggle-item">
                     <button class="menu-toggle" onclick="toggleSidebar()"></button>
                 </li>
-                <% } %>
                 <li class="<%- path === '' ? 'active' : '' %>"><a href="/">Unexpected</a></li>
                 <li class="<%- path.match(/^assertions\/?/) ? 'active' : '' %>"><a href="<%= assertionsByType.any[0].url%>">Assertions</a></li>
                 <li class="<%- path.match(/^api\/?/) ? 'active' : '' %>"><a href="<%= collections.apiPages[0].url%>">API</a></li>

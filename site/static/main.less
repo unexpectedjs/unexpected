@@ -1,6 +1,6 @@
 @headerColor: #162B34;
 @headerHeight: 40px;
-@navWidth: 340px;
+@navWidth: 350px;
 
 .layout() {
     box-sizing: border-box;
@@ -195,14 +195,30 @@ code {
     .icon('/static/bug-icon.svg');
 }
 
+.menu-toggle-item {
+    display: none;
+}
+
 @media only screen and (max-width : 800px) {
+    .sidebar {
+        background-color: #030303;
+        color: white;
+        a {
+            display: block;
+            color: white;
+            padding: 9px 0;
+        }
+    }
     .has-sidebar {
+        .menu-toggle-item {
+            display: initial;
+        }
         .menu-toggle {
             width: @headerHeight;
             height: @headerHeight;
             .icon('/static/menu-icon.svg');
         }
-        .bug-icon {
+        .logo-icon {
             display: none;
         }
 
