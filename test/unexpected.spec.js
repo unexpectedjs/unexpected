@@ -1623,11 +1623,11 @@ describe('unexpected', function () {
                 }, 'to throw',
                     'expected [ 1, 2, 3 ] to satisfy [ 1, 2 ]\n' +
                     '\n' +
-                    'Array({\n' +
-                    '  0: 1,\n' +
-                    '  1: 2,\n' +
-                    '  2: 3 // should be removed\n' +
-                    '})');
+                    '[\n' +
+                    '  1,\n' +
+                    '  2,\n' +
+                    '  3 // should be removed\n' +
+                    ']');
             });
 
             it('should fail if the value includes more indices than the subject', function () {
@@ -1636,12 +1636,12 @@ describe('unexpected', function () {
                 }, 'to throw',
                     'expected [ 1, 2, 3 ] to satisfy [ 1, 2, 3, 4 ]\n' +
                     '\n' +
-                    'Array({\n' +
-                    '  0: 1,\n' +
-                    '  1: 2,\n' +
-                    '  2: 3,\n' +
-                    '  3: undefined // should equal 4\n' +
-                    '})');
+                    '[\n' +
+                    '  1,\n' +
+                    '  2,\n' +
+                    '  3,\n' +
+                    '  undefined // should equal 4\n' +
+                    ']');
             });
         });
 
