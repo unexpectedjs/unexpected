@@ -84,8 +84,8 @@ header {
     }
 }
 
-.has-menu {
-    > nav {
+.has-sidebar {
+    .sidebar {
         .layout();
         top: @headerHeight;
         right: auto;
@@ -114,7 +114,7 @@ nav {
     width: 790px;
 }
 
-.has-menu .main {
+.has-sidebar .main {
     left: @navWidth;
     .content {
         margin: 27px 30px;
@@ -192,14 +192,16 @@ code {
         margin: 0;
         z-index: 1;
         outline: none;
+        &:hover {
+            background-color: lighten(@headerColor, 7%);
+        }
     }
 
-    header nav {
-        left: 20px;
-    }
-
-    .has-menu {
-        > nav {
+    .has-sidebar {
+        header nav {
+            left: 20px;
+        }
+        .sidebar {
             border-right: solid 5px @headerColor;
         }
         .main {
@@ -207,29 +209,25 @@ code {
         }
     }
 
-    .sidebar-hidden {
-        .has-menu {
-            > nav {
-                transition: all 200ms;
-                transform: translateX(-100%);
-            }
-            .main {
-                transition: all 200ms;
-                transform: translateX(0);
-            }
+    .has-sidebar.sidebar-hidden {
+        .sidebar {
+            transition: all 200ms;
+            transform: translateX(-100%);
+        }
+        .main {
+            transition: all 200ms;
+            transform: translateX(0);
         }
     }
 
-    .sidebar-visible {
-        .has-menu {
-            > nav {
-                transition: all 200ms;
-                transform: translateX(0%);
-            }
-            .main {
-                transition: all 200ms;
-                transform: translateX(@navWidth);
-            }
+    .has-sidebar.sidebar-visible {
+        .sidebar {
+            transition: all 200ms;
+            transform: translateX(0%);
+        }
+        .main {
+            transition: all 200ms;
+            transform: translateX(@navWidth);
         }
     }
 }

@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/static/main.css" type="text/css" media="screen" />
     <title><%= windowTitle %></title>
 </head>
-<body class="sidebar-hidden">
+<body class="sidebar-hidden<%=typeof hasSidebar !== 'undefined' ? ' has-sidebar' : ''%>">
     <header>
         <nav>
             <ul>
