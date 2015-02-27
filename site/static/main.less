@@ -63,6 +63,8 @@ header {
             display: block;
             float: left;
             margin: 0;
+            box-sizing: border-box;
+            height: @headerHeight;
 
             a {
                 color: white;
@@ -177,14 +179,22 @@ code {
 
 .menu-toggle { display: none }
 
+.when-has-sidebar {
+    display: none;
+}
+
+.has-sidebar {
+    .when-has-sidebar {
+        display: initial;
+    }
+}
+
 @media only screen and (max-width : 800px) {
     .menu-toggle {
-        .layout-element();
         display: inline-block;
         border: none;
         width: @headerHeight;
         height: @headerHeight;
-        background-image: url(/static/menu-icon.svg);
         background-repeat: no-repeat;
         background-position: center center;
         background-color: transparent;
@@ -192,15 +202,9 @@ code {
         margin: 0;
         z-index: 1;
         outline: none;
-        &:hover {
-            background-color: lighten(@headerColor, 7%);
-        }
     }
 
     .has-sidebar {
-        header nav {
-            left: 20px;
-        }
         .sidebar {
             border-right: solid 5px @headerColor;
         }
@@ -210,6 +214,10 @@ code {
     }
 
     .has-sidebar.sidebar-hidden {
+        .menu-toggle {
+            transition: all 200ms;
+            background-image: url(/static/menu-icon.svg);
+        }
         .sidebar {
             transition: all 200ms;
             transform: translateX(-100%);
@@ -221,6 +229,11 @@ code {
     }
 
     .has-sidebar.sidebar-visible {
+        .menu-toggle {
+            transition: all 200ms;
+            transform: rotate(360deg);
+            background-image: url(/static/hide-menu-icon.svg);
+        }
         .sidebar {
             transition: all 200ms;
             transform: translateX(0%);
