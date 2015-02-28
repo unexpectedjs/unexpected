@@ -1,6 +1,7 @@
 @headerColor: #162B34;
 @headerHeight: 40px;
-@navWidth: 350px;
+@navWidth: 330px;
+@mobileSidebarColor: #030303;
 
 .layout() {
     box-sizing: border-box;
@@ -29,6 +30,7 @@ h1, h2, h3, h4 {
 nav {
     ul {
         padding: 10px;
+        padding-right: 0;
     }
     li {
         list-style: none;
@@ -199,29 +201,46 @@ code {
     display: none;
 }
 
-@media only screen and (max-width : 800px) {
+.sidebar h3 {
+    margin: 0;
+    font-weight: normal;
+    font-size: 1em;
+}
+
+@media only screen and (max-width : 900px) {
     .content {
         width: auto;
         margin: 27px 30px;
     }
-    .sidebar {
-        background-color: #030303;
-        color: white;
-        a {
-            display: block;
+    .has-sidebar {
+        .sidebar {
+            background-color: @mobileSidebarColor;
             color: white;
-            padding: 9px 0;
-            padding-left: 18px;
-            &:hover {
+            padding: 10px 0;
+            h3 {
+                margin: 0;
+                font-weight: bold;
+                padding: 9px 0;
+                padding-left: 20px;
+            }
+            a {
+                display: block;
+                color: white;
+                padding: 9px 0;
+                padding-left: 35px;
+                &:hover {
+                    text-decoration: none;
+                }
+            }
+            li.active a {
+                background-color: lighten(@mobileSidebarColor, 15%);
                 text-decoration: none;
             }
+            ul {
+                margin: 0;
+                padding: 0;
+            }
         }
-        ul {
-            margin: 10px 0;
-            padding: 0;
-        }
-    }
-    .has-sidebar {
         .menu-toggle-item {
             display: initial;
         }
