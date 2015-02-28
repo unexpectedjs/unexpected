@@ -48,7 +48,6 @@
     "mocha": "2.1.0",
     "mocha-phantomjs": "3.5.3",
     "mocha-slow-reporter": "*",
-    "normalize.css": "3.0.2",
     "passerror": "1.1.0",
     "phantomjs": "1.9.15",
     "serve": "*"
