@@ -16,8 +16,6 @@ expect(window, 'not to be an', Image);
 [![Coverage Status](https://coveralls.io/repos/sunesimonsen/unexpected/badge.png)](https://coveralls.io/r/sunesimonsen/unexpected)
 [![Dependency Status](https://david-dm.org/sunesimonsen/unexpected.png)](https://david-dm.org/sunesimonsen/unexpected)
 
-[Run the test in the browser](http://sunesimonsen.github.io/unexpected/test/tests.html)
-
 ## Features
 
 - Extensible
