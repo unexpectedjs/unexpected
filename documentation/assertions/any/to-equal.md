@@ -21,7 +21,7 @@ expect({ text: 'foo!' }, 'to equal', { text: 'f00!' });
 expected { text: 'foo!' } to equal { text: 'f00!' }
 
 {
-  text: 'foo!' // should be 'f00!'
+  text: 'foo!' // should equal 'f00!'
                // -foo!
                // +f00!
 }
@@ -41,7 +41,7 @@ expected { one: 1, two: 2, four: 4, five: 5 } to equal { one: 1, two: 2, three: 
   two: 2,
   four: 4,
   five: 5, // should be removed
-  three: undefined // should be 3
+  three: undefined // should equal 3
 }
 ```
 

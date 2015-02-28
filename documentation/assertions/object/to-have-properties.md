@@ -35,11 +35,11 @@ expect({ a: 'f00', b: 'bar' }, 'to have own properties', {
 expected { a: 'f00', b: 'bar' } to have own properties { a: 'foo', c: 'baz' }
 
 {
-  a: 'f00', // should be 'foo'
+  a: 'f00', // should equal 'foo'
             // -f00
             // +foo
   b: 'bar',
-  c: undefined // should be 'baz'
+  c: undefined // should equal 'baz'
 }
 ```
 

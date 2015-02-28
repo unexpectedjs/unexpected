@@ -49,8 +49,8 @@ describe("documentation tests", function () {
                 "\n" +
                 "[\n" +
                 "  1,\n" +
-                "  3, // should be 2\n" +
-                "  2, // should be 3\n" +
+                "  3, // should equal 2\n" +
+                "  2, // should equal 3\n" +
                 "  4\n" +
                 "]"
             );
@@ -71,8 +71,8 @@ describe("documentation tests", function () {
                 "\n" +
                 "[\n" +
                 "  1,\n" +
-                "  3, // should be 2\n" +
-                "  2, // should be 3\n" +
+                "  3, // should equal 2\n" +
+                "  2, // should equal 3\n" +
                 "  4\n" +
                 "]"
             );
@@ -94,8 +94,8 @@ describe("documentation tests", function () {
                 "\n" +
                 "  [\n" +
                 "    1,\n" +
-                "    3, // should be 2\n" +
-                "    2, // should be 3\n" +
+                "    3, // should equal 2\n" +
+                "    2, // should equal 3\n" +
                 "    4\n" +
                 "  ]"
             );
@@ -128,10 +128,10 @@ describe("documentation tests", function () {
                 "expected Person({ name: 'John Doe', age: 42 }) to equal Person({ name: 'Jane Doe', age: 24 })\n" +
                 "\n" +
                 "Person({\n" +
-                "  name: 'John Doe', // should be 'Jane Doe'\n" +
+                "  name: 'John Doe', // should equal 'Jane Doe'\n" +
                 "                    // -John Doe\n" +
                 "                    // +Jane Doe\n" +
-                "  age: 42 // should be 24\n" +
+                "  age: 42 // should equal 24\n" +
                 "})"
             );
         }
@@ -163,10 +163,10 @@ describe("documentation tests", function () {
                 "expected new Person('John Doe', 42) to equal new Person('Jane Doe', 24)\n" +
                 "\n" +
                 "Person({\n" +
-                "  name: 'John Doe', // should be 'Jane Doe'\n" +
+                "  name: 'John Doe', // should equal 'Jane Doe'\n" +
                 "                    // -John Doe\n" +
                 "                    // +Jane Doe\n" +
-                "  age: 42 // should be 24\n" +
+                "  age: 42 // should equal 24\n" +
                 "})"
             );
         }
@@ -222,7 +222,7 @@ describe("documentation tests", function () {
                 "expected new Person('John Doe', 42) to equal new Person('Jane Doe', 24)\n" +
                 "\n" +
                 "{\n" +
-                "  name: 'John Doe' // should be 'Jane Doe'\n" +
+                "  name: 'John Doe' // should equal 'Jane Doe'\n" +
                 "                   // -John Doe\n" +
                 "                   // +Jane Doe\n" +
                 "}"
@@ -373,7 +373,7 @@ describe("documentation tests", function () {
                 "\n" +
                 "{\n" +
                 "  'John Doe': new Person('John Doe', 42),\n" +
-                "  'Jane Doe': new Person('Janie Doe', 24) // should be new Person('Jane Doe', 24)\n" +
+                "  'Jane Doe': new Person('Janie Doe', 24) // should equal new Person('Jane Doe', 24)\n" +
                 "                                          // new Person(\n" +
                 "                                          //   'Janie Doe', // should be 'Jane Doe'\n" +
                 "                                          //                // -Janie Doe\n" +
@@ -873,7 +873,7 @@ describe("documentation tests", function () {
                 "expected { text: 'foo!' } to equal { text: 'f00!' }\n" +
                 "\n" +
                 "{\n" +
-                "  text: 'foo!' // should be 'f00!'\n" +
+                "  text: 'foo!' // should equal 'f00!'\n" +
                 "               // -foo!\n" +
                 "               // +f00!\n" +
                 "}"
@@ -896,7 +896,7 @@ describe("documentation tests", function () {
                 "  two: 2,\n" +
                 "  four: 4,\n" +
                 "  five: 5, // should be removed\n" +
-                "  three: undefined // should be 3\n" +
+                "  three: undefined // should equal 3\n" +
                 "}"
             );
         }
@@ -1989,11 +1989,11 @@ describe("documentation tests", function () {
                 "expected { a: 'f00', b: 'bar' } to have own properties { a: 'foo', c: 'baz' }\n" +
                 "\n" +
                 "{\n" +
-                "  a: 'f00', // should be 'foo'\n" +
+                "  a: 'f00', // should equal 'foo'\n" +
                 "            // -f00\n" +
                 "            // +foo\n" +
                 "  b: 'bar',\n" +
-                "  c: undefined // should be 'baz'\n" +
+                "  c: undefined // should equal 'baz'\n" +
                 "}"
             );
         }
@@ -2422,7 +2422,7 @@ describe("documentation tests", function () {
                 "expected { text: 'f00!' } to equal { text: 'foo!' }\n" +
                 "\n" +
                 "{\n" +
-                "  text: 'f00!' // should be 'foo!'\n" +
+                "  text: 'f00!' // should equal 'foo!'\n" +
                 "               // -f00!\n" +
                 "               // +foo!\n" +
                 "}"

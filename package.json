@@ -1,6 +1,6 @@
 {
   "name": "unexpected",
-  "version": "5.8.1",
+  "version": "5.10.0",
   "author": "Sune Sloth Simonsen <sune@we-knowhow.dk>",
   "keywords": [
     "assertion",
@@ -15,16 +15,14 @@
   },
   "scripts": {
     "test": "make test && make test-phantomjs",
-    "travis": "npm test",
-    "generate-docs": "make site-build",
-    "prepublish": "npm run generate-docs && npm test && make unexpected.js"
+    "travis": "npm test"
   },
   "main": "./lib/index.js",
   "dependencies": {
     "arraydiff": "0.1.1",
     "diff": "1.1.0",
     "leven": "1.0.0",
-    "magicpen": "4.3.1"
+    "magicpen": "4.3.5"
   },
   "devDependencies": {
     "async": "0.9.0",
@@ -47,12 +45,12 @@
     "metalsmith-permalinks": "0.4.0",
     "metalsmith-static": "0.0.5",
     "metalsmith-templates": "0.6.0",
-    "mocha": "2.0.1",
-    "mocha-phantomjs": "3.5.1",
+    "mocha": "2.1.0",
+    "mocha-phantomjs": "3.5.3",
     "mocha-slow-reporter": "*",
     "normalize.css": "3.0.2",
     "passerror": "1.1.0",
-    "phantomjs": "1.9.12",
+    "phantomjs": "1.9.15",
     "serve": "*"
   }
 }

@@ -10,6 +10,8 @@ lint:
 unexpected.js: lib/*
 	(echo '/*!' && <LICENSE sed -e's/^/ * /' | sed -e's/\s+$$//' && echo ' */' && ./node_modules/.bin/browserify -p bundle-collapser/plugin -e lib -s weknowhow.expect) > $@
 
+.PHONY: unexpected.js
+
 test-phantomjs: ${TARGETS}
 	@$(eval QUERY=$(shell node -e "console.log(decodeURIComponent(process.argv.pop()))" "${grep}")) \
     ./node_modules/.bin/mocha-phantomjs test/tests.html?grep=${QUERY}
@@ -42,6 +44,7 @@ endif
 
 .PHONY: release-%
 release-%: git-dirty-check lint ${TARGETS} test-phantomjs
+	git add unexpected.js && git commit -m "Build unexpected.js"
 	npm version $*
 	@echo $* release ready to be publised to NPM
 	@echo Remember to push tags

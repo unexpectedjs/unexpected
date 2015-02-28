@@ -88,8 +88,8 @@ expected [ 1, 3, 2, 4 ] to be sorted
 
 [
   1,
-  3, // should be 2
-  2, // should be 3
+  3, // should equal 2
+  2, // should equal 3
   4
 ]
 ```
@@ -109,8 +109,8 @@ expected [ 1, 3, 2, 4 ] to equal [ 1, 2, 3, 4 ]
 
 [
   1,
-  3, // should be 2
-  2, // should be 3
+  3, // should equal 2
+  2, // should equal 3
   4
 ]
 ```
@@ -128,8 +128,8 @@ expected [ 1, 3, 2, 4 ] to be sorted
 
   [
     1,
-    3, // should be 2
-    2, // should be 3
+    3, // should equal 2
+    2, // should equal 3
     4
   ]
 ```
