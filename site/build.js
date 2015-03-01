@@ -78,7 +78,7 @@ metalSmith(__dirname)
     })
     .use(require('metalsmith-less')())
     .use(require('metalsmith-templates')('ejs'))
-    .use(require('./lib/autoprefixer')({ browsers: 'last 2 versions', cascade: false }))
+    .use(require('metalsmith-autoprefixer-gustavnikolaj')({ browsers: 'last 2 versions', cascade: false }))
     .use(require('./lib/delete-less-files')())
     .build(function (err) {
         if (err) { throw err; }
