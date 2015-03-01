@@ -18,10 +18,7 @@ metalSmith(__dirname)
             pattern: '*.md'
         }
     }))
-    .use(require('metalsmith-static')({
-        src: 'static',
-        dest: 'static'
-    }))
+    .use(require('./lib/include-static-assets')({ path: require('path').resolve(__dirname, 'static') }))
     // Dynamicly generate metadata for assertion files
     .use(function (files, metalsmith, next) {
         Object.keys(files).filter(function (file) {
@@ -81,7 +78,8 @@ metalSmith(__dirname)
     })
     .use(require('metalsmith-less')())
     .use(require('metalsmith-templates')('ejs'))
-    .use(require('metalsmith-autoprefixer')())
+    .use(require('./lib/autoprefixer')({ browsers: 'last 2 versions', cascade: false }))
+    .use(require('./lib/delete-less-files')())
     .build(function (err) {
         if (err) { throw err; }
         console.log('wrote site to site-build');
