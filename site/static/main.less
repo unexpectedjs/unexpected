@@ -3,6 +3,10 @@
 @navWidth: 330px;
 @mobileSidebarColor: #030303;
 
+.iOsScrollFix() {
+    -webkit-overflow-scrolling: touch;
+}
+
 .layout() {
     box-sizing: border-box;
     position: fixed;
@@ -96,6 +100,7 @@ header {
         width: @navWidth;
         padding: 0 20px;
         overflow-y: auto;
+        .iOsScrollFix();
     }
 }
 
@@ -103,6 +108,7 @@ header {
     .layout();
     top: @headerHeight;
     overflow-y: auto;
+    .iOsScrollFix();
 }
 
 nav {
@@ -152,6 +158,7 @@ code {
     margin: 0.5em 0;
     padding: 16px;
     overflow-x: auto;
+    .iOsScrollFix();
 }
 
 .code {
