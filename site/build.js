@@ -73,6 +73,7 @@ metalSmith(__dirname)
     .use(require('./metalsmith-unexpected-markdown')())
     // permalinks with no options will just make pretty urls...
     .use(require('metalsmith-permalinks')({ relative: false }))
+    .use(require('metalsmith-relative')())
     .use(function (files, metalsmith, next) {
         // Useful for debugging ;-)
         // require('uninspected').log(files);
