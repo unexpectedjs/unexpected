@@ -114,6 +114,11 @@ describe('math.js', function () {
 If a certain expectation fails, an exception will be raised which gets captured
 and shown/processed by the test runner.
 
+## Source
+
+The source for Unexpected can be found on
+[Github](https://github.com/unexpectedjs/unexpected).
+
 ## MIT License
 
 Copyright (c) 2013 Sune Simonsen <sune@we-knowhow.dk>
