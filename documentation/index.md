@@ -119,6 +119,17 @@ and shown/processed by the test runner.
 The source for Unexpected can be found on
 [Github](https://github.com/unexpectedjs/unexpected).
 
+## Releases
+
+### 6.0.0
+
+* New documentation and [corresponding site](https://unexpectedjs.github.io/).
+* Use `Object.is`/the [SameValue](http://people.mozilla.org/~jorendorff/es6-draft.html#sec-samevalue) when checking equality of primitive values (the `to be` and `to equal` assertions).
+* Tweaked the output of numerous assertions.
+* Constrained `to be empty` and `to have length` to only work with strings and array-like objects.
+* Renamed the `arrayLike` type to `array-like`.
+* Changed style names and added theming support (mostly internal).
+
 ## MIT License
 
 Copyright (c) 2013 Sune Simonsen <sune@we-knowhow.dk>
