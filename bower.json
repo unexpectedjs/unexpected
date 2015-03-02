@@ -3,7 +3,7 @@
   "authors": [
     "Sune Simonsen <sune@we-knowhow.dk>"
   ],
-  "description": "Minimalistic BDD assertion toolkit",
+  "description": "The extensible BDD assertion toolkit",
   "main": "unexpected.js",
   "moduleType": [
     "amd",
