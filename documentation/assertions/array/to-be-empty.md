@@ -1,9 +1,6 @@
 Asserts that an array is empty.
 
-Aliases:
-
-- `to be the empty array`
-- `to be an empty array`
+Aliases: `to be the empty array`, `to be an empty array`
 
 ```javascript
 expect([], 'to be empty');

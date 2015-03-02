@@ -1129,6 +1129,23 @@ describe("documentation tests", function () {
         }
     });
 
+    it("assertions/array/to-be-non-empty.md contains correct examples", function () {
+        expect([1, 2, 3], 'to be non-empty');
+
+        try {
+            expect([], 'to be non-empty');
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect([], 'to be non-empty');").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected [] to be non-empty"
+            );
+        }
+    });
+
     it("assertions/array/to-contain.md contains correct examples", function () {
         expect([0, 1, 2], 'to contain', 1);
         expect([ { name: 'John Doe' }, { name: 'Jane Doe' } ], 'to contain', { name: 'Jane Doe' });
@@ -2234,6 +2251,23 @@ describe("documentation tests", function () {
         } catch (e) {
             expect(e, "to have message",
                 "expected 'a' not to be below 'b'"
+            );
+        }
+    });
+
+    it("assertions/string/to-be-non-empty.md contains correct examples", function () {
+        expect('Hello', 'to be non-empty');
+
+        try {
+            expect('', 'to be non-empty');
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect('', 'to be non-empty');").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected '' to be non-empty"
             );
         }
     });
