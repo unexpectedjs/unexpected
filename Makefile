@@ -43,8 +43,11 @@ ifneq ($(shell git describe --always --dirty | grep -- -dirty),)
 endif
 
 .PHONY: release-%
-release-%: git-dirty-check lint ${TARGETS} test-phantomjs
-	git add unexpected.js && git commit -m "Build unexpected.js"
+release-%: site-build git-dirty-check lint ${TARGETS} test-phantomjs
+	if [ "`git status --porcelain site-build`" != "" ]; then \
+		(cd site-build && git add -A . && git commit -m "Updated site" && git push origin master) ; \
+	fi
+	git add unexpected.js site-build && git commit -m "Build unexpected.js and site"
 	npm version $*
 	@echo $* release ready to be publised to NPM
 	@echo Remember to push tags
