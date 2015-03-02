@@ -95,7 +95,7 @@ expect(null, 'to be falsy');
 expect(undefined, 'to be falsy');
 ```
 
-**be**: asserts `===` equality
+**be**: asserts equality using `Object.is`/the [SameValue](http://people.mozilla.org/~jorendorff/es6-draft.html#sec-samevalue) algorithm
 
 ```js
 expect(obj, 'to be', obj);
@@ -115,6 +115,13 @@ expect(undefined, 'to be undefined');
 expect(null, 'to be defined');
 expect(false, 'to be defined');
 expect({}, 'to be defined');
+```
+
+The SameValue/`Object.is` algorithm has some subtle differences compared to the `===` operator, which makes it more suitable for an assertion lib:
+
+```js
+expect(NaN, 'to be', NaN);
+expect(-0, 'not to be', 0);
 ```
 
 **equal**: asserts deep equality that works with objects

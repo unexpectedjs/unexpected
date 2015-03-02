@@ -182,6 +182,22 @@ describe('unexpected', function () {
             expect('', 'to be defined');
         });
 
+        it('NaN as equal to NaN', function () {
+            expect(NaN, 'to be', NaN);
+        });
+
+        it('considers negative zero not to be zero', function () {
+            expect(-0, 'not to be', 0);
+        });
+
+        it('considers negative zero to be itself', function () {
+            expect(-0, 'to be', -0);
+        });
+
+        it('considers zero to be itself', function () {
+            expect(0, 'to be', 0);
+        });
+
         it.skipIf(typeof Buffer === 'undefined', 'asserts === equality for Buffers', function () {
             var buffer = new Buffer([0x45, 0x59]);
             expect(buffer, 'to be', buffer);
@@ -328,6 +344,22 @@ describe('unexpected', function () {
             expect(/foo/m, 'to equal', new RegExp('foo', 'm'));
             expect([], 'not to equal', 0);
             expect(new Error('foo'), 'to equal', new Error('foo'));
+        });
+
+        it('treats NaN as equal to NaN', function () {
+            expect(NaN, 'to equal', NaN);
+        });
+
+        it('treats negative zero and zero as unequal', function () {
+            expect(-0, 'not to equal', 0);
+        });
+
+        it('treats negative zero as equal to itself', function () {
+            expect(-0, 'to equal', -0);
+        });
+
+        it('treats zero as equal to itself', function () {
+            expect(0, 'to equal', 0);
         });
 
         it('treats an arguments object as different from an array', function () {
@@ -3145,6 +3177,14 @@ describe('unexpected', function () {
 
             it('renders NaN correctly', function () {
                 expect(NaN, 'to inspect as', 'NaN');
+            });
+
+            it('renders zero correctly', function () {
+                expect(0, 'to inspect as', '0');
+            });
+
+            it('renders negative zero correctly', function () {
+                expect(-0, 'to inspect as', '-0');
             });
 
             it('renders Infinity correctly', function () {
