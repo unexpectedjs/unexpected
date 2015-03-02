@@ -1,5 +1,10 @@
 Asserts that the string is empty.
 
+Aliases:
+
+- `to be the empty string`
+- `to be an empty string`
+
 ```javascript
 expect('', 'to be empty');
 ```
