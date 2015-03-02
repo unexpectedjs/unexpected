@@ -818,6 +818,9 @@ describe("documentation tests", function () {
         expect(undefined, 'to be', obj.foo);
         expect(true, 'to be', !false);
 
+        expect(NaN, 'to be', NaN);
+        expect(-0, 'not to be', 0);
+
         try {
             expect('1', 'to be', 1);
             expect.fail(function (output) {
