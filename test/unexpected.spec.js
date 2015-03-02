@@ -834,7 +834,6 @@ describe('unexpected', function () {
         it('tests that the subject matches the given regular expression', function () {
             expect('test', 'to match', /.*st/);
             expect('test', 'not to match', /foo/);
-            expect(null, 'not to match', /foo/);
         });
 
         it('does not keep state between invocations', function () {
@@ -860,15 +859,6 @@ describe('unexpected', function () {
                    "expected 'barfooquuxfoobaz' not to match /foo/\n" +
                    '\n' +
                    'barfooquuxfoobaz');
-        });
-
-        it('does not fail when building a diff and the subject is not a string', function () {
-            expect(function () {
-                expect(123, 'not to match', /^12/);
-            }, 'to throw',
-                   "expected 123 not to match /^12/\n" +
-                   '\n' +
-                   '123');
         });
     });
 
