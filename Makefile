@@ -61,7 +61,7 @@ clean:
 
 .PHONY: site-build
 site-build:
-	-rm -fr site-build/*
+	-rm -fr `ls site-build`
 	(cd site-build && git reset --hard && git checkout master)
 	node site/build.js
 
