@@ -885,7 +885,7 @@ describe('unexpected', function () {
                 expect(null, 'not to contain', 'world');
             }, 'to throw',
                    'The assertion "not to contain" is not defined for the type "null",\n' +
-                   'but it is defined for these types: "string", "arrayLike"');
+                   'but it is defined for these types: "string", "array-like"');
 
             expect(function () {
                 expect('hello world', 'to contain', 'foo');
@@ -907,7 +907,7 @@ describe('unexpected', function () {
                 expect(1, 'to contain', 1);
             }, 'to throw exception',
                    'The assertion "to contain" is not defined for the type "number",\n' +
-                   'but it is defined for these types: "string", "arrayLike"');
+                   'but it is defined for these types: "string", "array-like"');
         });
 
         it('produces a diff when the array case fails and the not flag is on', function () {
@@ -980,13 +980,13 @@ describe('unexpected', function () {
                 expect(null, 'to have length', 4);
             }, 'to throw exception',
                    'The assertion "to have length" is not defined for the type "null",\n' +
-                   'but it is defined for these types: "string", "arrayLike"');
+                   'but it is defined for these types: "string", "array-like"');
 
             expect(function () {
                 expect({ length: 4 }, 'to have length', 4);
             }, 'to throw exception',
                    'The assertion "to have length" is not defined for the type "object",\n' +
-                   'but it is defined for these types: "string", "arrayLike"');
+                   'but it is defined for these types: "string", "array-like"');
         });
     });
 
@@ -1204,7 +1204,7 @@ describe('unexpected', function () {
                 expect(null, 'to be empty');
             }, 'to throw exception',
                    'The assertion "to be empty" is not defined for the type "null",\n' +
-                   'but it is defined for these types: "string", "arrayLike"');
+                   'but it is defined for these types: "string", "array-like"');
         });
     });
 
@@ -2087,7 +2087,7 @@ describe('unexpected', function () {
                 expect(42, 'to be an array whose items satisfy', function (item) {});
             }, 'to throw',
                    'The assertion "to be an array whose items satisfy" is not defined for the type "number",\n' +
-                   'but it is defined for the type "arrayLike"');
+                   'but it is defined for the type "array-like"');
         });
 
         it('supports the non-empty clause', function () {

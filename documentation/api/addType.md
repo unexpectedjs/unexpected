@@ -5,7 +5,7 @@ different types are compared, diffed, inspected and is also used to
 limit the scope of assertions.
 
 The following types are provided by out of the box by Unexpected:
-`any`, `arguments`, `array`, `arrayLike`, `binaryArray`, `boolean`,
+`any`, `arguments`, `array`, `array-like`, `binaryArray`, `boolean`,
 `Buffer`, `date`, `Error`, `function`, `null`, `number`, `object`,
 `regexp`, `string`, `undefined`.
 

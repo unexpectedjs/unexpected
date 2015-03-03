@@ -127,7 +127,7 @@ The source for Unexpected can be found on
 * Use `Object.is`/the [SameValue](http://people.mozilla.org/~jorendorff/es6-draft.html#sec-samevalue) when checking equality of primitive values (the `to be` and `to equal` assertions).
 * Tweaked the output of numerous assertions.
 * Constrained `to be empty` and `to have length` to only work with strings and array-like objects.
-* Renamed the `arrayLike` type to `array-like`.
+* Renamed the `array-like` type to `array-like`.
 * Changed style names and added theming support (mostly internal).
 
 ## MIT License
