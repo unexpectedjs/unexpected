@@ -5,7 +5,7 @@ function idToName(id) {
 }
 
 metalSmith(__dirname)
-    .destination('../site-build')
+    .destination('/tmp/site-build')
     .source('src')
     .use(require('metalsmith-collections')({
         assertions: {

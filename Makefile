@@ -61,8 +61,9 @@ clean:
 
 .PHONY: site-build
 site-build:
+	(cd site-build && git reset --hard && git checkout master && rm -rf `ls`)
 	node site/build.js
-	git submodule update
+	mv /tmp/site-build/* site-build/
 
 .PHONY: update-examples
 update-examples:
