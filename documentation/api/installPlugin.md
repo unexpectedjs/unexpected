@@ -96,7 +96,7 @@ expected [7,13] to contain 27
 For more inspiration you can look at the source for one of the
 following plugins:
 
-* [unexpected-knockout](https://github.com/sunesimonsen/unexpected-knockout)
-* [unexpected-sinon](https://github.com/sunesimonsen/unexpected-sinon)
-* [unexpected-express](https://github.com/papandreou/unexpected-express)
-* [unexpected-mitm](https://github.com/papandreou/unexpected-mitm)
+* [unexpected-knockout](https://github.com/unexpectedjs/unexpected-knockout)
+* [unexpected-sinon](https://github.com/unexpectedjs/unexpected-sinon)
+* [unexpected-express](https://github.com/unexpectedjs/unexpected-express)
+* [unexpected-mitm](https://github.com/unexpectedjs/unexpected-mitm)

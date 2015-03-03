@@ -5,7 +5,7 @@
 Clone the repository and install the developer dependencies:
 
 ```
-git clone git://github.com/sunesimonsen/unexpected.git unexpected
+git clone git://github.com/unexpectedjs/unexpected.git unexpected
 cd unexpected && npm install
 ```
 

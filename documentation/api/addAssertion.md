@@ -137,4 +137,4 @@ expected [ 1, 3, 2, 4 ] to be sorted
 The best resource for learning more about custom assertions is to look
 at how the predefined assertions are built:
 
-[lib/assertions.js](https://github.com/sunesimonsen/unexpected/blob/master/lib/assertions.js)
+[lib/assertions.js](https://github.com/unexpectedjs/unexpected/blob/master/lib/assertions.js)

@@ -8,10 +8,10 @@
     "assert"
   ],
   "license": "MIT",
-  "bugs": "https://github.com/sunesimonsen/unexpected/issues",
+  "bugs": "https://github.com/unexpectedjs/unexpected/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/sunesimonsen/unexpected"
+    "url": "https://github.com/unexpectedjs/unexpected"
   },
   "scripts": {
     "test": "make test && make test-phantomjs",
