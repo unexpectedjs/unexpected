@@ -47,7 +47,10 @@ release-%: site-build git-dirty-check lint ${TARGETS} test-phantomjs
 	if [ "`git status --porcelain site-build`" != "" ]; then \
 		(cd site-build && git add -A . && git commit -m "Updated site" && git push origin master) ; \
 	fi
-	git add unexpected.js site-build && git commit -m "Build unexpected.js and site"
+	git add unexpected.js site-build
+	if [ "`git status --porcelain`" != "" ]; then \
+		git commit -m "Build unexpected.js and site" ; \
+	fi
 	npm version $*
 	@echo $* release ready to be publised to NPM
 	@echo Remember to push tags
