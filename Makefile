@@ -57,7 +57,7 @@ clean:
 	-rm -fr ${TARGETS} coverage
 
 site-build: $(shell find ./documentation/ -type f) $(shell find ./site/ -type f)
-	-rm -fr site-build
+	-rm -fr site-build/*
 	node site/build.js
 
 .PHONY: update-examples
