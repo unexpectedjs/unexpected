@@ -59,7 +59,8 @@ release-%: site-build git-dirty-check lint ${TARGETS} test-phantomjs
 clean:
 	-rm -fr ${TARGETS} coverage
 
-site-build: $(shell find ./documentation/ -type f) $(shell find ./site/ -type f)
+.PHONY: site-build
+site-build:
 	-rm -fr site-build/*
 	(cd site-build && git reset --hard && git checkout master)
 	node site/build.js
