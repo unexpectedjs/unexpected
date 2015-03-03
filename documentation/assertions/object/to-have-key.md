@@ -1,6 +1,6 @@
 Asserts the presence of a key.
 
-Alias for [to be have keys](/assertions/object/to-have-keys).
+Alias for [to be have keys](../to-have-keys).
 
 ```javascript
 expect({ a: 'a', b: 'b', c: 'c' }, 'to have key', 'a');
