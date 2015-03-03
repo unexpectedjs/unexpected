@@ -129,6 +129,7 @@ The source for Unexpected can be found on
 * Constrained `to be empty` and `to have length` to only work with strings and array-like objects.
 * Renamed the `array-like` type to `array-like`.
 * Changed style names and added theming support (mostly internal).
+* Removed grammatically incorrect assertions.
 
 ## MIT License
 
