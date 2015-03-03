@@ -1853,7 +1853,7 @@ describe("documentation tests", function () {
         });
 
         expect({ foo: 0, bar: 1, baz: 2, qux: 3 },
-               'to be a non-empty map whose values satisfy',
+               'to be a hash whose values satisfy',
                'to be a number');
 
         try {

@@ -1,5 +1,7 @@
 Asserts that all values of a map satisfies a given function.
 
+Aliases: `to be an object whose values satisfy`, `to be a hash whose values satisfy`.
+
 ```javascript
 expect({ foo: 0, bar: 1, baz: 2, qux: 3 },
        'to be a map whose values satisfy', function (value, index) {
@@ -7,7 +9,7 @@ expect({ foo: 0, bar: 1, baz: 2, qux: 3 },
 });
 
 expect({ foo: 0, bar: 1, baz: 2, qux: 3 },
-       'to be a non-empty map whose values satisfy',
+       'to be a hash whose values satisfy',
        'to be a number');
 ```
 
@@ -27,4 +29,13 @@ failed expectation in { foo: [ 0, 1, 2 ], bar: [ 4, 5, 6 ], baz: [ 7, 8, 9 ] }:
             ⨯ expected 8 to be below 8
          2: ✓ expected 9 to be a number and
             ⨯ expected 9 to be below 8
+```
+
+You can use the `non-empty` flag to assert that the object is
+non-empty.
+
+```
+expect({ foo: 0, bar: 1, baz: 2, qux: 3 },
+       'to be a non-empty object whose values satisfy',
+       'to be a number');
 ```
