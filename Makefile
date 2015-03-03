@@ -42,14 +42,24 @@ ifneq ($(shell git describe --always --dirty | grep -- -dirty),)
 	$(error Working tree is dirty, please commit or stash your changes, then try again)
 endif
 
-.PHONY: release-%
-release-%: site-build git-dirty-check lint ${TARGETS} test-phantomjs
-	if [ "`git status --porcelain site-build`" != "" ]; then \
-		(cd site-build && git add -A . && git commit -m "Updated site" && git push origin master) ; \
+.PHONY: deploy-site
+deploy-site: site-build git-dirty-check
+	git checkout site-build
+	rm `git ls-files | grep -v '^\.gitignore$$'`
+	cp -r site-build/* .
+	if [ "`git status --porcelain`" != "" ]; then \
+		(git add -A . && \
+	     git commit -m "Updated site" && \
+	     git push origin +site-build:site-build && \
+		 git push git@github.com:unexpectedjs/unexpectedjs.github.io.git +site-build:master) ; \
 	fi
+	git checkout master
+
+.PHONY: release-%
+release-%: git-dirty-check lint ${TARGETS} test-phantomjs deploy-site
 	git add unexpected.js site-build
 	if [ "`git status --porcelain`" != "" ]; then \
-		git commit -m "Build unexpected.js and site" ; \
+		git commit -m "Build unexpected.js" ; \
 	fi
 	npm version $*
 	@echo $* release ready to be publised to NPM
@@ -61,9 +71,7 @@ clean:
 
 .PHONY: site-build
 site-build:
-	(cd site-build && git reset --hard && git checkout master && rm -rf `ls`)
 	node site/build.js
-	mv /tmp/site-build/* site-build/
 
 .PHONY: update-examples
 update-examples:
