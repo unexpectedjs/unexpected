@@ -3,7 +3,7 @@ REPORTER = dot
 TARGETS ?= unexpected.js
 
 lint:
-	@./node_modules/.bin/jshint lib/*.js test/*.js
+	@./node_modules/.bin/jshint --exclude test/documentation.spec.js lib/*.js test/*.js
 
 .PHONY: lint
 
@@ -25,6 +25,8 @@ coverage: lib/*
 	NODE_ENV=development ./node_modules/.bin/istanbul cover \
 		-x unexpected.js \
 		-x **/vendor/** \
+		-x **/site/** \
+		-x **/documentation/** \
 	--include-all-sources ./node_modules/mocha/bin/_mocha -- --reporter dot
 
 .PHONY: test-browser
@@ -41,8 +43,11 @@ ifneq ($(shell git describe --always --dirty | grep -- -dirty),)
 endif
 
 .PHONY: release-%
-release-%: git-dirty-check lint ${TARGETS} test-phantomjs
-	git add unexpected.js && git commit -m "Build unexpected.js"
+release-%: site-build git-dirty-check lint ${TARGETS} test-phantomjs
+	if [ "`git status --porcelain site-build`" != "" ]; then \
+		(cd site-build && git add -A . && git commit -m "Updated site" && git push origin master) ; \
+	fi
+	git add unexpected.js site-build && git commit -m "Build unexpected.js and site"
 	npm version $*
 	@echo $* release ready to be publised to NPM
 	@echo Remember to push tags
@@ -50,3 +55,11 @@ release-%: git-dirty-check lint ${TARGETS} test-phantomjs
 .PHONY: clean
 clean:
 	-rm -fr ${TARGETS} coverage
+
+site-build: $(shell find ./documentation/ -type f) $(shell find ./site/ -type f)
+	-rm -fr site-build
+	node site/build.js
+
+.PHONY: update-examples
+update-examples:
+	node site/update-examples.js

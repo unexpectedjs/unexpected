@@ -182,6 +182,22 @@ describe('unexpected', function () {
             expect('', 'to be defined');
         });
 
+        it('NaN as equal to NaN', function () {
+            expect(NaN, 'to be', NaN);
+        });
+
+        it('considers negative zero not to be zero', function () {
+            expect(-0, 'not to be', 0);
+        });
+
+        it('considers negative zero to be itself', function () {
+            expect(-0, 'to be', -0);
+        });
+
+        it('considers zero to be itself', function () {
+            expect(0, 'to be', 0);
+        });
+
         it.skipIf(typeof Buffer === 'undefined', 'asserts === equality for Buffers', function () {
             var buffer = new Buffer([0x45, 0x59]);
             expect(buffer, 'to be', buffer);
@@ -330,6 +346,22 @@ describe('unexpected', function () {
             expect(new Error('foo'), 'to equal', new Error('foo'));
         });
 
+        it('treats NaN as equal to NaN', function () {
+            expect(NaN, 'to equal', NaN);
+        });
+
+        it('treats negative zero and zero as unequal', function () {
+            expect(-0, 'not to equal', 0);
+        });
+
+        it('treats negative zero as equal to itself', function () {
+            expect(-0, 'to equal', -0);
+        });
+
+        it('treats zero as equal to itself', function () {
+            expect(0, 'to equal', 0);
+        });
+
         it('treats an arguments object as different from an array', function () {
             (function () {
                 expect(arguments, 'not to equal', ['foo', 'bar', 'baz']);
@@ -460,7 +492,6 @@ describe('unexpected', function () {
                    "[\n" +
                    "  1 // should equal 2\n" +
                    "]");
-
 
             expect(function () {
                 expect([0, { foo: 'bar' }, 1, { bar: 'bar'}, [1, 3, 2], 'bar'],
@@ -803,7 +834,6 @@ describe('unexpected', function () {
         it('tests that the subject matches the given regular expression', function () {
             expect('test', 'to match', /.*st/);
             expect('test', 'not to match', /foo/);
-            expect(null, 'not to match', /foo/);
         });
 
         it('does not keep state between invocations', function () {
@@ -830,15 +860,6 @@ describe('unexpected', function () {
                    '\n' +
                    'barfooquuxfoobaz');
         });
-
-        it('does not fail when building a diff and the subject is not a string', function () {
-            expect(function () {
-                expect(123, 'not to match', /^12/);
-            }, 'to throw',
-                   "expected 123 not to match /^12/\n" +
-                   '\n' +
-                   '123');
-        });
     });
 
     describe('contain assertion', function () {
@@ -864,7 +885,7 @@ describe('unexpected', function () {
                 expect(null, 'not to contain', 'world');
             }, 'to throw',
                    'The assertion "not to contain" is not defined for the type "null",\n' +
-                   'but it is defined for these types: "string", "arrayLike"');
+                   'but it is defined for these types: "string", "array-like"');
 
             expect(function () {
                 expect('hello world', 'to contain', 'foo');
@@ -886,7 +907,7 @@ describe('unexpected', function () {
                 expect(1, 'to contain', 1);
             }, 'to throw exception',
                    'The assertion "to contain" is not defined for the type "number",\n' +
-                   'but it is defined for these types: "string", "arrayLike"');
+                   'but it is defined for these types: "string", "array-like"');
         });
 
         it('produces a diff when the array case fails and the not flag is on', function () {
@@ -917,7 +938,9 @@ describe('unexpected', function () {
             expect([], 'to have length', 0);
             expect([1, 2, 3], 'to have length', 3);
             expect([1, 2, 3], 'not to have length', 4);
-            expect({ length: 4 }, 'to have length', 4);
+            expect((function () {
+                return arguments;
+            }(1,2,3,4)), 'to have length', 4);
         });
 
         it('asserts string .length', function () {
@@ -949,17 +972,21 @@ describe('unexpected', function () {
         it('throws when the assertion fails', function () {
             expect(function () {
                 expect([1, 2], 'to have length', 3);
-            }, 'to throw exception', "expected [ 1, 2 ] to have length 3");
+            }, 'to throw exception',
+                   "expected [ 1, 2 ] to have length 3\n" +
+                   "  expected 2 to be 3");
 
             expect(function () {
                 expect(null, 'to have length', 4);
             }, 'to throw exception',
                    'The assertion "to have length" is not defined for the type "null",\n' +
-                   'but it is defined for these types: "string", "object"');
+                   'but it is defined for these types: "string", "array-like"');
 
             expect(function () {
-                expect({ length: 'foo' }, 'to have length', 4);
-            }, 'to throw exception', "Assertion 'to have length' only supports array like objects");
+                expect({ length: 4 }, 'to have length', 4);
+            }, 'to throw exception',
+                   'The assertion "to have length" is not defined for the type "object",\n' +
+                   'but it is defined for these types: "string", "array-like"');
         });
     });
 
@@ -1105,20 +1132,13 @@ describe('unexpected', function () {
                    "}");
         });
 
-        it('asserts absence and values of an object of properties', function () {
-            expect({a: 'foo', b: 'bar'}, 'not to have properties', {c: 'baz', d: 'qux'});
-            expect(function () {
-                expect({a: 'foo', b: 'bar'}, 'not to have properties', {a: 'foo', c: 'baz'});
-            }, 'to throw', "expected { a: 'foo', b: 'bar' } not to have properties { a: 'foo', c: 'baz' }");
-        });
-
         it('asserts absence and values of an object of own properties', function () {
             var obj = create({a: 'foo', b: 'bar'});
             expect(obj, 'to have properties', {a: 'foo', b: 'bar'});
-            expect(obj, 'not to have own properties', {a: 'foo', b: 'bar'});
+            expect(obj, 'not to have own properties', ['a', 'b']);
             expect(function () {
-                expect({a: 'foo', b: 'bar'}, 'not to have own properties', {a: 'foo', b: 'bar'}); // should fail
-            }, 'to throw', "expected { a: 'foo', b: 'bar' } not to have own properties { a: 'foo', b: 'bar' }");
+                expect({a: 'foo', b: 'bar'}, 'not to have own properties', ['a', 'b']); // should fail
+            }, 'to throw', "expected { a: 'foo', b: 'bar' } not to have own properties [ 'a', 'b' ]");
         });
 
         it('includes prototype properties in the actual property (#48)', function () {
@@ -1155,16 +1175,19 @@ describe('unexpected', function () {
             expect(function () {
                 expect({a: 'foo', b: 'bar'}, 'to have properties', 'a', 'b');
             }, 'to throw', "Assertion 'to have properties' only supports input in the form of an Array or an Object.");
+
+            expect(function () {
+                expect({a: 'foo', b: 'bar'}, 'not to have properties', {a: 'foo', b: 'bar'});
+            }, 'to throw', "Assertion 'not to have properties' only supports input in the form of an Array.");
         });
     });
 
     describe('empty assertion', function () {
-        it('asserts presence of an own property (and value optionally)', function () {
+        it('asserts the array-like objects have a non-zero length', function () {
             expect([], 'to be empty');
             expect('', 'to be empty');
-            expect({}, 'to be empty');
-            expect({ length: 0, duck: 'typing' }, 'to be empty');
             expect([1, 2, 3], 'not to be empty');
+            expect('foobar', 'not to be empty');
             expect([1, 2, 3], 'to be non-empty');
         });
 
@@ -1181,7 +1204,7 @@ describe('unexpected', function () {
                 expect(null, 'to be empty');
             }, 'to throw exception',
                    'The assertion "to be empty" is not defined for the type "null",\n' +
-                   'but it is defined for these types: "string", "object"');
+                   'but it is defined for these types: "string", "array-like"');
         });
     });
 
@@ -1436,7 +1459,7 @@ describe('unexpected', function () {
         it('throws an error', function () {
             expect(function () {
                 expect.fail();
-            }, 'to throw exception', "explicit failure");
+            }, 'to throw exception', "Explicit failure");
         });
 
         it('sets the error message', function () {
@@ -1445,7 +1468,7 @@ describe('unexpected', function () {
                 expect.fail('fail with error message');
             } catch (e) {
                 wasCaught = true;
-                expect(e.message, 'to equal', '\nfail with error message');
+                expect(e.message, 'to contain', 'fail with error message');
             }
             expect(wasCaught, 'to be true');
         });
@@ -1459,7 +1482,7 @@ describe('unexpected', function () {
         it('supports placeholders', function () {
             expect(function () {
                 expect.fail('{0} was expected to be {1}', 0, 'zero');
-            }, 'to throw exception', "0 was expected to be zero");
+            }, 'to throw exception', "0 was expected to be 'zero'");
 
             expect(function () {
                 var output = expect.output.clone().text('zero');
@@ -1515,7 +1538,7 @@ describe('unexpected', function () {
                    "\n" +
                    "{\n" +
                    "  foo: 'foo' // expected 'foo' not to match /oo/\n" +
-                   "             // \n" +
+                   "             //\n" +
                    "             // foo\n" +
                    "}");
         });
@@ -2064,7 +2087,7 @@ describe('unexpected', function () {
                 expect(42, 'to be an array whose items satisfy', function (item) {});
             }, 'to throw',
                    'The assertion "to be an array whose items satisfy" is not defined for the type "number",\n' +
-                   'but it is defined for the type "arrayLike"');
+                   'but it is defined for the type "array-like"');
         });
 
         it('supports the non-empty clause', function () {
@@ -2298,7 +2321,8 @@ describe('unexpected', function () {
                 });
             }, 'to throw',
                    "failed expectation on keys foo, bar, baz, qux, quux:\n" +
-                   "  quux: expected 'quux' to have length 3");
+                   "  quux: expected 'quux' to have length 3\n" +
+                   "          expected 4 to be 3");
         });
     });
 
@@ -3145,6 +3169,14 @@ describe('unexpected', function () {
                 expect(NaN, 'to inspect as', 'NaN');
             });
 
+            it('renders zero correctly', function () {
+                expect(0, 'to inspect as', '0');
+            });
+
+            it('renders negative zero correctly', function () {
+                expect(-0, 'to inspect as', '-0');
+            });
+
             it('renders Infinity correctly', function () {
                 expect(Infinity, 'to inspect as', 'Infinity');
             });
@@ -3298,7 +3330,11 @@ describe('unexpected', function () {
                    "    circular: { self: [Circular] },\n" +
                    "    this: {\n" +
                    "      is: {\n" +
-                   "        deeply: { nested: ..., string: 'should be shown', 'a list': ... },\n" +
+                   "        deeply: {\n" +
+                   "          nested: ...,\n" +
+                   "          string: 'should be shown',\n" +
+                   "          'a list': ...\n" +
+                   "        },\n" +
                    "        'a list': [...]\n" +
                    "      }\n" +
                    "    }\n" +
@@ -3485,6 +3521,7 @@ describe('unexpected', function () {
                        "or\n" +
                        "✓ expected 'foobarbaz' to be a string and\n" +
                        "⨯ expected 'foobarbaz' to have length 6\n" +
+                       "    expected 9 to be 6\n" +
                        "or\n" +
                        "⨯ expected 'foobarbaz' to be an array");
             });

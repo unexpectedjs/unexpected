@@ -1,0 +1,16 @@
+<nav id="assertion-menu" class="sidebar js-remember-scroll-position">
+    <ul>
+        <% Object.keys(assertionsByType).sort().forEach(function (type) { %>
+        <li>
+            <h3><%= type %></h3>
+            <ul>
+                <% assertionsByType[type].forEach(function (assertion) { %>
+                <li class="<%= '/' + path + '/' === assertion.url ? 'active' : '' %>">
+                    <a href="<%= relative(assertion.url) %>"><%= assertion.title %></a>
+                </li>
+                <% }) %>
+            </ul>
+        </li>
+        <% }) %>
+    </ul>
+</nav>
