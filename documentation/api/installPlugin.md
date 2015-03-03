@@ -34,7 +34,7 @@ to extend the instance.
 expect.installPlugin(require('unexpected-sinon'));
 ```
 
-Notice that it is usually a good idea to [clone](/api/clone) the instance before
+Notice that it is usually a good idea to [clone](../clone) the instance before
 extending it.
 
 ## Example
