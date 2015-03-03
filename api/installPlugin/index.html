@@ -1,0 +1,144 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0">
+    <link rel="stylesheet" href="../../static/normalize.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../../static/main.css" type="text/css" media="screen" />
+    <title>installPlugin</title>
+</head>
+<body class="sidebar-hidden has-sidebar">
+    <header>
+        <div class="logo-icon"></div>
+        <nav>
+            <ul>
+                <li class="menu-toggle-item">
+                    <button class="menu-toggle" onclick="toggleSidebar()"></button>
+                </li>
+                <li class=""><a href="../..">Unexpected</a></li>
+                <li class=""><a href="../../assertions/any/to-be-a">Assertions</a></li>
+                <li class="active"><a href="../addAssertion">API</a></li>
+            </ul>
+        </nav>
+    </header>
+
+<section id="api">
+    <nav id="api-menu" class="sidebar js-remember-scroll-position">
+    <ul>
+        
+        <li class="">
+            <a href="../addAssertion">addAssertion</a>
+        </li>
+        
+        <li class="">
+            <a href="../addType">addType</a>
+        </li>
+        
+        <li class="">
+            <a href="../clone">clone</a>
+        </li>
+        
+        <li class="">
+            <a href="../fail">fail</a>
+        </li>
+        
+        <li class="active">
+            <a href="">installPlugin</a>
+        </li>
+        
+        <li class="">
+            <a href="../toString">toString</a>
+        </li>
+        
+    </ul>
+</nav>
+
+    <div class="main">
+        <div class="content">
+            <h2 id="plugins">Plugins</h2>
+<p>Unexpected is build on an extensible core. Every assertion, type and
+output style provided by the core library is implemented by extending
+the core. Plugins can make use of the exact same extension methods to
+provide new and exciting assertion capabilities.</p>
+<h2 id="expect-installplugin-typedefinition-">expect.installPlugin(typeDefinition)</h2>
+<p>Unexpected plugins are objects that adhere to the following interface:</p>
+<p>Required members:</p>
+<ul>
+<li><strong>name</strong>: <code>String</code> - the name of the plugin.</li>
+</ul>
+<p>Optional members:</p>
+<ul>
+<li><strong>dependencies</strong>: <code>String array</code> - a list of dependencies.</li>
+<li><strong>installInto</strong>: <code>function(expect)</code> - a function that will update the given expect instance.</li>
+</ul>
+<p>The name of the plugin should be the same as the NPM package name.</p>
+<p>A plugin can require a list of other plugins to be installed prior to
+installation of the plugin. If the dependency list is not fulfilled
+the installation will fail. The idea is that you manage your plugin
+versions using NPM. If you install a plugin that is already installed
+nothing will happen.</p>
+<p>The <code>installInto</code> function receives an instance of unexpected and uses
+the <code>addAssertion</code>, <code>addStyle</code>, <code>installTheme</code> and <code>addType</code> methods
+to extend the instance.</p>
+<div class="code lang-javascript">
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">installPlugin</span><span style="color: #000000">(</span><span style="color: #000000">require</span><span style="color: #000000">(</span><span style="color: #df5000">'unexpected-sinon'</span><span style="color: #000000">));</span></div>
+</div><p>Notice that it is usually a good idea to <a href="/api/clone">clone</a> the instance before
+extending it.</p>
+<h2 id="example">Example</h2>
+<p>Let&#39;s say we wanted first class support for a integer intervals and
+provide as a plugin.</p>
+<p>An interger interval is defined the following way:</p>
+<div class="code lang-javascript">
+  <div><span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">IntegerInterval</span><span style="color: #000000">(</span>from<span style="color: #000000">,</span>&nbsp;to<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #0086b3">this</span><span style="color: #000000">.</span>from&nbsp;<span style="color: #a71d5d">=</span>&nbsp;from<span style="color: #000000">;</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #0086b3">this</span><span style="color: #000000">.</span>to&nbsp;<span style="color: #a71d5d">=</span>&nbsp;to<span style="color: #000000">;</span></div>
+  <div><span style="color: #000000">}</span></div>
+</div><p>Now we will define an example plugin that will add support for this type:</p>
+<div class="code lang-javascript">
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">installPlugin</span><span style="color: #000000">({</span></div>
+  <div>&nbsp;&nbsp;name<span style="color: #000000">:</span>&nbsp;<span style="color: #df5000">'unexpected-integer-intervals'</span><span style="color: #000000">,</span></div>
+  <div>&nbsp;&nbsp;installInto<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">(</span>expect<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">addType</span><span style="color: #000000">({</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;name<span style="color: #000000">:</span>&nbsp;<span style="color: #df5000">'IntegerInterval'</span><span style="color: #000000">,</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;base<span style="color: #000000">:</span>&nbsp;<span style="color: #df5000">'object'</span><span style="color: #000000">,</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;identify<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">(</span>value<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #0086b3">return</span>&nbsp;value&nbsp;&amp;&amp;&nbsp;value&nbsp;<span style="color: #0086b3">instanceof</span>&nbsp;IntegerInterval<span style="color: #000000">;</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">},</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inspect<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">(</span>value<span style="color: #000000">,</span>&nbsp;depth<span style="color: #000000">,</span>&nbsp;output<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;output<span style="color: #000000">.</span><span style="color: #000000">text</span><span style="color: #000000">(</span><span style="color: #df5000">'['</span><span style="color: #000000">).</span><span style="color: #000000">jsNumber</span><span style="color: #000000">(</span>value<span style="color: #000000">.</span>from<span style="color: #000000">).</span><span style="color: #000000">text</span><span style="color: #000000">(</span><span style="color: #df5000">','</span><span style="color: #000000">).</span><span style="color: #000000">jsNumber</span><span style="color: #000000">(</span>value<span style="color: #000000">.</span>to<span style="color: #000000">).</span><span style="color: #000000">text</span><span style="color: #000000">(</span><span style="color: #df5000">']'</span><span style="color: #000000">);</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">}</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">});</span></div>
+  <div>&nbsp;</div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span><span style="color: #df5000">'[not]&nbsp;to&nbsp;contain'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">(</span>expect<span style="color: #000000">,</span>&nbsp;subject<span style="color: #000000">,</span>&nbsp;value<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>value<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'[not]&nbsp;to&nbsp;be&nbsp;within'</span><span style="color: #000000">,</span>&nbsp;subject<span style="color: #000000">.</span>from<span style="color: #000000">,</span>&nbsp;subject<span style="color: #000000">.</span>to<span style="color: #000000">);</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">});</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #000000">}</span></div>
+  <div><span style="color: #000000">})</span></div>
+</div><p>After installing the plugin we can use the <code>to contain</code> assertion on
+<code>IntegerInterval</code> instances.</p>
+<div class="code lang-javascript">
+  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #0086b3">new</span>&nbsp;IntegerInterval<span style="color: #000000">(</span><span style="color: #0086b3">7</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">13</span><span style="color: #000000">),</span>&nbsp;<span style="color: #df5000">'to&nbsp;contain'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">9</span><span style="color: #000000">);</span></div>
+</div><p>and we get improved output when the assertion fails:</p>
+<div class="code lang-javascript">
+  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #0086b3">new</span>&nbsp;IntegerInterval<span style="color: #000000">(</span><span style="color: #0086b3">7</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">13</span><span style="color: #000000">),</span>&nbsp;<span style="color: #df5000">'to&nbsp;contain'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">27</span><span style="color: #000000">);</span></div>
+</div><div class="output">
+  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;[<span style="color: #0086b3">7</span>,<span style="color: #0086b3">13</span>]&nbsp;<span style="color: red; font-weight: bold">to&nbsp;contain</span>&nbsp;<span style="color: #0086b3">27</span></div>
+</div><!-- TODO create a plugin page -->
+<p>For more inspiration you can look at the source for one of the
+following plugins:</p>
+<ul>
+<li><a href="https://github.com/unexpectedjs/unexpected-knockout">unexpected-knockout</a></li>
+<li><a href="https://github.com/unexpectedjs/unexpected-sinon">unexpected-sinon</a></li>
+<li><a href="https://github.com/unexpectedjs/unexpected-express">unexpected-express</a></li>
+<li><a href="https://github.com/unexpectedjs/unexpected-mitm">unexpected-mitm</a></li>
+</ul>
+
+        </div>
+    </div>
+</section>
+<script type="text/javascript" src="../../static/toggleSidebar.js"></script>
+<script type="text/javascript" src="../../static/rememberScrollPosition.js"></script>
+</body>
+</html>
+

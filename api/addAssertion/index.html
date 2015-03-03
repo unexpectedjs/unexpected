@@ -1,0 +1,254 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0">
+    <link rel="stylesheet" href="../../static/normalize.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../../static/main.css" type="text/css" media="screen" />
+    <title>addAssertion</title>
+</head>
+<body class="sidebar-hidden has-sidebar">
+    <header>
+        <div class="logo-icon"></div>
+        <nav>
+            <ul>
+                <li class="menu-toggle-item">
+                    <button class="menu-toggle" onclick="toggleSidebar()"></button>
+                </li>
+                <li class=""><a href="../..">Unexpected</a></li>
+                <li class=""><a href="../../assertions/any/to-be-a">Assertions</a></li>
+                <li class="active"><a href="">API</a></li>
+            </ul>
+        </nav>
+    </header>
+
+<section id="api">
+    <nav id="api-menu" class="sidebar js-remember-scroll-position">
+    <ul>
+        
+        <li class="active">
+            <a href="">addAssertion</a>
+        </li>
+        
+        <li class="">
+            <a href="../addType">addType</a>
+        </li>
+        
+        <li class="">
+            <a href="../clone">clone</a>
+        </li>
+        
+        <li class="">
+            <a href="../fail">fail</a>
+        </li>
+        
+        <li class="">
+            <a href="../installPlugin">installPlugin</a>
+        </li>
+        
+        <li class="">
+            <a href="../toString">toString</a>
+        </li>
+        
+    </ul>
+</nav>
+
+    <div class="main">
+        <div class="content">
+            <h2 id="expect-addassertion-typename-pattern-handler-">expect.addAssertion([typeName, ...], [pattern, ...], handler)</h2>
+<p>Signature:</p>
+<div class="code lang-javascript">
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span>pattern<span style="color: #000000">,</span>&nbsp;handler<span style="color: #000000">);</span></div>
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">([</span>pattern<span style="color: #000000">,</span>&nbsp;<span style="color: #000000">...]],</span>&nbsp;handler<span style="color: #000000">);</span></div>
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span>typeName<span style="color: #000000">,</span>&nbsp;pattern<span style="color: #000000">,</span>&nbsp;handler<span style="color: #000000">);</span></div>
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span>typeName<span style="color: #000000">,</span>&nbsp;<span style="color: #000000">[</span>pattern<span style="color: #000000">,</span>&nbsp;<span style="color: #000000">...],</span>&nbsp;handler<span style="color: #000000">);</span></div>
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">([</span>typeName<span style="color: #000000">,</span>&nbsp;<span style="color: #000000">...],</span>&nbsp;pattern<span style="color: #000000">,</span>&nbsp;handler<span style="color: #000000">);</span></div>
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">([</span>typeName<span style="color: #000000">,</span>&nbsp;<span style="color: #000000">...],</span>&nbsp;<span style="color: #000000">[</span>pattern<span style="color: #000000">,</span>&nbsp;<span style="color: #000000">...],</span>&nbsp;handler<span style="color: #000000">);</span></div>
+</div><p>New assertions can be added to Unexpected to following way.</p>
+<div class="code lang-javascript">
+  <div><span style="color: #0086b3">var</span>&nbsp;errorMode&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #df5000">'default'</span><span style="color: #000000">;</span><span style="color: #969896">&nbsp;//&nbsp;use&nbsp;to&nbsp;control&nbsp;the&nbsp;error&nbsp;mode&nbsp;later&nbsp;in&nbsp;the&nbsp;example</span></div>
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span><span style="color: #df5000">'array'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'[not]&nbsp;to&nbsp;be&nbsp;(sorted|ordered)'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">function</span><span style="color: #000000">(</span>expect<span style="color: #000000">,</span>&nbsp;subject<span style="color: #000000">,</span>&nbsp;cmp<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #0086b3">this</span><span style="color: #000000">.</span>errorMode&nbsp;<span style="color: #a71d5d">=</span>&nbsp;errorMode<span style="color: #000000">;</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>subject<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'[not]&nbsp;to&nbsp;equal'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #000000">[].</span><span style="color: #000000">concat</span><span style="color: #000000">(</span>subject<span style="color: #000000">).</span><span style="color: #000000">sort</span><span style="color: #000000">(</span>cmp<span style="color: #000000">));</span></div>
+  <div><span style="color: #000000">});</span></div>
+</div><p>The above assertion definition makes the following expects possible:</p>
+<div class="code lang-javascript">
+  <div><span style="color: #000000">expect</span><span style="color: #000000">([</span><span style="color: #0086b3">1</span><span style="color: #000000">,</span><span style="color: #0086b3">2</span><span style="color: #000000">,</span><span style="color: #0086b3">3</span><span style="color: #000000">],</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;sorted'</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #000000">expect</span><span style="color: #000000">([</span><span style="color: #0086b3">1</span><span style="color: #000000">,</span><span style="color: #0086b3">2</span><span style="color: #000000">,</span><span style="color: #0086b3">3</span><span style="color: #000000">],</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;ordered'</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #000000">expect</span><span style="color: #000000">([</span><span style="color: #0086b3">2</span><span style="color: #000000">,</span><span style="color: #0086b3">1</span><span style="color: #000000">,</span><span style="color: #0086b3">3</span><span style="color: #000000">],</span>&nbsp;<span style="color: #df5000">'not&nbsp;to&nbsp;be&nbsp;sorted'</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #000000">expect</span><span style="color: #000000">([</span><span style="color: #0086b3">2</span><span style="color: #000000">,</span><span style="color: #0086b3">1</span><span style="color: #000000">,</span><span style="color: #0086b3">3</span><span style="color: #000000">],</span>&nbsp;<span style="color: #df5000">'not&nbsp;to&nbsp;be&nbsp;ordered'</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #000000">expect</span><span style="color: #000000">([</span><span style="color: #0086b3">3</span><span style="color: #000000">,</span><span style="color: #0086b3">2</span><span style="color: #000000">,</span><span style="color: #0086b3">1</span><span style="color: #000000">],</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;sorted'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">(</span>x<span style="color: #000000">,</span>&nbsp;y<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span>&nbsp;<span style="color: #0086b3">return</span>&nbsp;y&nbsp;<span style="color: #a71d5d">-</span>&nbsp;x<span style="color: #000000">;</span>&nbsp;<span style="color: #000000">});</span></div>
+</div><p>Let&#39;s dissect the different parts of the custom assertion we just
+introduced.</p>
+<p>The first parameter to <code>addAssertion</code> is a string or an array
+specifying which types the assertion should be defined on. In this
+case the assertion in only defined for arrays. In case the type is not
+specified the assertion will be defined for the type <code>any</code>, and would
+be applicable any type. See the <code>Extending Unexpected with new types</code>
+section for more information about the type system in Unexpected.</p>
+<p>The second parameter to <code>addAssertion</code> is a string or an array stating
+the patterns this assertion should match. A pattern has the following
+syntax. A word in square brackets represents a flag that can either be
+there or not. If the flag is present <code>this.flags[flag]</code> will contain
+the value <code>true</code>. In this case <code>not</code> is a flag. When a flag it present
+in a nested <code>expect</code> it will be inserted if the flag is present;
+otherwise it will be removed. Text that is in parentheses with
+vertical bars between them are treated as alternative texts that can
+be used. In this case you can write <em>ordered</em> as an alternative to
+<em>sorted</em>.</p>
+<p>The last parameter to <code>addAssertion</code> is function that will be called
+when <code>expect</code> is invoked with an expectation matching the type and
+pattern of the assertion.</p>
+<p>So in this case, when <code>expect</code> is called the following way:</p>
+<div class="code lang-javascript">
+  <div><span style="color: #000000">expect</span><span style="color: #000000">([</span><span style="color: #0086b3">3</span><span style="color: #000000">,</span><span style="color: #0086b3">2</span><span style="color: #000000">,</span><span style="color: #0086b3">1</span><span style="color: #000000">],</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;sorted'</span><span style="color: #000000">,</span>&nbsp;reverse<span style="color: #000000">);</span></div>
+</div><p>The handler to our assertion will be called with the values the
+following way, where the <em>not</em> flag in the nested expect will be
+removed:</p>
+<div class="code lang-javascript">
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span><span style="color: #df5000">'array'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'[not]&nbsp;to&nbsp;be&nbsp;(sorted|ordered)'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">function</span><span style="color: #000000">(</span>expect<span style="color: #000000">,</span>&nbsp;<span style="color: #000000">[</span><span style="color: #0086b3">3</span><span style="color: #000000">,</span><span style="color: #0086b3">2</span><span style="color: #000000">,</span><span style="color: #0086b3">1</span><span style="color: #000000">],</span>&nbsp;reverse<span style="color: #000000">){</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">([</span><span style="color: #0086b3">3</span><span style="color: #000000">,</span><span style="color: #0086b3">2</span><span style="color: #000000">,</span><span style="color: #0086b3">1</span><span style="color: #000000">],</span>&nbsp;<span style="color: #df5000">'[not]&nbsp;to&nbsp;equal'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #000000">[].</span><span style="color: #000000">concat</span><span style="color: #000000">([</span><span style="color: #0086b3">3</span><span style="color: #000000">,</span><span style="color: #0086b3">2</span><span style="color: #000000">,</span><span style="color: #0086b3">1</span><span style="color: #000000">]).</span><span style="color: #000000">sort</span><span style="color: #000000">(</span>reverse<span style="color: #000000">));</span></div>
+  <div><span style="color: #000000">});</span></div>
+</div><h2 id="controlling-the-output-of-nested-expects">Controlling the output of nested expects</h2>
+<p>When a call to <code>expect</code> fails inside your assertion the standard error
+message for the custom assertion will be used. In the case of our
+<em>sorted</em> assertion fails, the output will be:</p>
+<div class="code lang-javascript">
+  <div><span style="color: #000000">expect</span><span style="color: #000000">([</span>&nbsp;<span style="color: #0086b3">1</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">3</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">2</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">4</span>&nbsp;<span style="color: #000000">],</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;sorted'</span><span style="color: #000000">);</span></div>
+</div><div class="output">
+  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;[&nbsp;<span style="color: #0086b3">1</span>,&nbsp;<span style="color: #0086b3">3</span>,&nbsp;<span style="color: #0086b3">2</span>,&nbsp;<span style="color: #0086b3">4</span>&nbsp;]&nbsp;<span style="color: red; font-weight: bold">to&nbsp;be&nbsp;sorted</span></div>
+  <div>&nbsp;</div>
+  <div>[</div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #0086b3">1</span>,</div>
+</div></div>
+</div></div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #0086b3">3</span>,&nbsp;</div>
+</div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">//</span></div>
+</div>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">should&nbsp;equal</span>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #0086b3">2</span></div>
+</div></div>
+</div></div>
+</div></div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #0086b3">2</span>,&nbsp;</div>
+</div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">//</span></div>
+</div>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">should&nbsp;equal</span>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #0086b3">3</span></div>
+</div></div>
+</div></div>
+</div></div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #0086b3">4</span></div>
+</div></div>
+</div></div>
+  <div>]</div>
+</div><p>We can control the output of the nested expects by changing the
+<code>this.errorMode</code> property.</p>
+<p>If we change the error mode to <em>bubble</em>, we get the following output:</p>
+<div class="code lang-javascript">
+  <div>errorMode&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #df5000">'bubble'</span><span style="color: #000000">;</span></div>
+  <div><span style="color: #000000">expect</span><span style="color: #000000">([</span>&nbsp;<span style="color: #0086b3">1</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">3</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">2</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">4</span>&nbsp;<span style="color: #000000">],</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;sorted'</span><span style="color: #000000">);</span></div>
+</div><div class="output">
+  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;[&nbsp;<span style="color: #0086b3">1</span>,&nbsp;<span style="color: #0086b3">3</span>,&nbsp;<span style="color: #0086b3">2</span>,&nbsp;<span style="color: #0086b3">4</span>&nbsp;]&nbsp;<span style="color: red; font-weight: bold">to&nbsp;equal</span>&nbsp;[&nbsp;<span style="color: #0086b3">1</span>,&nbsp;<span style="color: #0086b3">2</span>,&nbsp;<span style="color: #0086b3">3</span>,&nbsp;<span style="color: #0086b3">4</span>&nbsp;]</div>
+  <div>&nbsp;</div>
+  <div>[</div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #0086b3">1</span>,</div>
+</div></div>
+</div></div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #0086b3">3</span>,&nbsp;</div>
+</div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">//</span></div>
+</div>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">should&nbsp;equal</span>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #0086b3">2</span></div>
+</div></div>
+</div></div>
+</div></div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #0086b3">2</span>,&nbsp;</div>
+</div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">//</span></div>
+</div>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">should&nbsp;equal</span>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #0086b3">3</span></div>
+</div></div>
+</div></div>
+</div></div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #0086b3">4</span></div>
+</div></div>
+</div></div>
+  <div>]</div>
+</div><p>If we change the error mode to <em>nested</em>, we get the following output:</p>
+<div class="code lang-javascript">
+  <div>errorMode&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #df5000">'nested'</span><span style="color: #000000">;</span></div>
+  <div><span style="color: #000000">expect</span><span style="color: #000000">([</span>&nbsp;<span style="color: #0086b3">1</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">3</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">2</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">4</span>&nbsp;<span style="color: #000000">],</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;sorted'</span><span style="color: #000000">);</span></div>
+</div><div class="output">
+  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;[&nbsp;<span style="color: #0086b3">1</span>,&nbsp;<span style="color: #0086b3">3</span>,&nbsp;<span style="color: #0086b3">2</span>,&nbsp;<span style="color: #0086b3">4</span>&nbsp;]&nbsp;<span style="color: red; font-weight: bold">to&nbsp;be&nbsp;sorted</span></div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;[&nbsp;<span style="color: #0086b3">1</span>,&nbsp;<span style="color: #0086b3">3</span>,&nbsp;<span style="color: #0086b3">2</span>,&nbsp;<span style="color: #0086b3">4</span>&nbsp;]&nbsp;<span style="color: red; font-weight: bold">to&nbsp;equal</span>&nbsp;[&nbsp;<span style="color: #0086b3">1</span>,&nbsp;<span style="color: #0086b3">2</span>,&nbsp;<span style="color: #0086b3">3</span>,&nbsp;<span style="color: #0086b3">4</span>&nbsp;]</div>
+  <div>&nbsp;</div>
+  <div>[</div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #0086b3">1</span>,</div>
+</div></div>
+</div></div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #0086b3">3</span>,&nbsp;</div>
+</div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">//</span></div>
+</div>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">should&nbsp;equal</span>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #0086b3">2</span></div>
+</div></div>
+</div></div>
+</div></div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #0086b3">2</span>,&nbsp;</div>
+</div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">//</span></div>
+</div>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">should&nbsp;equal</span>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #0086b3">3</span></div>
+</div></div>
+</div></div>
+</div></div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #0086b3">4</span></div>
+</div></div>
+</div></div>
+  <div>]</div>
+</div></div>
+</div><p>The best resource for learning more about custom assertions is to look
+at how the predefined assertions are built:</p>
+<p><a href="https://github.com/unexpectedjs/unexpected/blob/master/lib/assertions.js">lib/assertions.js</a></p>
+
+        </div>
+    </div>
+</section>
+<script type="text/javascript" src="../../static/toggleSidebar.js"></script>
+<script type="text/javascript" src="../../static/rememberScrollPosition.js"></script>
+</body>
+</html>
+

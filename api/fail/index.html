@@ -1,0 +1,103 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0">
+    <link rel="stylesheet" href="../../static/normalize.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../../static/main.css" type="text/css" media="screen" />
+    <title>fail</title>
+</head>
+<body class="sidebar-hidden has-sidebar">
+    <header>
+        <div class="logo-icon"></div>
+        <nav>
+            <ul>
+                <li class="menu-toggle-item">
+                    <button class="menu-toggle" onclick="toggleSidebar()"></button>
+                </li>
+                <li class=""><a href="../..">Unexpected</a></li>
+                <li class=""><a href="../../assertions/any/to-be-a">Assertions</a></li>
+                <li class="active"><a href="../addAssertion">API</a></li>
+            </ul>
+        </nav>
+    </header>
+
+<section id="api">
+    <nav id="api-menu" class="sidebar js-remember-scroll-position">
+    <ul>
+        
+        <li class="">
+            <a href="../addAssertion">addAssertion</a>
+        </li>
+        
+        <li class="">
+            <a href="../addType">addType</a>
+        </li>
+        
+        <li class="">
+            <a href="../clone">clone</a>
+        </li>
+        
+        <li class="active">
+            <a href="">fail</a>
+        </li>
+        
+        <li class="">
+            <a href="../installPlugin">installPlugin</a>
+        </li>
+        
+        <li class="">
+            <a href="../toString">toString</a>
+        </li>
+        
+    </ul>
+</nav>
+
+    <div class="main">
+        <div class="content">
+            <h2 id="expect-fail-">expect.fail(...)</h2>
+<p>Explicitly forces failure.</p>
+<div class="code lang-javascript">
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">fail</span><span style="color: #000000">()</span></div>
+</div><div class="output">
+  <div><span style="color: red; font-weight: bold">Explicit&nbsp;failure</span></div>
+</div><div class="code lang-javascript">
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">fail</span><span style="color: #000000">(</span><span style="color: #df5000">'Custom&nbsp;failure&nbsp;message'</span><span style="color: #000000">)</span></div>
+</div><div class="output">
+  <div><span style="color: red; font-weight: bold">Custom&nbsp;failure&nbsp;message</span></div>
+</div><div class="code lang-javascript">
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">fail</span><span style="color: #000000">(</span><span style="color: #df5000">'{0}&nbsp;was&nbsp;expected&nbsp;to&nbsp;be&nbsp;{1}'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">0</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'zero'</span><span style="color: #000000">);</span></div>
+</div><div class="output">
+  <div><span style="color: #0086b3">0</span><span style="color: red; font-weight: bold">&nbsp;was&nbsp;expected&nbsp;to&nbsp;be&nbsp;</span><span style="color: #df5000">'zero'</span></div>
+</div><p>I case you want to rethrow an error, you should always use
+<code>expect.fail</code>, as it ensures that the error message will be correct
+for the different error modes.</p>
+<div class="code lang-javascript">
+  <div><span style="color: #0086b3">var</span>&nbsp;error&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #0086b3">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'throw&nbsp;me'</span><span style="color: #000000">);</span></div>
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">fail</span><span style="color: #000000">(</span><span style="color: #0086b3">new</span>&nbsp;Error<span style="color: #000000">(</span>error<span style="color: #000000">));</span></div>
+</div><div class="output">
+  <div><span style="color: red; font-weight: bold">Error:&nbsp;throw&nbsp;me</span></div>
+</div><p>When you want to build a completely custom output, you can call
+<code>expect.fail</code> with a callback and receive a
+<a href="https://github.com/sunesimonsen/magicpen">magicpen</a> instance that the
+output can be written to.</p>
+<div class="code lang-javascript">
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">fail</span><span style="color: #000000">(</span><span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">(</span>output<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #df5000">'You&nbsp;have&nbsp;been&nbsp;a&nbsp;very&nbsp;bad&nbsp;boy!'</span><span style="color: #000000">.</span><span style="color: #000000">split</span><span style="color: #000000">(</span><span style="color: #df5000">/&nbsp;/</span><span style="color: #000000">).</span><span style="color: #000000">forEach</span><span style="color: #000000">(</span><span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">(</span>word<span style="color: #000000">,</span>&nbsp;index<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #0086b3">if</span>&nbsp;<span style="color: #000000">(</span>index&nbsp;<span style="color: #a71d5d">&gt;</span>&nbsp;<span style="color: #0086b3">0</span><span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span>&nbsp;output<span style="color: #000000">.</span><span style="color: #000000">sp</span><span style="color: #000000">();</span>&nbsp;<span style="color: #000000">}</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #0086b3">var</span>&nbsp;style&nbsp;<span style="color: #a71d5d">=</span>&nbsp;index&nbsp;<span style="color: #a71d5d">%</span>&nbsp;<span style="color: #0086b3">2</span>&nbsp;<span style="color: #a71d5d">===</span>&nbsp;<span style="color: #0086b3">0</span>&nbsp;<span style="color: #a71d5d">?</span>&nbsp;<span style="color: #df5000">'jsPrimitive'</span>&nbsp;<span style="color: #000000">:</span>&nbsp;<span style="color: #df5000">'jsString'</span><span style="color: #000000">;</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;output<span style="color: #000000">[</span>style<span style="color: #000000">](</span>word<span style="color: #000000">);</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">});</span></div>
+  <div><span style="color: #000000">});</span></div>
+</div><div class="output">
+  <div><span style="color: #0086b3">You</span>&nbsp;<span style="color: #df5000">have</span>&nbsp;<span style="color: #0086b3">been</span>&nbsp;<span style="color: #df5000">a</span>&nbsp;<span style="color: #0086b3">very</span>&nbsp;<span style="color: #df5000">bad</span>&nbsp;<span style="color: #0086b3">boy!</span></div>
+</div>
+        </div>
+    </div>
+</section>
+<script type="text/javascript" src="../../static/toggleSidebar.js"></script>
+<script type="text/javascript" src="../../static/rememberScrollPosition.js"></script>
+</body>
+</html>
+

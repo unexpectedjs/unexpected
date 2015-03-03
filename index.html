@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0">
+    <link rel="stylesheet" href="static/normalize.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="static/main.css" type="text/css" media="screen" />
+    <title>Unexpected</title>
+</head>
+<body class="sidebar-hidden">
+    <header>
+        <div class="logo-icon"></div>
+        <nav>
+            <ul>
+                <li class="menu-toggle-item">
+                    <button class="menu-toggle" onclick="toggleSidebar()"></button>
+                </li>
+                <li class="active"><a href="">Unexpected</a></li>
+                <li class=""><a href="assertions/any/to-be-a">Assertions</a></li>
+                <li class=""><a href="api/addAssertion">API</a></li>
+            </ul>
+        </nav>
+    </header>
+
+<div class="main theme-dark">
+    <div class="content">
+        <h1 id="welcome-to-unexpected">Welcome to Unexpected</h1>
+<h3 id="the-extensible-bdd-assertion-toolkit">The extensible BDD assertion toolkit</h3>
+<div class="code lang-javascript">
+  <div>expect<span style="color: #999">({</span>&nbsp;text<span style="color: #999">:</span>&nbsp;<span style="color: #3CDAFF">'f00!'</span>&nbsp;<span style="color: #999">},</span>&nbsp;<span style="color: #3CDAFF">'to&nbsp;equal'</span><span style="color: #999">,</span>&nbsp;<span style="color: #999">{</span>&nbsp;text<span style="color: #999">:</span>&nbsp;<span style="color: #3CDAFF">'foo!'</span>&nbsp;<span style="color: #999">});</span></div>
+</div><div class="output">
+  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;{&nbsp;<span style="color: #939393">text</span>:&nbsp;<span style="color: #3CDAFF">'f00!'</span>&nbsp;}&nbsp;<span style="color: red; font-weight: bold">to&nbsp;equal</span>&nbsp;{&nbsp;<span style="color: #939393">text</span>:&nbsp;<span style="color: #3CDAFF">'foo!'</span>&nbsp;}</div>
+  <div>&nbsp;</div>
+  <div>{</div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #939393">text</span>:&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #3CDAFF">'f00!'</span></div>
+</div>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">//</span></div>
+  <div><span style="color: red; font-weight: bold">//</span></div>
+  <div><span style="color: red; font-weight: bold">//</span></div>
+</div>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">should&nbsp;equal</span>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #3CDAFF">'foo!'</span></div>
+</div></div>
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red">-</span></div>
+</div><div style="display: inline-block; vertical-align: top">
+  <div><span style="background-color: red; color: black">f00</span><span style="color: red">!</span></div>
+</div></div>
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: green">+</span></div>
+</div><div style="display: inline-block; vertical-align: top">
+  <div><span style="background-color: green; color: black">foo</span><span style="color: green">!</span></div>
+</div></div>
+</div></div>
+</div></div>
+  <div>}</div>
+</div><p><a href="http://badge.fury.io/js/unexpected"><img src="https://badge.fury.io/js/unexpected.svg" alt="NPM version"></a>
+<a href="https://travis-ci.org/unexpectedjs/unexpected"><img src="https://travis-ci.org/unexpectedjs/unexpected.svg?branch=master" alt="Build Status"></a>
+<a href="https://coveralls.io/r/unexpectedjs/unexpected"><img src="https://coveralls.io/repos/unexpectedjs/unexpected/badge.svg" alt="Coverage Status"></a>
+<a href="https://david-dm.org/unexpectedjs/unexpected"><img src="https://david-dm.org/unexpectedjs/unexpected.svg" alt="Dependency Status"></a></p>
+<h2 id="features">Features</h2>
+<ul>
+<li>Extensible</li>
+<li>Fast</li>
+<li>Provides really nice error messages</li>
+<li>Helps you if you misspells assertions</li>
+<li>Compatible with all test frameworks.</li>
+<li>Node.JS ready (<code>require(&#39;unexpected&#39;)</code>).</li>
+<li>Single global with no prototype extensions or shims.</li>
+<li>Cross-browser: works on Chrome, Firefox, Safari, Opera, IE6+,
+(IE6-IE8 with <a href="https://github.com/es-shims/es5-shim">es5-shim</a>).</li>
+</ul>
+<h3 id="node">Node</h3>
+<p>Install it with NPM or add it to your <code>package.json</code>:</p>
+<div class="code lang-javascript">
+  <div>$&nbsp;npm&nbsp;install&nbsp;unexpected</div>
+</div><p>Then:</p>
+<div class="code lang-javascript">
+  <div><span style="color: #939393">var</span>&nbsp;expect&nbsp;<span style="color: #3CDAFF">=</span>&nbsp;require<span style="color: #999">(</span><span style="color: #3CDAFF">'unexpected'</span><span style="color: #999">);</span></div>
+</div><h3 id="browser">Browser</h3>
+<p>Include <code>unexpected.js</code>.</p>
+<div class="code lang-javascript">
+  <div><span style="color: #3CDAFF">&lt;</span>script&nbsp;src<span style="color: #3CDAFF">=</span><span style="color: #3CDAFF">&quot;unexpected.js&quot;</span><span style="color: #3CDAFF">&gt;&lt;/</span>script<span style="color: #3CDAFF">&gt;</span></div>
+</div><p>this will expose the expect function under the following namespace:</p>
+<div class="code lang-javascript">
+  <div><span style="color: #939393">var</span>&nbsp;expect&nbsp;<span style="color: #3CDAFF">=</span>&nbsp;weknowhow<span style="color: #999">.</span>expect<span style="color: #999">;</span></div>
+</div><h3 id="requirejs">RequireJS</h3>
+<p>Include the library with RequireJS the following way:</p>
+<div class="code lang-javascript">
+  <div>require<span style="color: #999">.</span>config<span style="color: #999">({</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;paths<span style="color: #999">:</span>&nbsp;<span style="color: #999">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unexpected<span style="color: #999">:</span>&nbsp;<span style="color: #3CDAFF">'path/to/unexpected'</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #999">}</span></div>
+  <div><span style="color: #999">});</span></div>
+  <div>&nbsp;</div>
+  <div>define<span style="color: #999">([</span><span style="color: #3CDAFF">'unexpected'</span><span style="color: #999">],</span>&nbsp;<span style="color: #939393">function</span>&nbsp;<span style="color: #999">(</span>expect<span style="color: #999">)</span>&nbsp;<span style="color: #999">{</span></div>
+  <div>&nbsp;&nbsp;<span style="color: gray">&nbsp;//&nbsp;Your&nbsp;code</span></div>
+  <div><span style="color: #999">});</span></div>
+</div><h2 id="using-unexpected-with-a-test-framework">Using Unexpected with a test framework</h2>
+<p>For example, if you create a test suite with
+<a href="http://github.com/visionmedia/mocha">mocha</a>.</p>
+<p>Let&#39;s say we wanted to test the following program:</p>
+<p><strong>math.js</strong></p>
+<div class="code lang-javascript">
+  <div><span style="color: #939393">function</span>&nbsp;add&nbsp;<span style="color: #999">(</span>a<span style="color: #999">,</span>&nbsp;b<span style="color: #999">)</span>&nbsp;<span style="color: #999">{</span>&nbsp;<span style="color: #939393">return</span>&nbsp;a&nbsp;<span style="color: #3CDAFF">+</span>&nbsp;b<span style="color: #999">;</span>&nbsp;<span style="color: #999">};</span></div>
+</div><p>Our test file would look like this:</p>
+<div class="code lang-javascript">
+  <div>describe<span style="color: #999">(</span><span style="color: #3CDAFF">'math.js'</span><span style="color: #999">,</span>&nbsp;<span style="color: #939393">function</span>&nbsp;<span style="color: #999">()</span>&nbsp;<span style="color: #999">{</span></div>
+  <div>&nbsp;&nbsp;describe<span style="color: #999">(</span><span style="color: #3CDAFF">'add'</span><span style="color: #999">,</span>&nbsp;<span style="color: #939393">function</span>&nbsp;<span style="color: #999">()</span>&nbsp;<span style="color: #999">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;it<span style="color: #999">(</span><span style="color: #3CDAFF">'is&nbsp;a&nbsp;function'</span><span style="color: #999">,</span>&nbsp;<span style="color: #939393">function</span>&nbsp;<span style="color: #999">()</span>&nbsp;<span style="color: #999">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect<span style="color: #999">(</span>add<span style="color: #999">,</span>&nbsp;<span style="color: #3CDAFF">'to&nbsp;be&nbsp;a'</span><span style="color: #999">,</span>&nbsp;<span style="color: #3CDAFF">'function'</span><span style="color: #999">);</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #999">});</span></div>
+  <div>&nbsp;</div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;it<span style="color: #999">(</span><span style="color: #3CDAFF">'does&nbsp;addition&nbsp;on&nbsp;numbers'</span><span style="color: #999">,</span>&nbsp;<span style="color: #939393">function</span>&nbsp;<span style="color: #999">()</span>&nbsp;<span style="color: #999">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect<span style="color: #999">(</span>add<span style="color: #999">(</span><span style="color: white">1</span><span style="color: #999">,</span>&nbsp;<span style="color: white">3</span><span style="color: #999">),</span>&nbsp;<span style="color: #3CDAFF">'to&nbsp;be'</span><span style="color: #999">,</span>&nbsp;<span style="color: white">4</span><span style="color: #999">);</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #999">});</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #999">});</span></div>
+  <div><span style="color: #999">});</span></div>
+</div><p>If a certain expectation fails, an exception will be raised which gets captured
+and shown/processed by the test runner.</p>
+<h2 id="source">Source</h2>
+<p>The source for Unexpected can be found on
+<a href="https://github.com/unexpectedjs/unexpected">Github</a>.</p>
+<h2 id="releases">Releases</h2>
+<h3 id="6-0-0">6.0.0</h3>
+<ul>
+<li>New documentation and <a href="https://unexpectedjs.github.io/">corresponding site</a>.</li>
+<li>Use <code>Object.is</code>/the <a href="http://people.mozilla.org/~jorendorff/es6-draft.html#sec-samevalue">SameValue</a> when checking equality of primitive values (the <code>to be</code> and <code>to equal</code> assertions).</li>
+<li>Tweaked the output of numerous assertions.</li>
+<li>Constrained <code>to be empty</code> and <code>to have length</code> to only work with strings and array-like objects.</li>
+<li>Renamed the <code>arrayLike</code> type to <code>array-like</code>.</li>
+<li>Changed style names and added theming support (mostly internal).</li>
+<li>Removed grammatically incorrect assertions.</li>
+</ul>
+<h2 id="mit-license">MIT License</h2>
+<p>Copyright (c) 2013 Sune Simonsen <a href="&#109;&#97;&#x69;&#x6c;&#116;&#x6f;&#58;&#115;&#117;&#110;&#x65;&#64;&#x77;&#101;&#x2d;&#x6b;&#x6e;&#111;&#119;&#x68;&#x6f;&#119;&#46;&#100;&#107;">&#115;&#117;&#110;&#x65;&#64;&#x77;&#101;&#x2d;&#x6b;&#x6e;&#111;&#119;&#x68;&#x6f;&#119;&#46;&#100;&#107;</a></p>
+<p>Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+&#39;Software&#39;), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:</p>
+<p>The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.</p>
+<p>THE SOFTWARE IS PROVIDED &#39;AS IS&#39;, WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+
+    </div>
+    <a class="github-ribbon" href="https://github.com/unexpectedjs/unexpected"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
+</div>
+<script type="text/javascript" src="static/toggleSidebar.js"></script>
+<script type="text/javascript" src="static/rememberScrollPosition.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,545 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0">
+    <link rel="stylesheet" href="../../static/normalize.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../../static/main.css" type="text/css" media="screen" />
+    <title>addType</title>
+</head>
+<body class="sidebar-hidden has-sidebar">
+    <header>
+        <div class="logo-icon"></div>
+        <nav>
+            <ul>
+                <li class="menu-toggle-item">
+                    <button class="menu-toggle" onclick="toggleSidebar()"></button>
+                </li>
+                <li class=""><a href="../..">Unexpected</a></li>
+                <li class=""><a href="../../assertions/any/to-be-a">Assertions</a></li>
+                <li class="active"><a href="../addAssertion">API</a></li>
+            </ul>
+        </nav>
+    </header>
+
+<section id="api">
+    <nav id="api-menu" class="sidebar js-remember-scroll-position">
+    <ul>
+        
+        <li class="">
+            <a href="../addAssertion">addAssertion</a>
+        </li>
+        
+        <li class="active">
+            <a href="">addType</a>
+        </li>
+        
+        <li class="">
+            <a href="../clone">clone</a>
+        </li>
+        
+        <li class="">
+            <a href="../fail">fail</a>
+        </li>
+        
+        <li class="">
+            <a href="../installPlugin">installPlugin</a>
+        </li>
+        
+        <li class="">
+            <a href="../toString">toString</a>
+        </li>
+        
+    </ul>
+</nav>
+
+    <div class="main">
+        <div class="content">
+            <h2 id="types">Types</h2>
+<p>Unexpected comes with a type system that is used to explain how
+different types are compared, diffed, inspected and is also used to
+limit the scope of assertions.</p>
+<p>The following types are provided by out of the box by Unexpected:
+<code>any</code>, <code>arguments</code>, <code>array</code>, <code>array-like</code>, <code>binaryArray</code>, <code>boolean</code>,
+<code>Buffer</code>, <code>date</code>, <code>Error</code>, <code>function</code>, <code>null</code>, <code>number</code>, <code>object</code>,
+<code>regexp</code>, <code>string</code>, <code>undefined</code>.</p>
+<h2 id="expect-addtype-typedefinition-">expect.addType(typeDefinition)</h2>
+<p>Unexpected can be extended with knowledge about new types by calling
+the <code>addType</code> method with a type definition. The type definition must
+implement the required parts of the following interface:</p>
+<p>Required members:</p>
+<ul>
+<li><strong>name</strong>: <code>String</code> - the name of the type.</li>
+<li><strong>identify</strong>: <code>boolean function(value)</code> - a function deciding if the type
+should be used for the given value.</li>
+</ul>
+<p>Optional members:</p>
+<ul>
+<li><strong>base</strong>: <code>String</code> - the name of the base type. Defaults to <code>any</code>.</li>
+<li><strong>equal</strong>: <code>boolean function(a, b, equal)</code> -
+a function capable of comparing two values of this type for
+equality. If not specified it is inherited from the base type.</li>
+<li><strong>inspect</strong>: <code>function(value, depth, output, inspect)</code> -
+a function capable of inspecting a value of this type. If not
+specified it is inherited from the base type.</li>
+<li><strong>diff</strong>: <code>comparison function(actual, expected, output, diff, inspect)</code> -
+a function producing a comparison between two values of this
+type. If not specified it is inherited from the base type.</li>
+</ul>
+<h2 id="example">Example</h2>
+<p>Adding new types to the system is best explained by an example. Let&#39;s
+say we wanted to add first class support for a <code>Person</code> type:</p>
+<div class="code lang-javascript">
+  <div><span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">Person</span><span style="color: #000000">(</span>name<span style="color: #000000">,</span>&nbsp;age<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #0086b3">this</span><span style="color: #000000">.</span>name&nbsp;<span style="color: #a71d5d">=</span>&nbsp;name<span style="color: #000000">;</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #0086b3">this</span><span style="color: #000000">.</span>age&nbsp;<span style="color: #a71d5d">=</span>&nbsp;age<span style="color: #000000">;</span></div>
+  <div><span style="color: #000000">}</span></div>
+</div><p>We start out by creating a basic type for handling <code>Person</code>
+instances. The name of the type should be <code>Person</code> and it should
+inherit from the build in <code>object</code> type. Furthermore we add an
+<code>identify</code> method that will recognize <code>Person</code> instances.</p>
+<div class="code lang-javascript">
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addType</span><span style="color: #000000">({</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;name<span style="color: #000000">:</span>&nbsp;<span style="color: #df5000">'Person'</span><span style="color: #000000">,</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;base<span style="color: #000000">:</span>&nbsp;<span style="color: #df5000">'object'</span><span style="color: #000000">,</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;identify<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">(</span>value<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #0086b3">return</span>&nbsp;value&nbsp;<span style="color: #0086b3">instanceof</span>&nbsp;Person<span style="color: #000000">;</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">}</span></div>
+  <div><span style="color: #000000">});</span></div>
+</div><p>When you specify a base type, you inherit the optional members you
+didn&#39;t implement. In this case we inherited the methods <code>equal</code>,
+<code>inspect</code> and <code>diff</code> from the <code>object</code> type.</p>
+<p>Imagine that we make a failing expectation on a person instance:</p>
+<div class="code lang-javascript">
+  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #0086b3">new</span>&nbsp;Person<span style="color: #000000">(</span><span style="color: #df5000">'John&nbsp;Doe'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">42</span><span style="color: #000000">),</span>&nbsp;<span style="color: #df5000">'to&nbsp;equal'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">new</span>&nbsp;Person<span style="color: #000000">(</span><span style="color: #df5000">'Jane&nbsp;Doe'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">24</span><span style="color: #000000">));</span></div>
+</div><div class="output">
+  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;Person({&nbsp;<span style="color: #555">name</span>:&nbsp;<span style="color: #df5000">'John&nbsp;Doe'</span>,&nbsp;<span style="color: #555">age</span>:&nbsp;<span style="color: #0086b3">42</span>&nbsp;})&nbsp;<span style="color: red; font-weight: bold">to&nbsp;equal</span>&nbsp;Person({&nbsp;<span style="color: #555">name</span>:&nbsp;<span style="color: #df5000">'Jane&nbsp;Doe'</span>,&nbsp;<span style="color: #555">age</span>:&nbsp;<span style="color: #0086b3">24</span>&nbsp;})</div>
+  <div>&nbsp;</div>
+  <div>Person({</div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #555">name</span>:&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #df5000">'John&nbsp;Doe'</span>,</div>
+</div>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">//</span></div>
+  <div><span style="color: red; font-weight: bold">//</span></div>
+  <div><span style="color: red; font-weight: bold">//</span></div>
+</div>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">should&nbsp;equal</span>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #df5000">'Jane&nbsp;Doe'</span></div>
+</div></div>
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red">-</span></div>
+</div><div style="display: inline-block; vertical-align: top">
+  <div><span style="background-color: red; color: white">John</span><span style="color: red">&nbsp;Doe</span></div>
+</div></div>
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: green">+</span></div>
+</div><div style="display: inline-block; vertical-align: top">
+  <div><span style="background-color: green; color: white">Jane</span><span style="color: green">&nbsp;Doe</span></div>
+</div></div>
+</div></div>
+</div></div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #555">age</span>:&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #0086b3">42</span></div>
+</div>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">//</span></div>
+</div>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">should&nbsp;equal</span>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #0086b3">24</span></div>
+</div></div>
+</div></div>
+</div></div>
+  <div>})</div>
+</div><p>That is already quite helpful, but the output misses the information
+that it is <code>Person</code> instances we are comparing. We can fix that by
+implementing an <code>inspect</code> method on the type.</p>
+<div class="code lang-javascript">
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addType</span><span style="color: #000000">({</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;name<span style="color: #000000">:</span>&nbsp;<span style="color: #df5000">'Person'</span><span style="color: #000000">,</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;base<span style="color: #000000">:</span>&nbsp;<span style="color: #df5000">'object'</span><span style="color: #000000">,</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;identify<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">(</span>value<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #0086b3">return</span>&nbsp;value&nbsp;<span style="color: #0086b3">instanceof</span>&nbsp;Person<span style="color: #000000">;</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">},</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;inspect<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">(</span>person<span style="color: #000000">,</span>&nbsp;depth<span style="color: #000000">,</span>&nbsp;output<span style="color: #000000">,</span>&nbsp;inspect<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;output<span style="color: #000000">.</span><span style="color: #000000">text</span><span style="color: #000000">(</span><span style="color: #df5000">'new&nbsp;Person('</span><span style="color: #000000">)</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">.</span><span style="color: #000000">append</span><span style="color: #000000">(</span><span style="color: #000000">inspect</span><span style="color: #000000">(</span>person<span style="color: #000000">.</span>name<span style="color: #000000">,</span>&nbsp;depth<span style="color: #000000">))</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">.</span><span style="color: #000000">text</span><span style="color: #000000">(</span><span style="color: #df5000">',&nbsp;'</span><span style="color: #000000">)</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">.</span><span style="color: #000000">append</span><span style="color: #000000">(</span><span style="color: #000000">inspect</span><span style="color: #000000">(</span>person<span style="color: #000000">.</span>age<span style="color: #000000">,</span>&nbsp;depth<span style="color: #000000">))</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">.</span><span style="color: #000000">text</span><span style="color: #000000">(</span><span style="color: #df5000">')'</span><span style="color: #000000">);</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">}</span></div>
+  <div><span style="color: #000000">});</span></div>
+</div><p>Now we get the following output:</p>
+<div class="code lang-javascript">
+  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #0086b3">new</span>&nbsp;Person<span style="color: #000000">(</span><span style="color: #df5000">'John&nbsp;Doe'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">42</span><span style="color: #000000">),</span>&nbsp;<span style="color: #df5000">'to&nbsp;equal'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">new</span>&nbsp;Person<span style="color: #000000">(</span><span style="color: #df5000">'Jane&nbsp;Doe'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">24</span><span style="color: #000000">));</span></div>
+</div><div class="output">
+  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;new&nbsp;Person(<span style="color: #df5000">'John&nbsp;Doe'</span>,&nbsp;<span style="color: #0086b3">42</span>)&nbsp;<span style="color: red; font-weight: bold">to&nbsp;equal</span>&nbsp;new&nbsp;Person(<span style="color: #df5000">'Jane&nbsp;Doe'</span>,&nbsp;<span style="color: #0086b3">24</span>)</div>
+  <div>&nbsp;</div>
+  <div>Person({</div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #555">name</span>:&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #df5000">'John&nbsp;Doe'</span>,</div>
+</div>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">//</span></div>
+  <div><span style="color: red; font-weight: bold">//</span></div>
+  <div><span style="color: red; font-weight: bold">//</span></div>
+</div>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">should&nbsp;equal</span>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #df5000">'Jane&nbsp;Doe'</span></div>
+</div></div>
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red">-</span></div>
+</div><div style="display: inline-block; vertical-align: top">
+  <div><span style="background-color: red; color: white">John</span><span style="color: red">&nbsp;Doe</span></div>
+</div></div>
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: green">+</span></div>
+</div><div style="display: inline-block; vertical-align: top">
+  <div><span style="background-color: green; color: white">Jane</span><span style="color: green">&nbsp;Doe</span></div>
+</div></div>
+</div></div>
+</div></div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #555">age</span>:&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #0086b3">42</span></div>
+</div>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">//</span></div>
+</div>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">should&nbsp;equal</span>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #0086b3">24</span></div>
+</div></div>
+</div></div>
+</div></div>
+  <div>})</div>
+</div><p>That is a bit better, let me explain how it works. The <code>inspect</code>
+method is called with the value to be inspected, the depth this type
+should be inspected with, an output the inspected value should be
+written to and an inspect function that can be used to recursively
+inspect members. The output is an instance of
+<a href="https://github.com/unexpectedjs/magicpen">magicpen</a> extended with a
+number of <a href="https://github.com/unexpectedjs/unexpected/blob/master/lib/styles.js">styles</a>.</p>
+<p>We write <code>new Person(</code> without styling, then we append the inspected
+<code>name</code>, write a <code>,</code>, inspect the <code>age</code> and finish with the closing
+parenthesis. When <code>inspect</code> is called without a depth parameter it
+defaults to <code>depth-1</code>. Values inspected with depth zero will be
+inspected as <code>...</code>. In this case we always want the name so we forward the
+same depth to the <code>inspect</code> function.</p>
+<p>Let&#39;s say we wanted persons only to be compared by name and not by
+age. Then we need to override the <code>equal</code> method:</p>
+<div class="code lang-javascript">
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addType</span><span style="color: #000000">({</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;name<span style="color: #000000">:</span>&nbsp;<span style="color: #df5000">'Person'</span><span style="color: #000000">,</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;base<span style="color: #000000">:</span>&nbsp;<span style="color: #df5000">'object'</span><span style="color: #000000">,</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;identify<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">(</span>value<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #0086b3">return</span>&nbsp;value&nbsp;<span style="color: #0086b3">instanceof</span>&nbsp;Person<span style="color: #000000">;</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">},</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;inspect<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">(</span>person<span style="color: #000000">,</span>&nbsp;depth<span style="color: #000000">,</span>&nbsp;output<span style="color: #000000">,</span>&nbsp;inspect<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;output<span style="color: #000000">.</span><span style="color: #000000">text</span><span style="color: #000000">(</span><span style="color: #df5000">'new&nbsp;Person('</span><span style="color: #000000">)</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">.</span><span style="color: #000000">append</span><span style="color: #000000">(</span><span style="color: #000000">inspect</span><span style="color: #000000">(</span>person<span style="color: #000000">.</span>name<span style="color: #000000">,</span>&nbsp;depth<span style="color: #000000">))</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">.</span><span style="color: #000000">text</span><span style="color: #000000">(</span><span style="color: #df5000">',&nbsp;'</span><span style="color: #000000">)</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">.</span><span style="color: #000000">append</span><span style="color: #000000">(</span><span style="color: #000000">inspect</span><span style="color: #000000">(</span>person<span style="color: #000000">.</span>age<span style="color: #000000">,</span>&nbsp;depth<span style="color: #000000">))</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">.</span><span style="color: #000000">text</span><span style="color: #000000">(</span><span style="color: #df5000">')'</span><span style="color: #000000">);</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">},</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;equal<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">(</span>a<span style="color: #000000">,</span>&nbsp;b<span style="color: #000000">,</span>&nbsp;equal<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #0086b3">return</span>&nbsp;a&nbsp;<span style="color: #a71d5d">===</span>&nbsp;b&nbsp;<span style="color: #a71d5d">||</span>&nbsp;<span style="color: #000000">equal</span><span style="color: #000000">(</span>a<span style="color: #000000">.</span>name<span style="color: #000000">,</span>&nbsp;b<span style="color: #000000">.</span>name<span style="color: #000000">);</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">}</span></div>
+  <div><span style="color: #000000">});</span></div>
+</div><p>This will produce the same output as above, but that means the diff if
+wrong. It states that the age should be changed. We can fix that the
+following way:</p>
+<div class="code lang-javascript">
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addType</span><span style="color: #000000">({</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;name<span style="color: #000000">:</span>&nbsp;<span style="color: #df5000">'Person'</span><span style="color: #000000">,</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;base<span style="color: #000000">:</span>&nbsp;<span style="color: #df5000">'object'</span><span style="color: #000000">,</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;identify<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">(</span>value<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #0086b3">return</span>&nbsp;value&nbsp;<span style="color: #0086b3">instanceof</span>&nbsp;Person<span style="color: #000000">;</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">},</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;inspect<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">(</span>person<span style="color: #000000">,</span>&nbsp;depth<span style="color: #000000">,</span>&nbsp;output<span style="color: #000000">,</span>&nbsp;inspect<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;output<span style="color: #000000">.</span><span style="color: #000000">text</span><span style="color: #000000">(</span><span style="color: #df5000">'new&nbsp;Person('</span><span style="color: #000000">)</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">.</span><span style="color: #000000">append</span><span style="color: #000000">(</span><span style="color: #000000">inspect</span><span style="color: #000000">(</span>person<span style="color: #000000">.</span>name<span style="color: #000000">,</span>&nbsp;depth<span style="color: #000000">))</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">.</span><span style="color: #000000">text</span><span style="color: #000000">(</span><span style="color: #df5000">',&nbsp;'</span><span style="color: #000000">)</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">.</span><span style="color: #000000">append</span><span style="color: #000000">(</span><span style="color: #000000">inspect</span><span style="color: #000000">(</span>person<span style="color: #000000">.</span>age<span style="color: #000000">,</span>&nbsp;depth<span style="color: #000000">))</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">.</span><span style="color: #000000">text</span><span style="color: #000000">(</span><span style="color: #df5000">')'</span><span style="color: #000000">);</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">},</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;equal<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">(</span>a<span style="color: #000000">,</span>&nbsp;b<span style="color: #000000">,</span>&nbsp;equal<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #0086b3">return</span>&nbsp;a&nbsp;<span style="color: #a71d5d">===</span>&nbsp;b&nbsp;<span style="color: #a71d5d">||</span>&nbsp;<span style="color: #000000">equal</span><span style="color: #000000">(</span>a<span style="color: #000000">.</span>name<span style="color: #000000">,</span>&nbsp;b<span style="color: #000000">.</span>name<span style="color: #000000">);</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">},</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;diff<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">(</span>actual<span style="color: #000000">,</span>&nbsp;expected<span style="color: #000000">,</span>&nbsp;output<span style="color: #000000">,</span>&nbsp;diff<span style="color: #000000">,</span>&nbsp;inspect<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #0086b3">return</span>&nbsp;<span style="color: #0086b3">this</span><span style="color: #000000">.</span>baseType<span style="color: #000000">.</span><span style="color: #000000">diff</span><span style="color: #000000">({</span>name<span style="color: #000000">:</span>&nbsp;actual<span style="color: #000000">.</span>name<span style="color: #000000">},</span>&nbsp;<span style="color: #000000">{</span>name<span style="color: #000000">:</span>&nbsp;expected<span style="color: #000000">.</span>name<span style="color: #000000">});</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">}</span></div>
+  <div><span style="color: #000000">});</span></div>
+</div><div class="code lang-javascript">
+  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #0086b3">new</span>&nbsp;Person<span style="color: #000000">(</span><span style="color: #df5000">'John&nbsp;Doe'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">42</span><span style="color: #000000">),</span>&nbsp;<span style="color: #df5000">'to&nbsp;equal'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">new</span>&nbsp;Person<span style="color: #000000">(</span><span style="color: #df5000">'Jane&nbsp;Doe'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">24</span><span style="color: #000000">));</span></div>
+</div><div class="output">
+  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;new&nbsp;Person(<span style="color: #df5000">'John&nbsp;Doe'</span>,&nbsp;<span style="color: #0086b3">42</span>)&nbsp;<span style="color: red; font-weight: bold">to&nbsp;equal</span>&nbsp;new&nbsp;Person(<span style="color: #df5000">'Jane&nbsp;Doe'</span>,&nbsp;<span style="color: #0086b3">24</span>)</div>
+  <div>&nbsp;</div>
+  <div>{</div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #555">name</span>:&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #df5000">'John&nbsp;Doe'</span></div>
+</div>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">//</span></div>
+  <div><span style="color: red; font-weight: bold">//</span></div>
+  <div><span style="color: red; font-weight: bold">//</span></div>
+</div>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">should&nbsp;equal</span>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #df5000">'Jane&nbsp;Doe'</span></div>
+</div></div>
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red">-</span></div>
+</div><div style="display: inline-block; vertical-align: top">
+  <div><span style="background-color: red; color: white">John</span><span style="color: red">&nbsp;Doe</span></div>
+</div></div>
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: green">+</span></div>
+</div><div style="display: inline-block; vertical-align: top">
+  <div><span style="background-color: green; color: white">Jane</span><span style="color: green">&nbsp;Doe</span></div>
+</div></div>
+</div></div>
+</div></div>
+  <div>}</div>
+</div><p>The above <code>diff</code> method just calls the <code>diff</code> method on the base type
+with objects that only contain the name. The <code>object</code> diff will take
+care of all the hard work. We could also have called the <code>diff</code>
+function we got as an argument, but that will go off detecting the
+types of the parameters, therefore it is faster to call <code>diff</code> method
+on the base directly when you know it is the one you need.</p>
+<p>You could also do something really custom as seen below:</p>
+<div class="code lang-javascript">
+  <div><span style="color: #0086b3">var</span>&nbsp;inlineDiff&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #0086b3">true</span><span style="color: #000000">;</span><span style="color: #969896">&nbsp;//&nbsp;used&nbsp;to&nbsp;change&nbsp;inlining&nbsp;in&nbsp;a&nbsp;later&nbsp;example</span></div>
+  <div>&nbsp;</div>
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addType</span><span style="color: #000000">({</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;name<span style="color: #000000">:</span>&nbsp;<span style="color: #df5000">'Person'</span><span style="color: #000000">,</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;base<span style="color: #000000">:</span>&nbsp;<span style="color: #df5000">'object'</span><span style="color: #000000">,</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;identify<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">(</span>value<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #0086b3">return</span>&nbsp;value&nbsp;<span style="color: #0086b3">instanceof</span>&nbsp;Person<span style="color: #000000">;</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">},</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;inspect<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">(</span>person<span style="color: #000000">,</span>&nbsp;depth<span style="color: #000000">,</span>&nbsp;output<span style="color: #000000">,</span>&nbsp;inspect<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;output<span style="color: #000000">.</span><span style="color: #000000">text</span><span style="color: #000000">(</span><span style="color: #df5000">'new&nbsp;Person('</span><span style="color: #000000">)</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">.</span><span style="color: #000000">append</span><span style="color: #000000">(</span><span style="color: #000000">inspect</span><span style="color: #000000">(</span>person<span style="color: #000000">.</span>name<span style="color: #000000">,</span>&nbsp;depth<span style="color: #000000">))</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">.</span><span style="color: #000000">text</span><span style="color: #000000">(</span><span style="color: #df5000">',&nbsp;'</span><span style="color: #000000">)</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">.</span><span style="color: #000000">append</span><span style="color: #000000">(</span><span style="color: #000000">inspect</span><span style="color: #000000">(</span>person<span style="color: #000000">.</span>age<span style="color: #000000">,</span>&nbsp;depth<span style="color: #000000">))</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">.</span><span style="color: #000000">text</span><span style="color: #000000">(</span><span style="color: #df5000">')'</span><span style="color: #000000">);</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">},</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;equal<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">(</span>a<span style="color: #000000">,</span>&nbsp;b<span style="color: #000000">,</span>&nbsp;equal<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #0086b3">return</span>&nbsp;a&nbsp;<span style="color: #a71d5d">===</span>&nbsp;b&nbsp;<span style="color: #a71d5d">||</span>&nbsp;<span style="color: #000000">equal</span><span style="color: #000000">(</span>a<span style="color: #000000">.</span>name<span style="color: #000000">,</span>&nbsp;b<span style="color: #000000">.</span>name<span style="color: #000000">);</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">},</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;diff<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">(</span>actual<span style="color: #000000">,</span>&nbsp;expected<span style="color: #000000">,</span>&nbsp;output<span style="color: #000000">,</span>&nbsp;diff<span style="color: #000000">,</span>&nbsp;inspect<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #0086b3">var</span>&nbsp;nameDiff&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #000000">diff</span><span style="color: #000000">(</span>actual<span style="color: #000000">.</span>name<span style="color: #000000">,</span>&nbsp;expected<span style="color: #000000">.</span>name<span style="color: #000000">);</span></div>
+  <div>&nbsp;</div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;output<span style="color: #000000">.</span><span style="color: #000000">text</span><span style="color: #000000">(</span><span style="color: #df5000">'new&nbsp;Person('</span><span style="color: #000000">)</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">.</span><span style="color: #000000">nl</span><span style="color: #000000">()</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">.</span><span style="color: #000000">indentLines</span><span style="color: #000000">();</span></div>
+  <div>&nbsp;</div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #0086b3">if</span>&nbsp;<span style="color: #000000">(</span>nameDiff&nbsp;&amp;&amp;&nbsp;nameDiff<span style="color: #000000">.</span>inline<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;output<span style="color: #000000">.</span><span style="color: #000000">append</span><span style="color: #000000">(</span>nameDiff<span style="color: #000000">.</span>diff<span style="color: #000000">);</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">}</span>&nbsp;<span style="color: #0086b3">else</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;output<span style="color: #000000">.</span><span style="color: #000000">i</span><span style="color: #000000">().</span><span style="color: #000000">append</span><span style="color: #000000">(</span><span style="color: #000000">inspect</span><span style="color: #000000">(</span>actual<span style="color: #000000">.</span>name<span style="color: #000000">)).</span><span style="color: #000000">text</span><span style="color: #000000">(</span><span style="color: #df5000">','</span><span style="color: #000000">).</span><span style="color: #000000">sp</span><span style="color: #000000">()</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">.</span><span style="color: #000000">annotationBlock</span><span style="color: #000000">(</span><span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #0086b3">this</span><span style="color: #000000">.</span><span style="color: #000000">error</span><span style="color: #000000">(</span><span style="color: #df5000">'should&nbsp;be&nbsp;'</span><span style="color: #000000">).</span><span style="color: #000000">append</span><span style="color: #000000">(</span><span style="color: #000000">inspect</span><span style="color: #000000">(</span>expected<span style="color: #000000">.</span>name<span style="color: #000000">));</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #0086b3">if</span>&nbsp;<span style="color: #000000">(</span>nameDiff<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #0086b3">this</span><span style="color: #000000">.</span><span style="color: #000000">nl</span><span style="color: #000000">().</span><span style="color: #000000">append</span><span style="color: #000000">(</span>nameDiff<span style="color: #000000">.</span>diff<span style="color: #000000">);</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">}</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">})</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">.</span><span style="color: #000000">nl</span><span style="color: #000000">();</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">}</span></div>
+  <div>&nbsp;</div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;output<span style="color: #000000">.</span><span style="color: #000000">i</span><span style="color: #000000">().</span><span style="color: #000000">append</span><span style="color: #000000">(</span><span style="color: #000000">inspect</span><span style="color: #000000">(</span>actual<span style="color: #000000">.</span>age<span style="color: #000000">))</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">.</span><span style="color: #000000">outdentLines</span><span style="color: #000000">()</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">.</span><span style="color: #000000">nl</span><span style="color: #000000">()</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">.</span><span style="color: #000000">text</span><span style="color: #000000">(</span><span style="color: #df5000">')'</span><span style="color: #000000">);</span></div>
+  <div>&nbsp;</div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #0086b3">return</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inline<span style="color: #000000">:</span>&nbsp;inlineDiff<span style="color: #000000">,</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;diff<span style="color: #000000">:</span>&nbsp;output</div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">};</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">}</span></div>
+  <div><span style="color: #000000">});</span></div>
+</div><p>That would produce the following output.</p>
+<div class="code lang-javascript">
+  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #0086b3">new</span>&nbsp;Person<span style="color: #000000">(</span><span style="color: #df5000">'John&nbsp;Doe'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">42</span><span style="color: #000000">),</span>&nbsp;<span style="color: #df5000">'to&nbsp;equal'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">new</span>&nbsp;Person<span style="color: #000000">(</span><span style="color: #df5000">'Jane&nbsp;Doe'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">24</span><span style="color: #000000">));</span></div>
+</div><div class="output">
+  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;new&nbsp;Person(<span style="color: #df5000">'John&nbsp;Doe'</span>,&nbsp;<span style="color: #0086b3">42</span>)&nbsp;<span style="color: red; font-weight: bold">to&nbsp;equal</span>&nbsp;new&nbsp;Person(<span style="color: #df5000">'Jane&nbsp;Doe'</span>,&nbsp;<span style="color: #0086b3">24</span>)</div>
+  <div>&nbsp;</div>
+  <div>new&nbsp;Person(</div>
+  <div>&nbsp;&nbsp;<span style="color: #df5000">'John&nbsp;Doe'</span>,&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">//</span></div>
+  <div><span style="color: red; font-weight: bold">//</span></div>
+  <div><span style="color: red; font-weight: bold">//</span></div>
+</div>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">should&nbsp;be&nbsp;</span><span style="color: #df5000">'Jane&nbsp;Doe'</span></div>
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red">-</span></div>
+</div><div style="display: inline-block; vertical-align: top">
+  <div><span style="background-color: red; color: white">John</span><span style="color: red">&nbsp;Doe</span></div>
+</div></div>
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: green">+</span></div>
+</div><div style="display: inline-block; vertical-align: top">
+  <div><span style="background-color: green; color: white">Jane</span><span style="color: green">&nbsp;Doe</span></div>
+</div></div>
+</div></div>
+  <div>&nbsp;&nbsp;<span style="color: #0086b3">42</span></div>
+  <div>)</div>
+</div><p>This is a rather complicated example and I wont go though the details,
+but I would like to comment on the <code>inline</code> flag. When we diff objects
+against each other, the values of the keys will be diffed against each
+other. That means diffs are inserted into the containing
+structure. You can control this behavior using the <code>inline</code> flag. If
+the child diff is inline, it means that it will be appended directly
+into the parent; otherwise the diff will be inserted in an annotation
+block. The outputs below shows the contrast between setting the
+<code>Person</code> diff to inline or not.</p>
+<div class="code lang-javascript">
+  <div>inlineDiff&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #0086b3">true</span><span style="color: #000000">;</span></div>
+  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #000000">{</span><span style="color: #df5000">'John&nbsp;Doe'</span><span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">new</span>&nbsp;Person<span style="color: #000000">(</span><span style="color: #df5000">'John&nbsp;Doe'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">42</span><span style="color: #000000">),</span>&nbsp;<span style="color: #df5000">'Jane&nbsp;Doe'</span><span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">new</span>&nbsp;Person<span style="color: #000000">(</span><span style="color: #df5000">'Janie&nbsp;Doe'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">24</span><span style="color: #000000">)},</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #df5000">'to&nbsp;equal'</span><span style="color: #000000">,</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #000000">{</span><span style="color: #df5000">'John&nbsp;Doe'</span><span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">new</span>&nbsp;Person<span style="color: #000000">(</span><span style="color: #df5000">'John&nbsp;Doe'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">42</span><span style="color: #000000">),</span>&nbsp;<span style="color: #df5000">'Jane&nbsp;Doe'</span><span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">new</span>&nbsp;Person<span style="color: #000000">(</span><span style="color: #df5000">'Jane&nbsp;Doe'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">24</span><span style="color: #000000">)}</span></div>
+  <div><span style="color: #000000">);</span></div>
+</div><div class="output">
+  <div><span style="color: red; font-weight: bold">expected</span></div>
+  <div>{</div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #df5000">'John&nbsp;Doe'</span>:&nbsp;new&nbsp;Person(<span style="color: #df5000">'John&nbsp;Doe'</span>,&nbsp;<span style="color: #0086b3">42</span>),</div>
+</div></div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #df5000">'Jane&nbsp;Doe'</span>:&nbsp;new&nbsp;Person(<span style="color: #df5000">'Janie&nbsp;Doe'</span>,&nbsp;<span style="color: #0086b3">24</span>)</div>
+</div></div>
+  <div>}</div>
+  <div><span style="color: red; font-weight: bold">to&nbsp;equal</span></div>
+  <div>{</div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #df5000">'John&nbsp;Doe'</span>:&nbsp;new&nbsp;Person(<span style="color: #df5000">'John&nbsp;Doe'</span>,&nbsp;<span style="color: #0086b3">42</span>),</div>
+</div></div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #df5000">'Jane&nbsp;Doe'</span>:&nbsp;new&nbsp;Person(<span style="color: #df5000">'Jane&nbsp;Doe'</span>,&nbsp;<span style="color: #0086b3">24</span>)</div>
+</div></div>
+  <div>}</div>
+  <div>&nbsp;</div>
+  <div>{</div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #df5000">'John&nbsp;Doe'</span>:&nbsp;new&nbsp;Person(<span style="color: #df5000">'John&nbsp;Doe'</span>,&nbsp;<span style="color: #0086b3">42</span>),</div>
+</div></div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #df5000">'Jane&nbsp;Doe'</span>:&nbsp;new&nbsp;Person(</div>
+  <div>&nbsp;&nbsp;<span style="color: #df5000">'Janie&nbsp;Doe'</span>,&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">//</span></div>
+  <div><span style="color: red; font-weight: bold">//</span></div>
+  <div><span style="color: red; font-weight: bold">//</span></div>
+</div>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">should&nbsp;be&nbsp;</span><span style="color: #df5000">'Jane&nbsp;Doe'</span></div>
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red">-</span></div>
+</div><div style="display: inline-block; vertical-align: top">
+  <div><span style="background-color: red; color: white">Janie</span><span style="color: red">&nbsp;Doe</span></div>
+</div></div>
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: green">+</span></div>
+</div><div style="display: inline-block; vertical-align: top">
+  <div><span style="background-color: green; color: white">Jane</span><span style="color: green">&nbsp;Doe</span></div>
+</div></div>
+</div></div>
+  <div>&nbsp;&nbsp;<span style="color: #0086b3">24</span></div>
+  <div>)</div>
+</div></div>
+  <div>}</div>
+</div><div class="code lang-javascript">
+  <div>inlineDiff&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #0086b3">false</span><span style="color: #000000">;</span></div>
+  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #000000">{</span><span style="color: #df5000">'John&nbsp;Doe'</span><span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">new</span>&nbsp;Person<span style="color: #000000">(</span><span style="color: #df5000">'John&nbsp;Doe'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">42</span><span style="color: #000000">),</span>&nbsp;<span style="color: #df5000">'Jane&nbsp;Doe'</span><span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">new</span>&nbsp;Person<span style="color: #000000">(</span><span style="color: #df5000">'Janie&nbsp;Doe'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">24</span><span style="color: #000000">)},</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #df5000">'to&nbsp;equal'</span><span style="color: #000000">,</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #000000">{</span><span style="color: #df5000">'John&nbsp;Doe'</span><span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">new</span>&nbsp;Person<span style="color: #000000">(</span><span style="color: #df5000">'John&nbsp;Doe'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">42</span><span style="color: #000000">),</span>&nbsp;<span style="color: #df5000">'Jane&nbsp;Doe'</span><span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">new</span>&nbsp;Person<span style="color: #000000">(</span><span style="color: #df5000">'Jane&nbsp;Doe'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">24</span><span style="color: #000000">)}</span></div>
+  <div><span style="color: #000000">);</span></div>
+</div><div class="output">
+  <div><span style="color: red; font-weight: bold">expected</span></div>
+  <div>{</div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #df5000">'John&nbsp;Doe'</span>:&nbsp;new&nbsp;Person(<span style="color: #df5000">'John&nbsp;Doe'</span>,&nbsp;<span style="color: #0086b3">42</span>),</div>
+</div></div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #df5000">'Jane&nbsp;Doe'</span>:&nbsp;new&nbsp;Person(<span style="color: #df5000">'Janie&nbsp;Doe'</span>,&nbsp;<span style="color: #0086b3">24</span>)</div>
+</div></div>
+  <div>}</div>
+  <div><span style="color: red; font-weight: bold">to&nbsp;equal</span></div>
+  <div>{</div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #df5000">'John&nbsp;Doe'</span>:&nbsp;new&nbsp;Person(<span style="color: #df5000">'John&nbsp;Doe'</span>,&nbsp;<span style="color: #0086b3">42</span>),</div>
+</div></div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #df5000">'Jane&nbsp;Doe'</span>:&nbsp;new&nbsp;Person(<span style="color: #df5000">'Jane&nbsp;Doe'</span>,&nbsp;<span style="color: #0086b3">24</span>)</div>
+</div></div>
+  <div>}</div>
+  <div>&nbsp;</div>
+  <div>{</div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #df5000">'John&nbsp;Doe'</span>:&nbsp;new&nbsp;Person(<span style="color: #df5000">'John&nbsp;Doe'</span>,&nbsp;<span style="color: #0086b3">42</span>),</div>
+</div></div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #df5000">'Jane&nbsp;Doe'</span>:&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div>new&nbsp;Person(<span style="color: #df5000">'Janie&nbsp;Doe'</span>,&nbsp;<span style="color: #0086b3">24</span>)</div>
+</div>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">//</span></div>
+  <div><span style="color: red; font-weight: bold">//</span></div>
+  <div><span style="color: red; font-weight: bold">//</span></div>
+  <div><span style="color: red; font-weight: bold">//</span></div>
+  <div><span style="color: red; font-weight: bold">//</span></div>
+  <div><span style="color: red; font-weight: bold">//</span></div>
+  <div><span style="color: red; font-weight: bold">//</span></div>
+</div>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">should&nbsp;equal</span>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div>new&nbsp;Person(<span style="color: #df5000">'Jane&nbsp;Doe'</span>,&nbsp;<span style="color: #0086b3">24</span>)</div>
+</div></div>
+  <div>new&nbsp;Person(</div>
+  <div>&nbsp;&nbsp;<span style="color: #df5000">'Janie&nbsp;Doe'</span>,&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">//</span></div>
+  <div><span style="color: red; font-weight: bold">//</span></div>
+  <div><span style="color: red; font-weight: bold">//</span></div>
+</div>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">should&nbsp;be&nbsp;</span><span style="color: #df5000">'Jane&nbsp;Doe'</span></div>
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red">-</span></div>
+</div><div style="display: inline-block; vertical-align: top">
+  <div><span style="background-color: red; color: white">Janie</span><span style="color: red">&nbsp;Doe</span></div>
+</div></div>
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: green">+</span></div>
+</div><div style="display: inline-block; vertical-align: top">
+  <div><span style="background-color: green; color: white">Jane</span><span style="color: green">&nbsp;Doe</span></div>
+</div></div>
+</div></div>
+  <div>&nbsp;&nbsp;<span style="color: #0086b3">24</span></div>
+  <div>)</div>
+</div></div>
+</div></div>
+  <div>}</div>
+</div><p>Now that we have implemented a type, we can start adding assertions to
+it. These assertions will only work on this type or types inheriting
+from the type.</p>
+<div class="code lang-javascript">
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span><span style="color: #df5000">'Person'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;above&nbsp;legal&nbsp;age'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">(</span>expect<span style="color: #000000">,</span>&nbsp;subject<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>subject<span style="color: #000000">.</span>age<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;greater&nbsp;than&nbsp;or&nbsp;equal&nbsp;to'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">18</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #000000">});</span></div>
+  <div>&nbsp;</div>
+  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #0086b3">new</span>&nbsp;Person<span style="color: #000000">(</span><span style="color: #df5000">'Jane&nbsp;Doe'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">24</span><span style="color: #000000">),</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;above&nbsp;legal&nbsp;age'</span><span style="color: #000000">);</span></div>
+</div><p>Because <code>Person</code> inherits from <code>object</code> you can use all assertion
+defined for <code>object</code> or any of it&#39;s ancestors. Here is an example:</p>
+<div class="code lang-javascript">
+  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #0086b3">new</span>&nbsp;Person<span style="color: #000000">(</span><span style="color: #df5000">'Jane&nbsp;Doe'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">24</span><span style="color: #000000">),</span>&nbsp;<span style="color: #df5000">'to&nbsp;have&nbsp;keys'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'name'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'age'</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #0086b3">new</span>&nbsp;Person<span style="color: #000000">(</span><span style="color: #df5000">'Jane&nbsp;Doe'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">24</span><span style="color: #000000">),</span>&nbsp;<span style="color: #df5000">'to&nbsp;satisfy'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;name<span style="color: #000000">:</span>&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">it</span><span style="color: #000000">(</span><span style="color: #df5000">'to&nbsp;be&nbsp;a&nbsp;string'</span><span style="color: #000000">).</span><span style="color: #000000">and</span><span style="color: #000000">(</span><span style="color: #df5000">'not&nbsp;to&nbsp;be&nbsp;empty'</span><span style="color: #000000">),</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;age<span style="color: #000000">:</span>&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">it</span><span style="color: #000000">(</span><span style="color: #df5000">'to&nbsp;be&nbsp;a&nbsp;number'</span><span style="color: #000000">).</span><span style="color: #000000">and</span><span style="color: #000000">(</span><span style="color: #df5000">'not&nbsp;to&nbsp;be&nbsp;negative'</span><span style="color: #000000">)</span></div>
+  <div><span style="color: #000000">});</span></div>
+</div><p>The best resource for learning more about custom types is to look at
+how the predefined types are build:</p>
+<p><a href="https://github.com/unexpectedjs/unexpected/blob/master/lib/types.js">lib/types.js</a></p>
+
+        </div>
+    </div>
+</section>
+<script type="text/javascript" src="../../static/toggleSidebar.js"></script>
+<script type="text/javascript" src="../../static/rememberScrollPosition.js"></script>
+</body>
+</html>
+
