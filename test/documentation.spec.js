@@ -1824,7 +1824,7 @@ describe("documentation tests", function () {
                'to match', /^[a-z]{3}$/);
 
         expect(['foo', 'bar', 'baz', 'qux'],
-               'to be a non-empty map whose keys satisfy',
+               'to be a non-empty hash whose keys satisfy',
                'to match', /^\d+$/);
 
         try {
