@@ -215,6 +215,10 @@ code {
 }
 
 @media only screen and (max-width : 900px) {
+    .search {
+        display: none;
+    }
+
     body {
         font-size: 0.9em;
     }
@@ -309,5 +313,40 @@ code {
 
     .github-ribbon {
         display: none;
+    }
+}
+
+.search {
+    color: black;
+    position: absolute;
+    top: 9px;
+    right: 9px;
+    input {
+        width: 200px;
+    }
+    .dropDown {
+        position: absolute;
+        visibility: hidden;
+        top: 100%;
+        min-width: 100%;
+        right: 0;
+        height: auto;
+        background-color: white;
+        border: thin solid gray;
+        border-top: none;
+        box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.5);
+        white-space: nowrap;
+        box-sizing: border-box;
+        ul {
+            margin: 0;
+            padding: 0;
+            li {
+                list-style: none;
+                padding: 4px;
+                &.active {
+                    background-color: lighten(gray, 40%);
+                }
+            }
+        }
     }
 }

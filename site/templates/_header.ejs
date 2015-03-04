@@ -20,4 +20,10 @@
                 <li class="<%- path.match(/^api\/?/) ? 'active' : '' %>"><a href="<%= relative(collections.apiPages[0].url)%>">API</a></li>
             </ul>
         </nav>
+        <div class="search" style="visibility: hidden">
+            <input id="search" placeholder="Search..." value="">
+            <div id="searchDropDown" class="dropDown">
+                <ul id="searchResults"></ul>
+            </div>
+        </div>
     </header>

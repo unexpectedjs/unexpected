@@ -67,6 +67,26 @@ metalSmith(__dirname)
         metadata.assertionsByType = assertionsByType;
         next();
     })
+    .use(function (files, metalsmith, next) {
+        var metadata = metalsmith.metadata();
+        var indexData = [];
+
+        metadata.collections.apiPages.forEach(function (assertion) {
+            indexData.push({
+                label: assertion.title + ' (api)',
+                url: assertion.url
+            });
+        });
+
+        metadata.collections.assertions.forEach(function (assertion) {
+            indexData.push({
+                label: assertion.title + ' (' + assertion.type + ')',
+                url: assertion.url
+            });
+        });
+        files['searchIndex.json'] = { contents: JSON.stringify(indexData, null, 2) };
+        next();
+    })
     .use(require('./metalsmith-unexpected-markdown')())
     // permalinks with no options will just make pretty urls...
     .use(require('metalsmith-permalinks')({ relative: false }))
