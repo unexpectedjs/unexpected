@@ -43,7 +43,7 @@ ifneq ($(shell git describe --always --dirty | grep -- -dirty),)
 endif
 
 .PHONY: deploy-site
-deploy-site: site-build git-dirty-check
+deploy-site: git-dirty-check site-build
 	git checkout site-build
 	rm `git ls-files | grep -v '^\.gitignore$$'`
 	cp -r site-build/* .
@@ -55,12 +55,15 @@ deploy-site: site-build git-dirty-check
 	fi
 	git checkout master
 
-.PHONY: release-%
-release-%: git-dirty-check lint ${TARGETS} test-phantomjs deploy-site
-	git add unexpected.js site-build
+.PHONY: commit-unexpected
+commit-unexpected: unexpected.js
+	git add unexpected.js
 	if [ "`git status --porcelain`" != "" ]; then \
 		git commit -m "Build unexpected.js" ; \
 	fi
+
+.PHONY: release-%
+release-%: git-dirty-check lint ${TARGETS} test-phantomjs commit-unexpected deploy-site
 	npm version $*
 	@echo $* release ready to be publised to NPM
 	@echo Remember to push tags
