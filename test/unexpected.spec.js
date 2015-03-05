@@ -778,7 +778,7 @@ describe('unexpected', function () {
             }, 'not to throw exception', /matches the exception message/);
         });
 
-        it('provides a diff when the exception message does not match the given string', function () {
+        it.skipIf(phantomJsErrorWeirdness, 'provides a diff when the exception message does not match the given string', function () {
             expect(function () {
                 expect(function testFunction() {
                     throw new Error('bar');
@@ -789,10 +789,36 @@ describe('unexpected', function () {
                     '    throw new Error(\'bar\');\n' +
                     '}\n' +
                     'to throw \'foo\'\n' +
-                    '  expected \'bar\' to equal \'foo\'\n' +
+                    "  expected Error({ message: 'bar' }) to satisfy 'foo'\n" +
                     '\n' +
                     '  -bar\n' +
                     '  +foo');
+        });
+
+        it('matches the error against the given error instance', function () {
+            expect(function () {
+                throw new Error('matches the exception message');
+            }, 'to throw exception', new Error('matches the exception message'));
+        });
+
+        it.skipIf(phantomJsErrorWeirdness, 'provides a diff when the thrown error does not match the given error instance', function () {
+            expect(function () {
+                expect(function testFunction() {
+                    throw new Error('Custom error');
+                }, 'to throw exception', new Error('My error'));
+            }, 'to throw',
+                   'expected\n' +
+                   'function testFunction() {\n' +
+                   '    throw new Error(\'Custom error\');\n' +
+                   '}\n' +
+                   "to throw exception Error({ message: 'My error' })\n" +
+                   "  expected Error({ message: 'Custom error' }) to satisfy Error({ message: 'My error' })\n" +
+                   "\n" +
+                   "  Error({\n" +
+                   "    message: 'Custom error' // should equal 'My error'\n" +
+                   "                            // -Custom error\n" +
+                   "                            // +My error\n" +
+                   "  })");
         });
 
         it('exactly matches the message against the given string', function () {
@@ -1497,8 +1523,6 @@ describe('unexpected', function () {
     });
 
     describe('to satisfy assertion', function () {
-        // These are the examples from #40:
-
         it('forwards normal errors to the top-level', function () {
             expect(function () {
                 expect({
@@ -1590,6 +1614,22 @@ describe('unexpected', function () {
 
             it('should support satisfying against a regexp', function () {
                 expect(new Error('foo'), 'to satisfy', /foo/);
+            });
+
+            describe('when satisfying against a function', function () {
+                it('should succeed if the function does not throw', function () {
+                    expect(new Error('foo'), 'to satisfy', function (err) {
+                        expect(err, 'to be an', Error);
+                    });
+                });
+
+                it('fails when the function throws', function () {
+                    expect(function () {
+                        expect(new Error('Custom message'), 'to satisfy', function (err) {
+                            expect(err, 'to be a', TypeError);
+                        });
+                    }, 'to throw', "expected Error({ message: 'Custom message' }) to be a TypeError");
+                });
             });
         });
 

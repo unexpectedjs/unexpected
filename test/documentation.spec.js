@@ -1321,7 +1321,7 @@ describe("documentation tests", function () {
                 "  throw new Error('The error message!');\n" +
                 "}\n" +
                 "to throw 'The error message'\n" +
-                "  expected 'The error message!' to equal 'The error message'\n" +
+                "  expected Error({ message: 'The error message!' }) to satisfy 'The error message'\n" +
                 "\n" +
                 "  -The error message!\n" +
                 "  +The error message"
@@ -1350,7 +1350,7 @@ describe("documentation tests", function () {
                 "  throw new Error('The error message!');\n" +
                 "}\n" +
                 "to throw /catastrophic failure/\n" +
-                "  expected 'The error message!' to match /catastrophic failure/"
+                "  expected Error({ message: 'The error message!' }) to satisfy /catastrophic failure/"
             );
         }
 
@@ -1377,7 +1377,15 @@ describe("documentation tests", function () {
             });
         } catch (e) {
             expect(e, "to have message",
-                "expected Error({ message: 'Another error' }) to be a TypeError"
+                "expected\n" +
+                "function () {\n" +
+                "  throw new Error('Another error');\n" +
+                "}\n" +
+                "to throw\n" +
+                "function (e) {\n" +
+                "  expect(e, 'to be a', TypeError);\n" +
+                "}\n" +
+                "  expected Error({ message: 'Another error' }) to be a TypeError"
             );
         }
 
@@ -1429,9 +1437,7 @@ describe("documentation tests", function () {
                 "  throw new Error('The correct error message');\n" +
                 "}\n" +
                 "not to throw /error/\n" +
-                "  expected 'The correct error message' not to match /error/\n" +
-                "\n" +
-                "  The correct error message"
+                "  expected Error({ message: 'The correct error message' }) not to satisfy /error/"
             );
         }
     });

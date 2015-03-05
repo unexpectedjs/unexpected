@@ -42,7 +42,7 @@ function () {
   throw new Error('The error message!');
 }
 to throw 'The error message'
-  expected 'The error message!' to equal 'The error message'
+  expected Error({ message: 'The error message!' }) to satisfy 'The error message'
 
   -The error message!
   +The error message
@@ -71,7 +71,7 @@ function () {
   throw new Error('The error message!');
 }
 to throw /catastrophic failure/
-  expected 'The error message!' to match /catastrophic failure/
+  expected Error({ message: 'The error message!' }) to satisfy /catastrophic failure/
 ```
 
 You can also provide a function as the second parameter to do
@@ -96,7 +96,15 @@ expect(function () {
 ```
 
 ```output
-expected Error({ message: 'Another error' }) to be a TypeError
+expected
+function () {
+  throw new Error('Another error');
+}
+to throw
+function (e) {
+  expect(e, 'to be a', TypeError);
+}
+  expected Error({ message: 'Another error' }) to be a TypeError
 ```
 
 This assertion can be negated using the `not` flag:
@@ -147,7 +155,5 @@ function () {
   throw new Error('The correct error message');
 }
 not to throw /error/
-  expected 'The correct error message' not to match /error/
-
-  The correct error message
+  expected Error({ message: 'The correct error message' }) not to satisfy /error/
 ```
