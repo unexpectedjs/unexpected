@@ -1392,29 +1392,20 @@ module.exports = function (expect) {
         this.errorMode = 'nested';
 
         var thrown = false;
-        var argType = typeof arg;
+        var hasArg = arguments.length > 2;
 
         try {
             subject();
         } catch (e) {
-            if ('function' === argType) {
-                arg(e);
-            } else {
-                var message,
-                    isUnexpected = e && e._isUnexpected;
-                if (isUnexpected) {
-                    message = e.output.toString();
-                } else if (e && Object.prototype.toString.call(e) === '[object Error]') {
-                    message = e.message;
+            var isUnexpected = e && e._isUnexpected;
+            if (hasArg) {
+                if (isUnexpected && (typeof arg === 'string' || isRegExp(arg))) {
+                    expect(e.output.toString(), '[not] to satisfy', arg);
                 } else {
-                    message = String(e);
+                    expect(e, '[not] to satisfy', arg);
                 }
-
-                if ('string' === argType) {
-                    expect(message, '[not] to equal', arg);
-                } else if (isRegExp(arg)) {
-                    expect(message, '[not] to match', arg);
-                } else if (this.flags.not) {
+            } else {
+                if (this.flags.not) {
                     expect.fail('threw: {0}', isUnexpected ? e.output : expect.inspect(e));
                 }
             }
@@ -1422,7 +1413,7 @@ module.exports = function (expect) {
         }
 
         this.errorMode = 'default';
-        if ('string' === argType || isRegExp(arg)) {
+        if (hasArg) {
             // in the presence of a matcher, ensure the `not` only applies to
             // the matching.
             expect(thrown, 'to be truthy');
@@ -1608,6 +1599,8 @@ module.exports = function (expect) {
         var valueType = expect.findTypeOf(value);
         if (valueType.is('Error')) {
             expect(subject, 'to have properties', valueType.unwrap(value));
+        } else if (typeof value === 'function') {
+            value(subject);
         } else if (valueType.is('object')) {
             var keys = valueType.getKeys(value);
             keys.forEach(function (key) {
@@ -1720,7 +1713,7 @@ module.exports = function (expect) {
                                     try {
                                         expect(subject[key], 'to [exhaustively] satisfy', value[key]);
                                     } catch (e) {
-                                        if (!e._isUnexpected && !value[key]._expectIt) {
+                                        if (!e._isUnexpected) {
                                             expect.fail(e);
                                         }
                                         conflicting = e;
