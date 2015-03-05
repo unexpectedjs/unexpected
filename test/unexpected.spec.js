@@ -1499,6 +1499,16 @@ describe('unexpected', function () {
     describe('to satisfy assertion', function () {
         // These are the examples from #40:
 
+        it('forwards normal errors to the top-level', function () {
+            expect(function () {
+                expect({
+                    foo: 'foo'
+                }, 'to satisfy', function (value) {
+                    throw new Error('Custom error');
+                });
+            }, 'to throw', 'Custom error');
+        });
+
         it('should support expect.it in the RHS object', function () {
             expect({foo: 'bar'}, 'to satisfy', {
                 foo: expect.it('to be a string')
