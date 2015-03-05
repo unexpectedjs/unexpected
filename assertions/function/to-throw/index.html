@@ -36,6 +36,10 @@
                 </li>
                 
                 <li class="">
+                    <a href="../../any/to-be-defined">to be defined</a>
+                </li>
+                
+                <li class="">
                     <a href="../../any/to-be-falsy">to be falsy</a>
                 </li>
                 
@@ -67,10 +71,6 @@
                     <a href="../../any/to-satisfy">to satisfy</a>
                 </li>
                 
-                <li class="">
-                    <a href="../../any/to-be-defined">to be defined</a>
-                </li>
-                
             </ul>
         </li>
         
@@ -83,10 +83,6 @@
                 </li>
                 
                 <li class="">
-                    <a href="../../array/to-be-empty">to be empty</a>
-                </li>
-                
-                <li class="">
                     <a href="../../array/to-be-non-empty">to be non-empty</a>
                 </li>
                 
@@ -96,6 +92,10 @@
                 
                 <li class="">
                     <a href="../../array/to-have-length">to have length</a>
+                </li>
+                
+                <li class="">
+                    <a href="../../array/to-be-empty">to be empty</a>
                 </li>
                 
             </ul>
@@ -144,7 +144,7 @@
                 </li>
                 
                 <li class="">
-                    <a href="../../number/to-be-close-to">to be close to</a>
+                    <a href="../../number/to-be-NaN">to be NaN</a>
                 </li>
                 
                 <li class="">
@@ -156,7 +156,7 @@
                 </li>
                 
                 <li class="">
-                    <a href="../../number/to-be-NaN">to be NaN</a>
+                    <a href="../../number/to-be-close-to">to be close to</a>
                 </li>
                 
                 <li class="">
@@ -304,7 +304,7 @@ string as the second parameter.</p>
   <div><span style="color: #000000">}</span></div>
   <div><span style="color: red; font-weight: bold">to&nbsp;throw</span>&nbsp;<span style="color: #df5000">'The&nbsp;error&nbsp;message'</span></div>
   <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
-  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #df5000">'The&nbsp;error&nbsp;message!'</span>&nbsp;<span style="color: red; font-weight: bold">to&nbsp;equal</span>&nbsp;<span style="color: #df5000">'The&nbsp;error&nbsp;message'</span></div>
+  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;Error({&nbsp;<span style="color: #555">message</span>:&nbsp;<span style="color: #df5000">'The&nbsp;error&nbsp;message!'</span>&nbsp;})&nbsp;<span style="color: red; font-weight: bold">to&nbsp;satisfy</span>&nbsp;<span style="color: #df5000">'The&nbsp;error&nbsp;message'</span></div>
   <div>&nbsp;</div>
   <div><div style="display: inline-block; vertical-align: top">
   <div><span style="color: red">-</span></div>
@@ -335,7 +335,7 @@ assert the error message matches the given regular expression.</p>
   <div><span style="color: #000000">}</span></div>
   <div><span style="color: red; font-weight: bold">to&nbsp;throw</span>&nbsp;<span style="color: #df5000">/catastrophic&nbsp;failure/</span></div>
   <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
-  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #df5000">'The&nbsp;error&nbsp;message!'</span>&nbsp;<span style="color: red; font-weight: bold">to&nbsp;match</span>&nbsp;<span style="color: #df5000">/catastrophic&nbsp;failure/</span></div>
+  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;Error({&nbsp;<span style="color: #555">message</span>:&nbsp;<span style="color: #df5000">'The&nbsp;error&nbsp;message!'</span>&nbsp;})&nbsp;<span style="color: red; font-weight: bold">to&nbsp;satisfy</span>&nbsp;<span style="color: #df5000">/catastrophic&nbsp;failure/</span></div>
 </div></div>
 </div><p>You can also provide a function as the second parameter to do
 arbitrary assertions on the error.</p>
@@ -353,7 +353,17 @@ arbitrary assertions on the error.</p>
   <div>&nbsp;&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>e<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;a'</span><span style="color: #000000">,</span>&nbsp;TypeError<span style="color: #000000">);</span></div>
   <div><span style="color: #000000">});</span></div>
 </div><div class="output">
+  <div><span style="color: red; font-weight: bold">expected</span></div>
+  <div><span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #0086b3">throw</span>&nbsp;<span style="color: #0086b3">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'Another&nbsp;error'</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #000000">}</span></div>
+  <div><span style="color: red; font-weight: bold">to&nbsp;throw</span></div>
+  <div><span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">(</span>e<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>e<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;a'</span><span style="color: #000000">,</span>&nbsp;TypeError<span style="color: #000000">);</span></div>
+  <div><span style="color: #000000">}</span></div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
   <div><span style="color: red; font-weight: bold">expected</span>&nbsp;Error({&nbsp;<span style="color: #555">message</span>:&nbsp;<span style="color: #df5000">'Another&nbsp;error'</span>&nbsp;})&nbsp;<span style="color: red; font-weight: bold">to&nbsp;be&nbsp;a</span>&nbsp;TypeError</div>
+</div></div>
 </div><p>This assertion can be negated using the <code>not</code> flag:</p>
 <div class="code lang-javascript">
   <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
@@ -391,9 +401,7 @@ message.</p>
   <div><span style="color: #000000">}</span></div>
   <div><span style="color: red; font-weight: bold">not&nbsp;to&nbsp;throw</span>&nbsp;<span style="color: #df5000">/error/</span></div>
   <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
-  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #df5000">'The&nbsp;correct&nbsp;error&nbsp;message'</span>&nbsp;<span style="color: red; font-weight: bold">not&nbsp;to&nbsp;match</span>&nbsp;<span style="color: #df5000">/error/</span></div>
-  <div>&nbsp;</div>
-  <div>The&nbsp;correct&nbsp;<span style="background-color: red; color: white">error</span>&nbsp;message</div>
+  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;Error({&nbsp;<span style="color: #555">message</span>:&nbsp;<span style="color: #df5000">'The&nbsp;correct&nbsp;error&nbsp;message'</span>&nbsp;})&nbsp;<span style="color: red; font-weight: bold">not&nbsp;to&nbsp;satisfy</span>&nbsp;<span style="color: #df5000">/error/</span></div>
 </div></div>
 </div>
         </div>
