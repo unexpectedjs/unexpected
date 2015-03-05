@@ -156,6 +156,7 @@ function Unexpected(options) {
     this.output = options.output || magicpen();
     this._outputFormat = options.format || magicpen.defaultFormat;
     this.installedPlugins = options.installedPlugins || [];
+    this.nestingLevel = 0;
 }
 
 var OR = {};
@@ -383,7 +384,7 @@ Unexpected.prototype.fail = function (arg) {
     var error = new Error();
     error._isUnexpected = true;
     error.output = output;
-    if (nestingLevel === 0) {
+    if (this.nestingLevel === 0) {
         this.setErrorMessage(error);
     }
     throw error;
@@ -670,7 +671,6 @@ Unexpected.prototype.setErrorMessage = function (err) {
     }
 };
 
-var nestingLevel = 0;
 Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
     var that = this;
     if (arguments.length < 2) {
@@ -691,27 +691,27 @@ Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
         var flags = extend({}, assertionRule.flags);
 
         var callInNestedContext = function (callback) {
-            if (nestingLevel === 0) {
+            if (that.nestingLevel === 0) {
                 setTimeout(function () {
-                    nestingLevel = 0;
+                    that.nestingLevel = 0;
                 }, 0);
             }
 
-            nestingLevel += 1;
+            that.nestingLevel += 1;
             try {
                 callback();
             } catch (e) {
                 if (e._isUnexpected) {
                     truncateStack(e, wrappedExpect);
                     var wrappedError = handleNestedExpects(wrappedExpect, e, assertion);
-                    if (nestingLevel === 1) {
+                    if (that.nestingLevel === 1) {
                         that.setErrorMessage(wrappedError);
                     }
                     throw wrappedError;
                 }
                 throw e;
             } finally {
-                nestingLevel -= 1;
+                that.nestingLevel -= 1;
             }
         };
 
@@ -810,7 +810,7 @@ Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
         missingAssertionError.output = errorMessage;
         missingAssertionError._isUnexpected = true;
         missingAssertionError.errorMode = 'bubble';
-        if (nestingLevel === 0) {
+        if (that.nestingLevel === 0) {
             this.setErrorMessage(missingAssertionError);
         }
         this.fail(missingAssertionError);
