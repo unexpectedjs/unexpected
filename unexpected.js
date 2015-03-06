@@ -97,7 +97,11 @@ Assertion.prototype.standardErrorMessage = function () {
 Assertion.prototype.shift = function (expect, subject, assertionIndex) {
     var rest = this.args.slice(assertionIndex);
     this.args[assertionIndex] = expect.output.clone().error(this.args[assertionIndex]);
-    expect.apply(expect, [subject].concat(rest));
+    if (typeof rest[0] === 'function') {
+        rest[0](subject);
+    } else {
+        expect.apply(expect, [subject].concat(rest));
+    }
 };
 
 Assertion.prototype.throwStandardError = function () {
