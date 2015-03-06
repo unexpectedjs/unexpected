@@ -44,7 +44,8 @@ endif
 
 .PHONY: deploy-site
 deploy-site: git-dirty-check site-build
-	git checkout site-build
+	git fetch origin site-build
+	git checkout -B site-build origin/site-build
 	rm `git ls-files | grep -v '^\.gitignore$$'`
 	cp -r site-build/* .
 	if [ "`git status --porcelain`" != "" ]; then \
