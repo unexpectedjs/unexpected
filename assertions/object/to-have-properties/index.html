@@ -21,6 +21,12 @@
                 <li class=""><a href="../../../api/addAssertion">API</a></li>
             </ul>
         </nav>
+        <div class="search" style="visibility: hidden">
+            <input id="search" placeholder="Search..." value="">
+            <div id="searchDropDown" class="dropDown">
+                <ul id="searchResults"></ul>
+            </div>
+        </div>
     </header>
 
 <section id="assertions">
@@ -354,6 +360,10 @@
 </section>
 <script type="text/javascript" src="../../../static/toggleSidebar.js"></script>
 <script type="text/javascript" src="../../../static/rememberScrollPosition.js"></script>
+<script type="text/javascript">
+    var searchIndexPath = "../../../searchIndex.json";
+</script>
+<script type="text/javascript" src="../../../static/search.js"></script>
 </body>
 </html>
 

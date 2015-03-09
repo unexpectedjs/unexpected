@@ -20,6 +20,12 @@
                 <li class=""><a href="api/addAssertion">API</a></li>
             </ul>
         </nav>
+        <div class="search" style="visibility: hidden">
+            <input id="search" placeholder="Search..." value="">
+            <div id="searchDropDown" class="dropDown">
+                <ul id="searchResults"></ul>
+            </div>
+        </div>
     </header>
 
 <div class="main theme-dark">
@@ -135,7 +141,7 @@ and shown/processed by the test runner.</p>
 <li>Removed grammatically incorrect assertions.</li>
 </ul>
 <h2 id="mit-license">MIT License</h2>
-<p>Copyright (c) 2013 Sune Simonsen <a href="&#109;&#x61;&#x69;&#x6c;&#116;&#x6f;&#x3a;&#115;&#117;&#x6e;&#101;&#64;&#x77;&#x65;&#45;&#107;&#110;&#x6f;&#119;&#x68;&#x6f;&#x77;&#46;&#x64;&#x6b;">&#115;&#117;&#x6e;&#101;&#64;&#x77;&#x65;&#45;&#107;&#110;&#x6f;&#119;&#x68;&#x6f;&#x77;&#46;&#x64;&#x6b;</a></p>
+<p>Copyright (c) 2013 Sune Simonsen <a href="&#109;&#97;&#105;&#108;&#116;&#x6f;&#x3a;&#x73;&#117;&#x6e;&#101;&#64;&#119;&#x65;&#45;&#x6b;&#x6e;&#111;&#119;&#104;&#111;&#x77;&#x2e;&#x64;&#107;">&#x73;&#117;&#x6e;&#101;&#64;&#119;&#x65;&#45;&#x6b;&#x6e;&#111;&#119;&#104;&#111;&#x77;&#x2e;&#x64;&#107;</a></p>
 <p>Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
 &#39;Software&#39;), to deal in the Software without restriction, including
@@ -158,6 +164,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
 </div>
 <script type="text/javascript" src="static/toggleSidebar.js"></script>
 <script type="text/javascript" src="static/rememberScrollPosition.js"></script>
+<script type="text/javascript">
+    var searchIndexPath = "searchIndex.json";
+</script>
+<script type="text/javascript" src="static/search.js"></script>
 </body>
 </html>
 

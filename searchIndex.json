@@ -1,0 +1,218 @@
+[
+  {
+    "label": "addAssertion (api)",
+    "url": "/api/addAssertion/"
+  },
+  {
+    "label": "addType (api)",
+    "url": "/api/addType/"
+  },
+  {
+    "label": "clone (api)",
+    "url": "/api/clone/"
+  },
+  {
+    "label": "fail (api)",
+    "url": "/api/fail/"
+  },
+  {
+    "label": "installPlugin (api)",
+    "url": "/api/installPlugin/"
+  },
+  {
+    "label": "toString (api)",
+    "url": "/api/toString/"
+  },
+  {
+    "label": "to be infinite (number)",
+    "url": "/assertions/number/to-be-infinite/"
+  },
+  {
+    "label": "to be a (any)",
+    "url": "/assertions/any/to-be-a/"
+  },
+  {
+    "label": "to be falsy (any)",
+    "url": "/assertions/any/to-be-falsy/"
+  },
+  {
+    "label": "to be null (any)",
+    "url": "/assertions/any/to-be-null/"
+  },
+  {
+    "label": "to be ok (any)",
+    "url": "/assertions/any/to-be-ok/"
+  },
+  {
+    "label": "to be truthy (any)",
+    "url": "/assertions/any/to-be-truthy/"
+  },
+  {
+    "label": "to be undefined (any)",
+    "url": "/assertions/any/to-be-undefined/"
+  },
+  {
+    "label": "to be (any)",
+    "url": "/assertions/any/to-be/"
+  },
+  {
+    "label": "to equal (any)",
+    "url": "/assertions/any/to-equal/"
+  },
+  {
+    "label": "to satisfy (any)",
+    "url": "/assertions/any/to-satisfy/"
+  },
+  {
+    "label": "to be an array whose items satisfy (array)",
+    "url": "/assertions/array/to-be-an-array-whose-items-satisfy/"
+  },
+  {
+    "label": "to be empty (array)",
+    "url": "/assertions/array/to-be-empty/"
+  },
+  {
+    "label": "to be non-empty (array)",
+    "url": "/assertions/array/to-be-non-empty/"
+  },
+  {
+    "label": "to contain (array)",
+    "url": "/assertions/array/to-contain/"
+  },
+  {
+    "label": "to have length (array)",
+    "url": "/assertions/array/to-have-length/"
+  },
+  {
+    "label": "to be false (boolean)",
+    "url": "/assertions/boolean/to-be-false/"
+  },
+  {
+    "label": "to be true (boolean)",
+    "url": "/assertions/boolean/to-be-true/"
+  },
+  {
+    "label": "to have arity (function)",
+    "url": "/assertions/function/to-have-arity/"
+  },
+  {
+    "label": "to throw (function)",
+    "url": "/assertions/function/to-throw/"
+  },
+  {
+    "label": "to be NaN (number)",
+    "url": "/assertions/number/to-be-NaN/"
+  },
+  {
+    "label": "to be close to (number)",
+    "url": "/assertions/number/to-be-close-to/"
+  },
+  {
+    "label": "to be finite (number)",
+    "url": "/assertions/number/to-be-finite/"
+  },
+  {
+    "label": "to be greater than or equal to (number)",
+    "url": "/assertions/number/to-be-greater-than-or-equal-to/"
+  },
+  {
+    "label": "to be greater than (number)",
+    "url": "/assertions/number/to-be-greater-than/"
+  },
+  {
+    "label": "to be defined (any)",
+    "url": "/assertions/any/to-be-defined/"
+  },
+  {
+    "label": "to be less than or equal to (number)",
+    "url": "/assertions/number/to-be-less-than-or-equal-to/"
+  },
+  {
+    "label": "to be less than (number)",
+    "url": "/assertions/number/to-be-less-than/"
+  },
+  {
+    "label": "to be negative (number)",
+    "url": "/assertions/number/to-be-negative/"
+  },
+  {
+    "label": "to be positive (number)",
+    "url": "/assertions/number/to-be-positive/"
+  },
+  {
+    "label": "to be within (number)",
+    "url": "/assertions/number/to-be-within/"
+  },
+  {
+    "label": "to be a map whose keys satisfy (object)",
+    "url": "/assertions/object/to-be-a-map-whose-keys-satisfy/"
+  },
+  {
+    "label": "to be a map whose values satisfy (object)",
+    "url": "/assertions/object/to-be-a-map-whose-values-satisfy/"
+  },
+  {
+    "label": "to be canonical (object)",
+    "url": "/assertions/object/to-be-canonical/"
+  },
+  {
+    "label": "to have key (object)",
+    "url": "/assertions/object/to-have-key/"
+  },
+  {
+    "label": "to have keys (object)",
+    "url": "/assertions/object/to-have-keys/"
+  },
+  {
+    "label": "to have properties (object)",
+    "url": "/assertions/object/to-have-properties/"
+  },
+  {
+    "label": "to have property (object)",
+    "url": "/assertions/object/to-have-property/"
+  },
+  {
+    "label": "to be empty (string)",
+    "url": "/assertions/string/to-be-empty/"
+  },
+  {
+    "label": "to be greater than or equal to (string)",
+    "url": "/assertions/string/to-be-greater-than-or-equal-to/"
+  },
+  {
+    "label": "to be greater than (string)",
+    "url": "/assertions/string/to-be-greater-than/"
+  },
+  {
+    "label": "to be less than or equal to (string)",
+    "url": "/assertions/string/to-be-less-than-or-equal-to/"
+  },
+  {
+    "label": "to be less than (string)",
+    "url": "/assertions/string/to-be-less-than/"
+  },
+  {
+    "label": "to be non-empty (string)",
+    "url": "/assertions/string/to-be-non-empty/"
+  },
+  {
+    "label": "to be within (string)",
+    "url": "/assertions/string/to-be-within/"
+  },
+  {
+    "label": "to be (string)",
+    "url": "/assertions/string/to-be/"
+  },
+  {
+    "label": "to contain (string)",
+    "url": "/assertions/string/to-contain/"
+  },
+  {
+    "label": "to have length (string)",
+    "url": "/assertions/string/to-have-length/"
+  },
+  {
+    "label": "to match (string)",
+    "url": "/assertions/string/to-match/"
+  }
+]
