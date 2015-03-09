@@ -137,6 +137,9 @@ function setupSearch(searchIndex) {
 
     search.addEventListener('keyup', function (e) {
         if (e.which === keys.escape) {
+            query = '';
+            search.value = '';
+            renderMatches([]);
             search.blur();
         } else if (e.which !== keys.enter && search.value !== query) {
             query = search.value.toLowerCase();
