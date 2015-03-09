@@ -21,7 +21,7 @@ function setupSearch(searchIndex) {
     searchDropDown.addEventListener('mousedown', function (e) {
         if (e.button === 0 && e.target.hasAttribute('data-index')) {
             var index = e.target.getAttribute('data-index');
-            window.navigator.href = renderedMatches[index].url;
+            window.location.href = renderedMatches[index].url;
         }
     });
 
