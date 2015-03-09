@@ -3994,6 +3994,19 @@ describe('unexpected', function () {
                       );
 
                 expect(function () {
+                    expect([1, 2, 3, 0], 'to equal', [0, 1, 2, 3]);
+                }, 'to throw',
+                       "expected [ 1, 2, 3, 0 ] to equal [ 0, 1, 2, 3 ]\n" +
+                       "\n" +
+                       "[\n" +
+                       "  // missing 0\n" +
+                       "  1,\n" +
+                       "  2,\n" +
+                       "  3,\n" +
+                       "  0 // should be removed\n" +
+                       "]");
+
+                expect(function () {
                     expect([4, 3, 1, 2], 'to equal', [3, 4]);
                 }, 'to throw', 'expected [ 4, 3, 1, 2 ] to equal [ 3, 4 ]\n' +
                        '\n' +
