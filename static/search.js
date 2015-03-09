@@ -160,8 +160,6 @@ var getJSON = function(url, successHandler, errorHandler) {
   xhr.send();
 };
 
-if (!('ontouchstart' in window)) {
-    getJSON(searchIndexPath, function(status, data) {
-        setupSearch(data);
-    });
-}
+getJSON(searchIndexPath, function(status, data) {
+    setupSearch(data);
+});
