@@ -4,12 +4,12 @@
     "url": "/api/addAssertion/"
   },
   {
-    "label": "addType (api)",
-    "url": "/api/addType/"
-  },
-  {
     "label": "clone (api)",
     "url": "/api/clone/"
+  },
+  {
+    "label": "addType (api)",
+    "url": "/api/addType/"
   },
   {
     "label": "fail (api)",
