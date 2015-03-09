@@ -117,10 +117,10 @@ module.exports = Assertion;
 /*global setTimeout*/
 var Assertion = require(1);
 var utils = require(6);
-var magicpen = require(19);
+var magicpen = require(20);
 var truncateStack = utils.truncateStack;
 var extend = utils.extend;
-var leven = require(15);
+var leven = require(16);
 var cloneError = utils.cloneError;
 
 var anyType = {
@@ -1928,8 +1928,8 @@ var utils = require(6);
 var isRegExp = utils.isRegExp;
 var leftPad = utils.leftPad;
 var extend = utils.extend;
-var arrayDiff = require(8);
-var leven = require(15);
+var arrayChanges = require(8);
+var leven = require(16);
 
 module.exports = function (expect) {
     expect.addType({
@@ -2298,152 +2298,11 @@ module.exports = function (expect) {
                 return this.baseType.diff(actual, expected);
             }
 
-            var mutatedArray = new Array(actual.length);
-            for (var k = 0; k < actual.length; k += 1) {
-                mutatedArray[k] = {
-                    type: 'similar',
-                    value: actual[k]
-                };
-            }
-
-            if (mutatedArray.length > 0) {
-                mutatedArray[mutatedArray.length - 1].last = true;
-            }
-
-            var itemsDiff = arrayDiff(actual, expected, function (a, b) {
-                return equal(a, b) || structurallySimilar(a, b);
-            });
-
-            var removeTable = [];
-            function offsetIndex(index) {
-                return index + (removeTable[index - 1] || 0);
-            }
-
-            var removes = itemsDiff.filter(function (diffItem) {
-                return diffItem.type === 'remove';
-            });
-
-            var removesByIndex = {};
-            var removedItems = 0;
-            removes.forEach(function (diffItem) {
-                var removeIndex = removedItems + diffItem.index;
-                mutatedArray.slice(removeIndex, diffItem.howMany + removeIndex).forEach(function (v) {
-                    v.type = 'remove';
-                });
-                removedItems += diffItem.howMany;
-                removesByIndex[diffItem.index] = removedItems;
-            });
-
-            function updateRemoveTable() {
-                removedItems = 0;
-                actual.forEach(function (_, index) {
-                    removedItems += removesByIndex[index] || 0;
-                    removeTable[index] = removedItems;
-                });
-            }
-
-            updateRemoveTable();
-
-            var moves = itemsDiff.filter(function (diffItem) {
-                return diffItem.type === 'move';
-            });
-
-            var movedItems = 0;
-            moves.forEach(function (diffItem) {
-                var moveFromIndex = offsetIndex(diffItem.from);
-                var removed = mutatedArray.slice(moveFromIndex, diffItem.howMany + moveFromIndex);
-                var added = removed.map(function (v) {
-                    return utils.extend({}, v, { type: 'insert' });
-                });
-                removed.forEach(function (v) {
-                    v.type = 'remove';
-                });
-                Array.prototype.splice.apply(mutatedArray, [offsetIndex(diffItem.to), 0].concat(added));
-                movedItems += diffItem.howMany;
-                removesByIndex[diffItem.from] = movedItems;
-                updateRemoveTable();
-            });
-
-            var inserts = itemsDiff.filter(function (diffItem) {
-                return diffItem.type === 'insert';
-            });
-
-            inserts.forEach(function (diffItem) {
-                var added = new Array(diffItem.values.length);
-                for (var i = 0 ; i < diffItem.values.length ; i += 1) {
-                    added[i] = {
-                        type: 'insert',
-                        value: diffItem.values[i]
-                    };
-                }
-                Array.prototype.splice.apply(mutatedArray, [offsetIndex(diffItem.index), 0].concat(added));
-            });
-
-            var offset = 0;
-            mutatedArray.forEach(function (diffItem, index) {
-                var type = diffItem.type;
-                if (type === 'remove') {
-                    offset -= 1;
-                } else if (type === 'similar') {
-                    diffItem.expected = expected[offset + index];
-                }
-            });
-
-            var conflicts = mutatedArray.reduce(function (conflicts, item) {
-                return item.type === 'similar' ? conflicts : conflicts + 1;
-            }, 0);
-
-            for (var i = 0, c = 0; i < Math.max(actual.length, expected.length) &&  c <= conflicts; i += 1) {
-                var expectedType = typeof expected[i];
-                var actualType = typeof actual[i];
-
-                if (
-                    actualType !== expectedType ||
-                    ((actualType === 'object' || actualType === 'string') && !structurallySimilar(actual[i], expected[i])) ||
-                    (actualType !== 'object' && actualType !== 'string' && !equal(actual[i], expected[i]))
-                ) {
-                    c += 1;
-                }
-            }
-
-            if (c <= conflicts) {
-                mutatedArray = [];
-                var j;
-                for (j = 0; j < Math.min(actual.length, expected.length); j += 1) {
-                    mutatedArray.push({
-                        type: 'similar',
-                        value: actual[j],
-                        expected: expected[j]
-                    });
-                }
-
-                if (actual.length < expected.length) {
-                    for (; j < Math.max(actual.length, expected.length); j += 1) {
-                        mutatedArray.push({
-                            type: 'insert',
-                            value: expected[j]
-                        });
-                    }
-                } else {
-                    for (; j < Math.max(actual.length, expected.length); j += 1) {
-                        mutatedArray.push({
-                            type: 'remove',
-                            value: actual[j]
-                        });
-                    }
-                }
-                mutatedArray[mutatedArray.length - 1].last = true;
-            }
-
-            mutatedArray.forEach(function (diffItem) {
-                if (diffItem.type === 'similar' && equal(diffItem.value, diffItem.expected)) {
-                    diffItem.type = 'equal';
-                }
-            });
+            var changes = arrayChanges(actual, expected, equal, structurallySimilar);
 
             output.append(this.prefix(output.clone())).nl().indentLines();
 
-            mutatedArray.forEach(function (diffItem, index) {
+            changes.forEach(function (diffItem, index) {
                 output.i().block(function () {
                     var type = diffItem.type;
                     var last = !!diffItem.last;
@@ -2838,9 +2697,9 @@ module.exports = function (expect) {
     });
 };
 
-}).call(this,require(9).Buffer)
+}).call(this,require(10).Buffer)
 },{}],6:[function(require,module,exports){
-var stringDiff = require(14);
+var stringDiff = require(15);
 
 var errorMethodBlacklist = ['message', 'line', 'sourceId', 'sourceURL', 'stack', 'stackArray'].reduce(function (result, prop) {
     result[prop] = true;
@@ -3136,6 +2995,171 @@ assertions(unexpected);
 module.exports = unexpected;
 
 },{}],8:[function(require,module,exports){
+var arrayDiff = require(9);
+
+function extend(target) {
+    for (var i = 1; i < arguments.length; i += 1) {
+        var source = arguments[i];
+        Object.keys(source).forEach(function (key) {
+            target[key] = source[key];
+        });
+    }
+    return target;
+}
+
+module.exports = function arrayChanges(actual, expected, equal, similar) {
+    var mutatedArray = new Array(actual.length);
+
+    for (var k = 0; k < actual.length; k += 1) {
+        mutatedArray[k] = {
+            type: 'similar',
+            value: actual[k]
+        };
+    }
+
+    if (mutatedArray.length > 0) {
+        mutatedArray[mutatedArray.length - 1].last = true;
+    }
+
+    similar = similar || function (a, b) {
+        return false;
+    };
+
+    var itemsDiff = arrayDiff(actual, expected, function (a, b) {
+        return equal(a, b) || similar(a, b);
+    });
+
+    var removeTable = [];
+    function offsetIndex(index) {
+        return index + (removeTable[index - 1] || 0);
+    }
+
+    var removes = itemsDiff.filter(function (diffItem) {
+        return diffItem.type === 'remove';
+    });
+
+    var removesByIndex = {};
+    var removedItems = 0;
+    removes.forEach(function (diffItem) {
+        var removeIndex = removedItems + diffItem.index;
+        mutatedArray.slice(removeIndex, diffItem.howMany + removeIndex).forEach(function (v) {
+            v.type = 'remove';
+        });
+        removedItems += diffItem.howMany;
+        removesByIndex[diffItem.index] = removedItems;
+    });
+
+    function updateRemoveTable() {
+        removedItems = 0;
+        actual.forEach(function (_, index) {
+            removedItems += removesByIndex[index] || 0;
+            removeTable[index] = removedItems;
+        });
+    }
+
+    updateRemoveTable();
+
+    var moves = itemsDiff.filter(function (diffItem) {
+        return diffItem.type === 'move';
+    });
+
+    var movedItems = 0;
+    moves.forEach(function (diffItem) {
+        var moveFromIndex = offsetIndex(diffItem.from);
+        var removed = mutatedArray.slice(moveFromIndex, diffItem.howMany + moveFromIndex);
+        var added = removed.map(function (v) {
+            return extend({}, v, { last: false, type: 'insert' });
+        });
+        removed.forEach(function (v) {
+            v.type = 'remove';
+        });
+        Array.prototype.splice.apply(mutatedArray, [offsetIndex(diffItem.to), 0].concat(added));
+        movedItems += diffItem.howMany;
+        removesByIndex[diffItem.from] = movedItems;
+        updateRemoveTable();
+    });
+
+    var inserts = itemsDiff.filter(function (diffItem) {
+        return diffItem.type === 'insert';
+    });
+
+    inserts.forEach(function (diffItem) {
+        var added = new Array(diffItem.values.length);
+        for (var i = 0 ; i < diffItem.values.length ; i += 1) {
+            added[i] = {
+                type: 'insert',
+                value: diffItem.values[i]
+            };
+        }
+        Array.prototype.splice.apply(mutatedArray, [offsetIndex(diffItem.index), 0].concat(added));
+    });
+
+    var offset = 0;
+    mutatedArray.forEach(function (diffItem, index) {
+        var type = diffItem.type;
+        if (type === 'remove') {
+            offset -= 1;
+        } else if (type === 'similar') {
+            diffItem.expected = expected[offset + index];
+        }
+    });
+
+    var conflicts = mutatedArray.reduce(function (conflicts, item) {
+        return item.type === 'similar' ? conflicts : conflicts + 1;
+    }, 0);
+
+    for (var i = 0, c = 0; i < Math.max(actual.length, expected.length) &&  c <= conflicts; i += 1) {
+        var expectedType = typeof expected[i];
+        var actualType = typeof actual[i];
+
+        if (
+            actualType !== expectedType ||
+                ((actualType === 'object' || actualType === 'string') && !similar(actual[i], expected[i])) ||
+                (actualType !== 'object' && actualType !== 'string' && !equal(actual[i], expected[i]))
+        ) {
+            c += 1;
+        }
+    }
+
+    if (c <= conflicts) {
+        mutatedArray = [];
+        var j;
+        for (j = 0; j < Math.min(actual.length, expected.length); j += 1) {
+            mutatedArray.push({
+                type: 'similar',
+                value: actual[j],
+                expected: expected[j]
+            });
+        }
+
+        if (actual.length < expected.length) {
+            for (; j < Math.max(actual.length, expected.length); j += 1) {
+                mutatedArray.push({
+                    type: 'insert',
+                    value: expected[j]
+                });
+            }
+        } else {
+            for (; j < Math.max(actual.length, expected.length); j += 1) {
+                mutatedArray.push({
+                    type: 'remove',
+                    value: actual[j]
+                });
+            }
+        }
+        mutatedArray[mutatedArray.length - 1].last = true;
+    }
+
+    mutatedArray.forEach(function (diffItem) {
+        if (diffItem.type === 'similar' && equal(diffItem.value, diffItem.expected)) {
+            diffItem.type = 'equal';
+        }
+    });
+
+    return mutatedArray;
+};
+
+},{}],9:[function(require,module,exports){
 module.exports = arrayDiff;
 
 // Based on some rough benchmarking, this algorithm is about O(2n) worst case,
@@ -3318,7 +3342,7 @@ function arrayDiff(before, after, equalFn) {
   return removes.concat(outputMoves, inserts);
 }
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -3326,9 +3350,9 @@ function arrayDiff(before, after, equalFn) {
  * @license  MIT
  */
 
-var base64 = require(10)
-var ieee754 = require(11)
-var isArray = require(12)
+var base64 = require(11)
+var ieee754 = require(12)
+var isArray = require(13)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = Buffer
@@ -4372,7 +4396,7 @@ function decodeUtf8Char (str) {
   }
 }
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 ;(function (exports) {
@@ -4494,7 +4518,7 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 	exports.fromByteArray = uint8ToBase64
 }(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 exports.read = function(buffer, offset, isLE, mLen, nBytes) {
   var e, m,
       eLen = nBytes * 8 - mLen - 1,
@@ -4580,7 +4604,7 @@ exports.write = function(buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128;
 };
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 
 /**
  * isArray
@@ -4615,7 +4639,7 @@ module.exports = isArray || function (val) {
   return !! val && '[object Array]' == str.call(val);
 };
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -4680,7 +4704,7 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 /* See LICENSE file for terms of use */
 
 /*
@@ -5071,7 +5095,7 @@ process.chdir = function (dir) {
   }
 })(this);
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 // intentionally commented out as it makes it slower...
 //'use strict';
 
@@ -5119,17 +5143,17 @@ module.exports = function (a, b) {
 	return ret;
 };
 
-},{}],16:[function(require,module,exports){
-var utils = require(26);
-var TextSerializer = require(20);
-var colorDiff = require(30);
-var rgbRegexp = require(24);
-var themeMapper = require(25);
+},{}],17:[function(require,module,exports){
+var utils = require(27);
+var TextSerializer = require(21);
+var colorDiff = require(31);
+var rgbRegexp = require(25);
+var themeMapper = require(26);
 
 var cacheSize = 0;
 var maxColorCacheSize = 1024;
 
-var ansiStyles = utils.extend({}, require(27));
+var ansiStyles = utils.extend({}, require(28));
 Object.keys(ansiStyles).forEach(function (styleName) {
     ansiStyles[styleName.toLowerCase()] = ansiStyles[styleName];
 });
@@ -5261,11 +5285,11 @@ AnsiSerializer.prototype.text = function () {
 
 module.exports = AnsiSerializer;
 
-},{}],17:[function(require,module,exports){
-var cssStyles = require(21);
-var flattenBlocksInLines = require(23);
-var rgbRegexp = require(24);
-var themeMapper = require(25);
+},{}],18:[function(require,module,exports){
+var cssStyles = require(22);
+var flattenBlocksInLines = require(24);
+var rgbRegexp = require(25);
+var themeMapper = require(26);
 
 function ColoredConsoleSerializer(theme) {
     this.theme = theme;
@@ -5340,10 +5364,10 @@ ColoredConsoleSerializer.prototype.text = function () {
 
 module.exports = ColoredConsoleSerializer;
 
-},{}],18:[function(require,module,exports){
-var cssStyles = require(21);
-var rgbRegexp = require(24);
-var themeMapper = require(25);
+},{}],19:[function(require,module,exports){
+var cssStyles = require(22);
+var rgbRegexp = require(25);
+var themeMapper = require(26);
 
 function HtmlSerializer(theme) {
     this.theme = theme;
@@ -5408,13 +5432,13 @@ HtmlSerializer.prototype.text = function () {
 
 module.exports = HtmlSerializer;
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 /*global window*/
-var utils = require(26);
+var utils = require(27);
 var extend = utils.extend;
-var duplicateText = require(22);
-var rgbRegexp = require(24);
-var cssStyles = require(21);
+var duplicateText = require(23);
+var rgbRegexp = require(25);
+var cssStyles = require(22);
 
 function MagicPen(options) {
     if (!(this instanceof MagicPen)) {
@@ -5440,7 +5464,7 @@ if (typeof window !== 'undefined' && typeof window.navigator !== 'undefined') {
     } else {
         MagicPen.defaultFormat = 'html'; // Browser
     }
-} else if (require(32)) {
+} else if (require(33)) {
     MagicPen.defaultFormat = 'ansi'; // colored console
 } else {
     MagicPen.defaultFormat = 'text'; // Plain text
@@ -5462,10 +5486,10 @@ MagicPen.prototype.newline = MagicPen.prototype.nl = function (count) {
 };
 
 MagicPen.serializers = {
-    text: require(20),
-    html: require(18),
-    ansi: require(16),
-    coloredConsole: require(17)
+    text: require(21),
+    html: require(19),
+    ansi: require(17),
+    coloredConsole: require(18)
 };
 
 function hasSameTextStyling(a, b) {
@@ -5892,8 +5916,8 @@ MagicPen.prototype.installTheme = function (formats, theme) {
 
 module.exports = MagicPen;
 
-},{}],20:[function(require,module,exports){
-var flattenBlocksInLines = require(23);
+},{}],21:[function(require,module,exports){
+var flattenBlocksInLines = require(24);
 
 function TextSerializer() {}
 
@@ -5920,7 +5944,7 @@ TextSerializer.prototype.block = function (content) {
 
 module.exports = TextSerializer;
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 var cssStyles = {
     bold: 'font-weight: bold',
     dim: 'opacity: 0.7',
@@ -5956,7 +5980,7 @@ Object.keys(cssStyles).forEach(function (styleName) {
 
 module.exports = cssStyles;
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 var whitespaceCacheLength = 256;
 var whitespaceCache = [''];
 for (var i = 1; i <= whitespaceCacheLength; i += 1) {
@@ -5992,9 +6016,9 @@ function duplicateText(content, times) {
 
 module.exports = duplicateText;
 
-},{}],23:[function(require,module,exports){
-var utils = require(26);
-var duplicateText = require(22);
+},{}],24:[function(require,module,exports){
+var utils = require(27);
+var duplicateText = require(23);
 
 function createPadding(length) {
     return { style: 'text', args: [duplicateText(' ', length)] };
@@ -6076,10 +6100,10 @@ function flattenBlocksInLines(lines) {
 
 module.exports = flattenBlocksInLines;
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 module.exports =  /^(?:bg)?#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i;
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 module.exports = function (theme, args) {
     if (args.length === 2) {
         var count = 0;
@@ -6103,7 +6127,7 @@ module.exports = function (theme, args) {
     return args;
 };
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 var utils = {
     extend: function (target) {
         for (var i = 1; i < arguments.length; i += 1) {
@@ -6171,7 +6195,7 @@ var utils = {
 
 module.exports = utils;
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 'use strict';
 
 var styles = module.exports = {
@@ -6229,7 +6253,7 @@ Object.keys(styles).forEach(function (groupName) {
 	});
 });
 
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 /**
  * @author Markus Ekholm
  * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
@@ -6344,7 +6368,7 @@ function xyz_to_lab(c)
 // js-indent-level: 2
 // End:
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 /**
  * @author Markus Ekholm
  * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
@@ -6510,12 +6534,12 @@ function radians(n) { return n*(PI/180); }
 // js-indent-level: 2
 // End:
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 'use strict';
 
-var diff = require(29);
-var convert = require(28);
-var palette = require(31);
+var diff = require(30);
+var convert = require(29);
+var palette = require(32);
 
 var color = module.exports = {};
 
@@ -6540,7 +6564,7 @@ color.furthest = function(target, relative) {
     return result[key];
 };
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 /**
  * @author Markus Ekholm
  * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
@@ -6578,8 +6602,8 @@ exports.palette_map_key = palette_map_key;
 /**
 * IMPORTS
 */
-var color_diff    = require(29);
-var color_convert = require(28);
+var color_diff    = require(30);
+var color_convert = require(29);
 
 /**
  * API FUNCTIONS
@@ -6649,7 +6673,7 @@ function diff(c1,c2)
 // js-indent-level: 2
 // End:
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 (function (process){
 'use strict';
 var argv = process.argv;
@@ -6691,6 +6715,6 @@ module.exports = (function () {
 	return false;
 })();
 
-}).call(this,require(13))
+}).call(this,require(14))
 },{}]},{},[7])(7)
 });
