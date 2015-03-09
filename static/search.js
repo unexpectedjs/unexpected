@@ -25,6 +25,13 @@ function setupSearch(searchIndex) {
         }
     });
 
+    searchDropDown.addEventListener('touchstart', function (e) {
+        if (e.target.hasAttribute('data-index')) {
+            var index = e.target.getAttribute('data-index');
+            window.location.href = renderedMatches[index].url;
+        }
+    });
+
     function htmlEncode(text) {
         return text.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
     }

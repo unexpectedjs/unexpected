@@ -182,12 +182,10 @@ code {
   font-weight: normal;
   font-size: 1em;
 }
-@media only screen and (max-width: 500px) {
+@media only screen and (max-width: 900px) {
   .search {
     display: none;
   }
-}
-@media only screen and (max-width: 900px) {
   body {
     font-size: 0.9em;
   }
