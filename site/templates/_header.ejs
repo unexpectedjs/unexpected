@@ -3,9 +3,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0">
-    <link rel="stylesheet" href="<%= relative('/static/normalize.css') %>" type="text/css" media="screen" />
-    <link rel="stylesheet" href="<%= relative('/static/main.css') %>" type="text/css" media="screen" />
-    <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="<%= relative('/static/bug-icon-black.ico') %>">
+    <link rel="stylesheet" href="<%= '/static/normalize.css' %>" type="text/css" media="screen" />
+    <link rel="stylesheet" href="<%= '/static/main.css' %>" type="text/css" media="screen" />
+    <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="<%= '/static/bug-icon-black.ico' %>">
     <title><%= windowTitle %></title>
 </head>
 <body class="sidebar-hidden<%=typeof hasSidebar !== 'undefined' ? ' has-sidebar' : ''%>">
@@ -16,9 +16,9 @@
                 <li class="menu-toggle-item">
                     <button class="menu-toggle" onclick="toggleSidebar()"></button>
                 </li>
-                <li class="<%- path === '' ? 'active' : '' %>"><a href="<%= relative('/') %>">Unexpected</a></li>
-                <li class="<%- path.match(/^assertions\/?/) ? 'active' : '' %>"><a href="<%= relative(assertionsByType.any[0].url)%>">Assertions</a></li>
-                <li class="<%- path.match(/^api\/?/) ? 'active' : '' %>"><a href="<%= relative(collections.apiPages[0].url)%>">API</a></li>
+                <li class="<%- path === '' ? 'active' : '' %>"><a href="<%= '/' %>">Unexpected</a></li>
+                <li class="<%- path.match(/^assertions\/?/) ? 'active' : '' %>"><a href="<%= assertionsByType.any[0].url %>">Assertions</a></li>
+                <li class="<%- path.match(/^api\/?/) ? 'active' : '' %>"><a href="<%= collections.apiPages[0].url %>">API</a></li>
             </ul>
         </nav>
         <div class="search" style="visibility: hidden">

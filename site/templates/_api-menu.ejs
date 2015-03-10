@@ -2,7 +2,7 @@
     <ul>
         <% collections.apiPages.forEach(function (apiPage) { %>
         <li class="<%= '/' + path + '/' === apiPage.url ? 'active' : '' %>">
-            <a href="<%= relative(apiPage.url) %>"><%= apiPage.title %></a>
+            <a href="<%= apiPage.url %>"><%= apiPage.title %></a>
         </li>
         <% }) %>
     </ul>

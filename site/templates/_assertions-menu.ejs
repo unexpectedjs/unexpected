@@ -6,7 +6,7 @@
             <ul>
                 <% assertionsByType[type].forEach(function (assertion) { %>
                 <li class="<%= '/' + path + '/' === assertion.url ? 'active' : '' %>">
-                    <a href="<%= relative(assertion.url) %>"><%= assertion.title %></a>
+                    <a href="<%= assertion.url %>"><%= assertion.title %></a>
                 </li>
                 <% }) %>
             </ul>
