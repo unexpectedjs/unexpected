@@ -2505,16 +2505,6 @@ module.exports = function (expect) {
     });
 
     expect.addType({
-        name: 'DomElement',
-        identify: function (value) {
-            return utils.isDOMElement(value);
-        },
-        inspect: function (value, depth, output) {
-            output.code(utils.getOuterHTML(value), 'html');
-        }
-    });
-
-    expect.addType({
         name: 'binaryArray',
         base: 'array-like',
         digitWidth: 2,
@@ -2718,36 +2708,6 @@ var utils = module.exports = {
             return b !== b;
         }
         return a === b;
-    },
-
-    // https://gist.github.com/1044128/
-    getOuterHTML: function (element) {
-        // jshint browser:true
-        if ('outerHTML' in element) return element.outerHTML;
-        var ns = "http://www.w3.org/1999/xhtml";
-        var container = document.createElementNS(ns, '_');
-        var xmlSerializer = new XMLSerializer();
-        var html;
-        if (document.xmlVersion) {
-            return xmlSerializer.serializeToString(element);
-        } else {
-            container.appendChild(element.cloneNode(false));
-            html = container.innerHTML.replace('><', '>' + element.innerHTML + '<');
-            container.innerHTML = '';
-            return html;
-        }
-    },
-
-    // Returns true if object is a DOM element.
-    isDOMElement: function (object) {
-        if (typeof HTMLElement === 'object') {
-            return object instanceof HTMLElement;
-        } else {
-            return object &&
-                typeof object === 'object' &&
-                object.nodeType === 1 &&
-                typeof object.nodeName === 'string';
-        }
     },
 
     isArray: function (ar) {
@@ -3147,7 +3107,9 @@ module.exports = function arrayChanges(actual, expected, equal, similar) {
                 });
             }
         }
-        mutatedArray[mutatedArray.length - 1].last = true;
+        if (mutatedArray.length > 0) {
+            mutatedArray[mutatedArray.length - 1].last = true;
+        }
     }
 
     mutatedArray.forEach(function (diffItem) {
