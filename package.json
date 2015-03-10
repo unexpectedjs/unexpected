@@ -19,7 +19,7 @@
   },
   "main": "./lib/index.js",
   "dependencies": {
-    "array-changes": "1.0.0",
+    "array-changes": "1.0.1",
     "diff": "1.1.0",
     "leven": "1.0.0",
     "magicpen": "4.3.5"
