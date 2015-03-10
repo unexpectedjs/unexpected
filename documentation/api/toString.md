@@ -1,4 +1,4 @@
-## expect.toString()
+### expect.toString()
 
 Prints all registered assertions to the console.
 

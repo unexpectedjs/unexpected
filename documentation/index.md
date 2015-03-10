@@ -5,7 +5,7 @@ title: Unexpected
 ---
 
 # Welcome to Unexpected
-### The extensible BDD assertion toolkit
+# The extensible BDD assertion toolkit
 
 ```javascript
 expect({ text: 'f00!' }, 'to equal', { text: 'foo!' });

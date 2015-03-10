@@ -1,4 +1,4 @@
-## expect.clone()
+### expect.clone()
 
 Before extending the unexpected instance with new functionality it is
 usually a good idea to clone it, so you don't change the global

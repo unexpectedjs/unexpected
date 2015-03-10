@@ -9,7 +9,7 @@ The following types are provided by out of the box by Unexpected:
 `Buffer`, `date`, `Error`, `function`, `null`, `number`, `object`,
 `regexp`, `string`, `undefined`.
 
-## expect.addType(typeDefinition)
+### expect.addType(typeDefinition)
 
 Unexpected can be extended with knowledge about new types by calling
 the `addType` method with a type definition. The type definition must
@@ -34,7 +34,7 @@ Optional members:
   a function producing a comparison between two values of this
   type. If not specified it is inherited from the base type.
 
-## Example
+### Example
 
 Adding new types to the system is best explained by an example. Let's
 say we wanted to add first class support for a `Person` type:
