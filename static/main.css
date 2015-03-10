@@ -7,7 +7,23 @@ h1,
 h2,
 h3,
 h4 {
-  font-weight: bold;
+  font-weight: normal;
+}
+h2 {
+  font-size: 1.4em;
+}
+h3 {
+  font-size: 1.15em;
+}
+#welcome-to-unexpected {
+  margin-top: 0px;
+  font-size: 1.6em;
+  margin-bottom: 2px;
+}
+#the-extensible-bdd-assertion-toolkit {
+  margin-top: 0px;
+  margin-bottom: 27px;
+  font-size: 1.15em;
 }
 nav ul {
   padding: 10px;
