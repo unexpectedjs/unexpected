@@ -4,10 +4,10 @@ module.exports = {
         pen.installTheme('html', {
             jsComment: 'gray',
             jsFunctionName: 'jsKeyword',
-            jsKeyword: '#939393',
+            jsKeyword: '#FFAA27',
             jsNumber: [],
             jsPrimitive: 'white',
-            jsRegexp: 'green',
+            jsRegexp: '#C6FF3C',
             jsString: '#3CDAFF',
             jsKey: '#939393',
             diffAddedHighlight: ['bgGreen', 'black'],
