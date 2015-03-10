@@ -84,20 +84,20 @@
     "url": "/assertions/array/to-have-length/"
   },
   {
-    "label": "to be false (boolean)",
-    "url": "/assertions/boolean/to-be-false/"
-  },
-  {
-    "label": "to be true (boolean)",
-    "url": "/assertions/boolean/to-be-true/"
-  },
-  {
     "label": "to have arity (function)",
     "url": "/assertions/function/to-have-arity/"
   },
   {
     "label": "to throw (function)",
     "url": "/assertions/function/to-throw/"
+  },
+  {
+    "label": "to be false (boolean)",
+    "url": "/assertions/boolean/to-be-false/"
+  },
+  {
+    "label": "to be true (boolean)",
+    "url": "/assertions/boolean/to-be-true/"
   },
   {
     "label": "to be NaN (number)",
