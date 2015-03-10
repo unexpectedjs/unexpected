@@ -8,12 +8,12 @@
     "url": "/api/addType/"
   },
   {
-    "label": "clone (api)",
-    "url": "/api/clone/"
-  },
-  {
     "label": "fail (api)",
     "url": "/api/fail/"
+  },
+  {
+    "label": "clone (api)",
+    "url": "/api/clone/"
   },
   {
     "label": "installPlugin (api)",
@@ -84,20 +84,20 @@
     "url": "/assertions/array/to-have-length/"
   },
   {
-    "label": "to have arity (function)",
-    "url": "/assertions/function/to-have-arity/"
-  },
-  {
-    "label": "to throw (function)",
-    "url": "/assertions/function/to-throw/"
-  },
-  {
     "label": "to be false (boolean)",
     "url": "/assertions/boolean/to-be-false/"
   },
   {
     "label": "to be true (boolean)",
     "url": "/assertions/boolean/to-be-true/"
+  },
+  {
+    "label": "to have arity (function)",
+    "url": "/assertions/function/to-have-arity/"
+  },
+  {
+    "label": "to throw (function)",
+    "url": "/assertions/function/to-throw/"
   },
   {
     "label": "to be NaN (number)",
