@@ -3,7 +3,7 @@ module.exports = {
     installInto: function (pen) {
         pen.installTheme('html', {
             // Mimic github theme
-            'prism:comment': '#969896',
+            'prism:comment': 'jsComment',
             'prism:cdata': '#708090',
 
             'prism:punctuation': '#000000',
@@ -13,18 +13,18 @@ module.exports = {
 
             'prism:attr-name': '#795da3',
 
-            'prism:operator': '#a71d5d',
+            'prism:operator': 'jsKeyword',
             'prism:variable': '#a67f59',
 
-            'prism:string': '#df5000',
+            'prism:string': 'jsString',
             'prism:url': 'prism:string',
             'css:string': 'prism:string',
             'prism:entity': 'prism:string',
             'prism:atrule': 'prism:string',
             'attr-value': 'prism:string',
-            'prism:regex': 'prism:string',
+            'prism:regex': 'jsRegexp',
 
-            'prism:keyword': '#0086b3',
+            'prism:keyword': 'jsKeyword',
 
             'prism:function': '#000000',
 
