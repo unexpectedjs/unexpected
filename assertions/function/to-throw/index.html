@@ -282,32 +282,32 @@
         <div class="content">
             <p>Asserts that the function throws an error when called.</p>
 <div class="code lang-javascript">
-  <div><span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">willThrow</span><span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
-  <div>&nbsp;&nbsp;<span style="color: #0086b3">throw</span>&nbsp;<span style="color: #0086b3">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'The&nbsp;error&nbsp;message'</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">willThrow</span><span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #a71d5d">throw</span>&nbsp;<span style="color: #a71d5d">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'The&nbsp;error&nbsp;message'</span><span style="color: #000000">);</span></div>
   <div><span style="color: #000000">}</span></div>
   <div><span style="color: #000000">expect</span><span style="color: #000000">(</span>willThrow<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;throw'</span><span style="color: #000000">);</span></div>
   <div><span style="color: #000000">expect</span><span style="color: #000000">(</span>willThrow<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;throw&nbsp;error'</span><span style="color: #000000">);</span></div>
   <div><span style="color: #000000">expect</span><span style="color: #000000">(</span>willThrow<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;throw&nbsp;exception'</span><span style="color: #000000">);</span></div>
 </div><p>In case of a failing expectation you get the following output:</p>
 <div class="code lang-javascript">
-  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">willNotThrow</span><span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{},</span>&nbsp;<span style="color: #df5000">'to&nbsp;throw'</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">willNotThrow</span><span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{},</span>&nbsp;<span style="color: #df5000">'to&nbsp;throw'</span><span style="color: #000000">);</span></div>
 </div><div class="output">
-  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">willNotThrow</span><span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{}</span>&nbsp;<span style="color: red; font-weight: bold">to&nbsp;throw</span></div>
+  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">willNotThrow</span><span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{}</span>&nbsp;<span style="color: red; font-weight: bold">to&nbsp;throw</span></div>
 </div><p>You can assert the error message is a given string if you provide a
 string as the second parameter.</p>
 <div class="code lang-javascript">
-  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
-  <div>&nbsp;&nbsp;<span style="color: #0086b3">throw</span>&nbsp;<span style="color: #0086b3">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'The&nbsp;error&nbsp;message'</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #a71d5d">throw</span>&nbsp;<span style="color: #a71d5d">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'The&nbsp;error&nbsp;message'</span><span style="color: #000000">);</span></div>
   <div><span style="color: #000000">},</span>&nbsp;<span style="color: #df5000">'to&nbsp;throw'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'The&nbsp;error&nbsp;message'</span><span style="color: #000000">);</span></div>
 </div><p>In case of a failing expectation you get the following output:</p>
 <div class="code lang-javascript">
-  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
-  <div>&nbsp;&nbsp;<span style="color: #0086b3">throw</span>&nbsp;<span style="color: #0086b3">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'The&nbsp;error&nbsp;message!'</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #a71d5d">throw</span>&nbsp;<span style="color: #a71d5d">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'The&nbsp;error&nbsp;message!'</span><span style="color: #000000">);</span></div>
   <div><span style="color: #000000">},</span>&nbsp;<span style="color: #df5000">'to&nbsp;throw'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'The&nbsp;error&nbsp;message'</span><span style="color: #000000">);</span></div>
 </div><div class="output">
   <div><span style="color: red; font-weight: bold">expected</span></div>
-  <div><span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
-  <div>&nbsp;&nbsp;<span style="color: #0086b3">throw</span>&nbsp;<span style="color: #0086b3">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'The&nbsp;error&nbsp;message!'</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #a71d5d">throw</span>&nbsp;<span style="color: #a71d5d">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'The&nbsp;error&nbsp;message!'</span><span style="color: #000000">);</span></div>
   <div><span style="color: #000000">}</span></div>
   <div><span style="color: red; font-weight: bold">to&nbsp;throw</span>&nbsp;<span style="color: #df5000">'The&nbsp;error&nbsp;message'</span></div>
   <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
@@ -327,45 +327,45 @@ string as the second parameter.</p>
 </div><p>By providing a regular expression as the second parameter you can
 assert the error message matches the given regular expression.</p>
 <div class="code lang-javascript">
-  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
-  <div>&nbsp;&nbsp;<span style="color: #0086b3">throw</span>&nbsp;<span style="color: #0086b3">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'The&nbsp;error&nbsp;message'</span><span style="color: #000000">);</span></div>
-  <div><span style="color: #000000">},</span>&nbsp;<span style="color: #df5000">'to&nbsp;throw'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">/error&nbsp;message/</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #a71d5d">throw</span>&nbsp;<span style="color: #a71d5d">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'The&nbsp;error&nbsp;message'</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #000000">},</span>&nbsp;<span style="color: #df5000">'to&nbsp;throw'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #183691">/error&nbsp;message/</span><span style="color: #000000">);</span></div>
 </div><p>In case of a failing expectation you get the following output:</p>
 <div class="code lang-javascript">
-  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
-  <div>&nbsp;&nbsp;<span style="color: #0086b3">throw</span>&nbsp;<span style="color: #0086b3">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'The&nbsp;error&nbsp;message!'</span><span style="color: #000000">);</span></div>
-  <div><span style="color: #000000">},</span>&nbsp;<span style="color: #df5000">'to&nbsp;throw'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">/catastrophic&nbsp;failure/</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #a71d5d">throw</span>&nbsp;<span style="color: #a71d5d">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'The&nbsp;error&nbsp;message!'</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #000000">},</span>&nbsp;<span style="color: #df5000">'to&nbsp;throw'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #183691">/catastrophic&nbsp;failure/</span><span style="color: #000000">);</span></div>
 </div><div class="output">
   <div><span style="color: red; font-weight: bold">expected</span></div>
-  <div><span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
-  <div>&nbsp;&nbsp;<span style="color: #0086b3">throw</span>&nbsp;<span style="color: #0086b3">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'The&nbsp;error&nbsp;message!'</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #a71d5d">throw</span>&nbsp;<span style="color: #a71d5d">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'The&nbsp;error&nbsp;message!'</span><span style="color: #000000">);</span></div>
   <div><span style="color: #000000">}</span></div>
-  <div><span style="color: red; font-weight: bold">to&nbsp;throw</span>&nbsp;<span style="color: #df5000">/catastrophic&nbsp;failure/</span></div>
+  <div><span style="color: red; font-weight: bold">to&nbsp;throw</span>&nbsp;<span style="color: #183691">/catastrophic&nbsp;failure/</span></div>
   <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
-  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;Error({&nbsp;<span style="color: #555">message</span>:&nbsp;<span style="color: #df5000">'The&nbsp;error&nbsp;message!'</span>&nbsp;})&nbsp;<span style="color: red; font-weight: bold">to&nbsp;satisfy</span>&nbsp;<span style="color: #df5000">/catastrophic&nbsp;failure/</span></div>
+  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;Error({&nbsp;<span style="color: #555">message</span>:&nbsp;<span style="color: #df5000">'The&nbsp;error&nbsp;message!'</span>&nbsp;})&nbsp;<span style="color: red; font-weight: bold">to&nbsp;satisfy</span>&nbsp;<span style="color: #183691">/catastrophic&nbsp;failure/</span></div>
 </div></div>
 </div><p>You can also provide a function as the second parameter to do
 arbitrary assertions on the error.</p>
 <div class="code lang-javascript">
-  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
-  <div>&nbsp;&nbsp;<span style="color: #0086b3">this</span><span style="color: #000000">.</span>foo<span style="color: #000000">.</span><span style="color: #000000">bar</span><span style="color: #000000">();</span></div>
-  <div><span style="color: #000000">},</span>&nbsp;<span style="color: #df5000">'to&nbsp;throw'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">(</span>e<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #a71d5d">this</span><span style="color: #000000">.</span>foo<span style="color: #000000">.</span><span style="color: #000000">bar</span><span style="color: #000000">();</span></div>
+  <div><span style="color: #000000">},</span>&nbsp;<span style="color: #df5000">'to&nbsp;throw'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>e<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
   <div>&nbsp;&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>e<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;a'</span><span style="color: #000000">,</span>&nbsp;TypeError<span style="color: #000000">);</span></div>
   <div><span style="color: #000000">});</span></div>
 </div><p>In case of a failing expectation you get the following output:</p>
 <div class="code lang-javascript">
-  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
-  <div>&nbsp;&nbsp;<span style="color: #0086b3">throw</span>&nbsp;<span style="color: #0086b3">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'Another&nbsp;error'</span><span style="color: #000000">);</span></div>
-  <div><span style="color: #000000">},</span>&nbsp;<span style="color: #df5000">'to&nbsp;throw'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">(</span>e<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #a71d5d">throw</span>&nbsp;<span style="color: #a71d5d">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'Another&nbsp;error'</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #000000">},</span>&nbsp;<span style="color: #df5000">'to&nbsp;throw'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>e<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
   <div>&nbsp;&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>e<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;a'</span><span style="color: #000000">,</span>&nbsp;TypeError<span style="color: #000000">);</span></div>
   <div><span style="color: #000000">});</span></div>
 </div><div class="output">
   <div><span style="color: red; font-weight: bold">expected</span></div>
-  <div><span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
-  <div>&nbsp;&nbsp;<span style="color: #0086b3">throw</span>&nbsp;<span style="color: #0086b3">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'Another&nbsp;error'</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #a71d5d">throw</span>&nbsp;<span style="color: #a71d5d">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'Another&nbsp;error'</span><span style="color: #000000">);</span></div>
   <div><span style="color: #000000">}</span></div>
   <div><span style="color: red; font-weight: bold">to&nbsp;throw</span></div>
-  <div><span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">(</span>e<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>e<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
   <div>&nbsp;&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>e<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;a'</span><span style="color: #000000">,</span>&nbsp;TypeError<span style="color: #000000">);</span></div>
   <div><span style="color: #000000">}</span></div>
   <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
@@ -373,18 +373,18 @@ arbitrary assertions on the error.</p>
 </div></div>
 </div><p>This assertion can be negated using the <code>not</code> flag:</p>
 <div class="code lang-javascript">
-  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
   <div>&nbsp;<span style="color: #969896">&nbsp;//&nbsp;Do&nbsp;some&nbsp;work&nbsp;that&nbsp;should&nbsp;not&nbsp;throw</span></div>
   <div><span style="color: #000000">},</span>&nbsp;<span style="color: #df5000">'not&nbsp;to&nbsp;throw'</span><span style="color: #000000">);</span></div>
 </div><p>In case of a failing expectation you get the following output:</p>
 <div class="code lang-javascript">
-  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
-  <div>&nbsp;&nbsp;<span style="color: #0086b3">throw</span>&nbsp;<span style="color: #0086b3">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'threw&nbsp;anyway'</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #a71d5d">throw</span>&nbsp;<span style="color: #a71d5d">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'threw&nbsp;anyway'</span><span style="color: #000000">);</span></div>
   <div><span style="color: #000000">},</span>&nbsp;<span style="color: #df5000">'not&nbsp;to&nbsp;throw'</span><span style="color: #000000">);</span></div>
 </div><div class="output">
   <div><span style="color: red; font-weight: bold">expected</span></div>
-  <div><span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
-  <div>&nbsp;&nbsp;<span style="color: #0086b3">throw</span>&nbsp;<span style="color: #0086b3">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'threw&nbsp;anyway'</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #a71d5d">throw</span>&nbsp;<span style="color: #a71d5d">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'threw&nbsp;anyway'</span><span style="color: #000000">);</span></div>
   <div><span style="color: #000000">}</span></div>
   <div><span style="color: red; font-weight: bold">not&nbsp;to&nbsp;throw</span></div>
   <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
@@ -393,22 +393,22 @@ arbitrary assertions on the error.</p>
 </div><p>You can also use the <code>not</code> flag in combination with matching the error
 message.</p>
 <div class="code lang-javascript">
-  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
-  <div>&nbsp;&nbsp;<span style="color: #0086b3">throw</span>&nbsp;<span style="color: #0086b3">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'The&nbsp;correct&nbsp;error&nbsp;message'</span><span style="color: #000000">);</span></div>
-  <div><span style="color: #000000">},</span>&nbsp;<span style="color: #df5000">'not&nbsp;to&nbsp;throw'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">/great&nbsp;success/</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #a71d5d">throw</span>&nbsp;<span style="color: #a71d5d">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'The&nbsp;correct&nbsp;error&nbsp;message'</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #000000">},</span>&nbsp;<span style="color: #df5000">'not&nbsp;to&nbsp;throw'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #183691">/great&nbsp;success/</span><span style="color: #000000">);</span></div>
 </div><p>In case of a failing expectation you get the following output:</p>
 <div class="code lang-javascript">
-  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
-  <div>&nbsp;&nbsp;<span style="color: #0086b3">throw</span>&nbsp;<span style="color: #0086b3">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'The&nbsp;correct&nbsp;error&nbsp;message'</span><span style="color: #000000">);</span></div>
-  <div><span style="color: #000000">},</span>&nbsp;<span style="color: #df5000">'not&nbsp;to&nbsp;throw'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">/error/</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #a71d5d">throw</span>&nbsp;<span style="color: #a71d5d">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'The&nbsp;correct&nbsp;error&nbsp;message'</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #000000">},</span>&nbsp;<span style="color: #df5000">'not&nbsp;to&nbsp;throw'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #183691">/error/</span><span style="color: #000000">);</span></div>
 </div><div class="output">
   <div><span style="color: red; font-weight: bold">expected</span></div>
-  <div><span style="color: #0086b3">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
-  <div>&nbsp;&nbsp;<span style="color: #0086b3">throw</span>&nbsp;<span style="color: #0086b3">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'The&nbsp;correct&nbsp;error&nbsp;message'</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #a71d5d">throw</span>&nbsp;<span style="color: #a71d5d">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'The&nbsp;correct&nbsp;error&nbsp;message'</span><span style="color: #000000">);</span></div>
   <div><span style="color: #000000">}</span></div>
-  <div><span style="color: red; font-weight: bold">not&nbsp;to&nbsp;throw</span>&nbsp;<span style="color: #df5000">/error/</span></div>
+  <div><span style="color: red; font-weight: bold">not&nbsp;to&nbsp;throw</span>&nbsp;<span style="color: #183691">/error/</span></div>
   <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
-  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;Error({&nbsp;<span style="color: #555">message</span>:&nbsp;<span style="color: #df5000">'The&nbsp;correct&nbsp;error&nbsp;message'</span>&nbsp;})&nbsp;<span style="color: red; font-weight: bold">not&nbsp;to&nbsp;satisfy</span>&nbsp;<span style="color: #df5000">/error/</span></div>
+  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;Error({&nbsp;<span style="color: #555">message</span>:&nbsp;<span style="color: #df5000">'The&nbsp;correct&nbsp;error&nbsp;message'</span>&nbsp;})&nbsp;<span style="color: red; font-weight: bold">not&nbsp;to&nbsp;satisfy</span>&nbsp;<span style="color: #183691">/error/</span></div>
 </div></div>
 </div>
         </div>
