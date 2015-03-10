@@ -85,14 +85,14 @@
   <div>$&nbsp;npm&nbsp;install&nbsp;unexpected</div>
 </div><p>Then:</p>
 <div class="code lang-javascript">
-  <div><span style="color: #939393">var</span>&nbsp;expect&nbsp;<span style="color: #3CDAFF">=</span>&nbsp;require<span style="color: #999">(</span><span style="color: #3CDAFF">'unexpected'</span><span style="color: #999">);</span></div>
+  <div><span style="color: #FFAA27">var</span>&nbsp;expect&nbsp;<span style="color: #3CDAFF">=</span>&nbsp;require<span style="color: #999">(</span><span style="color: #3CDAFF">'unexpected'</span><span style="color: #999">);</span></div>
 </div><h3 id="browser">Browser</h3>
 <p>Include <code>unexpected.js</code>.</p>
 <div class="code lang-javascript">
   <div><span style="color: #3CDAFF">&lt;</span>script&nbsp;src<span style="color: #3CDAFF">=</span><span style="color: #3CDAFF">&quot;unexpected.js&quot;</span><span style="color: #3CDAFF">&gt;&lt;/</span>script<span style="color: #3CDAFF">&gt;</span></div>
 </div><p>this will expose the expect function under the following namespace:</p>
 <div class="code lang-javascript">
-  <div><span style="color: #939393">var</span>&nbsp;expect&nbsp;<span style="color: #3CDAFF">=</span>&nbsp;weknowhow<span style="color: #999">.</span>expect<span style="color: #999">;</span></div>
+  <div><span style="color: #FFAA27">var</span>&nbsp;expect&nbsp;<span style="color: #3CDAFF">=</span>&nbsp;weknowhow<span style="color: #999">.</span>expect<span style="color: #999">;</span></div>
 </div><h3 id="requirejs">RequireJS</h3>
 <p>Include the library with RequireJS the following way:</p>
 <div class="code lang-javascript">
@@ -102,7 +102,7 @@
   <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #999">}</span></div>
   <div><span style="color: #999">});</span></div>
   <div>&nbsp;</div>
-  <div>define<span style="color: #999">([</span><span style="color: #3CDAFF">'unexpected'</span><span style="color: #999">],</span>&nbsp;<span style="color: #939393">function</span>&nbsp;<span style="color: #999">(</span>expect<span style="color: #999">)</span>&nbsp;<span style="color: #999">{</span></div>
+  <div>define<span style="color: #999">([</span><span style="color: #3CDAFF">'unexpected'</span><span style="color: #999">],</span>&nbsp;<span style="color: #FFAA27">function</span>&nbsp;<span style="color: #999">(</span>expect<span style="color: #999">)</span>&nbsp;<span style="color: #999">{</span></div>
   <div>&nbsp;&nbsp;<span style="color: gray">&nbsp;//&nbsp;Your&nbsp;code</span></div>
   <div><span style="color: #999">});</span></div>
 </div><h2 id="using-unexpected-with-a-test-framework">Using Unexpected with a test framework</h2>
@@ -111,16 +111,16 @@
 <p>Let&#39;s say we wanted to test the following program:</p>
 <p><strong>math.js</strong></p>
 <div class="code lang-javascript">
-  <div><span style="color: #939393">function</span>&nbsp;add&nbsp;<span style="color: #999">(</span>a<span style="color: #999">,</span>&nbsp;b<span style="color: #999">)</span>&nbsp;<span style="color: #999">{</span>&nbsp;<span style="color: #939393">return</span>&nbsp;a&nbsp;<span style="color: #3CDAFF">+</span>&nbsp;b<span style="color: #999">;</span>&nbsp;<span style="color: #999">};</span></div>
+  <div><span style="color: #FFAA27">function</span>&nbsp;add&nbsp;<span style="color: #999">(</span>a<span style="color: #999">,</span>&nbsp;b<span style="color: #999">)</span>&nbsp;<span style="color: #999">{</span>&nbsp;<span style="color: #FFAA27">return</span>&nbsp;a&nbsp;<span style="color: #3CDAFF">+</span>&nbsp;b<span style="color: #999">;</span>&nbsp;<span style="color: #999">};</span></div>
 </div><p>Our test file would look like this:</p>
 <div class="code lang-javascript">
-  <div>describe<span style="color: #999">(</span><span style="color: #3CDAFF">'math.js'</span><span style="color: #999">,</span>&nbsp;<span style="color: #939393">function</span>&nbsp;<span style="color: #999">()</span>&nbsp;<span style="color: #999">{</span></div>
-  <div>&nbsp;&nbsp;describe<span style="color: #999">(</span><span style="color: #3CDAFF">'add'</span><span style="color: #999">,</span>&nbsp;<span style="color: #939393">function</span>&nbsp;<span style="color: #999">()</span>&nbsp;<span style="color: #999">{</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;it<span style="color: #999">(</span><span style="color: #3CDAFF">'is&nbsp;a&nbsp;function'</span><span style="color: #999">,</span>&nbsp;<span style="color: #939393">function</span>&nbsp;<span style="color: #999">()</span>&nbsp;<span style="color: #999">{</span></div>
+  <div>describe<span style="color: #999">(</span><span style="color: #3CDAFF">'math.js'</span><span style="color: #999">,</span>&nbsp;<span style="color: #FFAA27">function</span>&nbsp;<span style="color: #999">()</span>&nbsp;<span style="color: #999">{</span></div>
+  <div>&nbsp;&nbsp;describe<span style="color: #999">(</span><span style="color: #3CDAFF">'add'</span><span style="color: #999">,</span>&nbsp;<span style="color: #FFAA27">function</span>&nbsp;<span style="color: #999">()</span>&nbsp;<span style="color: #999">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;it<span style="color: #999">(</span><span style="color: #3CDAFF">'is&nbsp;a&nbsp;function'</span><span style="color: #999">,</span>&nbsp;<span style="color: #FFAA27">function</span>&nbsp;<span style="color: #999">()</span>&nbsp;<span style="color: #999">{</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect<span style="color: #999">(</span>add<span style="color: #999">,</span>&nbsp;<span style="color: #3CDAFF">'to&nbsp;be&nbsp;a'</span><span style="color: #999">,</span>&nbsp;<span style="color: #3CDAFF">'function'</span><span style="color: #999">);</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #999">});</span></div>
   <div>&nbsp;</div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;it<span style="color: #999">(</span><span style="color: #3CDAFF">'does&nbsp;addition&nbsp;on&nbsp;numbers'</span><span style="color: #999">,</span>&nbsp;<span style="color: #939393">function</span>&nbsp;<span style="color: #999">()</span>&nbsp;<span style="color: #999">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;it<span style="color: #999">(</span><span style="color: #3CDAFF">'does&nbsp;addition&nbsp;on&nbsp;numbers'</span><span style="color: #999">,</span>&nbsp;<span style="color: #FFAA27">function</span>&nbsp;<span style="color: #999">()</span>&nbsp;<span style="color: #999">{</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect<span style="color: #999">(</span>add<span style="color: #999">(</span><span style="color: white">1</span><span style="color: #999">,</span>&nbsp;<span style="color: white">3</span><span style="color: #999">),</span>&nbsp;<span style="color: #3CDAFF">'to&nbsp;be'</span><span style="color: #999">,</span>&nbsp;<span style="color: white">4</span><span style="color: #999">);</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #999">});</span></div>
   <div>&nbsp;&nbsp;<span style="color: #999">});</span></div>
@@ -142,7 +142,7 @@ and shown/processed by the test runner.</p>
 <li>Removed grammatically incorrect assertions.</li>
 </ul>
 <h2 id="mit-license">MIT License</h2>
-<p>Copyright (c) 2013 Sune Simonsen <a href="&#109;&#x61;&#x69;&#108;&#116;&#x6f;&#x3a;&#x73;&#117;&#x6e;&#101;&#x40;&#119;&#x65;&#45;&#x6b;&#110;&#111;&#119;&#x68;&#x6f;&#x77;&#x2e;&#x64;&#107;">&#x73;&#117;&#x6e;&#101;&#x40;&#119;&#x65;&#45;&#x6b;&#110;&#111;&#119;&#x68;&#x6f;&#x77;&#x2e;&#x64;&#107;</a></p>
+<p>Copyright (c) 2013 Sune Simonsen <a href="&#109;&#97;&#x69;&#108;&#116;&#x6f;&#58;&#115;&#117;&#110;&#101;&#x40;&#x77;&#101;&#x2d;&#107;&#110;&#x6f;&#119;&#104;&#111;&#x77;&#46;&#100;&#x6b;">&#115;&#117;&#110;&#101;&#x40;&#x77;&#101;&#x2d;&#107;&#110;&#x6f;&#119;&#104;&#111;&#x77;&#46;&#100;&#x6b;</a></p>
 <p>Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
 &#39;Software&#39;), to deal in the Software without restriction, including
