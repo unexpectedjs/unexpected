@@ -4258,8 +4258,16 @@ describe('unexpected', function () {
                             }, resolve, reject);
                         }, delay);
                     });
+                })
+                .addAssertion('to be ordered after delay', function (expect, subject) {
+                    this.errorMode = 'nested';
+                    return expect(subject, 'to be sorted after delay', 200);
                 });
         });
+
+        it('supports composition', expect.async(function () {
+            return expect([1, 3, 2], 'to be ordered after delay');
+        }));
 
         it('has a nice syntax', expect.async(function () {
             return expect([1, 3, 2], 'to be sorted after delay', 200);
