@@ -1,4 +1,4 @@
-/*global weknowhow, describe, it, beforeEach, setTimeout, Int8Array, Uint8Array, Uint16Array, Uint32Array*/
+/*global weknowhow, describe, it, before, beforeEach, setTimeout, Int8Array, Uint8Array, Uint16Array, Uint32Array*/
 
 var expect = typeof weknowhow === 'undefined' ? require('../lib/') : weknowhow.expect;
 
@@ -4297,5 +4297,27 @@ describe('unexpected', function () {
         it('should combine with other assertions (showcase)', function () {
             expect([[1, 2], [3, 4]], 'to be an array whose items satisfy', 'when passed as parameters to', add, 'to be a number');
         });
+    });
+
+    describe('async', function () {
+        before(function () {
+            expect = expect.clone()
+                .addAssertion('to be sorted after delay', function (expect, subject, delay) {
+                    this.errorMode = 'nested';
+
+                    return expect.promise(function (resolve, reject) {
+                        setTimeout(function () {
+                            expect.execute(function () {
+                                expect(subject, 'to be an array');
+                                expect(subject, 'to equal', [].concat(subject).sort());
+                            }, resolve, reject);
+                        }, delay);
+                    });
+                });
+        });
+
+        it('has a nice syntax', expect.async(function () {
+            return expect([1, 3, 2], 'to be sorted after delay', 200);
+        }));
     });
 });
