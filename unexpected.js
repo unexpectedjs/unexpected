@@ -1713,7 +1713,7 @@ module.exports = function (expect) {
                                     if (!bothAreArrays) {
                                         this.key(key).text(':').sp();
                                     }
-                                    valueOutput.text(last ? '' : ',');
+                                    valueOutput.amend('text', last ? '' : ',');
 
                                     if (isInlineDiff) {
                                         this.append(valueOutput);
@@ -2049,7 +2049,7 @@ module.exports = function (expect) {
                 var inspectedValue = inspect(value);
 
                 if (!lastIndex) {
-                    inspectedValue.text(',');
+                    inspectedValue.amend('text', ',');
                 }
 
                 if (value && value._expectIt) {
@@ -2154,7 +2154,7 @@ module.exports = function (expect) {
 
                     this.key(key);
                     this.text(':').sp();
-                    valueOutput.text(last ? '' : ',');
+                    valueOutput.amend('text', last ? '' : ',');
                     if (isInlineDiff) {
                         this.append(valueOutput);
                     } else {
@@ -2262,13 +2262,13 @@ module.exports = function (expect) {
             var multipleLines = inspectedItems.some(function (o) {
                 var size = o.size();
                 width += size.width;
-                return width > 50 || o.height > 1;
+                return width > 50 || size.height > 1;
             });
 
             inspectedItems.forEach(function (inspectedItem, index) {
                 var lastIndex = index === inspectedItems.length - 1;
                 if (!lastIndex) {
-                    inspectedItem.text(',');
+                    inspectedItem.amend('text', ',');
                 }
             });
 
@@ -2322,19 +2322,19 @@ module.exports = function (expect) {
                             this.error('missing ').block(inspect(diffItem.value));
                         });
                     } else if (type === 'remove') {
-                        this.block(inspect(diffItem.value).text(last ? ' ' : ', ').error('// should be removed'));
+                        this.block(inspect(diffItem.value).amend('text', last ? ' ' : ', ').error('// should be removed'));
                     } else if (type === 'equal') {
-                        this.block(inspect(diffItem.value).text(last ? '' : ','));
+                        this.block(inspect(diffItem.value).amend('text', last ? '' : ','));
                     } else {
                         var valueDiff = diff(diffItem.value, diffItem.expected);
                         if (valueDiff && valueDiff.inline) {
-                            this.block(valueDiff.diff.text(last ? '' : ','));
+                            this.block(valueDiff.diff.amend('text', last ? '' : ','));
                         } else if (valueDiff) {
-                            this.block(inspect(diffItem.value).text(last ? ' ' : ', ')).annotationBlock(function () {
+                            this.block(inspect(diffItem.value).amend('text', last ? ' ' : ', ')).annotationBlock(function () {
                                 this.shouldEqualError(diffItem.expected, inspect).nl().append(valueDiff.diff);
                             });
                         } else {
-                            this.block(inspect(diffItem.value).text(last ? ' ' : ', ')).annotationBlock(function () {
+                            this.block(inspect(diffItem.value).amend('text', last ? ' ' : ', ')).annotationBlock(function () {
                                 this.shouldEqualError(diffItem.expected, inspect);
                             });
                         }
@@ -3117,7 +3117,9 @@ module.exports = function arrayChanges(actual, expected, equal, similar) {
                 });
             }
         }
-        mutatedArray[mutatedArray.length - 1].last = true;
+        if (mutatedArray.length > 0) {
+            mutatedArray[mutatedArray.length - 1].last = true;
+        }
     }
 
     mutatedArray.forEach(function (diffItem) {
@@ -5623,6 +5625,37 @@ MagicPen.prototype.block = function () {
     return this.write({ style: 'block', args: [blockOutput] });
 };
 
+function amend(output, pen) {
+    var lastLine = output[output.length - 1].slice();
+    var newOutput = output.slice(0, -1);
+    var lastEntry = lastLine[lastLine.length - 1];
+    if (lastEntry && lastEntry.style === 'block') {
+        lastLine[lastLine.length - 1] = {
+            style: 'block',
+            args: [amend(lastEntry.args[0], pen)]
+        };
+        newOutput[output.length - 1] = lastLine;
+    } else {
+        Array.prototype.push.apply(lastLine, pen.output[0]);
+        newOutput[output.length - 1] = normalizeLine(lastLine);
+        newOutput.push.apply(newOutput, pen.output.slice(1));
+    }
+
+    return newOutput;
+}
+
+MagicPen.prototype.amend = function () {
+    var pen = this.getContentFromArguments(arguments);
+
+    if (pen.isEmpty()) {
+        return this;
+    }
+
+    this.output = amend(this.output, pen);
+
+    return this;
+};
+
 MagicPen.prototype.append = function () {
     var pen = this.getContentFromArguments(arguments);
 
@@ -5809,7 +5842,6 @@ function replaceText(output, outputArray, regexp, cb) {
 MagicPen.prototype.isEmpty = function () {
     return this.output.length === 1 && this.output[0].length === 0;
 };
-
 
 MagicPen.prototype.replaceText = function (regexp, cb) {
     if (this.isEmpty()) {
