@@ -6,8 +6,9 @@ limit the scope of assertions.
 
 The following types are provided by out of the box by Unexpected:
 `any`, `arguments`, `array`, `array-like`, `binaryArray`, `boolean`,
-`Buffer`, `date`, `Error`, `function`, `null`, `number`, `object`,
-`regexp`, `string`, `undefined`.
+`Buffer`, `date`, `Error`, `function`, `Int8Array`, `Int16Array`,
+`Int32Array`, `NaN`, `null`, `number`, `object`, `regexp`, `string`,
+`Uint8Array`, `Uint16Array`, `Uint32Array`, and `undefined`.
 
 ### expect.addType(typeDefinition)
 
