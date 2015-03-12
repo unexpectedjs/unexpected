@@ -32,8 +32,8 @@
     "url": "/assertions/any/to-be-a/"
   },
   {
-    "label": "to be defined (any)",
-    "url": "/assertions/any/to-be-defined/"
+    "label": "to be falsy (any)",
+    "url": "/assertions/any/to-be-falsy/"
   },
   {
     "label": "to be null (any)",
@@ -120,8 +120,8 @@
     "url": "/assertions/number/to-be-greater-than/"
   },
   {
-    "label": "to be falsy (any)",
-    "url": "/assertions/any/to-be-falsy/"
+    "label": "to be defined (any)",
+    "url": "/assertions/any/to-be-defined/"
   },
   {
     "label": "to be less than or equal to (number)",
