@@ -22,7 +22,7 @@
     "array-changes": "1.0.1",
     "diff": "1.1.0",
     "leven": "1.0.0",
-    "magicpen": "4.3.5"
+    "magicpen": "4.4.0"
   },
   "devDependencies": {
     "async": "0.9.0",

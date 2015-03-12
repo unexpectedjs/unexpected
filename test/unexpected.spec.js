@@ -3266,6 +3266,38 @@ describe('unexpected', function () {
             });
         });
 
+        describe('block items as inspected correctly in', function () {
+            var clonedExpect = expect.clone().addType({
+                name: 'multiline',
+                identify: function (value) {
+                    return typeof value === 'string' && value.indexOf('\n') !== -1;
+                },
+                inspect: function (value, depth, output) {
+                    output.jsString("'").block(function () {
+                        this.jsString(value);
+                    }).amend('jsString', "'");
+                }
+            });
+
+            it('arrays', function () {
+                clonedExpect([ 'foo\nfoo', 'bar' ], 'to inspect as',
+                       "[\n" +
+                       "  'foo\n" +
+                       "   foo',\n" +
+                       "  'bar'\n" +
+                       "]");
+            });
+
+            it('objects', function () {
+                clonedExpect({ foo: 'foo\nfoo', bar: 'bar' }, 'to inspect as',
+                       "{\n" +
+                       "  foo: 'foo\n" +
+                       "        foo',\n" +
+                       "  bar: 'bar'\n" +
+                       "}");
+            });
+        });
+
         it('indents correctly', function () {
             var data = [{
                 "guid": "db550c87-1680-462a-bacc-655cecdd8907",
