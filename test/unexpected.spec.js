@@ -4250,13 +4250,12 @@ describe('unexpected', function () {
                 .addAssertion('to be sorted after delay', function (expect, subject, delay) {
                     this.errorMode = 'nested';
 
-                    return expect.promise(function (resolve, reject) {
-                        setTimeout(function () {
-                            expect.execute(function () {
-                                expect(subject, 'to be an array');
-                                expect(subject, 'to equal', [].concat(subject).sort());
-                            }, resolve, reject);
-                        }, delay);
+                    return expect.promise(function (run) {
+                        setTimeout(run(function () {
+                            expect(subject, 'to be an array');
+                            expect(subject, 'to equal', [].concat(subject).sort());
+                        }), delay);
+                        expect(42, 'to equal', 24);
                     });
                 })
                 .addAssertion('to be ordered after delay', function (expect, subject) {
