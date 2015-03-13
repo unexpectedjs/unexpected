@@ -1711,9 +1711,19 @@ module.exports = function (expect) {
                                     }
 
                                     if (!bothAreArrays) {
-                                        this.key(key).text(':').sp();
+                                        this.key(key).text(':');
                                     }
                                     valueOutput.amend('text', last ? '' : ',');
+
+
+                                    if (!bothAreArrays) {
+                                        if (valueOutput.isBlock() && valueOutput.isMultiline()) {
+                                            this.indentLines();
+                                            this.nl().i();
+                                        } else {
+                                            this.sp();
+                                        }
+                                    }
 
                                     if (isInlineDiff) {
                                         this.append(valueOutput);
@@ -2052,10 +2062,17 @@ module.exports = function (expect) {
                     inspectedValue.amend('text', ',');
                 }
 
-                if (value && value._expectIt) {
-                    propertyOutput.sp().block(inspectedValue);
+                if (inspectedValue.isBlock() && inspectedValue.isMultiline()) {
+                    propertyOutput.indentLines();
+                    propertyOutput.nl().i();
                 } else {
-                    propertyOutput.sp().append(inspectedValue);
+                    propertyOutput.sp();
+                }
+
+                if (value && value._expectIt) {
+                    propertyOutput.block(inspectedValue);
+                } else {
+                    propertyOutput.append(inspectedValue);
                 }
                 if (hasGetter && hasSetter) {
                     propertyOutput.sp().jsComment('/* getter/setter */');
@@ -2153,8 +2170,15 @@ module.exports = function (expect) {
                     }
 
                     this.key(key);
-                    this.text(':').sp();
+                    this.text(':');
                     valueOutput.amend('text', last ? '' : ',');
+                    if (valueOutput.isBlock() && valueOutput.isMultiline()) {
+                        this.indentLines();
+                        this.nl().i();
+                    } else {
+                        this.sp();
+                    }
+
                     if (isInlineDiff) {
                         this.append(valueOutput);
                     } else {
@@ -5614,6 +5638,16 @@ MagicPen.prototype.getContentFromArguments = function (args) {
                         'a callback append content to a penor\n' +
                         'a style and arguments for that style');
     }
+};
+
+MagicPen.prototype.isMultiline = function () {
+    return this.output.length > 1 || this.size().height > 1;
+};
+
+MagicPen.prototype.isBlock = function () {
+    return this.output.length === 1 &&
+        this.output[0].length === 1 &&
+        this.output[0][0].style === 'block';
 };
 
 MagicPen.prototype.block = function () {
