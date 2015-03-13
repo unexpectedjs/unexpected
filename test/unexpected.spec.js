@@ -4325,6 +4325,52 @@ describe('unexpected', function () {
                 });
         });
 
+
+        it('fails if it is called without a callback', function () {
+            expect(function () {
+                expect.async();
+            }, 'to throw', /expect.async requires a callback without arguments./);
+
+            expect(function () {
+                expect.async('adsf');
+            }, 'to throw', /expect.async requires a callback without arguments./);
+        });
+
+        it('fails if the returned function is not called with a done callback', function () {
+            expect(function () {
+                expect.async(function () {})();
+            }, 'to throw', /expect.async should be called in the context of an it-block/);
+
+            expect(function () {
+                expect.async(function () {})('foo');
+            }, 'to throw', /expect.async should be called in the context of an it-block/);
+        });
+
+        it('fails if is called within a asynchronious context', function () {
+            expect(function () {
+                function done() {}
+                expect.async(function () {
+                    expect.async(function () {
+                    })(done);
+                })(done);
+            }, 'to throw', /expect.async can't be within a expect.async context./);
+        });
+
+        it('fails if the callback does not return a promise or throws', function () {
+            expect(function () {
+                function done() {}
+                expect.async(function () {
+                })(done);
+            }, 'to throw', /expect.async requires the block to return a promise or throw an exception./);
+
+            expect(function () {
+                function done() {}
+                expect.async(function () {
+                    return {};
+                })(done);
+            }, 'to throw', /expect.async requires the block to return a promise or throw an exception./);
+        });
+
         it('supports composition', expect.async(function () {
             return expect([1, 3, 2], 'to be ordered after delay');
         }));
