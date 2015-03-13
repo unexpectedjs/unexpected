@@ -4255,12 +4255,18 @@ describe('unexpected', function () {
                             expect(subject, 'to be an array');
                             expect(subject, 'to equal', [].concat(subject).sort());
                         }), delay);
-                        expect(42, 'to equal', 24);
                     });
                 })
                 .addAssertion('to be ordered after delay', function (expect, subject) {
                     this.errorMode = 'nested';
                     return expect(subject, 'to be sorted after delay', 200);
+                })
+                .addAssertion('im sync', function (expect, subject) {
+                    return expect.promise(function (run) {
+                        run(function () {
+                            expect(subject, 'to be', 24);
+                        })();
+                    });
                 });
         });
 
@@ -4271,5 +4277,11 @@ describe('unexpected', function () {
         it('has a nice syntax', expect.async(function () {
             return expect([1, 3, 2], 'to be sorted after delay', 200);
         }));
+
+        it('tests that assertions that returns promises are converted to exceptions if they are sync', function () {
+            expect(function () {
+                expect(42, 'im sync');
+            }, 'to throw', 'expected 42 im sync');
+        });
     });
 });
