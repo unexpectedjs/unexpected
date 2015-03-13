@@ -3273,9 +3273,11 @@ describe('unexpected', function () {
                     return typeof value === 'string' && value.indexOf('\n') !== -1;
                 },
                 inspect: function (value, depth, output) {
-                    output.jsString("'").block(function () {
-                        this.jsString(value);
-                    }).amend('jsString', "'");
+                    output.block(function () {
+                        this.jsString("'").block(function () {
+                            this.jsString(value);
+                        }).amend('jsString', "'");
+                    });
                 }
             });
 
@@ -3291,8 +3293,9 @@ describe('unexpected', function () {
             it('objects', function () {
                 clonedExpect({ foo: 'foo\nfoo', bar: 'bar' }, 'to inspect as',
                        "{\n" +
-                       "  foo: 'foo\n" +
-                       "        foo',\n" +
+                       "  foo:\n" +
+                       "    'foo\n" +
+                       "     foo',\n" +
                        "  bar: 'bar'\n" +
                        "}");
             });
