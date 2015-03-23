@@ -30,6 +30,20 @@ expect.addType({
             a.toString('ansi') === b.toString('ansi') &&
             a.toString('html') === b.toString('html');
     }
+}).addType({
+    name: 'Promise',
+    base: 'object',
+    identify: function (obj) {
+        return this.baseType.identify(obj) && typeof obj.then === 'function';
+    }
+}).addAssertion('Promise', 'to be rejected', function (expect, subject, expectedReason) {
+    return subject.then(function () {
+        throw new Error('Promise unexpectedly fulfilled');
+    }).caught(function (err) {
+        if (typeof expectedReason !== 'undefined') {
+            return expect(err.output.toString('text'), 'to satisfy', expectedReason);
+        }
+    });
 });
 
 expect.addAssertion('to have message', function (expect, subject, value) {
@@ -2216,6 +2230,35 @@ describe('unexpected', function () {
                 "  2: failed expectation in [ 7, 8, '9' ]:\n" +
                 "       2: expected '9' to be a number");
         });
+
+        describe('delegating to an async assertion', function () {
+            var clonedExpect = expect.clone()
+                .addAssertion('to be a number after a short delay', function (expect, subject, delay) {
+                    this.errorMode = 'nested';
+
+                    return expect.promise(function (run) {
+                        setTimeout(run(function () {
+                            expect(subject, 'to be a number');
+                        }), 1);
+                    });
+                });
+
+            it('should succeed', function () {
+                return clonedExpect([1, 2, 3], 'to be an array whose items satisfy', 'to be a number after a short delay');
+            });
+
+            it('should fail with a diff', function () {
+                return expect(
+                    clonedExpect([0, false, 'abc'], 'to be an array whose items satisfy', 'to be a number after a short delay'),
+                    'to be rejected',
+                        "failed expectation in [ 0, false, 'abc' ]:\n" +
+                        "  1: expected false to be a number after a short delay\n" +
+                        "       expected false to be a number\n" +
+                        "  2: expected 'abc' to be a number after a short delay\n" +
+                        "       expected 'abc' to be a number"
+                );
+            });
+        });
     });
 
     describe('to be a map whose values satisfy assertion', function () {
@@ -2302,6 +2345,35 @@ describe('unexpected', function () {
                 "  baz: failed expectation in [ 7, 8, '9' ]:\n" +
                 "         2: expected '9' to be a number");
         });
+
+        describe('delegating to an async assertion', function () {
+            var clonedExpect = expect.clone()
+                .addAssertion('to be a number after a short delay', function (expect, subject, delay) {
+                    this.errorMode = 'nested';
+
+                    return expect.promise(function (run) {
+                        setTimeout(run(function () {
+                            expect(subject, 'to be a number');
+                        }), 1);
+                    });
+                });
+
+            it('should succeed', function () {
+                return clonedExpect({0: 1, 1: 2, 2: 3}, 'to be a map whose values satisfy', 'to be a number after a short delay');
+            });
+
+            it('should fail with a diff', function () {
+                return expect(
+                    clonedExpect({0: 0, 1: false, 2: 'abc'}, 'to be a map whose values satisfy', 'to be a number after a short delay'),
+                    'to be rejected',
+                        "failed expectation in { 0: 0, 1: false, 2: 'abc' }:\n" +
+                        "  1: expected false to be a number after a short delay\n" +
+                        "       expected false to be a number\n" +
+                        "  2: expected 'abc' to be a number after a short delay\n" +
+                        "       expected 'abc' to be a number"
+                );
+            });
+        });
     });
 
     describe('to be a map whose keys satisfy assertion', function () {
@@ -2373,6 +2445,35 @@ describe('unexpected', function () {
                    "failed expectation on keys foo, bar, baz, qux, quux:\n" +
                    "  quux: expected 'quux' to have length 3\n" +
                    "          expected 4 to be 3");
+        });
+
+        describe('delegating to an async assertion', function () {
+            var clonedExpect = expect.clone()
+                .addAssertion('to be a sequence of as after a short delay', function (expect, subject, delay) {
+                    this.errorMode = 'nested';
+
+                    return expect.promise(function (run) {
+                        setTimeout(run(function () {
+                            expect(subject, 'to match', /^a+$/);
+                        }), 1);
+                    });
+                });
+
+            it('should succeed', function () {
+                return clonedExpect({a: 1, aa: 2}, 'to be an object whose keys satisfy', 'to be a sequence of as after a short delay');
+            });
+
+            it('should fail with a diff', function () {
+                return expect(
+                    clonedExpect({a: 1, foo: 2, bar: 3}, 'to be an object whose keys satisfy', 'to be a sequence of as after a short delay'),
+                    'to be rejected',
+                        "failed expectation on keys a, foo, bar:\n" +
+                        "  foo: expected 'foo' to be a sequence of as after a short delay\n" +
+                        "         expected 'foo' to match /^a+$/\n" +
+                        "  bar: expected 'bar' to be a sequence of as after a short delay\n" +
+                        "         expected 'bar' to match /^a+$/"
+                );
+            });
         });
     });
 
