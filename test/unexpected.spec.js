@@ -3682,8 +3682,7 @@ describe('unexpected', function () {
                     .or('to be a string')
                     .or('to be an array');
                 expect(function () {
-                    var value = expectation(true);
-                    console.log(value.isRejected(), value.isFulfilled());
+                    expectation(true);
                 }, 'to throw',
                        "⨯ expected true to be a number or\n" +
                        "⨯ expected true to be a string or\n" +
