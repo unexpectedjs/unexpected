@@ -4419,11 +4419,34 @@ describe('unexpected', function () {
         });
 
         it('supports composition', expect.async(function () {
-            return expect([1, 3, 2], 'to be ordered after delay');
+            return expect(
+                expect([1, 3, 2], 'to be ordered after delay'),
+                'to be rejected',
+                    'expected [ 1, 3, 2 ] to be ordered after delay\n' +
+                    '  expected [ 1, 3, 2 ] to be sorted after delay 200\n' +
+                    '    expected [ 1, 3, 2 ] to equal [ 1, 2, 3 ]\n' +
+                    '\n' +
+                    '    [\n' +
+                    '      1,\n' +
+                    '      3, // should equal 2\n' +
+                    '      2 // should equal 3\n' +
+                    '    ]'
+            );
         }));
 
         it('has a nice syntax', expect.async(function () {
-            return expect([1, 3, 2], 'to be sorted after delay', 200);
+            return expect(
+                expect([1, 3, 2], 'to be sorted after delay', 200),
+                'to be rejected',
+                    'expected [ 1, 3, 2 ] to be sorted after delay 200\n' +
+                    '  expected [ 1, 3, 2 ] to equal [ 1, 2, 3 ]\n' +
+                    '\n' +
+                    '  [\n' +
+                    '    1,\n' +
+                    '    3, // should equal 2\n' +
+                    '    2 // should equal 3\n' +
+                    '  ]'
+            );
         }));
 
         it('tests that assertions that returns promises are converted to exceptions if they are sync', function () {
