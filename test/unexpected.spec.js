@@ -3631,12 +3631,13 @@ describe('unexpected', function () {
                        "⨯ expected 'foobarbaz' to be an array");
             });
 
-            it('if there are only no and-clauses it writes the failure output more compactly', function () {
+            it('if there are no and-clauses it writes the failure output more compactly', function () {
                 var expectation = expect.it('to be a number')
                     .or('to be a string')
                     .or('to be an array');
                 expect(function () {
-                    expectation(true);
+                    var value = expectation(true);
+                    console.log(value.isRejected(), value.isFulfilled());
                 }, 'to throw',
                        "⨯ expected true to be a number or\n" +
                        "⨯ expected true to be a string or\n" +
