@@ -41,7 +41,7 @@ expect.addType({
         throw new Error('Promise unexpectedly fulfilled');
     }).caught(function (err) {
         if (typeof expectedReason !== 'undefined') {
-            return expect(err.output.toString('text'), 'to satisfy', expectedReason);
+            return expect(err._isUnexpected ? err.output.toString('text') : err.message, 'to satisfy', expectedReason);
         }
     });
 });
@@ -3757,7 +3757,95 @@ describe('unexpected', function () {
                        '⨯ expected true to be a number or\n' +
                        '⨯ expected true to be a string');
             });
+        });
 
+        describe('with async assertions', function () {
+            var clonedExpect = expect.clone()
+                .addAssertion('to be a number after a short delay', function (expect, subject) {
+                    this.errorMode = 'nested';
+
+                    return expect.promise(function (run) {
+                        setTimeout(run(function () {
+                            expect(subject, 'to be a number');
+                        }), 1);
+                    });
+                })
+                .addAssertion('to be finite after a short delay', function (expect, subject) {
+                    this.errorMode = 'nested';
+
+                    return expect.promise(function (run) {
+                        setTimeout(run(function () {
+                            expect(subject, 'to be finite');
+                        }), 1);
+                    });
+                })
+                .addAssertion('to be a string after a short delay', function (expect, subject) {
+                    this.errorMode = 'nested';
+
+                    return expect.promise(function (run) {
+                        setTimeout(run(function () {
+                            expect(subject, 'to be a string');
+                        }), 1);
+                    });
+                });
+
+            it('should succeed', function () {
+                return clonedExpect.it('to be a number after a short delay')(123);
+            });
+
+            it('should fail with a diff', function () {
+                return expect(
+                    clonedExpect.it('to be a number after a short delay')(false),
+                    'to be rejected',
+                        'expected false to be a number after a short delay\n' +
+                        '  expected false to be a number'
+                );
+            });
+
+            describe('with a chained "and" construct', function () {
+                it('should succeed', function () {
+                    return clonedExpect
+                        .it('to be a number after a short delay')
+                        .and('to be finite after a short delay')(123);
+                });
+
+                it('should fail with a diff', function () {
+                    return expect(
+                        clonedExpect
+                            .it('to be a number after a short delay')
+                            .and('to be finite after a short delay')(false),
+                        'to be rejected',
+                            '⨯ expected false to be a number after a short delay and\n' +
+                            '    expected false to be a number\n' +
+                            '  expected false to be finite after a short delay'
+                    );
+                });
+            });
+
+            describe('with a chained "or" construct', function () {
+                it('should succeed', function () {
+                    return clonedExpect
+                        .it('to be a number after a short delay')
+                            .and('to be finite after a short delay')
+                        .or('to be a string after a short delay')('abc');
+                });
+
+                it('should fail with a diff', function () {
+                    return expect(
+                        clonedExpect
+                            .it('to be a number after a short delay')
+                                .and('to be finite after a short delay')
+                            .or('to be a string after a short delay')(false),
+                        'to be rejected',
+                            '⨯ expected false to be a number after a short delay and\n' +
+                            '    expected false to be a number\n' +
+                            '  expected false to be finite after a short delay\n' +
+                            'or\n' +
+                            '⨯ expected false to be a string after a short delay\n' +
+                            '    expected false to be a string'
+                    );
+                });
+            });
         });
     });
 
