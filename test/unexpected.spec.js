@@ -1,6 +1,7 @@
 /*global weknowhow, describe, it, before, beforeEach, setTimeout, Int8Array, Uint8Array, Uint16Array, Uint32Array*/
 
 var expect = typeof weknowhow === 'undefined' ? require('../lib/') : weknowhow.expect;
+var workQueue = typeof weknowhow === 'undefined' ? require('../lib/workQueue') : null;
 
 // use this instead of Object.create in order to make the tests run in
 // browsers that are not es5 compatible.
@@ -4595,6 +4596,25 @@ describe('unexpected', function () {
             expect(function () {
                 expect(42, 'im sync');
             }, 'to throw', 'expected 42 im sync');
+        });
+
+        it.skipIf(!workQueue, 'throw an unhandled rejection if a promise is not caught by the test', function (done) {
+            workQueue.onUnhandledRejection = function (err) {
+                expect(err.output.toString(), 'to equal',
+                    'expected [ 1, 3, 2 ] to be ordered after delay\n' +
+                    '  expected [ 1, 3, 2 ] to be sorted after delay 200\n' +
+                    '    expected [ 1, 3, 2 ] to equal [ 1, 2, 3 ]\n' +
+                    '\n' +
+                    '    [\n' +
+                    '      1,\n' +
+                    '      3, // should equal 2\n' +
+                    '      2 // should equal 3\n' +
+                    '    ]');
+
+                done();
+            };
+
+            expect([1, 3, 2], 'to be ordered after delay');
         });
     });
 });
