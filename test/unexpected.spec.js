@@ -4489,6 +4489,31 @@ describe('unexpected', function () {
         });
     });
 
+    describe('assertion.shift', function () {
+        describe('with an async assertion', function () {
+            var clonedExpect = expect.clone().addAssertion('when delayed a little bit', function (expect, subject) {
+                var that = this;
+                return expect.promise(function (run) {
+                    setTimeout(run(function () {
+                        return that.shift(expect, subject, 0);
+                    }), 1);
+                });
+            });
+
+            it('should succeed', function () {
+                return clonedExpect(42, 'when delayed a little bit', 'to be a number');
+            });
+
+            it('should fail with a diff', function () {
+                return expect(
+                    clonedExpect(false, 'when delayed a little bit', 'to be a number'),
+                    'to be rejected',
+                    'expected false when delayed a little bit to be a number'
+                );
+            });
+        });
+    });
+
     describe('async', function () {
         before(function () {
             expect = expect.clone()
