@@ -2161,6 +2161,32 @@ describe('unexpected', function () {
                 expect({foo: 123}, 'to exhaustively satisfy', {bar: undefined});
             }, 'to throw');
         });
+
+        describe('when delegating to async assertions', function () {
+            var clonedExpect = expect.clone()
+                .addAssertion('to be a number after a short delay', function (expect, subject) {
+                    this.errorMode = 'nested';
+
+                    return expect.promise(function (run) {
+                        setTimeout(run(function () {
+                            expect(subject, 'to be a number');
+                        }), 1);
+                    });
+                });
+
+            it('returns a promise that is resolved if the assertion succeeds', function () {
+                return clonedExpect(42, 'to satisfy', clonedExpect.it('to be a number after a short delay'));
+            });
+
+            it('returns a promise that is rejected if the assertion fails', function () {
+                expect(clonedExpect('wat', 'to satisfy', clonedExpect.it('to be a number after a short delay')),
+                       'to be rejected',
+                       "expected 'wat' to satisfy expect.it('to be a number after a short delay')\n" +
+                       "\n" +
+                       "expected 'wat' to be a number after a short delay\n" +
+                       "  expected 'wat' to be a number");
+            });
+        });
     });
 
     describe('to be an array whose items satisfy assertion', function () {
