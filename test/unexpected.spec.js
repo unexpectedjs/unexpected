@@ -1575,6 +1575,15 @@ describe('unexpected', function () {
             });
         });
 
+        it('should support expect.it at the first level', function () {
+            expect(function () {
+                expect('bar', 'to satisfy', expect.it('to be a number'));
+            }, 'to throw',
+                   "expected 'bar' to satisfy expect.it('to be a number')\n" +
+                   "\n" +
+                   "expected 'bar' to be a number");
+        });
+
         it('should support regular expressions in the RHS object', function () {
             expect({foo: 'bar'}, 'to satisfy', {
                 foo: /ba/
@@ -4529,7 +4538,7 @@ describe('unexpected', function () {
                 })
                 .addAssertion('to be ordered after delay', function (expect, subject) {
                     this.errorMode = 'nested';
-                    return expect(subject, 'to be sorted after delay', 200);
+                    return expect(subject, 'to be sorted after delay', 20);
                 })
                 .addAssertion('im sync', function (expect, subject) {
                     return expect.promise(function (run) {
@@ -4591,7 +4600,7 @@ describe('unexpected', function () {
                 expect([1, 3, 2], 'to be ordered after delay'),
                 'to be rejected',
                     'expected [ 1, 3, 2 ] to be ordered after delay\n' +
-                    '  expected [ 1, 3, 2 ] to be sorted after delay 200\n' +
+                    '  expected [ 1, 3, 2 ] to be sorted after delay 20\n' +
                     '    expected [ 1, 3, 2 ] to equal [ 1, 2, 3 ]\n' +
                     '\n' +
                     '    [\n' +
@@ -4604,9 +4613,9 @@ describe('unexpected', function () {
 
         it('has a nice syntax', expect.async(function () {
             return expect(
-                expect([1, 3, 2], 'to be sorted after delay', 200),
+                expect([1, 3, 2], 'to be sorted after delay', 20),
                 'to be rejected',
-                    'expected [ 1, 3, 2 ] to be sorted after delay 200\n' +
+                    'expected [ 1, 3, 2 ] to be sorted after delay 20\n' +
                     '  expected [ 1, 3, 2 ] to equal [ 1, 2, 3 ]\n' +
                     '\n' +
                     '  [\n' +
@@ -4627,7 +4636,7 @@ describe('unexpected', function () {
             workQueue.onUnhandledRejection = function (err) {
                 expect(err.output.toString(), 'to equal',
                     'expected [ 1, 3, 2 ] to be ordered after delay\n' +
-                    '  expected [ 1, 3, 2 ] to be sorted after delay 200\n' +
+                    '  expected [ 1, 3, 2 ] to be sorted after delay 20\n' +
                     '    expected [ 1, 3, 2 ] to equal [ 1, 2, 3 ]\n' +
                     '\n' +
                     '    [\n' +
