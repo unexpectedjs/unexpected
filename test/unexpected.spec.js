@@ -789,9 +789,14 @@ describe('unexpected', function () {
             expect(function () {
                 throw new Error('matches the exception message');
             }, 'to throw exception', /matches the exception message/);
+        });
+
+        it('does not support the not-flag in combination with an argument', function () {
             expect(function () {
-                throw new Error('Other error');
-            }, 'not to throw exception', /matches the exception message/);
+                expect(function () {
+                    throw new Error('matches the exception message');
+                }, 'not to throw', /matches the exception message/);
+            }, 'to throw', "The 'not to throw' assertion does not support arguments");
         });
 
         it.skipIf(phantomJsErrorWeirdness, 'provides a diff when the exception message does not match the given string', function () {
@@ -841,9 +846,6 @@ describe('unexpected', function () {
             expect(function () {
                 throw new Error('matches the exception message');
             }, 'to throw exception', 'matches the exception message');
-            expect(function () {
-                throw new Error('matches the exception message');
-            }, 'not to throw exception', 'the exception message');
         });
 
         it('does not break if null is thrown', function () {

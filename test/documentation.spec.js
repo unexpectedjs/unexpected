@@ -1414,32 +1414,6 @@ describe("documentation tests", function () {
                 "  threw: Error({ message: 'threw anyway' })"
             );
         }
-
-        expect(function () {
-          throw new Error('The correct error message');
-        }, 'not to throw', /great success/);
-
-        try {
-            expect(function () {
-              throw new Error('The correct error message');
-            }, 'not to throw', /error/);
-            expect.fail(function (output) {
-                output.error("expected:").nl();
-                output.code("expect(function () {").nl();
-                output.code("  throw new Error('The correct error message');").nl();
-                output.code("}, 'not to throw', /error/);").nl();
-                output.error("to throw");
-            });
-        } catch (e) {
-            expect(e, "to have message",
-                "expected\n" +
-                "function () {\n" +
-                "  throw new Error('The correct error message');\n" +
-                "}\n" +
-                "not to throw /error/\n" +
-                "  expected Error({ message: 'The correct error message' }) not to satisfy /error/"
-            );
-        }
     });
 
     it("assertions/number/to-be-NaN.md contains correct examples", function () {

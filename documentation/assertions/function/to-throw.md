@@ -131,29 +131,3 @@ function () {
 not to throw
   threw: Error({ message: 'threw anyway' })
 ```
-
-You can also use the `not` flag in combination with matching the error
-message.
-
-```javascript
-expect(function () {
-  throw new Error('The correct error message');
-}, 'not to throw', /great success/);
-```
-
-In case of a failing expectation you get the following output:
-
-```javascript
-expect(function () {
-  throw new Error('The correct error message');
-}, 'not to throw', /error/);
-```
-
-```output
-expected
-function () {
-  throw new Error('The correct error message');
-}
-not to throw /error/
-  expected Error({ message: 'The correct error message' }) not to satisfy /error/
-```
