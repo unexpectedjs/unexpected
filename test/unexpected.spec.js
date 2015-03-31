@@ -260,13 +260,6 @@ describe('unexpected', function () {
             expect('abc', 'to be a non-empty string');
             expect([], 'to be an', 'array');
             expect([], 'to be an array');
-            expect(['abc'], 'to be an array of strings');
-            expect([{}], 'to be an array of objects');
-            expect([{}], 'to be a non-empty array of objects');
-            expect([/foo/, /bar/], 'to be a non-empty array of regexps');
-            expect([/foo/, /bar/], 'to be a non-empty array of regexes');
-            expect([[], [], []], 'to be an array of arrays');
-            expect(['abc'], 'to be a non-empty array of strings');
             expect([], 'to be an empty array');
             expect({}, 'to be an', Object);
             expect([123], 'to be a non-empty array');
@@ -330,6 +323,29 @@ describe('unexpected', function () {
                 expect(e, 'not to have property', 'actual');
                 expect(e, 'not to have property', 'expected');
             });
+        });
+    });
+
+    describe('to a an array of assertion', function () {
+        it('fails if the given array is empty', function () {
+            expect(function () {
+                expect([], 'to be an array of strings');
+            }, 'to throw',
+                   "expected [] to be an array of strings\n" +
+                   "  expected [] to be non-empty");
+        });
+
+        it('asserts that all items in the array has the specified type', function () {
+            expect(['abc'], 'to be an array of strings');
+            expect([{}], 'to be an array of objects');
+            expect([/foo/, /bar/], 'to be an array of regexps');
+            expect([/foo/, /bar/], 'to be an array of regexes');
+        });
+
+        it('fails if any item in the array has another type than what is expected', function () {
+            expect(function () {
+                expect(['abc', 123], 'to be an array of strings');
+            }, 'to throw', "expected [ 'abc', 123 ] to be an array of strings");
         });
     });
 
