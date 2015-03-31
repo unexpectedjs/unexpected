@@ -2213,10 +2213,17 @@ describe('unexpected', function () {
                    '  but it is defined for the type "array-like"');
         });
 
-        it('supports the non-empty clause', function () {
-            expect([1], 'to be a non-empty array whose items satisfy', function (item) {
-                expect(item, 'to be a number');
-            });
+        it('fails if the given array is empty', function () {
+            expect(function () {
+                expect([], 'to be an array whose items satisfy', function (item) {
+                    expect(item, 'to be a number');
+                });
+            }, 'to throw',
+                   "expected [] to be an array whose items satisfy\n" +
+                   "function (item) {\n" +
+                   "    expect(item, 'to be a number');\n" +
+                   "}\n" +
+                   "  expected [] to be non-empty");
         });
 
         it('asserts that the given callback does not throw for any items in the array', function () {
@@ -2255,12 +2262,6 @@ describe('unexpected', function () {
             expect(function () {
                 expect(['0', 1, '2', '3'], 'to be an array whose items satisfy', 'not to be a number');
             }, 'to throw', /expected 1 not to be a number/);
-
-            expect(function () {
-                expect([], 'to be a non-empty array whose items satisfy', function (item) {
-                    expect(item, 'not to be a number');
-                });
-            }, 'to throw', /expected \[\] to be non-empty/);
         });
 
         it('provides a detailed report of where failures occur', function () {
@@ -2350,10 +2351,43 @@ describe('unexpected', function () {
             expect({ foo: '0', bar: '1', baz: '2', qux: '3' }, 'to be a map whose values satisfy', 'not to be a number');
         });
 
-        it('supports the non-empty clause', function () {
-            expect({ foo: '0' }, 'to be a non-empty map whose values satisfy', function (value) {
-                expect(value, 'to equal', '0');
-            });
+        it('fails if the given object is empty', function () {
+            expect(function () {
+                expect({}, 'to be a map whose values satisfy', function (value) {
+                    expect(value, 'to equal', '0');
+                });
+            }, 'to throw',
+                   "expected {} to be a map whose values satisfy\n" +
+                   "function (value) {\n" +
+                   "    expect(value, 'to equal', '0');\n" +
+                   "}\n" +
+                   "  expected {} not to equal {}");
+        });
+
+        it('fails if the given array is empty', function () {
+            expect(function () {
+                expect([], 'to be an array whose items satisfy', function (item) {
+                    expect(item, 'to be a number');
+                });
+            }, 'to throw',
+                   "expected [] to be an array whose items satisfy\n" +
+                   "function (item) {\n" +
+                   "    expect(item, 'to be a number');\n" +
+                   "}\n" +
+                   "  expected [] to be non-empty");
+        });
+
+        it('fails if the given array is empty', function () {
+            expect(function () {
+                expect([], 'to be an array whose items satisfy', function (item) {
+                    expect(item, 'to be a number');
+                });
+            }, 'to throw',
+                   "expected [] to be an array whose items satisfy\n" +
+                   "function (item) {\n" +
+                   "    expect(item, 'to be a number');\n" +
+                   "}\n" +
+                   "  expected [] to be non-empty");
         });
 
         it('supports "hash" and "object" as aliases', function () {
@@ -2473,10 +2507,17 @@ describe('unexpected', function () {
             });
         });
 
-        it('supports the non-empty clause', function () {
-            expect({ foo: '0' }, 'to be a non-empty map whose keys satisfy', function (key) {
-                expect(key, 'to match', /^[a-z]{3}$/);
-            });
+        it('fails if the given object is empty', function () {
+            expect(function () {
+                expect({}, 'to be a map whose keys satisfy', function (key) {
+                    expect(key, 'to match', /^[a-z]{3}$/);
+                });
+            }, 'to throw',
+                   "expected {} to be a map whose keys satisfy\n" +
+                   "function (key) {\n" +
+                   "    expect(key, 'to match', /^[a-z]{3}$/);\n" +
+                   "}\n" +
+                   "  expected {} not to equal {}");
         });
 
         it('supports "hash" and "object" as aliases', function () {

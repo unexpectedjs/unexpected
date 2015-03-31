@@ -416,7 +416,7 @@ describe("documentation tests", function () {
             });
         } catch (e) {
             expect(e, "to have message",
-                "Unknown assertion \"to be an integer\", did you mean: \"to be a number\""
+                "Unknown assertion \"to be an integer\", did you mean: \"to be a regex\""
             );
         }
     });
@@ -1047,10 +1047,6 @@ describe("documentation tests", function () {
 
         expect([[1], [2]], 'to be an array whose items satisfy',
                'to be an array whose items satisfy', 'to be a number');
-
-        expect([[], []], 'to be a non-empty array whose items satisfy', function (item) {
-            expect(item, 'to be an empty array');
-        });
 
         expect([1, 2, 3, 4], 'to be an array whose items satisfy',
           expect.it('to be a number').and('to be positive'));
@@ -1802,10 +1798,6 @@ describe("documentation tests", function () {
         expect({ foo: 0, bar: 1, baz: 2, qux: 3 },
                'to be a map whose keys satisfy',
                'to match', /^[a-z]{3}$/);
-
-        expect(['foo', 'bar', 'baz', 'qux'],
-               'to be a non-empty hash whose keys satisfy',
-               'to match', /^\d+$/);
 
         try {
             expect({ foo: 0, bar: 1, baz: 2, qux: 3, quux: 4 },
