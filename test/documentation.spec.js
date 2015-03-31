@@ -2042,21 +2042,6 @@ describe("documentation tests", function () {
 
         expect({ a: 'b' }, 'not to have property', 'b');
         expect(Object.create({ a: 'b' }), 'not to have own property', 'a');
-
-        expect({ a: 'b' }, 'not to have property', 'a', 'foo');
-
-        try {
-            expect({ a: 'b' }, 'not to have property', 'a');
-            expect.fail(function (output) {
-                output.error("expected:").nl();
-                output.code("expect({ a: 'b' }, 'not to have property', 'a');").nl();
-                output.error("to throw");
-            });
-        } catch (e) {
-            expect(e, "to have message",
-                "expected { a: 'b' } not to have property 'a'"
-            );
-        }
     });
 
     it("assertions/string/to-be-empty.md contains correct examples", function () {
