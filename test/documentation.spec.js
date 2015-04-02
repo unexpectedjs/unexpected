@@ -100,6 +100,34 @@ describe("documentation tests", function () {
                 "  ]"
             );
         }
+
+        function Timelock(value, delay) {
+          this.value = value;
+          this.delay = delay;
+        }
+
+        Timelock.prototype.getValue = function (cb) {
+          var that = this;
+          setTimeout(function () {
+            cb(that.value);
+          }, this.delay);
+        }
+
+        expect.addType({
+          name: 'Timelock',
+          identify: function (value) {
+            return value && value instanceof Timelock;
+          }
+        });
+
+        expect.addAssertion('Timelock', 'to satisfy', function (expect, subject, spec) {
+          this.errorMode = 'diff';
+          return expect.promise(function (run) {
+            subject.getValue(run(function (value) {
+              return expect(value, 'to satisfy', spec);
+            }));
+          });
+        });
     });
 
     it("api/addType.md contains correct examples", function () {

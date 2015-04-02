@@ -1,4 +1,4 @@
-## expect.promise(promiseBody)
+### expect.promise(promiseBody)
 
 This method is used inside [addAssertion](/api/addAssertion) to
 promise from the given body function.
