@@ -22,6 +22,11 @@ Required members:
 * __identify__: `boolean function(value)` - a function deciding if the type
   should be used for the given value.
 
+Note that your type has the option to take precedence over all the build-in
+types. Test subjects will be tested against the most recently defined type
+first, so `identify` functions should take care not to break with `undefined`,
+`null` and so on.
+
 Optional members:
 
 * __base__: `String` - the name of the base type. Defaults to `any`.
