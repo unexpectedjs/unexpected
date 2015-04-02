@@ -88,9 +88,9 @@ Person({
 })
 ```
 
-That is already quite helpful, but the output misses the information
-that it is `Person` instances we are comparing. We can fix that by
-implementing an `inspect` method on the type.
+That is already quite helpful, but it would be even nicer if the
+stringification of `Person` instances could read as valid calls to the
+constructor. We can fix that by implementing an `inspect` method on the type.
 
 ```javascript
 expect.addType({
