@@ -22,7 +22,7 @@ Required members:
 * __identify__: `boolean function(value)` - a function deciding if the type
   should be used for the given value.
 
-Note that your type has the option to take precedence over all the build-in
+Note that your type has the option to take precedence over all the built-in
 types. Test subjects will be tested against the most recently defined type
 first, so `identify` functions should take care not to break with `undefined`,
 `null` and so on.
@@ -54,7 +54,7 @@ function Person(name, age) {
 
 We start out by creating a basic type for handling `Person`
 instances. The name of the type should be `Person` and it should
-inherit from the build in `object` type. Furthermore we add an
+inherit from the built-in `object` type. Furthermore we add an
 `identify` method that will recognize `Person` instances.
 
 ```javascript
@@ -71,7 +71,7 @@ When you specify a base type, you inherit the optional members you
 didn't implement. In this case we inherited the methods `equal`,
 `inspect` and `diff` from the `object` type.
 
-Imagine that we make a failing expectation on a person instance:
+Imagine that we make a failing expectation on a `Person` instance:
 
 ```javascript
 expect(new Person('John Doe', 42), 'to equal', new Person('Jane Doe', 24));
@@ -129,7 +129,7 @@ Person({
 That is a bit better, let me explain how it works. The `inspect`
 method is called with the value to be inspected, the depth this type
 should be inspected with, an output the inspected value should be
-written to and an inspect function that can be used to recursively
+written to, and an inspect function that can be used to recursively
 inspect members. The output is an instance of
 [magicpen](https://github.com/unexpectedjs/magicpen) extended with a
 number of [styles](https://github.com/unexpectedjs/unexpected/blob/master/lib/styles.js).
@@ -141,7 +141,7 @@ defaults to `depth-1`. Values inspected with depth zero will be
 inspected as `...`. In this case we always want the name so we forward the
 same depth to the `inspect` function.
 
-Let's say we wanted persons only to be compared by name and not by
+Let's say we wanted `Person` instances only to be compared by name and not by
 age. Then we need to override the `equal` method:
 
 ```javascript
@@ -283,7 +283,7 @@ new Person(
 )
 ```
 
-This is a rather complicated example and I wont go though the details,
+This is a rather complicated example and I won't go though the details,
 but I would like to comment on the `inline` flag. When we diff objects
 against each other, the values of the keys will be diffed against each
 other. That means diffs are inserted into the containing
@@ -371,7 +371,7 @@ expect(new Person('Jane Doe', 24), 'to be above legal age');
 ```
 
 Because `Person` inherits from `object` you can use all assertion
-defined for `object` or any of it's ancestors. Here is an example:
+defined for `object` or any of its ancestors. Here is an example:
 
 ```javascript
 expect(new Person('Jane Doe', 24), 'to have keys', 'name', 'age');
@@ -382,6 +382,6 @@ expect(new Person('Jane Doe', 24), 'to satisfy', {
 ```
 
 The best resource for learning more about custom types is to look at
-how the predefined types are build:
+how the predefined types are built:
 
 [lib/types.js](https://github.com/unexpectedjs/unexpected/blob/master/lib/types.js)
