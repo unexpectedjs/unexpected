@@ -163,7 +163,7 @@ even if the retrieval is delayed. Then we would be able to do stuff
 like this:
 
 ```js#evaluate:false
-expect(new Timelock('Hello world'), 'to satisfy', expect.it('have lenght', 11));
+return expect(new Timelock('Hello world'), 'to satisfy', expect.it('have lenght', 11));
 ```
 
 First we need to defined a [type](/api/addType/) for handling the `Timelock`:
@@ -191,11 +191,15 @@ expect.addAssertion('Timelock', 'to satisfy', function (expect, subject, spec) {
 Let's see how it works:
 
 ```js#async:true
-return expect(new Timelock('Hello world!', 20), 'to satisfy', expect.it('not to match', /!/));
+return expect(new Timelock('Hello world!', 5), 'to satisfy', expect.it('not to match', /!/));
 ```
 
 ```output
-expected 'Hello world!' to satisfy not to match, /!/
+expected 'Hello world!' to satisfy expect.it('not to match', /!/)
+
+expected 'Hello world!' not to match /!/
+
+Hello world!
 ```
 
 The best resource for learning more about custom assertions is to look

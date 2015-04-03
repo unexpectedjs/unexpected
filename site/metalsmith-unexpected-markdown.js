@@ -72,9 +72,12 @@ function extractTests(codeBlocks) {
 
         switch (codeBlock.lang) {
         case 'javascript':
-            if (flags.evaluate && !flags.async) {
+            if (flags.evaluate) {
                 evaluatedExampleIndex = index;
-                tests.push({ code: codeBlock.code });
+                tests.push({
+                    code: codeBlock.code,
+                    async: !!flags.async
+                });
             }
             break;
         case 'output':
@@ -139,50 +142,103 @@ function writeTestsToFile(exampleTests, done) {
 
         pen.i().text('it("').text(file).text(' contains correct examples", function () {').nl();
         pen.indentLines();
+        pen.i().text('var promises = [];').nl();
 
         tests.forEach(function (test, index) {
             if (index > 0) {
                 pen.nl();
             }
 
-            if (test.output) {
-                pen.i().text('try {').nl();
-                pen.indentLines();
-                pen.i().block('text', test.code).nl();
-                pen.i().text('expect.fail(function (output) {').nl();
-                pen.indentLines();
-                pen.i().text('output.error("expected:").nl();').nl();
-                test.code.split(/\n/).forEach(function (line, index) {
-                    pen.i().text('output.code("').escapedString(line).text('").nl();').nl();
-                });
-                pen.i().text('output.error("to throw");').nl();
-                pen.outdentLines();
-                pen.i().text('});').nl();
-                pen.outdentLines();
-                pen.i().text('} catch (e) {').nl();
-                pen.indentLines();
-                pen.i().text('expect(e, "to have message",').nl();
-                pen.indentLines();
-                var lines = test.output.split(/\n/);
-                lines.forEach(function (line, index) {
-                    pen.i().text('"').escapedString(line);
-                    if (index < lines.length - 1) {
-                        pen.text('\\n" +').nl();
-                    } else {
-                        pen.text('"');
-                    }
-                });
-                pen.nl();
-                pen.outdentLines();
-                pen.i().text(');').nl();
-                pen.outdentLines();
-                pen.i().text('}');
+            if (test.async) {
+                if (test.output) {
+
+                    pen.i().text('promises.push(expect.promise(function () {').nl();
+                    pen.indentLines();
+                    pen.i().block('text', test.code).nl();
+                    pen.outdentLines();
+                    pen.i().text('}).then(function () {').nl();
+                    pen.indentLines();
+                    pen.i().text('return expect.promise(function () {').nl();
+                    pen.indentLines();
+                    pen.i().text('expect.fail(function (output) {').nl();
+                    pen.indentLines();
+                    pen.i().text('output.error("expected:").nl();').nl();
+                    test.code.split(/\n/).forEach(function (line, index) {
+                        pen.i().text('output.code("').escapedString(line).text('").nl();').nl();
+                    });
+                    pen.i().text('output.error("to throw");').nl();
+                    pen.outdentLines();
+                    pen.i().text('});').nl();
+                    pen.outdentLines();
+                    pen.i().text('});').nl();
+                    pen.outdentLines();
+                    pen.i().text('}).caught(function (e) {').nl();
+                    pen.indentLines();
+                    pen.i().text('expect(e, "to have message",').nl();
+                    pen.indentLines();
+                    var lines = test.output.split(/\n/);
+                    lines.forEach(function (line, index) {
+                        pen.i().text('"').escapedString(line);
+                        if (index < lines.length - 1) {
+                            pen.text('\\n" +').nl();
+                        } else {
+                            pen.text('"');
+                        }
+                    });
+                    pen.nl();
+                    pen.outdentLines();
+                    pen.i().text(');').nl();
+                    pen.outdentLines();
+                    pen.i().text('}));').nl();
+                } else {
+                    pen.i().text('promises.push(expect.promise(function () {').nl();
+                    pen.indentLines();
+                    pen.i().block('text', test.code);
+                    pen.outdentLines();
+                    pen.text('}));');
+                }
             } else {
-                pen.i().block('text', test.code);
+                if (test.output) {
+                    pen.i().text('try {').nl();
+                    pen.indentLines();
+                    pen.i().block('text', test.code).nl();
+                    pen.i().text('expect.fail(function (output) {').nl();
+                    pen.indentLines();
+                    pen.i().text('output.error("expected:").nl();').nl();
+                    test.code.split(/\n/).forEach(function (line, index) {
+                        pen.i().text('output.code("').escapedString(line).text('").nl();').nl();
+                    });
+                    pen.i().text('output.error("to throw");').nl();
+                    pen.outdentLines();
+                    pen.i().text('});').nl();
+                    pen.outdentLines();
+                    pen.i().text('} catch (e) {').nl();
+                    pen.indentLines();
+                    pen.i().text('expect(e, "to have message",').nl();
+                    pen.indentLines();
+                    var lines = test.output.split(/\n/);
+                    lines.forEach(function (line, index) {
+                        pen.i().text('"').escapedString(line);
+                        if (index < lines.length - 1) {
+                            pen.text('\\n" +').nl();
+                        } else {
+                            pen.text('"');
+                        }
+                    });
+                    pen.nl();
+                    pen.outdentLines();
+                    pen.i().text(');').nl();
+                    pen.outdentLines();
+                    pen.i().text('}');
+                } else {
+                    pen.i().block('text', test.code);
+                }
             }
+
             pen.nl();
         });
 
+        pen.i().text('return expect.promise.all(promises);').nl();
         pen.outdentLines();
         pen.i().text('});').nl();
     });
@@ -209,8 +265,8 @@ function evaluateExamples(expect, codeBlocks, cb) {
                 if (codeBlock.flags.async) {
                     var promise = vm.runInThisContext(
                         '(function () { ' +
-                        codeBlock.code +
-                        '})();'
+                            codeBlock.code +
+                            '})();'
                     );
                     if (!isPromise(promise)) {
                         throw new Error('Async code block did not return a promise or throw\n' + codeBlock.code);

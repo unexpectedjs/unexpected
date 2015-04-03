@@ -24,6 +24,7 @@ describe("documentation tests", function () {
     });
 
     it("api/addAssertion.md contains correct examples", function () {
+        var promises = [];
         var errorMode = 'default'; // use to control the error mode later in the example
         expect.addAssertion('array', '[not] to be (sorted|ordered)', function(expect, subject, cmp) {
           this.errorMode = errorMode;
@@ -128,9 +129,32 @@ describe("documentation tests", function () {
             }));
           });
         });
+
+        promises.push(expect.promise(function () {
+            return expect(new Timelock('Hello world!', 5), 'to satisfy', expect.it('not to match', /!/));
+        }).then(function () {
+            return expect.promise(function () {
+                expect.fail(function (output) {
+                    output.error("expected:").nl();
+                    output.code("return expect(new Timelock('Hello world!', 5), 'to satisfy', expect.it('not to match', /!/));").nl();
+                    output.error("to throw");
+                });
+            });
+        }).caught(function (e) {
+            expect(e, "to have message",
+                "expected 'Hello world!' to satisfy expect.it('not to match', /!/)\n" +
+                "\n" +
+                "expected 'Hello world!' not to match /!/\n" +
+                "\n" +
+                "Hello world!"
+            );
+        }));
+
+        return expect.promise.all(promises);
     });
 
     it("api/addType.md contains correct examples", function () {
+        var promises = [];
         function Person(name, age) {
             this.name = name;
             this.age = age;
@@ -423,9 +447,11 @@ describe("documentation tests", function () {
             name: expect.it('to be a string').and('not to be empty'),
             age: expect.it('to be a number').and('not to be negative')
         });
+        return expect.promise.all(promises);
     });
 
     it("api/clone.md contains correct examples", function () {
+        var promises = [];
         var originalExpect = expect;
 
         expect = expect.clone().addAssertion('to be an integer', function (expect, subject) {
@@ -447,9 +473,11 @@ describe("documentation tests", function () {
                 "Unknown assertion \"to be an integer\", did you mean: \"to be a regex\""
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("api/fail.md contains correct examples", function () {
+        var promises = [];
         try {
             expect.fail()
             expect.fail(function (output) {
@@ -528,9 +556,11 @@ describe("documentation tests", function () {
                 "You have been a very bad boy!"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("api/installPlugin.md contains correct examples", function () {
+        var promises = [];
         function IntegerInterval(from, to) {
           this.from = from;
           this.to = to;
@@ -570,9 +600,11 @@ describe("documentation tests", function () {
                 "expected [7,13] to contain 27"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/any/to-be-a.md contains correct examples", function () {
+        var promises = [];
         expect(true, 'to be a', 'boolean');
         expect(5, 'to be a', 'number');
         expect('abc', 'to be a', 'string');
@@ -632,9 +664,11 @@ describe("documentation tests", function () {
                 "expected function () { return 'wat'; } not to be an Object"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/any/to-be-defined.md contains correct examples", function () {
+        var promises = [];
         expect('Hello world!', 'to be defined');
         expect({ foo: { bar: 'baz' } }, 'to be defined');
 
@@ -650,9 +684,11 @@ describe("documentation tests", function () {
                 "expected undefined to be defined"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/any/to-be-falsy.md contains correct examples", function () {
+        var promises = [];
         expect(0, 'to be falsy');
         expect(false, 'to be falsy');
         expect('', 'to be falsy');
@@ -690,9 +726,11 @@ describe("documentation tests", function () {
                 "expected '' not to be falsy"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/any/to-be-null.md contains correct examples", function () {
+        var promises = [];
         expect(null, 'to be null');
 
         try {
@@ -723,9 +761,11 @@ describe("documentation tests", function () {
                 "expected null not to be null"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/any/to-be-ok.md contains correct examples", function () {
+        var promises = [];
         expect(1, 'to be ok');
         expect(true, 'to be ok');
         expect({}, 'to be ok');
@@ -763,9 +803,11 @@ describe("documentation tests", function () {
                 "expected {} not to be ok"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/any/to-be-truthy.md contains correct examples", function () {
+        var promises = [];
         expect(1, 'to be truthy');
         expect(true, 'to be truthy');
         expect({}, 'to be truthy');
@@ -803,9 +845,11 @@ describe("documentation tests", function () {
                 "expected {} not to be truthy"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/any/to-be-undefined.md contains correct examples", function () {
+        var promises = [];
         expect(undefined, 'to be undefined');
 
         try {
@@ -836,9 +880,11 @@ describe("documentation tests", function () {
                 "expected undefined not to be undefined"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/any/to-be.md contains correct examples", function () {
+        var promises = [];
         var obj = {};
         expect(obj, 'to be', obj);
         expect(1, 'to be', 1);
@@ -883,9 +929,11 @@ describe("documentation tests", function () {
                 "expected 1 not to be 1"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/any/to-equal.md contains correct examples", function () {
+        var promises = [];
         expect({ a: 'b' }, 'to equal', { a: 'b' });
         var now = new Date();
         expect(now, 'to equal', now);
@@ -1001,9 +1049,11 @@ describe("documentation tests", function () {
                 "expected { a: { b: 'd' } } not to equal { a: { b: 'd' } }"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/any/to-satisfy.md contains correct examples", function () {
+        var promises = [];
         expect({ hey: { there: true } }, 'to satisfy', { hey: {} });
 
         expect({ hey: { there: true } }, 'to exhaustively satisfy', { hey: { there: true } });
@@ -1064,9 +1114,11 @@ describe("documentation tests", function () {
                 "}"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/array/to-be-an-array-whose-items-satisfy.md contains correct examples", function () {
+        var promises = [];
         expect([0, 1, 2, 3, 4], 'to be an array whose items satisfy', function (item, index) {
             expect(item, 'to be a number');
         });
@@ -1119,9 +1171,11 @@ describe("documentation tests", function () {
                 "     ⨯ expected 0 to be positive"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/array/to-be-empty.md contains correct examples", function () {
+        var promises = [];
         expect([], 'to be empty');
 
         try {
@@ -1151,9 +1205,11 @@ describe("documentation tests", function () {
                 "expected [] not to be empty"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/array/to-be-non-empty.md contains correct examples", function () {
+        var promises = [];
         expect([1, 2, 3], 'to be non-empty');
 
         try {
@@ -1168,9 +1224,11 @@ describe("documentation tests", function () {
                 "expected [] to be non-empty"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/array/to-contain.md contains correct examples", function () {
+        var promises = [];
         expect([0, 1, 2], 'to contain', 1);
         expect([ { name: 'John Doe' }, { name: 'Jane Doe' } ], 'to contain', { name: 'Jane Doe' });
         expect([0, 1, 2], 'to contain', 0, 2);
@@ -1207,9 +1265,11 @@ describe("documentation tests", function () {
                 "]"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/array/to-have-length.md contains correct examples", function () {
+        var promises = [];
         expect([1,2,3], 'to have length', 3);
 
         try {
@@ -1240,9 +1300,11 @@ describe("documentation tests", function () {
                 "expected [ 1, 2, 3 ] not to have length 3"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/boolean/to-be-false.md contains correct examples", function () {
+        var promises = [];
         expect(false, 'to be false');
 
         try {
@@ -1257,9 +1319,11 @@ describe("documentation tests", function () {
                 "expected true to be false"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/boolean/to-be-true.md contains correct examples", function () {
+        var promises = [];
         expect(true, 'to be true');
 
         try {
@@ -1274,9 +1338,11 @@ describe("documentation tests", function () {
                 "expected false to be true"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/function/to-have-arity.md contains correct examples", function () {
+        var promises = [];
         expect(Math.max, 'to have arity', 2);
         expect('wat'.substring, 'to have arity', 2);
 
@@ -1300,9 +1366,11 @@ describe("documentation tests", function () {
                 "to have arity 3"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/function/to-throw.md contains correct examples", function () {
+        var promises = [];
         function willThrow() {
           throw new Error('The error message');
         }
@@ -1438,9 +1506,11 @@ describe("documentation tests", function () {
                 "  threw: Error({ message: 'threw anyway' })"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/number/to-be-NaN.md contains correct examples", function () {
+        var promises = [];
         expect(NaN, 'to be NaN');
 
         try {
@@ -1470,9 +1540,11 @@ describe("documentation tests", function () {
                 "expected NaN not to be NaN"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/number/to-be-close-to.md contains correct examples", function () {
+        var promises = [];
         expect(1.5, 'to be close to', 1.500001, 1e-5);
         expect(1.5, 'to be close to', 1.5000000001)
 
@@ -1503,9 +1575,11 @@ describe("documentation tests", function () {
                 "expected 1.5 not to be close to 1.5000000001 (epsilon: 1e-9)"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/number/to-be-finite.md contains correct examples", function () {
+        var promises = [];
         expect(123, 'to be finite');
 
         try {
@@ -1536,9 +1610,11 @@ describe("documentation tests", function () {
                 "expected 123 not to be finite"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/number/to-be-greater-than-or-equal-to.md contains correct examples", function () {
+        var promises = [];
         expect(3, 'to be greater than or equal to', 3);
         expect(4, 'to be >=', 3);
         expect(4, '>=', 4);
@@ -1571,9 +1647,11 @@ describe("documentation tests", function () {
                 "expected 2 not to be greater than or equal to 2"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/number/to-be-greater-than.md contains correct examples", function () {
+        var promises = [];
         expect(3, 'to be greater than', 2);
         expect(1, 'to be above', 0);
         expect(4, 'to be >', 3);
@@ -1608,9 +1686,11 @@ describe("documentation tests", function () {
                 "expected 3 not to be greater than 2"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/number/to-be-infinite.md contains correct examples", function () {
+        var promises = [];
         expect(Infinity, 'to be infinite');
         expect(-Infinity, 'to be infinite');
 
@@ -1641,9 +1721,11 @@ describe("documentation tests", function () {
                 "expected Infinity not to be infinite"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/number/to-be-less-than-or-equal-to.md contains correct examples", function () {
+        var promises = [];
         expect(3, 'to be less than or equal to', 3);
         expect(3, 'to be <=', 4);
         expect(4, '<=', 4);
@@ -1676,9 +1758,11 @@ describe("documentation tests", function () {
                 "expected 2 not to be less than or equal to 2"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/number/to-be-less-than.md contains correct examples", function () {
+        var promises = [];
         expect(2, 'to be less than', 3);
         expect(0, 'to be below', 1);
         expect(3, 'to be <', 4);
@@ -1713,9 +1797,11 @@ describe("documentation tests", function () {
                 "expected 2 not to be less than 3"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/number/to-be-negative.md contains correct examples", function () {
+        var promises = [];
         expect(-42, 'to be negative');
 
         try {
@@ -1746,9 +1832,11 @@ describe("documentation tests", function () {
                 "expected -1 not to be negative"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/number/to-be-positive.md contains correct examples", function () {
+        var promises = [];
         expect(42, 'to be positive');
 
         try {
@@ -1779,9 +1867,11 @@ describe("documentation tests", function () {
                 "expected 1 not to be positive"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/number/to-be-within.md contains correct examples", function () {
+        var promises = [];
         expect(0, 'to be within', 0, 4);
         expect(1, 'to be within', 0, 4);
         expect(2.5, 'to be within', 0, 4);
@@ -1815,9 +1905,11 @@ describe("documentation tests", function () {
                 "expected 0 not to be within 0..4"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/object/to-be-a-map-whose-keys-satisfy.md contains correct examples", function () {
+        var promises = [];
         expect({ foo: 0, bar: 1, baz: 2, qux: 3 },
                'to be a map whose keys satisfy', function (key, value) {
             expect(key, 'to match', /^[a-z]{3}$/);
@@ -1844,9 +1936,11 @@ describe("documentation tests", function () {
                 "  quux: expected 'quux' to match /^[a-z]{3}$/"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/object/to-be-a-map-whose-values-satisfy.md contains correct examples", function () {
+        var promises = [];
         expect({ foo: 0, bar: 1, baz: 2, qux: 3 },
                'to be a map whose values satisfy', function (value, index) {
             expect(value, 'to be a number');
@@ -1879,9 +1973,11 @@ describe("documentation tests", function () {
                 "            ⨯ expected 9 to be below 8"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/object/to-be-canonical.md contains correct examples", function () {
+        var promises = [];
         expect({ a: 123, b: 456 }, 'to be canonical');
         expect([456, { a: 123 }], 'to be canonical');
 
@@ -1897,9 +1993,11 @@ describe("documentation tests", function () {
                 "expected [ 456, { b: 456, a: 123 } ] to be canonical"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/object/to-have-key.md contains correct examples", function () {
+        var promises = [];
         expect({ a: 'a', b: 'b', c: 'c' }, 'to have key', 'a');
 
         expect({ a: 'a' }, 'to only have key', 'a');
@@ -1934,9 +2032,11 @@ describe("documentation tests", function () {
                 "expected { a: 'a', b: 'b' } to not have key 'a'"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/object/to-have-keys.md contains correct examples", function () {
+        var promises = [];
         expect({ a: 'a', b: 'b', c: 'c' }, 'to have keys', 'a', 'c');
         expect({ a: 'a', b: 'b', c: 'c' }, 'to have keys', ['a', 'c']);
 
@@ -1972,9 +2072,11 @@ describe("documentation tests", function () {
                 "expected { a: 'a', b: 'b', c: 'c' } to not only have keys 'a', 'b', 'c'"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/object/to-have-properties.md contains correct examples", function () {
+        var promises = [];
         expect({ a: 'a', b: { c: 'c' }, d: 'd' }, 'to have properties', ['a', 'b']);
         expect({ a: 'a', b: { c: 'c' }, d: 'd' }, 'to have properties', {
             a: 'a',
@@ -2033,9 +2135,11 @@ describe("documentation tests", function () {
                 "expected { a: 'a', b: { c: 'c' }, d: 'd' } not to have properties [ 'b', 'd' ]"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/object/to-have-property.md contains correct examples", function () {
+        var promises = [];
         expect([1, 2], 'to have property', 'length');
         expect({ a: 'b' }, 'to have property', 'a');
         expect({ a: 'b' }, 'to have property', 'toString');
@@ -2062,9 +2166,11 @@ describe("documentation tests", function () {
 
         expect({ a: 'b' }, 'not to have property', 'b');
         expect(Object.create({ a: 'b' }), 'not to have own property', 'a');
+        return expect.promise.all(promises);
     });
 
     it("assertions/string/to-be-empty.md contains correct examples", function () {
+        var promises = [];
         expect('', 'to be empty');
 
         try {
@@ -2094,9 +2200,11 @@ describe("documentation tests", function () {
                 "expected '' not to be empty"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/string/to-be-greater-than-or-equal-to.md contains correct examples", function () {
+        var promises = [];
         expect('b', 'to be greater than or equal to', 'b');
         expect('c', 'to be >=', 'b');
         expect('c', '>=', 'c');
@@ -2129,9 +2237,11 @@ describe("documentation tests", function () {
                 "expected 'a' not to be greater than or equal to 'a'"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/string/to-be-greater-than.md contains correct examples", function () {
+        var promises = [];
         expect('b', 'to be greater than', 'a');
         expect('b', 'to be above', 'a');
         expect('b', 'to be >', 'a');
@@ -2166,9 +2276,11 @@ describe("documentation tests", function () {
                 "expected 'b' not to be above 'a'"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/string/to-be-less-than-or-equal-to.md contains correct examples", function () {
+        var promises = [];
         expect('b', 'to be less than or equal to', 'b');
         expect('b', 'to be <=', 'c');
         expect('c', '<=', 'c');
@@ -2201,9 +2313,11 @@ describe("documentation tests", function () {
                 "expected 'a' not to be less than or equal to 'a'"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/string/to-be-less-than.md contains correct examples", function () {
+        var promises = [];
         expect('a', 'to be less than', 'b');
         expect('a', 'to be below', 'b');
         expect('a', 'to be <', 'b');
@@ -2238,9 +2352,11 @@ describe("documentation tests", function () {
                 "expected 'a' not to be below 'b'"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/string/to-be-non-empty.md contains correct examples", function () {
+        var promises = [];
         expect('Hello', 'to be non-empty');
 
         try {
@@ -2255,9 +2371,11 @@ describe("documentation tests", function () {
                 "expected '' to be non-empty"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/string/to-be-within.md contains correct examples", function () {
+        var promises = [];
         expect('a', 'to be within', 'a', 'd');
         expect('b', 'to be within', 'a', 'd');
         expect('aabbcc', 'to be within', 'aaa', 'aaz');
@@ -2291,9 +2409,11 @@ describe("documentation tests", function () {
                 "expected 'c' not to be within 'a'..'d'"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/string/to-be.md contains correct examples", function () {
+        var promises = [];
         expect('Hello', 'to be', 'Hello');
 
         try {
@@ -2327,9 +2447,11 @@ describe("documentation tests", function () {
                 "expected 'Hello world!' not to be 'Hello world!'"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/string/to-contain.md contains correct examples", function () {
+        var promises = [];
         expect('Hello beautiful world!', 'to contain', 'beautiful');
         expect('Hello beautiful world!', 'to contain', 'Hello', 'world');
 
@@ -2362,9 +2484,11 @@ describe("documentation tests", function () {
                 "Hello beautiful world!"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/string/to-have-length.md contains correct examples", function () {
+        var promises = [];
         expect('Hello world', 'to have length', 11);
 
         try {
@@ -2395,9 +2519,11 @@ describe("documentation tests", function () {
                 "expected 'Hello world' not to have length 11"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("assertions/string/to-match.md contains correct examples", function () {
+        var promises = [];
         expect('Hello beautiful world!', 'to match', /bea.t.*/);
 
         try {
@@ -2429,9 +2555,11 @@ describe("documentation tests", function () {
                 "Hello beautiful world!"
             );
         }
+        return expect.promise.all(promises);
     });
 
     it("index.md contains correct examples", function () {
+        var promises = [];
         try {
             expect({ text: 'f00!' }, 'to equal', { text: 'foo!' });
             expect.fail(function (output) {
@@ -2450,5 +2578,6 @@ describe("documentation tests", function () {
                 "}"
             );
         }
+        return expect.promise.all(promises);
     });
 });
