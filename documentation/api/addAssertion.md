@@ -173,13 +173,15 @@ expect.addType({
   name: 'Timelock',
   identify: function (value) {
     return value && value instanceof Timelock;
+  },
+  inspect: function (value, depth, output) {
+    output.jsFunctionName('Timelock');
   }
 });
 ```
 
 ```js
 expect.addAssertion('Timelock', 'to satisfy', function (expect, subject, spec) {
-  this.errorMode = 'diff';
   return expect.promise(function (run) {
     subject.getValue(run(function (value) {
       return expect(value, 'to satisfy', spec);
