@@ -144,6 +144,8 @@ describe("documentation tests", function () {
             });
         }).caught(function (e) {
             expect(e, "to have message",
+                "expected Timelock to satisfy expect.it('not to match', /!/)\n" +
+                "\n" +
                 "expected 'Hello world!' not to match /!/\n" +
                 "\n" +
                 "Hello world!"

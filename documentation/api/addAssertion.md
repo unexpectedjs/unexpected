@@ -197,6 +197,8 @@ return expect(new Timelock('Hello world!', 5), 'to satisfy', expect.it('not to m
 ```
 
 ```output
+expected Timelock to satisfy expect.it('not to match', /!/)
+
 expected 'Hello world!' not to match /!/
 
 Hello world!
