@@ -2928,6 +2928,18 @@ describe('unexpected', function () {
                            ']');
                 });
 
+                it('errorMode=diff only includes the diff', function () {
+                    errorMode = 'diff';
+                    expect(function () {
+                        clonedExpect([3, 2, 1], 'to be sorted');
+                    }, 'to throw',
+                           '[\n' +
+                           "  3, // should equal 1\n" +
+                           "  2,\n" +
+                           "  1 // should equal 3\n" +
+                           ']');
+                });
+
                 it('errorMode=default uses the standard error message of the assertion', function () {
                     errorMode = 'default';
                     expect(function () {
@@ -2975,6 +2987,19 @@ describe('unexpected', function () {
                     });
                 });
 
+                it('errorMode=diff only includes the diff', function (done) {
+                    errorMode = 'diff';
+                    clonedExpect([3, 2, 1], 'to be sorted after delay', 1, function (err) {
+                        expect(err, 'to have message',
+                           '[\n' +
+                           "  3, // should equal 1\n" +
+                           "  2,\n" +
+                           "  1 // should equal 3\n" +
+                           ']');
+                        done();
+                    });
+                });
+
                 it('errorMode=default uses the standard error message of the assertion', function (done) {
                     errorMode = 'default';
                     clonedExpect(42, 'to be sorted after delay', 1, function (err) {
@@ -3008,6 +3033,90 @@ describe('unexpected', function () {
                             expect(err, 'to have message', 'expected 42 to be sorted after delay 1');
                             done();
                         });
+                    });
+                });
+            });
+
+            describe('for custom assertions that return promises', function () {
+                beforeEach(function () {
+                    clonedExpect = expect.clone()
+                        .addAssertion('to be sorted after delay', function (expect, subject, delay, done) {
+                            this.errorMode = errorMode;
+                            return expect.promise(function (run) {
+                                setTimeout(run(function () {
+                                    expect(subject, 'to be an array');
+                                    expect(subject, 'to equal', [].concat(subject).sort());
+                                }), delay);
+                            });
+                        });
+                });
+
+                it('errorMode=nested nest the error message of expect failures in the assertion under the assertion standard message', function () {
+                    errorMode = 'nested';
+                    return expect(
+                        clonedExpect(42, 'to be sorted after delay', 1),
+                        'to be rejected',
+                            'expected 42 to be sorted after delay 1\n  expected 42 to be an array'
+                    );
+                });
+
+                it('errorMode=bubble bubbles uses the error message of expect failures in the assertion', function () {
+                    errorMode = 'bubble';
+                    return expect(
+                        clonedExpect(42, 'to be sorted after delay', 1),
+                        'to be rejected',
+                            'expected 42 to be an array'
+                    );
+                });
+
+                it('errorMode=default uses the standard error message of the assertion', function () {
+                    errorMode = 'default';
+                    return expect(
+                        clonedExpect(42, 'to be sorted after delay', 1),
+                        'to be rejected',
+                            'expected 42 to be sorted after delay 1'
+                    );
+                });
+
+                describe('nested inside another custom assertion', function () {
+                    it('errorMode=nested nest the error message of expect failures in the assertion under the assertion standard message', function () {
+                        errorMode = 'nested';
+                        return expect(
+                            clonedExpect(42, 'to be sorted after delay', 1),
+                            'to be rejected',
+                                'expected 42 to be sorted after delay 1\n  expected 42 to be an array'
+                        );
+                    });
+
+                    it('errorMode=bubble bubbles uses the error message of expect failures in the assertion', function () {
+                        errorMode = 'bubble';
+                        return expect(
+                            clonedExpect(42, 'to be sorted after delay', 1),
+                            'to be rejected',
+                                'expected 42 to be an array'
+                        );
+                    });
+
+                    it('errorMode=diff only includes the diff', function () {
+                        errorMode = 'diff';
+                        return expect(
+                            clonedExpect([3, 2, 1], 'to be sorted after delay', 1),
+                            'to be rejected',
+                                '[\n' +
+                                "  3, // should equal 1\n" +
+                                "  2,\n" +
+                                "  1 // should equal 3\n" +
+                                ']'
+                        );
+                    });
+
+                    it('errorMode=default uses the standard error message of the assertion', function () {
+                        errorMode = 'default';
+                        return expect(
+                            clonedExpect(42, 'to be sorted after delay', 1),
+                            'to be rejected',
+                                'expected 42 to be sorted after delay 1'
+                        );
                     });
                 });
             });
