@@ -1722,7 +1722,7 @@ describe('unexpected', function () {
                     'expected [] to satisfy [ undefined ]\n' +
                     '\n' +
                     '[\n' +
-                    '  undefined // should satisfy undefined\n' +
+                    '  // should satisfy undefined\n' +
                     ']'
                 );
             });
@@ -1750,7 +1750,7 @@ describe('unexpected', function () {
                     '  1,\n' +
                     '  2,\n' +
                     '  3,\n' +
-                    '  undefined // should equal 4\n' +
+                    '  // should equal 4\n' +
                     ']');
             });
         });
