@@ -1703,6 +1703,30 @@ describe('unexpected', function () {
                 expect([1, 2, 3], 'to satisfy', [1, 2, 3]);
             });
 
+            it('should produce a diff when an undefined item in the subject is found at a position outside of the value array', function () {
+                expect(function () {
+                    expect([ undefined ], 'to satisfy', []);
+                }, 'to throw',
+                    'expected [ undefined ] to satisfy []\n' +
+                    '\n' +
+                    '[\n' +
+                    '  undefined // should be removed\n' +
+                    ']'
+                );
+            });
+
+            it('should produce a diff when the value has more items than the subject', function () {
+                expect(function () {
+                    expect([], 'to satisfy', [ undefined ]);
+                }, 'to throw',
+                    'expected [] to satisfy [ undefined ]\n' +
+                    '\n' +
+                    '[\n' +
+                    '  undefined // should satisfy undefined\n' +
+                    ']'
+                );
+            });
+
             it('should fail if the value does not include all the indices of the subject', function () {
                 expect(function () {
                     expect([1, 2, 3], 'to satisfy', [1, 2]);
