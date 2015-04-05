@@ -1062,39 +1062,48 @@ describe("documentation tests", function () {
 
         expect({ bar: 'quux', baz: true }, 'to satisfy', { bar: /QU*X/i });
 
-        expect({foo: 123, bar: 'bar', baz: 'bogus', qux: 42}, 'to satisfy', {
+        expect({foo: 123, bar: 'bar', baz: 'bogus', qux: 42, quux: 'wat'}, 'to satisfy', {
             foo: expect.it('to be a number').and('to be greater than', 10),
             baz: expect.it('not to match', /^boh/),
             qux: expect.it('to be a string')
                           .and('not to be empty')
                        .or('to be a number')
-                          .and('to be positive')
+                          .and('to be positive'),
+            quux: function (value) {
+              expect(value, 'to be a string');
+            }
         });
 
         try {
-            expect({foo: 9, bar: 'bar', baz: 'bogus', qux: 42}, 'to satisfy', {
+            expect({foo: 9, bar: 'bar', baz: 'bogus', qux: 42, quux: 'wat'}, 'to satisfy', {
                 foo: expect.it('to be a number').and('to be greater than', 10),
                 baz: expect.it('not to match', /^bog/),
                 qux: expect.it('to be a string')
                               .and('not to be empty')
                            .or('to be a number')
-                              .and('to be positive')
+                              .and('to be positive'),
+                quux: function (value) {
+                  expect(value, 'to be a number');
+                }
             });
             expect.fail(function (output) {
                 output.error("expected:").nl();
-                output.code("expect({foo: 9, bar: 'bar', baz: 'bogus', qux: 42}, 'to satisfy', {").nl();
+                output.code("expect({foo: 9, bar: 'bar', baz: 'bogus', qux: 42, quux: 'wat'}, 'to satisfy', {").nl();
                 output.code("    foo: expect.it('to be a number').and('to be greater than', 10),").nl();
                 output.code("    baz: expect.it('not to match', /^bog/),").nl();
                 output.code("    qux: expect.it('to be a string')").nl();
                 output.code("                  .and('not to be empty')").nl();
                 output.code("               .or('to be a number')").nl();
-                output.code("                  .and('to be positive')").nl();
+                output.code("                  .and('to be positive'),").nl();
+                output.code("    quux: function (value) {").nl();
+                output.code("      expect(value, 'to be a number');").nl();
+                output.code("    }").nl();
                 output.code("});").nl();
                 output.error("to throw");
             });
         } catch (e) {
             expect(e, "to have message",
-                "expected { foo: 9, bar: 'bar', baz: 'bogus', qux: 42 } to satisfy\n" +
+                "expected { foo: 9, bar: 'bar', baz: 'bogus', qux: 42, quux: 'wat' } to satisfy\n" +
                 "{\n" +
                 "  foo: expect.it('to be a number')\n" +
                 "               .and('to be greater than', 10),\n" +
@@ -1102,7 +1111,10 @@ describe("documentation tests", function () {
                 "  qux: expect.it('to be a string')\n" +
                 "               .and('not to be empty')\n" +
                 "             .or('to be a number')\n" +
-                "               .and('to be positive')\n" +
+                "               .and('to be positive'),\n" +
+                "  quux: function (value) {\n" +
+                "    expect(value, 'to be a number');\n" +
+                "  }\n" +
                 "}\n" +
                 "\n" +
                 "{\n" +
@@ -1112,7 +1124,8 @@ describe("documentation tests", function () {
                 "  baz: 'bogus', // expected 'bogus' not to match /^bog/\n" +
                 "                //\n" +
                 "                // bogus\n" +
-                "  qux: 42\n" +
+                "  qux: 42,\n" +
+                "  quux: 'wat' // expected 'wat' to be a number\n" +
                 "}"
             );
         }

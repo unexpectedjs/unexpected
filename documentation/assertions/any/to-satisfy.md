@@ -20,35 +20,41 @@ against the corresponding values in the subject:
 expect({ bar: 'quux', baz: true }, 'to satisfy', { bar: /QU*X/i });
 ```
 
-Can be combined with `expect.it` to create complex specifications that delegate to
-existing assertions:
+Can be combined with `expect.it` or functions to create complex
+specifications that delegate to existing assertions:
 
 ```javascript
-expect({foo: 123, bar: 'bar', baz: 'bogus', qux: 42}, 'to satisfy', {
+expect({foo: 123, bar: 'bar', baz: 'bogus', qux: 42, quux: 'wat'}, 'to satisfy', {
     foo: expect.it('to be a number').and('to be greater than', 10),
     baz: expect.it('not to match', /^boh/),
     qux: expect.it('to be a string')
                   .and('not to be empty')
                .or('to be a number')
-                  .and('to be positive')
+                  .and('to be positive'),
+    quux: function (value) {
+      expect(value, 'to be a string');
+    }
 });
 ```
 
 In case of a failing expectation you get the following output:
 
 ```javascript
-expect({foo: 9, bar: 'bar', baz: 'bogus', qux: 42}, 'to satisfy', {
+expect({foo: 9, bar: 'bar', baz: 'bogus', qux: 42, quux: 'wat'}, 'to satisfy', {
     foo: expect.it('to be a number').and('to be greater than', 10),
     baz: expect.it('not to match', /^bog/),
     qux: expect.it('to be a string')
                   .and('not to be empty')
                .or('to be a number')
-                  .and('to be positive')
+                  .and('to be positive'),
+    quux: function (value) {
+      expect(value, 'to be a number');
+    }
 });
 ```
 
 ```output
-expected { foo: 9, bar: 'bar', baz: 'bogus', qux: 42 } to satisfy
+expected { foo: 9, bar: 'bar', baz: 'bogus', qux: 42, quux: 'wat' } to satisfy
 {
   foo: expect.it('to be a number')
                .and('to be greater than', 10),
@@ -56,7 +62,10 @@ expected { foo: 9, bar: 'bar', baz: 'bogus', qux: 42 } to satisfy
   qux: expect.it('to be a string')
                .and('not to be empty')
              .or('to be a number')
-               .and('to be positive')
+               .and('to be positive'),
+  quux: function (value) {
+    expect(value, 'to be a number');
+  }
 }
 
 {
@@ -66,6 +75,7 @@ expected { foo: 9, bar: 'bar', baz: 'bogus', qux: 42 } to satisfy
   baz: 'bogus', // expected 'bogus' not to match /^bog/
                 //
                 // bogus
-  qux: 42
+  qux: 42,
+  quux: 'wat' // expected 'wat' to be a number
 }
 ```
