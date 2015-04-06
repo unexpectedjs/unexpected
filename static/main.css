@@ -117,6 +117,9 @@ header nav li.active a {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
+.main:focus {
+  outline: none;
+}
 nav li.active a {
   text-decoration: underline;
 }

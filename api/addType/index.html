@@ -61,7 +61,7 @@
     </ul>
 </nav>
 
-    <div class="main">
+    <div class="main" tabindex="-1">
         <div class="content">
             <h2 id="types">Types</h2>
 <p>Unexpected comes with a type system that is used to explain how
@@ -82,6 +82,10 @@ implement the required parts of the following interface:</p>
 <li><strong>identify</strong>: <code>boolean function(value)</code> - a function deciding if the type
 should be used for the given value.</li>
 </ul>
+<p>Note that your type has the option to take precedence over all the built-in
+types. Test subjects will be tested against the most recently defined type
+first, so <code>identify</code> functions should take care not to break with <code>undefined</code>,
+<code>null</code> and so on.</p>
 <p>Optional members:</p>
 <ul>
 <li><strong>base</strong>: <code>String</code> - the name of the base type. Defaults to <code>any</code>.</li>
@@ -105,7 +109,7 @@ say we wanted to add first class support for a <code>Person</code> type:</p>
   <div><span style="color: #000000">}</span></div>
 </div><p>We start out by creating a basic type for handling <code>Person</code>
 instances. The name of the type should be <code>Person</code> and it should
-inherit from the build in <code>object</code> type. Furthermore we add an
+inherit from the built-in <code>object</code> type. Furthermore we add an
 <code>identify</code> method that will recognize <code>Person</code> instances.</p>
 <div class="code lang-javascript">
   <div>expect<span style="color: #000000">.</span><span style="color: #000000">addType</span><span style="color: #000000">({</span></div>
@@ -118,7 +122,7 @@ inherit from the build in <code>object</code> type. Furthermore we add an
 </div><p>When you specify a base type, you inherit the optional members you
 didn&#39;t implement. In this case we inherited the methods <code>equal</code>,
 <code>inspect</code> and <code>diff</code> from the <code>object</code> type.</p>
-<p>Imagine that we make a failing expectation on a person instance:</p>
+<p>Imagine that we make a failing expectation on a <code>Person</code> instance:</p>
 <div class="code lang-javascript">
   <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #a71d5d">new</span>&nbsp;Person<span style="color: #000000">(</span><span style="color: #df5000">'John&nbsp;Doe'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">42</span><span style="color: #000000">),</span>&nbsp;<span style="color: #df5000">'to&nbsp;equal'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">new</span>&nbsp;Person<span style="color: #000000">(</span><span style="color: #df5000">'Jane&nbsp;Doe'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">24</span><span style="color: #000000">));</span></div>
 </div><div class="output">
@@ -160,9 +164,9 @@ didn&#39;t implement. In this case we inherited the methods <code>equal</code>,
 </div></div>
 </div></div>
   <div>})</div>
-</div><p>That is already quite helpful, but the output misses the information
-that it is <code>Person</code> instances we are comparing. We can fix that by
-implementing an <code>inspect</code> method on the type.</p>
+</div><p>That is already quite helpful, but it would be even nicer if the
+stringification of <code>Person</code> instances could read as valid calls to the
+constructor. We can fix that by implementing an <code>inspect</code> method on the type.</p>
 <div class="code lang-javascript">
   <div>expect<span style="color: #000000">.</span><span style="color: #000000">addType</span><span style="color: #000000">({</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;name<span style="color: #000000">:</span>&nbsp;<span style="color: #df5000">'Person'</span><span style="color: #000000">,</span></div>
@@ -223,7 +227,7 @@ implementing an <code>inspect</code> method on the type.</p>
 </div><p>That is a bit better, let me explain how it works. The <code>inspect</code>
 method is called with the value to be inspected, the depth this type
 should be inspected with, an output the inspected value should be
-written to and an inspect function that can be used to recursively
+written to, and an inspect function that can be used to recursively
 inspect members. The output is an instance of
 <a href="https://github.com/unexpectedjs/magicpen">magicpen</a> extended with a
 number of <a href="https://github.com/unexpectedjs/unexpected/blob/master/lib/styles.js">styles</a>.</p>
@@ -233,7 +237,7 @@ parenthesis. When <code>inspect</code> is called without a depth parameter it
 defaults to <code>depth-1</code>. Values inspected with depth zero will be
 inspected as <code>...</code>. In this case we always want the name so we forward the
 same depth to the <code>inspect</code> function.</p>
-<p>Let&#39;s say we wanted persons only to be compared by name and not by
+<p>Let&#39;s say we wanted <code>Person</code> instances only to be compared by name and not by
 age. Then we need to override the <code>equal</code> method:</p>
 <div class="code lang-javascript">
   <div>expect<span style="color: #000000">.</span><span style="color: #000000">addType</span><span style="color: #000000">({</span></div>
@@ -390,7 +394,7 @@ on the base directly when you know it is the one you need.</p>
 </div></div>
   <div>&nbsp;&nbsp;<span style="color: #0086b3">42</span></div>
   <div>)</div>
-</div><p>This is a rather complicated example and I wont go though the details,
+</div><p>This is a rather complicated example and I won&#39;t go though the details,
 but I would like to comment on the <code>inline</code> flag. When we diff objects
 against each other, the values of the keys will be diffed against each
 other. That means diffs are inserted into the containing
@@ -532,7 +536,7 @@ from the type.</p>
   <div>&nbsp;</div>
   <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #a71d5d">new</span>&nbsp;Person<span style="color: #000000">(</span><span style="color: #df5000">'Jane&nbsp;Doe'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">24</span><span style="color: #000000">),</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;above&nbsp;legal&nbsp;age'</span><span style="color: #000000">);</span></div>
 </div><p>Because <code>Person</code> inherits from <code>object</code> you can use all assertion
-defined for <code>object</code> or any of it&#39;s ancestors. Here is an example:</p>
+defined for <code>object</code> or any of its ancestors. Here is an example:</p>
 <div class="code lang-javascript">
   <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #a71d5d">new</span>&nbsp;Person<span style="color: #000000">(</span><span style="color: #df5000">'Jane&nbsp;Doe'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">24</span><span style="color: #000000">),</span>&nbsp;<span style="color: #df5000">'to&nbsp;have&nbsp;keys'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'name'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'age'</span><span style="color: #000000">);</span></div>
   <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #a71d5d">new</span>&nbsp;Person<span style="color: #000000">(</span><span style="color: #df5000">'Jane&nbsp;Doe'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">24</span><span style="color: #000000">),</span>&nbsp;<span style="color: #df5000">'to&nbsp;satisfy'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #000000">{</span></div>
@@ -540,7 +544,7 @@ defined for <code>object</code> or any of it&#39;s ancestors. Here is an example
   <div>&nbsp;&nbsp;&nbsp;&nbsp;age<span style="color: #000000">:</span>&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">it</span><span style="color: #000000">(</span><span style="color: #df5000">'to&nbsp;be&nbsp;a&nbsp;number'</span><span style="color: #000000">).</span><span style="color: #000000">and</span><span style="color: #000000">(</span><span style="color: #df5000">'not&nbsp;to&nbsp;be&nbsp;negative'</span><span style="color: #000000">)</span></div>
   <div><span style="color: #000000">});</span></div>
 </div><p>The best resource for learning more about custom types is to look at
-how the predefined types are build:</p>
+how the predefined types are built:</p>
 <p><a href="https://github.com/unexpectedjs/unexpected/blob/master/lib/types.js">lib/types.js</a></p>
 
         </div>
@@ -548,6 +552,7 @@ how the predefined types are build:</p>
 </section>
 <script type="text/javascript" src="/static/toggleSidebar.js"></script>
 <script type="text/javascript" src="/static/rememberScrollPosition.js"></script>
+<script type="text/javascript" src="/static/focusMain.js"></script>
 <script type="text/javascript" src="/static/search.js"></script>
 </body>
 </html>
