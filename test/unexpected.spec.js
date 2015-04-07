@@ -1585,6 +1585,35 @@ describe('unexpected', function () {
             }, 'to throw', 'Custom error');
         });
 
+        it('forwards normal errors found in promise aggregate errors to the top level', function () {
+            var clonedExpect = expect.clone().addAssertion('to foo', function (expect, subject) {
+
+                var promises = [
+                    clonedExpect.promise(function () {
+                        clonedExpect('foo', 'to equal', 'bar');
+                    }),
+                    clonedExpect.promise(function () {
+                        return clonedExpect.promise.any([
+                            clonedExpect.promise(function () {
+                                clonedExpect('foo', 'to equal', 'bar');
+                            }),
+                            clonedExpect.promise(function () {
+                                throw new Error('wat');
+                            })
+                        ]);
+                    })
+                ];
+                return expect.promise.all(promises).caught(function (err) {
+                    return clonedExpect.promise.settle(promises);
+                });
+            });
+
+            expect(function () {
+                return clonedExpect('foo', 'to foo');
+            }, 'to throw', 'wat');
+
+        });
+
         it('should support expect.it in the RHS object', function () {
             expect({foo: 'bar'}, 'to satisfy', {
                 foo: expect.it('to be a string')
