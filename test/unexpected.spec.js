@@ -4884,46 +4884,70 @@ describe('unexpected', function () {
         });
     });
 
-    it('should return the resolved value when an assertion returns an oathbreakable promise that returns a value', function () {
-        var clonedExpect = expect.clone().addAssertion('to foo', function (expect, subject, value) {
-            return expect.promise(function () {
+    describe('expect.promise', function () {
+        it('should forward non-unexpected errors', function () {
+            var clonedExpect = expect.clone().addAssertion('to foo', function (expect, subject, value) {
+                return expect.withError(function () {
+                    return expect.promise(function () {
+                        return expect.promise.any([
+                            expect.promise(function () {
+                                expect(subject, 'to be', 24);
+                            }),
+                            expect.promise(function () {
+                                throw new Error('wat');
+                            })
+                        ]);
+                    });
+                }, function (e) {
+                    // success
+                });
+            });
+            expect(function () {
+                clonedExpect(42, 'to foo');
+            }, 'to throw', 'wat');
+        });
+
+        it('should return the resolved value when an assertion returns an oathbreakable promise that returns a value', function () {
+            var clonedExpect = expect.clone().addAssertion('to foo', function (expect, subject, value) {
+                return expect.promise(function () {
+                    expect(subject, 'to equal', 'foo');
+                    return 'bar';
+                });
+            });
+            expect(clonedExpect('foo', 'to foo'), 'to equal', 'bar');
+        });
+
+        it('should return the resolved value when an assertion returns an oathbreakable promise that resolves with a value', function () {
+            var clonedExpect = expect.clone().addAssertion('to foo', function (expect, subject, value) {
+                return expect.promise(function (resolve, reject) {
+                    expect(subject, 'to equal', 'foo');
+                    resolve('bar');
+                });
+            });
+            expect(clonedExpect('foo', 'to foo'), 'to equal', 'bar');
+        });
+
+        it('should preserve the resolved value when an assertion contains a non-oathbreakable promise', function (done) {
+            var clonedExpect = expect.clone().addAssertion('to foo', function (expect, subject, value) {
+                return expect.promise(function (resolve, reject) {
+                    expect(subject, 'to equal', 'foo');
+                    setTimeout(function () {
+                        resolve('bar');
+                    }, 1);
+                });
+            });
+            clonedExpect('foo', 'to foo').then(function (value) {
+                expect(value, 'to equal', 'bar');
+                done();
+            });
+        });
+
+        it('should preserve the return value when an assertion returns a non-promise value', function () {
+            var clonedExpect = expect.clone().addAssertion('to foo', function (expect, subject, value) {
                 expect(subject, 'to equal', 'foo');
                 return 'bar';
             });
+            expect(clonedExpect('foo', 'to foo'), 'to equal', 'bar');
         });
-        expect(clonedExpect('foo', 'to foo'), 'to equal', 'bar');
-    });
-
-    it('should return the resolved value when an assertion returns an oathbreakable promise that resolves with a value', function () {
-        var clonedExpect = expect.clone().addAssertion('to foo', function (expect, subject, value) {
-            return expect.promise(function (resolve, reject) {
-                expect(subject, 'to equal', 'foo');
-                resolve('bar');
-            });
-        });
-        expect(clonedExpect('foo', 'to foo'), 'to equal', 'bar');
-    });
-
-    it('should preserve the resolved value when an assertion contains a non-oathbreakable promise', function (done) {
-        var clonedExpect = expect.clone().addAssertion('to foo', function (expect, subject, value) {
-            return expect.promise(function (resolve, reject) {
-                expect(subject, 'to equal', 'foo');
-                setTimeout(function () {
-                    resolve('bar');
-                }, 1);
-            });
-        });
-        clonedExpect('foo', 'to foo').then(function (value) {
-            expect(value, 'to equal', 'bar');
-            done();
-        });
-    });
-
-    it('should preserve the return value when an assertion returns a non-promise value', function () {
-        var clonedExpect = expect.clone().addAssertion('to foo', function (expect, subject, value) {
-            expect(subject, 'to equal', 'foo');
-            return 'bar';
-        });
-        expect(clonedExpect('foo', 'to foo'), 'to equal', 'bar');
     });
 });
