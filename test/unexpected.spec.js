@@ -3804,7 +3804,7 @@ describe('unexpected', function () {
                 '    var foo = \'bar\';\n' +
                 '    var quux = \'baz\';\n' +
                 '    while (foo) {\n' +
-                '    // ... lines removed ...\n' +
+                '        foo = foo\n' +
                 '            .substr(0, foo.length - 1);\n' +
                 '    }\n' +
                 '    return quux;\n' +
