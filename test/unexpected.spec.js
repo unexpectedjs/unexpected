@@ -1,5 +1,3 @@
-/*global weknowhow, describe, it, before, beforeEach, setTimeout, Int8Array, Uint8Array, Uint16Array, Uint32Array*/
-
 var expect = typeof weknowhow === 'undefined' ? require('../lib/') : weknowhow.expect;
 var workQueue = typeof weknowhow === 'undefined' ? require('../lib/workQueue') : null;
 

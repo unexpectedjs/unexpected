@@ -154,7 +154,7 @@ Timelock.prototype.getValue = function (cb) {
   setTimeout(function () {
     cb(that.value);
   }, this.delay);
-}
+};
 ```
 
 It would be pretty nice if we could use
