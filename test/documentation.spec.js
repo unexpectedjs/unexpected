@@ -1324,6 +1324,33 @@ describe("documentation tests", function () {
         return expect.promise.all(promises);
     });
 
+    it("assertions/array/when-passed-as-parameters-to.md contains correct examples", function () {
+        var promises = [];
+        function add(a, b) {
+            return a + b;
+        }
+
+        expect([1, 2], 'when passed as parameters to', add, 'to equal', 3);
+
+        try {
+            expect([1, 2], 'when passed as parameters to', add, 'to equal', 9);
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect([1, 2], 'when passed as parameters to', add, 'to equal', 9);").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected [ 1, 2 ] when passed as parameters to\n" +
+                "function add(a, b) {\n" +
+                "    return a + b;\n" +
+                "} to equal 9\n" +
+                "  expected 3 to equal 9"
+            );
+        }
+        return expect.promise.all(promises);
+    });
+
     it("assertions/boolean/to-be-false.md contains correct examples", function () {
         var promises = [];
         expect(false, 'to be false');
