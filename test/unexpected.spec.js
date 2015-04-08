@@ -1,58 +1,58 @@
-var expect = typeof weknowhow === 'undefined' ? require('../lib/') : weknowhow.expect;
-var workQueue = typeof weknowhow === 'undefined' ? require('../lib/workQueue') : null;
-
-// use this instead of Object.create in order to make the tests run in
-// browsers that are not es5 compatible.
-function create(o) {
-    function F() {}
-    F.prototype = o;
-    return new F();
-}
-
 it.skipIf = function (condition) {
     (condition ? it.skip : it).apply(it, Array.prototype.slice.call(arguments, 1));
 };
 
-var circular = {};
-circular.self = circular;
-
-expect.addType({
-    name: 'magicpen',
-    identify: function (obj) {
-        return obj && obj.isMagicPen;
-    },
-    inspect: function (pen, depth, output) {
-        return output.append(pen);
-    },
-    equal: function (a, b) {
-        return a.toString() === b.toString() &&
-            a.toString('ansi') === b.toString('ansi') &&
-            a.toString('html') === b.toString('html');
-    }
-}).addType({
-    name: 'Promise',
-    base: 'object',
-    identify: function (obj) {
-        return this.baseType.identify(obj) && typeof obj.then === 'function';
-    }
-}).addAssertion('Promise', 'to be rejected', function (expect, subject, expectedReason) {
-    return subject.then(function () {
-        throw new Error('Promise unexpectedly fulfilled');
-    }).caught(function (err) {
-        if (typeof expectedReason !== 'undefined') {
-            return expect(err._isUnexpected ? err.output.toString('text') : err.message, 'to satisfy', expectedReason);
-        }
-    });
-});
-
-expect.addAssertion('to have message', function (expect, subject, value) {
-    // Copied from https://github.com/sindresorhus/ansi-regex
-    var ansiRegex = /(?:(?:\u001b\[)|\u009b)(?:(?:[0-9]{1,3})?(?:(?:;[0-9]{0,3})*)?[A-M|f-m])|\u001b[A-M]/g;
-    expect(subject.output.toString(), 'to equal', value);
-    expect(subject.message.replace(ansiRegex, ''), 'to equal', '\n' + value);
-});
-
 describe('unexpected', function () {
+    var expect = typeof weknowhow === 'undefined' ? require('../lib/').clone() : weknowhow.expect.clone();
+    var workQueue = typeof weknowhow === 'undefined' ? require('../lib/workQueue') : null;
+
+    // use this instead of Object.create in order to make the tests run in
+    // browsers that are not es5 compatible.
+    function create(o) {
+        function F() {}
+        F.prototype = o;
+        return new F();
+    }
+
+    var circular = {};
+    circular.self = circular;
+
+    expect.addType({
+        name: 'magicpen',
+        identify: function (obj) {
+            return obj && obj.isMagicPen;
+        },
+        inspect: function (pen, depth, output) {
+            return output.append(pen);
+        },
+        equal: function (a, b) {
+            return a.toString() === b.toString() &&
+                a.toString('ansi') === b.toString('ansi') &&
+                a.toString('html') === b.toString('html');
+        }
+    }).addType({
+        name: 'Promise',
+        base: 'object',
+        identify: function (obj) {
+            return this.baseType.identify(obj) && typeof obj.then === 'function';
+        }
+    }).addAssertion('Promise', 'to be rejected', function (expect, subject, expectedReason) {
+        return subject.then(function () {
+            throw new Error('Promise unexpectedly fulfilled');
+        }).caught(function (err) {
+            if (typeof expectedReason !== 'undefined') {
+                return expect(err._isUnexpected ? err.output.toString('text') : err.message, 'to satisfy', expectedReason);
+            }
+        });
+    });
+
+    expect.addAssertion('to have message', function (expect, subject, value) {
+        // Copied from https://github.com/sindresorhus/ansi-regex
+        var ansiRegex = /(?:(?:\u001b\[)|\u009b)(?:(?:[0-9]{1,3})?(?:(?:;[0-9]{0,3})*)?[A-M|f-m])|\u001b[A-M]/g;
+        expect(subject.output.toString(), 'to equal', value);
+        expect(subject.message.replace(ansiRegex, ''), 'to equal', '\n' + value);
+    });
+
     describe('argument validation', function () {
         it('fails when given no parameters', function () {
             expect(function () {
@@ -2935,10 +2935,7 @@ describe('unexpected', function () {
                     errorMode = 'bubble';
                     expect(function () {
                         clonedExpect(42, 'to be sorted');
-                    }, 'to throw', function (err) {
-                        expect(err.output.toString(), 'to equal', 'expected 42 to be an array');
-                        expect(err.stack, 'to contain', err.message);
-                    });
+                    }, 'to throw', 'expected 42 to be an array');
                 });
 
                 it('errorMode=bubble only includes the diff once', function () {
@@ -2971,10 +2968,7 @@ describe('unexpected', function () {
                     errorMode = 'default';
                     expect(function () {
                         clonedExpect(42, 'to be sorted');
-                    }, 'to throw', function (err) {
-                        expect(err.output.toString(), 'to equal', 'expected 42 to be sorted');
-                        expect(err.stack, 'to contain', err.message);
-                    });
+                    }, 'to throw', 'expected 42 to be sorted');
                 });
             });
 
