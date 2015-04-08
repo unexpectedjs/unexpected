@@ -4720,6 +4720,58 @@ describe('unexpected', function () {
         it('should combine with other assertions (showcase)', function () {
             expect([[1, 2], [3, 4]], 'to be an array whose items satisfy', 'when passed as parameters to', add, 'to be a number');
         });
+
+        describe('with the async flag', function () {
+            function delayedIncrement(num, cb) {
+                setTimeout(function () {
+                    if (typeof num === 'number') {
+                        cb(null, num + 1);
+                    } else {
+                        cb(new Error('not a number'));
+                    }
+                }, 1);
+            }
+
+            it('should succeed', function () {
+                return expect([123], 'when passed as parameters to async', delayedIncrement, 'to equal', 124);
+            });
+
+            it('should fail if the result of the async function does not meet the criteria', function () {
+                return expect(
+                    expect([123], 'when passed as parameters to async', delayedIncrement, 'to equal', 125),
+                    'to be rejected',
+                        "expected [ 123 ] when passed as parameters to async\n" +
+                        "function delayedIncrement(num, cb) {\n" +
+                        "    setTimeout(function () {\n" +
+                        "        if (typeof num === 'number') {\n" +
+                        "            cb(null, num + 1);\n" +
+                        "        } else {\n" +
+                        "            cb(new Error('not a number'));\n" +
+                        "        }\n" +
+                        "    }, 1);\n" +
+                        "} to equal 125\n" +
+                        "  expected 124 to equal 125"
+                );
+            });
+
+            it('should fail if the async function calls the callback with an error', function () {
+                return expect(
+                    expect([false], 'when passed as parameters to async', delayedIncrement, 'to equal', 125),
+                    'to be rejected',
+                        "expected [ false ] when passed as parameters to async\n" +
+                        "function delayedIncrement(num, cb) {\n" +
+                        "    setTimeout(function () {\n" +
+                        "        if (typeof num === 'number') {\n" +
+                        "            cb(null, num + 1);\n" +
+                        "        } else {\n" +
+                        "            cb(new Error('not a number'));\n" +
+                        "        }\n" +
+                        "    }, 1);\n" +
+                        "}, 'to equal', 125\n" +
+                        "  expected Error({ message: 'not a number' }) to be falsy"
+                );
+            });
+        });
     });
 
     describe('assertion.shift', function () {

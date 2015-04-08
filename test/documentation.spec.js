@@ -1348,6 +1348,16 @@ describe("documentation tests", function () {
                 "  expected 3 to equal 9"
             );
         }
+
+        promises.push(expect.promise(function () {
+            function delayedAdd(a, b, cb) {
+                setTimeout(function () {
+                    cb(null, a + b);
+                }, 1);
+            }
+
+            return expect([1, 2], 'when passed as parameters to async', delayedAdd, 'to equal', 3);
+        }));
         return expect.promise.all(promises);
     });
 
