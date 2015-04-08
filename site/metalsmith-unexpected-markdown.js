@@ -213,7 +213,7 @@ function writeTestsToFile(exampleTests, done) {
                     pen.indentLines();
                     pen.i().block('text', test.code);
                     pen.outdentLines();
-                    pen.text('}));');
+                    pen.nl().i().text('}));');
                 }
             } else {
                 if (test.output) {
