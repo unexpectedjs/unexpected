@@ -609,6 +609,29 @@ describe("documentation tests", function () {
         return expect.promise.all(promises);
     });
 
+    it("assertions/Error/to-have-message.md contains correct examples", function () {
+        var promises = [];
+        expect(new Error('foobar'), 'to have message', 'foobar');
+
+        try {
+            expect(new Error('foobar'), 'to have message', 'barfoo');
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect(new Error('foobar'), 'to have message', 'barfoo');").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected Error({ message: 'foobar' }) to have message 'barfoo'\n" +
+                "  expected 'foobar' to satisfy 'barfoo'\n" +
+                "\n" +
+                "  -foobar\n" +
+                "  +barfoo"
+            );
+        }
+        return expect.promise.all(promises);
+    });
+
     it("assertions/any/to-be-a.md contains correct examples", function () {
         var promises = [];
         expect(true, 'to be a', 'boolean');
