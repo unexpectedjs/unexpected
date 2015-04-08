@@ -922,7 +922,7 @@ describe('unexpected', function () {
                     );
                 });
             });
-        })
+        });
     });
 
     describe('arity assertion', function () {
