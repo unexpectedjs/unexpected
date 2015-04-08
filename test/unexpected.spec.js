@@ -46,13 +46,6 @@ describe('unexpected', function () {
         });
     });
 
-    expect.addAssertion('to have message', function (expect, subject, value) {
-        // Copied from https://github.com/sindresorhus/ansi-regex
-        var ansiRegex = /(?:(?:\u001b\[)|\u009b)(?:(?:[0-9]{1,3})?(?:(?:;[0-9]{0,3})*)?[A-M|f-m])|\u001b[A-M]/g;
-        expect(subject.output.toString(), 'to equal', value);
-        expect(subject.message.replace(ansiRegex, ''), 'to equal', '\n' + value);
-    });
-
     describe('argument validation', function () {
         it('fails when given no parameters', function () {
             expect(function () {
@@ -875,6 +868,61 @@ describe('unexpected', function () {
                 'not to throw\n' +
               '  threw: null');
         });
+    });
+
+    describe('Error type', function () {
+        describe('to have message assertion', function () {
+            describe('with an Unexpected error', function () {
+                var err;
+                try {
+                    expect(1, 'to equal', 2);
+                } catch (e) {
+                    err = e;
+                }
+                it('should succeed', function () {
+                    expect(err, 'to have message', 'expected 1 to equal 2');
+                });
+
+                it('should fail with a diff', function () {
+                    expect(function () {
+                        expect(err, 'to have message', 'expected 3 to equal 2');
+                    }, 'to throw',
+                        "expected\n" +
+                        "Error({\n" +
+                        "  message: '\\n\\u001b[31m\\u001b[1mexpected\\u001b[22m\\u001b[39m 1 \\u001b[31m\\u001b[1mto equal\\u001b[22m\\u001b[39m 2',\n" +
+                        "  _isUnexpected: true,\n" +
+                        "  output: expected 1 to equal 2,\n" +
+                        "  label: 'should equal',\n" +
+                        "  _hasSerializedErrorMessage: true\n" +
+                        "})\n" +
+                        "to have message 'expected 3 to equal 2'\n" +
+                        "  expected 'expected 1 to equal 2' to satisfy 'expected 3 to equal 2'\n" +
+                        "\n" +
+                        "  -expected 1 to equal 2\n" +
+                        "  +expected 3 to equal 2"
+                    );
+                });
+            });
+
+            describe('with a non-Unexpected error', function () {
+                var err = new Error('Bummer!');
+                it('should succeed', function () {
+                    expect(err, 'to have message', 'Bummer!');
+                });
+
+                it('should fail with a diff', function () {
+                    expect(function () {
+                        expect(err, 'to have message', 'Dammit!');
+                    }, 'to throw',
+                        "expected Error({ message: 'Bummer!' }) to have message 'Dammit!'\n" +
+                        "  expected 'Bummer!' to satisfy 'Dammit!'\n" +
+                        "\n" +
+                        "  -Bummer!\n" +
+                        "  +Dammit!"
+                    );
+                });
+            });
+        })
     });
 
     describe('arity assertion', function () {
