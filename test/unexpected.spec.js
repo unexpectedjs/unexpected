@@ -873,7 +873,7 @@ describe('unexpected', function () {
                 '    throw null;\n' +
                 '}\n' +
                 'not to throw\n' +
-              '  threw: null');
+                '  threw: null');
         });
     });
 
