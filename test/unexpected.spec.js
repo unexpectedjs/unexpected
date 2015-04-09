@@ -4769,6 +4769,74 @@ describe('unexpected', function () {
             expect([[1, 2], [3, 4]], 'to be an array whose items satisfy', 'when passed as parameters to', add, 'to be a number');
         });
 
+        describe('with the constructor flag', function () {
+            function Foo(a, b, c, d) {
+                this.a = a;
+                this.b = b;
+                this.c = c;
+                this.d = d;
+                this.numParams = arguments.length;
+            }
+
+            it('should create a new instance when called with an empty array', function () {
+                expect([], 'when passed as parameters to constructor', Foo, 'to satisfy', function (obj) {
+                    expect(obj, 'to be a', Foo);
+                    expect(obj.a, 'to be undefined');
+                    expect(obj.numParams, 'to equal', 0);
+                });
+            });
+
+            it('should create a new instance when called with an array with one element', function () {
+                expect([1], 'when passed as parameters to constructor', Foo, 'to satisfy', function (obj) {
+                    expect(obj, 'to be a', Foo);
+                    expect(obj.a, 'to equal', 1);
+                    expect(obj.b, 'to be undefined');
+                    expect(obj.numParams, 'to equal', 1);
+                });
+            });
+
+            it('should create a new instance when called with an array with two elements', function () {
+                expect([1, 2], 'when passed as parameters to constructor', Foo, 'to satisfy', function (obj) {
+                    expect(obj, 'to be a', Foo);
+                    expect(obj.a, 'to equal', 1);
+                    expect(obj.b, 'to equal', 2);
+                    expect(obj.c, 'to be undefined');
+                    expect(obj.numParams, 'to equal', 2);
+                });
+            });
+
+            it('should create a new instance when called with an array with three elements', function () {
+                expect([1, 2, 3], 'when passed as parameters to constructor', Foo, 'to satisfy', function (obj) {
+                    expect(obj, 'to be a', Foo);
+                    expect(obj.a, 'to equal', 1);
+                    expect(obj.b, 'to equal', 2);
+                    expect(obj.c, 'to equal', 3);
+                    expect(obj.d, 'to be undefined');
+                    expect(obj.numParams, 'to equal', 3);
+                });
+            });
+
+            it('should create a new instance when called with an array with four elements', function () {
+                expect([1, 2, 3, 4], 'when passed as parameters to constructor', Foo, 'to satisfy', function (obj) {
+                    expect(obj, 'to be a', Foo);
+                    expect(obj.a, 'to equal', 1);
+                    expect(obj.b, 'to equal', 2);
+                    expect(obj.c, 'to equal', 3);
+                    expect(obj.d, 'to equal', 4);
+                    expect(obj.e, 'to be undefined');
+                    expect(obj.numParams, 'to equal', 4);
+                });
+            });
+
+            it('should create a new instance', function () {
+                expect([1, 2], 'when passed as parameters to constructor', Foo, 'to satisfy', function (obj) {
+                    expect(obj, 'to be a', Foo);
+                    expect(obj.a, 'to equal', 1);
+                    expect(obj.b, 'to equal', 2);
+                });
+            });
+        });
+
         describe('with the async flag', function () {
             function delayedIncrement(num, cb) {
                 setTimeout(function () {
@@ -4818,6 +4886,24 @@ describe('unexpected', function () {
                         "}, 'to equal', 125\n" +
                         "  expected Error({ message: 'not a number' }) to be falsy"
                 );
+            });
+
+            it('should work in combination with the constructor flag', function (done) {
+                function Foo(a, b, cb) {
+                    this.a = a;
+                    this.b = b;
+                    var that = this;
+                    setTimeout(function () {
+                        cb(null, that);
+                    });
+                }
+
+                expect([1, 2], 'when passed as parameters to async constructor', Foo, 'to satisfy', function (obj) {
+                    expect(obj, 'to be a', Foo);
+                    expect(obj.a, 'to equal', 1);
+                    expect(obj.b, 'to equal', 2);
+                    done();
+                });
             });
         });
     });
