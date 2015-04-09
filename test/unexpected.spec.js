@@ -4769,6 +4769,10 @@ describe('unexpected', function () {
             expect([[1, 2], [3, 4]], 'to be an array whose items satisfy', 'when passed as parameters to', add, 'to be a number');
         });
 
+        it('should pass the subject as a single parameter when invoked as "when passed as parameter to"', function () {
+            expect(1, 'when passed as parameter to', add.bind(null, 1), 'to equal', 2);
+        });
+
         describe('with the constructor flag', function () {
             function Foo(a, b, c, d) {
                 this.a = a;
