@@ -2,8 +2,11 @@ it.skipIf = function (condition) {
     (condition ? it.skip : it).apply(it, Array.prototype.slice.call(arguments, 1));
 };
 
-
 var isMochaPhantomJS = typeof mochaPhantomJS !== 'undefined';
+
+describe.skipIf = function (condition) {
+    (condition ? describe.skip : describe).apply(describe, Array.prototype.slice.call(arguments, 1));
+};
 
 describe('unexpected', function () {
     var expect = typeof weknowhow === 'undefined' ? require('../lib/').clone() : weknowhow.expect.clone();
@@ -5062,6 +5065,12 @@ describe('unexpected', function () {
                 return 'bar';
             });
             expect(clonedExpect('foo', 'to foo'), 'to equal', 'bar');
+        });
+    });
+
+    describe.skipIf(typeof Buffer === 'undefined', 'when decoded as assertion', function () {
+        it('should decode a Buffer instance to utf-8', function () {
+            expect(new Buffer('æøå', 'utf-8'), 'when decoded as', 'utf-8', 'to equal', 'æøå');
         });
     });
 });
