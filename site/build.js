@@ -52,7 +52,16 @@ metalSmith(__dirname)
     .use(function (files, metalsmith, next) {
         var metadata = metalsmith.metadata();
 
-        var assertionsByType = {};
+        // Make sure that the most important types are listed first and in this order:
+        var assertionsByType = {
+            any: [],
+            array: [],
+            boolean: [],
+            function: [],
+            number: [],
+            object: [],
+            string: []
+        };
         metadata.collections.assertions.forEach(function (assertion) {
             assertionsByType[assertion.type] = assertionsByType[assertion.type] || [];
             assertionsByType[assertion.type].push(assertion);
