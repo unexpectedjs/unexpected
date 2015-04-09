@@ -1,7 +1,82 @@
 var metalSmith = require('metalsmith');
+var expect = require('../lib/');
 
 function idToName(id) {
     return id.replace(/-/g, ' ');
+}
+
+function getTypeHierarchy(typeIndex, typeName) {
+    var tree = {};
+    Object.keys(typeIndex[typeName] || {}).forEach(function (childTypeName) {
+        tree[childTypeName] = getTypeHierarchy(typeIndex, childTypeName);
+    });
+
+    return tree;
+}
+
+function flattenTypeHierarchy(typeHierarchy, assertionsByType) {
+    var result = [];
+    Object.keys(typeHierarchy).sort(function (a, b) {
+        var aChildren = Object.keys(typeHierarchy[a]);
+        var bChildren = Object.keys(typeHierarchy[b]);
+        if (aChildren.length === 0 && bChildren.length > 0) {
+            return -1;
+        }
+        if (aChildren.length > 0 && bChildren.length === 0) {
+            return 1;
+        }
+
+        if (assertionsByType[a].length > assertionsByType[b].length) {
+            return -1;
+        }
+        if (assertionsByType[a].length < assertionsByType[b].length) {
+            return 1;
+        }
+
+
+        a = a.toLowerCase();
+        b = b.toLowerCase();
+        if (a < b) { return -1; }
+        if (a > b) { return 1; }
+        return 0;
+    }).forEach(function (typeName) {
+        result.push(typeName);
+        Array.prototype.push.apply(result, flattenTypeHierarchy(typeHierarchy[typeName], assertionsByType));
+    });
+    return result;
+}
+
+function addTypeToIndex(typeIndex, type) {
+    if (type.baseType) {
+        typeIndex[type.baseType.name] = typeIndex[type.baseType.name] || {};
+        typeIndex[type.baseType.name][type.name] = type.name;
+        addTypeToIndex(typeIndex, type.baseType);
+    }
+}
+
+function sortTypesByHierarchy(assertionsByType) {
+    var typeIndex = {};
+    var unknownTypes = [];
+    Object.keys(assertionsByType).forEach(function (typeName) {
+        var type = expect.getType(typeName);
+        if (type) {
+            addTypeToIndex(typeIndex, type);
+        } else {
+            unknownTypes.push(typeName);
+        }
+    });
+
+    var typeHierarchy = { 'any': getTypeHierarchy(typeIndex, 'any') };
+
+    var result = {};
+
+    flattenTypeHierarchy(typeHierarchy, assertionsByType).concat(unknownTypes).forEach(function (typeName) {
+        if (assertionsByType[typeName]) {
+            result[typeName] = assertionsByType[typeName];
+        }
+    });
+
+    return result;
 }
 
 metalSmith(__dirname)
@@ -53,19 +128,13 @@ metalSmith(__dirname)
         var metadata = metalsmith.metadata();
 
         // Make sure that the most important types are listed first and in this order:
-        var assertionsByType = {
-            any: [],
-            array: [],
-            boolean: [],
-            function: [],
-            number: [],
-            object: [],
-            string: []
-        };
+        var assertionsByType = {};
         metadata.collections.assertions.forEach(function (assertion) {
             assertionsByType[assertion.type] = assertionsByType[assertion.type] || [];
             assertionsByType[assertion.type].push(assertion);
         });
+
+        assertionsByType = sortTypesByHierarchy(assertionsByType);
         Object.keys(assertionsByType).forEach(function (type) {
             assertionsByType[type].sort(function (a, b) {
                 if (a.name < b.name) return -1;
