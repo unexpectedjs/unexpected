@@ -4774,69 +4774,18 @@ describe('unexpected', function () {
         });
 
         describe('with the constructor flag', function () {
-            function Foo(a, b, c, d) {
+            function Foo(a, b) {
                 this.a = a;
                 this.b = b;
-                this.c = c;
-                this.d = d;
                 this.numParams = arguments.length;
             }
-
-            it('should create a new instance when called with an empty array', function () {
-                expect([], 'when passed as parameters to constructor', Foo, 'to satisfy', function (obj) {
-                    expect(obj, 'to be a', Foo);
-                    expect(obj.a, 'to be undefined');
-                    expect(obj.numParams, 'to equal', 0);
-                });
-            });
-
-            it('should create a new instance when called with an array with one element', function () {
-                expect([1], 'when passed as parameters to constructor', Foo, 'to satisfy', function (obj) {
-                    expect(obj, 'to be a', Foo);
-                    expect(obj.a, 'to equal', 1);
-                    expect(obj.b, 'to be undefined');
-                    expect(obj.numParams, 'to equal', 1);
-                });
-            });
-
-            it('should create a new instance when called with an array with two elements', function () {
-                expect([1, 2], 'when passed as parameters to constructor', Foo, 'to satisfy', function (obj) {
-                    expect(obj, 'to be a', Foo);
-                    expect(obj.a, 'to equal', 1);
-                    expect(obj.b, 'to equal', 2);
-                    expect(obj.c, 'to be undefined');
-                    expect(obj.numParams, 'to equal', 2);
-                });
-            });
-
-            it('should create a new instance when called with an array with three elements', function () {
-                expect([1, 2, 3], 'when passed as parameters to constructor', Foo, 'to satisfy', function (obj) {
-                    expect(obj, 'to be a', Foo);
-                    expect(obj.a, 'to equal', 1);
-                    expect(obj.b, 'to equal', 2);
-                    expect(obj.c, 'to equal', 3);
-                    expect(obj.d, 'to be undefined');
-                    expect(obj.numParams, 'to equal', 3);
-                });
-            });
-
-            it('should create a new instance when called with an array with four elements', function () {
-                expect([1, 2, 3, 4], 'when passed as parameters to constructor', Foo, 'to satisfy', function (obj) {
-                    expect(obj, 'to be a', Foo);
-                    expect(obj.a, 'to equal', 1);
-                    expect(obj.b, 'to equal', 2);
-                    expect(obj.c, 'to equal', 3);
-                    expect(obj.d, 'to equal', 4);
-                    expect(obj.e, 'to be undefined');
-                    expect(obj.numParams, 'to equal', 4);
-                });
-            });
 
             it('should create a new instance', function () {
                 expect([1, 2], 'when passed as parameters to constructor', Foo, 'to satisfy', function (obj) {
                     expect(obj, 'to be a', Foo);
                     expect(obj.a, 'to equal', 1);
                     expect(obj.b, 'to equal', 2);
+                    expect(obj.numParams, 'to equal', 2);
                 });
             });
         });
