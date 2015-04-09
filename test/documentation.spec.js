@@ -609,6 +609,28 @@ describe("documentation tests", function () {
         return expect.promise.all(promises);
     });
 
+    it("assertions/Buffer/when-decoded-as.md contains correct examples", function () {
+        var promises = [];
+        expect(new Buffer([0xe2, 0x98, 0xba]), 'when decoded as', 'utf-8', 'to equal', '☺');
+
+        try {
+            expect(new Buffer([0xe2, 0x98, 0xba]), 'when decoded as', 'utf-8', 'to equal', 'happy face');
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect(new Buffer([0xe2, 0x98, 0xba]), 'when decoded as', 'utf-8', 'to equal', 'happy face');").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected Buffer([0xE2, 0x98, 0xBA]) when decoded as 'utf-8' to equal 'happy face'\n" +
+                "\n" +
+                "-☺\n" +
+                "+happy face"
+            );
+        }
+        return expect.promise.all(promises);
+    });
+
     it("assertions/Error/to-have-message.md contains correct examples", function () {
         var promises = [];
         expect(new Error('foobar'), 'to have message', 'foobar');
