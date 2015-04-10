@@ -2,6 +2,9 @@ it.skipIf = function (condition) {
     (condition ? it.skip : it).apply(it, Array.prototype.slice.call(arguments, 1));
 };
 
+
+var isMochaPhantomJs = typeof mochaPhantomJS !== 'undefined';
+
 describe('unexpected', function () {
     var expect = typeof weknowhow === 'undefined' ? require('../lib/').clone() : weknowhow.expect.clone();
     var workQueue = typeof weknowhow === 'undefined' ? require('../lib/workQueue') : null;
@@ -3195,7 +3198,7 @@ describe('unexpected', function () {
         });
 
         // I can't figure out why this doesn't work in mocha-phantomjs:
-        it.skipIf(typeof mochaPhantomJS !== 'undefined', 'truncates the stack when a custom assertion throws a regular assertion error', function () {
+        it.skipIf(isMochaPhantomJS, 'truncates the stack when a custom assertion throws a regular assertion error', function () {
             var clonedExpect = expect.clone().addAssertion('to equal foo', function theCustomAssertion(expect, subject) {
                 expect(subject, 'to equal', 'foo');
             });
@@ -3591,7 +3594,7 @@ describe('unexpected', function () {
     }
 
     describe('equal', function () {
-        it.skipIf(!Object.prototype.__lookupGetter__, 'handles getters and setters correctly', function () {
+        it.skipIf(isMochaPhantomJs, 'handles getters and setters correctly', function () {
             expect(new Field('VALUE', 'getter'), 'to equal', new Field('VALUE', 'getter'));
             expect(new Field('VALUE', 'setter'), 'to equal', new Field('VALUE', 'setter'));
             expect(new Field('VALUE', 'getter and setter'), 'to equal', new Field('VALUE', 'getter and setter'));
@@ -3603,7 +3606,7 @@ describe('unexpected', function () {
             expect(expect.inspect(subject).toString(), 'to equal', value);
         });
 
-        it.skipIf(!Object.prototype.__lookupGetter__, 'handles getters and setters correctly', function () {
+        it.skipIf(isMochaPhantomJs, 'handles getters and setters correctly', function () {
             expect(new Field('VALUE', 'getter'), 'to inspect as', "Field({ value: 'VALUE' /* getter */ })");
             expect(new Field('VALUE', 'setter'), 'to inspect as', "Field({ set value: function (val) { value = val; } })");
             expect(new Field('VALUE', 'getter and setter'), 'to inspect as', "Field({ value: 'VALUE' /* getter/setter */ })");
