@@ -889,21 +889,19 @@ describe('unexpected', function () {
                 it('should fail with a diff', function () {
                     expect(function () {
                         expect(err, 'to have message', 'expected 3 to equal 2');
-                    }, 'to throw',
-                        "expected\n" +
-                        "Error({\n" +
-                        "  message: '\\n\\u001b[31m\\u001b[1mexpected\\u001b[22m\\u001b[39m 1 \\u001b[31m\\u001b[1mto equal\\u001b[22m\\u001b[39m 2',\n" +
-                        "  _isUnexpected: true,\n" +
-                        "  output: expected 1 to equal 2,\n" +
-                        "  label: 'should equal',\n" +
-                        "  _hasSerializedErrorMessage: true\n" +
-                        "})\n" +
-                        "to have message 'expected 3 to equal 2'\n" +
-                        "  expected 'expected 1 to equal 2' to satisfy 'expected 3 to equal 2'\n" +
-                        "\n" +
-                        "  -expected 1 to equal 2\n" +
-                        "  +expected 3 to equal 2"
-                    );
+                    }, 'to throw', function (err) {
+                        var message = err.output.toString('text');
+                        expect(
+                            message,
+                            'to contain',
+                            "to have message 'expected 3 to equal 2'\n" +
+                                "  expected 'expected 1 to equal 2' to satisfy 'expected 3 to equal 2'\n" +
+                                "\n" +
+                                "  -expected 1 to equal 2\n" +
+                                "  +expected 3 to equal 2"
+                        );
+                        expect(message, 'to match', /^expected\nError\(\{[\s\S]*\}\)/);
+                    });
                 });
             });
 
