@@ -3,7 +3,7 @@ it.skipIf = function (condition) {
 };
 
 
-var isMochaPhantomJs = typeof mochaPhantomJS !== 'undefined';
+var isMochaPhantomJS = typeof mochaPhantomJS !== 'undefined';
 
 describe('unexpected', function () {
     var expect = typeof weknowhow === 'undefined' ? require('../lib/').clone() : weknowhow.expect.clone();
@@ -3592,7 +3592,7 @@ describe('unexpected', function () {
     }
 
     describe('equal', function () {
-        it.skipIf(isMochaPhantomJs, 'handles getters and setters correctly', function () {
+        it.skipIf(isMochaPhantomJS, 'handles getters and setters correctly', function () {
             expect(new Field('VALUE', 'getter'), 'to equal', new Field('VALUE', 'getter'));
             expect(new Field('VALUE', 'setter'), 'to equal', new Field('VALUE', 'setter'));
             expect(new Field('VALUE', 'getter and setter'), 'to equal', new Field('VALUE', 'getter and setter'));
@@ -3604,7 +3604,7 @@ describe('unexpected', function () {
             expect(expect.inspect(subject).toString(), 'to equal', value);
         });
 
-        it.skipIf(isMochaPhantomJs, 'handles getters and setters correctly', function () {
+        it.skipIf(isMochaPhantomJS, 'handles getters and setters correctly', function () {
             expect(new Field('VALUE', 'getter'), 'to inspect as', "Field({ value: 'VALUE' /* getter */ })");
             expect(new Field('VALUE', 'setter'), 'to inspect as', "Field({ set value: function (val) { value = val; } })");
             expect(new Field('VALUE', 'getter and setter'), 'to inspect as', "Field({ value: 'VALUE' /* getter/setter */ })");
