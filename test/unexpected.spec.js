@@ -4840,24 +4840,6 @@ describe('unexpected', function () {
                         "  expected Error({ message: 'not a number' }) to be falsy"
                 );
             });
-
-            it('should work in combination with the constructor flag', function (done) {
-                function Foo(a, b, cb) {
-                    this.a = a;
-                    this.b = b;
-                    var that = this;
-                    setTimeout(function () {
-                        cb(null, that);
-                    });
-                }
-
-                expect([1, 2], 'when passed as parameters to async constructor', Foo, 'to satisfy', function (obj) {
-                    expect(obj, 'to be a', Foo);
-                    expect(obj.a, 'to equal', 1);
-                    expect(obj.b, 'to equal', 2);
-                    done();
-                });
-            });
         });
     });
 
