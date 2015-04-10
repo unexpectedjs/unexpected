@@ -1161,6 +1161,32 @@ describe("documentation tests", function () {
         return expect.promise.all(promises);
     });
 
+    it("assertions/any/when-passed-as-parameter-to.md contains correct examples", function () {
+        var promises = [];
+        function increment(n) {
+            return n + 1;
+        }
+
+        expect(1, 'when passed as parameter to', increment, 'to equal', 2);
+
+        try {
+            expect(1, 'when passed as parameter to', increment, 'to equal', 3);
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect(1, 'when passed as parameter to', increment, 'to equal', 3);").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected 1 when passed as parameter to\n" +
+                "function increment(n) {\n" +
+                "    return n + 1;\n" +
+                "}, 'to equal', 3"
+            );
+        }
+        return expect.promise.all(promises);
+    });
+
     it("assertions/array/to-be-an-array-whose-items-satisfy.md contains correct examples", function () {
         var promises = [];
         expect([0, 1, 2, 3, 4], 'to be an array whose items satisfy', function (item, index) {
@@ -1381,6 +1407,12 @@ describe("documentation tests", function () {
 
             return expect([1, 2], 'when passed as parameters to async', delayedAdd, 'to equal', 3);
         }));
+
+        function Foo(value) {
+            this.value = value;
+        }
+
+        expect(123, 'when passed as parameter to constructor', Foo, 'to be a', Foo);
         return expect.promise.all(promises);
     });
 

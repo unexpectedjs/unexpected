@@ -37,3 +37,14 @@ return expect([1, 2], 'when passed as parameters to async', delayedAdd, 'to equa
 ```
 
 The assertion will fail if the async function passes an error to the callback.
+
+You can also use the `constructor` flag to create an instance of a constructor
+function (using the `new` operator):
+
+```javascript
+function Foo(value) {
+    this.value = value;
+}
+
+expect(123, 'when passed as parameter to constructor', Foo, 'to be a', Foo);
+```

@@ -4770,6 +4770,27 @@ describe('unexpected', function () {
             expect([[1, 2], [3, 4]], 'to be an array whose items satisfy', 'when passed as parameters to', add, 'to be a number');
         });
 
+        it('should pass the subject as a single parameter when invoked as "when passed as parameter to"', function () {
+            expect(1, 'when passed as parameter to', add.bind(null, 1), 'to equal', 2);
+        });
+
+        describe('with the constructor flag', function () {
+            function Foo(a, b) {
+                this.a = a;
+                this.b = b;
+                this.numParams = arguments.length;
+            }
+
+            it('should create a new instance', function () {
+                expect([1, 2], 'when passed as parameters to constructor', Foo, 'to satisfy', function (obj) {
+                    expect(obj, 'to be a', Foo);
+                    expect(obj.a, 'to equal', 1);
+                    expect(obj.b, 'to equal', 2);
+                    expect(obj.numParams, 'to equal', 2);
+                });
+            });
+        });
+
         describe('with the async flag', function () {
             function delayedIncrement(num, cb) {
                 setTimeout(function () {
