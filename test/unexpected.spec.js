@@ -1788,6 +1788,16 @@ describe('unexpected', function () {
                     '+01 02 04                                         │...│');
             });
 
+            it.skipIf(typeof Buffer === 'undefined', 'fail with a binary diff when the assertion fails with the assertion flag on', function () {
+                expect(function () {
+                    expect(new Buffer([1, 2, 3]), 'to satisfy assertion', new Buffer([1, 2, 4]));
+                }, 'to throw',
+                    'expected Buffer([0x01, 0x02, 0x03]) to satisfy Buffer([0x01, 0x02, 0x04])\n' +
+                    '\n' +
+                    '-01 02 03                                         │...│\n' +
+                    '+01 02 04                                         │...│');
+            });
+
             it.skipIf(typeof Buffer === 'undefined', 'to satisfy it to equal buffer instance', function () {
                 expect(new Buffer('bar'), 'to satisfy', expect.it('to equal', new Buffer('bar')));
             });
