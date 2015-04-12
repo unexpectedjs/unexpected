@@ -1213,63 +1213,6 @@ describe("documentation tests", function () {
         return expect.promise.all(promises);
     });
 
-    it("assertions/array/to-be-an-array-whose-items-satisfy.md contains correct examples", function () {
-        var promises = [];
-        expect([0, 1, 2, 3, 4], 'to be an array whose items satisfy', function (item, index) {
-            expect(item, 'to be a number');
-        });
-
-        expect([0, 1, 2, 3, 4], 'to be an array whose items satisfy', 'to be a number');
-
-        expect([[1], [2]], 'to be an array whose items satisfy',
-               'to be an array whose items satisfy', 'to be a number');
-
-        expect([1, 2, 3, 4], 'to be an array whose items satisfy',
-          expect.it('to be a number').and('to be positive'));
-
-        try {
-            expect([ [0, 1, 2], [4, '5', '6'], [7, '8', 9] ],
-              'to be an array whose items satisfy',
-              'to be an array whose items satisfy',
-              'to be a number');
-            expect.fail(function (output) {
-                output.error("expected:").nl();
-                output.code("expect([ [0, 1, 2], [4, '5', '6'], [7, '8', 9] ],").nl();
-                output.code("  'to be an array whose items satisfy',").nl();
-                output.code("  'to be an array whose items satisfy',").nl();
-                output.code("  'to be a number');").nl();
-                output.error("to throw");
-            });
-        } catch (e) {
-            expect(e, "to have message",
-                "failed expectation in [ [ 0, 1, 2 ], [ 4, '5', '6' ], [ 7, '8', 9 ] ]:\n" +
-                "  1: failed expectation in [ 4, '5', '6' ]:\n" +
-                "       1: expected '5' to be a number\n" +
-                "       2: expected '6' to be a number\n" +
-                "  2: failed expectation in [ 7, '8', 9 ]:\n" +
-                "       1: expected '8' to be a number"
-            );
-        }
-
-        try {
-            expect([0, 1, 2, 3, 4], 'to be an array whose items satisfy',
-              expect.it('to be a number').and('to be positive'));
-            expect.fail(function (output) {
-                output.error("expected:").nl();
-                output.code("expect([0, 1, 2, 3, 4], 'to be an array whose items satisfy',").nl();
-                output.code("  expect.it('to be a number').and('to be positive'));").nl();
-                output.error("to throw");
-            });
-        } catch (e) {
-            expect(e, "to have message",
-                "failed expectation in [ 0, 1, 2, 3, 4 ]:\n" +
-                "  0: ✓ expected 0 to be a number and\n" +
-                "     ⨯ expected 0 to be positive"
-            );
-        }
-        return expect.promise.all(promises);
-    });
-
     it("assertions/array/to-be-empty.md contains correct examples", function () {
         var promises = [];
         expect([], 'to be empty');
@@ -1359,6 +1302,63 @@ describe("documentation tests", function () {
                 "  { name: 'John Doe' },\n" +
                 "  { name: 'Jane Doe' } // should be removed\n" +
                 "]"
+            );
+        }
+        return expect.promise.all(promises);
+    });
+
+    it("assertions/array/to-have-items-satisfying.md contains correct examples", function () {
+        var promises = [];
+        expect([0, 1, 2, 3, 4], 'to have items satisfying', function (item, index) {
+            expect(item, 'to be a number');
+        });
+
+        expect([0, 1, 2, 3, 4], 'to have items satisfying', 'to be a number');
+
+        expect([[1], [2]], 'to have items satisfying',
+               'to have items satisfying', 'to be a number');
+
+        expect([1, 2, 3, 4], 'to have items satisfying',
+          expect.it('to be a number').and('to be positive'));
+
+        try {
+            expect([ [0, 1, 2], [4, '5', '6'], [7, '8', 9] ],
+              'to have items satisfying',
+              'to have items satisfying',
+              'to be a number');
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect([ [0, 1, 2], [4, '5', '6'], [7, '8', 9] ],").nl();
+                output.code("  'to have items satisfying',").nl();
+                output.code("  'to have items satisfying',").nl();
+                output.code("  'to be a number');").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "failed expectation in [ [ 0, 1, 2 ], [ 4, '5', '6' ], [ 7, '8', 9 ] ]:\n" +
+                "  1: failed expectation in [ 4, '5', '6' ]:\n" +
+                "       1: expected '5' to be a number\n" +
+                "       2: expected '6' to be a number\n" +
+                "  2: failed expectation in [ 7, '8', 9 ]:\n" +
+                "       1: expected '8' to be a number"
+            );
+        }
+
+        try {
+            expect([0, 1, 2, 3, 4], 'to have items satisfying',
+              expect.it('to be a number').and('to be positive'));
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect([0, 1, 2, 3, 4], 'to have items satisfying',").nl();
+                output.code("  expect.it('to be a number').and('to be positive'));").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "failed expectation in [ 0, 1, 2, 3, 4 ]:\n" +
+                "  0: ✓ expected 0 to be a number and\n" +
+                "     ⨯ expected 0 to be positive"
             );
         }
         return expect.promise.all(promises);
@@ -2055,74 +2055,6 @@ describe("documentation tests", function () {
         return expect.promise.all(promises);
     });
 
-    it("assertions/object/to-be-a-map-whose-keys-satisfy.md contains correct examples", function () {
-        var promises = [];
-        expect({ foo: 0, bar: 1, baz: 2, qux: 3 },
-               'to be a map whose keys satisfy', function (key, value) {
-            expect(key, 'to match', /^[a-z]{3}$/);
-        });
-
-        expect({ foo: 0, bar: 1, baz: 2, qux: 3 },
-               'to be a map whose keys satisfy',
-               'to match', /^[a-z]{3}$/);
-
-        try {
-            expect({ foo: 0, bar: 1, baz: 2, qux: 3, quux: 4 },
-                   'to be a map whose keys satisfy',
-                   'to match', /^[a-z]{3}$/);
-            expect.fail(function (output) {
-                output.error("expected:").nl();
-                output.code("expect({ foo: 0, bar: 1, baz: 2, qux: 3, quux: 4 },").nl();
-                output.code("       'to be a map whose keys satisfy',").nl();
-                output.code("       'to match', /^[a-z]{3}$/);").nl();
-                output.error("to throw");
-            });
-        } catch (e) {
-            expect(e, "to have message",
-                "failed expectation on keys foo, bar, baz, qux, quux:\n" +
-                "  quux: expected 'quux' to match /^[a-z]{3}$/"
-            );
-        }
-        return expect.promise.all(promises);
-    });
-
-    it("assertions/object/to-be-a-map-whose-values-satisfy.md contains correct examples", function () {
-        var promises = [];
-        expect({ foo: 0, bar: 1, baz: 2, qux: 3 },
-               'to be a map whose values satisfy', function (value, index) {
-            expect(value, 'to be a number');
-        });
-
-        expect({ foo: 0, bar: 1, baz: 2, qux: 3 },
-               'to be a hash whose values satisfy',
-               'to be a number');
-
-        try {
-            expect({ foo: [0, 1, 2], bar: [4, 5, 6], baz: [7, 8, 9] },
-                   'to be a map whose values satisfy',
-                   'to be an array whose items satisfy',
-                   expect.it('to be a number').and('to be below', 8));
-            expect.fail(function (output) {
-                output.error("expected:").nl();
-                output.code("expect({ foo: [0, 1, 2], bar: [4, 5, 6], baz: [7, 8, 9] },").nl();
-                output.code("       'to be a map whose values satisfy',").nl();
-                output.code("       'to be an array whose items satisfy',").nl();
-                output.code("       expect.it('to be a number').and('to be below', 8));").nl();
-                output.error("to throw");
-            });
-        } catch (e) {
-            expect(e, "to have message",
-                "failed expectation in { foo: [ 0, 1, 2 ], bar: [ 4, 5, 6 ], baz: [ 7, 8, 9 ] }:\n" +
-                "  baz: failed expectation in [ 7, 8, 9 ]:\n" +
-                "         1: ✓ expected 8 to be a number and\n" +
-                "            ⨯ expected 8 to be below 8\n" +
-                "         2: ✓ expected 9 to be a number and\n" +
-                "            ⨯ expected 9 to be below 8"
-            );
-        }
-        return expect.promise.all(promises);
-    });
-
     it("assertions/object/to-be-canonical.md contains correct examples", function () {
         var promises = [];
         expect({ a: 123, b: 456 }, 'to be canonical');
@@ -2177,6 +2109,37 @@ describe("documentation tests", function () {
         } catch (e) {
             expect(e, "to have message",
                 "expected { a: 'a', b: 'b' } to not have key 'a'"
+            );
+        }
+        return expect.promise.all(promises);
+    });
+
+    it("assertions/object/to-have-keys-satisfying.md contains correct examples", function () {
+        var promises = [];
+        expect({ foo: 0, bar: 1, baz: 2, qux: 3 },
+               'to have keys satisfying', function (key, value) {
+            expect(key, 'to match', /^[a-z]{3}$/);
+        });
+
+        expect({ foo: 0, bar: 1, baz: 2, qux: 3 },
+               'to have keys satisfying',
+               'to match', /^[a-z]{3}$/);
+
+        try {
+            expect({ foo: 0, bar: 1, baz: 2, qux: 3, quux: 4 },
+                   'to have keys satisfying',
+                   'to match', /^[a-z]{3}$/);
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect({ foo: 0, bar: 1, baz: 2, qux: 3, quux: 4 },").nl();
+                output.code("       'to have keys satisfying',").nl();
+                output.code("       'to match', /^[a-z]{3}$/);").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "failed expectation on keys foo, bar, baz, qux, quux:\n" +
+                "  quux: expected 'quux' to match /^[a-z]{3}$/"
             );
         }
         return expect.promise.all(promises);
@@ -2313,6 +2276,43 @@ describe("documentation tests", function () {
 
         expect({ a: 'b' }, 'not to have property', 'b');
         expect(Object.create({ a: 'b' }), 'not to have own property', 'a');
+        return expect.promise.all(promises);
+    });
+
+    it("assertions/object/to-have-values-satisfying.md contains correct examples", function () {
+        var promises = [];
+        expect({ foo: 0, bar: 1, baz: 2, qux: 3 },
+               'to have values satisfying', function (value, index) {
+            expect(value, 'to be a number');
+        });
+
+        expect({ foo: 0, bar: 1, baz: 2, qux: 3 },
+               'to have values satisfying',
+               'to be a number');
+
+        try {
+            expect({ foo: [0, 1, 2], bar: [4, 5, 6], baz: [7, 8, 9] },
+                   'to have values satisfying',
+                   'to have items satisfying',
+                   expect.it('to be a number').and('to be below', 8));
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect({ foo: [0, 1, 2], bar: [4, 5, 6], baz: [7, 8, 9] },").nl();
+                output.code("       'to have values satisfying',").nl();
+                output.code("       'to have items satisfying',").nl();
+                output.code("       expect.it('to be a number').and('to be below', 8));").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "failed expectation in { foo: [ 0, 1, 2 ], bar: [ 4, 5, 6 ], baz: [ 7, 8, 9 ] }:\n" +
+                "  baz: failed expectation in [ 7, 8, 9 ]:\n" +
+                "         1: ✓ expected 8 to be a number and\n" +
+                "            ⨯ expected 8 to be below 8\n" +
+                "         2: ✓ expected 9 to be a number and\n" +
+                "            ⨯ expected 9 to be below 8"
+            );
+        }
         return expect.promise.all(promises);
     });
 
