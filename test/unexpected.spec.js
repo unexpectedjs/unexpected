@@ -323,29 +323,6 @@ describe('unexpected', function () {
         });
     });
 
-    describe('to a an array of assertion', function () {
-        it('fails if the given array is empty', function () {
-            expect(function () {
-                expect([], 'to be an array of strings');
-            }, 'to throw',
-                   "expected [] to be an array of strings\n" +
-                   "  expected [] to be non-empty");
-        });
-
-        it('asserts that all items in the array has the specified type', function () {
-            expect(['abc'], 'to be an array of strings');
-            expect([{}], 'to be an array of objects');
-            expect([/foo/, /bar/], 'to be an array of regexps');
-            expect([/foo/, /bar/], 'to be an array of regexes');
-        });
-
-        it('fails if any item in the array has another type than what is expected', function () {
-            expect(function () {
-                expect(['abc', 123], 'to be an array of strings');
-            }, 'to throw', "expected [ 'abc', 123 ] to be an array of strings");
-        });
-    });
-
     describe('equal assertion', function () {
         it('asserts deep equality that works with objects', function () {
             expect({ a: 'b' }, 'to equal', { a: 'b' });
