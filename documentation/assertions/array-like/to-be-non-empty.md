@@ -1,7 +1,7 @@
 ---
 title: to be non-empty
 ---
-Asserts that an array is empty.
+Asserts that an array (or array-like object) is empty.
 
 Aliases: `not to be empty`
 

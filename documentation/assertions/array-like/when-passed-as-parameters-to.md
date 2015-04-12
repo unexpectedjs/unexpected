@@ -1,4 +1,4 @@
-Apply a function to the subject array, then delegate the return value to another assertion.
+Apply a function to the subject array (or array-like object), then delegate the return value to another assertion.
 
 ```js
 function add(a, b) {

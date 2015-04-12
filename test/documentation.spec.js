@@ -1213,7 +1213,7 @@ describe("documentation tests", function () {
         return expect.promise.all(promises);
     });
 
-    it("assertions/array/to-be-empty.md contains correct examples", function () {
+    it("assertions/array-like/to-be-empty.md contains correct examples", function () {
         var promises = [];
         expect([], 'to be empty');
 
@@ -1247,7 +1247,7 @@ describe("documentation tests", function () {
         return expect.promise.all(promises);
     });
 
-    it("assertions/array/to-be-non-empty.md contains correct examples", function () {
+    it("assertions/array-like/to-be-non-empty.md contains correct examples", function () {
         var promises = [];
         expect([1, 2, 3], 'to be non-empty');
 
@@ -1266,7 +1266,7 @@ describe("documentation tests", function () {
         return expect.promise.all(promises);
     });
 
-    it("assertions/array/to-contain.md contains correct examples", function () {
+    it("assertions/array-like/to-contain.md contains correct examples", function () {
         var promises = [];
         expect([0, 1, 2], 'to contain', 1);
         expect([ { name: 'John Doe' }, { name: 'Jane Doe' } ], 'to contain', { name: 'Jane Doe' });
@@ -1307,7 +1307,7 @@ describe("documentation tests", function () {
         return expect.promise.all(promises);
     });
 
-    it("assertions/array/to-have-items-satisfying.md contains correct examples", function () {
+    it("assertions/array-like/to-have-items-satisfying.md contains correct examples", function () {
         var promises = [];
         expect([0, 1, 2, 3, 4], 'to have items satisfying', function (item, index) {
             expect(item, 'to be a number');
@@ -1364,7 +1364,7 @@ describe("documentation tests", function () {
         return expect.promise.all(promises);
     });
 
-    it("assertions/array/to-have-length.md contains correct examples", function () {
+    it("assertions/array-like/to-have-length.md contains correct examples", function () {
         var promises = [];
         expect([1,2,3], 'to have length', 3);
 
@@ -1399,7 +1399,7 @@ describe("documentation tests", function () {
         return expect.promise.all(promises);
     });
 
-    it("assertions/array/when-passed-as-parameters-to.md contains correct examples", function () {
+    it("assertions/array-like/when-passed-as-parameters-to.md contains correct examples", function () {
         var promises = [];
         function add(a, b) {
             return a + b;

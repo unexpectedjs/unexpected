@@ -1,4 +1,4 @@
-Asserts that all items of an array satisfy a given assertion or function.
+Asserts that all items of an array (or array-like object) satisfy a given assertion or function.
 
 Alias: `to be an array whose items satisfy`.
 

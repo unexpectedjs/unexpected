@@ -1,4 +1,4 @@
-Asserts an array contains one or more items.
+Asserts an array (or array-like object) contains one or more items.
 
 ```javascript
 expect([0, 1, 2], 'to contain', 1);
