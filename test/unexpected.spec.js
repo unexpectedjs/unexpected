@@ -4779,6 +4779,14 @@ describe('unexpected', function () {
             expect([3, 4], 'when passed as parameters to', add, 'to equal', 7);
         });
 
+        it('works with an array-like object', function () {
+            var args;
+            (function () {
+                args = arguments;
+            }(3, 4));
+            expect(args, 'when passed as parameters to', add, 'to equal', 7);
+        });
+
         it('should produce a nested error message when the assertion fails', function () {
             expect(function () {
                 expect([3, 4], 'when passed as parameters to', add, 'to equal', 8);
