@@ -121,6 +121,23 @@ The source for Unexpected can be found on
 
 ## Releases
 
+### 7.0.0
+
+* Support for [asynchronous assertions using promises](/api/promise/). All
+  built-in assertions that delegate to other assertions (such as `to satisfy`)
+  have been rewritten to support this. The change is fully backwards compatible.
+* Removed support for the `to be an array of` and
+  `to be an array of (strings|numbers|...)` assertions. There are better and
+  more flexible alternatives.
+* Renamed assertions so that the subject type isn't mentioned in the assertion name.
+  The old names are kept around as aliases for now. These assertions are affected:
+    * `to be an array whose items satisfy` => `to have items satisfying`
+    * `to be an (object|hash|map) whose keys satisfy` => `to have keys satisfying`
+    * `to be an (object|hash|map) whose values satisfy` => `to have values satisfying`
+* New `when passed as parameter to constructor` and `when passed as parameter to async` "adverbial" assertions.
+* New `to have message` assertion defined for `Error` instances.
+* A lot of output improvements and minor tweaks.
+
 ### 6.0.0
 
 * New documentation and [corresponding site](https://unexpectedjs.github.io/).
