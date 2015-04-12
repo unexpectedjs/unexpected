@@ -135,6 +135,7 @@ The source for Unexpected can be found on
     * `to be an (object|hash|map) whose keys satisfy` => `to have keys satisfying`
     * `to be an (object|hash|map) whose values satisfy` => `to have values satisfying`
 * New `when passed as parameter to constructor` and `when passed as parameter to async` "adverbial" assertions.
+* New `when decoded as` "adverbial" assertion for `Buffer` instances.
 * New `to have message` assertion defined for `Error` instances.
 * A lot of output improvements and minor tweaks.
 
