@@ -7,6 +7,7 @@ it.skipIf = function (condition) {
 
 describe("documentation tests", function () {
     var expect = typeof weknowhow === 'undefined' ? require('../lib/').clone() : weknowhow.expect.clone();
+    expect.output.preferredWidth = 80;
 
     var isBrowser = typeof weknowhow !== 'undefined';
     var isPhantom = typeof mochaPhantomJS !== 'undefined';

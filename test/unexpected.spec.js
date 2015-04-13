@@ -11,6 +11,7 @@ describe.skipIf = function (condition) {
 describe('unexpected', function () {
     var expect = typeof weknowhow === 'undefined' ? require('../lib/').clone() : weknowhow.expect.clone();
     var workQueue = typeof weknowhow === 'undefined' ? require('../lib/workQueue') : null;
+    expect.output.preferredWidth = 80;
 
     // use this instead of Object.create in order to make the tests run in
     // browsers that are not es5 compatible.
@@ -1977,10 +1978,7 @@ describe('unexpected', function () {
                    "  pill: {\n" +
                    "    red: 'I\\'ll show you how deep the rabbit hole goes',\n" +
                    "    blue: { ignorance: ... },\n" +
-                   "    purple: {\n" +
-                   "      you: 'wat there is another pill',\n" +
-                   "      them: 'there is always more choices'\n" +
-                   "    }\n" +
+                   "    purple: { you: 'wat there is another pill', them: 'there is always more choices' }\n" +
                    "  }\n" +
                    "}\n" +
                    "to satisfy\n" +
@@ -1997,10 +1995,7 @@ describe('unexpected', function () {
                    "                                                         // -I'll show you how deep the rabbit hole goes\n" +
                    "                                                         // +I'll show you how deep the rabbit hole goes.\n" +
                    "    blue: { ignorance: ... },\n" +
-                   "    purple: {\n" +
-                   "      you: 'wat there is another pill',\n" +
-                   "      them: 'there is always more choices'\n" +
-                   "    }\n" +
+                   "    purple: { you: 'wat there is another pill', them: 'there is always more choices' }\n" +
                    "  }\n" +
                    "}");
         });
@@ -2155,10 +2150,8 @@ describe('unexpected', function () {
                         foo: new MysteryBox({ baz: clonedExpect.it('to be a number') })
                     });
                 }, 'to throw',
-                       "expected { foo: MysteryBox({ baz: 123, quux: 987 }) } to exhaustively satisfy\n" +
-                       "{\n" +
-                       "  foo: MysteryBox({ baz: expect.it('to be a number') })\n" +
-                       "}\n" +
+                       "expected { foo: MysteryBox({ baz: 123, quux: 987 }) }\n" +
+                       "to exhaustively satisfy { foo: MysteryBox({ baz: expect.it('to be a number') }) }\n" +
                        "\n" +
                        "{\n" +
                        "  foo: MysteryBox({\n" +
@@ -2518,12 +2511,7 @@ describe('unexpected', function () {
                     });
                 });
             }, 'to throw',
-                "failed expectation in\n" +
-                "{\n" +
-                "  foo: [ 0, 1, 2 ],\n" +
-                "  bar: [ 4, '5', 6 ],\n" +
-                "  baz: [ 7, 8, '9' ]\n" +
-                "}:\n" +
+                "failed expectation in { foo: [ 0, 1, 2 ], bar: [ 4, '5', 6 ], baz: [ 7, 8, '9' ] }:\n" +
                 "  bar: failed expectation in [ 4, '5', 6 ]:\n" +
                 "         1: expected '5' to be a number\n" +
                 "  baz: failed expectation in [ 7, 8, '9' ]:\n" +
@@ -3757,16 +3745,12 @@ describe('unexpected', function () {
             expect(expect.inspect(data, 5).toString(), 'to equal',
                    "[\n" +
                    "  {\n" +
-                   "    guid: 'db550c87-1680-462a-bacc-655cecdd8907',\n" +
-                   "    isActive: false,\n" +
-                   "    age: 38,\n" +
-                   "    email: 'huntterry@medalert.com',\n" +
-                   "    phone: '+1 (803) 472-3209',\n" +
+                   "    guid: 'db550c87-1680-462a-bacc-655cecdd8907', isActive: false,\n" +
+                   "    age: 38, email: 'huntterry@medalert.com', phone: '+1 (803) 472-3209',\n" +
                    "    address: '944 Milton Street, Madrid, Ohio, 1336',\n" +
                    "    about: 'Ea consequat nulla duis incididunt ut irureirure cupidatat. Est tempor cillum commodo aliquaconsequat esse commodo. Culpa ipsum eu consectetur idenim quis sint. Aliqua deserunt dolore reprehenderitid anim exercitation laboris. Eiusmod aute consecteturexcepteur in nulla proident occaecatconsectetur.\\r\\n',\n" +
                    "    registered: new Date('Sun, 03 Jun 1984 09:36:47 GMT'),\n" +
-                   "    latitude: 8.635553,\n" +
-                   "    longitude: -103.382498,\n" +
+                   "    latitude: 8.635553, longitude: -103.382498,\n" +
                    "    tags: [ 'tempor', 'dolore', 'non', 'sit', 'minim', 'aute', 'non' ],\n" +
                    "    friends: [\n" +
                    "      { id: 0, name: 'Jeanne Hyde' },\n" +
@@ -3792,24 +3776,13 @@ describe('unexpected', function () {
                    "    ]\n" +
                    "  },\n" +
                    "  {\n" +
-                   "    guid: '904c2f38-071c-4b97-b968-f5c228aaf41a',\n" +
-                   "    isActive: false,\n" +
-                   "    age: 34,\n" +
-                   "    email: 'peckhester@medalert.com',\n" +
+                   "    guid: '904c2f38-071c-4b97-b968-f5c228aaf41a', isActive: false,\n" +
+                   "    age: 34, email: 'peckhester@medalert.com',\n" +
                    "    phone: '+1 (848) 599-3447',\n" +
                    "    address: '323 Legion Street, Caspar, Delaware, 4117',\n" +
                    "    registered: new Date('Tue, 10 Mar 1981 17:02:53 GMT'),\n" +
-                   "    latitude: -55.321712,\n" +
-                   "    longitude: -100.276818,\n" +
-                   "    tags: [\n" +
-                   "      'Lorem',\n" +
-                   "      'laboris',\n" +
-                   "      'enim',\n" +
-                   "      'anim',\n" +
-                   "      'sint',\n" +
-                   "      'incididunt',\n" +
-                   "      'labore'\n" +
-                   "    ],\n" +
+                   "    latitude: -55.321712, longitude: -100.276818,\n" +
+                   "    tags: [ 'Lorem', 'laboris', 'enim', 'anim', 'sint', 'incididunt', 'labore' ],\n" +
                    "    friends: [\n" +
                    "      { id: 0, name: 'Patterson Meadows' },\n" +
                    "      { id: 1, name: 'Velasquez Joseph' },\n" +
@@ -3821,14 +3794,58 @@ describe('unexpected', function () {
                    "    circular: { self: [Circular] },\n" +
                    "    this: {\n" +
                    "      is: {\n" +
-                   "        deeply: {\n" +
-                   "          nested: ...,\n" +
-                   "          string: 'should be shown',\n" +
-                   "          'a list': ...\n" +
-                   "        },\n" +
+                   "        deeply: { nested: ..., string: 'should be shown', 'a list': ... },\n" +
                    "        'a list': [...]\n" +
                    "      }\n" +
                    "    }\n" +
+                   "  }\n" +
+                   "]");
+
+
+            var clonedExpect = expect.clone();
+            clonedExpect.output.preferredWidth = 200;
+console.log(clonedExpect.inspect(data, 5).toString('ansi'));
+            expect(clonedExpect.inspect(data, 5).toString(), 'to equal',
+                   "[\n" +
+                   "  {\n" +
+                   "    guid: 'db550c87-1680-462a-bacc-655cecdd8907', isActive: false, age: 38, email: 'huntterry@medalert.com', phone: '+1 (803) 472-3209', address: '944 Milton Street, Madrid, Ohio, 1336',\n" +
+                   "    about: 'Ea consequat nulla duis incididunt ut irureirure cupidatat. Est tempor cillum commodo aliquaconsequat esse commodo. Culpa ipsum eu consectetur idenim quis sint. Aliqua deserunt dolore reprehenderitid anim exercitation laboris. Eiusmod aute consecteturexcepteur in nulla proident occaecatconsectetur.\\r\\n',\n" +
+                   "    registered: new Date('Sun, 03 Jun 1984 09:36:47 GMT'), latitude: 8.635553, longitude: -103.382498, tags: [ 'tempor', 'dolore', 'non', 'sit', 'minim', 'aute', 'non' ],\n" +
+                   "    friends: [\n" +
+                   "      { id: 0, name: 'Jeanne Hyde' },\n" +
+                   "      { id: 1, name: 'Chavez Parker' },\n" +
+                   "      { id: 2, name: 'Orr Rogers' },\n" +
+                   "      { id: 3, name: 'Etta Glover' },\n" +
+                   "      { id: 4, name: 'Glenna Aguirre' },\n" +
+                   "      { id: 5, name: 'Erika England' },\n" +
+                   "      { id: 6, name: 'Casandra Stanton' },\n" +
+                   "      { id: 7, name: 'Hooper Cobb' },\n" +
+                   "      { id: 8, name: 'Gates Todd' },\n" +
+                   "      { id: 9, name: 'Lesa Chase' },\n" +
+                   "      { id: 10, name: 'Natasha Frazier' },\n" +
+                   "      { id: 11, name: 'Lynnette Key' },\n" +
+                   "      { id: 12, name: 'Linda Mclaughlin' },\n" +
+                   "      { id: 13, name: 'Harrison Martinez' },\n" +
+                   "      { id: 14, name: 'Tameka Hebert' },\n" +
+                   "      { id: 15, name: 'Gena Farley' },\n" +
+                   "      { id: 16, name: 'Conley Walsh' },\n" +
+                   "      { id: 17, name: 'Suarez Norman' },\n" +
+                   "      { id: 18, name: 'Susana Pitts' },\n" +
+                   "      { id: 19, name: 'Peck Hester' }\n" +
+                   "    ]\n" +
+                   "  },\n" +
+                   "  {\n" +
+                   "    guid: '904c2f38-071c-4b97-b968-f5c228aaf41a', isActive: false, age: 34, email: 'peckhester@medalert.com', phone: '+1 (848) 599-3447', address: '323 Legion Street, Caspar, Delaware, 4117',\n" +
+                   "    registered: new Date('Tue, 10 Mar 1981 17:02:53 GMT'), latitude: -55.321712, longitude: -100.276818, tags: [ 'Lorem', 'laboris', 'enim', 'anim', 'sint', 'incididunt', 'labore' ],\n" +
+                   "    friends: [\n" +
+                   "      { id: 0, name: 'Patterson Meadows' },\n" +
+                   "      { id: 1, name: 'Velasquez Joseph' },\n" +
+                   "      { id: 2, name: 'Horn Harrison' },\n" +
+                   "      { id: 3, name: 'Young Mooney' },\n" +
+                   "      { id: 4, name: 'Barbara Lynn' },\n" +
+                   "      { id: 5, name: 'Sharpe Downs' }\n" +
+                   "    ],\n" +
+                   "    circular: { self: [Circular] }, this: { is: { deeply: { nested: ..., string: 'should be shown', 'a list': ... }, 'a list': [...] } }\n" +
                    "  }\n" +
                    "]");
         });

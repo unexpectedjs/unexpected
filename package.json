@@ -24,7 +24,7 @@
     "bluebird": "^2.9.13",
     "diff": "1.1.0",
     "leven": "1.0.0",
-    "magicpen": "4.6.0"
+    "magicpen": "4.7.0"
   },
   "devDependencies": {
     "async": "0.9.0",
