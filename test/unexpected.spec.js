@@ -2269,6 +2269,28 @@ describe('unexpected', function () {
                        "expected 'wat' to be a number after a short delay\n" +
                        "  expected 'wat' to be a number");
             });
+
+            it('supports many levels of asynchronous assertions', function () {
+                clonedExpect.addAssertion('when delayed a little bit', function (expect, subject) {
+                    var that = this;
+                    return expect.promise(function (run) {
+                        setTimeout(run(function () {
+                            return that.shift(expect, subject, 0);
+                        }), 1);
+                    });
+                });
+                return expect(
+                    clonedExpect('abc', 'when delayed a little bit', 'when delayed a little bit', 'to satisfy', clonedExpect.it('when delayed a little bit', 'to equal', 'def')),
+                    'to be rejected',
+                        "expected 'abc'\n" +
+                        "when delayed a little bit when delayed a little bit 'to satisfy', expect.it('when delayed a little bit', 'to equal', 'def')\n" +
+                        "\n" +
+                        "expected 'abc' when delayed a little bit to equal 'def'\n" +
+                        "\n" +
+                        "-abc\n" +
+                        "+def"
+                );
+            });
         });
     });
 
