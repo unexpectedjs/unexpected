@@ -3804,7 +3804,6 @@ describe('unexpected', function () {
 
             var clonedExpect = expect.clone();
             clonedExpect.output.preferredWidth = 200;
-console.log(clonedExpect.inspect(data, 5).toString('ansi'));
             expect(clonedExpect.inspect(data, 5).toString(), 'to equal',
                    "[\n" +
                    "  {\n" +
