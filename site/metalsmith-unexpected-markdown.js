@@ -108,7 +108,9 @@ function writeTestsToFile(exampleTests, done) {
 
     pen.text('describe("documentation tests", function () {').nl();
     pen.indentLines();
-	pen.i().text("var expect = typeof weknowhow === 'undefined' ? require('../lib/').clone() : weknowhow.expect.clone();").nl(2);
+	pen.i().text("var expect = typeof weknowhow === 'undefined' ? require('../lib/').clone() : weknowhow.expect.clone();").nl();
+    pen.i().text("expect.output.preferredWidth = 80;").nl(2);
+
     pen.i().text("var isBrowser = typeof weknowhow !== 'undefined';").nl();
     pen.i().text("var isPhantom = typeof mochaPhantomJS !== 'undefined';").nl();
 
