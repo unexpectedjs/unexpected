@@ -2404,7 +2404,24 @@ describe('unexpected', function () {
             expect([[1], [2]], 'to have items satisfying', 'to have items satisfying', 'to be a number');
         });
 
-        it('supports legacy legacy', function () {
+        it('formats non-Unexpected errors correctly', function () {
+            expect(function () {
+                expect([[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]], 'to have items satisfying', function (item) {
+                    expect.fail(function (output) {
+                        output.text('foo').nl().text('bar');
+                    });
+                });
+            }, 'to throw',
+                    'failed expectation in\n' +
+                    '[\n' +
+                    '  [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 ]\n' +
+                    ']:\n' +
+                    '  0: foo\n' +
+                    '     bar'
+            );
+        });
+
+        it('supports legacy "to be an array whose items satisfy"', function () {
             expect(['0', '1', '2', '3'], 'to be an array whose items satisfy', 'not to be a number');
         });
 
