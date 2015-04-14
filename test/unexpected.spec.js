@@ -799,6 +799,29 @@ describe('unexpected', function () {
                     "  threw: Error({ message: 'The Error' })");
         });
 
+        it.skipIf(phantomJsErrorWeirdness, 'fails with the correct message when an Unexpected error is thrown', function () {
+            expect(function () {
+                expect(function testFunction() {
+                    expect.fail(function (output) {
+                        output.text('foo').block(function () {
+                            this.text('bar').nl().text('baz');
+                        }).text('quux');
+                    });
+                }, 'not to throw');
+            }, 'to throw',
+                   'expected\n' +
+                    'function testFunction() {\n' +
+                    "    expect.fail(function (output) {\n" +
+                    "        output.text('foo').block(function () {\n" +
+                    "            this.text('bar').nl().text('baz');\n" +
+                    "        }).text('quux');\n" +
+                    "    });\n" +
+                    '}\n' +
+                    'not to throw\n' +
+                    "  threw: foobarquux\n" +
+                    "            baz");
+        });
+
         it('fails if the argument is not a function', function () {
             expect(function () {
                 expect(1, 'to throw exception');
