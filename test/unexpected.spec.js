@@ -279,6 +279,46 @@ describe('unexpected', function () {
             expect(circular, 'to be an object');
         });
 
+        it('should support type objects', function () {
+            expect('foo', 'to be a', expect.getType('string'));
+        });
+
+        it('should fail with the correct error message if the type is given as an anonymous function', function () {
+            expect(function () {
+                expect('foo', 'to be a', function () {});
+            }, 'to throw', "expected 'foo' to be a function () {}");
+        });
+
+        it('should throw when the type is specified as undefined', function () {
+            expect(function () {
+                expect('foo', 'to be an', undefined);
+            }, 'to throw', "The 'to be an' assertion requires either a string (type name), a type object, or function argument");
+        });
+
+        it('should throw when the type is specified as null', function () {
+            expect(function () {
+                expect('foo', 'to be a', null);
+            }, 'to throw', "The 'to be a' assertion requires either a string (type name), a type object, or function argument");
+        });
+
+        it('should not consider a string a to be an instance of an object without a name property', function () {
+            expect(function () {
+                expect('foo', 'to be a', {});
+            }, 'to throw', "The 'to be a' assertion requires either a string (type name), a type object, or function argument");
+        });
+
+        it('should throw when the type is specified as an object without an identify function', function () {
+            expect(function () {
+                expect('foo', 'to be a', { name: 'bar' });
+            }, 'to throw', "The 'to be a' assertion requires either a string (type name), a type object, or function argument");
+        });
+
+        it('should throw when the type is specified as an object with an identify function, but without a name property', function () {
+            expect(function () {
+                expect('foo', 'to be a', { identify: function () { return true; } });
+            }, 'to throw', "The 'to be a' assertion requires either a string (type name), a type object, or function argument");
+        });
+
         it('throws when the assertion fails', function () {
             expect(function () {
                 expect(5, 'to be an', Array);
