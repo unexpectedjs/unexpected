@@ -1666,6 +1666,75 @@ describe('unexpected', function () {
     });
 
     describe('to satisfy assertion', function () {
+        describe('with the not flag', function () {
+            it('should succeed when the assertion fails without the not flag', function () {
+                expect({foo: 123}, 'not to satisfy', {foo: 456});
+            });
+
+            it('should succeed when the assertion fails without the not flag, async case', function () {
+                var clonedExpect = expect.clone().addAssertion('when delayed a little bit', function (expect, subject) {
+                    var that = this;
+                    return expect.promise(function (run) {
+                        setTimeout(run(function () {
+                            return that.shift(expect, subject, 0);
+                        }), 1);
+                    });
+                });
+                expect({foo: 123}, 'not to satisfy', {foo: clonedExpect.it('when delayed a little bit', 'to equal', 456)});
+            });
+
+            it('should fail when a non-Unexpected error occurs', function () {
+                expect(function () {
+                    expect({foo: 123}, 'not to satisfy', function () {
+                        throw new Error('foo');
+                    });
+                }, 'to throw', 'foo');
+            });
+
+            it('should fail when the assertion succeeds', function () {
+                expect(function () {
+                    expect({foo: 123}, 'not to satisfy', {foo: 123});
+                }, 'to throw',
+                    'expected { foo: 123 } not to satisfy { foo: 123 }'
+                );
+            });
+        });
+
+        describe('with the assertion flag', function () {
+            it('should succeed', function () {
+                expect('foo', 'to satisfy assertion', 'to equal', 'foo');
+            });
+
+            it('should fail with a diff', function () {
+                expect(function () {
+                    expect('foo', 'to satisfy assertion', 'to equal', 'bar');
+                }, 'to throw',
+                    "expected 'foo' to equal 'bar'\n" +
+                    "\n" +
+                    "-foo\n" +
+                    "+bar"
+                );
+            });
+
+            describe('and the exhaustively flag', function () {
+                it('should succeed', function () {
+                    expect({foo: 123}, 'to exhaustively satisfy assertion', {foo: 123});
+                });
+
+                it('should fail with a diff', function () {
+                    expect(function () {
+                        expect({foo: 123}, 'to exhaustively satisfy assertion', {foo: 456});
+                    }, 'to throw',
+                        "expected { foo: 123 } to exhaustively satisfy { foo: 456 }\n" +
+                        "\n" +
+                        "{\n" +
+                        "  foo: 123 // should equal 456\n" +
+                        "}"
+                    );
+                });
+            });
+        });
+
         it('forwards normal errors to the top-level', function () {
             expect(function () {
                 expect({
