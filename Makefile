@@ -26,6 +26,7 @@ coverage: lib/*
 		-x unexpected.js \
 		-x **/vendor/** \
 		-x **/site/** \
+		-x **/site-build/** \
 		-x **/documentation/** \
 	--include-all-sources ./node_modules/mocha/bin/_mocha -- --reporter dot
 
