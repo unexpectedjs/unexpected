@@ -1831,12 +1831,12 @@ describe('unexpected', function () {
             });
         });
 
-        describe('on Buffer instances', function () {
-            it.skipIf(typeof Buffer === 'undefined', 'should assert equality', function () {
+        describe.skipIf(typeof Buffer === 'undefined', 'on Buffer instances', function () {
+            it('should assert equality', function () {
                 expect(new Buffer([1, 2, 3]), 'to satisfy', new Buffer([1, 2, 3]));
             });
 
-            it.skipIf(typeof Buffer === 'undefined', 'fail with a binary diff when the assertion fails', function () {
+            it('should fail with a binary diff when the assertion fails', function () {
                 expect(function () {
                     expect(new Buffer([1, 2, 3]), 'to satisfy', new Buffer([1, 2, 4]));
                 }, 'to throw',
@@ -1846,7 +1846,7 @@ describe('unexpected', function () {
                     '+01 02 04                                         │...│');
             });
 
-            it.skipIf(typeof Buffer === 'undefined', 'fail with a binary diff when the assertion fails with the assertion flag on', function () {
+            it('should fail with a binary diff when the assertion fails with the assertion flag on', function () {
                 expect(function () {
                     expect(new Buffer([1, 2, 3]), 'to satisfy assertion', new Buffer([1, 2, 4]));
                 }, 'to throw',
@@ -1856,8 +1856,29 @@ describe('unexpected', function () {
                     '+01 02 04                                         │...│');
             });
 
-            it.skipIf(typeof Buffer === 'undefined', 'to satisfy it to equal buffer instance', function () {
-                expect(new Buffer('bar'), 'to satisfy', expect.it('to equal', new Buffer('bar')));
+            describe('with expect.it', function () {
+                it('should succeed', function () {
+                    expect(new Buffer('bar'), 'to satisfy', expect.it('to equal', new Buffer('bar')));
+                });
+
+                it('should fail with a diff', function () {
+                    expect(function () {
+                        expect(new Buffer('bar'), 'to satisfy', expect.it('to equal', new Buffer('foo')));
+                    }, 'to throw',
+                        "expected Buffer([0x62, 0x61, 0x72]) to satisfy expect.it('to equal', Buffer([0x66, 0x6F, 0x6F]))\n" +
+                        "\n" +
+                        "expected Buffer([0x62, 0x61, 0x72]) to equal Buffer([0x66, 0x6F, 0x6F])\n" +
+                        "\n" +
+                        "-62 61 72                                         │bar│\n" +
+                        "+66 6F 6F                                         │foo│"
+                    );
+                });
+            });
+
+            it('should satisfy a function', function () {
+                expect(new Buffer('bar'), 'to satisfy', function (buffer) {
+                    expect(buffer, 'to have length', 3);
+                });
             });
         });
 
