@@ -1793,6 +1793,23 @@ describe('unexpected', function () {
                 expect(new Error('foo'), 'to satisfy', { message: 'foo' });
             });
 
+            describe('in "exhaustively" mode', function () {
+                it('should succeed', function () {
+                    expect(new Error('foo'), 'to exhaustively satisfy', { message: 'foo' });
+                });
+
+                it('should fail with a diff', function () {
+                    var err = new Error('foo');
+                    err.bar = 123;
+                    expect(function () {
+                        expect(err, 'to exhaustively satisfy', { message: 'foo' });
+                    }, 'to throw',
+                        // Would be nice to have a diff here:
+                        "expected Error({ message: 'foo', bar: 123 }) to exhaustively satisfy { message: 'foo' }"
+                    );
+                });
+            });
+
             it('should support satisfying against a regexp', function () {
                 expect(new Error('foo'), 'to satisfy', /foo/);
             });
