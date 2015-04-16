@@ -5147,12 +5147,23 @@ describe('unexpected', function () {
     });
 
     describe('assertion.shift', function () {
+        describe('with a function as the next argument', function () {
+            it('should succeed', function () {
+                var clonedExpect = expect.clone().addAssertion('string', 'when prepended with foo', function (expect, subject) {
+                    return this.shift('foo' + subject, 0);
+                });
+                clonedExpect('foo', 'when prepended with foo', function (str) {
+                    clonedExpect(str, 'to equal', 'foofoo');
+                });
+            });
+        });
+
         describe('with an async assertion', function () {
             var clonedExpect = expect.clone().addAssertion('when delayed a little bit', function (expect, subject) {
                 var that = this;
                 return expect.promise(function (run) {
                     setTimeout(run(function () {
-                        return that.shift(expect, subject, 0);
+                        return that.shift(subject, 0);
                     }), 1);
                 });
             });
