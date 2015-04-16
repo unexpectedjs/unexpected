@@ -1210,6 +1210,12 @@ describe('unexpected', function () {
         });
     });
 
+    describe('to have keys assertion', function () {
+        it('should work with non-enumerable keys returned by the getKeys function of the subject type', function () {
+            expect(new Error('foo'), 'to only have key', 'message');
+        });
+    });
+
     describe('properties assertion', function () {
         it('asserts presence of a list of properties', function () {
             expect({a: 'foo', b: 'bar'}, 'to have properties', ['a', 'b']);
