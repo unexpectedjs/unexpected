@@ -127,6 +127,14 @@ metalSmith(__dirname)
     .use(function (files, metalsmith, next) {
         var metadata = metalsmith.metadata();
 
+        metadata.collections.apiPages.sort(function (a, b) {
+            var aTitle = a.title.toLowerCase();
+            var bTitle = b.title.toLowerCase();
+            if (aTitle < bTitle) return -1;
+            if (aTitle > bTitle) return 1;
+            return 0;
+        });
+
         // Make sure that the most important types are listed first and in this order:
         var assertionsByType = {};
         metadata.collections.assertions.forEach(function (assertion) {
@@ -137,8 +145,10 @@ metalSmith(__dirname)
         assertionsByType = sortTypesByHierarchy(assertionsByType);
         Object.keys(assertionsByType).forEach(function (type) {
             assertionsByType[type].sort(function (a, b) {
-                if (a.name < b.name) return -1;
-                if (a.name > b.name) return 1;
+                var aName = a.title.toLowerCase();
+                var bName = b.title.toLowerCase();
+                if (aName < bName) return -1;
+                if (aName > bName) return 1;
                 return 0;
             });
         });
