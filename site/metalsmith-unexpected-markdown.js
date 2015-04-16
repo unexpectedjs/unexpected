@@ -109,13 +109,13 @@ function writeTestsToFile(exampleTests, done) {
 
     pen.text('describe("documentation tests", function () {').nl();
     pen.indentLines();
-	pen.i().text("var expect = typeof weknowhow === 'undefined' ? require('../lib/').clone() : weknowhow.expect.clone();").nl();
-    pen.i().text("expect.output.preferredWidth = 80;").nl(2);
+	pen.i().text("var unexpected = typeof weknowhow === 'undefined' ? require('../lib/').clone() : weknowhow.expect.clone();").nl();
+    pen.i().text("unexpected.output.preferredWidth = 80;").nl(2);
 
     pen.i().text("var isBrowser = typeof weknowhow !== 'undefined';").nl();
     pen.i().text("var isPhantom = typeof mochaPhantomJS !== 'undefined';").nl();
 
-    pen.i().text('expect.addAssertion("to have message", function (expect, subject, value) {').nl();
+    pen.i().text('unexpected.addAssertion("to have message", function (expect, subject, value) {').nl();
     pen.indentLines();
     pen.i().block(function () {
         this.text('var message;').nl();
@@ -132,9 +132,10 @@ function writeTestsToFile(exampleTests, done) {
     pen.outdentLines();
     pen.i().text('});').nl(2);
 
+    pen.i().text('var expect;').nl();
     pen.i().text('beforeEach(function () {').nl();
     pen.indentLines();
-    pen.i().text('expect = expect.clone();').nl();
+    pen.i().text('expect = unexpected.clone();').nl();
     pen.outdentLines();
     pen.i().text('});').nl(2);
 
@@ -283,7 +284,7 @@ function isPromise(value) {
 
 function evaluateExamples(expect, codeBlocks, cb) {
     var oldGlobal = extend({}, global);
-    global.expect = expect;
+    global.expect = expect.clone();
 
     async.eachSeries(codeBlocks, function (codeBlock, cb) {
         if (codeBlock.lang === 'javascript' && codeBlock.flags.evaluate) {

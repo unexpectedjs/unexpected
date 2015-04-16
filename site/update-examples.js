@@ -50,7 +50,7 @@ function isPromise(value) {
 
 function evaluateExamples(expect, codeBlocks, cb) {
     var oldGlobal = extend({}, global);
-    global.expect = expect;
+    global.expect = expect.clone();
 
     async.eachSeries(codeBlocks, function (codeBlock, cb) {
         if (codeBlock.lang === 'javascript' && codeBlock.flags.evaluate) {
