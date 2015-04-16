@@ -610,6 +610,67 @@ describe("documentation tests", function () {
         return expect.promise.all(promises);
     });
 
+    it("api/promise-all.md contains correct examples", function () {
+        var promises = [];
+        expect.addAssertion('to be a number after a short delay', function (expect, subject) {
+          return expect.promise(function (run) {
+            setTimeout(run(function () {
+                expect(subject, 'to be a number');
+            }), 1);
+          });
+        });
+
+        promises.push(expect.promise(function () {
+            return expect.promise.all({
+              foo: [
+                expect(42, 'to be a number after a short delay')
+              ],
+              bar: expect([0, 1, 2], 'to have items satisfying',
+                                     expect.it('to be a number after a short delay')),
+
+              baz: expect({ a: 1, b: 2 }, 'to have values satisfying',
+                                          'to be a number after a short delay')
+            });
+        }));
+
+        promises.push(expect.promise(function () {
+            return expect.promise.all({
+              foo: [
+                expect(42, 'to be a number after a short delay')
+              ],
+              bar: expect([0, 1, 2], 'to have items satisfying',
+                                     expect.it('to be a number after a short delay')),
+
+              baz: expect({ a: '0', b: 1 }, 'to have values satisfying',
+                                          'to be a number after a short delay')
+            });
+        }).then(function () {
+            return expect.promise(function () {
+                expect.fail(function (output) {
+                    output.error("expected:").nl();
+                    output.code("return expect.promise.all({").nl();
+                    output.code("  foo: [").nl();
+                    output.code("    expect(42, 'to be a number after a short delay')").nl();
+                    output.code("  ],").nl();
+                    output.code("  bar: expect([0, 1, 2], 'to have items satisfying',").nl();
+                    output.code("                         expect.it('to be a number after a short delay')),").nl();
+                    output.code("").nl();
+                    output.code("  baz: expect({ a: '0', b: 1 }, 'to have values satisfying',").nl();
+                    output.code("                              'to be a number after a short delay')").nl();
+                    output.code("});").nl();
+                    output.error("to throw");
+                });
+            });
+        }).caught(function (e) {
+            expect(e, "to have message",
+                "failed expectation in { a: '0', b: 1 }:\n" +
+                "  a: expected '0' to be a number after a short delay"
+            );
+        }));
+
+        return expect.promise.all(promises);
+    });
+
     it("assertions/Buffer/when-decoded-as.md contains correct examples", function () {
         var promises = [];
         if (!isBrowser) {
