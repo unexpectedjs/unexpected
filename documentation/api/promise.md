@@ -1,19 +1,19 @@
 ### expect.promise(promiseBody)
 
-This method is used inside [addAssertion](/api/addAssertion) to
-promise from the given body function.
+This method is used inside [addAssertion](/api/addAssertion) to create
+a promise from the given body function.
 
 Signature:
 
 ```js#evaluate:false
 expect.promise(function () { ... });
-expect.promise(function (resolve, reject) { ... });
 expect.promise(function (run) { ... });
+expect.promise(function (resolve, reject) { ... });
 ```
 
-When the promise body takes no arguments, the body will be executed,
-if it throws and exception an rejected promise will be returned, if
-the body returns a promise that will be returned by the method;
+When the promise body takes no arguments, the body will be executed.
+If the body throws an exception a rejected promise will be returned.
+If the body returns a promise that will be returned by the method;
 otherwise a resolve promise will be returned. You can use the method
 the following way:
 
@@ -24,9 +24,6 @@ var promises = items.map(function (item) {
   });
 });
 ```
-
-When the promise body takes two arguments it is just an alias for
-`new Promise(function (resolve, reject) { ... })`.
 
 When the promise body takes one argument it will be executed and given a
 wrapper function that should be used to wrap asynchronous callbacks:
@@ -47,3 +44,9 @@ Notice you can call the run wrapper as many times as you want as long
 as it is within the current tick, the promise will wait for all the
 wrapper functions to finish before the promise will be rejected or
 resolved.
+
+When the promise body takes two arguments, it is just an alias for:
+
+```js#evaluate:false
+new Promise(function (resolve, reject) { ... })
+```
