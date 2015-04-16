@@ -6,12 +6,12 @@ it.skipIf = function (condition) {
 };
 
 describe("documentation tests", function () {
-    var expect = typeof weknowhow === 'undefined' ? require('../lib/').clone() : weknowhow.expect.clone();
-    expect.output.preferredWidth = 80;
+    var unexpected = typeof weknowhow === 'undefined' ? require('../lib/').clone() : weknowhow.expect.clone();
+    unexpected.output.preferredWidth = 80;
 
     var isBrowser = typeof weknowhow !== 'undefined';
     var isPhantom = typeof mochaPhantomJS !== 'undefined';
-    expect.addAssertion("to have message", function (expect, subject, value) {
+    unexpected.addAssertion("to have message", function (expect, subject, value) {
         var message;
         if (subject._isUnexpected) {
             message = subject.output.toString();
@@ -24,8 +24,9 @@ describe("documentation tests", function () {
         expect(message, "to equal", value);
     });
 
+    var expect;
     beforeEach(function () {
-        expect = expect.clone();
+        expect = unexpected.clone();
     });
 
     it("api/addAssertion.md contains correct examples", function () {
@@ -665,6 +666,107 @@ describe("documentation tests", function () {
             expect(e, "to have message",
                 "failed expectation in { a: '0', b: 1 }:\n" +
                 "  a: expected '0' to be a number after a short delay"
+            );
+        }));
+
+        return expect.promise.all(promises);
+    });
+
+    it("api/promise-any.md contains correct examples", function () {
+        var promises = [];
+        expect.addAssertion('to be a number after a short delay', function (expect, subject) {
+          return expect.promise(function (run) {
+            setTimeout(run(function () {
+                expect(subject, 'to be a number');
+            }), 0);
+          });
+        });
+
+        promises.push(expect.promise(function () {
+            return expect.promise.any({
+              foo: [
+                expect('42', 'to be a number after a short delay')
+              ],
+              bar: expect([0, 1, 2], 'to have items satisfying',
+                                     expect.it('to be a number after a short delay')),
+
+              baz: expect({ a: '1', b: 2 }, 'to have values satisfying',
+                                          'to be a number after a short delay')
+            });
+        }));
+
+        promises.push(expect.promise(function () {
+            return expect.promise.any({
+              foo: [
+                expect('42', 'to be a number after a short delay')
+              ],
+              bar: expect([0, '1', 2], 'to have items satisfying',
+                                     expect.it('to be a number after a short delay')),
+
+              baz: expect({ a: '0', b: 1 }, 'to have values satisfying',
+                                          'to be a number after a short delay')
+            }).caught(function (aggregateError) {
+              // Let's reformat the error a bit
+              expect.fail(function (output) {
+                output.error(aggregateError.message);
+                var errors = [];
+                Array.prototype.push.apply(errors, aggregateError);
+
+                errors.sort(function (a, b) { // Make the output stable
+                  if (a.message < b.message) return -1;
+                  if (a.message > b.message) return 1;
+                  return 0;
+                });
+
+                output.indentLines();
+                errors.forEach(function (e, i) {
+                  output.nl().i().text(i + ': ').block(e.output);
+                });
+              });
+            });
+        }).then(function () {
+            return expect.promise(function () {
+                expect.fail(function (output) {
+                    output.error("expected:").nl();
+                    output.code("return expect.promise.any({").nl();
+                    output.code("  foo: [").nl();
+                    output.code("    expect('42', 'to be a number after a short delay')").nl();
+                    output.code("  ],").nl();
+                    output.code("  bar: expect([0, '1', 2], 'to have items satisfying',").nl();
+                    output.code("                         expect.it('to be a number after a short delay')),").nl();
+                    output.code("").nl();
+                    output.code("  baz: expect({ a: '0', b: 1 }, 'to have values satisfying',").nl();
+                    output.code("                              'to be a number after a short delay')").nl();
+                    output.code("}).caught(function (aggregateError) {").nl();
+                    output.code("  // Let's reformat the error a bit").nl();
+                    output.code("  expect.fail(function (output) {").nl();
+                    output.code("    output.error(aggregateError.message);").nl();
+                    output.code("    var errors = [];").nl();
+                    output.code("    Array.prototype.push.apply(errors, aggregateError);").nl();
+                    output.code("").nl();
+                    output.code("    errors.sort(function (a, b) { // Make the output stable").nl();
+                    output.code("      if (a.message < b.message) return -1;").nl();
+                    output.code("      if (a.message > b.message) return 1;").nl();
+                    output.code("      return 0;").nl();
+                    output.code("    });").nl();
+                    output.code("").nl();
+                    output.code("    output.indentLines();").nl();
+                    output.code("    errors.forEach(function (e, i) {").nl();
+                    output.code("      output.nl().i().text(i + ': ').block(e.output);").nl();
+                    output.code("    });").nl();
+                    output.code("  });").nl();
+                    output.code("});").nl();
+                    output.error("to throw");
+                });
+            });
+        }).caught(function (e) {
+            expect(e, "to have message",
+                "aggregate error\n" +
+                "  0: expected '42' to be a number after a short delay\n" +
+                "  1: failed expectation in [ 0, '1', 2 ]:\n" +
+                "       1: expected '1' to be a number after a short delay\n" +
+                "  2: failed expectation in { a: '0', b: 1 }:\n" +
+                "       a: expected '0' to be a number after a short delay"
             );
         }));
 
