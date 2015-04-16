@@ -1706,6 +1706,35 @@ describe('unexpected', function () {
             });
         });
 
+        it.skipIf(!Object.defineProperty, 'should honor the getKeys implementation of a type when building a diff', function () {
+            function MyThing(a, b) {
+                this.a = a;
+                Object.defineProperty(this, 'b', { enumerable: false, value: b });
+            }
+
+            var clonedExpect = expect.clone().addType({
+                name: 'MyThing',
+                base: 'object',
+                identify: function (obj) {
+                    return obj instanceof MyThing;
+                },
+                getKeys: function () {
+                    return ['a', 'b'];
+                }
+            });
+
+            expect(function () {
+                clonedExpect(new MyThing(123, 456), 'to exhaustively satisfy', {a: 123, b: 654});
+            }, 'to throw',
+                'expected MyThing({ a: 123, b: 456 }) to exhaustively satisfy { a: 123, b: 654 }\n' +
+                '\n' +
+                'MyThing({\n' +
+                '  a: 123,\n' +
+                '  b: 456 // should equal 654\n' +
+                '})'
+            );
+        });
+
         describe('with the assertion flag', function () {
             it('should succeed', function () {
                 expect('foo', 'to satisfy assertion', 'to equal', 'foo');
