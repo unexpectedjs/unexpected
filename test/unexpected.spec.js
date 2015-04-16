@@ -2264,6 +2264,60 @@ describe('unexpected', function () {
                     });
             });
 
+            it('should inspect multiline block values in diffs correctly', function () {
+                expect(function () {
+                    clonedExpect.addType({
+                            base: 'number',
+                            name: 'numberBox',
+                            identify: function (obj) {
+                                return typeof obj === 'number' && obj > 0 && obj < 10;
+                            },
+                            inspect: function (obj, depth, output) {
+                                return output.block(function () {
+                                    this.text('+-+').nl()
+                                      .text('|'+ obj + '|').nl()
+                                      .text('|_|');
+                                });
+                            }
+                        });
+                    clonedExpect({foo: 2, bar: 'baz'}, 'to satisfy', {bar: 'quux'});
+                }, 'to throw',
+                    "expected\n" +
+                    "{\n" +
+                    "  foo:\n" +
+                    "    +-+\n" +
+                    "    |2|\n" +
+                    "    |_|,\n" +
+                    "  bar: 'baz'\n" +
+                    "}\n" +
+                    "to satisfy { bar: 'quux' }\n" +
+                    "\n" +
+                    "{\n" +
+                    "  foo:\n" +
+                    "    +-+\n" +
+                    "    |2|\n" +
+                    "    |_|,\n" +
+                    "  bar: 'baz' // should equal 'quux'\n" +
+                    "             // -baz\n" +
+                    "             // +quux\n" +
+                    "}"
+                );
+            });
+
+            it('should use a "to satisfy" label when a conflict does not have a label', function () {
+                expect(function () {
+                    expect({foo: {bar: 123}}, 'to satisfy', {foo: {bar: /d/}});
+                }, 'to throw',
+                    'expected { foo: { bar: 123 } } to satisfy { foo: { bar: /d/ } }\n' +
+                    '\n' +
+                    '{\n' +
+                    '  foo: {\n' +
+                    '    bar: 123 // should satisfy /d/\n' +
+                    '  }\n' +
+                    '}'
+                );
+            });
+
             it('should delegate to the "to satisfies" assertion defined for the custom type', function () {
                 clonedExpect({
                     foo: new MysteryBox({ baz: 123, quux: 987 }),
