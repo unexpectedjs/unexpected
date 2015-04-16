@@ -2554,6 +2554,33 @@ describe('unexpected', function () {
                         "+def"
                 );
             });
+
+            it('supports and groups combined with async assertions', function () {
+                return expect(
+                    expect(123, 'to satisfy',
+                        expect.it('when delayed a little bit', 'to equal', 456)
+                            .or('when delayed a little bit', 'to be a string')
+                            .and('to be greater than', 100)
+                            .or('when delayed a little bit', 'to be a number')
+                            .and('when delayed a little bit', 'to be within', 100, 110)
+                    ),
+                    'to be rejected',
+                        "expected 123 to satisfy\n" +
+                        "expect.it('when delayed a little bit', 'to equal', 456)\n" +
+                        "      .or('when delayed a little bit', 'to be a string')\n" +
+                        "        .and('to be greater than', 100)\n" +
+                        "      .or('when delayed a little bit', 'to be a number')\n" +
+                        "        .and('when delayed a little bit', 'to be within', 100, 110)\n" +
+                        "\n" +
+                        "⨯ expected 123 when delayed a little bit to equal 456\n" +
+                        "or\n" +
+                        "⨯ expected 123 when delayed a little bit to be a string and\n" +
+                        "  expected 123 to be greater than 100\n" +
+                        "or\n" +
+                        "✓ expected 123 when delayed a little bit 'to be a number' and\n" +
+                        "⨯ expected 123 when delayed a little bit to be within 100, 110"
+                );
+            });
         });
     });
 
