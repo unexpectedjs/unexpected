@@ -12,6 +12,7 @@ var extend = require('../lib/utils').extend;
 var vm = require('vm');
 
 var unexpected = require('../lib/').clone();
+unexpected.output.preferredWidth = 80;
 unexpected.installPlugin(require('magicpen-prism'));
 
 var lightExpect = unexpected.clone()

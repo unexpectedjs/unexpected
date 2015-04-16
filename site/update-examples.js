@@ -7,7 +7,8 @@ var passError = require('passerror');
 var glob = require('glob');
 var fs = require('fs');
 var Path = require('path');
-var expect = require('../lib/');
+var expect = require('../lib/').clone();
+expect.output.preferredWidth = 80;
 var vm = require('vm');
 var extend = require('../lib/utils').extend;
 
