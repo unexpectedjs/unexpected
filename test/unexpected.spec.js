@@ -51,6 +51,13 @@ describe('unexpected', function () {
                 return expect(err._isUnexpected ? err.output.toString('text') : err.message, 'to satisfy', expectedReason);
             }
         });
+    }).addAssertion('when delayed a little bit', function (expect, subject) {
+        var that = this;
+        return expect.promise(function (run) {
+            setTimeout(run(function () {
+                return that.shift(expect, subject, 0);
+            }), 1);
+        });
     });
 
     describe('argument validation', function () {
@@ -1678,15 +1685,7 @@ describe('unexpected', function () {
             });
 
             it('should succeed when the assertion fails without the not flag, async case', function () {
-                var clonedExpect = expect.clone().addAssertion('when delayed a little bit', function (expect, subject) {
-                    var that = this;
-                    return expect.promise(function (run) {
-                        setTimeout(run(function () {
-                            return that.shift(expect, subject, 0);
-                        }), 1);
-                    });
-                });
-                expect({foo: 123}, 'not to satisfy', {foo: clonedExpect.it('when delayed a little bit', 'to equal', 456)});
+                expect({foo: 123}, 'not to satisfy', {foo: expect.it('when delayed a little bit', 'to equal', 456)});
             });
 
             it('should fail when a non-Unexpected error occurs', function () {
@@ -2542,17 +2541,9 @@ describe('unexpected', function () {
                        "  expected 'wat' to be a number");
             });
 
-            it('supports many levels of asynchronous assertions', function () {
-                clonedExpect.addAssertion('when delayed a little bit', function (expect, subject) {
-                    var that = this;
-                    return expect.promise(function (run) {
-                        setTimeout(run(function () {
-                            return that.shift(expect, subject, 0);
-                        }), 1);
-                    });
-                });
+            describe('supports many levels of asynchronous assertions', function () {
                 return expect(
-                    clonedExpect('abc', 'when delayed a little bit', 'when delayed a little bit', 'to satisfy', clonedExpect.it('when delayed a little bit', 'to equal', 'def')),
+                    expect('abc', 'when delayed a little bit', 'when delayed a little bit', 'to satisfy', expect.it('when delayed a little bit', 'to equal', 'def')),
                     'to be rejected',
                         "expected 'abc'\n" +
                         "when delayed a little bit when delayed a little bit 'to satisfy', expect.it('when delayed a little bit', 'to equal', 'def')\n" +
@@ -5224,22 +5215,13 @@ describe('unexpected', function () {
         });
 
         describe('with an async assertion', function () {
-            var clonedExpect = expect.clone().addAssertion('when delayed a little bit', function (expect, subject) {
-                var that = this;
-                return expect.promise(function (run) {
-                    setTimeout(run(function () {
-                        return that.shift(subject, 0);
-                    }), 1);
-                });
-            });
-
             it('should succeed', function () {
-                return clonedExpect(42, 'when delayed a little bit', 'to be a number');
+                return expect(42, 'when delayed a little bit', 'to be a number');
             });
 
             it('should fail with a diff', function () {
                 return expect(
-                    clonedExpect(false, 'when delayed a little bit', 'to be a number'),
+                    expect(false, 'when delayed a little bit', 'to be a number'),
                     'to be rejected',
                     'expected false when delayed a little bit to be a number'
                 );
