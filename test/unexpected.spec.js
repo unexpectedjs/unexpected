@@ -2880,6 +2880,15 @@ describe('unexpected', function () {
                    "  expected {} not to equal {}");
         });
 
+        it('should work with non-enumerable keys returned by the getKeys function of the subject type', function () {
+            expect(function () {
+                expect(new Error('foo'), 'to have keys satisfying', /bar/);
+            }, 'to throw',
+                "failed expectation on keys message:\n" +
+                "  message: expected 'message' to satisfy /bar/"
+            );
+        });
+
         it('supports legacy aliases', function () {
             expect({ foo: '0' }, 'to be a map whose keys satisfy', function (key) {
                 expect(key, 'to match', /^[a-z]{3}$/);
