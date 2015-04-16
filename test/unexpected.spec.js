@@ -3473,6 +3473,27 @@ describe('unexpected', function () {
             });
         });
 
+        describe('without Error.captureStackTrace', function () {
+            var orig;
+            before(function () {
+                orig = Error.captureStackTrace;
+                Error.captureStackTrace = null;
+            });
+            after(function () {
+                Error.captureStackTrace = orig;
+            });
+            it('truncates the stack when a custom assertion throws a regular assertion error', function () {
+                var clonedExpect = expect.clone().addAssertion('to equal foo', function theCustomAssertion(expect, subject) {
+                    expect(subject, 'to equal', 'foo');
+                });
+                expect(function () {
+                    clonedExpect('bar', 'to equal foo');
+                }, 'to throw', function (err) {
+                    expect(err.stack, 'not to contain', 'theCustomAssertion');
+                });
+            });
+        });
+
         it('does not truncate the stack or replace the error message when the assertion function itself contains an error', function () {
             var clonedExpect = expect.clone().addAssertion('to equal foo', function theCustomAssertion(expect, subject) {
                 expect(subject, 'to equal', 'foo');
