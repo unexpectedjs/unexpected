@@ -2318,6 +2318,19 @@ describe('unexpected', function () {
                 );
             });
 
+            it('should build the correct diff when the subject and value have "diff" and "inline" keys', function () {
+                expect(function () {
+                    expect({diff: 123, inline: 456}, 'to satisfy', {diff: 321, inline: 654});
+                }, 'to throw',
+                    'expected { diff: 123, inline: 456 } to satisfy { diff: 321, inline: 654 }\n' +
+                    '\n' +
+                    '{\n' +
+                    '  diff: 123, // should equal 321\n' +
+                    '  inline: 456 // should equal 654\n' +
+                    '}'
+                );
+            });
+
             it('should delegate to the "to satisfies" assertion defined for the custom type', function () {
                 clonedExpect({
                     foo: new MysteryBox({ baz: 123, quux: 987 }),
