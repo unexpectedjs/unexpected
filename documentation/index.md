@@ -33,11 +33,11 @@ expected { text: 'f00!' } to equal { text: 'foo!' }
 - Provides really nice error messages
 - Helps you if you misspells assertions
 - Compatible with all test frameworks.
-- Node.JS ready (`require('unexpected')`).
+- Node.JS ready (`require('unexpected')`)
 - Supports [asynchronous assertions using promises](/api/addAssertion/#asynchronous-assertions)
 - Single global with no prototype extensions or shims.
 - Cross-browser: works on Chrome, Firefox, Safari, Opera, IE6+,
-  (IE6-IE8 with [es5-shim](https://github.com/es-shims/es5-shim)).
+  (IE6-IE8 with [es5-shim](https://github.com/es-shims/es5-shim))
 
 ### Node
 
