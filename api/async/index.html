@@ -1,0 +1,126 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0">
+    <link rel="stylesheet" href="/static/normalize.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/static/main.css" type="text/css" media="screen" />
+    <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="/static/bug-icon-black.ico">
+    <title>async</title>
+</head>
+<body class="sidebar-hidden has-sidebar">
+    <header>
+        <div class="logo-icon"></div>
+        <nav>
+            <ul>
+                <li class="menu-toggle-item">
+                    <button class="menu-toggle" onclick="toggleSidebar()"></button>
+                </li>
+                <li class=""><a href="/">Unexpected</a></li>
+                <li class=""><a href="/assertions/any/to-be/">Assertions</a></li>
+                <li class="active"><a href="/api/addAssertion/">API</a></li>
+            </ul>
+        </nav>
+        <div class="search" style="visibility: hidden">
+            <input id="search" placeholder="Search..." value="">
+            <div id="searchDropDown" class="dropDown">
+                <ul id="searchResults"></ul>
+            </div>
+        </div>
+    </header>
+
+<section id="api">
+    <nav id="api-menu" class="sidebar js-remember-scroll-position">
+    <ul>
+        
+        <li class="">
+            <a href="/api/addAssertion/">addAssertion</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/addType/">addType</a>
+        </li>
+        
+        <li class="active">
+            <a href="/api/async/">async</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/clone/">clone</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/fail/">fail</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/installPlugin/">installPlugin</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/promise/">promise</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/promise-all/">promise.all</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/promise-any/">promise.any</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/promise-settle/">promise.settle</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/toString/">toString</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/withError/">withError</a>
+        </li>
+        
+    </ul>
+</nav>
+
+    <div class="main" tabindex="-1">
+        <div class="content">
+            <h3 id="expect-async-">expect.async(...)</h3>
+<p>Unexpected comes with build in support for asynchronous assertions.</p>
+<p>Internally Unexpected uses promises to orchestrate the asynchronous
+computation and in test frameworks like <a href="http://mochajs.org/">Mocha</a>
+that supports promises out of the box, you will be able to just return
+the promise of an asynchronous assertion:</p>
+<div class="code lang-javascript">
+  <div><span style="color: #000000">describe</span><span style="color: #000000">(</span><span style="color: #df5000">'asynchronous&nbsp;testing'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #000000">it</span><span style="color: #000000">(</span><span style="color: #df5000">'should&nbsp;be&nbsp;fun'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>middleware<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;yield&nbsp;exchange'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;request<span style="color: #000000">:</span>&nbsp;<span style="color: #000000">{</span>&nbsp;url<span style="color: #000000">:</span>&nbsp;<span style="color: #df5000">'/hello'</span>&nbsp;<span style="color: #000000">},</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;response<span style="color: #000000">:</span>&nbsp;<span style="color: #000000">{</span>&nbsp;statusCode<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">200</span>&nbsp;<span style="color: #000000">}</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">});</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #000000">});</span></div>
+  <div><span style="color: #000000">});</span></div>
+</div><p>For test frameworks that only supports a done-callback, we provide a
+wrapper function:</p>
+<div class="code lang-javascript">
+  <div><span style="color: #000000">describe</span><span style="color: #000000">(</span><span style="color: #df5000">'asynchronous&nbsp;testing'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #000000">it</span><span style="color: #000000">(</span><span style="color: #df5000">'should&nbsp;be&nbsp;fun'</span><span style="color: #000000">,</span>&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">async</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>middleware<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;yield&nbsp;exchange'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;request<span style="color: #000000">:</span>&nbsp;<span style="color: #000000">{</span>&nbsp;url<span style="color: #000000">:</span>&nbsp;<span style="color: #df5000">'/hello'</span>&nbsp;<span style="color: #000000">},</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;response<span style="color: #000000">:</span>&nbsp;<span style="color: #000000">{</span>&nbsp;statusCode<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">200</span>&nbsp;<span style="color: #000000">}</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">});</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #000000">}));</span></div>
+  <div><span style="color: #000000">});</span></div>
+</div>
+        </div>
+    </div>
+</section>
+<script type="text/javascript" src="/static/toggleSidebar.js"></script>
+<script type="text/javascript" src="/static/rememberScrollPosition.js"></script>
+<script type="text/javascript" src="/static/focusMain.js"></script>
+<script type="text/javascript" src="/static/search.js"></script>
+</body>
+</html>
+

@@ -18,7 +18,7 @@
                     <button class="menu-toggle" onclick="toggleSidebar()"></button>
                 </li>
                 <li class=""><a href="/">Unexpected</a></li>
-                <li class=""><a href="/assertions/any/to-be-a/">Assertions</a></li>
+                <li class=""><a href="/assertions/any/to-be/">Assertions</a></li>
                 <li class="active"><a href="/api/addAssertion/">API</a></li>
             </ul>
         </nav>
@@ -42,6 +42,10 @@
             <a href="/api/addType/">addType</a>
         </li>
         
+        <li class="">
+            <a href="/api/async/">async</a>
+        </li>
+        
         <li class="active">
             <a href="/api/clone/">clone</a>
         </li>
@@ -55,7 +59,27 @@
         </li>
         
         <li class="">
+            <a href="/api/promise/">promise</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/promise-all/">promise.all</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/promise-any/">promise.any</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/promise-settle/">promise.settle</a>
+        </li>
+        
+        <li class="">
             <a href="/api/toString/">toString</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/withError/">withError</a>
         </li>
         
     </ul>
@@ -82,7 +106,7 @@ original instance:</p>
 <div class="code lang-javascript">
   <div><span style="color: #000000">originalExpect</span><span style="color: #000000">(</span><span style="color: #0086b3">42</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;an&nbsp;integer'</span><span style="color: #000000">);</span></div>
 </div><div class="output">
-  <div><span style="color: red; font-weight: bold">Unknown&nbsp;assertion&nbsp;&quot;</span><span style="color: #df5000">to&nbsp;be&nbsp;an&nbsp;integer</span><span style="color: red; font-weight: bold">&quot;,&nbsp;did&nbsp;you&nbsp;mean:&nbsp;&quot;</span><span style="color: #df5000">to&nbsp;be&nbsp;a&nbsp;regex</span><span style="color: red; font-weight: bold">&quot;</span></div>
+  <div><span style="color: red; font-weight: bold">Unknown&nbsp;assertion&nbsp;&quot;</span><span style="color: #df5000">to&nbsp;be&nbsp;an&nbsp;integer</span><span style="color: red; font-weight: bold">&quot;,&nbsp;did&nbsp;you&nbsp;mean:&nbsp;&quot;</span><span style="color: #df5000">to&nbsp;be&nbsp;a&nbsp;number</span><span style="color: red; font-weight: bold">&quot;</span></div>
 </div>
         </div>
     </div>

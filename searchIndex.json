@@ -8,6 +8,10 @@
     "url": "/api/addType/"
   },
   {
+    "label": "async (api)",
+    "url": "/api/async/"
+  },
+  {
     "label": "clone (api)",
     "url": "/api/clone/"
   },
@@ -20,16 +24,44 @@
     "url": "/api/installPlugin/"
   },
   {
+    "label": "promise (api)",
+    "url": "/api/promise/"
+  },
+  {
+    "label": "promise.all (api)",
+    "url": "/api/promise-all/"
+  },
+  {
+    "label": "promise.any (api)",
+    "url": "/api/promise-any/"
+  },
+  {
+    "label": "promise.settle (api)",
+    "url": "/api/promise-settle/"
+  },
+  {
     "label": "toString (api)",
     "url": "/api/toString/"
   },
   {
-    "label": "to be infinite (number)",
-    "url": "/assertions/number/to-be-infinite/"
+    "label": "withError (api)",
+    "url": "/api/withError/"
+  },
+  {
+    "label": "to be greater than or equal to (number)",
+    "url": "/assertions/number/to-be-greater-than-or-equal-to/"
+  },
+  {
+    "label": "when decoded as (Buffer)",
+    "url": "/assertions/Buffer/when-decoded-as/"
   },
   {
     "label": "to be a (any)",
     "url": "/assertions/any/to-be-a/"
+  },
+  {
+    "label": "to be defined (any)",
+    "url": "/assertions/any/to-be-defined/"
   },
   {
     "label": "to be falsy (any)",
@@ -64,24 +96,32 @@
     "url": "/assertions/any/to-satisfy/"
   },
   {
-    "label": "to be an array whose items satisfy (array)",
-    "url": "/assertions/array/to-be-an-array-whose-items-satisfy/"
+    "label": "when passed as parameter to (any)",
+    "url": "/assertions/any/when-passed-as-parameter-to/"
   },
   {
-    "label": "to be empty (array)",
-    "url": "/assertions/array/to-be-empty/"
+    "label": "to be empty (array-like)",
+    "url": "/assertions/array-like/to-be-empty/"
   },
   {
-    "label": "to be non-empty (array)",
-    "url": "/assertions/array/to-be-non-empty/"
+    "label": "to be non-empty (array-like)",
+    "url": "/assertions/array-like/to-be-non-empty/"
   },
   {
-    "label": "to contain (array)",
-    "url": "/assertions/array/to-contain/"
+    "label": "to contain (array-like)",
+    "url": "/assertions/array-like/to-contain/"
   },
   {
-    "label": "to have length (array)",
-    "url": "/assertions/array/to-have-length/"
+    "label": "to have items satisfying (array-like)",
+    "url": "/assertions/array-like/to-have-items-satisfying/"
+  },
+  {
+    "label": "to have length (array-like)",
+    "url": "/assertions/array-like/to-have-length/"
+  },
+  {
+    "label": "when passed as parameters to (array-like)",
+    "url": "/assertions/array-like/when-passed-as-parameters-to/"
   },
   {
     "label": "to be false (boolean)",
@@ -112,16 +152,16 @@
     "url": "/assertions/number/to-be-finite/"
   },
   {
-    "label": "to be greater than or equal to (number)",
-    "url": "/assertions/number/to-be-greater-than-or-equal-to/"
+    "label": "to have message (Error)",
+    "url": "/assertions/Error/to-have-message/"
   },
   {
     "label": "to be greater than (number)",
     "url": "/assertions/number/to-be-greater-than/"
   },
   {
-    "label": "to be defined (any)",
-    "url": "/assertions/any/to-be-defined/"
+    "label": "to be infinite (number)",
+    "url": "/assertions/number/to-be-infinite/"
   },
   {
     "label": "to be less than or equal to (number)",
@@ -144,20 +184,16 @@
     "url": "/assertions/number/to-be-within/"
   },
   {
-    "label": "to be a map whose keys satisfy (object)",
-    "url": "/assertions/object/to-be-a-map-whose-keys-satisfy/"
-  },
-  {
-    "label": "to be a map whose values satisfy (object)",
-    "url": "/assertions/object/to-be-a-map-whose-values-satisfy/"
-  },
-  {
     "label": "to be canonical (object)",
     "url": "/assertions/object/to-be-canonical/"
   },
   {
     "label": "to have key (object)",
     "url": "/assertions/object/to-have-key/"
+  },
+  {
+    "label": "to have keys satisfying (object)",
+    "url": "/assertions/object/to-have-keys-satisfying/"
   },
   {
     "label": "to have keys (object)",
@@ -170,6 +206,10 @@
   {
     "label": "to have property (object)",
     "url": "/assertions/object/to-have-property/"
+  },
+  {
+    "label": "to have values satisfying (object)",
+    "url": "/assertions/object/to-have-values-satisfying/"
   },
   {
     "label": "to be empty (string)",

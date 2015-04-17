@@ -1,0 +1,185 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0">
+    <link rel="stylesheet" href="/static/normalize.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/static/main.css" type="text/css" media="screen" />
+    <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="/static/bug-icon-black.ico">
+    <title>promise.any</title>
+</head>
+<body class="sidebar-hidden has-sidebar">
+    <header>
+        <div class="logo-icon"></div>
+        <nav>
+            <ul>
+                <li class="menu-toggle-item">
+                    <button class="menu-toggle" onclick="toggleSidebar()"></button>
+                </li>
+                <li class=""><a href="/">Unexpected</a></li>
+                <li class=""><a href="/assertions/any/to-be/">Assertions</a></li>
+                <li class="active"><a href="/api/addAssertion/">API</a></li>
+            </ul>
+        </nav>
+        <div class="search" style="visibility: hidden">
+            <input id="search" placeholder="Search..." value="">
+            <div id="searchDropDown" class="dropDown">
+                <ul id="searchResults"></ul>
+            </div>
+        </div>
+    </header>
+
+<section id="api">
+    <nav id="api-menu" class="sidebar js-remember-scroll-position">
+    <ul>
+        
+        <li class="">
+            <a href="/api/addAssertion/">addAssertion</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/addType/">addType</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/async/">async</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/clone/">clone</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/fail/">fail</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/installPlugin/">installPlugin</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/promise/">promise</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/promise-all/">promise.all</a>
+        </li>
+        
+        <li class="active">
+            <a href="/api/promise-any/">promise.any</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/promise-settle/">promise.settle</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/toString/">toString</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/withError/">withError</a>
+        </li>
+        
+    </ul>
+</nav>
+
+    <div class="main" tabindex="-1">
+        <div class="content">
+            <h3 id="expect-promise-any-">expect.promise.any(...)</h3>
+<p>This method will find all promises in the given structure and return a
+promise that resolves when any of the promises in the structure have
+resolved. If all of the promises are rejected, the resulting promise
+will be rejected with the errors.</p>
+<p>Let&#39;s make an asynchronous assertion that we can uses for the examples:</p>
+<div class="code lang-javascript">
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span><span style="color: #df5000">'to&nbsp;be&nbsp;a&nbsp;number&nbsp;after&nbsp;a&nbsp;short&nbsp;delay'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>expect<span style="color: #000000">,</span>&nbsp;subject<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">promise</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>run<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">setTimeout</span><span style="color: #000000">(</span><span style="color: #000000">run</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>subject<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;a&nbsp;number'</span><span style="color: #000000">);</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">}),</span>&nbsp;<span style="color: #0086b3">0</span><span style="color: #000000">);</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #000000">});</span></div>
+  <div><span style="color: #000000">});</span></div>
+</div><p>See the <a href="/api/promise">promise</a> documentation for more details on how
+expect.promise works.</p>
+<p>The following code snippet creates a promise that resolves when any the
+promises in the nested structure resolves.</p>
+<div class="code lang-javascript">
+  <div><span style="color: #a71d5d">return</span>&nbsp;expect<span style="color: #000000">.</span>promise<span style="color: #000000">.</span><span style="color: #000000">any</span><span style="color: #000000">({</span></div>
+  <div>&nbsp;&nbsp;foo<span style="color: #000000">:</span>&nbsp;<span style="color: #000000">[</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #df5000">'42'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;a&nbsp;number&nbsp;after&nbsp;a&nbsp;short&nbsp;delay'</span><span style="color: #000000">)</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #000000">],</span></div>
+  <div>&nbsp;&nbsp;bar<span style="color: #000000">:</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">([</span><span style="color: #0086b3">0</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">1</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">2</span><span style="color: #000000">],</span>&nbsp;<span style="color: #df5000">'to&nbsp;have&nbsp;items&nbsp;satisfying'</span><span style="color: #000000">,</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">it</span><span style="color: #000000">(</span><span style="color: #df5000">'to&nbsp;be&nbsp;a&nbsp;number&nbsp;after&nbsp;a&nbsp;short&nbsp;delay'</span><span style="color: #000000">)),</span></div>
+  <div>&nbsp;</div>
+  <div>&nbsp;&nbsp;baz<span style="color: #000000">:</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">({</span>&nbsp;a<span style="color: #000000">:</span>&nbsp;<span style="color: #df5000">'1'</span><span style="color: #000000">,</span>&nbsp;b<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">2</span>&nbsp;<span style="color: #000000">},</span>&nbsp;<span style="color: #df5000">'to&nbsp;have&nbsp;values&nbsp;satisfying'</span><span style="color: #000000">,</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;a&nbsp;number&nbsp;after&nbsp;a&nbsp;short&nbsp;delay'</span><span style="color: #000000">)</span></div>
+  <div><span style="color: #000000">});</span></div>
+</div><p>The following code snippet create a promise that is rejected when all
+of the promises in the nested structure are rejected.</p>
+<div class="code lang-javascript">
+  <div><span style="color: #a71d5d">return</span>&nbsp;expect<span style="color: #000000">.</span>promise<span style="color: #000000">.</span><span style="color: #000000">any</span><span style="color: #000000">({</span></div>
+  <div>&nbsp;&nbsp;foo<span style="color: #000000">:</span>&nbsp;<span style="color: #000000">[</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #df5000">'42'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;a&nbsp;number&nbsp;after&nbsp;a&nbsp;short&nbsp;delay'</span><span style="color: #000000">)</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #000000">],</span></div>
+  <div>&nbsp;&nbsp;bar<span style="color: #000000">:</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">([</span><span style="color: #0086b3">0</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'1'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">2</span><span style="color: #000000">],</span>&nbsp;<span style="color: #df5000">'to&nbsp;have&nbsp;items&nbsp;satisfying'</span><span style="color: #000000">,</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">it</span><span style="color: #000000">(</span><span style="color: #df5000">'to&nbsp;be&nbsp;a&nbsp;number&nbsp;after&nbsp;a&nbsp;short&nbsp;delay'</span><span style="color: #000000">)),</span></div>
+  <div>&nbsp;</div>
+  <div>&nbsp;&nbsp;baz<span style="color: #000000">:</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">({</span>&nbsp;a<span style="color: #000000">:</span>&nbsp;<span style="color: #df5000">'0'</span><span style="color: #000000">,</span>&nbsp;b<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">1</span>&nbsp;<span style="color: #000000">},</span>&nbsp;<span style="color: #df5000">'to&nbsp;have&nbsp;values&nbsp;satisfying'</span><span style="color: #000000">,</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;a&nbsp;number&nbsp;after&nbsp;a&nbsp;short&nbsp;delay'</span><span style="color: #000000">)</span></div>
+  <div><span style="color: #000000">}).</span><span style="color: #000000">caught</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>aggregateError<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;<span style="color: #969896">&nbsp;//&nbsp;Let's&nbsp;reformat&nbsp;the&nbsp;error&nbsp;a&nbsp;bit</span></div>
+  <div>&nbsp;&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">fail</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>output<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;output<span style="color: #000000">.</span><span style="color: #000000">error</span><span style="color: #000000">(</span>aggregateError<span style="color: #000000">.</span>message<span style="color: #000000">);</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">var</span>&nbsp;errors&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #000000">[];</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">for</span>&nbsp;<span style="color: #000000">(</span><span style="color: #a71d5d">var</span>&nbsp;i&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #0086b3">0</span><span style="color: #000000">;</span>&nbsp;i&nbsp;<span style="color: #a71d5d">&lt;</span>&nbsp;aggregateError<span style="color: #000000">.</span>length<span style="color: #000000">;</span>&nbsp;i&nbsp;<span style="color: #a71d5d">+=</span>&nbsp;<span style="color: #0086b3">1</span><span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;errors<span style="color: #000000">.</span><span style="color: #000000">push</span><span style="color: #000000">(</span>aggregateError<span style="color: #000000">[</span>i<span style="color: #000000">]);</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">}</span></div>
+  <div>&nbsp;</div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;errors<span style="color: #000000">.</span><span style="color: #000000">sort</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>a<span style="color: #000000">,</span>&nbsp;b<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span><span style="color: #969896">&nbsp;//&nbsp;Make&nbsp;the&nbsp;output&nbsp;stable</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">if</span>&nbsp;<span style="color: #000000">(</span>a<span style="color: #000000">.</span>message&nbsp;<span style="color: #a71d5d">&lt;</span>&nbsp;b<span style="color: #000000">.</span>message<span style="color: #000000">)</span>&nbsp;<span style="color: #a71d5d">return</span>&nbsp;<span style="color: #a71d5d">-</span><span style="color: #0086b3">1</span><span style="color: #000000">;</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">if</span>&nbsp;<span style="color: #000000">(</span>a<span style="color: #000000">.</span>message&nbsp;<span style="color: #a71d5d">&gt;</span>&nbsp;b<span style="color: #000000">.</span>message<span style="color: #000000">)</span>&nbsp;<span style="color: #a71d5d">return</span>&nbsp;<span style="color: #0086b3">1</span><span style="color: #000000">;</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;<span style="color: #0086b3">0</span><span style="color: #000000">;</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">});</span></div>
+  <div>&nbsp;</div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;output<span style="color: #000000">.</span><span style="color: #000000">indentLines</span><span style="color: #000000">();</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;errors<span style="color: #000000">.</span><span style="color: #000000">forEach</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>e<span style="color: #000000">,</span>&nbsp;i<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;output<span style="color: #000000">.</span><span style="color: #000000">nl</span><span style="color: #000000">().</span><span style="color: #000000">i</span><span style="color: #000000">().</span><span style="color: #000000">text</span><span style="color: #000000">(</span>i&nbsp;<span style="color: #a71d5d">+</span>&nbsp;<span style="color: #df5000">':&nbsp;'</span><span style="color: #000000">).</span><span style="color: #000000">block</span><span style="color: #000000">(</span>e<span style="color: #000000">.</span>output<span style="color: #000000">);</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">});</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #000000">});</span></div>
+  <div><span style="color: #000000">});</span></div>
+</div><div class="output">
+  <div><span style="color: red; font-weight: bold">aggregate&nbsp;error</span></div>
+  <div>&nbsp;&nbsp;0:&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #df5000">'42'</span>&nbsp;<span style="color: red; font-weight: bold">to&nbsp;be&nbsp;a&nbsp;number&nbsp;after&nbsp;a&nbsp;short&nbsp;delay</span></div>
+</div></div>
+  <div>&nbsp;&nbsp;1:&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">failed&nbsp;expectation&nbsp;in</span>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div>[&nbsp;<span style="color: #0086b3">0</span>,&nbsp;<span style="color: #df5000">'1'</span>,&nbsp;<span style="color: #0086b3">2</span>&nbsp;]<span style="color: red; font-weight: bold">:</span></div>
+</div></div>
+  <div>&nbsp;&nbsp;1:&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #df5000">'1'</span>&nbsp;<span style="color: red; font-weight: bold">to&nbsp;be&nbsp;a&nbsp;number&nbsp;after&nbsp;a&nbsp;short&nbsp;delay</span></div>
+</div></div>
+</div></div>
+</div></div>
+  <div>&nbsp;&nbsp;2:&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">failed&nbsp;expectation&nbsp;in</span>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div>{&nbsp;<span style="color: #555">a</span>:&nbsp;<span style="color: #df5000">'0'</span>,&nbsp;<span style="color: #555">b</span>:&nbsp;<span style="color: #0086b3">1</span>&nbsp;}<span style="color: red; font-weight: bold">:</span></div>
+</div></div>
+  <div>&nbsp;&nbsp;a:&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #df5000">'0'</span>&nbsp;<span style="color: red; font-weight: bold">to&nbsp;be&nbsp;a&nbsp;number&nbsp;after&nbsp;a&nbsp;short&nbsp;delay</span></div>
+</div></div>
+</div></div>
+</div>
+        </div>
+    </div>
+</section>
+<script type="text/javascript" src="/static/toggleSidebar.js"></script>
+<script type="text/javascript" src="/static/rememberScrollPosition.js"></script>
+<script type="text/javascript" src="/static/focusMain.js"></script>
+<script type="text/javascript" src="/static/search.js"></script>
+</body>
+</html>
+

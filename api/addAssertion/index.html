@@ -18,7 +18,7 @@
                     <button class="menu-toggle" onclick="toggleSidebar()"></button>
                 </li>
                 <li class=""><a href="/">Unexpected</a></li>
-                <li class=""><a href="/assertions/any/to-be-a/">Assertions</a></li>
+                <li class=""><a href="/assertions/any/to-be/">Assertions</a></li>
                 <li class="active"><a href="/api/addAssertion/">API</a></li>
             </ul>
         </nav>
@@ -43,6 +43,10 @@
         </li>
         
         <li class="">
+            <a href="/api/async/">async</a>
+        </li>
+        
+        <li class="">
             <a href="/api/clone/">clone</a>
         </li>
         
@@ -55,7 +59,27 @@
         </li>
         
         <li class="">
+            <a href="/api/promise/">promise</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/promise-all/">promise.all</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/promise-any/">promise.any</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/promise-settle/">promise.settle</a>
+        </li>
+        
+        <li class="">
             <a href="/api/toString/">toString</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/withError/">withError</a>
         </li>
         
     </ul>
@@ -117,7 +141,7 @@ removed:</p>
   <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span><span style="color: #df5000">'array'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'[not]&nbsp;to&nbsp;be&nbsp;(sorted|ordered)'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span><span style="color: #000000">(</span>expect<span style="color: #000000">,</span>&nbsp;<span style="color: #000000">[</span><span style="color: #0086b3">3</span><span style="color: #000000">,</span><span style="color: #0086b3">2</span><span style="color: #000000">,</span><span style="color: #0086b3">1</span><span style="color: #000000">],</span>&nbsp;reverse<span style="color: #000000">){</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">([</span><span style="color: #0086b3">3</span><span style="color: #000000">,</span><span style="color: #0086b3">2</span><span style="color: #000000">,</span><span style="color: #0086b3">1</span><span style="color: #000000">],</span>&nbsp;<span style="color: #df5000">'[not]&nbsp;to&nbsp;equal'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #000000">[].</span><span style="color: #000000">concat</span><span style="color: #000000">([</span><span style="color: #0086b3">3</span><span style="color: #000000">,</span><span style="color: #0086b3">2</span><span style="color: #000000">,</span><span style="color: #0086b3">1</span><span style="color: #000000">]).</span><span style="color: #000000">sort</span><span style="color: #000000">(</span>reverse<span style="color: #000000">));</span></div>
   <div><span style="color: #000000">});</span></div>
-</div><h2 id="controlling-the-output-of-nested-expects">Controlling the output of nested expects</h2>
+</div><h4 id="controlling-the-output-of-nested-expects">Controlling the output of nested expects</h4>
 <p>When a call to <code>expect</code> fails inside your assertion the standard error
 message for the custom assertion will be used. In the case of our
 <em>sorted</em> assertion fails, the output will be:</p>
@@ -246,6 +270,60 @@ message for the custom assertion will be used. In the case of our
 </div></div>
 </div></div>
   <div>]</div>
+</div></div>
+</div><h4 id="asynchronous-assertions">Asynchronous assertions</h4>
+<p>Unexpected comes with build in support for asynchronous
+assertions. You basically just return a promise from the assertion.</p>
+<p>For the purpose of explaining how we can make an asynchronous
+assertion we will defined a silly asynchronous type which contains a
+value that can only be retrieved after a delay:</p>
+<div class="code lang-javascript">
+  <div><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">Timelock</span><span style="color: #000000">(</span>value<span style="color: #000000">,</span>&nbsp;delay<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #a71d5d">this</span><span style="color: #000000">.</span>value&nbsp;<span style="color: #a71d5d">=</span>&nbsp;value<span style="color: #000000">;</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #a71d5d">this</span><span style="color: #000000">.</span>delay&nbsp;<span style="color: #a71d5d">=</span>&nbsp;delay<span style="color: #000000">;</span></div>
+  <div><span style="color: #000000">}</span></div>
+  <div>&nbsp;</div>
+  <div>Timelock<span style="color: #000000">.</span>prototype<span style="color: #000000">.</span>getValue&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>cb<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #a71d5d">var</span>&nbsp;that&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #a71d5d">this</span><span style="color: #000000">;</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #000000">setTimeout</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">cb</span><span style="color: #000000">(</span>that<span style="color: #000000">.</span>value<span style="color: #000000">);</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #000000">},</span>&nbsp;<span style="color: #a71d5d">this</span><span style="color: #000000">.</span>delay<span style="color: #000000">);</span></div>
+  <div><span style="color: #000000">};</span></div>
+</div><p>It would be pretty nice if we could use
+<a href="/assertions/any/to-satisfy/">to satisfy</a> on the value of a <code>Timelock</code>
+even if the retrieval is delayed. Then we would be able to do stuff
+like this:</p>
+<div class="code lang-javascript">
+  <div><span style="color: #a71d5d">return</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #a71d5d">new</span>&nbsp;Timelock<span style="color: #000000">(</span><span style="color: #df5000">'Hello&nbsp;world'</span><span style="color: #000000">),</span>&nbsp;<span style="color: #df5000">'to&nbsp;satisfy'</span><span style="color: #000000">,</span>&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">it</span><span style="color: #000000">(</span><span style="color: #df5000">'have&nbsp;lenght'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">11</span><span style="color: #000000">));</span></div>
+</div><p>First we need to defined a <a href="/api/addType/">type</a> for handling the <code>Timelock</code>:</p>
+<div class="code lang-javascript">
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addType</span><span style="color: #000000">({</span></div>
+  <div>&nbsp;&nbsp;name<span style="color: #000000">:</span>&nbsp;<span style="color: #df5000">'Timelock'</span><span style="color: #000000">,</span></div>
+  <div>&nbsp;&nbsp;identify<span style="color: #000000">:</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>value<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;value&nbsp;&amp;&amp;&nbsp;value&nbsp;<span style="color: #a71d5d">instanceof</span>&nbsp;Timelock<span style="color: #000000">;</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #000000">},</span></div>
+  <div>&nbsp;&nbsp;inspect<span style="color: #000000">:</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>value<span style="color: #000000">,</span>&nbsp;depth<span style="color: #000000">,</span>&nbsp;output<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;output<span style="color: #000000">.</span><span style="color: #000000">jsFunctionName</span><span style="color: #000000">(</span><span style="color: #df5000">'Timelock'</span><span style="color: #000000">);</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #000000">}</span></div>
+  <div><span style="color: #000000">});</span></div>
+</div><div class="code lang-javascript">
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span><span style="color: #df5000">'Timelock'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;satisfy'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>expect<span style="color: #000000">,</span>&nbsp;subject<span style="color: #000000">,</span>&nbsp;spec<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">promise</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>run<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;subject<span style="color: #000000">.</span><span style="color: #000000">getValue</span><span style="color: #000000">(</span><span style="color: #000000">run</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>value<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>value<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;satisfy'</span><span style="color: #000000">,</span>&nbsp;spec<span style="color: #000000">);</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">}));</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #000000">});</span></div>
+  <div><span style="color: #000000">});</span></div>
+</div><p>Let&#39;s see how it works:</p>
+<div class="code lang-javascript">
+  <div><span style="color: #a71d5d">return</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #a71d5d">new</span>&nbsp;Timelock<span style="color: #000000">(</span><span style="color: #df5000">'Hello&nbsp;world!'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">5</span><span style="color: #000000">),</span>&nbsp;<span style="color: #df5000">'to&nbsp;satisfy'</span><span style="color: #000000">,</span>&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">it</span><span style="color: #000000">(</span><span style="color: #df5000">'not&nbsp;to&nbsp;match'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #183691">/!/</span><span style="color: #000000">));</span></div>
+</div><div class="output">
+  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #795da3">Timelock</span>&nbsp;<span style="color: red; font-weight: bold">to&nbsp;satisfy</span>&nbsp;expect.it(<span style="color: #df5000">'not&nbsp;to&nbsp;match'</span>,&nbsp;<span style="color: #183691">/!/</span>)</div>
+  <div>&nbsp;</div>
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #df5000">'Hello&nbsp;world!'</span>&nbsp;<span style="color: red; font-weight: bold">not&nbsp;to&nbsp;match</span>&nbsp;<span style="color: #183691">/!/</span></div>
+  <div>&nbsp;</div>
+  <div>Hello&nbsp;world<span style="background-color: red; color: white">!</span></div>
 </div></div>
 </div><p>The best resource for learning more about custom assertions is to look
 at how the predefined assertions are built:</p>

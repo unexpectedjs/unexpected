@@ -18,7 +18,7 @@
                     <button class="menu-toggle" onclick="toggleSidebar()"></button>
                 </li>
                 <li class=""><a href="/">Unexpected</a></li>
-                <li class=""><a href="/assertions/any/to-be-a/">Assertions</a></li>
+                <li class=""><a href="/assertions/any/to-be/">Assertions</a></li>
                 <li class="active"><a href="/api/addAssertion/">API</a></li>
             </ul>
         </nav>
@@ -43,6 +43,10 @@
         </li>
         
         <li class="">
+            <a href="/api/async/">async</a>
+        </li>
+        
+        <li class="">
             <a href="/api/clone/">clone</a>
         </li>
         
@@ -55,7 +59,27 @@
         </li>
         
         <li class="">
+            <a href="/api/promise/">promise</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/promise-all/">promise.all</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/promise-any/">promise.any</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/promise-settle/">promise.settle</a>
+        </li>
+        
+        <li class="">
             <a href="/api/toString/">toString</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/withError/">withError</a>
         </li>
         
     </ul>
@@ -121,7 +145,7 @@ provide as a plugin.</p>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>value<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'[not]&nbsp;to&nbsp;be&nbsp;within'</span><span style="color: #000000">,</span>&nbsp;subject<span style="color: #000000">.</span>from<span style="color: #000000">,</span>&nbsp;subject<span style="color: #000000">.</span>to<span style="color: #000000">);</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">});</span></div>
   <div>&nbsp;&nbsp;<span style="color: #000000">}</span></div>
-  <div><span style="color: #000000">})</span></div>
+  <div><span style="color: #000000">});</span></div>
 </div><p>After installing the plugin we can use the <code>to contain</code> assertion on
 <code>IntegerInterval</code> instances.</p>
 <div class="code lang-javascript">

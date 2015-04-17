@@ -18,7 +18,7 @@
                     <button class="menu-toggle" onclick="toggleSidebar()"></button>
                 </li>
                 <li class=""><a href="/">Unexpected</a></li>
-                <li class=""><a href="/assertions/any/to-be-a/">Assertions</a></li>
+                <li class=""><a href="/assertions/any/to-be/">Assertions</a></li>
                 <li class="active"><a href="/api/addAssertion/">API</a></li>
             </ul>
         </nav>
@@ -43,6 +43,10 @@
         </li>
         
         <li class="">
+            <a href="/api/async/">async</a>
+        </li>
+        
+        <li class="">
             <a href="/api/clone/">clone</a>
         </li>
         
@@ -55,7 +59,27 @@
         </li>
         
         <li class="">
+            <a href="/api/promise/">promise</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/promise-all/">promise.all</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/promise-any/">promise.any</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/promise-settle/">promise.settle</a>
+        </li>
+        
+        <li class="">
             <a href="/api/toString/">toString</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/withError/">withError</a>
         </li>
         
     </ul>
@@ -415,8 +439,6 @@ block. The outputs below shows the contrast between setting the
   <div>{</div>
   <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
   <div><span style="color: #df5000">'John&nbsp;Doe'</span>:&nbsp;new&nbsp;Person(<span style="color: #df5000">'John&nbsp;Doe'</span>,&nbsp;<span style="color: #0086b3">42</span>),</div>
-</div></div>
-  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
   <div><span style="color: #df5000">'Jane&nbsp;Doe'</span>:&nbsp;new&nbsp;Person(<span style="color: #df5000">'Janie&nbsp;Doe'</span>,&nbsp;<span style="color: #0086b3">24</span>)</div>
 </div></div>
   <div>}</div>
@@ -424,8 +446,6 @@ block. The outputs below shows the contrast between setting the
   <div>{</div>
   <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
   <div><span style="color: #df5000">'John&nbsp;Doe'</span>:&nbsp;new&nbsp;Person(<span style="color: #df5000">'John&nbsp;Doe'</span>,&nbsp;<span style="color: #0086b3">42</span>),</div>
-</div></div>
-  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
   <div><span style="color: #df5000">'Jane&nbsp;Doe'</span>:&nbsp;new&nbsp;Person(<span style="color: #df5000">'Jane&nbsp;Doe'</span>,&nbsp;<span style="color: #0086b3">24</span>)</div>
 </div></div>
   <div>}</div>
@@ -469,8 +489,6 @@ block. The outputs below shows the contrast between setting the
   <div>{</div>
   <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
   <div><span style="color: #df5000">'John&nbsp;Doe'</span>:&nbsp;new&nbsp;Person(<span style="color: #df5000">'John&nbsp;Doe'</span>,&nbsp;<span style="color: #0086b3">42</span>),</div>
-</div></div>
-  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
   <div><span style="color: #df5000">'Jane&nbsp;Doe'</span>:&nbsp;new&nbsp;Person(<span style="color: #df5000">'Janie&nbsp;Doe'</span>,&nbsp;<span style="color: #0086b3">24</span>)</div>
 </div></div>
   <div>}</div>
@@ -478,8 +496,6 @@ block. The outputs below shows the contrast between setting the
   <div>{</div>
   <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
   <div><span style="color: #df5000">'John&nbsp;Doe'</span>:&nbsp;new&nbsp;Person(<span style="color: #df5000">'John&nbsp;Doe'</span>,&nbsp;<span style="color: #0086b3">42</span>),</div>
-</div></div>
-  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
   <div><span style="color: #df5000">'Jane&nbsp;Doe'</span>:&nbsp;new&nbsp;Person(<span style="color: #df5000">'Jane&nbsp;Doe'</span>,&nbsp;<span style="color: #0086b3">24</span>)</div>
 </div></div>
   <div>}</div>

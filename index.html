@@ -17,7 +17,7 @@
                     <button class="menu-toggle" onclick="toggleSidebar()"></button>
                 </li>
                 <li class="active"><a href="/">Unexpected</a></li>
-                <li class=""><a href="/assertions/any/to-be-a/">Assertions</a></li>
+                <li class=""><a href="/assertions/any/to-be/">Assertions</a></li>
                 <li class=""><a href="/api/addAssertion/">API</a></li>
             </ul>
         </nav>
@@ -74,22 +74,23 @@
 <li>Provides really nice error messages</li>
 <li>Helps you if you misspells assertions</li>
 <li>Compatible with all test frameworks.</li>
-<li>Node.JS ready (<code>require(&#39;unexpected&#39;)</code>).</li>
+<li>Node.JS ready (<code>require(&#39;unexpected&#39;)</code>)</li>
+<li>Supports <a href="/api/addAssertion/#asynchronous-assertions">asynchronous assertions using promises</a></li>
 <li>Single global with no prototype extensions or shims.</li>
 <li>Cross-browser: works on Chrome, Firefox, Safari, Opera, IE6+,
-(IE6-IE8 with <a href="https://github.com/es-shims/es5-shim">es5-shim</a>).</li>
+(IE6-IE8 with <a href="https://github.com/es-shims/es5-shim">es5-shim</a>)</li>
 </ul>
 <h3 id="node">Node</h3>
 <p>Install it with NPM or add it to your <code>package.json</code>:</p>
-<div class="code lang-javascript">
+<div class="code lang-undefined">
   <div>$&nbsp;npm&nbsp;install&nbsp;unexpected</div>
 </div><p>Then:</p>
 <div class="code lang-javascript">
   <div><span style="color: #FFAA27">var</span>&nbsp;expect&nbsp;<span style="color: #3CDAFF">=</span>&nbsp;require<span style="color: #999">(</span><span style="color: #3CDAFF">'unexpected'</span><span style="color: #999">);</span></div>
 </div><h3 id="browser">Browser</h3>
 <p>Include <code>unexpected.js</code>.</p>
-<div class="code lang-javascript">
-  <div><span style="color: #3CDAFF">&lt;</span>script&nbsp;src<span style="color: #3CDAFF">=</span><span style="color: #3CDAFF">&quot;unexpected.js&quot;</span><span style="color: #3CDAFF">&gt;&lt;/</span>script<span style="color: #3CDAFF">&gt;</span></div>
+<div class="code lang-html">
+  <div><span style="color: #999">&lt;</span><span style="color: white">script&nbsp;</span><span style="color: #3CDAFF">src</span><span style="color: #999">=&quot;</span><span style="color: #FFAA27">unexpected.js</span><span style="color: #999">&quot;&gt;&lt;/</span><span style="color: white">script</span><span style="color: #999">&gt;</span></div>
 </div><p>this will expose the expect function under the following namespace:</p>
 <div class="code lang-javascript">
   <div><span style="color: #FFAA27">var</span>&nbsp;expect&nbsp;<span style="color: #3CDAFF">=</span>&nbsp;weknowhow<span style="color: #999">.</span>expect<span style="color: #999">;</span></div>
@@ -131,6 +132,28 @@ and shown/processed by the test runner.</p>
 <p>The source for Unexpected can be found on
 <a href="https://github.com/unexpectedjs/unexpected">Github</a>.</p>
 <h2 id="releases">Releases</h2>
+<h3 id="7-0-0">7.0.0</h3>
+<ul>
+<li>Support for
+<a href="/api/addAssertion/#asynchronous-assertions">asynchronous assertions using promises</a>.
+All built-in assertions that delegate to other assertions (such as <code>to satisfy</code>)
+have been rewritten to support this. The change is fully backwards compatible.</li>
+<li>Removed support for the <code>to be an array of</code> and
+<code>to be an array of (strings|numbers|...)</code> assertions. There are better and
+more flexible alternatives.</li>
+<li>Renamed assertions so that the subject type isn&#39;t mentioned in the assertion name.
+The old names are kept around as aliases for now. These assertions are affected:<ul>
+<li><code>to be an array whose items satisfy</code> =&gt; <code>to have items satisfying</code></li>
+<li><code>to be an (object|hash|map) whose keys satisfy</code> =&gt; <code>to have keys satisfying</code></li>
+<li><code>to be an (object|hash|map) whose values satisfy</code> =&gt; <code>to have values satisfying</code>
+Also, these 3 assertions no longer pass for empty collections.</li>
+</ul>
+</li>
+<li>New <code>when passed as parameter to constructor</code> and <code>when passed as parameter to async</code> &quot;adverbial&quot; assertions.</li>
+<li>New <code>when decoded as</code> &quot;adverbial&quot; assertion for <code>Buffer</code> instances.</li>
+<li>New <code>to have message</code> assertion defined for <code>Error</code> instances.</li>
+<li>A lot of output improvements and minor tweaks.</li>
+</ul>
 <h3 id="6-0-0">6.0.0</h3>
 <ul>
 <li>New documentation and <a href="https://unexpectedjs.github.io/">corresponding site</a>.</li>
@@ -142,7 +165,7 @@ and shown/processed by the test runner.</p>
 <li>Removed grammatically incorrect assertions.</li>
 </ul>
 <h2 id="mit-license">MIT License</h2>
-<p>Copyright (c) 2013 Sune Simonsen <a href="&#x6d;&#97;&#x69;&#x6c;&#x74;&#x6f;&#58;&#x73;&#117;&#x6e;&#101;&#64;&#119;&#101;&#45;&#107;&#110;&#111;&#x77;&#x68;&#x6f;&#x77;&#46;&#x64;&#x6b;">&#x73;&#117;&#x6e;&#101;&#64;&#119;&#101;&#45;&#107;&#110;&#111;&#x77;&#x68;&#x6f;&#x77;&#46;&#x64;&#x6b;</a></p>
+<p>Copyright (c) 2013 Sune Simonsen <a href="&#x6d;&#x61;&#105;&#x6c;&#x74;&#111;&#x3a;&#115;&#x75;&#110;&#101;&#64;&#x77;&#101;&#45;&#x6b;&#x6e;&#x6f;&#119;&#104;&#111;&#119;&#x2e;&#100;&#x6b;">&#115;&#x75;&#110;&#101;&#64;&#x77;&#101;&#45;&#x6b;&#x6e;&#x6f;&#119;&#104;&#111;&#119;&#x2e;&#100;&#x6b;</a></p>
 <p>Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
 &#39;Software&#39;), to deal in the Software without restriction, including

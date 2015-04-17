@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/static/normalize.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="/static/main.css" type="text/css" media="screen" />
     <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="/static/bug-icon-black.ico">
-    <title>object - to be a map whose values satisfy</title>
+    <title>object - to have values satisfying</title>
 </head>
 <body class="sidebar-hidden has-sidebar">
     <header>
@@ -18,7 +18,7 @@
                     <button class="menu-toggle" onclick="toggleSidebar()"></button>
                 </li>
                 <li class=""><a href="/">Unexpected</a></li>
-                <li class="active"><a href="/assertions/any/to-be-a/">Assertions</a></li>
+                <li class="active"><a href="/assertions/any/to-be/">Assertions</a></li>
                 <li class=""><a href="/api/addAssertion/">API</a></li>
             </ul>
         </nav>
@@ -39,7 +39,15 @@
             <ul>
                 
                 <li class="">
+                    <a href="/assertions/any/to-be/">to be</a>
+                </li>
+                
+                <li class="">
                     <a href="/assertions/any/to-be-a/">to be a</a>
+                </li>
+                
+                <li class="">
+                    <a href="/assertions/any/to-be-defined/">to be defined</a>
                 </li>
                 
                 <li class="">
@@ -63,10 +71,6 @@
                 </li>
                 
                 <li class="">
-                    <a href="/assertions/any/to-be/">to be</a>
-                </li>
-                
-                <li class="">
                     <a href="/assertions/any/to-equal/">to equal</a>
                 </li>
                 
@@ -75,34 +79,109 @@
                 </li>
                 
                 <li class="">
-                    <a href="/assertions/any/to-be-defined/">to be defined</a>
+                    <a href="/assertions/any/when-passed-as-parameter-to/">when passed as parameter to</a>
                 </li>
                 
             </ul>
         </li>
         
         <li>
-            <h3>array</h3>
+            <h3>number</h3>
             <ul>
                 
                 <li class="">
-                    <a href="/assertions/array/to-be-an-array-whose-items-satisfy/">to be an array whose items satisfy</a>
+                    <a href="/assertions/number/to-be-close-to/">to be close to</a>
                 </li>
                 
                 <li class="">
-                    <a href="/assertions/array/to-be-empty/">to be empty</a>
+                    <a href="/assertions/number/to-be-finite/">to be finite</a>
                 </li>
                 
                 <li class="">
-                    <a href="/assertions/array/to-be-non-empty/">to be non-empty</a>
+                    <a href="/assertions/number/to-be-greater-than/">to be greater than</a>
                 </li>
                 
                 <li class="">
-                    <a href="/assertions/array/to-contain/">to contain</a>
+                    <a href="/assertions/number/to-be-greater-than-or-equal-to/">to be greater than or equal to</a>
                 </li>
                 
                 <li class="">
-                    <a href="/assertions/array/to-have-length/">to have length</a>
+                    <a href="/assertions/number/to-be-infinite/">to be infinite</a>
+                </li>
+                
+                <li class="">
+                    <a href="/assertions/number/to-be-less-than/">to be less than</a>
+                </li>
+                
+                <li class="">
+                    <a href="/assertions/number/to-be-less-than-or-equal-to/">to be less than or equal to</a>
+                </li>
+                
+                <li class="">
+                    <a href="/assertions/number/to-be-NaN/">to be NaN</a>
+                </li>
+                
+                <li class="">
+                    <a href="/assertions/number/to-be-negative/">to be negative</a>
+                </li>
+                
+                <li class="">
+                    <a href="/assertions/number/to-be-positive/">to be positive</a>
+                </li>
+                
+                <li class="">
+                    <a href="/assertions/number/to-be-within/">to be within</a>
+                </li>
+                
+            </ul>
+        </li>
+        
+        <li>
+            <h3>string</h3>
+            <ul>
+                
+                <li class="">
+                    <a href="/assertions/string/to-be/">to be</a>
+                </li>
+                
+                <li class="">
+                    <a href="/assertions/string/to-be-empty/">to be empty</a>
+                </li>
+                
+                <li class="">
+                    <a href="/assertions/string/to-be-greater-than/">to be greater than</a>
+                </li>
+                
+                <li class="">
+                    <a href="/assertions/string/to-be-greater-than-or-equal-to/">to be greater than or equal to</a>
+                </li>
+                
+                <li class="">
+                    <a href="/assertions/string/to-be-less-than/">to be less than</a>
+                </li>
+                
+                <li class="">
+                    <a href="/assertions/string/to-be-less-than-or-equal-to/">to be less than or equal to</a>
+                </li>
+                
+                <li class="">
+                    <a href="/assertions/string/to-be-non-empty/">to be non-empty</a>
+                </li>
+                
+                <li class="">
+                    <a href="/assertions/string/to-be-within/">to be within</a>
+                </li>
+                
+                <li class="">
+                    <a href="/assertions/string/to-contain/">to contain</a>
+                </li>
+                
+                <li class="">
+                    <a href="/assertions/string/to-have-length/">to have length</a>
+                </li>
+                
+                <li class="">
+                    <a href="/assertions/string/to-match/">to match</a>
                 </li>
                 
             </ul>
@@ -124,6 +203,41 @@
         </li>
         
         <li>
+            <h3>object</h3>
+            <ul>
+                
+                <li class="">
+                    <a href="/assertions/object/to-be-canonical/">to be canonical</a>
+                </li>
+                
+                <li class="">
+                    <a href="/assertions/object/to-have-key/">to have key</a>
+                </li>
+                
+                <li class="">
+                    <a href="/assertions/object/to-have-keys/">to have keys</a>
+                </li>
+                
+                <li class="">
+                    <a href="/assertions/object/to-have-keys-satisfying/">to have keys satisfying</a>
+                </li>
+                
+                <li class="">
+                    <a href="/assertions/object/to-have-properties/">to have properties</a>
+                </li>
+                
+                <li class="">
+                    <a href="/assertions/object/to-have-property/">to have property</a>
+                </li>
+                
+                <li class="active">
+                    <a href="/assertions/object/to-have-values-satisfying/">to have values satisfying</a>
+                </li>
+                
+            </ul>
+        </li>
+        
+        <li>
             <h3>function</h3>
             <ul>
                 
@@ -139,137 +253,53 @@
         </li>
         
         <li>
-            <h3>number</h3>
+            <h3>Error</h3>
             <ul>
                 
                 <li class="">
-                    <a href="/assertions/number/to-be-greater-than/">to be greater than</a>
-                </li>
-                
-                <li class="">
-                    <a href="/assertions/number/to-be-infinite/">to be infinite</a>
-                </li>
-                
-                <li class="">
-                    <a href="/assertions/number/to-be-close-to/">to be close to</a>
-                </li>
-                
-                <li class="">
-                    <a href="/assertions/number/to-be-finite/">to be finite</a>
-                </li>
-                
-                <li class="">
-                    <a href="/assertions/number/to-be-greater-than-or-equal-to/">to be greater than or equal to</a>
-                </li>
-                
-                <li class="">
-                    <a href="/assertions/number/to-be-NaN/">to be NaN</a>
-                </li>
-                
-                <li class="">
-                    <a href="/assertions/number/to-be-less-than-or-equal-to/">to be less than or equal to</a>
-                </li>
-                
-                <li class="">
-                    <a href="/assertions/number/to-be-less-than/">to be less than</a>
-                </li>
-                
-                <li class="">
-                    <a href="/assertions/number/to-be-negative/">to be negative</a>
-                </li>
-                
-                <li class="">
-                    <a href="/assertions/number/to-be-positive/">to be positive</a>
-                </li>
-                
-                <li class="">
-                    <a href="/assertions/number/to-be-within/">to be within</a>
+                    <a href="/assertions/Error/to-have-message/">to have message</a>
                 </li>
                 
             </ul>
         </li>
         
         <li>
-            <h3>object</h3>
+            <h3>array-like</h3>
             <ul>
                 
                 <li class="">
-                    <a href="/assertions/object/to-be-a-map-whose-keys-satisfy/">to be a map whose keys satisfy</a>
-                </li>
-                
-                <li class="active">
-                    <a href="/assertions/object/to-be-a-map-whose-values-satisfy/">to be a map whose values satisfy</a>
+                    <a href="/assertions/array-like/to-be-empty/">to be empty</a>
                 </li>
                 
                 <li class="">
-                    <a href="/assertions/object/to-be-canonical/">to be canonical</a>
+                    <a href="/assertions/array-like/to-be-non-empty/">to be non-empty</a>
                 </li>
                 
                 <li class="">
-                    <a href="/assertions/object/to-have-key/">to have key</a>
+                    <a href="/assertions/array-like/to-contain/">to contain</a>
                 </li>
                 
                 <li class="">
-                    <a href="/assertions/object/to-have-keys/">to have keys</a>
+                    <a href="/assertions/array-like/to-have-items-satisfying/">to have items satisfying</a>
                 </li>
                 
                 <li class="">
-                    <a href="/assertions/object/to-have-properties/">to have properties</a>
+                    <a href="/assertions/array-like/to-have-length/">to have length</a>
                 </li>
                 
                 <li class="">
-                    <a href="/assertions/object/to-have-property/">to have property</a>
+                    <a href="/assertions/array-like/when-passed-as-parameters-to/">when passed as parameters to</a>
                 </li>
                 
             </ul>
         </li>
         
         <li>
-            <h3>string</h3>
+            <h3>Buffer</h3>
             <ul>
                 
                 <li class="">
-                    <a href="/assertions/string/to-be-non-empty/">to be non-empty</a>
-                </li>
-                
-                <li class="">
-                    <a href="/assertions/string/to-be-empty/">to be empty</a>
-                </li>
-                
-                <li class="">
-                    <a href="/assertions/string/to-be-greater-than/">to be greater than</a>
-                </li>
-                
-                <li class="">
-                    <a href="/assertions/string/to-be-less-than-or-equal-to/">to be less than or equal to</a>
-                </li>
-                
-                <li class="">
-                    <a href="/assertions/string/to-be-less-than/">to be less than</a>
-                </li>
-                
-                <li class="">
-                    <a href="/assertions/string/to-be-greater-than-or-equal-to/">to be greater than or equal to</a>
-                </li>
-                
-                <li class="">
-                    <a href="/assertions/string/to-be-within/">to be within</a>
-                </li>
-                
-                <li class="">
-                    <a href="/assertions/string/to-be/">to be</a>
-                </li>
-                
-                <li class="">
-                    <a href="/assertions/string/to-contain/">to contain</a>
-                </li>
-                
-                <li class="">
-                    <a href="/assertions/string/to-have-length/">to have length</a>
-                </li>
-                
-                <li class="">
-                    <a href="/assertions/string/to-match/">to match</a>
+                    <a href="/assertions/Buffer/when-decoded-as/">when decoded as</a>
                 </li>
                 
             </ul>
@@ -280,22 +310,24 @@
 
     <div class="main" tabindex="-1">
         <div class="content">
-            <p>Asserts that all values of a map satisfies a given function.</p>
-<p>Aliases: <code>to be an object whose values satisfy</code>, <code>to be a hash whose values satisfy</code>.</p>
+            <p>Asserts that all values of an object satisfy a given assertion or function.</p>
+<p>Notice this assertion fails when given an empty object.</p>
+<p>Aliases: <code>to be a map whose values satisfy</code>,
+<code>to be an object whose values satisfy</code>, <code>to be a hash whose values satisfy</code>.</p>
 <div class="code lang-javascript">
   <div><span style="color: #000000">expect</span><span style="color: #000000">({</span>&nbsp;foo<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">0</span><span style="color: #000000">,</span>&nbsp;bar<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">1</span><span style="color: #000000">,</span>&nbsp;baz<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">2</span><span style="color: #000000">,</span>&nbsp;qux<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">3</span>&nbsp;<span style="color: #000000">},</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;a&nbsp;map&nbsp;whose&nbsp;values&nbsp;satisfy'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>value<span style="color: #000000">,</span>&nbsp;index<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #df5000">'to&nbsp;have&nbsp;values&nbsp;satisfying'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>value<span style="color: #000000">,</span>&nbsp;index<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>value<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;a&nbsp;number'</span><span style="color: #000000">);</span></div>
   <div><span style="color: #000000">});</span></div>
   <div>&nbsp;</div>
   <div><span style="color: #000000">expect</span><span style="color: #000000">({</span>&nbsp;foo<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">0</span><span style="color: #000000">,</span>&nbsp;bar<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">1</span><span style="color: #000000">,</span>&nbsp;baz<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">2</span><span style="color: #000000">,</span>&nbsp;qux<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">3</span>&nbsp;<span style="color: #000000">},</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;a&nbsp;hash&nbsp;whose&nbsp;values&nbsp;satisfy'</span><span style="color: #000000">,</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #df5000">'to&nbsp;have&nbsp;values&nbsp;satisfying'</span><span style="color: #000000">,</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;a&nbsp;number'</span><span style="color: #000000">);</span></div>
 </div><p>In case of a failing expectation you get the following output:</p>
 <div class="code lang-javascript">
   <div><span style="color: #000000">expect</span><span style="color: #000000">({</span>&nbsp;foo<span style="color: #000000">:</span>&nbsp;<span style="color: #000000">[</span><span style="color: #0086b3">0</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">1</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">2</span><span style="color: #000000">],</span>&nbsp;bar<span style="color: #000000">:</span>&nbsp;<span style="color: #000000">[</span><span style="color: #0086b3">4</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">5</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">6</span><span style="color: #000000">],</span>&nbsp;baz<span style="color: #000000">:</span>&nbsp;<span style="color: #000000">[</span><span style="color: #0086b3">7</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">8</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">9</span><span style="color: #000000">]</span>&nbsp;<span style="color: #000000">},</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;a&nbsp;map&nbsp;whose&nbsp;values&nbsp;satisfy'</span><span style="color: #000000">,</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;an&nbsp;array&nbsp;whose&nbsp;items&nbsp;satisfy'</span><span style="color: #000000">,</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #df5000">'to&nbsp;have&nbsp;values&nbsp;satisfying'</span><span style="color: #000000">,</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #df5000">'to&nbsp;have&nbsp;items&nbsp;satisfying'</span><span style="color: #000000">,</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">it</span><span style="color: #000000">(</span><span style="color: #df5000">'to&nbsp;be&nbsp;a&nbsp;number'</span><span style="color: #000000">).</span><span style="color: #000000">and</span><span style="color: #000000">(</span><span style="color: #df5000">'to&nbsp;be&nbsp;below'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">8</span><span style="color: #000000">));</span></div>
 </div><div class="output">
   <div><span style="color: red; font-weight: bold">failed&nbsp;expectation&nbsp;in</span>&nbsp;<div style="display: inline-block; vertical-align: top">
@@ -307,7 +339,7 @@
 </div></div>
   <div>&nbsp;&nbsp;1:&nbsp;<div style="display: inline-block; vertical-align: top">
   <div><span style="color: green; font-weight: bold">✓&nbsp;</span><div style="display: inline-block; vertical-align: top">
-  <div><span style="color: green; font-weight: bold">expected&nbsp;</span>8&nbsp;<span style="color: green; font-weight: bold">to&nbsp;be&nbsp;a&nbsp;number</span></div>
+  <div><span style="color: green; font-weight: bold">expected&nbsp;</span><span style="color: #0086b3">8</span>&nbsp;<span style="color: green; font-weight: bold">to&nbsp;be&nbsp;a&nbsp;number</span></div>
 </div><span style="color: #969896">&nbsp;and</span></div>
   <div><span style="color: red; font-weight: bold">⨯&nbsp;</span><div style="display: inline-block; vertical-align: top">
   <div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #0086b3">8</span>&nbsp;<span style="color: red; font-weight: bold">to&nbsp;be&nbsp;below</span>&nbsp;<span style="color: #0086b3">8</span></div>
@@ -315,19 +347,13 @@
 </div></div>
   <div>&nbsp;&nbsp;2:&nbsp;<div style="display: inline-block; vertical-align: top">
   <div><span style="color: green; font-weight: bold">✓&nbsp;</span><div style="display: inline-block; vertical-align: top">
-  <div><span style="color: green; font-weight: bold">expected&nbsp;</span>9&nbsp;<span style="color: green; font-weight: bold">to&nbsp;be&nbsp;a&nbsp;number</span></div>
+  <div><span style="color: green; font-weight: bold">expected&nbsp;</span><span style="color: #0086b3">9</span>&nbsp;<span style="color: green; font-weight: bold">to&nbsp;be&nbsp;a&nbsp;number</span></div>
 </div><span style="color: #969896">&nbsp;and</span></div>
   <div><span style="color: red; font-weight: bold">⨯&nbsp;</span><div style="display: inline-block; vertical-align: top">
   <div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #0086b3">9</span>&nbsp;<span style="color: red; font-weight: bold">to&nbsp;be&nbsp;below</span>&nbsp;<span style="color: #0086b3">8</span></div>
 </div></div>
 </div></div>
 </div></div>
-</div><p>You can use the <code>non-empty</code> flag to assert that the object is
-non-empty.</p>
-<div class="code lang-javascript">
-  <div><span style="color: #000000">expect</span><span style="color: #000000">({</span>&nbsp;foo<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">0</span><span style="color: #000000">,</span>&nbsp;bar<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">1</span><span style="color: #000000">,</span>&nbsp;baz<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">2</span><span style="color: #000000">,</span>&nbsp;qux<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">3</span>&nbsp;<span style="color: #000000">},</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;a&nbsp;non-empty&nbsp;object&nbsp;whose&nbsp;values&nbsp;satisfy'</span><span style="color: #000000">,</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;a&nbsp;number'</span><span style="color: #000000">);</span></div>
 </div>
         </div>
     </div>

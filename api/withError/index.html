@@ -1,0 +1,159 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0">
+    <link rel="stylesheet" href="/static/normalize.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/static/main.css" type="text/css" media="screen" />
+    <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="/static/bug-icon-black.ico">
+    <title>withError</title>
+</head>
+<body class="sidebar-hidden has-sidebar">
+    <header>
+        <div class="logo-icon"></div>
+        <nav>
+            <ul>
+                <li class="menu-toggle-item">
+                    <button class="menu-toggle" onclick="toggleSidebar()"></button>
+                </li>
+                <li class=""><a href="/">Unexpected</a></li>
+                <li class=""><a href="/assertions/any/to-be/">Assertions</a></li>
+                <li class="active"><a href="/api/addAssertion/">API</a></li>
+            </ul>
+        </nav>
+        <div class="search" style="visibility: hidden">
+            <input id="search" placeholder="Search..." value="">
+            <div id="searchDropDown" class="dropDown">
+                <ul id="searchResults"></ul>
+            </div>
+        </div>
+    </header>
+
+<section id="api">
+    <nav id="api-menu" class="sidebar js-remember-scroll-position">
+    <ul>
+        
+        <li class="">
+            <a href="/api/addAssertion/">addAssertion</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/addType/">addType</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/async/">async</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/clone/">clone</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/fail/">fail</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/installPlugin/">installPlugin</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/promise/">promise</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/promise-all/">promise.all</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/promise-any/">promise.any</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/promise-settle/">promise.settle</a>
+        </li>
+        
+        <li class="">
+            <a href="/api/toString/">toString</a>
+        </li>
+        
+        <li class="active">
+            <a href="/api/withError/">withError</a>
+        </li>
+        
+    </ul>
+</nav>
+
+    <div class="main" tabindex="-1">
+        <div class="content">
+            <h2 id="expect-witherror-function-function-err-">expect.withError(function () { ... }, function (err) {})</h2>
+<p>In some situations you want to modify an error thrown from
+unexpected. This method handles all the details for you.</p>
+<p>Notice that this method is only available inside
+<a href="/api/addAssertion">expect.addAssertion</a>.</p>
+<p>The standard case is to attach a diff or change the error message of
+an error being thrown.</p>
+<div class="code lang-javascript">
+  <div><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">Person</span><span style="color: #000000">(</span>options<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #a71d5d">this</span><span style="color: #000000">.</span>name&nbsp;<span style="color: #a71d5d">=</span>&nbsp;options<span style="color: #000000">.</span>name<span style="color: #000000">;</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #a71d5d">this</span><span style="color: #000000">.</span>gender&nbsp;<span style="color: #a71d5d">=</span>&nbsp;options<span style="color: #000000">.</span>gender<span style="color: #000000">;</span></div>
+  <div><span style="color: #000000">}</span></div>
+  <div>&nbsp;</div>
+  <div>Person<span style="color: #000000">.</span>prototype<span style="color: #000000">.</span>genderSign&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;switch&nbsp;<span style="color: #000000">(</span><span style="color: #a71d5d">this</span><span style="color: #000000">.</span>gender<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;case&nbsp;<span style="color: #df5000">'female'</span><span style="color: #000000">:</span>&nbsp;<span style="color: #a71d5d">return</span>&nbsp;<span style="color: #df5000">'♀'</span><span style="color: #000000">;</span></div>
+  <div>&nbsp;&nbsp;case&nbsp;<span style="color: #df5000">'male'</span><span style="color: #000000">:</span>&nbsp;<span style="color: #a71d5d">return</span>&nbsp;<span style="color: #df5000">'♂'</span><span style="color: #000000">;</span></div>
+  <div>&nbsp;&nbsp;default<span style="color: #000000">:</span>&nbsp;<span style="color: #a71d5d">return</span>&nbsp;<span style="color: #df5000">'⚧'</span><span style="color: #000000">;</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #000000">}</span></div>
+  <div><span style="color: #000000">};</span></div>
+  <div>&nbsp;</div>
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span><span style="color: #df5000">'to&nbsp;have&nbsp;same&nbsp;gender&nbsp;as'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>expect<span style="color: #000000">,</span>&nbsp;subject<span style="color: #000000">,</span>&nbsp;value<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">withError</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>subject<span style="color: #000000">.</span>gender<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be'</span><span style="color: #000000">,</span>&nbsp;value<span style="color: #000000">.</span>gender<span style="color: #000000">);</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #000000">},</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>e<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">fail</span><span style="color: #000000">({</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;diff<span style="color: #000000">:</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>output<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inline<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">false</span><span style="color: #000000">,</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;diff<span style="color: #000000">:</span>&nbsp;output<span style="color: #000000">.</span><span style="color: #000000">bold</span><span style="color: #000000">(</span>subject<span style="color: #000000">.</span><span style="color: #000000">genderSign</span><span style="color: #000000">()).</span><span style="color: #000000">text</span><span style="color: #000000">(</span><span style="color: #df5000">'&nbsp;≠&nbsp;'</span><span style="color: #000000">).</span><span style="color: #000000">bold</span><span style="color: #000000">(</span>value<span style="color: #000000">.</span><span style="color: #000000">genderSign</span><span style="color: #000000">())</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">};</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">}</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">});</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #000000">});</span></div>
+  <div><span style="color: #000000">});</span></div>
+  <div>&nbsp;</div>
+  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #a71d5d">new</span>&nbsp;Person<span style="color: #000000">({</span>&nbsp;name<span style="color: #000000">:</span>&nbsp;<span style="color: #df5000">'John&nbsp;Doe'</span><span style="color: #000000">,</span>&nbsp;gender<span style="color: #000000">:</span>&nbsp;<span style="color: #df5000">'male'</span>&nbsp;<span style="color: #000000">}),</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #df5000">'to&nbsp;have&nbsp;same&nbsp;gender&nbsp;as'</span><span style="color: #000000">,</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">new</span>&nbsp;Person<span style="color: #000000">({</span>&nbsp;name<span style="color: #000000">:</span>&nbsp;<span style="color: #df5000">'Jane&nbsp;Doe'</span><span style="color: #000000">,</span>&nbsp;gender<span style="color: #000000">:</span>&nbsp;<span style="color: #df5000">'female'</span>&nbsp;<span style="color: #000000">}));</span></div>
+</div><div class="output">
+  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;Person({&nbsp;<span style="color: #555">name</span>:&nbsp;<span style="color: #df5000">'John&nbsp;Doe'</span>,&nbsp;<span style="color: #555">gender</span>:&nbsp;<span style="color: #df5000">'male'</span>&nbsp;})&nbsp;<span style="color: red; font-weight: bold">to&nbsp;have&nbsp;same&nbsp;gender&nbsp;as</span>&nbsp;Person({&nbsp;<span style="color: #555">name</span>:&nbsp;<span style="color: #df5000">'Jane&nbsp;Doe'</span>,&nbsp;<span style="color: #555">gender</span>:&nbsp;<span style="color: #df5000">'female'</span>&nbsp;})</div>
+  <div>&nbsp;</div>
+  <div><span style="font-weight: bold">♂</span>&nbsp;≠&nbsp;<span style="font-weight: bold">♀</span></div>
+</div><p>The method also supports asynchronous assertion the following way:</p>
+<div class="code lang-javascript">
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span><span style="color: #df5000">'delegating&nbsp;to&nbsp;an&nbsp;asynchronous&nbsp;assertion'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>expect<span style="color: #000000">,</span>&nbsp;subject<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">withError</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>subject<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'asynchronous&nbsp;expectation'</span><span style="color: #000000">);</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #000000">},</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>e<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">fail</span><span style="color: #000000">({</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;diff<span style="color: #000000">:</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>output<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inline<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">true</span><span style="color: #000000">,</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;diff<span style="color: #000000">:</span>&nbsp;output<span style="color: #000000">.</span><span style="color: #000000">text</span><span style="color: #000000">(</span><span style="color: #df5000">'Cool&nbsp;a&nbsp;diff&nbsp;attached&nbsp;to&nbsp;an&nbsp;asynchronous&nbsp;failure!'</span><span style="color: #000000">)</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">};</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">}</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">});</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #000000">});</span></div>
+  <div><span style="color: #000000">});</span></div>
+</div>
+        </div>
+    </div>
+</section>
+<script type="text/javascript" src="/static/toggleSidebar.js"></script>
+<script type="text/javascript" src="/static/rememberScrollPosition.js"></script>
+<script type="text/javascript" src="/static/focusMain.js"></script>
+<script type="text/javascript" src="/static/search.js"></script>
+</body>
+</html>
+
