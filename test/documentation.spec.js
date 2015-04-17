@@ -542,26 +542,64 @@ describe("documentation tests", function () {
 
         try {
             expect.fail(function (output) {
-                'You have been a very bad boy!'.split(/ /).forEach(function (word, index) {
-                    if (index > 0) { output.sp(); }
-                    var style = index % 2 === 0 ? 'jsPrimitive' : 'jsString';
-                    output[style](word);
-                });
+              'You have been a very bad boy!'.split(/ /).forEach(function (word, index) {
+                if (index > 0) { output.sp(); }
+                var style = index % 2 === 0 ? 'jsPrimitive' : 'jsString';
+                output[style](word);
+              });
             });
             expect.fail(function (output) {
                 output.error("expected:").nl();
                 output.code("expect.fail(function (output) {").nl();
-                output.code("    'You have been a very bad boy!'.split(/ /).forEach(function (word, index) {").nl();
-                output.code("        if (index > 0) { output.sp(); }").nl();
-                output.code("        var style = index % 2 === 0 ? 'jsPrimitive' : 'jsString';").nl();
-                output.code("        output[style](word);").nl();
-                output.code("    });").nl();
+                output.code("  'You have been a very bad boy!'.split(/ /).forEach(function (word, index) {").nl();
+                output.code("    if (index > 0) { output.sp(); }").nl();
+                output.code("    var style = index % 2 === 0 ? 'jsPrimitive' : 'jsString';").nl();
+                output.code("    output[style](word);").nl();
+                output.code("  });").nl();
                 output.code("});").nl();
                 output.error("to throw");
             });
         } catch (e) {
             expect(e, "to have message",
                 "You have been a very bad boy!"
+            );
+        }
+
+        try {
+            expect.fail({
+              message: function (output) {
+                'You have been a very bad boy!'.split(/ /).forEach(function (word, index) {
+                  if (index > 0) { output.sp(); }
+                  var style = index % 2 === 0 ? 'jsPrimitive' : 'jsString';
+                  output[style](word);
+                });
+              },
+              diff: function (output, diff, inspect, equal) {
+                return diff('You have been a very bad boy!', 'You have been a very mad boy!')
+              }
+            });
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect.fail({").nl();
+                output.code("  message: function (output) {").nl();
+                output.code("    'You have been a very bad boy!'.split(/ /).forEach(function (word, index) {").nl();
+                output.code("      if (index > 0) { output.sp(); }").nl();
+                output.code("      var style = index % 2 === 0 ? 'jsPrimitive' : 'jsString';").nl();
+                output.code("      output[style](word);").nl();
+                output.code("    });").nl();
+                output.code("  },").nl();
+                output.code("  diff: function (output, diff, inspect, equal) {").nl();
+                output.code("    return diff('You have been a very bad boy!', 'You have been a very mad boy!')").nl();
+                output.code("  }").nl();
+                output.code("});").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "You have been a very bad boy!\n" +
+                "\n" +
+                "-You have been a very bad boy!\n" +
+                "+You have been a very mad boy!"
             );
         }
         return expect.promise.all(testPromises);
