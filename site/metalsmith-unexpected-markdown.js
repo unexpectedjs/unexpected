@@ -151,7 +151,7 @@ function writeTestsToFile(exampleTests, done) {
 
         pen.i().text('it("').text(file).text(' contains correct examples", function () {').nl();
         pen.indentLines();
-        pen.i().text('var promises = [];').nl();
+        pen.i().text('var testPromises = [];').nl();
 
         tests.forEach(function (test, index) {
             if (index > 0) {
@@ -174,7 +174,7 @@ function writeTestsToFile(exampleTests, done) {
             var lines;
             if (test.flags.async) {
                 if (test.output) {
-                    pen.i().text('promises.push(expect.promise(function () {').nl();
+                    pen.i().text('testPromises.push(expect.promise(function () {').nl();
                     pen.indentLines();
                     pen.i().block('text', test.code).nl();
                     pen.outdentLines();
@@ -213,7 +213,7 @@ function writeTestsToFile(exampleTests, done) {
                     pen.outdentLines();
                     pen.i().text('}));').nl();
                 } else {
-                    pen.i().text('promises.push(expect.promise(function () {').nl();
+                    pen.i().text('testPromises.push(expect.promise(function () {').nl();
                     pen.indentLines();
                     pen.i().block('text', test.code);
                     pen.outdentLines();
@@ -257,15 +257,14 @@ function writeTestsToFile(exampleTests, done) {
                 }
             }
 
-            if (conditions.length > 0) {
-                pen.i().text('}').nl();
-                pen.outdentLines();
-            }
-
             pen.nl();
+            if (conditions.length > 0) {
+                pen.outdentLines();
+                pen.i().text('}').nl();
+            }
         });
 
-        pen.i().text('return expect.promise.all(promises);').nl();
+        pen.i().text('return expect.promise.all(testPromises);').nl();
         pen.outdentLines();
         pen.i().text('});').nl();
     });

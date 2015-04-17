@@ -3,7 +3,7 @@
 Explicitly forces failure.
 
 ```js
-expect.fail()
+expect.fail();
 ```
 
 ```output
@@ -11,7 +11,7 @@ Explicit failure
 ```
 
 ```js
-expect.fail('Custom failure message')
+expect.fail('Custom failure message');
 ```
 
 ```output

@@ -27,7 +27,7 @@ expect.addAssertion('to be a number after a short delay', function (expect, subj
 See the [promise](/api/promise) documentation for more details on how
 expect.promise works.
 
-The following code snippet create a promise resolves when all the
+The following code snippet creates a promise that resolves when all the
 promises in the nested structure resolves.
 
 ```js#async:true
@@ -55,7 +55,7 @@ return expect.promise.all({
                          expect.it('to be a number after a short delay')),
 
   baz: expect({ a: '0', b: 1 }, 'to have values satisfying',
-                              'to be a number after a short delay')
+                                'to be a number after a short delay')
 });
 ```
 

@@ -72,7 +72,7 @@ expect.installPlugin({
        expect(value, '[not] to be within', subject.from, subject.to);
      });
   }
-})
+});
 ```
 
 After installing the plugin we can use the `to contain` assertion on
