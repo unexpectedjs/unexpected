@@ -58,6 +58,8 @@ describe('unexpected', function () {
                 return that.shift(expect, subject, 0);
             }), 1);
         });
+    }).addAssertion('to inspect as', function (expect, subject, value) {
+        expect(expect.inspect(subject).toString(), 'to equal', value);
     });
 
     describe('argument validation', function () {
@@ -3949,14 +3951,20 @@ describe('unexpected', function () {
     });
 
     describe('inspect', function () {
-        expect.addAssertion('to inspect as', function (expect, subject, value) {
-            expect(expect.inspect(subject).toString(), 'to equal', value);
-        });
-
         it.skipIf(isMochaPhantomJS, 'handles getters and setters correctly', function () {
             expect(new Field('VALUE', 'getter'), 'to inspect as', "Field({ value: 'VALUE' /* getter */ })");
             expect(new Field('VALUE', 'setter'), 'to inspect as', "Field({ set value: function (val) { value = val; } })");
             expect(new Field('VALUE', 'getter and setter'), 'to inspect as', "Field({ value: 'VALUE' /* getter/setter */ })");
+        });
+
+        it('should render strings with control chars and backslashes correctly', function () {
+            var stringWithControlCharsAndStuff = '\\';
+            for (var i = 0 ; i < 32 ; i += 1) {
+                stringWithControlCharsAndStuff += String.fromCharCode(i);
+            }
+
+            expect(stringWithControlCharsAndStuff, 'to inspect as',
+                "'\\\\\\x00\\x01\\x02\\x03\\x04\\x05\\x06\\x07\\b\\t\\n\\x0b\\f\\r\\x0e\\x0f\\x10\\x11\\x12\\x13\\x14\\x15\\x16\\x17\\x18\\x19\\x1a\\x1b\\x1c\\x1d\\x1e\\x1f'");
         });
 
         describe('with various special values', function () {
