@@ -58,7 +58,9 @@ return expect.promise.any({
   expect.fail(function (output) {
     output.error(aggregateError.message);
     var errors = [];
-    Array.prototype.push.apply(errors, aggregateError);
+    for (var i = 0; i < aggregateError.length; i += 1) {
+      errors.push(aggregateError[i]);
+    }
 
     errors.sort(function (a, b) { // Make the output stable
       if (a.message < b.message) return -1;

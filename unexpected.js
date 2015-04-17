@@ -2349,14 +2349,6 @@ module.exports = function (expect) {
 
 },{}],8:[function(require,module,exports){
 module.exports = function throwIfNonUnexpectedError(err) {
-    if (err && !err._isUnexpected) {
-        console.log('\n\n\n\n\n\n\n\n');
-        console.log('------------ debug start -------------');
-        console.log(err);
-        console.log('------------- debug end --------------');
-        console.log('\n\n\n\n\n\n\n\n');
-    }
-
     if (err && err.message === 'aggregate error') {
         for (var i = 0 ; i < err.length ; i += 1) {
             throwIfNonUnexpectedError(err[i]);

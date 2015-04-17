@@ -735,7 +735,9 @@ describe("documentation tests", function () {
               expect.fail(function (output) {
                 output.error(aggregateError.message);
                 var errors = [];
-                Array.prototype.push.apply(errors, aggregateError);
+                for (var i = 0; i < aggregateError.length; i += 1) {
+                  errors.push(aggregateError[i]);
+                }
 
                 errors.sort(function (a, b) { // Make the output stable
                   if (a.message < b.message) return -1;
@@ -767,7 +769,9 @@ describe("documentation tests", function () {
                     output.code("  expect.fail(function (output) {").nl();
                     output.code("    output.error(aggregateError.message);").nl();
                     output.code("    var errors = [];").nl();
-                    output.code("    Array.prototype.push.apply(errors, aggregateError);").nl();
+                    output.code("    for (var i = 0; i < aggregateError.length; i += 1) {").nl();
+                    output.code("      errors.push(aggregateError[i]);").nl();
+                    output.code("    }").nl();
                     output.code("").nl();
                     output.code("    errors.sort(function (a, b) { // Make the output stable").nl();
                     output.code("      if (a.message < b.message) return -1;").nl();
