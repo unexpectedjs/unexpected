@@ -115,23 +115,6 @@ function writeTestsToFile(exampleTests, done) {
     pen.i().text("var isBrowser = typeof weknowhow !== 'undefined';").nl();
     pen.i().text("var isPhantom = typeof mochaPhantomJS !== 'undefined';").nl();
 
-    pen.i().text('unexpected.addAssertion("to have message", function (expect, subject, value) {').nl();
-    pen.indentLines();
-    pen.i().block(function () {
-        this.text('var message;').nl();
-        this.text('if (subject._isUnexpected) {').nl();
-        this.text('    message = subject.output.toString();').nl();
-        this.text('} else if (subject && Object.prototype.toString.call(subject) === "[object Error]") {').nl();
-        this.text('    message = subject.message;').nl();
-        this.text('} else {').nl();
-        this.text('    message = String(subject);').nl();
-        this.text('}').nl();
-        this.text('this.errorMode = "bubble";').nl();
-        this.text('expect(message, "to equal", value);');
-    }).nl();
-    pen.outdentLines();
-    pen.i().text('});').nl(2);
-
     pen.i().text('var expect;').nl();
     pen.i().text('beforeEach(function () {').nl();
     pen.indentLines();

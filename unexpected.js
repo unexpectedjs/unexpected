@@ -1844,6 +1844,8 @@ module.exports = function (expect) {
                                         if (promiseByKey[key] && promiseByKey[key].isRejected()) {
                                             conflicting = promiseByKey[key].reason();
                                         }
+                                        var arrayItemOutOfRange = bothAreArrays && (index >= subject.length || index >= value.length);
+
                                         var isInlineDiff = true;
 
                                         if (!(key in value)) {
@@ -1852,14 +1854,14 @@ module.exports = function (expect) {
                                             } else {
                                                 conflicting = null;
                                             }
-                                        } else if (conflicting) {
-                                            var keyDiff = conflicting.createDiff && conflicting.createDiff(output.clone(), diff, inspect, equal);
+                                        } else if (conflicting || arrayItemOutOfRange) {
+                                            var keyDiff = conflicting && conflicting.createDiff && conflicting.createDiff(output.clone(), diff, inspect, equal);
                                             isInlineDiff = !keyDiff || keyDiff.inline ;
                                             if (typeof value[key] === 'function') {
                                                 isInlineDiff = false;
                                                 annotation.append(conflicting.output);
                                             } else if (!keyDiff || (keyDiff && !keyDiff.inline)) {
-                                                annotation.error(conflicting.label || 'should satisfy').sp()
+                                                annotation.error((conflicting && conflicting.label) || 'should satisfy').sp()
                                                     .block(inspect(value[key]));
 
                                                 if (keyDiff) {
@@ -1872,7 +1874,11 @@ module.exports = function (expect) {
 
                                         var last = index === keys.length - 1;
                                         if (!valueOutput) {
-                                            valueOutput = inspect(subject[key], conflicting ? Infinity : 1);
+                                            if (bothAreArrays && key >= subject.length) {
+                                                valueOutput = output.clone();
+                                            } else {
+                                                valueOutput = inspect(subject[key], conflicting ? Infinity : 1);
+                                            }
                                         }
 
                                         if (!bothAreArrays) {
@@ -1896,7 +1902,7 @@ module.exports = function (expect) {
                                             this.block(valueOutput);
                                         }
                                         if (!annotation.isEmpty()) {
-                                            this.sp().annotationBlock(annotation);
+                                            this.sp(valueOutput.isEmpty() ? 0 : 1).annotationBlock(annotation);
                                         }
                                     }).nl();
                                 });
@@ -2343,6 +2349,14 @@ module.exports = function (expect) {
 
 },{}],8:[function(require,module,exports){
 module.exports = function throwIfNonUnexpectedError(err) {
+    if (err && !err._isUnexpected) {
+        console.log('\n\n\n\n\n\n\n\n');
+        console.log('------------ debug start -------------');
+        console.log(err);
+        console.log('------------- debug end --------------');
+        console.log('\n\n\n\n\n\n\n\n');
+    }
+
     if (err && err.message === 'aggregate error') {
         for (var i = 0 ; i < err.length ; i += 1) {
             throwIfNonUnexpectedError(err[i]);
@@ -10600,6 +10614,7 @@ HtmlSerializer.prototype.text = function () {
 module.exports = HtmlSerializer;
 
 },{}],27:[function(require,module,exports){
+(function (process){
 /*global window*/
 var utils = require(34);
 var extend = utils.extend;
@@ -10623,6 +10638,7 @@ function MagicPen(options) {
     this.styles = {};
     this.installedPlugins = [];
     this._themes = {};
+    this.preferredWidth = (!process.browser && process.stdout.columns) || 80;
 }
 
 if (typeof window !== 'undefined' && typeof window.navigator !== 'undefined') {
@@ -11123,6 +11139,7 @@ MagicPen.prototype.installTheme = function (formats, theme) {
 
 module.exports = MagicPen;
 
+}).call(this,require(21))
 },{}],28:[function(require,module,exports){
 var flattenBlocksInLines = require(31);
 
