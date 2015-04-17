@@ -13,14 +13,6 @@ describe('unexpected', function () {
     var workQueue = typeof weknowhow === 'undefined' ? require('../lib/workQueue') : null;
     expect.output.preferredWidth = 80;
 
-    // use this instead of Object.create in order to make the tests run in
-    // browsers that are not es5 compatible.
-    function create(o) {
-        function F() {}
-        F.prototype = o;
-        return new F();
-    }
-
     var circular = {};
     circular.self = circular;
 
@@ -168,6 +160,21 @@ describe('unexpected', function () {
                     errors.push(new Error('foo'));
                 }
                 expect(errors[0], 'to equal', errors[1]);
+            });
+
+            it('ignores blacklisted properties in the diff', function () {
+                var error = new Error('foo');
+                error.description = 'qux';
+                expect(function () {
+                    expect(error, 'to satisfy', new Error('bar'));
+                }, 'to throw',
+                       "expected Error({ message: 'foo' }) to satisfy Error({ message: 'bar' })\n" +
+                       "\n" +
+                       "Error({\n" +
+                       "  message: 'foo' // should equal 'bar'\n" +
+                       "                 // -foo\n" +
+                       "                 // +bar\n" +
+                       "})");
             });
         });
 
@@ -953,7 +960,7 @@ describe('unexpected', function () {
                                 "  -expected 1 to equal 2\n" +
                                 "  +expected 3 to equal 2"
                         );
-                        expect(message, 'to match', /^expected\nError\(\{[\s\S]*\}\)/);
+                        expect(message, 'to match', /^expected\sError\(\{[\s\S]*\}\)/);
                     });
                 });
             });
@@ -1163,7 +1170,7 @@ describe('unexpected', function () {
             expect({a: 'b'}, 'to have property', 'toString');
             expect({a: 'b'}, 'not to have property', 'b');
             expect({'"a"': 'b'}, 'to have own property', '"a"');
-            expect(create({a: 'b'}), 'not to have own property', 'a');
+            expect(Object.create({a: 'b'}), 'not to have own property', 'a');
             expect(function () {}, 'to have property', 'toString');
         });
 
@@ -1233,7 +1240,7 @@ describe('unexpected', function () {
         it('asserts presence of a list of own properties', function () {
             expect({a: 'foo', b: 'bar'}, 'to have own properties', ['a', 'b']);
             expect(function () {
-                var obj = create({a: 'foo', b: 'bar'});
+                var obj = Object.create({a: 'foo', b: 'bar'});
                 expect(obj, 'to have properties', ['a', 'b']); // should not fail
                 expect(obj, 'to have own properties', ['a', 'b']); // should fail
             }, 'to throw', "expected {} to have own properties [ 'a', 'b' ]");
@@ -1251,7 +1258,7 @@ describe('unexpected', function () {
         });
 
         it('asserts absence of a list of own properties', function () {
-            var obj = create({a: 'foo', b: 'bar'});
+            var obj = Object.create({a: 'foo', b: 'bar'});
             expect(obj, 'to have properties', ['a', 'b']);
             expect(obj, 'not to have own properties', ['a', 'b']);
             expect(function () {
@@ -1289,7 +1296,7 @@ describe('unexpected', function () {
         it('asserts presence and values of an object of own properties', function () {
             expect({a: 'foo', b: 'bar'}, 'to have own properties', {a: 'foo', b: 'bar'});
             expect(function () {
-                var obj = create({a: 'foo', b: 'bar'});
+                var obj = Object.create({a: 'foo', b: 'bar'});
                 expect(obj, 'to have properties', {a: 'foo', b: 'bar'}); // should not fail
                 expect(obj, 'to have own properties', {a: 'foo', b: 'bar'}); // should fail
             }, 'to throw', "expected {} to have own properties { a: 'foo', b: 'bar' }\n" +
@@ -1312,7 +1319,7 @@ describe('unexpected', function () {
         });
 
         it('asserts absence and values of an object of own properties', function () {
-            var obj = create({a: 'foo', b: 'bar'});
+            var obj = Object.create({a: 'foo', b: 'bar'});
             expect(obj, 'to have properties', {a: 'foo', b: 'bar'});
             expect(obj, 'not to have own properties', ['a', 'b']);
             expect(function () {
@@ -3567,7 +3574,7 @@ describe('unexpected', function () {
                 clonedExpect('foo', 'to equal foo');
             }, 'to throw', function (err) {
                 expect(err.stack, 'to contain', 'theCustomAssertion');
-                expect(err.message, 'to match', /is not a function/);
+                expect(err.message, 'to match', /is not a function|Function expected/);
             });
         });
 

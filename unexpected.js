@@ -53,13 +53,6 @@ Assertion.prototype.shift = function (subject, assertionIndex) {
     }
 };
 
-Assertion.prototype.throwStandardError = function () {
-    var err = new Error();
-    err.output = this.standardErrorMessage();
-    err._isUnexpected = true;
-    throw err;
-};
-
 module.exports = Assertion;
 
 },{}],2:[function(require,module,exports){
@@ -67,12 +60,12 @@ module.exports = Assertion;
 var Assertion = require(1);
 var createStandardErrorMessage = require(4);
 var utils = require(10);
-var magicpen = require(26);
+var magicpen = require(27);
 var truncateStack = utils.truncateStack;
 var extend = utils.extend;
-var leven = require(22);
+var leven = require(23);
 var cloneError = utils.cloneError;
-var Promise = require(15);
+var Promise = require(16);
 var makePromise = require(5);
 var oathbreaker = require(6);
 var throwIfNonUnexpectedError = require(8);
@@ -114,6 +107,22 @@ function Unexpected(options) {
     this.output = options.output || magicpen();
     this._outputFormat = options.format || magicpen.defaultFormat;
     this.installedPlugins = options.installedPlugins || [];
+
+    // Make bound versions of these two helpers up front to save a bit when creating wrapped expects:
+    var that = this;
+    this.getType = function (typeName) {
+        return utils.findFirst(that.types, function (type) {
+            return type.name === typeName;
+        });
+    };
+    this.findTypeOf = function () { // ...
+        var objs = Array.prototype.slice.call(arguments);
+        return utils.findFirst(that.types || [], function (type) {
+            return objs.every(function (obj) {
+                return type.identify(obj);
+            });
+        });
+    };
 }
 
 var OR = {};
@@ -277,15 +286,6 @@ Unexpected.prototype.equal = function (actual, expected, depth, seen) {
     });
 };
 
-Unexpected.prototype.findTypeOf = function () { // ...
-    var objs = Array.prototype.slice.call(arguments);
-    return utils.findFirst(this.types || [], function (type) {
-        return objs.every(function (obj) {
-            return type.identify(obj);
-        });
-    });
-};
-
 Unexpected.prototype.inspect = function (obj, depth) {
     var seen = [];
     var that = this;
@@ -418,9 +418,18 @@ Unexpected.prototype.addAssertion = function (types, patterns, handler) {
             throw new Error('No such type: ' + typeName);
         }
         var isSeenByExpandedPattern = {};
-        patterns.forEach(function (pattern) {
-            ensureValidPattern(pattern);
-            expandPattern(pattern).forEach(function (expandedPattern) {
+        patterns.forEach(ensureValidPattern);
+        var expandedPatternArrays = patterns.map(expandPattern);
+        var defaultValueByFlag = {};
+        expandedPatternArrays.forEach(function(expandedPatterns) {
+            expandedPatterns.forEach(function (expandedPattern) {
+                Object.keys(expandedPattern.flags).forEach(function (flag) {
+                    defaultValueByFlag[flag] = false;
+                });
+            });
+        });
+        patterns.forEach(function (pattern, i) {
+            expandedPatternArrays[i].forEach(function (expandedPattern) {
                 if (expandedPattern.text in assertionsForType) {
                     if (!isSeenByExpandedPattern[expandedPattern.text]) {
                         throw new Error('Cannot redefine assertion: ' + expandedPattern.text + (typeName === 'any' ? '' : ' for type ' + typeName));
@@ -429,7 +438,7 @@ Unexpected.prototype.addAssertion = function (types, patterns, handler) {
                     isSeenByExpandedPattern[expandedPattern.text] = true;
                     assertionsForType[expandedPattern.text] = {
                         handler: handler,
-                        flags: expandedPattern.flags,
+                        flags: extend({}, defaultValueByFlag, expandedPattern.flags),
                         alternations: expandedPattern.alternations
                     };
                 }
@@ -438,12 +447,6 @@ Unexpected.prototype.addAssertion = function (types, patterns, handler) {
     });
 
     return this.expect; // for chaining
-};
-
-Unexpected.prototype.getType = function (typeName) {
-    return utils.findFirst(this.typeNames, function (type) {
-        return type.name === typeName;
-    });
 };
 
 Unexpected.prototype.addType = function (type) {
@@ -619,7 +622,7 @@ function installExpectMethods(unexpected, expectFunction) {
     expect.it = unexpected.it.bind(unexpected);
     expect.equal = unexpected.equal.bind(unexpected);
     expect.inspect = unexpected.inspect.bind(unexpected);
-    expect.findTypeOf = unexpected.findTypeOf.bind(unexpected);
+    expect.findTypeOf = unexpected.findTypeOf; // Already bound
     expect.fail = function () {
         try {
             unexpected.fail.apply(unexpected, arguments);
@@ -638,6 +641,7 @@ function installExpectMethods(unexpected, expectFunction) {
     expect.addStyle = unexpected.addStyle.bind(unexpected);
     expect.installTheme = unexpected.installTheme.bind(unexpected);
     expect.addType = unexpected.addType.bind(unexpected);
+    expect.getType = unexpected.getType;
     expect.clone = unexpected.clone.bind(unexpected);
     expect.toString = unexpected.toString.bind(unexpected);
     expect.assertions = unexpected.assertions;
@@ -739,10 +743,10 @@ Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
 
             // Not sure this is the right way to go about this:
             wrappedExpect.equal = that.equal;
-            wrappedExpect.types = that.types;
             wrappedExpect.inspect = that.inspect;
             wrappedExpect.diff = that.diff;
-            wrappedExpect.findTypeOf = that.findTypeOf;
+            wrappedExpect.findTypeOf = that.findTypeOf.bind(that);
+            wrappedExpect.getType = expect.getType;
             wrappedExpect.output = that.output;
             wrappedExpect.outputFormat = that.outputFormat;
             wrappedExpect.fail = function () {
@@ -1136,6 +1140,8 @@ function ensureValidPattern(pattern) {
 module.exports = Unexpected;
 
 },{}],3:[function(require,module,exports){
+(function (Buffer){
+var ansiRegex = require(13)();
 var utils = require(10);
 var objectIs = utils.objectIs;
 var isRegExp = utils.isRegExp;
@@ -1215,12 +1221,20 @@ module.exports = function (expect) {
             type = /^reg(?:exp?|ular expression)$/.test(type) ? 'regexp' : type;
             this.args[0] = expect.output.clone().jsString(type);
             expect(subjectType.is(type), '[not] to be truthy');
-        } else {
-            if (typeof type.name === 'string') {
-                this.args[0] = expect.output.clone().text(type.name);
+        } else if ('function' === typeof type) {
+            var functionName = utils.getFunctionName(type);
+            if (functionName) {
+                this.args[0] = expect.output.clone().text(functionName);
             }
-
             expect(subject instanceof type, '[not] to be truthy');
+        } else if ('object' === typeof type && type) {
+            if (typeof type.identify !== 'function' || typeof type.name !== 'string') {
+                throw new Error("The '" + this.testDescription + "' assertion requires either a string (type name), a type object, or function argument");
+            }
+            this.args[0] = expect.output.clone().text(type.name);
+            expect(type.identify(subject), '[not] to be true');
+        } else {
+            throw new Error("The '" + this.testDescription + "' assertion requires either a string (type name), a type object, or function argument");
         }
     });
 
@@ -1315,7 +1329,9 @@ module.exports = function (expect) {
                         var propertyNames = expect.findTypeOf(subject).getKeys(subject);
                         // Might put duplicates into propertyNames, but that does not matter:
                         for (var propertyName in subject) {
-                            propertyNames.push(propertyName);
+                            if (!subject.hasOwnProperty(propertyName)) {
+                                propertyNames.push(propertyName);
+                            }
                         }
                         propertyNames.forEach(function (propertyName) {
                             if ((!flags.own || subject.hasOwnProperty(propertyName)) && !(propertyName in properties)) {
@@ -1368,7 +1384,7 @@ module.exports = function (expect) {
 
         if (this.flags.only) {
             expect(hasKeys, 'to be truthy');
-            expect(Object.keys(subject).length === keys.length, '[not] to be truthy');
+            expect(expect.findTypeOf(subject).getKeys(subject).length === keys.length, '[not] to be truthy');
         } else {
             expect(hasKeys, '[not] to be truthy');
         }
@@ -1517,13 +1533,15 @@ module.exports = function (expect) {
         expect(subject.length, 'to equal', value);
     });
 
-    expect.addAssertion('object', 'to be (a map|a hash|an object) whose values satisfy', function (expect, subject) {
+    expect.addAssertion('object', [
+        'to have values satisfying',
+        'to be (a map|a hash|an object) whose values satisfy'
+    ], function (expect, subject) {
         var extraArgs = Array.prototype.slice.call(arguments, 2);
         if (extraArgs.length === 0) {
             throw new Error('Assertion "' + this.testDescription + '" expects a third argument');
         }
         this.errorMode = 'nested';
-        expect(subject, 'to be an object');
         expect(subject, 'not to equal', {});
         this.errorMode = 'bubble';
 
@@ -1562,12 +1580,7 @@ module.exports = function (expect) {
                             } else {
                                 seenFirstRejected = true;
                             }
-                            output.i().text(key).text(': ');
-                            if (error._isUnexpected) {
-                                output.block(error.output);
-                            } else {
-                                output.block(output.clone().text(error.message));
-                            }
+                            output.i().text(key).text(': ').block(error.output);
                         }
                     });
                 });
@@ -1575,7 +1588,10 @@ module.exports = function (expect) {
         });
     });
 
-    expect.addAssertion('array-like', 'to be an array whose items satisfy', function (expect, subject) { // ...
+    expect.addAssertion('array-like', [
+        'to have items satisfying',
+        'to be an array whose items satisfy'
+    ], function (expect, subject) { // ...
         var extraArgs = Array.prototype.slice.call(arguments, 2);
         if (extraArgs.length === 0) {
             throw new Error('Assertion "' + this.testDescription + '" expects a third argument');
@@ -1583,24 +1599,13 @@ module.exports = function (expect) {
         this.errorMode = 'nested';
         expect(subject, 'to be non-empty');
         this.errorMode = 'bubble';
-        return expect.apply(expect, [subject, 'to be a map whose values satisfy'].concat(extraArgs));
+        return expect.apply(expect, [subject, 'to have values satisfying'].concat(extraArgs));
     });
 
-    expect.addAssertion('array-like', 'to be an array of', function (expect, subject, itemType) {
-        this.errorMode = 'nested';
-        expect(subject, 'to be non-empty');
-        this.errorMode = 'default';
-        expect(subject, 'to be an array whose items satisfy', 'to be a', itemType);
-    });
-
-    expect.addAssertion('array-like', 'to be an array of (strings|numbers|booleans|arrays|objects|functions|regexps|regexes|regular expressions)', function (expect, subject) {
-        this.errorMode = 'nested';
-        expect(subject, 'to be non-empty');
-        this.errorMode = 'default';
-        expect(subject, 'to be an array of', this.alternations[0].replace(/e?s$/, ''));
-    });
-
-    expect.addAssertion('object', 'to be (a map|a hash|an object) whose (keys|properties) satisfy', function (expect, subject) {
+    expect.addAssertion('object', [
+        'to have keys satisfying',
+        'to be (a map|a hash|an object) whose (keys|properties) satisfy'
+    ], function (expect, subject) {
         var extraArgs = Array.prototype.slice.call(arguments, 2);
         if (extraArgs.length === 0) {
             throw new Error('Assertion "' + this.testDescription + '" expects a third argument');
@@ -1610,8 +1615,9 @@ module.exports = function (expect) {
         expect(subject, 'not to equal', {});
         this.errorMode = 'bubble';
 
-        var promiseByKey = {};
-        Object.keys(subject).forEach(function (key) {
+        var subjectKeys = expect.findTypeOf(subject).getKeys(subject),
+            promiseByKey = {};
+        subjectKeys.forEach(function (key) {
             promiseByKey[key] = expect.promise(function () {
                 if (typeof extraArgs[0] === 'function') {
                     return extraArgs[0](key, subject[key]);
@@ -1625,7 +1631,7 @@ module.exports = function (expect) {
             return expect.promise.settle(promiseByKey).then(function () {
                 expect.fail(function (output) {
                     output.error('failed expectation on keys ')
-                          .text(Object.keys(subject).join(', '))
+                          .text(subjectKeys.join(', '))
                           .error(':').nl()
                           .indentLines();
 
@@ -1639,12 +1645,7 @@ module.exports = function (expect) {
                             } else {
                                 seenFirstRejected = true;
                             }
-                            output.i().text(key).text(': ');
-                            if (error._isUnexpected) {
-                                output.block(error.output);
-                            } else {
-                                output.block(output.clone().text(error.message));
-                            }
+                            output.i().text(key).text(': ').block(error.output);
                         }
                     });
                 });
@@ -1676,7 +1677,20 @@ module.exports = function (expect) {
         }(subject));
     });
 
-    expect.addAssertion('Error', 'to [exhaustively] satisfy [assertion]', function (expect, subject, value) {
+    expect.addAssertion('Error', 'to have message', function (expect, subject, value) {
+        this.errorMode = 'nested';
+        if (subject._isUnexpected) {
+            return expect.promise(function () {
+                return expect(subject.output.toString('text'), 'to satisfy', value);
+            }).then(function () {
+                return expect(subject.message.replace(ansiRegex, '').replace(/^\n/, ''), 'to satisfy', value);
+            });
+        } else {
+            return expect(subject.message, 'to satisfy', value);
+        }
+    });
+
+    expect.addAssertion('Error', 'to [exhaustively] satisfy', function (expect, subject, value) {
         var valueType = expect.findTypeOf(value);
         if (valueType.is('Error')) {
             expect(subject, 'to have properties', valueType.unwrap(value));
@@ -1688,7 +1702,9 @@ module.exports = function (expect) {
                 expect(subject[key], 'to [exhaustively] satisfy', value[key]);
             });
             if (this.flags.exhaustively) {
-                expect(utils.getKeysOfDefinedProperties(subject), 'to have length', keys.filter(function (key) {
+                expect(expect.findTypeOf(subject).getKeys(subject).filter(function (key) {
+                    return typeof subject[key] !== 'undefined';
+                }), 'to have length', keys.filter(function (key) {
                     return typeof value[key] !== 'undefined';
                 }).length);
             }
@@ -1720,6 +1736,12 @@ module.exports = function (expect) {
         }
     });
 
+    if (typeof Buffer !== 'undefined') {
+        expect.addAssertion('Buffer', 'when decoded as', function (expect, subject, value) {
+            return this.shift(subject.toString(value), 1);
+        });
+    }
+
     expect.addAssertion('[not] to [exhaustively] satisfy [assertion]', function (expect, subject, value) {
         if (this.flags.not) {
             return expect.promise(function (resolve, reject) {
@@ -1739,9 +1761,13 @@ module.exports = function (expect) {
                     }
                 });
             });
-        } else if (this.flags.assertion && typeof value === 'string') {
+        } else if (this.flags.assertion) {
             this.errorMode = 'bubble'; // to satisfy assertion 'to be a number' => to be a number
-            return expect.apply(expect, Array.prototype.slice.call(arguments, 1));
+            if (typeof value === 'string') {
+                return expect.apply(expect, Array.prototype.slice.call(arguments, 1));
+            } else {
+                return expect.apply(expect, [subject, this.flags.exhaustively ? 'to exhaustively satisfy' : 'to satisfy'].concat(Array.prototype.slice.call(arguments, 2)));
+            }
         } else if (value && value._expectIt) {
             return expect.withError(function () {
                 return value(subject);
@@ -1762,12 +1788,13 @@ module.exports = function (expect) {
         } else if (isRegExp(value)) {
             expect(subject, 'to match', value);
         } else {
-            var type = expect.findTypeOf(subject, value),
-                bothAreArrays = type.is('array');
-            if (type.is('array-like') || type.is('object')) {
+            var subjectType = expect.findTypeOf(subject),
+                commonType = expect.findTypeOf(subject, value),
+                bothAreArrays = commonType.is('array');
+            if (commonType.is('array-like') || commonType.is('object')) {
                 expect(subject, 'to be an object');
                 var promiseByKey = {};
-                var keys = type.getKeys(value);
+                var keys = subjectType.getKeys(value);
                 keys.forEach(function (key, index) {
                     promiseByKey[key] = expect.promise(function () {
                         if (typeof value[key] === 'function') {
@@ -1782,7 +1809,7 @@ module.exports = function (expect) {
 
                 return expect.promise.all([
                     expect.promise(function () {
-                        if (type.is('array-like') || flags.exhaustively) {
+                        if (commonType.is('array-like') || flags.exhaustively) {
                             expect(subject, 'to only have keys', keys);
                         }
                     }),
@@ -1796,9 +1823,10 @@ module.exports = function (expect) {
                                     inline: true
                                 };
 
-                                var keyIndex = {};
-                                Object.keys(subject).concat(Object.keys(value)).forEach(function (key) {
-                                    if (!(key in result)) {
+                                var valueType = expect.findTypeOf(value),
+                                    keyIndex = {};
+                                subjectType.getKeys(subject).concat(valueType.getKeys(value)).forEach(function (key) {
+                                    if (!(key in keyIndex)) {
                                         keyIndex[key] = key;
                                     }
                                 });
@@ -1819,7 +1847,7 @@ module.exports = function (expect) {
                                         var isInlineDiff = true;
 
                                         if (!(key in value)) {
-                                            if (type.is('array-like') || flags.exhaustively) {
+                                            if (commonType.is('array-like') || flags.exhaustively) {
                                                 annotation.error('should be removed');
                                             } else {
                                                 conflicting = null;
@@ -1932,15 +1960,48 @@ module.exports = function (expect) {
 
     expect.addAssertion('function', 'when called with', function (expect, subject, args) { // ...
         this.errorMode = 'nested';
-        return this.shift(expect, subject.apply(subject, args), 1);
+        return this.shift(subject.apply(subject, args), 1);
     });
 
-    expect.addAssertion('array', 'when passed as parameters to', function (expect, subject, fn) { // ...
+    function instantiate(Constructor, args) {
+        function ProxyConstructor() {
+            return Constructor.apply(this, args);
+        }
+        ProxyConstructor.prototype = Constructor.prototype;
+        return new ProxyConstructor();
+    }
+
+    expect.addAssertion('array-like', [
+        'when passed as parameters to [async]',
+        'when passed as parameters to [constructor]'
+    ], function (expect, subject, fn) { // ...
         this.errorMode = 'nested';
-        return this.shift(expect, fn.apply(fn, subject), 1);
+        var that = this,
+            args = subject;
+        if (that.flags.async) {
+            return expect.promise(function (run) {
+                args = [].concat(args);
+                args.push(run(function (err, result) {
+                    expect(err, 'to be falsy');
+                    return that.shift(result, 1);
+                }));
+                fn.apply(null, args);
+            });
+        } else {
+            subject = that.flags.constructor ? instantiate(fn, args) : fn.apply(fn, args);
+            return that.shift(subject, 1);
+        }
+    });
+
+    expect.addAssertion([
+        'when passed as parameter to [async]',
+        'when passed as parameter to [constructor]'
+    ], function (expect, subject) {
+        return expect.apply(expect, [[subject], 'when passed as parameters to [async] [constructor]'].concat(this.args));
     });
 };
 
+}).call(this,require(17).Buffer)
 },{}],4:[function(require,module,exports){
 module.exports = function createStandardErrorMessage(expect, subject, testDescription, args) {
     var output = expect.output.clone();
@@ -2005,7 +2066,7 @@ module.exports = function createStandardErrorMessage(expect, subject, testDescri
 
 },{}],5:[function(require,module,exports){
 /*global Promise:true*/
-var Promise = require(15);
+var Promise = require(16);
 var oathbreaker = require(6);
 var throwIfNonUnexpectedError = require(8);
 
@@ -2125,7 +2186,7 @@ module.exports = makePromise;
 },{}],6:[function(require,module,exports){
 /*global Promise:true*/
 var workQueue = require(11);
-var Promise = require(15);
+var Promise = require(16);
 module.exports = function oathbreaker(value) {
     if (!value || typeof value.then !== 'function') {
         return value;
@@ -2216,6 +2277,32 @@ module.exports = function (expect) {
         diffRemovedHighlight: ['bgRed', 'black']
     });
 
+    expect.addStyle('singleQuotedString', function (content) {
+        content = String(content);
+        this.jsString("'")
+            .jsString(content.replace(/[\\\x00-\x1f']/g, function ($0) {
+                if ($0 === '\n') {
+                    return '\\n';
+                } else if ($0 === '\r') {
+                    return '\\r';
+                } else if ($0 === "'") {
+                    return "\\'";
+                } else if ($0 === '\\') {
+                    return '\\\\';
+                } else if ($0 === '\t') {
+                    return '\\t';
+                } else if ($0 === '\b') {
+                    return '\\b';
+                } else if ($0 === '\f') {
+                    return '\\f';
+                } else {
+                    var charCode = $0.charCodeAt(0);
+                    return '\\x' + (charCode < 16 ? '0' : '') + charCode.toString(16);
+                }
+            }))
+            .jsString("'");
+    });
+
     expect.addStyle('key', function (content) {
         content = String(content);
         if (/^[a-z\$\_][a-z0-9\$\_]*$/i.test(content)) {
@@ -2223,14 +2310,10 @@ module.exports = function (expect) {
         } else if (/^(?:0|[1-9][0-9]*)$/.test(content)) {
             this.jsNumber(content);
         } else {
-            this.jsString('\'')
-                .jsString(JSON.stringify(content).replace(/^"|"$/g, '')
-                         .replace(/'/g, "\\'")
-                         .replace(/\\"/g, '"'))
-                .jsString('\'');
-
+            this.singleQuotedString(content);
         }
     });
+
     // Intended to be redefined by a plugin that offers syntax highlighting:
     expect.addStyle('code', function (content, language) {
         this.text(content);
@@ -2275,8 +2358,8 @@ var utils = require(10);
 var isRegExp = utils.isRegExp;
 var leftPad = utils.leftPad;
 var extend = utils.extend;
-var arrayChanges = require(13);
-var leven = require(22);
+var arrayChanges = require(14);
+var leven = require(23);
 
 module.exports = function (expect) {
     expect.addType({
@@ -2336,9 +2419,12 @@ module.exports = function (expect) {
                 return false;
             }
 
-            var actualKeys = utils.getKeysOfDefinedProperties(a),
-                expectedKeys = utils.getKeysOfDefinedProperties(b),
-                key;
+            var actualKeys = expect.findTypeOf(a).getKeys(a).filter(function (key) {
+                    return typeof a[key] !== 'undefined';
+                }),
+                expectedKeys = expect.findTypeOf(b).getKeys(b).filter(function (key) {
+                    return typeof b[key] !== 'undefined';
+                });
 
             // having the same number of owned properties (keys incorporates hasOwnProperty)
             if (actualKeys.length !== expectedKeys.length) {
@@ -2357,7 +2443,7 @@ module.exports = function (expect) {
             //equivalent values for every corresponding key, and
             // possibly expensive deep test
             for (var j = 0; j < actualKeys.length; j += 1) {
-                key = actualKeys[j];
+                var key = actualKeys[j];
                 if (!equal(a[key], b[key])) {
                     return false;
                 }
@@ -2365,7 +2451,7 @@ module.exports = function (expect) {
             return true;
         },
         inspect: function (obj, depth, output, inspect) {
-            var keys = Object.keys(obj);
+            var keys = this.getKeys(obj);
             if (keys.length === 0) {
                 return utils.wrapConstructorNameAroundOutput(output.text('{}'), obj);
             }
@@ -2410,40 +2496,64 @@ module.exports = function (expect) {
                 return propertyOutput;
             });
 
+            var maxLineLength = output.preferredWidth - (depth === Infinity ? 0 : depth) * 2 - 2;
             var width = 0;
-            var multipleLines = inspectedItems.some(function (o) {
-                var size = o.size();
-                width += size.width;
-                return width > 50 || size.height > 1;
+            var compact = inspectedItems.length > 5 || inspectedItems.every(function (inspectedItem) {
+                if (inspectedItem.isMultiline()) {
+                    return false;
+                }
+                width += inspectedItem.size().width;
+                return width < maxLineLength;
             });
 
-            if (multipleLines) {
-                output.text('{').nl().indentLines();
-
+            var itemsOutput = output.clone();
+            if (compact) {
+                var currentLineLength = 0;
                 inspectedItems.forEach(function (inspectedItem, index) {
-                    output.i().block(inspectedItem).nl();
-                });
+                    var size = inspectedItem.size();
+                    currentLineLength += size.width + 1;
+                    if (index > 0) {
+                        if (size.height === 1 && currentLineLength < maxLineLength) {
+                            itemsOutput.sp();
+                        } else {
+                            itemsOutput.nl();
+                            currentLineLength = size.width;
+                        }
 
-                output.outdentLines().text('}');
-            } else {
-                output.text('{ ');
-                inspectedItems.forEach(function (inspectedItem, index) {
-                    output.append(inspectedItem);
-                    var lastIndex = index === inspectedItems.length - 1;
-                    if (!lastIndex) {
-                        output.sp();
+                        if (size.height > 1) {
+                            // Make sure that we don't append more to this line
+                            currentLineLength = maxLineLength;
+                        }
                     }
+                    itemsOutput.append(inspectedItem);
                 });
-                output.text(' }');
+            } else {
+                inspectedItems.forEach(function (inspectedItem, index) {
+                    if (index > 0) {
+                        itemsOutput.nl();
+                    }
+                    itemsOutput.append(inspectedItem);
+                });
             }
+
+            if (itemsOutput.isMultiline()) {
+                output.text('{').nl()
+                      .indentLines()
+                      .i().block(itemsOutput)
+                      .outdentLines()
+                      .nl().text('}');
+            } else {
+                output.text('{ ').append(itemsOutput).text(' }');
+            }
+
             return utils.wrapConstructorNameAroundOutput(output, obj);
         },
         diff: function (actual, expected, output, diff, inspect, equal) {
             if (actual.constructor !== expected.constructor) {
                 return {
                     diff: output.text('Mismatching constructors ')
-                        .text(actual.constructor && actual.constructor.name || actual.constructor)
-                        .text(' should be ').text(expected.constructor && expected.constructor.name || expected.constructor),
+                        .text(actual.constructor && utils.getFunctionName(actual.constructor) || actual.constructor)
+                        .text(' should be ').text(expected.constructor && utils.getFunctionName(expected.constructor) || expected.constructor),
                     inline: false
                 };
             }
@@ -2454,8 +2564,8 @@ module.exports = function (expect) {
             };
 
             var keyIndex = {};
-            Object.keys(actual).concat(Object.keys(expected)).forEach(function (key) {
-                if (!(key in result)) {
+            expect.findTypeOf(actual).getKeys(actual).concat(expect.findTypeOf(expected).getKeys(expected)).forEach(function (key) {
+                if (!(key in keyIndex)) {
                     keyIndex[key] = key;
                 }
             });
@@ -2545,8 +2655,8 @@ module.exports = function (expect) {
             return true;
         }
 
-        var aKeys = Object.keys(a);
-        var bKeys = Object.keys(b);
+        var aKeys = expect.findTypeOf(a).getKeys(a);
+        var bKeys = expect.findTypeOf(b).getKeys(b);
         var numberOfSimilarKeys = 0;
         var requiredSimilarKeys = Math.round(Math.max(aKeys.length, bKeys.length) / 2);
         return aKeys.concat(bKeys).some(function (key) {
@@ -2609,11 +2719,16 @@ module.exports = function (expect) {
                 }
             }
 
+            var maxLineLength = output.preferredWidth - (depth === Infinity ? 0 : depth) * 2 - 2;
             var width = 0;
             var multipleLines = inspectedItems.some(function (o) {
+                if (o.isMultiline()) {
+                    return true;
+                }
+
                 var size = o.size();
                 width += size.width;
-                return width > 50 || size.height > 1;
+                return width > maxLineLength;
             });
 
             inspectedItems.forEach(function (inspectedItem, index) {
@@ -2721,6 +2836,11 @@ module.exports = function (expect) {
         }
     });
 
+    var errorMethodBlacklist = ['message', 'description', 'line', 'column', 'sourceId', 'sourceURL', 'stack', 'stackArray'].reduce(function (result, prop) {
+        result[prop] = true;
+        return result;
+    }, {});
+
     expect.addType({
         base: 'object',
         name: 'Error',
@@ -2728,14 +2848,17 @@ module.exports = function (expect) {
             return utils.isError(value);
         },
         getKeys: function (value) {
-            var keys = this.baseType.getKeys(value);
-            keys.push('message');
+            var keys = this.baseType.getKeys(value).filter(function (key) {
+                return !errorMethodBlacklist[key];
+            });
+            keys.unshift('message');
             return keys;
         },
         unwrap: function (value) {
-            return extend({
-                message: value.message
-            }, value);
+            return this.getKeys(value).reduce(function (result, key) {
+                result[key] = value[key];
+                return result;
+            }, {});
         },
         equal: function (a, b, equal) {
             return a === b ||
@@ -2747,15 +2870,29 @@ module.exports = function (expect) {
             output.text('Error(').append(inspect(errorObject, depth)).text(')');
         },
         diff: function (actual, expected, output, diff) {
-            var result = diff(extend({
-                message: actual.message
-            }, actual), extend({
-                message: expected.message
-            }, expected));
+            var result = diff(this.unwrap(actual), this.unwrap(expected));
             if (result.diff) {
                 result.diff = utils.wrapConstructorNameAroundOutput(result.diff, actual);
             }
             return result;
+        }
+    });
+
+    var unexpectedErrorMethodBlacklist = ['output', '_isUnexpected', 'htmlMessage', '_hasSerializedErrorMessage'].reduce(function (result, prop) {
+        result[prop] = true;
+        return result;
+    }, {});
+    expect.addType({
+        base: 'Error',
+        name: 'UnexpectedError',
+        identify: function (value) {
+            return value && typeof value === 'object' &&
+                value._isUnexpected && this.baseType.identify(value);
+        },
+        getKeys: function (value) {
+            return this.baseType.getKeys(value).filter(function (key) {
+                return !unexpectedErrorMethodBlacklist[key];
+            });
         }
     });
 
@@ -2784,15 +2921,14 @@ module.exports = function (expect) {
         },
         inspect: function (f, depth, output, inspect) {
             var source = f.toString();
-            var name;
+            var name = utils.getFunctionName(f) || '';
             var args;
             var body;
-            var matchSource = source.match(/^function (\w*)?\s*\(([^\)]*)\)\s*\{([\s\S]*?( *)?)\}$/);
+            var matchSource = source.match(/^\s*function \w*?\s*\(([^\)]*)\)\s*\{([\s\S]*?( *)?)\}\s*$/);
             if (matchSource) {
-                name = matchSource[1];
-                args = matchSource[2];
-                body = matchSource[3];
-                var bodyIndent = matchSource[4] || '';
+                args = matchSource[1];
+                body = matchSource[2];
+                var bodyIndent = matchSource[3] || '';
                 // Remove leading indentation unless the function is a one-liner or it uses multiline string literals
                 if (/\n/.test(body) && !/\\\n/.test(body)) {
                     body = body.replace(new RegExp('^ {' + bodyIndent.length + '}', 'mg'), '');
@@ -2803,10 +2939,9 @@ module.exports = function (expect) {
                 if (/^\s*\[native code\]\s*$/.test(body)) {
                     body = ' /* native code */ ';
                 } else {
-                    body = body.replace(/^((?:.*\n){3}( *).*\n)[\s\S]*?\n((?:.*\n){3})$/, '$1$2// ... lines removed ...\n$3');
+                    body = body.replace(/^((?:.*\n){3}( *).*\n)[\s\S]*?\n[\s\S]*?\n((?:.*\n){3})$/, '$1$2// ... lines removed ...\n$3');
                 }
             } else {
-                name = f.name || '';
                 args = ' /*...*/ ';
                 body = ' /*...*/ ';
             }
@@ -2976,11 +3111,7 @@ module.exports = function (expect) {
             return typeof value === 'string';
         },
         inspect: function (value, depth, output) {
-            output.jsString('\'')
-                .jsString(JSON.stringify(value).replace(/^"|"$/g, '')
-                         .replace(/'/g, "\\'")
-                         .replace(/\\"/g, '"'))
-                .jsString('\'');
+            output.singleQuotedString(value);
         },
         diff: function (actual, expected, output, diff, inspect) {
             var result = {
@@ -3048,9 +3179,9 @@ module.exports = function (expect) {
     });
 };
 
-}).call(this,require(16).Buffer)
+}).call(this,require(17).Buffer)
 },{}],10:[function(require,module,exports){
-var stringDiff = require(21);
+var stringDiff = require(22);
 
 var errorMethodBlacklist = ['message', 'line', 'sourceId', 'sourceURL', 'stack', 'stackArray'].reduce(function (result, prop) {
     result[prop] = true;
@@ -3079,10 +3210,6 @@ var utils = module.exports = {
         return (Object.prototype.toString.call(re) === '[object RegExp]');
     },
 
-    isPromise: function (value) {
-        return value && typeof value.then === 'function';
-    },
-
     isError: function (err) {
         return typeof err === 'object' && (Object.prototype.toString.call(err) === '[object Error]' || err instanceof Error);
     },
@@ -3095,22 +3222,6 @@ var utils = module.exports = {
             });
         }
         return target;
-    },
-
-    isUndefinedOrNull: function (value) {
-        return value === null || value === undefined;
-    },
-
-    getKeysOfDefinedProperties: function (object) {
-        var keys = Object.keys(object).filter(function (key) {
-            return typeof object[key] !== 'undefined';
-        });
-        // The 'message' property of Error instances is not enumerable for some reason, but we want
-        // to include it in the set when comparing:
-        if (Object.prototype.toString.call(object) === '[object Error]') {
-            keys.push('message');
-        }
-        return keys;
     },
 
     truncateStack: function (err, fn) {
@@ -3295,8 +3406,26 @@ var utils = module.exports = {
         return output;
     },
 
+    getFunctionName: function (f) {
+        if (typeof f.name === 'string') {
+            return f.name;
+        }
+        var matchFunctionName = Function.prototype.toString.call(f).match(/function ([^\(]+)/);
+        if (matchFunctionName) {
+            return matchFunctionName[1];
+        }
+
+        if (f === Object) {
+            return 'Object';
+        }
+        if (f === Function) {
+            return 'Function';
+        }
+    },
+
     wrapConstructorNameAroundOutput: function (output, obj) {
-        var constructorName = obj.constructor && obj.constructor !== Object && obj.constructor.name;
+        var constructor = obj.constructor;
+        var constructorName = constructor && constructor !== Object && utils.getFunctionName(constructor);
         if (constructorName && constructorName !== 'Object') {
             return output.clone().text(constructorName + '(').append(output).text(')');
         } else {
@@ -3307,7 +3436,7 @@ var utils = module.exports = {
 
 },{}],11:[function(require,module,exports){
 /*global Promise:true*/
-var Promise = require(15);
+var Promise = require(16);
 
 var workQueue = {
     queue: [],
@@ -3357,7 +3486,13 @@ assertions(unexpected);
 module.exports = unexpected;
 
 },{}],13:[function(require,module,exports){
-var arrayDiff = require(14);
+'use strict';
+module.exports = function () {
+	return /(?:(?:\u001b\[)|\u009b)(?:(?:[0-9]{1,3})?(?:(?:;[0-9]{0,3})*)?[A-M|f-m])|\u001b[A-M]/g;
+};
+
+},{}],14:[function(require,module,exports){
+var arrayDiff = require(15);
 
 function extend(target) {
     for (var i = 1; i < arguments.length; i += 1) {
@@ -3523,7 +3658,7 @@ module.exports = function arrayChanges(actual, expected, equal, similar) {
     return mutatedArray;
 };
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 module.exports = arrayDiff;
 
 // Based on some rough benchmarking, this algorithm is about O(2n) worst case,
@@ -3706,7 +3841,7 @@ function arrayDiff(before, after, equalFn) {
   return removes.concat(outputMoves, inserts);
 }
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 (function (process,global){
 /* @preserve
  * The MIT License (MIT)
@@ -8373,8 +8508,8 @@ module.exports = ret;
 
 },{"./es5.js":14}]},{},[4])(4)
 });                    ;if (typeof window !== 'undefined' && window !== null) {                               window.P = window.Promise;                                                     } else if (typeof self !== 'undefined' && self !== null) {                             self.P = self.Promise;                                                         }
-}).call(this,require(20),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],16:[function(require,module,exports){
+}).call(this,require(21),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],17:[function(require,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -8382,9 +8517,9 @@ module.exports = ret;
  * @license  MIT
  */
 
-var base64 = require(17)
-var ieee754 = require(18)
-var isArray = require(19)
+var base64 = require(18)
+var ieee754 = require(19)
+var isArray = require(20)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = Buffer
@@ -9428,7 +9563,7 @@ function decodeUtf8Char (str) {
   }
 }
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 ;(function (exports) {
@@ -9550,7 +9685,7 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 	exports.fromByteArray = uint8ToBase64
 }(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 exports.read = function(buffer, offset, isLE, mLen, nBytes) {
   var e, m,
       eLen = nBytes * 8 - mLen - 1,
@@ -9636,7 +9771,7 @@ exports.write = function(buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128;
 };
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 
 /**
  * isArray
@@ -9671,7 +9806,7 @@ module.exports = isArray || function (val) {
   return !! val && '[object Array]' == str.call(val);
 };
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -9736,7 +9871,7 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 /* See LICENSE file for terms of use */
 
 /*
@@ -10127,7 +10262,7 @@ process.chdir = function (dir) {
   }
 })(this);
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 // intentionally commented out as it makes it slower...
 //'use strict';
 
@@ -10175,17 +10310,17 @@ module.exports = function (a, b) {
 	return ret;
 };
 
-},{}],23:[function(require,module,exports){
-var utils = require(33);
-var TextSerializer = require(27);
-var colorDiff = require(37);
-var rgbRegexp = require(31);
-var themeMapper = require(32);
+},{}],24:[function(require,module,exports){
+var utils = require(34);
+var TextSerializer = require(28);
+var colorDiff = require(38);
+var rgbRegexp = require(32);
+var themeMapper = require(33);
 
 var cacheSize = 0;
 var maxColorCacheSize = 1024;
 
-var ansiStyles = utils.extend({}, require(34));
+var ansiStyles = utils.extend({}, require(35));
 Object.keys(ansiStyles).forEach(function (styleName) {
     ansiStyles[styleName.toLowerCase()] = ansiStyles[styleName];
 });
@@ -10317,11 +10452,11 @@ AnsiSerializer.prototype.text = function () {
 
 module.exports = AnsiSerializer;
 
-},{}],24:[function(require,module,exports){
-var cssStyles = require(28);
-var flattenBlocksInLines = require(30);
-var rgbRegexp = require(31);
-var themeMapper = require(32);
+},{}],25:[function(require,module,exports){
+var cssStyles = require(29);
+var flattenBlocksInLines = require(31);
+var rgbRegexp = require(32);
+var themeMapper = require(33);
 
 function ColoredConsoleSerializer(theme) {
     this.theme = theme;
@@ -10396,10 +10531,10 @@ ColoredConsoleSerializer.prototype.text = function () {
 
 module.exports = ColoredConsoleSerializer;
 
-},{}],25:[function(require,module,exports){
-var cssStyles = require(28);
-var rgbRegexp = require(31);
-var themeMapper = require(32);
+},{}],26:[function(require,module,exports){
+var cssStyles = require(29);
+var rgbRegexp = require(32);
+var themeMapper = require(33);
 
 function HtmlSerializer(theme) {
     this.theme = theme;
@@ -10464,13 +10599,13 @@ HtmlSerializer.prototype.text = function () {
 
 module.exports = HtmlSerializer;
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 /*global window*/
-var utils = require(33);
+var utils = require(34);
 var extend = utils.extend;
-var duplicateText = require(29);
-var rgbRegexp = require(31);
-var cssStyles = require(28);
+var duplicateText = require(30);
+var rgbRegexp = require(32);
+var cssStyles = require(29);
 
 function MagicPen(options) {
     if (!(this instanceof MagicPen)) {
@@ -10496,7 +10631,7 @@ if (typeof window !== 'undefined' && typeof window.navigator !== 'undefined') {
     } else {
         MagicPen.defaultFormat = 'html'; // Browser
     }
-} else if (require(39)) {
+} else if (require(40)) {
     MagicPen.defaultFormat = 'ansi'; // colored console
 } else {
     MagicPen.defaultFormat = 'text'; // Plain text
@@ -10518,10 +10653,10 @@ MagicPen.prototype.newline = MagicPen.prototype.nl = function (count) {
 };
 
 MagicPen.serializers = {
-    text: require(27),
-    html: require(25),
-    ansi: require(23),
-    coloredConsole: require(24)
+    text: require(28),
+    html: require(26),
+    ansi: require(24),
+    coloredConsole: require(25)
 };
 
 function hasSameTextStyling(a, b) {
@@ -10988,8 +11123,8 @@ MagicPen.prototype.installTheme = function (formats, theme) {
 
 module.exports = MagicPen;
 
-},{}],27:[function(require,module,exports){
-var flattenBlocksInLines = require(30);
+},{}],28:[function(require,module,exports){
+var flattenBlocksInLines = require(31);
 
 function TextSerializer() {}
 
@@ -11016,7 +11151,7 @@ TextSerializer.prototype.block = function (content) {
 
 module.exports = TextSerializer;
 
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 var cssStyles = {
     bold: 'font-weight: bold',
     dim: 'opacity: 0.7',
@@ -11052,7 +11187,7 @@ Object.keys(cssStyles).forEach(function (styleName) {
 
 module.exports = cssStyles;
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 var whitespaceCacheLength = 256;
 var whitespaceCache = [''];
 for (var i = 1; i <= whitespaceCacheLength; i += 1) {
@@ -11088,9 +11223,9 @@ function duplicateText(content, times) {
 
 module.exports = duplicateText;
 
-},{}],30:[function(require,module,exports){
-var utils = require(33);
-var duplicateText = require(29);
+},{}],31:[function(require,module,exports){
+var utils = require(34);
+var duplicateText = require(30);
 
 function createPadding(length) {
     return { style: 'text', args: [duplicateText(' ', length)] };
@@ -11172,10 +11307,10 @@ function flattenBlocksInLines(lines) {
 
 module.exports = flattenBlocksInLines;
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 module.exports =  /^(?:bg)?#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i;
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 module.exports = function (theme, args) {
     if (args.length === 2) {
         var count = 0;
@@ -11199,7 +11334,7 @@ module.exports = function (theme, args) {
     return args;
 };
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 var utils = {
     extend: function (target) {
         for (var i = 1; i < arguments.length; i += 1) {
@@ -11267,7 +11402,7 @@ var utils = {
 
 module.exports = utils;
 
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 'use strict';
 
 var styles = module.exports = {
@@ -11325,7 +11460,7 @@ Object.keys(styles).forEach(function (groupName) {
 	});
 });
 
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 /**
  * @author Markus Ekholm
  * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
@@ -11440,7 +11575,7 @@ function xyz_to_lab(c)
 // js-indent-level: 2
 // End:
 
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 /**
  * @author Markus Ekholm
  * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
@@ -11606,12 +11741,12 @@ function radians(n) { return n*(PI/180); }
 // js-indent-level: 2
 // End:
 
-},{}],37:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 'use strict';
 
-var diff = require(36);
-var convert = require(35);
-var palette = require(38);
+var diff = require(37);
+var convert = require(36);
+var palette = require(39);
 
 var color = module.exports = {};
 
@@ -11636,7 +11771,7 @@ color.furthest = function(target, relative) {
     return result[key];
 };
 
-},{}],38:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 /**
  * @author Markus Ekholm
  * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
@@ -11674,8 +11809,8 @@ exports.palette_map_key = palette_map_key;
 /**
 * IMPORTS
 */
-var color_diff    = require(36);
-var color_convert = require(35);
+var color_diff    = require(37);
+var color_convert = require(36);
 
 /**
  * API FUNCTIONS
@@ -11745,7 +11880,7 @@ function diff(c1,c2)
 // js-indent-level: 2
 // End:
 
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 (function (process){
 'use strict';
 var argv = process.argv;
@@ -11787,6 +11922,6 @@ module.exports = (function () {
 	return false;
 })();
 
-}).call(this,require(20))
+}).call(this,require(21))
 },{}]},{},[12])(12)
 });

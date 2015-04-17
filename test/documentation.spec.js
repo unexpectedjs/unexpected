@@ -11,18 +11,18 @@ describe("documentation tests", function () {
 
     var isBrowser = typeof weknowhow !== 'undefined';
     var isPhantom = typeof mochaPhantomJS !== 'undefined';
-    unexpected.addAssertion("to have message", function (expect, subject, value) {
-        var message;
-        if (subject._isUnexpected) {
-            message = subject.output.toString();
-        } else if (subject && Object.prototype.toString.call(subject) === "[object Error]") {
-            message = subject.message;
-        } else {
-            message = String(subject);
-        }
-        this.errorMode = "bubble";
-        expect(message, "to equal", value);
-    });
+    // unexpected.addAssertion("to have message", function (expect, subject, value) {
+    //     var message;
+    //     if (subject._isUnexpected) {
+    //         message = subject.output.toString();
+    //     } else if (subject && Object.prototype.toString.call(subject) === "[object Error]") {
+    //         message = subject.message;
+    //     } else {
+    //         message = String(subject);
+    //     }
+    //     this.errorMode = "bubble";
+    //     expect(message, "to equal", value);
+    // });
 
     var expect;
     beforeEach(function () {
