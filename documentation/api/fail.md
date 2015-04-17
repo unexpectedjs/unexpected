@@ -26,7 +26,7 @@ expect.fail('{0} was expected to be {1}', 0, 'zero');
 0 was expected to be 'zero'
 ```
 
-I case you want to rethrow an error, you should always use
+In case you want to rethrow an error, you should always use
 `expect.fail`, as it ensures that the error message will be correct
 for the different error modes.
 
