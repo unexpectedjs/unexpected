@@ -33,10 +33,11 @@ expected { text: 'f00!' } to equal { text: 'foo!' }
 - Provides really nice error messages
 - Helps you if you misspells assertions
 - Compatible with all test frameworks.
-- Node.JS ready (`require('unexpected')`).
+- Node.JS ready (`require('unexpected')`)
+- Supports [asynchronous assertions using promises](/api/addAssertion/#asynchronous-assertions)
 - Single global with no prototype extensions or shims.
 - Cross-browser: works on Chrome, Firefox, Safari, Opera, IE6+,
-  (IE6-IE8 with [es5-shim](https://github.com/es-shims/es5-shim)).
+  (IE6-IE8 with [es5-shim](https://github.com/es-shims/es5-shim))
 
 ### Node
 
@@ -120,6 +121,26 @@ The source for Unexpected can be found on
 [Github](https://github.com/unexpectedjs/unexpected).
 
 ## Releases
+
+### 7.0.0
+
+* Support for
+  [asynchronous assertions using promises](/api/addAssertion/#asynchronous-assertions).
+  All built-in assertions that delegate to other assertions (such as `to satisfy`)
+  have been rewritten to support this. The change is fully backwards compatible.
+* Removed support for the `to be an array of` and
+  `to be an array of (strings|numbers|...)` assertions. There are better and
+  more flexible alternatives.
+* Renamed assertions so that the subject type isn't mentioned in the assertion name.
+  The old names are kept around as aliases for now. These assertions are affected:
+    * `to be an array whose items satisfy` => `to have items satisfying`
+    * `to be an (object|hash|map) whose keys satisfy` => `to have keys satisfying`
+    * `to be an (object|hash|map) whose values satisfy` => `to have values satisfying`
+  Also, these 3 assertions no longer pass for empty collections.
+* New `when passed as parameter to constructor` and `when passed as parameter to async` "adverbial" assertions.
+* New `when decoded as` "adverbial" assertion for `Buffer` instances.
+* New `to have message` assertion defined for `Error` instances.
+* A lot of output improvements and minor tweaks.
 
 ### 6.0.0
 

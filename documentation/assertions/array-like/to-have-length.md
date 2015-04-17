@@ -1,4 +1,4 @@
-Asserts that an array has the specified length.
+Asserts that an array (or array-like object) has the specified length.
 
 ```javascript
 expect([1,2,3], 'to have length', 3);

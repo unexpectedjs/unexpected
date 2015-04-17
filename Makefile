@@ -13,7 +13,7 @@ unexpected.js: lib/*
 .PHONY: unexpected.js
 
 test-phantomjs: ${TARGETS}
-	@$(eval QUERY=$(shell node -e "console.log(decodeURIComponent(process.argv.pop()))" "${grep}")) \
+	@$(eval QUERY=$(shell node -e "console.log(decodeURIComponent(process.argv.pop()).replace(/\s/g, '%20'))" "${grep}")) \
     ./node_modules/.bin/mocha-phantomjs test/tests.html?grep=${QUERY}
 
 test: lint
@@ -26,6 +26,7 @@ coverage: lib/*
 		-x unexpected.js \
 		-x **/vendor/** \
 		-x **/site/** \
+		-x **/site-build/** \
 		-x **/documentation/** \
 	--include-all-sources ./node_modules/mocha/bin/_mocha -- --reporter dot
 

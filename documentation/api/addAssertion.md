@@ -73,7 +73,7 @@ expect.addAssertion('array', '[not] to be (sorted|ordered)', function(expect, [3
 });
 ```
 
-## Controlling the output of nested expects
+#### Controlling the output of nested expects
 
 When a call to `expect` fails inside your assertion the standard error
 message for the custom assertion will be used. In the case of our
@@ -132,6 +132,76 @@ expected [ 1, 3, 2, 4 ] to be sorted
     2, // should equal 3
     4
   ]
+```
+
+#### Asynchronous assertions
+
+Unexpected comes with build in support for asynchronous
+assertions. You basically just return a promise from the assertion.
+
+For the purpose of explaining how we can make an asynchronous
+assertion we will defined a silly asynchronous type which contains a
+value that can only be retrieved after a delay:
+
+```js
+function Timelock(value, delay) {
+  this.value = value;
+  this.delay = delay;
+}
+
+Timelock.prototype.getValue = function (cb) {
+  var that = this;
+  setTimeout(function () {
+    cb(that.value);
+  }, this.delay);
+};
+```
+
+It would be pretty nice if we could use
+[to satisfy](/assertions/any/to-satisfy/) on the value of a `Timelock`
+even if the retrieval is delayed. Then we would be able to do stuff
+like this:
+
+```js#evaluate:false
+return expect(new Timelock('Hello world'), 'to satisfy', expect.it('have lenght', 11));
+```
+
+First we need to defined a [type](/api/addType/) for handling the `Timelock`:
+
+```js
+expect.addType({
+  name: 'Timelock',
+  identify: function (value) {
+    return value && value instanceof Timelock;
+  },
+  inspect: function (value, depth, output) {
+    output.jsFunctionName('Timelock');
+  }
+});
+```
+
+```js
+expect.addAssertion('Timelock', 'to satisfy', function (expect, subject, spec) {
+  return expect.promise(function (run) {
+    subject.getValue(run(function (value) {
+      return expect(value, 'to satisfy', spec);
+    }));
+  });
+});
+```
+
+Let's see how it works:
+
+```js#async:true
+return expect(new Timelock('Hello world!', 5), 'to satisfy', expect.it('not to match', /!/));
+```
+
+```output
+expected Timelock to satisfy expect.it('not to match', /!/)
+
+expected 'Hello world!' not to match /!/
+
+Hello world!
 ```
 
 The best resource for learning more about custom assertions is to look

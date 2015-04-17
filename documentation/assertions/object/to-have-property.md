@@ -37,20 +37,3 @@ This assertion can be negated using the `not` flag:
 expect({ a: 'b' }, 'not to have property', 'b');
 expect(Object.create({ a: 'b' }), 'not to have own property', 'a');
 ```
-
-You can provide a second parameter to assert that the value of the
-property is not equal to the given value.
-
-```javascript
-expect({ a: 'b' }, 'not to have property', 'a', 'foo');
-```
-
-In case of a failing expectation you get the following output:
-
-```javascript
-expect({ a: 'b' }, 'not to have property', 'a');
-```
-
-```output
-expected { a: 'b' } not to have property 'a'
-```

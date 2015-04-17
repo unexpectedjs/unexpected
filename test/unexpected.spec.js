@@ -1,45 +1,59 @@
-/*global weknowhow, describe, it, beforeEach, setTimeout, Int8Array, Uint8Array, Uint16Array, Uint32Array*/
-
-var expect = typeof weknowhow === 'undefined' ? require('../lib/') : weknowhow.expect;
-
-// use this instead of Object.create in order to make the tests run in
-// browsers that are not es5 compatible.
-function create(o) {
-    function F() {}
-    F.prototype = o;
-    return new F();
-}
-
 it.skipIf = function (condition) {
     (condition ? it.skip : it).apply(it, Array.prototype.slice.call(arguments, 1));
 };
 
-var circular = {};
-circular.self = circular;
+var isMochaPhantomJS = typeof mochaPhantomJS !== 'undefined';
 
-expect.addType({
-    name: 'magicpen',
-    identify: function (obj) {
-        return obj && obj.isMagicPen;
-    },
-    inspect: function (pen, depth, output) {
-        return output.append(pen);
-    },
-    equal: function (a, b) {
-        return a.toString() === b.toString() &&
-            a.toString('ansi') === b.toString('ansi') &&
-            a.toString('html') === b.toString('html');
-    }
-});
-
-expect.addAssertion('to have message', function (expect, subject, value) {
-    // Copied from https://github.com/sindresorhus/ansi-regex
-    var ansiRegex = /(?:(?:\u001b\[)|\u009b)(?:(?:[0-9]{1,3})?(?:(?:;[0-9]{0,3})*)?[A-M|f-m])|\u001b[A-M]/g;
-    expect(subject.output.toString(), 'to equal', value);
-    expect(subject.message.replace(ansiRegex, ''), 'to equal', '\n' + value);
-});
+describe.skipIf = function (condition) {
+    (condition ? describe.skip : describe).apply(describe, Array.prototype.slice.call(arguments, 1));
+};
 
 describe('unexpected', function () {
+    var expect = typeof weknowhow === 'undefined' ? require('../lib/').clone() : weknowhow.expect.clone();
+    var workQueue = typeof weknowhow === 'undefined' ? require('../lib/workQueue') : null;
+    expect.output.preferredWidth = 80;
+
+    var circular = {};
+    circular.self = circular;
+
+    expect.addType({
+        name: 'magicpen',
+        identify: function (obj) {
+            return obj && obj.isMagicPen;
+        },
+        inspect: function (pen, depth, output) {
+            return output.append(pen);
+        },
+        equal: function (a, b) {
+            return a.toString() === b.toString() &&
+                a.toString('ansi') === b.toString('ansi') &&
+                a.toString('html') === b.toString('html');
+        }
+    }).addType({
+        name: 'Promise',
+        base: 'object',
+        identify: function (obj) {
+            return this.baseType.identify(obj) && typeof obj.then === 'function';
+        }
+    }).addAssertion('Promise', 'to be rejected', function (expect, subject, expectedReason) {
+        return subject.then(function () {
+            throw new Error('Promise unexpectedly fulfilled');
+        }).caught(function (err) {
+            if (typeof expectedReason !== 'undefined') {
+                return expect(err._isUnexpected ? err.output.toString('text') : err.message, 'to satisfy', expectedReason);
+            }
+        });
+    }).addAssertion('when delayed a little bit', function (expect, subject) {
+        var that = this;
+        return expect.promise(function (run) {
+            setTimeout(run(function () {
+                return that.shift(expect, subject, 0);
+            }), 1);
+        });
+    }).addAssertion('to inspect as', function (expect, subject, value) {
+        expect(expect.inspect(subject).toString(), 'to equal', value);
+    });
+
     describe('argument validation', function () {
         it('fails when given no parameters', function () {
             expect(function () {
@@ -147,6 +161,21 @@ describe('unexpected', function () {
                 }
                 expect(errors[0], 'to equal', errors[1]);
             });
+
+            it('ignores blacklisted properties in the diff', function () {
+                var error = new Error('foo');
+                error.description = 'qux';
+                expect(function () {
+                    expect(error, 'to satisfy', new Error('bar'));
+                }, 'to throw',
+                       "expected Error({ message: 'foo' }) to satisfy Error({ message: 'bar' })\n" +
+                       "\n" +
+                       "Error({\n" +
+                       "  message: 'foo' // should equal 'bar'\n" +
+                       "                 // -foo\n" +
+                       "                 // +bar\n" +
+                       "})");
+            });
         });
 
         it('throws with a stack trace that has the calling function as the top frame when the assertion fails (if the environment supports it)', function () {
@@ -245,13 +274,6 @@ describe('unexpected', function () {
             expect('abc', 'to be a non-empty string');
             expect([], 'to be an', 'array');
             expect([], 'to be an array');
-            expect(['abc'], 'to be an array of strings');
-            expect([{}], 'to be an array of objects');
-            expect([{}], 'to be a non-empty array of objects');
-            expect([/foo/, /bar/], 'to be a non-empty array of regexps');
-            expect([/foo/, /bar/], 'to be a non-empty array of regexes');
-            expect([[], [], []], 'to be an array of arrays');
-            expect(['abc'], 'to be a non-empty array of strings');
             expect([], 'to be an empty array');
             expect({}, 'to be an', Object);
             expect([123], 'to be a non-empty array');
@@ -271,6 +293,46 @@ describe('unexpected', function () {
             expect(expect, 'to be a', 'function');
             expect(expect, 'to be a function');
             expect(circular, 'to be an object');
+        });
+
+        it('should support type objects', function () {
+            expect('foo', 'to be a', expect.getType('string'));
+        });
+
+        it('should fail with the correct error message if the type is given as an anonymous function', function () {
+            expect(function () {
+                expect('foo', 'to be a', function () {});
+            }, 'to throw', "expected 'foo' to be a function () {}");
+        });
+
+        it('should throw when the type is specified as undefined', function () {
+            expect(function () {
+                expect('foo', 'to be an', undefined);
+            }, 'to throw', "The 'to be an' assertion requires either a string (type name), a type object, or function argument");
+        });
+
+        it('should throw when the type is specified as null', function () {
+            expect(function () {
+                expect('foo', 'to be a', null);
+            }, 'to throw', "The 'to be a' assertion requires either a string (type name), a type object, or function argument");
+        });
+
+        it('should not consider a string a to be an instance of an object without a name property', function () {
+            expect(function () {
+                expect('foo', 'to be a', {});
+            }, 'to throw', "The 'to be a' assertion requires either a string (type name), a type object, or function argument");
+        });
+
+        it('should throw when the type is specified as an object without an identify function', function () {
+            expect(function () {
+                expect('foo', 'to be a', { name: 'bar' });
+            }, 'to throw', "The 'to be a' assertion requires either a string (type name), a type object, or function argument");
+        });
+
+        it('should throw when the type is specified as an object with an identify function, but without a name property', function () {
+            expect(function () {
+                expect('foo', 'to be a', { identify: function () { return true; } });
+            }, 'to throw', "The 'to be a' assertion requires either a string (type name), a type object, or function argument");
         });
 
         it('throws when the assertion fails', function () {
@@ -753,6 +815,29 @@ describe('unexpected', function () {
                     "  threw: Error({ message: 'The Error' })");
         });
 
+        it.skipIf(phantomJsErrorWeirdness, 'fails with the correct message when an Unexpected error is thrown', function () {
+            expect(function () {
+                expect(function testFunction() {
+                    expect.fail(function (output) {
+                        output.text('foo').block(function () {
+                            this.text('bar').nl().text('baz');
+                        }).text('quux');
+                    });
+                }, 'not to throw');
+            }, 'to throw',
+                   'expected\n' +
+                    'function testFunction() {\n' +
+                    "    expect.fail(function (output) {\n" +
+                    "        output.text('foo').block(function () {\n" +
+                    "            this.text('bar').nl().text('baz');\n" +
+                    "        }).text('quux');\n" +
+                    "    });\n" +
+                    '}\n' +
+                    'not to throw\n' +
+                    "  threw: foobarquux\n" +
+                    "            baz");
+        });
+
         it('fails if the argument is not a function', function () {
             expect(function () {
                 expect(1, 'to throw exception');
@@ -774,9 +859,14 @@ describe('unexpected', function () {
             expect(function () {
                 throw new Error('matches the exception message');
             }, 'to throw exception', /matches the exception message/);
+        });
+
+        it('does not support the not-flag in combination with an argument', function () {
             expect(function () {
-                throw new Error('Other error');
-            }, 'not to throw exception', /matches the exception message/);
+                expect(function () {
+                    throw new Error('matches the exception message');
+                }, 'not to throw', /matches the exception message/);
+            }, 'to throw', "The 'not to throw' assertion does not support arguments");
         });
 
         it.skipIf(phantomJsErrorWeirdness, 'provides a diff when the exception message does not match the given string', function () {
@@ -826,9 +916,6 @@ describe('unexpected', function () {
             expect(function () {
                 throw new Error('matches the exception message');
             }, 'to throw exception', 'matches the exception message');
-            expect(function () {
-                throw new Error('matches the exception message');
-            }, 'not to throw exception', 'the exception message');
         });
 
         it('does not break if null is thrown', function () {
@@ -842,7 +929,60 @@ describe('unexpected', function () {
                 '    throw null;\n' +
                 '}\n' +
                 'not to throw\n' +
-              '  threw: null');
+                '  threw: null');
+        });
+    });
+
+    describe('Error type', function () {
+        describe('to have message assertion', function () {
+            describe('with an Unexpected error', function () {
+                var err;
+                try {
+                    expect(1, 'to equal', 2);
+                } catch (e) {
+                    err = e;
+                }
+                it('should succeed', function () {
+                    expect(err, 'to have message', 'expected 1 to equal 2');
+                });
+
+                it('should fail with a diff', function () {
+                    expect(function () {
+                        expect(err, 'to have message', 'expected 3 to equal 2');
+                    }, 'to throw', function (err) {
+                        var message = err.output.toString('text');
+                        expect(
+                            message,
+                            'to contain',
+                            "to have message 'expected 3 to equal 2'\n" +
+                                "  expected 'expected 1 to equal 2' to satisfy 'expected 3 to equal 2'\n" +
+                                "\n" +
+                                "  -expected 1 to equal 2\n" +
+                                "  +expected 3 to equal 2"
+                        );
+                        expect(message, 'to match', /^expected\sError\(\{[\s\S]*\}\)/);
+                    });
+                });
+            });
+
+            describe('with a non-Unexpected error', function () {
+                var err = new Error('Bummer!');
+                it('should succeed', function () {
+                    expect(err, 'to have message', 'Bummer!');
+                });
+
+                it('should fail with a diff', function () {
+                    expect(function () {
+                        expect(err, 'to have message', 'Dammit!');
+                    }, 'to throw',
+                        "expected Error({ message: 'Bummer!' }) to have message 'Dammit!'\n" +
+                        "  expected 'Bummer!' to satisfy 'Dammit!'\n" +
+                        "\n" +
+                        "  -Bummer!\n" +
+                        "  +Dammit!"
+                    );
+                });
+            });
         });
     });
 
@@ -1030,7 +1170,7 @@ describe('unexpected', function () {
             expect({a: 'b'}, 'to have property', 'toString');
             expect({a: 'b'}, 'not to have property', 'b');
             expect({'"a"': 'b'}, 'to have own property', '"a"');
-            expect(create({a: 'b'}), 'not to have own property', 'a');
+            expect(Object.create({a: 'b'}), 'not to have own property', 'a');
             expect(function () {}, 'to have property', 'toString');
         });
 
@@ -1078,6 +1218,18 @@ describe('unexpected', function () {
                    '  The assertion "not to have own property" is not defined for the type "null",\n' +
                    '  but it is defined for the type "object"');
         });
+
+        it('does not support the not-flag in combination with a value argument', function () {
+            expect(function () {
+                expect({ a: 'a' }, 'not to have property', 'a', 'a');
+            }, "to throw", "The 'not to have property' assertion does not with a value argument");
+        });
+    });
+
+    describe('to have keys assertion', function () {
+        it('should work with non-enumerable keys returned by the getKeys function of the subject type', function () {
+            expect(new Error('foo'), 'to only have key', 'message');
+        });
     });
 
     describe('properties assertion', function () {
@@ -1088,7 +1240,7 @@ describe('unexpected', function () {
         it('asserts presence of a list of own properties', function () {
             expect({a: 'foo', b: 'bar'}, 'to have own properties', ['a', 'b']);
             expect(function () {
-                var obj = create({a: 'foo', b: 'bar'});
+                var obj = Object.create({a: 'foo', b: 'bar'});
                 expect(obj, 'to have properties', ['a', 'b']); // should not fail
                 expect(obj, 'to have own properties', ['a', 'b']); // should fail
             }, 'to throw', "expected {} to have own properties [ 'a', 'b' ]");
@@ -1106,7 +1258,7 @@ describe('unexpected', function () {
         });
 
         it('asserts absence of a list of own properties', function () {
-            var obj = create({a: 'foo', b: 'bar'});
+            var obj = Object.create({a: 'foo', b: 'bar'});
             expect(obj, 'to have properties', ['a', 'b']);
             expect(obj, 'not to have own properties', ['a', 'b']);
             expect(function () {
@@ -1144,7 +1296,7 @@ describe('unexpected', function () {
         it('asserts presence and values of an object of own properties', function () {
             expect({a: 'foo', b: 'bar'}, 'to have own properties', {a: 'foo', b: 'bar'});
             expect(function () {
-                var obj = create({a: 'foo', b: 'bar'});
+                var obj = Object.create({a: 'foo', b: 'bar'});
                 expect(obj, 'to have properties', {a: 'foo', b: 'bar'}); // should not fail
                 expect(obj, 'to have own properties', {a: 'foo', b: 'bar'}); // should fail
             }, 'to throw', "expected {} to have own properties { a: 'foo', b: 'bar' }\n" +
@@ -1167,7 +1319,7 @@ describe('unexpected', function () {
         });
 
         it('asserts absence and values of an object of own properties', function () {
-            var obj = create({a: 'foo', b: 'bar'});
+            var obj = Object.create({a: 'foo', b: 'bar'});
             expect(obj, 'to have properties', {a: 'foo', b: 'bar'});
             expect(obj, 'not to have own properties', ['a', 'b']);
             expect(function () {
@@ -1536,6 +1688,96 @@ describe('unexpected', function () {
     });
 
     describe('to satisfy assertion', function () {
+        describe('with the not flag', function () {
+            it('should succeed when the assertion fails without the not flag', function () {
+                expect({foo: 123}, 'not to satisfy', {foo: 456});
+            });
+
+            it('should succeed when the assertion fails without the not flag, async case', function () {
+                expect({foo: 123}, 'not to satisfy', {foo: expect.it('when delayed a little bit', 'to equal', 456)});
+            });
+
+            it('should fail when a non-Unexpected error occurs', function () {
+                expect(function () {
+                    expect({foo: 123}, 'not to satisfy', function () {
+                        throw new Error('foo');
+                    });
+                }, 'to throw', 'foo');
+            });
+
+            it('should fail when the assertion succeeds', function () {
+                expect(function () {
+                    expect({foo: 123}, 'not to satisfy', {foo: 123});
+                }, 'to throw',
+                    'expected { foo: 123 } not to satisfy { foo: 123 }'
+                );
+            });
+        });
+
+        it.skipIf(!Object.defineProperty, 'should honor the getKeys implementation of a type when building a diff', function () {
+            function MyThing(a, b) {
+                this.a = a;
+                Object.defineProperty(this, 'b', { enumerable: false, value: b });
+            }
+
+            var clonedExpect = expect.clone().addType({
+                name: 'MyThing',
+                base: 'object',
+                identify: function (obj) {
+                    return obj instanceof MyThing;
+                },
+                getKeys: function () {
+                    return ['a', 'b'];
+                }
+            });
+
+            expect(function () {
+                clonedExpect(new MyThing(123, 456), 'to exhaustively satisfy', {a: 123, b: 654});
+            }, 'to throw',
+                'expected MyThing({ a: 123, b: 456 }) to exhaustively satisfy { a: 123, b: 654 }\n' +
+                '\n' +
+                'MyThing({\n' +
+                '  a: 123,\n' +
+                '  b: 456 // should equal 654\n' +
+                '})'
+            );
+        });
+
+        describe('with the assertion flag', function () {
+            it('should succeed', function () {
+                expect('foo', 'to satisfy assertion', 'to equal', 'foo');
+            });
+
+            it('should fail with a diff', function () {
+                expect(function () {
+                    expect('foo', 'to satisfy assertion', 'to equal', 'bar');
+                }, 'to throw',
+                    "expected 'foo' to equal 'bar'\n" +
+                    "\n" +
+                    "-foo\n" +
+                    "+bar"
+                );
+            });
+
+            describe('and the exhaustively flag', function () {
+                it('should succeed', function () {
+                    expect({foo: 123}, 'to exhaustively satisfy assertion', {foo: 123});
+                });
+
+                it('should fail with a diff', function () {
+                    expect(function () {
+                        expect({foo: 123}, 'to exhaustively satisfy assertion', {foo: 456});
+                    }, 'to throw',
+                        "expected { foo: 123 } to exhaustively satisfy { foo: 456 }\n" +
+                        "\n" +
+                        "{\n" +
+                        "  foo: 123 // should equal 456\n" +
+                        "}"
+                    );
+                });
+            });
+        });
+
         it('forwards normal errors to the top-level', function () {
             expect(function () {
                 expect({
@@ -1546,18 +1788,56 @@ describe('unexpected', function () {
             }, 'to throw', 'Custom error');
         });
 
+        it('forwards normal errors found in promise aggregate errors to the top level', function () {
+            var clonedExpect = expect.clone().addAssertion('to foo', function (expect, subject) {
+
+                var promises = [
+                    clonedExpect.promise(function () {
+                        clonedExpect('foo', 'to equal', 'bar');
+                    }),
+                    clonedExpect.promise(function () {
+                        return clonedExpect.promise.any([
+                            clonedExpect.promise(function () {
+                                clonedExpect('foo', 'to equal', 'bar');
+                            }),
+                            clonedExpect.promise(function () {
+                                throw new Error('wat');
+                            })
+                        ]);
+                    })
+                ];
+                return expect.promise.all(promises).caught(function (err) {
+                    return clonedExpect.promise.settle(promises);
+                });
+            });
+
+            expect(function () {
+                return clonedExpect('foo', 'to foo');
+            }, 'to throw', 'wat');
+
+        });
+
         it('should support expect.it in the RHS object', function () {
             expect({foo: 'bar'}, 'to satisfy', {
                 foo: expect.it('to be a string')
             });
 
             expect({foo: [123]}, 'to satisfy', {
-                foo: expect.it('to be an array whose items satisfy', 'to be a number')
+                foo: expect.it('to have items satisfying', 'to be a number')
             });
 
             expect({foo: function () { throw new Error('Explosion'); } }, 'to satisfy', {
                 foo: expect.it('to be a function')
             });
+        });
+
+        it('should support expect.it at the first level', function () {
+            expect(function () {
+                expect('bar', 'to satisfy', expect.it('to be a number'));
+            }, 'to throw',
+                   "expected 'bar' to satisfy expect.it('to be a number')\n" +
+                   "\n" +
+                   "expected 'bar' to be a number");
         });
 
         it('should support regular expressions in the RHS object', function () {
@@ -1625,6 +1905,23 @@ describe('unexpected', function () {
                 expect(new Error('foo'), 'to satisfy', { message: 'foo' });
             });
 
+            describe('in "exhaustively" mode', function () {
+                it('should succeed', function () {
+                    expect(new Error('foo'), 'to exhaustively satisfy', { message: 'foo' });
+                });
+
+                it('should fail with a diff', function () {
+                    var err = new Error('foo');
+                    err.bar = 123;
+                    expect(function () {
+                        expect(err, 'to exhaustively satisfy', { message: 'foo' });
+                    }, 'to throw',
+                        // Would be nice to have a diff here:
+                        "expected Error({ message: 'foo', bar: 123 }) to exhaustively satisfy { message: 'foo' }"
+                    );
+                });
+            });
+
             it('should support satisfying against a regexp', function () {
                 expect(new Error('foo'), 'to satisfy', /foo/);
             });
@@ -1646,12 +1943,12 @@ describe('unexpected', function () {
             });
         });
 
-        describe('on Buffer instances', function () {
-            it.skipIf(typeof Buffer === 'undefined', 'should assert equality', function () {
+        describe.skipIf(typeof Buffer === 'undefined', 'on Buffer instances', function () {
+            it('should assert equality', function () {
                 expect(new Buffer([1, 2, 3]), 'to satisfy', new Buffer([1, 2, 3]));
             });
 
-            it.skipIf(typeof Buffer === 'undefined', 'fail with a binary diff when the assertion fails', function () {
+            it('should fail with a binary diff when the assertion fails', function () {
                 expect(function () {
                     expect(new Buffer([1, 2, 3]), 'to satisfy', new Buffer([1, 2, 4]));
                 }, 'to throw',
@@ -1661,8 +1958,39 @@ describe('unexpected', function () {
                     '+01 02 04                                         │...│');
             });
 
-            it.skipIf(typeof Buffer === 'undefined', 'to satisfy it to equal buffer instance', function () {
-                expect(new Buffer('bar'), 'to satisfy', expect.it('to equal', new Buffer('bar')));
+            it('should fail with a binary diff when the assertion fails with the assertion flag on', function () {
+                expect(function () {
+                    expect(new Buffer([1, 2, 3]), 'to satisfy assertion', new Buffer([1, 2, 4]));
+                }, 'to throw',
+                    'expected Buffer([0x01, 0x02, 0x03]) to satisfy Buffer([0x01, 0x02, 0x04])\n' +
+                    '\n' +
+                    '-01 02 03                                         │...│\n' +
+                    '+01 02 04                                         │...│');
+            });
+
+            describe('with expect.it', function () {
+                it('should succeed', function () {
+                    expect(new Buffer('bar'), 'to satisfy', expect.it('to equal', new Buffer('bar')));
+                });
+
+                it('should fail with a diff', function () {
+                    expect(function () {
+                        expect(new Buffer('bar'), 'to satisfy', expect.it('to equal', new Buffer('foo')));
+                    }, 'to throw',
+                        "expected Buffer([0x62, 0x61, 0x72]) to satisfy expect.it('to equal', Buffer([0x66, 0x6F, 0x6F]))\n" +
+                        "\n" +
+                        "expected Buffer([0x62, 0x61, 0x72]) to equal Buffer([0x66, 0x6F, 0x6F])\n" +
+                        "\n" +
+                        "-62 61 72                                         │bar│\n" +
+                        "+66 6F 6F                                         │foo│"
+                    );
+                });
+            });
+
+            it('should satisfy a function', function () {
+                expect(new Buffer('bar'), 'to satisfy', function (buffer) {
+                    expect(buffer, 'to have length', 3);
+                });
             });
         });
 
@@ -1887,10 +2215,7 @@ describe('unexpected', function () {
                    "  pill: {\n" +
                    "    red: 'I\\'ll show you how deep the rabbit hole goes',\n" +
                    "    blue: { ignorance: ... },\n" +
-                   "    purple: {\n" +
-                   "      you: 'wat there is another pill',\n" +
-                   "      them: 'there is always more choices'\n" +
-                   "    }\n" +
+                   "    purple: { you: 'wat there is another pill', them: 'there is always more choices' }\n" +
                    "  }\n" +
                    "}\n" +
                    "to satisfy\n" +
@@ -1907,10 +2232,7 @@ describe('unexpected', function () {
                    "                                                         // -I'll show you how deep the rabbit hole goes\n" +
                    "                                                         // +I'll show you how deep the rabbit hole goes.\n" +
                    "    blue: { ignorance: ... },\n" +
-                   "    purple: {\n" +
-                   "      you: 'wat there is another pill',\n" +
-                   "      them: 'there is always more choices'\n" +
-                   "    }\n" +
+                   "    purple: { you: 'wat there is another pill', them: 'there is always more choices' }\n" +
                    "  }\n" +
                    "}");
         });
@@ -2009,6 +2331,73 @@ describe('unexpected', function () {
                     });
             });
 
+            it('should inspect multiline block values in diffs correctly', function () {
+                expect(function () {
+                    clonedExpect.addType({
+                            base: 'number',
+                            name: 'numberBox',
+                            identify: function (obj) {
+                                return typeof obj === 'number' && obj > 0 && obj < 10;
+                            },
+                            inspect: function (obj, depth, output) {
+                                return output.block(function () {
+                                    this.text('+-+').nl()
+                                      .text('|'+ obj + '|').nl()
+                                      .text('|_|');
+                                });
+                            }
+                        });
+                    clonedExpect({foo: 2, bar: 'baz'}, 'to satisfy', {bar: 'quux'});
+                }, 'to throw',
+                    "expected\n" +
+                    "{\n" +
+                    "  foo:\n" +
+                    "    +-+\n" +
+                    "    |2|\n" +
+                    "    |_|,\n" +
+                    "  bar: 'baz'\n" +
+                    "}\n" +
+                    "to satisfy { bar: 'quux' }\n" +
+                    "\n" +
+                    "{\n" +
+                    "  foo:\n" +
+                    "    +-+\n" +
+                    "    |2|\n" +
+                    "    |_|,\n" +
+                    "  bar: 'baz' // should equal 'quux'\n" +
+                    "             // -baz\n" +
+                    "             // +quux\n" +
+                    "}"
+                );
+            });
+
+            it('should use a "to satisfy" label when a conflict does not have a label', function () {
+                expect(function () {
+                    expect({foo: {bar: 123}}, 'to satisfy', {foo: {bar: /d/}});
+                }, 'to throw',
+                    'expected { foo: { bar: 123 } } to satisfy { foo: { bar: /d/ } }\n' +
+                    '\n' +
+                    '{\n' +
+                    '  foo: {\n' +
+                    '    bar: 123 // should satisfy /d/\n' +
+                    '  }\n' +
+                    '}'
+                );
+            });
+
+            it('should build the correct diff when the subject and value have "diff" and "inline" keys', function () {
+                expect(function () {
+                    expect({diff: 123, inline: 456}, 'to satisfy', {diff: 321, inline: 654});
+                }, 'to throw',
+                    'expected { diff: 123, inline: 456 } to satisfy { diff: 321, inline: 654 }\n' +
+                    '\n' +
+                    '{\n' +
+                    '  diff: 123, // should equal 321\n' +
+                    '  inline: 456 // should equal 654\n' +
+                    '}'
+                );
+            });
+
             it('should delegate to the "to satisfies" assertion defined for the custom type', function () {
                 clonedExpect({
                     foo: new MysteryBox({ baz: 123, quux: 987 }),
@@ -2065,10 +2454,8 @@ describe('unexpected', function () {
                         foo: new MysteryBox({ baz: clonedExpect.it('to be a number') })
                     });
                 }, 'to throw',
-                       "expected { foo: MysteryBox({ baz: 123, quux: 987 }) } to exhaustively satisfy\n" +
-                       "{\n" +
-                       "  foo: MysteryBox({ baz: expect.it('to be a number') })\n" +
-                       "}\n" +
+                       "expected { foo: MysteryBox({ baz: 123, quux: 987 }) }\n" +
+                       "to exhaustively satisfy { foo: MysteryBox({ baz: expect.it('to be a number') }) }\n" +
                        "\n" +
                        "{\n" +
                        "  foo: MysteryBox({\n" +
@@ -2161,51 +2548,146 @@ describe('unexpected', function () {
                 expect({foo: 123}, 'to exhaustively satisfy', {bar: undefined});
             }, 'to throw');
         });
+
+        describe('when delegating to async assertions', function () {
+            var clonedExpect = expect.clone()
+                .addAssertion('to be a number after a short delay', function (expect, subject) {
+                    this.errorMode = 'nested';
+
+                    return expect.promise(function (run) {
+                        setTimeout(run(function () {
+                            expect(subject, 'to be a number');
+                        }), 1);
+                    });
+                });
+
+            it('returns a promise that is resolved if the assertion succeeds', function () {
+                return clonedExpect(42, 'to satisfy', clonedExpect.it('to be a number after a short delay'));
+            });
+
+            it('returns a promise that is rejected if the assertion fails', function () {
+                expect(clonedExpect('wat', 'to satisfy', clonedExpect.it('to be a number after a short delay')),
+                       'to be rejected',
+                       "expected 'wat' to satisfy expect.it('to be a number after a short delay')\n" +
+                       "\n" +
+                       "expected 'wat' to be a number after a short delay\n" +
+                       "  expected 'wat' to be a number");
+            });
+
+            describe('supports many levels of asynchronous assertions', function () {
+                return expect(
+                    expect('abc', 'when delayed a little bit', 'when delayed a little bit', 'to satisfy', expect.it('when delayed a little bit', 'to equal', 'def')),
+                    'to be rejected',
+                        "expected 'abc'\n" +
+                        "when delayed a little bit when delayed a little bit 'to satisfy', expect.it('when delayed a little bit', 'to equal', 'def')\n" +
+                        "\n" +
+                        "expected 'abc' when delayed a little bit to equal 'def'\n" +
+                        "\n" +
+                        "-abc\n" +
+                        "+def"
+                );
+            });
+
+            it('supports and groups combined with async assertions', function () {
+                return expect(
+                    expect(123, 'to satisfy',
+                        expect.it('when delayed a little bit', 'to equal', 456)
+                            .or('when delayed a little bit', 'to be a string')
+                            .and('to be greater than', 100)
+                            .or('when delayed a little bit', 'to be a number')
+                            .and('when delayed a little bit', 'to be within', 100, 110)
+                    ),
+                    'to be rejected',
+                        "expected 123 to satisfy\n" +
+                        "expect.it('when delayed a little bit', 'to equal', 456)\n" +
+                        "      .or('when delayed a little bit', 'to be a string')\n" +
+                        "        .and('to be greater than', 100)\n" +
+                        "      .or('when delayed a little bit', 'to be a number')\n" +
+                        "        .and('when delayed a little bit', 'to be within', 100, 110)\n" +
+                        "\n" +
+                        "⨯ expected 123 when delayed a little bit to equal 456\n" +
+                        "or\n" +
+                        "⨯ expected 123 when delayed a little bit to be a string and\n" +
+                        "  expected 123 to be greater than 100\n" +
+                        "or\n" +
+                        "✓ expected 123 when delayed a little bit 'to be a number' and\n" +
+                        "⨯ expected 123 when delayed a little bit to be within 100, 110"
+                );
+            });
+        });
     });
 
-    describe('to be an array whose items satisfy assertion', function () {
+    describe('to have items satisfying assertion', function () {
         it('requires a third argument', function () {
             expect(function () {
-                expect([1, 2, 3], 'to be an array whose items satisfy');
-            }, 'to throw', 'Assertion "to be an array whose items satisfy" expects a third argument');
+                expect([1, 2, 3], 'to have items satisfying');
+            }, 'to throw', 'Assertion "to have items satisfying" expects a third argument');
         });
 
         it('only accepts arrays as the target object', function () {
             expect(function () {
-                expect(42, 'to be an array whose items satisfy', function (item) {});
+                expect(42, 'to have items satisfying', function (item) {});
             }, 'to throw',
-                   'expected 42 to be an array whose items satisfy function (item) {}\n' +
-                   '  The assertion "to be an array whose items satisfy" is not defined for the type "number",\n' +
+                   'expected 42 to have items satisfying function (item) {}\n' +
+                   '  The assertion "to have items satisfying" is not defined for the type "number",\n' +
                    '  but it is defined for the type "array-like"');
         });
 
-        it('supports the non-empty clause', function () {
-            expect([1], 'to be a non-empty array whose items satisfy', function (item) {
-                expect(item, 'to be a number');
-            });
+        it('fails if the given array is empty', function () {
+            expect(function () {
+                expect([], 'to have items satisfying', function (item) {
+                    expect(item, 'to be a number');
+                });
+            }, 'to throw',
+                   "expected [] to have items satisfying\n" +
+                   "function (item) {\n" +
+                   "    expect(item, 'to be a number');\n" +
+                   "}\n" +
+                   "  expected [] to be non-empty");
         });
 
         it('asserts that the given callback does not throw for any items in the array', function () {
-            expect([0, 1, 2, 3], 'to be an array whose items satisfy', function (item, index) {
+            expect([0, 1, 2, 3], 'to have items satisfying', function (item, index) {
                 expect(item, 'to be a number');
                 expect(index, 'to be a number');
             });
 
-            expect(['0', '1', '2', '3'], 'to be an array whose items satisfy', function (item, index) {
+            expect(['0', '1', '2', '3'], 'to have items satisfying', function (item, index) {
                 expect(item, 'not to be a number');
                 expect(index, 'to be a number');
             });
 
-            expect([0, 1, 2, 3], 'to be an array whose items satisfy', 'to be a number');
+            expect([0, 1, 2, 3], 'to have items satisfying', 'to be a number');
 
+            expect(['0', '1', '2', '3'], 'to have items satisfying', 'not to be a number');
+
+            expect([[1], [2]], 'to have items satisfying', 'to have items satisfying', 'to be a number');
+        });
+
+        it('formats non-Unexpected errors correctly', function () {
+            expect(function () {
+                expect([[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]], 'to have items satisfying', function (item) {
+                    expect.fail(function (output) {
+                        output.text('foo').nl().text('bar');
+                    });
+                });
+            }, 'to throw',
+                    'failed expectation in\n' +
+                    '[\n' +
+                    '  [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 ]\n' +
+                    ']:\n' +
+                    '  0: foo\n' +
+                    '     bar'
+            );
+        });
+
+        it('supports legacy "to be an array whose items satisfy"', function () {
             expect(['0', '1', '2', '3'], 'to be an array whose items satisfy', 'not to be a number');
-
-            expect([[1], [2]], 'to be an array whose items satisfy', 'to be an array whose items satisfy', 'to be a number');
         });
 
         it('provides the item index to the callback function', function () {
             var arr = ['0', '1', '2', '3'];
-            expect(arr, 'to be an array whose items satisfy', function (item, index) {
+            expect(arr, 'to have items satisfying', function (item, index) {
                 expect(index, 'to be a number');
                 expect(index, 'to be', parseInt(item, 10));
             });
@@ -2213,25 +2695,19 @@ describe('unexpected', function () {
 
         it('fails when the assertion fails', function () {
             expect(function () {
-                expect(['0', 1, '2', '3'], 'to be an array whose items satisfy', function (item) {
+                expect(['0', 1, '2', '3'], 'to have items satisfying', function (item) {
                     expect(item, 'not to be a number');
                 });
             }, 'to throw', /expected 1 not to be a number/);
 
             expect(function () {
-                expect(['0', 1, '2', '3'], 'to be an array whose items satisfy', 'not to be a number');
+                expect(['0', 1, '2', '3'], 'to have items satisfying', 'not to be a number');
             }, 'to throw', /expected 1 not to be a number/);
-
-            expect(function () {
-                expect([], 'to be a non-empty array whose items satisfy', function (item) {
-                    expect(item, 'not to be a number');
-                });
-            }, 'to throw', /expected \[\] to be non-empty/);
         });
 
         it('provides a detailed report of where failures occur', function () {
             expect(function () {
-                expect([0, 1, '2', 3, 4], 'to be an array whose items satisfy', function (item) {
+                expect([0, 1, '2', 3, 4], 'to have items satisfying', function (item) {
                     expect(item, 'to be a number');
                     expect(item, 'to be less than', 4);
                 });
@@ -2243,8 +2719,8 @@ describe('unexpected', function () {
 
         it('indents failure reports of nested assertions correctly', function () {
             expect(function () {
-                expect([[0, 1, 2], [4, '5', 6], [7, 8, '9']], 'to be an array whose items satisfy', function (arr) {
-                    expect(arr, 'to be an array whose items satisfy', function (item) {
+                expect([[0, 1, 2], [4, '5', 6], [7, 8, '9']], 'to have items satisfying', function (arr) {
+                    expect(arr, 'to have items satisfying', function (item) {
                         expect(item, 'to be a number');
                     });
                 });
@@ -2255,45 +2731,111 @@ describe('unexpected', function () {
                 "  2: failed expectation in [ 7, 8, '9' ]:\n" +
                 "       2: expected '9' to be a number");
         });
+
+        describe('delegating to an async assertion', function () {
+            var clonedExpect = expect.clone()
+                .addAssertion('to be a number after a short delay', function (expect, subject, delay) {
+                    this.errorMode = 'nested';
+
+                    return expect.promise(function (run) {
+                        setTimeout(run(function () {
+                            expect(subject, 'to be a number');
+                        }), 1);
+                    });
+                });
+
+            it('should succeed', function () {
+                return clonedExpect([1, 2, 3], 'to have items satisfying', 'to be a number after a short delay');
+            });
+
+            it('should fail with a diff', function () {
+                return expect(
+                    clonedExpect([0, false, 'abc'], 'to have items satisfying', 'to be a number after a short delay'),
+                    'to be rejected',
+                        "failed expectation in [ 0, false, 'abc' ]:\n" +
+                        "  1: expected false to be a number after a short delay\n" +
+                        "       expected false to be a number\n" +
+                        "  2: expected 'abc' to be a number after a short delay\n" +
+                        "       expected 'abc' to be a number"
+                );
+            });
+        });
     });
 
-    describe('to be a map whose values satisfy assertion', function () {
+    describe('to have values satisfying assertion', function () {
         it('requires a third argument', function () {
             expect(function () {
-                expect([1, 2, 3], 'to be a map whose values satisfy');
-            }, 'to throw', 'Assertion "to be a map whose values satisfy" expects a third argument');
+                expect([1, 2, 3], 'to have values satisfying');
+            }, 'to throw', 'Assertion "to have values satisfying" expects a third argument');
         });
 
         it('only accepts objects and arrays as the target', function () {
             expect(function () {
-                expect(42, 'to be a map whose values satisfy', function (value) {});
+                expect(42, 'to have values satisfying', function (value) {});
             }, 'to throw',
-                   'expected 42 to be a map whose values satisfy function (value) {}\n' +
-                   '  The assertion "to be a map whose values satisfy" is not defined for the type "number",\n' +
+                   'expected 42 to have values satisfying function (value) {}\n' +
+                   '  The assertion "to have values satisfying" is not defined for the type "number",\n' +
                    '  but it is defined for the type "object"');
         });
 
         it('asserts that the given callback does not throw for any values in the map', function () {
-            expect({ foo: 0, bar: 1, baz: 2, qux: 3 }, 'to be a map whose values satisfy', function (value) {
+            expect({ foo: 0, bar: 1, baz: 2, qux: 3 }, 'to have values satisfying', function (value) {
                 expect(value, 'to be a number');
             });
 
-            expect({ foo: '0', bar: '1', baz: '2', qux: '3' }, 'to be a map whose values satisfy', function (value) {
+            expect({ foo: '0', bar: '1', baz: '2', qux: '3' }, 'to have values satisfying', function (value) {
                 expect(value, 'not to be a number');
             });
 
-            expect({ foo: 0, bar: 1, baz: 2, qux: 3 }, 'to be a map whose values satisfy', 'to be a number');
+            expect({ foo: 0, bar: 1, baz: 2, qux: 3 }, 'to have values satisfying', 'to be a number');
 
-            expect({ foo: '0', bar: '1', baz: '2', qux: '3' }, 'to be a map whose values satisfy', 'not to be a number');
+            expect({ foo: '0', bar: '1', baz: '2', qux: '3' }, 'to have values satisfying', 'not to be a number');
         });
 
-        it('supports the non-empty clause', function () {
-            expect({ foo: '0' }, 'to be a non-empty map whose values satisfy', function (value) {
-                expect(value, 'to equal', '0');
+        it('fails if the given object is empty', function () {
+            expect(function () {
+                expect({}, 'to have values satisfying', function (value) {
+                    expect(value, 'to equal', '0');
+                });
+            }, 'to throw',
+                   "expected {} to have values satisfying\n" +
+                   "function (value) {\n" +
+                   "    expect(value, 'to equal', '0');\n" +
+                   "}\n" +
+                   "  expected {} not to equal {}");
+        });
+
+        it('fails if the given array is empty', function () {
+            expect(function () {
+                expect([], 'to have items satisfying', function (item) {
+                    expect(item, 'to be a number');
+                });
+            }, 'to throw',
+                   "expected [] to have items satisfying\n" +
+                   "function (item) {\n" +
+                   "    expect(item, 'to be a number');\n" +
+                   "}\n" +
+                   "  expected [] to be non-empty");
+        });
+
+        it('fails if the given array is empty', function () {
+            expect(function () {
+                expect([], 'to have items satisfying', function (item) {
+                    expect(item, 'to be a number');
+                });
+            }, 'to throw',
+                   "expected [] to have items satisfying\n" +
+                   "function (item) {\n" +
+                   "    expect(item, 'to be a number');\n" +
+                   "}\n" +
+                   "  expected [] to be non-empty");
+        });
+
+        it('supports legacy aliases', function () {
+            expect({ foo: '0' }, 'to be a map whose values satisfy', function (value) {
+                expect(value, 'not to be a number');
             });
-        });
 
-        it('supports "hash" and "object" as aliases', function () {
             expect({ foo: '0' }, 'to be an object whose values satisfy', function (value) {
                 expect(value, 'not to be a number');
             });
@@ -2305,7 +2847,7 @@ describe('unexpected', function () {
 
         it('fails when the assertion fails', function () {
             expect(function () {
-                expect({ foo: '0', bar: 1, baz: '2', qux: '3' }, 'to be a map whose values satisfy', function (value) {
+                expect({ foo: '0', bar: 1, baz: '2', qux: '3' }, 'to have values satisfying', function (value) {
                     expect(value, 'not to be a number');
                 });
             }, 'to throw', /expected 1 not to be a number/);
@@ -2313,7 +2855,7 @@ describe('unexpected', function () {
 
         it('provides a detailed report of where failures occur', function () {
             expect(function () {
-                expect({ foo: 0, bar: 1, baz: '2', qux: 3, quux: 4 }, 'to be a map whose values satisfy', function (value) {
+                expect({ foo: 0, bar: 1, baz: '2', qux: 3, quux: 4 }, 'to have values satisfying', function (value) {
                     expect(value, 'to be a number');
                     expect(value, 'to be less than', 4);
                 });
@@ -2325,69 +2867,113 @@ describe('unexpected', function () {
 
         it('indents failure reports of nested assertions correctly', function () {
             expect(function () {
-                expect({ foo: [0, 1, 2], bar: [4, '5', 6], baz: [7, 8, '9'] }, 'to be a map whose values satisfy', function (arr) {
-                    expect(arr, 'to be an array whose items satisfy', function (item) {
+                expect({ foo: [0, 1, 2], bar: [4, '5', 6], baz: [7, 8, '9'] }, 'to have values satisfying', function (arr) {
+                    expect(arr, 'to have items satisfying', function (item) {
                         expect(item, 'to be a number');
                     });
                 });
             }, 'to throw',
-                "failed expectation in\n" +
-                "{\n" +
-                "  foo: [ 0, 1, 2 ],\n" +
-                "  bar: [ 4, '5', 6 ],\n" +
-                "  baz: [ 7, 8, '9' ]\n" +
-                "}:\n" +
+                "failed expectation in { foo: [ 0, 1, 2 ], bar: [ 4, '5', 6 ], baz: [ 7, 8, '9' ] }:\n" +
                 "  bar: failed expectation in [ 4, '5', 6 ]:\n" +
                 "         1: expected '5' to be a number\n" +
                 "  baz: failed expectation in [ 7, 8, '9' ]:\n" +
                 "         2: expected '9' to be a number");
         });
+
+        describe('delegating to an async assertion', function () {
+            var clonedExpect = expect.clone()
+                .addAssertion('to be a number after a short delay', function (expect, subject, delay) {
+                    this.errorMode = 'nested';
+
+                    return expect.promise(function (run) {
+                        setTimeout(run(function () {
+                            expect(subject, 'to be a number');
+                        }), 1);
+                    });
+                });
+
+            it('should succeed', function () {
+                return clonedExpect({0: 1, 1: 2, 2: 3}, 'to have values satisfying', 'to be a number after a short delay');
+            });
+
+            it('should fail with a diff', function () {
+                return expect(
+                    clonedExpect({0: 0, 1: false, 2: 'abc'}, 'to have values satisfying', 'to be a number after a short delay'),
+                    'to be rejected',
+                        "failed expectation in { 0: 0, 1: false, 2: 'abc' }:\n" +
+                        "  1: expected false to be a number after a short delay\n" +
+                        "       expected false to be a number\n" +
+                        "  2: expected 'abc' to be a number after a short delay\n" +
+                        "       expected 'abc' to be a number"
+                );
+            });
+        });
     });
 
-    describe('to be a map whose keys satisfy assertion', function () {
+    describe('to have keys satisfying assertion', function () {
         it('requires a third argument', function () {
             expect(function () {
-                expect([1, 2, 3], 'to be a map whose keys satisfy');
-            }, 'to throw', 'Assertion "to be a map whose keys satisfy" expects a third argument');
+                expect([1, 2, 3], 'to have keys satisfying');
+            }, 'to throw', 'Assertion "to have keys satisfying" expects a third argument');
         });
 
         it('only accepts objects as the target', function () {
             expect(function () {
-                expect(42, 'to be a map whose keys satisfy', function (key) {});
+                expect(42, 'to have keys satisfying', function (key) {});
             }, 'to throw',
-                   'expected 42 to be a map whose keys satisfy function (key) {}\n' +
-                   '  The assertion "to be a map whose keys satisfy" is not defined for the type "number",\n' +
+                   'expected 42 to have keys satisfying function (key) {}\n' +
+                   '  The assertion "to have keys satisfying" is not defined for the type "number",\n' +
                    '  but it is defined for the type "object"');
         });
 
         it('asserts that the given callback does not throw for any keys in the map', function () {
-            expect({ foo: 0, bar: 1, baz: 2, qux: 3 }, 'to be a map whose keys satisfy', function (key) {
+            expect({ foo: 0, bar: 1, baz: 2, qux: 3 }, 'to have keys satisfying', function (key) {
                 expect(key, 'not to be empty');
             });
 
-            expect({ foo: 0, bar: 1, baz: 2, qux: 3 }, 'to be a map whose keys satisfy', function (key) {
+            expect({ foo: 0, bar: 1, baz: 2, qux: 3 }, 'to have keys satisfying', function (key) {
                 expect(key, 'to match', /^[a-z]{3}$/);
             });
 
-            expect({ foo: 0, bar: 1, baz: 2, qux: 3 }, 'to be a map whose keys satisfy', 'not to be empty');
+            expect({ foo: 0, bar: 1, baz: 2, qux: 3 }, 'to have keys satisfying', 'not to be empty');
 
-            expect({ foo: 0, bar: 1, baz: 2, qux: 3 }, 'to be a map whose keys satisfy', 'to match', /^[a-z]{3}$/);
+            expect({ foo: 0, bar: 1, baz: 2, qux: 3 }, 'to have keys satisfying', 'to match', /^[a-z]{3}$/);
         });
 
         it('receives the key and the value when the third argument is a function', function () {
-            expect({ foo: 123 }, 'to be a map whose keys satisfy', function (key, value) {
+            expect({ foo: 123 }, 'to have keys satisfying', function (key, value) {
                 expect(key, 'to equal', 'foo');
                 expect(value, 'to equal', 123);
             });
         });
 
-        it('supports the non-empty clause', function () {
-            expect({ foo: '0' }, 'to be a non-empty map whose keys satisfy', function (key) {
-                expect(key, 'to match', /^[a-z]{3}$/);
-            });
+        it('fails if the given object is empty', function () {
+            expect(function () {
+                expect({}, 'to have keys satisfying', function (key) {
+                    expect(key, 'to match', /^[a-z]{3}$/);
+                });
+            }, 'to throw',
+                   "expected {} to have keys satisfying\n" +
+                   "function (key) {\n" +
+                   "    expect(key, 'to match', /^[a-z]{3}$/);\n" +
+                   "}\n" +
+                   "  expected {} not to equal {}");
         });
 
-        it('supports "hash" and "object" as aliases', function () {
+        it('should work with non-enumerable keys returned by the getKeys function of the subject type', function () {
+            expect(function () {
+                expect(new Error('foo'), 'to have keys satisfying', /bar/);
+            }, 'to throw',
+                "failed expectation on keys message:\n" +
+                "  message: expected 'message' to satisfy /bar/"
+            );
+        });
+
+        it('supports legacy aliases', function () {
+            expect({ foo: '0' }, 'to be a map whose keys satisfy', function (key) {
+                expect(key, 'to match', /^[a-z]{3}$/);
+            });
+
             expect({ foo: '0' }, 'to be an object whose keys satisfy', function (key) {
                 expect(key, 'to match', /^[a-z]{3}$/);
             });
@@ -2399,7 +2985,7 @@ describe('unexpected', function () {
 
         it('fails when the assertion fails', function () {
             expect(function () {
-                expect({ foo: 0, bar: 1, Baz: 2, qux: 3 }, 'to be a map whose keys satisfy', function (key) {
+                expect({ foo: 0, bar: 1, Baz: 2, qux: 3 }, 'to have keys satisfying', function (key) {
                     expect(key, 'to match', /^[a-z]{3}$/);
                 });
             }, 'to throw', /expected 'Baz' to match/);
@@ -2407,13 +2993,42 @@ describe('unexpected', function () {
 
         it('provides a detailed report of where failures occur', function () {
             expect(function () {
-                expect({ foo: 0, bar: 1, baz: 2, qux: 3, quux: 4 }, 'to be a map whose keys satisfy', function (key) {
+                expect({ foo: 0, bar: 1, baz: 2, qux: 3, quux: 4 }, 'to have keys satisfying', function (key) {
                     expect(key, 'to have length', 3);
                 });
             }, 'to throw',
                    "failed expectation on keys foo, bar, baz, qux, quux:\n" +
                    "  quux: expected 'quux' to have length 3\n" +
                    "          expected 4 to be 3");
+        });
+
+        describe('delegating to an async assertion', function () {
+            var clonedExpect = expect.clone()
+                .addAssertion('to be a sequence of as after a short delay', function (expect, subject, delay) {
+                    this.errorMode = 'nested';
+
+                    return expect.promise(function (run) {
+                        setTimeout(run(function () {
+                            expect(subject, 'to match', /^a+$/);
+                        }), 1);
+                    });
+                });
+
+            it('should succeed', function () {
+                return clonedExpect({a: 1, aa: 2}, 'to have keys satisfying', 'to be a sequence of as after a short delay');
+            });
+
+            it('should fail with a diff', function () {
+                return expect(
+                    clonedExpect({a: 1, foo: 2, bar: 3}, 'to have keys satisfying', 'to be a sequence of as after a short delay'),
+                    'to be rejected',
+                        "failed expectation on keys a, foo, bar:\n" +
+                        "  foo: expected 'foo' to be a sequence of as after a short delay\n" +
+                        "         expected 'foo' to match /^a+$/\n" +
+                        "  bar: expected 'bar' to be a sequence of as after a short delay\n" +
+                        "         expected 'bar' to match /^a+$/"
+                );
+            });
         });
     });
 
@@ -2730,10 +3345,7 @@ describe('unexpected', function () {
                     errorMode = 'bubble';
                     expect(function () {
                         clonedExpect(42, 'to be sorted');
-                    }, 'to throw', function (err) {
-                        expect(err.output.toString(), 'to equal', 'expected 42 to be an array');
-                        expect(err.stack, 'to contain', err.message);
-                    });
+                    }, 'to throw', 'expected 42 to be an array');
                 });
 
                 it('errorMode=bubble only includes the diff once', function () {
@@ -2750,14 +3362,23 @@ describe('unexpected', function () {
                            ']');
                 });
 
+                it('errorMode=diff only includes the diff', function () {
+                    errorMode = 'diff';
+                    expect(function () {
+                        clonedExpect([3, 2, 1], 'to be sorted');
+                    }, 'to throw',
+                           '[\n' +
+                           "  3, // should equal 1\n" +
+                           "  2,\n" +
+                           "  1 // should equal 3\n" +
+                           ']');
+                });
+
                 it('errorMode=default uses the standard error message of the assertion', function () {
                     errorMode = 'default';
                     expect(function () {
                         clonedExpect(42, 'to be sorted');
-                    }, 'to throw', function (err) {
-                        expect(err.output.toString(), 'to equal', 'expected 42 to be sorted');
-                        expect(err.stack, 'to contain', err.message);
-                    });
+                    }, 'to throw', 'expected 42 to be sorted');
                 });
             });
 
@@ -2793,6 +3414,22 @@ describe('unexpected', function () {
                     errorMode = 'bubble';
                     clonedExpect(42, 'to be sorted after delay', 1, function (err) {
                         expect(err, 'to have message', 'expected 42 to be an array');
+                        done();
+                    });
+                });
+
+                // It is very hard to get this working as we need errors thrown asynchronously
+                // without a promise to be serialized so they will have a message property when
+                // they get caught by window.onerror.
+                it.skip('errorMode=diff only includes the diff', function (done) {
+                    errorMode = 'diff';
+                    clonedExpect([3, 2, 1], 'to be sorted after delay', 1, function (err) {
+                        expect(err, 'to have message',
+                           '[\n' +
+                           "  3, // should equal 1\n" +
+                           "  2,\n" +
+                           "  1 // should equal 3\n" +
+                           ']');
                         done();
                     });
                 });
@@ -2833,10 +3470,94 @@ describe('unexpected', function () {
                     });
                 });
             });
+
+            describe('for custom assertions that return promises', function () {
+                beforeEach(function () {
+                    clonedExpect = expect.clone()
+                        .addAssertion('to be sorted after delay', function (expect, subject, delay, done) {
+                            this.errorMode = errorMode;
+                            return expect.promise(function (run) {
+                                setTimeout(run(function () {
+                                    expect(subject, 'to be an array');
+                                    expect(subject, 'to equal', [].concat(subject).sort());
+                                }), delay);
+                            });
+                        });
+                });
+
+                it('errorMode=nested nest the error message of expect failures in the assertion under the assertion standard message', function () {
+                    errorMode = 'nested';
+                    return expect(
+                        clonedExpect(42, 'to be sorted after delay', 1),
+                        'to be rejected',
+                            'expected 42 to be sorted after delay 1\n  expected 42 to be an array'
+                    );
+                });
+
+                it('errorMode=bubble bubbles uses the error message of expect failures in the assertion', function () {
+                    errorMode = 'bubble';
+                    return expect(
+                        clonedExpect(42, 'to be sorted after delay', 1),
+                        'to be rejected',
+                            'expected 42 to be an array'
+                    );
+                });
+
+                it('errorMode=default uses the standard error message of the assertion', function () {
+                    errorMode = 'default';
+                    return expect(
+                        clonedExpect(42, 'to be sorted after delay', 1),
+                        'to be rejected',
+                            'expected 42 to be sorted after delay 1'
+                    );
+                });
+
+                describe('nested inside another custom assertion', function () {
+                    it('errorMode=nested nest the error message of expect failures in the assertion under the assertion standard message', function () {
+                        errorMode = 'nested';
+                        return expect(
+                            clonedExpect(42, 'to be sorted after delay', 1),
+                            'to be rejected',
+                                'expected 42 to be sorted after delay 1\n  expected 42 to be an array'
+                        );
+                    });
+
+                    it('errorMode=bubble bubbles uses the error message of expect failures in the assertion', function () {
+                        errorMode = 'bubble';
+                        return expect(
+                            clonedExpect(42, 'to be sorted after delay', 1),
+                            'to be rejected',
+                                'expected 42 to be an array'
+                        );
+                    });
+
+                    it('errorMode=diff only includes the diff', function () {
+                        errorMode = 'diff';
+                        return expect(
+                            clonedExpect([3, 2, 1], 'to be sorted after delay', 1),
+                            'to be rejected',
+                                '[\n' +
+                                "  3, // should equal 1\n" +
+                                "  2,\n" +
+                                "  1 // should equal 3\n" +
+                                ']'
+                        );
+                    });
+
+                    it('errorMode=default uses the standard error message of the assertion', function () {
+                        errorMode = 'default';
+                        return expect(
+                            clonedExpect(42, 'to be sorted after delay', 1),
+                            'to be rejected',
+                                'expected 42 to be sorted after delay 1'
+                        );
+                    });
+                });
+            });
         });
 
         // I can't figure out why this doesn't work in mocha-phantomjs:
-        it.skipIf(typeof mochaPhantomJS !== 'undefined', 'truncates the stack when a custom assertion throws a regular assertion error', function () {
+        it.skipIf(isMochaPhantomJS, 'truncates the stack when a custom assertion throws a regular assertion error', function () {
             var clonedExpect = expect.clone().addAssertion('to equal foo', function theCustomAssertion(expect, subject) {
                 expect(subject, 'to equal', 'foo');
             });
@@ -2844,6 +3565,27 @@ describe('unexpected', function () {
                 clonedExpect('bar', 'to equal foo');
             }, 'to throw', function (err) {
                 expect(err.stack, 'not to contain', 'theCustomAssertion');
+            });
+        });
+
+        describe('without Error.captureStackTrace', function () {
+            var orig;
+            before(function () {
+                orig = Error.captureStackTrace;
+                Error.captureStackTrace = null;
+            });
+            after(function () {
+                Error.captureStackTrace = orig;
+            });
+            it('truncates the stack when a custom assertion throws a regular assertion error', function () {
+                var clonedExpect = expect.clone().addAssertion('to equal foo', function theCustomAssertion(expect, subject) {
+                    expect(subject, 'to equal', 'foo');
+                });
+                expect(function () {
+                    clonedExpect('bar', 'to equal foo');
+                }, 'to throw', function (err) {
+                    expect(err.stack, 'not to contain', 'theCustomAssertion');
+                });
             });
         });
 
@@ -2856,7 +3598,7 @@ describe('unexpected', function () {
                 clonedExpect('foo', 'to equal foo');
             }, 'to throw', function (err) {
                 expect(err.stack, 'to contain', 'theCustomAssertion');
-                expect(err.message, 'to match', /is not a function/);
+                expect(err.message, 'to match', /is not a function|Function expected/);
             });
         });
 
@@ -3222,17 +3964,21 @@ describe('unexpected', function () {
 
     function Field(val, options) {
         var value = val;
+        var propertyDescription = {
+            enumerable: true
+        };
         if (options.match(/getter/)) {
-            this.__defineGetter__('value', function () { return value; });
+            propertyDescription.get = function () { return value; };
         }
 
         if (options.match(/setter/)) {
-            this.__defineSetter__('value', function (val) { value = val; });
+            propertyDescription.set = function (val) { value = val; };
         }
+        Object.defineProperty(this, 'value', propertyDescription);
     }
 
     describe('equal', function () {
-        it.skipIf(!Object.prototype.__lookupGetter__, 'handles getters and setters correctly', function () {
+        it.skipIf(!Object.defineProperty, 'handles getters and setters correctly', function () {
             expect(new Field('VALUE', 'getter'), 'to equal', new Field('VALUE', 'getter'));
             expect(new Field('VALUE', 'setter'), 'to equal', new Field('VALUE', 'setter'));
             expect(new Field('VALUE', 'getter and setter'), 'to equal', new Field('VALUE', 'getter and setter'));
@@ -3240,14 +3986,20 @@ describe('unexpected', function () {
     });
 
     describe('inspect', function () {
-        expect.addAssertion('to inspect as', function (expect, subject, value) {
-            expect(expect.inspect(subject).toString(), 'to equal', value);
-        });
-
-        it.skipIf(!Object.prototype.__lookupGetter__, 'handles getters and setters correctly', function () {
+        it.skipIf(!Object.defineProperty, 'handles getters and setters correctly', function () {
             expect(new Field('VALUE', 'getter'), 'to inspect as', "Field({ value: 'VALUE' /* getter */ })");
             expect(new Field('VALUE', 'setter'), 'to inspect as', "Field({ set value: function (val) { value = val; } })");
             expect(new Field('VALUE', 'getter and setter'), 'to inspect as', "Field({ value: 'VALUE' /* getter/setter */ })");
+        });
+
+        it('should render strings with control chars and backslashes correctly', function () {
+            var stringWithControlCharsAndStuff = '\\';
+            for (var i = 0 ; i < 32 ; i += 1) {
+                stringWithControlCharsAndStuff += String.fromCharCode(i);
+            }
+
+            expect(stringWithControlCharsAndStuff, 'to inspect as',
+                "'\\\\\\x00\\x01\\x02\\x03\\x04\\x05\\x06\\x07\\b\\t\\n\\x0b\\f\\r\\x0e\\x0f\\x10\\x11\\x12\\x13\\x14\\x15\\x16\\x17\\x18\\x19\\x1a\\x1b\\x1c\\x1d\\x1e\\x1f'");
         });
 
         describe('with various special values', function () {
@@ -3395,16 +4147,12 @@ describe('unexpected', function () {
             expect(expect.inspect(data, 5).toString(), 'to equal',
                    "[\n" +
                    "  {\n" +
-                   "    guid: 'db550c87-1680-462a-bacc-655cecdd8907',\n" +
-                   "    isActive: false,\n" +
-                   "    age: 38,\n" +
-                   "    email: 'huntterry@medalert.com',\n" +
-                   "    phone: '+1 (803) 472-3209',\n" +
+                   "    guid: 'db550c87-1680-462a-bacc-655cecdd8907', isActive: false,\n" +
+                   "    age: 38, email: 'huntterry@medalert.com', phone: '+1 (803) 472-3209',\n" +
                    "    address: '944 Milton Street, Madrid, Ohio, 1336',\n" +
                    "    about: 'Ea consequat nulla duis incididunt ut irureirure cupidatat. Est tempor cillum commodo aliquaconsequat esse commodo. Culpa ipsum eu consectetur idenim quis sint. Aliqua deserunt dolore reprehenderitid anim exercitation laboris. Eiusmod aute consecteturexcepteur in nulla proident occaecatconsectetur.\\r\\n',\n" +
                    "    registered: new Date('Sun, 03 Jun 1984 09:36:47 GMT'),\n" +
-                   "    latitude: 8.635553,\n" +
-                   "    longitude: -103.382498,\n" +
+                   "    latitude: 8.635553, longitude: -103.382498,\n" +
                    "    tags: [ 'tempor', 'dolore', 'non', 'sit', 'minim', 'aute', 'non' ],\n" +
                    "    friends: [\n" +
                    "      { id: 0, name: 'Jeanne Hyde' },\n" +
@@ -3430,24 +4178,13 @@ describe('unexpected', function () {
                    "    ]\n" +
                    "  },\n" +
                    "  {\n" +
-                   "    guid: '904c2f38-071c-4b97-b968-f5c228aaf41a',\n" +
-                   "    isActive: false,\n" +
-                   "    age: 34,\n" +
-                   "    email: 'peckhester@medalert.com',\n" +
+                   "    guid: '904c2f38-071c-4b97-b968-f5c228aaf41a', isActive: false,\n" +
+                   "    age: 34, email: 'peckhester@medalert.com',\n" +
                    "    phone: '+1 (848) 599-3447',\n" +
                    "    address: '323 Legion Street, Caspar, Delaware, 4117',\n" +
                    "    registered: new Date('Tue, 10 Mar 1981 17:02:53 GMT'),\n" +
-                   "    latitude: -55.321712,\n" +
-                   "    longitude: -100.276818,\n" +
-                   "    tags: [\n" +
-                   "      'Lorem',\n" +
-                   "      'laboris',\n" +
-                   "      'enim',\n" +
-                   "      'anim',\n" +
-                   "      'sint',\n" +
-                   "      'incididunt',\n" +
-                   "      'labore'\n" +
-                   "    ],\n" +
+                   "    latitude: -55.321712, longitude: -100.276818,\n" +
+                   "    tags: [ 'Lorem', 'laboris', 'enim', 'anim', 'sint', 'incididunt', 'labore' ],\n" +
                    "    friends: [\n" +
                    "      { id: 0, name: 'Patterson Meadows' },\n" +
                    "      { id: 1, name: 'Velasquez Joseph' },\n" +
@@ -3459,14 +4196,57 @@ describe('unexpected', function () {
                    "    circular: { self: [Circular] },\n" +
                    "    this: {\n" +
                    "      is: {\n" +
-                   "        deeply: {\n" +
-                   "          nested: ...,\n" +
-                   "          string: 'should be shown',\n" +
-                   "          'a list': ...\n" +
-                   "        },\n" +
+                   "        deeply: { nested: ..., string: 'should be shown', 'a list': ... },\n" +
                    "        'a list': [...]\n" +
                    "      }\n" +
                    "    }\n" +
+                   "  }\n" +
+                   "]");
+
+
+            var clonedExpect = expect.clone();
+            clonedExpect.output.preferredWidth = 200;
+            expect(clonedExpect.inspect(data, 5).toString(), 'to equal',
+                   "[\n" +
+                   "  {\n" +
+                   "    guid: 'db550c87-1680-462a-bacc-655cecdd8907', isActive: false, age: 38, email: 'huntterry@medalert.com', phone: '+1 (803) 472-3209', address: '944 Milton Street, Madrid, Ohio, 1336',\n" +
+                   "    about: 'Ea consequat nulla duis incididunt ut irureirure cupidatat. Est tempor cillum commodo aliquaconsequat esse commodo. Culpa ipsum eu consectetur idenim quis sint. Aliqua deserunt dolore reprehenderitid anim exercitation laboris. Eiusmod aute consecteturexcepteur in nulla proident occaecatconsectetur.\\r\\n',\n" +
+                   "    registered: new Date('Sun, 03 Jun 1984 09:36:47 GMT'), latitude: 8.635553, longitude: -103.382498, tags: [ 'tempor', 'dolore', 'non', 'sit', 'minim', 'aute', 'non' ],\n" +
+                   "    friends: [\n" +
+                   "      { id: 0, name: 'Jeanne Hyde' },\n" +
+                   "      { id: 1, name: 'Chavez Parker' },\n" +
+                   "      { id: 2, name: 'Orr Rogers' },\n" +
+                   "      { id: 3, name: 'Etta Glover' },\n" +
+                   "      { id: 4, name: 'Glenna Aguirre' },\n" +
+                   "      { id: 5, name: 'Erika England' },\n" +
+                   "      { id: 6, name: 'Casandra Stanton' },\n" +
+                   "      { id: 7, name: 'Hooper Cobb' },\n" +
+                   "      { id: 8, name: 'Gates Todd' },\n" +
+                   "      { id: 9, name: 'Lesa Chase' },\n" +
+                   "      { id: 10, name: 'Natasha Frazier' },\n" +
+                   "      { id: 11, name: 'Lynnette Key' },\n" +
+                   "      { id: 12, name: 'Linda Mclaughlin' },\n" +
+                   "      { id: 13, name: 'Harrison Martinez' },\n" +
+                   "      { id: 14, name: 'Tameka Hebert' },\n" +
+                   "      { id: 15, name: 'Gena Farley' },\n" +
+                   "      { id: 16, name: 'Conley Walsh' },\n" +
+                   "      { id: 17, name: 'Suarez Norman' },\n" +
+                   "      { id: 18, name: 'Susana Pitts' },\n" +
+                   "      { id: 19, name: 'Peck Hester' }\n" +
+                   "    ]\n" +
+                   "  },\n" +
+                   "  {\n" +
+                   "    guid: '904c2f38-071c-4b97-b968-f5c228aaf41a', isActive: false, age: 34, email: 'peckhester@medalert.com', phone: '+1 (848) 599-3447', address: '323 Legion Street, Caspar, Delaware, 4117',\n" +
+                   "    registered: new Date('Tue, 10 Mar 1981 17:02:53 GMT'), latitude: -55.321712, longitude: -100.276818, tags: [ 'Lorem', 'laboris', 'enim', 'anim', 'sint', 'incididunt', 'labore' ],\n" +
+                   "    friends: [\n" +
+                   "      { id: 0, name: 'Patterson Meadows' },\n" +
+                   "      { id: 1, name: 'Velasquez Joseph' },\n" +
+                   "      { id: 2, name: 'Horn Harrison' },\n" +
+                   "      { id: 3, name: 'Young Mooney' },\n" +
+                   "      { id: 4, name: 'Barbara Lynn' },\n" +
+                   "      { id: 5, name: 'Sharpe Downs' }\n" +
+                   "    ],\n" +
+                   "    circular: { self: [Circular] }, this: { is: { deeply: { nested: ..., string: 'should be shown', 'a list': ... }, 'a list': [...] } }\n" +
                    "  }\n" +
                    "]");
         });
@@ -3493,7 +4273,7 @@ describe('unexpected', function () {
                 '    var foo = \'bar\';\n' +
                 '    var quux = \'baz\';\n' +
                 '    while (foo) {\n' +
-                '    // ... lines removed ...\n' +
+                '        foo = foo\n' +
                 '            .substr(0, foo.length - 1);\n' +
                 '    }\n' +
                 '    return quux;\n' +
@@ -3655,7 +4435,7 @@ describe('unexpected', function () {
                        "⨯ expected 'foobarbaz' to be an array");
             });
 
-            it('if there are only no and-clauses it writes the failure output more compactly', function () {
+            it('if there are no and-clauses it writes the failure output more compactly', function () {
                 var expectation = expect.it('to be a number')
                     .or('to be a string')
                     .or('to be an array');
@@ -3680,7 +4460,95 @@ describe('unexpected', function () {
                        '⨯ expected true to be a number or\n' +
                        '⨯ expected true to be a string');
             });
+        });
 
+        describe('with async assertions', function () {
+            var clonedExpect = expect.clone()
+                .addAssertion('to be a number after a short delay', function (expect, subject) {
+                    this.errorMode = 'nested';
+
+                    return expect.promise(function (run) {
+                        setTimeout(run(function () {
+                            expect(subject, 'to be a number');
+                        }), 1);
+                    });
+                })
+                .addAssertion('to be finite after a short delay', function (expect, subject) {
+                    this.errorMode = 'nested';
+
+                    return expect.promise(function (run) {
+                        setTimeout(run(function () {
+                            expect(subject, 'to be finite');
+                        }), 1);
+                    });
+                })
+                .addAssertion('to be a string after a short delay', function (expect, subject) {
+                    this.errorMode = 'nested';
+
+                    return expect.promise(function (run) {
+                        setTimeout(run(function () {
+                            expect(subject, 'to be a string');
+                        }), 1);
+                    });
+                });
+
+            it('should succeed', function () {
+                return clonedExpect.it('to be a number after a short delay')(123);
+            });
+
+            it('should fail with a diff', function () {
+                return expect(
+                    clonedExpect.it('to be a number after a short delay')(false),
+                    'to be rejected',
+                        'expected false to be a number after a short delay\n' +
+                        '  expected false to be a number'
+                );
+            });
+
+            describe('with a chained "and" construct', function () {
+                it('should succeed', function () {
+                    return clonedExpect
+                        .it('to be a number after a short delay')
+                        .and('to be finite after a short delay')(123);
+                });
+
+                it('should fail with a diff', function () {
+                    return expect(
+                        clonedExpect
+                            .it('to be a number after a short delay')
+                            .and('to be finite after a short delay')(false),
+                        'to be rejected',
+                            '⨯ expected false to be a number after a short delay and\n' +
+                            '    expected false to be a number\n' +
+                            '  expected false to be finite after a short delay'
+                    );
+                });
+            });
+
+            describe('with a chained "or" construct', function () {
+                it('should succeed', function () {
+                    return clonedExpect
+                        .it('to be a number after a short delay')
+                            .and('to be finite after a short delay')
+                        .or('to be a string after a short delay')('abc');
+                });
+
+                it('should fail with a diff', function () {
+                    return expect(
+                        clonedExpect
+                            .it('to be a number after a short delay')
+                                .and('to be finite after a short delay')
+                            .or('to be a string after a short delay')(false),
+                        'to be rejected',
+                            '⨯ expected false to be a number after a short delay and\n' +
+                            '    expected false to be a number\n' +
+                            '  expected false to be finite after a short delay\n' +
+                            'or\n' +
+                            '⨯ expected false to be a string after a short delay\n' +
+                            '    expected false to be a string'
+                    );
+                });
+            });
         });
     });
 
@@ -4306,6 +5174,14 @@ describe('unexpected', function () {
             expect([3, 4], 'when passed as parameters to', add, 'to equal', 7);
         });
 
+        it('works with an array-like object', function () {
+            var args;
+            (function () {
+                args = arguments;
+            }(3, 4));
+            expect(args, 'when passed as parameters to', add, 'to equal', 7);
+        });
+
         it('should produce a nested error message when the assertion fails', function () {
             expect(function () {
                 expect([3, 4], 'when passed as parameters to', add, 'to equal', 8);
@@ -4319,7 +5195,309 @@ describe('unexpected', function () {
         });
 
         it('should combine with other assertions (showcase)', function () {
-            expect([[1, 2], [3, 4]], 'to be an array whose items satisfy', 'when passed as parameters to', add, 'to be a number');
+            expect([[1, 2], [3, 4]], 'to have items satisfying', 'when passed as parameters to', add, 'to be a number');
+        });
+
+        it('should pass the subject as a single parameter when invoked as "when passed as parameter to"', function () {
+            expect(1, 'when passed as parameter to', add.bind(null, 1), 'to equal', 2);
+        });
+
+        describe('with the constructor flag', function () {
+            function Foo(a, b) {
+                this.a = a;
+                this.b = b;
+                this.numParams = arguments.length;
+            }
+
+            it('should create a new instance', function () {
+                expect([1, 2], 'when passed as parameters to constructor', Foo, 'to satisfy', function (obj) {
+                    expect(obj, 'to be a', Foo);
+                    expect(obj.a, 'to equal', 1);
+                    expect(obj.b, 'to equal', 2);
+                    expect(obj.numParams, 'to equal', 2);
+                });
+            });
+        });
+
+        describe('with the async flag', function () {
+            function delayedIncrement(num, cb) {
+                setTimeout(function () {
+                    if (typeof num === 'number') {
+                        cb(null, num + 1);
+                    } else {
+                        cb(new Error('not a number'));
+                    }
+                }, 1);
+            }
+
+            it('should succeed', function () {
+                return expect([123], 'when passed as parameters to async', delayedIncrement, 'to equal', 124);
+            });
+
+            it('should fail if the result of the async function does not meet the criteria', function () {
+                return expect(
+                    expect([123], 'when passed as parameters to async', delayedIncrement, 'to equal', 125),
+                    'to be rejected',
+                        "expected [ 123 ] when passed as parameters to async\n" +
+                        "function delayedIncrement(num, cb) {\n" +
+                        "    setTimeout(function () {\n" +
+                        "        if (typeof num === 'number') {\n" +
+                        "            cb(null, num + 1);\n" +
+                        "        } else {\n" +
+                        "            cb(new Error('not a number'));\n" +
+                        "        }\n" +
+                        "    }, 1);\n" +
+                        "} to equal 125\n" +
+                        "  expected 124 to equal 125"
+                );
+            });
+
+            it('should fail if the async function calls the callback with an error', function () {
+                return expect(
+                    expect([false], 'when passed as parameters to async', delayedIncrement, 'to equal', 125),
+                    'to be rejected',
+                        "expected [ false ] when passed as parameters to async\n" +
+                        "function delayedIncrement(num, cb) {\n" +
+                        "    setTimeout(function () {\n" +
+                        "        if (typeof num === 'number') {\n" +
+                        "            cb(null, num + 1);\n" +
+                        "        } else {\n" +
+                        "            cb(new Error('not a number'));\n" +
+                        "        }\n" +
+                        "    }, 1);\n" +
+                        "}, 'to equal', 125\n" +
+                        "  expected Error({ message: 'not a number' }) to be falsy"
+                );
+            });
+        });
+    });
+
+    describe('assertion.shift', function () {
+        describe('with a function as the next argument', function () {
+            it('should succeed', function () {
+                var clonedExpect = expect.clone().addAssertion('string', 'when prepended with foo', function (expect, subject) {
+                    return this.shift('foo' + subject, 0);
+                });
+                clonedExpect('foo', 'when prepended with foo', function (str) {
+                    clonedExpect(str, 'to equal', 'foofoo');
+                });
+            });
+        });
+
+        describe('with an async assertion', function () {
+            it('should succeed', function () {
+                return expect(42, 'when delayed a little bit', 'to be a number');
+            });
+
+            it('should fail with a diff', function () {
+                return expect(
+                    expect(false, 'when delayed a little bit', 'to be a number'),
+                    'to be rejected',
+                    'expected false when delayed a little bit to be a number'
+                );
+            });
+        });
+    });
+
+    describe('async', function () {
+        before(function () {
+            expect = expect.clone()
+                .addAssertion('to be sorted after delay', function (expect, subject, delay) {
+                    this.errorMode = 'nested';
+
+                    return expect.promise(function (run) {
+                        setTimeout(run(function () {
+                            expect(subject, 'to be an array');
+                            expect(subject, 'to equal', [].concat(subject).sort());
+                        }), delay);
+                    });
+                })
+                .addAssertion('to be ordered after delay', function (expect, subject) {
+                    this.errorMode = 'nested';
+                    return expect(subject, 'to be sorted after delay', 20);
+                })
+                .addAssertion('im sync', function (expect, subject) {
+                    return expect.promise(function (run) {
+                        run(function () {
+                            expect(subject, 'to be', 24);
+                        })();
+                    });
+                });
+        });
+
+
+        it('fails if it is called without a callback', function () {
+            expect(function () {
+                expect.async();
+            }, 'to throw', /expect.async requires a callback without arguments./);
+
+            expect(function () {
+                expect.async('adsf');
+            }, 'to throw', /expect.async requires a callback without arguments./);
+        });
+
+        it('fails if the returned function is not called with a done callback', function () {
+            expect(function () {
+                expect.async(function () {})();
+            }, 'to throw', /expect.async should be called in the context of an it-block/);
+
+            expect(function () {
+                expect.async(function () {})('foo');
+            }, 'to throw', /expect.async should be called in the context of an it-block/);
+        });
+
+        it('fails if is called within a asynchronious context', function () {
+            expect(function () {
+                function done() {}
+                expect.async(function () {
+                    expect.async(function () {
+                    })(done);
+                })(done);
+            }, 'to throw', /expect.async can't be within a expect.async context./);
+        });
+
+        it('fails if the callback does not return a promise or throws', function () {
+            expect(function () {
+                function done() {}
+                expect.async(function () {
+                })(done);
+            }, 'to throw', /expect.async requires the block to return a promise or throw an exception./);
+
+            expect(function () {
+                function done() {}
+                expect.async(function () {
+                    return {};
+                })(done);
+            }, 'to throw', /expect.async requires the block to return a promise or throw an exception./);
+        });
+
+        it('supports composition', expect.async(function () {
+            return expect(
+                expect([1, 3, 2], 'to be ordered after delay'),
+                'to be rejected',
+                    'expected [ 1, 3, 2 ] to be ordered after delay\n' +
+                    '  expected [ 1, 3, 2 ] to be sorted after delay 20\n' +
+                    '    expected [ 1, 3, 2 ] to equal [ 1, 2, 3 ]\n' +
+                    '\n' +
+                    '    [\n' +
+                    '      1,\n' +
+                    '      3, // should equal 2\n' +
+                    '      2 // should equal 3\n' +
+                    '    ]'
+            );
+        }));
+
+        it('has a nice syntax', expect.async(function () {
+            return expect(
+                expect([1, 3, 2], 'to be sorted after delay', 20),
+                'to be rejected',
+                    'expected [ 1, 3, 2 ] to be sorted after delay 20\n' +
+                    '  expected [ 1, 3, 2 ] to equal [ 1, 2, 3 ]\n' +
+                    '\n' +
+                    '  [\n' +
+                    '    1,\n' +
+                    '    3, // should equal 2\n' +
+                    '    2 // should equal 3\n' +
+                    '  ]'
+            );
+        }));
+
+        it('tests that assertions that returns promises are converted to exceptions if they are sync', function () {
+            expect(function () {
+                expect(42, 'im sync');
+            }, 'to throw', 'expected 42 im sync');
+        });
+
+        it.skipIf(!workQueue, 'throw an unhandled rejection if a promise is not caught by the test', function (done) {
+            workQueue.onUnhandledRejection = function (err) {
+                expect(err.output.toString(), 'to equal',
+                    'expected [ 1, 3, 2 ] to be ordered after delay\n' +
+                    '  expected [ 1, 3, 2 ] to be sorted after delay 20\n' +
+                    '    expected [ 1, 3, 2 ] to equal [ 1, 2, 3 ]\n' +
+                    '\n' +
+                    '    [\n' +
+                    '      1,\n' +
+                    '      3, // should equal 2\n' +
+                    '      2 // should equal 3\n' +
+                    '    ]');
+
+                done();
+            };
+
+            expect([1, 3, 2], 'to be ordered after delay');
+        });
+    });
+
+    describe('expect.promise', function () {
+        it('should forward non-unexpected errors', function () {
+            var clonedExpect = expect.clone().addAssertion('to foo', function (expect, subject, value) {
+                return expect.withError(function () {
+                    return expect.promise(function () {
+                        return expect.promise.any([
+                            expect.promise(function () {
+                                expect(subject, 'to be', 24);
+                            }),
+                            expect.promise(function () {
+                                throw new Error('wat');
+                            })
+                        ]);
+                    });
+                }, function (e) {
+                    // success
+                });
+            });
+            expect(function () {
+                clonedExpect(42, 'to foo');
+            }, 'to throw', 'wat');
+        });
+
+        it('should return the resolved value when an assertion returns an oathbreakable promise that returns a value', function () {
+            var clonedExpect = expect.clone().addAssertion('to foo', function (expect, subject, value) {
+                return expect.promise(function () {
+                    expect(subject, 'to equal', 'foo');
+                    return 'bar';
+                });
+            });
+            expect(clonedExpect('foo', 'to foo'), 'to equal', 'bar');
+        });
+
+        it('should return the resolved value when an assertion returns an oathbreakable promise that resolves with a value', function () {
+            var clonedExpect = expect.clone().addAssertion('to foo', function (expect, subject, value) {
+                return expect.promise(function (resolve, reject) {
+                    expect(subject, 'to equal', 'foo');
+                    resolve('bar');
+                });
+            });
+            expect(clonedExpect('foo', 'to foo'), 'to equal', 'bar');
+        });
+
+        it('should preserve the resolved value when an assertion contains a non-oathbreakable promise', function (done) {
+            var clonedExpect = expect.clone().addAssertion('to foo', function (expect, subject, value) {
+                return expect.promise(function (resolve, reject) {
+                    expect(subject, 'to equal', 'foo');
+                    setTimeout(function () {
+                        resolve('bar');
+                    }, 1);
+                });
+            });
+            clonedExpect('foo', 'to foo').then(function (value) {
+                expect(value, 'to equal', 'bar');
+                done();
+            });
+        });
+
+        it('should preserve the return value when an assertion returns a non-promise value', function () {
+            var clonedExpect = expect.clone().addAssertion('to foo', function (expect, subject, value) {
+                expect(subject, 'to equal', 'foo');
+                return 'bar';
+            });
+            expect(clonedExpect('foo', 'to foo'), 'to equal', 'bar');
+        });
+    });
+
+    describe.skipIf(typeof Buffer === 'undefined', 'when decoded as assertion', function () {
+        it('should decode a Buffer instance to utf-8', function () {
+            expect(new Buffer('æøå', 'utf-8'), 'when decoded as', 'utf-8', 'to equal', 'æøå');
         });
     });
 });

@@ -30,7 +30,7 @@ expect(function () {
 
 In case of a failing expectation you get the following output:
 
-```javascript
+```javascript#skipPhantom:true
 expect(function () {
   throw new Error('The error message!');
 }, 'to throw', 'The error message');
@@ -59,7 +59,7 @@ expect(function () {
 
 In case of a failing expectation you get the following output:
 
-```javascript
+```javascript#skipPhantom:true
 expect(function () {
   throw new Error('The error message!');
 }, 'to throw', /catastrophic failure/);
@@ -87,7 +87,7 @@ expect(function () {
 
 In case of a failing expectation you get the following output:
 
-```javascript
+```javascript#skipPhantom:true
 expect(function () {
   throw new Error('Another error');
 }, 'to throw', function (e) {
@@ -117,7 +117,7 @@ expect(function () {
 
 In case of a failing expectation you get the following output:
 
-```javascript
+```javascript#skipPhantom:true
 expect(function () {
   throw new Error('threw anyway');
 }, 'not to throw');
@@ -130,30 +130,4 @@ function () {
 }
 not to throw
   threw: Error({ message: 'threw anyway' })
-```
-
-You can also use the `not` flag in combination with matching the error
-message.
-
-```javascript
-expect(function () {
-  throw new Error('The correct error message');
-}, 'not to throw', /great success/);
-```
-
-In case of a failing expectation you get the following output:
-
-```javascript
-expect(function () {
-  throw new Error('The correct error message');
-}, 'not to throw', /error/);
-```
-
-```output
-expected
-function () {
-  throw new Error('The correct error message');
-}
-not to throw /error/
-  expected Error({ message: 'The correct error message' }) not to satisfy /error/
 ```
