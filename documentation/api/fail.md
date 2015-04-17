@@ -88,6 +88,9 @@ The message can be either a `string` a
 function that will recieve a
 [magicpen](https://github.com/sunesimonsen/magicpen) instance.
 
+If you are using the default error mode, you don't have to specify the
+error message as it is just thrown away.
+
 The diff is a method that will create a custom diff lazily. To get a
 better understanding of the diff method see the [type](/api/addType)
 documentation.

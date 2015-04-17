@@ -897,6 +897,85 @@ describe("documentation tests", function () {
         return expect.promise.all(testPromises);
     });
 
+    it("api/withError.md contains correct examples", function () {
+        var testPromises = [];
+        try {
+            function Person(options) {
+              this.name = options.name;
+              this.gender = options.gender;
+            }
+
+            Person.prototype.genderSign = function () {
+              switch (this.gender) {
+              case 'female': return '♀';
+              case 'male': return '♂';
+              default: return '⚧';
+              }
+            };
+
+            expect.addAssertion('to have same gender as', function (expect, subject, value) {
+              expect.withError(function () {
+                expect(subject.gender, 'to be', value.gender);
+              }, function (e) {
+                expect.fail({
+                  diff: function (output) {
+                    return {
+                      inline: false,
+                      diff: output.bold(subject.genderSign()).text(' ≠ ').bold(value.genderSign())
+                    };
+                  }
+                });
+              });
+            });
+
+            expect(new Person({ name: 'John Doe', gender: 'male' }),
+                   'to have same gender as',
+                   new Person({ name: 'Jane Doe', gender: 'female' }));
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("function Person(options) {").nl();
+                output.code("  this.name = options.name;").nl();
+                output.code("  this.gender = options.gender;").nl();
+                output.code("}").nl();
+                output.code("").nl();
+                output.code("Person.prototype.genderSign = function () {").nl();
+                output.code("  switch (this.gender) {").nl();
+                output.code("  case 'female': return '♀';").nl();
+                output.code("  case 'male': return '♂';").nl();
+                output.code("  default: return '⚧';").nl();
+                output.code("  }").nl();
+                output.code("};").nl();
+                output.code("").nl();
+                output.code("expect.addAssertion('to have same gender as', function (expect, subject, value) {").nl();
+                output.code("  expect.withError(function () {").nl();
+                output.code("    expect(subject.gender, 'to be', value.gender);").nl();
+                output.code("  }, function (e) {").nl();
+                output.code("    expect.fail({").nl();
+                output.code("      diff: function (output) {").nl();
+                output.code("        return {").nl();
+                output.code("          inline: false,").nl();
+                output.code("          diff: output.bold(subject.genderSign()).text(' ≠ ').bold(value.genderSign())").nl();
+                output.code("        };").nl();
+                output.code("      }").nl();
+                output.code("    });").nl();
+                output.code("  });").nl();
+                output.code("});").nl();
+                output.code("").nl();
+                output.code("expect(new Person({ name: 'John Doe', gender: 'male' }),").nl();
+                output.code("       'to have same gender as',").nl();
+                output.code("       new Person({ name: 'Jane Doe', gender: 'female' }));").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected Person({ name: 'John Doe', gender: 'male' }) to have same gender as Person({ name: 'Jane Doe', gender: 'female' })\n" +
+                "\n" +
+                "♂ ≠ ♀"
+            );
+        }
+        return expect.promise.all(testPromises);
+    });
+
     it("assertions/Buffer/when-decoded-as.md contains correct examples", function () {
         var testPromises = [];
         if (!isBrowser) {
