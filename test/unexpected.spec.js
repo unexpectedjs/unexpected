@@ -3940,17 +3940,21 @@ describe('unexpected', function () {
 
     function Field(val, options) {
         var value = val;
+        var propertyDescription = {
+            enumerable: true
+        };
         if (options.match(/getter/)) {
-            this.__defineGetter__('value', function () { return value; });
+            propertyDescription.get = function () { return value; };
         }
 
         if (options.match(/setter/)) {
-            this.__defineSetter__('value', function (val) { value = val; });
+            propertyDescription.set = function (val) { value = val; };
         }
+        Object.defineProperty(this, 'value', propertyDescription);
     }
 
     describe('equal', function () {
-        it.skipIf(isMochaPhantomJS, 'handles getters and setters correctly', function () {
+        it.skipIf(!Object.defineProperty, 'handles getters and setters correctly', function () {
             expect(new Field('VALUE', 'getter'), 'to equal', new Field('VALUE', 'getter'));
             expect(new Field('VALUE', 'setter'), 'to equal', new Field('VALUE', 'setter'));
             expect(new Field('VALUE', 'getter and setter'), 'to equal', new Field('VALUE', 'getter and setter'));
@@ -3958,7 +3962,7 @@ describe('unexpected', function () {
     });
 
     describe('inspect', function () {
-        it.skipIf(isMochaPhantomJS, 'handles getters and setters correctly', function () {
+        it.skipIf(!Object.defineProperty, 'handles getters and setters correctly', function () {
             expect(new Field('VALUE', 'getter'), 'to inspect as', "Field({ value: 'VALUE' /* getter */ })");
             expect(new Field('VALUE', 'setter'), 'to inspect as', "Field({ set value: function (val) { value = val; } })");
             expect(new Field('VALUE', 'getter and setter'), 'to inspect as', "Field({ value: 'VALUE' /* getter/setter */ })");

@@ -271,7 +271,7 @@ Unexpected.prototype.it = function () { // ...
 Unexpected.prototype.equal = function (actual, expected, depth, seen) {
     var that = this;
 
-    depth = typeof depth === 'number' ? depth : 500;
+    depth = typeof depth === 'number' ? depth : 100;
     if (depth <= 0) {
         // detect recursive loops in the structure
         seen = seen || [];
@@ -917,7 +917,7 @@ Unexpected.prototype.diff = function (a, b, depth, seen) {
     var output = this.output.clone();
     var that = this;
 
-    depth = typeof depth === 'number' ? depth : 500;
+    depth = typeof depth === 'number' ? depth : 100;
     if (depth <= 0) {
         // detect recursive loops in the structure
         seen = seen || [];
@@ -2357,7 +2357,6 @@ module.exports = function throwIfNonUnexpectedError(err) {
 var utils = require(10);
 var isRegExp = utils.isRegExp;
 var leftPad = utils.leftPad;
-var extend = utils.extend;
 var arrayChanges = require(14);
 var leven = require(23);
 
@@ -2458,8 +2457,9 @@ module.exports = function (expect) {
             var inspectedItems = keys.map(function (key, index) {
                 var lastIndex = index === keys.length - 1;
 
-                var hasGetter = obj.__lookupGetter__ && obj.__lookupGetter__(key);
-                var hasSetter = obj.__lookupGetter__ && obj.__lookupSetter__(key);
+                var propertyDescriptor = Object.getOwnPropertyDescriptor && Object.getOwnPropertyDescriptor(obj, key);
+                var hasGetter = propertyDescriptor && propertyDescriptor.get;
+                var hasSetter = propertyDescriptor && propertyDescriptor.set;
                 var propertyOutput = output.clone();
                 if (hasSetter && !hasGetter) {
                     propertyOutput.text('set').sp();
@@ -2836,7 +2836,7 @@ module.exports = function (expect) {
         }
     });
 
-    var errorMethodBlacklist = ['message', 'description', 'line', 'column', 'sourceId', 'sourceURL', 'stack', 'stackArray'].reduce(function (result, prop) {
+    var errorMethodBlacklist = ['message', 'name', 'description', 'line', 'column', 'sourceId', 'sourceURL', 'stack', 'stackArray'].reduce(function (result, prop) {
         result[prop] = true;
         return result;
     }, {});
@@ -2906,7 +2906,7 @@ module.exports = function (expect) {
         },
         inspect: function (date, depth, output, inspect) {
             // TODO: Inspect "new" as an operator and Date as a built-in once we have the styles defined:
-            output.jsKeyword('new').sp().text('Date(').append(inspect(date.toUTCString()).text(')'));
+            output.jsKeyword('new').sp().text('Date(').append(inspect(date.toUTCString().replace(/UTC/, 'GMT')).text(')'));
         }
     });
 
