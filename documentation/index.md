@@ -34,6 +34,7 @@ expected { text: 'f00!' } to equal { text: 'foo!' }
 - Helps you if you misspells assertions
 - Compatible with all test frameworks.
 - Node.JS ready (`require('unexpected')`).
+- Supports [asynchronous assertions using promises](/api/addAssertion/#asynchronous-assertions)
 - Single global with no prototype extensions or shims.
 - Cross-browser: works on Chrome, Firefox, Safari, Opera, IE6+,
   (IE6-IE8 with [es5-shim](https://github.com/es-shims/es5-shim)).
@@ -123,8 +124,9 @@ The source for Unexpected can be found on
 
 ### 7.0.0
 
-* Support for [asynchronous assertions using promises](/api/promise/). All
-  built-in assertions that delegate to other assertions (such as `to satisfy`)
+* Support for
+  [asynchronous assertions using promises](/api/addAssertion/#asynchronous-assertions).
+  All built-in assertions that delegate to other assertions (such as `to satisfy`)
   have been rewritten to support this. The change is fully backwards compatible.
 * Removed support for the `to be an array of` and
   `to be an array of (strings|numbers|...)` assertions. There are better and
