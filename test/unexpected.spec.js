@@ -1694,7 +1694,7 @@ describe('unexpected', function () {
             });
 
             it('should succeed when the assertion fails without the not flag, async case', function () {
-                expect({foo: 123}, 'not to satisfy', {foo: expect.it('when delayed a little bit', 'to equal', 456)});
+                return expect({foo: 123}, 'not to satisfy', {foo: expect.it('when delayed a little bit', 'to equal', 456)});
             });
 
             it('should fail when a non-Unexpected error occurs', function () {
