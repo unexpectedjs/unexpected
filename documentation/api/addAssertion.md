@@ -136,11 +136,11 @@ expected [ 1, 3, 2, 4 ] to be sorted
 
 #### Asynchronous assertions
 
-Unexpected comes with build in support for asynchronous
+Unexpected comes with built-in support for asynchronous
 assertions. You basically just return a promise from the assertion.
 
 For the purpose of explaining how we can make an asynchronous
-assertion we will defined a silly asynchronous type which contains a
+assertion we will define a silly type which contains a
 value that can only be retrieved after a delay:
 
 ```js
@@ -158,15 +158,15 @@ Timelock.prototype.getValue = function (cb) {
 ```
 
 It would be pretty nice if we could use
-[to satisfy](/assertions/any/to-satisfy/) on the value of a `Timelock`
+[to satisfy](/assertions/any/to-satisfy/) on the value of a `Timelock`,
 even if the retrieval is delayed. Then we would be able to do stuff
 like this:
 
 ```js#evaluate:false
-return expect(new Timelock('Hello world'), 'to satisfy', expect.it('have lenght', 11));
+return expect(new Timelock('Hello world'), 'to satisfy', expect.it('have length', 11));
 ```
 
-First we need to defined a [type](/api/addType/) for handling the `Timelock`:
+First we need to define a [type](/api/addType/) for handling the `Timelock`:
 
 ```js
 expect.addType({
