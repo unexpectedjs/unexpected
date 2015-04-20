@@ -71,7 +71,7 @@ expect.fail({
     });
   },
   diff: function (output, diff, inspect, equal) {
-    return diff('You have been a very bad boy!', 'You have been a very mad boy!')
+    return diff('You have been a very bad boy!', 'You have been a very mad boy!');
   }
 });
 ```

@@ -321,7 +321,7 @@ function createUpdatedMarkdown(expect, content, codeBlocks, options) {
                 if (exampleBlock.error) {
                     var error = exampleBlock.error;
                     var errorMessage = error._isUnexpected ?
-                        error.output :
+                        error.getErrorMessage() :
                         expect.output.clone().error(error.message);
 
                     return errorMessage.toString('html')

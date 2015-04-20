@@ -562,7 +562,7 @@ describe("documentation tests", function () {
                 });
               },
               diff: function (output, diff, inspect, equal) {
-                return diff('You have been a very bad boy!', 'You have been a very mad boy!')
+                return diff('You have been a very bad boy!', 'You have been a very mad boy!');
               }
             });
             expect.fail(function (output) {
@@ -576,7 +576,7 @@ describe("documentation tests", function () {
                 output.code("    });").nl();
                 output.code("  },").nl();
                 output.code("  diff: function (output, diff, inspect, equal) {").nl();
-                output.code("    return diff('You have been a very bad boy!', 'You have been a very mad boy!')").nl();
+                output.code("    return diff('You have been a very bad boy!', 'You have been a very mad boy!');").nl();
                 output.code("  }").nl();
                 output.code("});").nl();
                 output.error("to throw");
@@ -747,7 +747,7 @@ describe("documentation tests", function () {
 
                 output.indentLines();
                 errors.forEach(function (e, i) {
-                  output.nl().i().text(i + ': ').block(e.output);
+                  output.nl().i().text(i + ': ').block(e.getErrorMessage());
                 });
               });
             });
@@ -781,7 +781,7 @@ describe("documentation tests", function () {
                     output.code("").nl();
                     output.code("    output.indentLines();").nl();
                     output.code("    errors.forEach(function (e, i) {").nl();
-                    output.code("      output.nl().i().text(i + ': ').block(e.output);").nl();
+                    output.code("      output.nl().i().text(i + ': ').block(e.getErrorMessage());").nl();
                     output.code("    });").nl();
                     output.code("  });").nl();
                     output.code("});").nl();
@@ -831,7 +831,7 @@ describe("documentation tests", function () {
                     if (promises[key].isFulfilled()) {
                       output.success('✓');
                     } else {
-                      output.error('⨯ ').block(promises[key].reason().output);
+                      output.error('⨯ ').block(promises[key].reason().getErrorMessage());
                     }
                     output.nl();
                   });
@@ -862,7 +862,7 @@ describe("documentation tests", function () {
                     output.code("        if (promises[key].isFulfilled()) {").nl();
                     output.code("          output.success('✓');").nl();
                     output.code("        } else {").nl();
-                    output.code("          output.error('⨯ ').block(promises[key].reason().output);").nl();
+                    output.code("          output.error('⨯ ').block(promises[key].reason().getErrorMessage());").nl();
                     output.code("        }").nl();
                     output.code("        output.nl();").nl();
                     output.code("      });").nl();

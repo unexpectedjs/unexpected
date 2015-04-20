@@ -2,8 +2,6 @@ it.skipIf = function (condition) {
     (condition ? it.skip : it).apply(it, Array.prototype.slice.call(arguments, 1));
 };
 
-var isMochaPhantomJS = typeof mochaPhantomJS !== 'undefined';
-
 describe.skipIf = function (condition) {
     (condition ? describe.skip : describe).apply(describe, Array.prototype.slice.call(arguments, 1));
 };
@@ -40,7 +38,7 @@ describe('unexpected', function () {
             throw new Error('Promise unexpectedly fulfilled');
         }).caught(function (err) {
             if (typeof expectedReason !== 'undefined') {
-                return expect(err._isUnexpected ? err.output.toString('text') : err.message, 'to satisfy', expectedReason);
+                return expect(err._isUnexpected ? err.getErrorMessage().toString('text') : err.message, 'to satisfy', expectedReason);
             }
         });
     }).addAssertion('when delayed a little bit', function (expect, subject) {
@@ -110,16 +108,14 @@ describe('unexpected', function () {
             it('considers Error instances with different messages to be different', function () {
                 expect(function () {
                     expect(new Error('foo'), 'to equal', new Error('bar'));
-                }, 'to throw exception', function (err) {
-                    expect(err.output.toString(), 'to equal',
-                           "expected Error({ message: 'foo' }) to equal Error({ message: 'bar' })\n" +
-                           "\n" +
-                           "Error({\n" +
-                           "  message: 'foo' // should equal 'bar'\n" +
-                           "                 // -foo\n" +
-                           "                 // +bar\n" +
-                           "})");
-                });
+                }, 'to throw exception',
+                       "expected Error({ message: 'foo' }) to equal Error({ message: 'bar' })\n" +
+                       "\n" +
+                       "Error({\n" +
+                       "  message: 'foo' // should equal 'bar'\n" +
+                       "                 // -foo\n" +
+                       "                 // +bar\n" +
+                       "})");
             });
 
             it('considers Error instances with the same message but different stacks to be equal', function () {
@@ -352,13 +348,11 @@ describe('unexpected', function () {
         it("throws an error a diff when comparing string and not negated", function () {
             expect(function () {
                 expect('foo', 'to be', 'bar');
-            }, 'to throw exception', function (e) {
-                expect(e.output.toString(), 'to equal',
-                       "expected 'foo' to be 'bar'\n" +
-                       "\n" +
-                       "-foo\n" +
-                       "+bar");
-            });
+            }, 'to throw exception',
+                   "expected 'foo' to be 'bar'\n" +
+                   "\n" +
+                   "-foo\n" +
+                   "+bar");
         });
 
         it("throws an error without actual and expected when comparing string and negated", function () {
@@ -780,28 +774,25 @@ describe('unexpected', function () {
     });
 
     describe('exception assertion', function () {
-        var phantomJsErrorWeirdness;
-        try {
-            throw new Error('foo');
-        } catch (e) {
-            phantomJsErrorWeirdness = Object.keys(e).indexOf('sourceURL') >= 0;
-        }
-
-        it.skipIf(phantomJsErrorWeirdness, 'fails if no exception is thrown', function () {
+        it('fails if no exception is thrown', function () {
             expect(function () {
                 expect(function () {
                     // Don't throw
                 }, 'to throw exception');
-            }, 'to throw',
-                'expected\n' +
-                'function () {\n' +
-                '    // Don\'t throw\n' +
-                '}\n' +
-                'to throw exception');
-
+            }, 'to throw', function (err) {
+                var message = err.getErrorMessage().toString();
+                // PhantomJS adds a simicolon after the comment
+                message = message.replace(';', '');
+                expect(message, 'to equal',
+                       'expected\n' +
+                       'function () {\n' +
+                       '    // Don\'t throw\n' +
+                       '}\n' +
+                       'to throw exception');
+            });
         });
 
-        it.skipIf(phantomJsErrorWeirdness, 'fails if exception is thrown', function () {
+        it('fails if exception is thrown', function () {
             expect(function () {
                 expect(function testFunction() {
                     throw new Error('The Error');
@@ -815,7 +806,7 @@ describe('unexpected', function () {
                     "  threw: Error({ message: 'The Error' })");
         });
 
-        it.skipIf(phantomJsErrorWeirdness, 'fails with the correct message when an Unexpected error is thrown', function () {
+        it('fails with the correct message when an Unexpected error is thrown', function () {
             expect(function () {
                 expect(function testFunction() {
                     expect.fail(function (output) {
@@ -869,7 +860,7 @@ describe('unexpected', function () {
             }, 'to throw', "The 'not to throw' assertion does not support arguments");
         });
 
-        it.skipIf(phantomJsErrorWeirdness, 'provides a diff when the exception message does not match the given string', function () {
+        it('provides a diff when the exception message does not match the given string', function () {
             expect(function () {
                 expect(function testFunction() {
                     throw new Error('bar');
@@ -892,7 +883,7 @@ describe('unexpected', function () {
             }, 'to throw exception', new Error('matches the exception message'));
         });
 
-        it.skipIf(phantomJsErrorWeirdness, 'provides a diff when the thrown error does not match the given error instance', function () {
+        it('provides a diff when the thrown error does not match the given error instance', function () {
             expect(function () {
                 expect(function testFunction() {
                     throw new Error('Custom error');
@@ -950,7 +941,7 @@ describe('unexpected', function () {
                     expect(function () {
                         expect(err, 'to have message', 'expected 3 to equal 2');
                     }, 'to throw', function (err) {
-                        var message = err.output.toString('text');
+                        var message = err.getErrorMessage().toString('text');
                         expect(
                             message,
                             'to contain',
@@ -3327,9 +3318,7 @@ describe('unexpected', function () {
                     errorMode = 'nested';
                     expect(function () {
                         clonedExpect(42, 'to be sorted');
-                    }, 'to throw', function (err) {
-                        expect(err.output.toString(), 'to equal', 'expected 42 to be sorted\n  expected 42 to be an array');
-                    });
+                    }, 'to throw', 'expected 42 to be sorted\n  expected 42 to be an array');
                 });
 
                 it('errorMode=nested does not hoist the label of the leaf assertion', function () {
@@ -3443,8 +3432,6 @@ describe('unexpected', function () {
                 });
 
                 describe('nested inside another custom assertion', function () {
-                    // TODO async assertions does not handle error message wrapping correctly
-
                     it('errorMode=nested nest the error message of expect failures in the assertion under the assertion standard message', function (done) {
                         errorMode = 'nested';
                         clonedExpect(42, 'to be sorted after delay', 1, function (err) {
@@ -3556,8 +3543,7 @@ describe('unexpected', function () {
             });
         });
 
-        // I can't figure out why this doesn't work in mocha-phantomjs:
-        it.skipIf(isMochaPhantomJS, 'truncates the stack when a custom assertion throws a regular assertion error', function () {
+        it('truncates the stack when a custom assertion throws a regular assertion error', function () {
             var clonedExpect = expect.clone().addAssertion('to equal foo', function theCustomAssertion(expect, subject) {
                 expect(subject, 'to equal', 'foo');
             });
@@ -3565,27 +3551,6 @@ describe('unexpected', function () {
                 clonedExpect('bar', 'to equal foo');
             }, 'to throw', function (err) {
                 expect(err.stack, 'not to contain', 'theCustomAssertion');
-            });
-        });
-
-        describe('without Error.captureStackTrace', function () {
-            var orig;
-            before(function () {
-                orig = Error.captureStackTrace;
-                Error.captureStackTrace = null;
-            });
-            after(function () {
-                Error.captureStackTrace = orig;
-            });
-            it('truncates the stack when a custom assertion throws a regular assertion error', function () {
-                var clonedExpect = expect.clone().addAssertion('to equal foo', function theCustomAssertion(expect, subject) {
-                    expect(subject, 'to equal', 'foo');
-                });
-                expect(function () {
-                    clonedExpect('bar', 'to equal foo');
-                }, 'to throw', function (err) {
-                    expect(err.stack, 'not to contain', 'theCustomAssertion');
-                });
             });
         });
 
@@ -5410,7 +5375,7 @@ describe('unexpected', function () {
 
         it.skipIf(!workQueue, 'throw an unhandled rejection if a promise is not caught by the test', function (done) {
             workQueue.onUnhandledRejection = function (err) {
-                expect(err.output.toString(), 'to equal',
+                expect(err.getErrorMessage().toString(), 'to equal',
                     'expected [ 1, 3, 2 ] to be ordered after delay\n' +
                     '  expected [ 1, 3, 2 ] to be sorted after delay 20\n' +
                     '    expected [ 1, 3, 2 ] to equal [ 1, 2, 3 ]\n' +

@@ -67,7 +67,7 @@ function evaluateExamples(expect, codeBlocks, cb) {
                     promise.then(function () {
                         cb();
                     }).caught(function (e) {
-                        codeBlock.error = e;
+                        codeBlock.error = e._isUnexpected ? e.getErrorMessage().toString('text') : e.message;
                         cb();
                     });
                 } else {
@@ -75,7 +75,7 @@ function evaluateExamples(expect, codeBlocks, cb) {
                     cb();
                 }
             } catch (e) {
-                codeBlock.error = e;
+                codeBlock.error = e._isUnexpected ? e.getErrorMessage().toString('text') : e.message;
                 cb();
             }
         } else {
@@ -112,9 +112,8 @@ function updateCodeBlocks(content, codeBlocks) {
             var exampleBlock = codeBlocks[currentIndex - 1];
             var output = '';
             if (exampleBlock && exampleBlock.lang === 'javascript') {
-                var error = exampleBlock.error;
-                if (error) {
-                    output = error.output ? error.output.toString() : error.message;
+                if (exampleBlock.error) {
+                    output = exampleBlock.error;
                 }
             }
             return '```' + lang + '\n' + output + '\n```';

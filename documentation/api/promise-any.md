@@ -70,7 +70,7 @@ return expect.promise.any({
 
     output.indentLines();
     errors.forEach(function (e, i) {
-      output.nl().i().text(i + ': ').block(e.output);
+      output.nl().i().text(i + ': ').block(e.getErrorMessage());
     });
   });
 });
