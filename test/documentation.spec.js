@@ -1562,10 +1562,11 @@ describe("documentation tests", function () {
             });
         } catch (e) {
             expect(e, "to have message",
-                "expected 1 when passed as parameter to\n" +
+                "expected [ 1 ] when passed as parameters to\n" +
                 "function increment(n) {\n" +
                 "    return n + 1;\n" +
-                "}, 'to equal', 3"
+                "} to equal 3\n" +
+                "  expected 2 to equal 3"
             );
         }
         return expect.promise.all(testPromises);
