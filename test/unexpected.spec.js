@@ -1817,17 +1817,48 @@ describe('unexpected', function () {
 
         });
 
-        it('should support expect.it in the RHS object', function () {
-            expect({foo: 'bar'}, 'to satisfy', {
-                foo: expect.it('to be a string')
+        describe('with expect.it in the RHS object', function () {
+            it('should support an object with a property value of expect.it', function () {
+                expect({foo: 'bar'}, 'to satisfy', {
+                    foo: expect.it('to be a string')
+                });
             });
 
-            expect({foo: [123]}, 'to satisfy', {
-                foo: expect.it('to have items satisfying', 'to be a number')
+            it('should support passing an array value to an expect.it', function () {
+                expect({foo: [123]}, 'to satisfy', {
+                    foo: expect.it('to have items satisfying', 'to be a number')
+                });
             });
 
-            expect({foo: function () { throw new Error('Explosion'); } }, 'to satisfy', {
-                foo: expect.it('to be a function')
+            it('should not call functions in the LHS object', function () {
+                expect({foo: function () { throw new Error('Explosion'); } }, 'to satisfy', {
+                    foo: expect.it('to be a function')
+                });
+            });
+
+            it('should succeed with an or group where the first assertion passes and the second one fails', function () {
+                return expect(2, 'to satisfy', expect.it('to equal', 2).or('to equal', 1));
+            });
+
+            it('should succeed with an or group where the first one fails and the second assertion passes', function () {
+                return expect(1, 'to satisfy', expect.it('to equal', 2).or('to equal', 1));
+            });
+
+            it('should succeed with an or group where both assertions pass', function () {
+                return expect(1, 'to satisfy', expect.it('to equal', 2).or('to equal', 1));
+            });
+
+            it('should fail with an or group where both assertions fail', function () {
+                return expect(
+                    expect(3, 'to satisfy', expect.it('to equal', 2).or('to equal', 1)),
+                    'to be rejected',
+                        "expected 3 to satisfy\n" +
+                        "expect.it('to equal', 2)\n" +
+                        "      .or('to equal', 1)\n" +
+                        "\n" +
+                        "⨯ expected 3 to equal 2 or\n" +
+                        "⨯ expected 3 to equal 1"
+                );
             });
         });
 
