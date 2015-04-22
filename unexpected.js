@@ -56,7 +56,7 @@ Assertion.prototype.shift = function (subject, assertionIndex) {
 module.exports = Assertion;
 
 },{}],2:[function(require,module,exports){
-/*global Promise:true*/
+/*global Promise:true, it:true, jasmine*/
 var Assertion = require(1);
 var createStandardErrorMessage = require(5);
 var utils = require(11);
@@ -99,7 +99,80 @@ var anyType = {
     }
 };
 
+function jasmineFail(err) {
+    if (typeof jasmine === 'object') {
+        jasmine.getEnv().fail(err);
+    }
+}
+
+function jasmineSuccess(err) {
+    if (typeof jasmine === 'object') {
+        jasmine.getEnv().expect(true).toBe(true);
+    }
+}
+
+var promiseCreated = false;
+
+function patchItMethod() {
+    if (typeof it === 'function' && !it.isPatched) {
+        var originalIt = it;
+        it = function (title, fn) {
+            if (!fn) {
+                return originalIt(title);
+            }
+            var async = fn.length > 0;
+            var wrapper = function (done) {
+                promiseCreated = false;
+                var result;
+                try {
+                    if (async) {
+                        fn.call(this, function (err) {
+                            if (err) {
+                                jasmineFail(err);
+                            } else {
+                                jasmineSuccess();
+                            }
+                            done(err);
+                        });
+                        return;
+                    } else {
+                        result = fn.call(this);
+                    }
+                    var isPromise = result && typeof result === 'object' && typeof result.then === 'function';
+                    if (isPromise) {
+                        result.then(function () {
+                            jasmineSuccess();
+                            done();
+                        }).caught(function (err) {
+                            jasmineFail(err);
+                            done(err);
+                        });
+                    } else if (promiseCreated) {
+                        throw new Error('When using asynchronous assertions you must return a promise from the it block');
+                    } else {
+                        jasmineSuccess();
+                        done();
+                    }
+                } catch (err) {
+                    jasmineFail(err);
+                    return done(err);
+                }
+            };
+            wrapper.toString = function () {
+                return fn.toString();
+            };
+            return originalIt(title, wrapper);
+        };
+
+        Object.keys(originalIt).forEach(function (methodName) {
+            it[methodName] = originalIt[methodName];
+        });
+        it.isPatched = true;
+    }
+}
+
 function Unexpected(options) {
+    patchItMethod();
     options = options || {};
     this.assertions = options.assertions || {any: {}};
     this.typeByName = options.typeByName || {};
@@ -635,6 +708,7 @@ Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
                 try {
                     var result = oathbreaker(callback());
                     if (result && typeof result.then === 'function' && typeof result.caught === 'function') {
+                        promiseCreated = true;
                         return result.caught(function (e) {
                             if (e && e._isUnexpected) {
                                 truncateStack(e, wrappedExpect);
@@ -773,6 +847,7 @@ Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
     try {
         var promise = executeExpect(subject, testDescriptionString, args);
         if (promise && typeof promise.then === 'function') {
+            promiseCreated = true;
             return promise.caught(function (e) {
                 if (e && e._isUnexpected) {
                     // TODO truncate the stack
