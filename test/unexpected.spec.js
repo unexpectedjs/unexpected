@@ -3407,10 +3407,7 @@ describe('unexpected', function () {
                     });
                 });
 
-                // It is very hard to get this working as we need errors thrown asynchronously
-                // without a promise to be serialized so they will have a message property when
-                // they get caught by window.onerror.
-                it.skip('errorMode=diff only includes the diff', function (done) {
+                it('errorMode=diff only includes the diff', function (done) {
                     errorMode = 'diff';
                     clonedExpect([3, 2, 1], 'to be sorted after delay', 1, function (err) {
                         expect(err, 'to have message',
