@@ -869,14 +869,14 @@ Unexpected.prototype.async = function (cb) {
 
     function asyncMisusage(message) {
         that._isAsync = false;
-        that.fail(function (output) {
+        that.expect.fail(function (output) {
             output.error(message).nl()
-                  .error("Usage: ").nl()
-                  .error("it('test description', expect.async(function () {").nl()
+                  .text("Usage: ").nl()
+                  .text("it('test description', expect.async(function () {").nl()
                   .indentLines()
-                  .i().error("return expect('test.txt', 'to have content', 'Content read asynchroniously');").nl()
+                  .i().text("return expect('test.txt', 'to have content', 'Content read asynchroniously');").nl()
                   .outdentLines()
-                  .error("});");
+                  .text("});");
         });
     }
 
@@ -2003,6 +2003,7 @@ module.exports = function (expect) {
         'when passed as parameter to [async]',
         'when passed as parameter to [constructor]'
     ], function (expect, subject) {
+        this.errorMode = 'bubble';
         return expect.apply(expect, [[subject], 'when passed as parameters to [async] [constructor]'].concat(this.args));
     });
 };
