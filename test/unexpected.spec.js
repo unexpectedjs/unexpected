@@ -5325,6 +5325,9 @@ describe('unexpected', function () {
                 });
         });
 
+        it('@wat', function () {
+            expect([1, 2, 3], 'to be ordered after delay');
+        });
 
         it('fails if it is called without a callback', function () {
             expect(function () {
