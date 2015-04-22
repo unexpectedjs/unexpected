@@ -272,10 +272,10 @@ message for the custom assertion will be used. In the case of our
   <div>]</div>
 </div></div>
 </div><h4 id="asynchronous-assertions">Asynchronous assertions</h4>
-<p>Unexpected comes with build in support for asynchronous
+<p>Unexpected comes with built-in support for asynchronous
 assertions. You basically just return a promise from the assertion.</p>
 <p>For the purpose of explaining how we can make an asynchronous
-assertion we will defined a silly asynchronous type which contains a
+assertion we will define a silly type which contains a
 value that can only be retrieved after a delay:</p>
 <div class="code lang-javascript">
   <div><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">Timelock</span><span style="color: #000000">(</span>value<span style="color: #000000">,</span>&nbsp;delay<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
@@ -290,12 +290,12 @@ value that can only be retrieved after a delay:</p>
   <div>&nbsp;&nbsp;<span style="color: #000000">},</span>&nbsp;<span style="color: #a71d5d">this</span><span style="color: #000000">.</span>delay<span style="color: #000000">);</span></div>
   <div><span style="color: #000000">};</span></div>
 </div><p>It would be pretty nice if we could use
-<a href="/assertions/any/to-satisfy/">to satisfy</a> on the value of a <code>Timelock</code>
+<a href="/assertions/any/to-satisfy/">to satisfy</a> on the value of a <code>Timelock</code>,
 even if the retrieval is delayed. Then we would be able to do stuff
 like this:</p>
 <div class="code lang-javascript">
-  <div><span style="color: #a71d5d">return</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #a71d5d">new</span>&nbsp;Timelock<span style="color: #000000">(</span><span style="color: #df5000">'Hello&nbsp;world'</span><span style="color: #000000">),</span>&nbsp;<span style="color: #df5000">'to&nbsp;satisfy'</span><span style="color: #000000">,</span>&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">it</span><span style="color: #000000">(</span><span style="color: #df5000">'have&nbsp;lenght'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">11</span><span style="color: #000000">));</span></div>
-</div><p>First we need to defined a <a href="/api/addType/">type</a> for handling the <code>Timelock</code>:</p>
+  <div><span style="color: #a71d5d">return</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #a71d5d">new</span>&nbsp;Timelock<span style="color: #000000">(</span><span style="color: #df5000">'Hello&nbsp;world'</span><span style="color: #000000">),</span>&nbsp;<span style="color: #df5000">'to&nbsp;satisfy'</span><span style="color: #000000">,</span>&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">it</span><span style="color: #000000">(</span><span style="color: #df5000">'have&nbsp;length'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">11</span><span style="color: #000000">));</span></div>
+</div><p>First we need to define a <a href="/api/addType/">type</a> for handling the <code>Timelock</code>:</p>
 <div class="code lang-javascript">
   <div>expect<span style="color: #000000">.</span><span style="color: #000000">addType</span><span style="color: #000000">({</span></div>
   <div>&nbsp;&nbsp;name<span style="color: #000000">:</span>&nbsp;<span style="color: #df5000">'Timelock'</span><span style="color: #000000">,</span></div>
