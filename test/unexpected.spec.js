@@ -2566,7 +2566,7 @@ describe('unexpected', function () {
             });
 
             it('returns a promise that is rejected if the assertion fails', function () {
-                expect(clonedExpect('wat', 'to satisfy', clonedExpect.it('to be a number after a short delay')),
+                return expect(clonedExpect('wat', 'to satisfy', clonedExpect.it('to be a number after a short delay')),
                        'to be rejected',
                        "expected 'wat' to satisfy expect.it('to be a number after a short delay')\n" +
                        "\n" +
