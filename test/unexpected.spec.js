@@ -5160,8 +5160,25 @@ describe('unexpected', function () {
             expect([[1, 2], [3, 4]], 'to have items satisfying', 'when passed as parameters to', add, 'to be a number');
         });
 
-        it('should pass the subject as a single parameter when invoked as "when passed as parameter to"', function () {
-            expect(1, 'when passed as parameter to', add.bind(null, 1), 'to equal', 2);
+        describe('when invoked as "when passed as parameter to"', function () {
+            it('should pass the subject as a single parameter', function () {
+                expect(1, 'when passed as parameter to', add.bind(null, 1), 'to equal', 2);
+            });
+
+            it.skip('should fail with the correct error message and diff', function () {
+                function increment(n) {
+                    return n + 1;
+                }
+                expect(function () {
+                    expect(1, 'when passed as parameter to', increment, 'to equal', 3);
+                }, 'to throw',
+                       'expected 1 when passed as parameter to\n' +
+                       'function increment(n) {\n' +
+                       '    return n + 1;\n' +
+                       '} to equal 3\n' +
+                       '  expected 2 to equal 3'
+                );
+            });
         });
 
         describe('with the constructor flag', function () {
