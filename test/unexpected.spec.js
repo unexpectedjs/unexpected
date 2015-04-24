@@ -5346,7 +5346,7 @@ describe('unexpected', function () {
             }, 'to throw', /expect.async should be called in the context of an it-block/);
         });
 
-        it('fails if is called within a asynchronious context', function () {
+        it('fails if is called within a asynchronous context', function () {
             expect(function () {
                 function done() {}
                 expect.async(function () {
