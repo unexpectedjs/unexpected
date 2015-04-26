@@ -14,8 +14,7 @@
     "url": "https://github.com/unexpectedjs/unexpected"
   },
   "scripts": {
-    "test": "make test && make test-phantomjs",
-    "travis": "npm test"
+    "test": "make test && make test-phantomjs"
   },
   "main": "./lib/index.js",
   "dependencies": {
