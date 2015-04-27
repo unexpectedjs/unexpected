@@ -19,6 +19,9 @@ test-phantomjs: ${TARGETS}
 test-jasmine:
 	./node_modules/.bin/jasmine JASMINE_CONFIG_PATH=test/support/jasmine.json
 
+test-jasmine-browser: unexpected.js
+	@./node_modules/.bin/serve .
+
 test: lint
 	mocha
 
