@@ -1817,7 +1817,7 @@ describe('unexpected', function () {
 
         });
 
-        describe('with expect.it in the RHS object', function () {
+        describe('with a synchronous expect.it in the RHS object', function () {
             it('should support an object with a property value of expect.it', function () {
                 expect({foo: 'bar'}, 'to satisfy', {
                     foo: expect.it('to be a string')
@@ -1858,6 +1858,79 @@ describe('unexpected', function () {
                     "\n" +
                     "⨯ expected 3 to equal 2 or\n" +
                     "⨯ expected 3 to equal 1"
+                );
+            });
+        });
+
+        describe('with an asynchronous expect.it in the RHS object', function () {
+            it('should support an object with a property value of expect.it', function () {
+                return expect({foo: 'bar'}, 'to satisfy', {
+                    foo: expect.it('when delayed a little bit', 'to be a string')
+                });
+            });
+
+            it('should support passing an array value to an expect.it', function () {
+                return expect({foo: [123]}, 'to satisfy', {
+                    foo: expect.it('when delayed a little bit', 'to have items satisfying', 'to be a number')
+                });
+            });
+
+            it('should succeed with an or group where the first assertion passes and the second one fails', function () {
+                return expect(2, 'to satisfy', expect.it('when delayed a little bit', 'to equal', 2).or('when delayed a little bit', 'to equal', 1));
+            });
+
+            it('should succeed with an or group where the first one fails and the second assertion passes', function () {
+                return expect(1, 'to satisfy', expect.it('when delayed a little bit', 'to equal', 2).or('when delayed a little bit', 'to equal', 1));
+            });
+
+            it('should succeed with an or group where the first one fails synchronously and the second assertion passes asynchronously', function () {
+                return expect(1, 'to satisfy', expect.it('to equal', 2).or('when delayed a little bit', 'to equal', 1));
+            });
+
+            it('should succeed with an or group where the first one fails asynchronously and the second assertion passes synchronously', function () {
+                return expect(1, 'to satisfy', expect.it('when delayed a little bit', 'to equal', 2).or('to equal', 1));
+            });
+
+            it('should succeed with an or group where both assertions pass', function () {
+                return expect(1, 'to satisfy', expect.it('when delayed a little bit', 'to equal', 2).or('when delayed a little bit', 'to equal', 1));
+            });
+
+            it('should fail with an or group where both assertions fail asynchronously', function () {
+                return expect(
+                    expect(3, 'to satisfy', expect.it('when delayed a little bit', 'to equal', 2).or('when delayed a little bit', 'to equal', 1)),
+                    'to be rejected',
+                        "expected 3 to satisfy\n" +
+                        "expect.it('when delayed a little bit', 'to equal', 2)\n" +
+                        "      .or('when delayed a little bit', 'to equal', 1)\n" +
+                        "\n" +
+                        "⨯ expected 3 when delayed a little bit to equal 2 or\n" +
+                        "⨯ expected 3 when delayed a little bit to equal 1"
+                );
+            });
+
+            it('should fail with an or group where the first one fails synchronously and the second one fails asynchronously', function () {
+                return expect(
+                    expect(3, 'to satisfy', expect.it('to equal', 2).or('when delayed a little bit', 'to equal', 1)),
+                    'to be rejected',
+                        "expected 3 to satisfy\n" +
+                        "expect.it('to equal', 2)\n" +
+                        "      .or('when delayed a little bit', 'to equal', 1)\n" +
+                        "\n" +
+                        "⨯ expected 3 to equal 2 or\n" +
+                        "⨯ expected 3 when delayed a little bit to equal 1"
+                );
+            });
+
+            it('should fail with an or group where the first one fails asynchronously and the second one fails synchronously', function () {
+                return expect(
+                    expect(3, 'to satisfy', expect.it('when delayed a little bit', 'to equal', 2).or('to equal', 1)),
+                    'to be rejected',
+                        "expected 3 to satisfy\n" +
+                        "expect.it('when delayed a little bit', 'to equal', 2)\n" +
+                        "      .or('to equal', 1)\n" +
+                        "\n" +
+                        "⨯ expected 3 when delayed a little bit to equal 2 or\n" +
+                        "⨯ expected 3 to equal 1"
                 );
             });
         });
