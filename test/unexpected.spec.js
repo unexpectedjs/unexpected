@@ -1849,15 +1849,15 @@ describe('unexpected', function () {
             });
 
             it('should fail with an or group where both assertions fail', function () {
-                return expect(
-                    expect(3, 'to satisfy', expect.it('to equal', 2).or('to equal', 1)),
-                    'to be rejected',
-                        "expected 3 to satisfy\n" +
-                        "expect.it('to equal', 2)\n" +
-                        "      .or('to equal', 1)\n" +
-                        "\n" +
-                        "⨯ expected 3 to equal 2 or\n" +
-                        "⨯ expected 3 to equal 1"
+                expect(function () {
+                    expect(3, 'to satisfy', expect.it('to equal', 2).or('to equal', 1));
+                }, 'to throw',
+                    "expected 3 to satisfy\n" +
+                    "expect.it('to equal', 2)\n" +
+                    "      .or('to equal', 1)\n" +
+                    "\n" +
+                    "⨯ expected 3 to equal 2 or\n" +
+                    "⨯ expected 3 to equal 1"
                 );
             });
         });
