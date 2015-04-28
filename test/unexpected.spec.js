@@ -2010,6 +2010,12 @@ describe('unexpected', function () {
                 expect(err, 'to satisfy', new Error('foo'));
             });
 
+            it('should not consider errors with different constructors to satisfy each other, even if all properties are identical', function () {
+                expect(function () {
+                    expect(new Error('foo'), 'to satisfy', new TypeError('foo'));
+                }, 'to throw', "expected Error({ message: 'foo' }) to satisfy TypeError({ message: 'foo' })");
+            });
+
             it('should support satisfying against an object', function () {
                 expect(new Error('foo'), 'to satisfy', { message: 'foo' });
             });
