@@ -5610,30 +5610,17 @@ describe('unexpected', function () {
         });
 
         it('should throw an exception if the argument was not a function', function () {
-            function validateError(e) {
-                expect(e, 'to be a', TypeError);
-                expect(e, 'to have message', 'A function argument must be supplied.');
-            }
-
+            var expectedError = new TypeError('expect.promise(...) requires a function argument to be supplied.\n' +
+                                              'See http://unexpectedjs.github.io/api/promise/ for more details.');
             expect(function () {
                 expect.promise();
-            }, 'to throw', validateError);
+            }, 'to throw', expectedError);
 
-            expect(function () {
-                expect.promise(null);
-            }, 'to throw', validateError);
-
-            expect(function () {
-                expect.promise('');
-            }, 'to throw', validateError);
-
-            expect(function () {
-                expect.promise([]);
-            }, 'to throw', validateError);
-
-            expect(function () {
-                expect.promise({});
-            }, 'to throw', validateError);
+            [undefined, null, '', [], {}].forEach(function (arg) {
+                expect(function () {
+                    expect.promise(arg);
+                }, 'to throw', expectedError);
+            });
         });
     });
 
