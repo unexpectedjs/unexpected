@@ -5598,6 +5598,33 @@ describe('unexpected', function () {
             });
             expect(clonedExpect('foo', 'to foo'), 'to equal', 'bar');
         });
+
+        it('should throw an exception if the argument was not a function', function () {
+            function validateError(e) {
+                expect(e, 'to be a', TypeError);
+                expect(e, 'to have message', 'A function argument must be supplied.');
+            }
+
+            expect(function () {
+                expect.promise();
+            }, 'to throw', validateError);
+
+            expect(function () {
+                expect.promise(null);
+            }, 'to throw', validateError);
+
+            expect(function () {
+                expect.promise('');
+            }, 'to throw', validateError);
+
+            expect(function () {
+                expect.promise([]);
+            }, 'to throw', validateError);
+
+            expect(function () {
+                expect.promise({});
+            }, 'to throw', validateError);
+        });
     });
 
     describe.skipIf(typeof Buffer === 'undefined', 'when decoded as assertion', function () {
