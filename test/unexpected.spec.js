@@ -934,6 +934,10 @@ describe('unexpected', function () {
     });
 
     describe('Error type', function () {
+        it('should inspect the constructor name correctly', function () {
+            expect(new TypeError('foo'), 'to inspect as', "TypeError({ message: 'foo' })");
+        });
+
         describe('to have message assertion', function () {
             describe('with an Unexpected error', function () {
                 var err;
