@@ -107,7 +107,33 @@ function (e) {
   expected Error({ message: 'Another error' }) to be a TypeError
 ```
 
-This assertion can be negated using the `not` flag:
+Actually what happens is, that the thrown error is checked
+[to satisfy](/assertions/any/to-satisfy/) against the second
+parameter. That means you could also just supply an error object to
+validate against:
+
+```javascript
+expect(function () {
+  throw new TypeError('Invalid syntax');
+}, 'to throw', new TypeError('Invalid syntax'));
+```
+
+In case of a failing expectation you get the following output:
+
+```javascript#skipPhantom:true
+expect(function () {
+  throw new Error('Another error');
+}, 'to throw', new TypeError('Invalid syntax'));
+```
+
+```output
+expected
+function () {
+  throw new Error('Another error');
+}
+to throw TypeError({ message: 'Invalid syntax' })
+  expected Error({ message: 'Another error' }) to satisfy TypeError({ message: 'Invalid syntax' })
+```
 
 ```javascript
 expect(function () {

@@ -1986,6 +1986,34 @@ describe("documentation tests", function () {
         }
 
         expect(function () {
+          throw new TypeError('Invalid syntax');
+        }, 'to throw', new TypeError('Invalid syntax'));
+
+        if (!isPhantom) {
+            try {
+                expect(function () {
+                  throw new Error('Another error');
+                }, 'to throw', new TypeError('Invalid syntax'));
+                expect.fail(function (output) {
+                    output.error("expected:").nl();
+                    output.code("expect(function () {").nl();
+                    output.code("  throw new Error('Another error');").nl();
+                    output.code("}, 'to throw', new TypeError('Invalid syntax'));").nl();
+                    output.error("to throw");
+                });
+            } catch (e) {
+                expect(e, "to have message",
+                    "expected\n" +
+                    "function () {\n" +
+                    "  throw new Error('Another error');\n" +
+                    "}\n" +
+                    "to throw TypeError({ message: 'Invalid syntax' })\n" +
+                    "  expected Error({ message: 'Another error' }) to satisfy TypeError({ message: 'Invalid syntax' })"
+                );
+            }
+        }
+
+        expect(function () {
           // Do some work that should not throw
         }, 'not to throw');
 
