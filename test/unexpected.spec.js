@@ -941,6 +941,10 @@ describe('unexpected', function () {
     });
 
     describe('Error type', function () {
+        it('should inspect the constructor name correctly', function () {
+            expect(new TypeError('foo'), 'to inspect as', "TypeError({ message: 'foo' })");
+        });
+
         describe('to have message assertion', function () {
             describe('with an Unexpected error', function () {
                 var err;
@@ -1824,17 +1828,122 @@ describe('unexpected', function () {
 
         });
 
-        it('should support expect.it in the RHS object', function () {
-            expect({foo: 'bar'}, 'to satisfy', {
-                foo: expect.it('to be a string')
+        describe('with a synchronous expect.it in the RHS object', function () {
+            it('should support an object with a property value of expect.it', function () {
+                expect({foo: 'bar'}, 'to satisfy', {
+                    foo: expect.it('to be a string')
+                });
             });
 
-            expect({foo: [123]}, 'to satisfy', {
-                foo: expect.it('to have items satisfying', 'to be a number')
+            it('should support passing an array value to an expect.it', function () {
+                expect({foo: [123]}, 'to satisfy', {
+                    foo: expect.it('to have items satisfying', 'to be a number')
+                });
             });
 
-            expect({foo: function () { throw new Error('Explosion'); } }, 'to satisfy', {
-                foo: expect.it('to be a function')
+            it('should not call functions in the LHS object', function () {
+                expect({foo: function () { throw new Error('Explosion'); } }, 'to satisfy', {
+                    foo: expect.it('to be a function')
+                });
+            });
+
+            // This one fails on CI, but I cannot reproduce it locally
+            it.skip('should succeed with an or group where the first assertion passes and the second one fails', function () {
+                return expect(2, 'to satisfy', expect.it('to equal', 2).or('to equal', 1));
+            });
+
+            it('should succeed with an or group where the first one fails and the second assertion passes', function () {
+                return expect(1, 'to satisfy', expect.it('to equal', 2).or('to equal', 1));
+            });
+
+            it('should succeed with an or group where both assertions pass', function () {
+                return expect(1, 'to satisfy', expect.it('to equal', 2).or('to equal', 1));
+            });
+
+            it('should fail with an or group where both assertions fail', function () {
+                expect(function () {
+                    expect(3, 'to satisfy', expect.it('to equal', 2).or('to equal', 1));
+                }, 'to throw',
+                    "expected 3 to satisfy\n" +
+                    "expect.it('to equal', 2)\n" +
+                    "      .or('to equal', 1)\n" +
+                    "\n" +
+                    "⨯ expected 3 to equal 2 or\n" +
+                    "⨯ expected 3 to equal 1"
+                );
+            });
+        });
+
+        describe('with an asynchronous expect.it in the RHS object', function () {
+            it('should support an object with a property value of expect.it', function () {
+                return expect({foo: 'bar'}, 'to satisfy', {
+                    foo: expect.it('when delayed a little bit', 'to be a string')
+                });
+            });
+
+            it('should support passing an array value to an expect.it', function () {
+                return expect({foo: [123]}, 'to satisfy', {
+                    foo: expect.it('when delayed a little bit', 'to have items satisfying', 'to be a number')
+                });
+            });
+
+            it('should succeed with an or group where the first assertion passes and the second one fails', function () {
+                return expect(2, 'to satisfy', expect.it('when delayed a little bit', 'to equal', 2).or('when delayed a little bit', 'to equal', 1));
+            });
+
+            it('should succeed with an or group where the first one fails and the second assertion passes', function () {
+                return expect(1, 'to satisfy', expect.it('when delayed a little bit', 'to equal', 2).or('when delayed a little bit', 'to equal', 1));
+            });
+
+            it('should succeed with an or group where the first one fails synchronously and the second assertion passes asynchronously', function () {
+                return expect(1, 'to satisfy', expect.it('to equal', 2).or('when delayed a little bit', 'to equal', 1));
+            });
+
+            it('should succeed with an or group where the first one fails asynchronously and the second assertion passes synchronously', function () {
+                return expect(1, 'to satisfy', expect.it('when delayed a little bit', 'to equal', 2).or('to equal', 1));
+            });
+
+            it('should succeed with an or group where both assertions pass', function () {
+                return expect(1, 'to satisfy', expect.it('when delayed a little bit', 'to equal', 2).or('when delayed a little bit', 'to equal', 1));
+            });
+
+            it('should fail with an or group where both assertions fail asynchronously', function () {
+                return expect(
+                    expect(3, 'to satisfy', expect.it('when delayed a little bit', 'to equal', 2).or('when delayed a little bit', 'to equal', 1)),
+                    'to be rejected',
+                        "expected 3 to satisfy\n" +
+                        "expect.it('when delayed a little bit', 'to equal', 2)\n" +
+                        "      .or('when delayed a little bit', 'to equal', 1)\n" +
+                        "\n" +
+                        "⨯ expected 3 when delayed a little bit to equal 2 or\n" +
+                        "⨯ expected 3 when delayed a little bit to equal 1"
+                );
+            });
+
+            it('should fail with an or group where the first one fails synchronously and the second one fails asynchronously', function () {
+                return expect(
+                    expect(3, 'to satisfy', expect.it('to equal', 2).or('when delayed a little bit', 'to equal', 1)),
+                    'to be rejected',
+                        "expected 3 to satisfy\n" +
+                        "expect.it('to equal', 2)\n" +
+                        "      .or('when delayed a little bit', 'to equal', 1)\n" +
+                        "\n" +
+                        "⨯ expected 3 to equal 2 or\n" +
+                        "⨯ expected 3 when delayed a little bit to equal 1"
+                );
+            });
+
+            it('should fail with an or group where the first one fails asynchronously and the second one fails synchronously', function () {
+                return expect(
+                    expect(3, 'to satisfy', expect.it('when delayed a little bit', 'to equal', 2).or('to equal', 1)),
+                    'to be rejected',
+                        "expected 3 to satisfy\n" +
+                        "expect.it('when delayed a little bit', 'to equal', 2)\n" +
+                        "      .or('to equal', 1)\n" +
+                        "\n" +
+                        "⨯ expected 3 when delayed a little bit to equal 2 or\n" +
+                        "⨯ expected 3 to equal 1"
+                );
             });
         });
 
@@ -1906,6 +2015,12 @@ describe('unexpected', function () {
                 var err = new Error('foo');
                 err.bar = 123;
                 expect(err, 'to satisfy', new Error('foo'));
+            });
+
+            it('should not consider errors with different constructors to satisfy each other, even if all properties are identical', function () {
+                expect(function () {
+                    expect(new Error('foo'), 'to satisfy', new TypeError('foo'));
+                }, 'to throw', "expected Error({ message: 'foo' }) to satisfy TypeError({ message: 'foo' })");
             });
 
             it('should support satisfying against an object', function () {
@@ -5341,7 +5456,7 @@ describe('unexpected', function () {
             }, 'to throw', /expect.async should be called in the context of an it-block/);
         });
 
-        it('fails if is called within a asynchronious context', function () {
+        it('fails if is called within a asynchronous context', function () {
             expect(function () {
                 function done() {}
                 expect.async(function () {
@@ -5487,6 +5602,20 @@ describe('unexpected', function () {
                 return 'bar';
             });
             expect(clonedExpect('foo', 'to foo'), 'to equal', 'bar');
+        });
+
+        it('should throw an exception if the argument was not a function', function () {
+            var expectedError = new TypeError('expect.promise(...) requires a function argument to be supplied.\n' +
+                                              'See http://unexpectedjs.github.io/api/promise/ for more details.');
+            expect(function () {
+                expect.promise();
+            }, 'to throw', expectedError);
+
+            [undefined, null, '', [], {}].forEach(function (arg) {
+                expect(function () {
+                    expect.promise(arg);
+                }, 'to throw', expectedError);
+            });
         });
     });
 
