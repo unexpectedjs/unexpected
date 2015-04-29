@@ -1718,6 +1718,20 @@ describe('unexpected', function () {
             });
         });
 
+        it('should foo', function () {
+            expect(function () {
+                expect(['aa', 'bb', 'cc'], 'to satisfy', {2: /quux/});
+            }, 'to throw',
+                "expected [ 'aa', 'bb', 'cc' ] to satisfy { 2: /quux/ }\n" +
+                "\n" +
+                "Array({\n" +
+                "  0: 'aa',\n" +
+                "  1: 'bb',\n" +
+                "  2: 'cc' // should match /quux/\n" +
+                "})"
+            );
+        });
+
         it.skipIf(!Object.defineProperty, 'should honor the getKeys implementation of a type when building a diff', function () {
             function MyThing(a, b) {
                 this.a = a;
