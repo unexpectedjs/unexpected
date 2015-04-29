@@ -2715,7 +2715,7 @@ describe('unexpected', function () {
                        "  expected 'wat' to be a number");
             });
 
-            describe('supports many levels of asynchronous assertions', function () {
+            it('supports many levels of asynchronous assertions', function () {
                 return expect(
                     expect('abc', 'when delayed a little bit', 'when delayed a little bit', 'to satisfy', expect.it('when delayed a little bit', 'to equal', 'def')),
                     'to be rejected',
