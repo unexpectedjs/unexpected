@@ -75,7 +75,12 @@ var anyType = {
     },
     equal: utils.objectIs,
     inspect: function (value, depth, output) {
-        return output.text(value);
+        if (output && output.isMagicPen) {
+            return output.text(value);
+        } else {
+            // Guard against node.js' require('util').inspect eagerly calling .inspect() on objects
+            return String(value);
+        }
     },
     diff: function (actual, expected, output, diff, inspect) {
         return null;
@@ -1781,11 +1786,12 @@ module.exports = function (expect) {
         } else {
             var subjectType = expect.findTypeOf(subject),
                 commonType = expect.findTypeOf(subject, value),
+                valueType = expect.findTypeOf(value),
                 bothAreArrays = commonType.is('array');
             if (commonType.is('array-like') || commonType.is('object')) {
                 expect(subject, 'to be an object');
                 var promiseByKey = {};
-                var keys = subjectType.getKeys(value);
+                var keys = valueType.getKeys(value);
                 keys.forEach(function (key, index) {
                     promiseByKey[key] = expect.promise(function () {
                         if (typeof value[key] === 'function') {
