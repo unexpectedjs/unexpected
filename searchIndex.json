@@ -48,8 +48,8 @@
     "url": "/api/withError/"
   },
   {
-    "label": "to have keys (object)",
-    "url": "/assertions/object/to-have-keys/"
+    "label": "to be greater than or equal to (number)",
+    "url": "/assertions/number/to-be-greater-than-or-equal-to/"
   },
   {
     "label": "when decoded as (Buffer)",
@@ -140,34 +140,6 @@
     "url": "/assertions/function/to-throw/"
   },
   {
-    "label": "to be canonical (object)",
-    "url": "/assertions/object/to-be-canonical/"
-  },
-  {
-    "label": "to have key (object)",
-    "url": "/assertions/object/to-have-key/"
-  },
-  {
-    "label": "to have keys satisfying (object)",
-    "url": "/assertions/object/to-have-keys-satisfying/"
-  },
-  {
-    "label": "to have message (Error)",
-    "url": "/assertions/Error/to-have-message/"
-  },
-  {
-    "label": "to have properties (object)",
-    "url": "/assertions/object/to-have-properties/"
-  },
-  {
-    "label": "to have property (object)",
-    "url": "/assertions/object/to-have-property/"
-  },
-  {
-    "label": "to have values satisfying (object)",
-    "url": "/assertions/object/to-have-values-satisfying/"
-  },
-  {
     "label": "to be NaN (number)",
     "url": "/assertions/number/to-be-NaN/"
   },
@@ -180,8 +152,8 @@
     "url": "/assertions/number/to-be-finite/"
   },
   {
-    "label": "to be greater than or equal to (number)",
-    "url": "/assertions/number/to-be-greater-than-or-equal-to/"
+    "label": "to have message (Error)",
+    "url": "/assertions/Error/to-have-message/"
   },
   {
     "label": "to be greater than (number)",
@@ -210,6 +182,34 @@
   {
     "label": "to be within (number)",
     "url": "/assertions/number/to-be-within/"
+  },
+  {
+    "label": "to be canonical (object)",
+    "url": "/assertions/object/to-be-canonical/"
+  },
+  {
+    "label": "to have key (object)",
+    "url": "/assertions/object/to-have-key/"
+  },
+  {
+    "label": "to have keys satisfying (object)",
+    "url": "/assertions/object/to-have-keys-satisfying/"
+  },
+  {
+    "label": "to have keys (object)",
+    "url": "/assertions/object/to-have-keys/"
+  },
+  {
+    "label": "to have properties (object)",
+    "url": "/assertions/object/to-have-properties/"
+  },
+  {
+    "label": "to have property (object)",
+    "url": "/assertions/object/to-have-property/"
+  },
+  {
+    "label": "to have values satisfying (object)",
+    "url": "/assertions/object/to-have-values-satisfying/"
   },
   {
     "label": "to be empty (string)",
