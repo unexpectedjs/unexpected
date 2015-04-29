@@ -1947,6 +1947,25 @@ describe('unexpected', function () {
             });
         });
 
+        it('should support diffs in the error report', function () {
+            expect(function () {
+                expect('foo', 'to satisfy', expect.it('to equal', 'bar').or('to equal', 'baz'));
+            }, 'to throw',
+                "expected 'foo' to satisfy\n" +
+                "expect.it('to equal', 'bar')\n" +
+                "      .or('to equal', 'baz')\n" +
+                "\n" +
+                "⨯ expected 'foo' to equal 'bar' or\n" +
+                "\n" +
+                "  -foo\n" +
+                "  +bar\n" +
+                "⨯ expected 'foo' to equal 'baz'\n" +
+                "\n" +
+                "  -foo\n" +
+                "  +baz"
+            );
+        });
+
         it('should support expect.it at the first level', function () {
             expect(function () {
                 expect('bar', 'to satisfy', expect.it('to be a number'));
