@@ -178,7 +178,7 @@ metalSmith(__dirname)
         files['searchIndex.json'] = { contents: JSON.stringify(indexData, null, 2) };
         next();
     })
-    .use(require('./metalsmith-unexpected-markdown')({
+    .use(require('metalsmith-unexpected-markdown')({
         unexpected: require('../lib/'),
         testFile: path.resolve(__dirname, '..', 'test', 'documentation.spec.js'),
         updateExamples: 'update-examples' in argv
