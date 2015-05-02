@@ -86,4 +86,4 @@ site-build:
 
 .PHONY: update-examples
 update-examples:
-	node site/update-examples.js
+	node site/build.js --update-examples

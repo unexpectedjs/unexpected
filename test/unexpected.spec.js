@@ -22,6 +22,10 @@ describe.skipIf = function (condition) {
     (condition ? describe.skip : describe).apply(describe, Array.prototype.slice.call(arguments, 1));
 };
 
+function toArguments() {
+    return arguments;
+}
+
 describe('unexpected', function () {
     var expect = typeof weknowhow === 'undefined' ? require('../lib/').clone() : weknowhow.expect.clone();
     var workQueue = typeof weknowhow === 'undefined' ? require('../lib/workQueue') : null;
@@ -435,9 +439,7 @@ describe('unexpected', function () {
         });
 
         it('treats an arguments object as different from an array', function () {
-            (function () {
-                expect(arguments, 'not to equal', ['foo', 'bar', 'baz']);
-            }('foo', 'bar', 'baz'));
+            expect(toArguments('foo', 'bar', 'baz'), 'not to equal', ['foo', 'bar', 'baz']);
         });
 
         it('array should not equal sparse array', function () {
@@ -532,9 +534,7 @@ describe('unexpected', function () {
                    "})");
 
             expect(function () {
-                (function () {
-                    expect(arguments, 'to equal', ['foo', 'bar', 'baz']);
-                }('foo', 'bar'));
+                expect(toArguments('foo', 'bar'), 'to equal', ['foo', 'bar', 'baz']);
             }, 'to throw exception', "expected arguments( 'foo', 'bar' ) to equal [ 'foo', 'bar', 'baz' ]\n" +
                    "\n" +
                    "Mismatching constructors Object should be Array");
@@ -1118,9 +1118,7 @@ describe('unexpected', function () {
             expect([], 'to have length', 0);
             expect([1, 2, 3], 'to have length', 3);
             expect([1, 2, 3], 'not to have length', 4);
-            expect((function () {
-                return arguments;
-            }(1,2,3,4)), 'to have length', 4);
+            expect(toArguments(1,2,3,4), 'to have length', 4);
         });
 
         it('asserts string .length', function () {
@@ -2178,6 +2176,25 @@ describe('unexpected', function () {
                         getMe: 'got me'
                     }
                 });
+            });
+        });
+
+        describe('on array-like', function () {
+            it('should diff correctly against an array on the right hand side', function () {
+                expect(function () {
+                    expect(toArguments({foo: 'foo'},2,3), 'to satisfy', [{foo: 'f00'}]);
+                }, 'to throw',
+                       "expected arguments( { foo: 'foo' }, 2, 3 ) to satisfy [ { foo: 'f00' } ]\n" +
+                       "\n" +
+                       "[\n" +
+                       "  {\n" +
+                       "    foo: 'foo' // should equal 'f00'\n" +
+                       "               // -foo\n" +
+                       "               // +f00\n" +
+                       "  },\n" +
+                       "  2, // should be removed\n" +
+                       "  3 // should be removed\n" +
+                       "]");
             });
         });
 

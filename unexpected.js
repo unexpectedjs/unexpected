@@ -193,13 +193,25 @@ function Unexpected(options) {
             return type.name === typeName;
         });
     };
-    this.findTypeOf = function () { // ...
-        var objs = Array.prototype.slice.call(arguments);
+    this.findTypeOf = function (obj) {
         return utils.findFirst(that.types || [], function (type) {
-            return objs.every(function (obj) {
-                return type.identify(obj);
-            });
+            return type.identify(obj);
         });
+    };
+    this.findCommonType = function (a, b) {
+        var aAncestorIndex = {};
+        var current = this.findTypeOf(a);
+        while (current) {
+            aAncestorIndex[current.name] = current;
+            current = current.baseType;
+        }
+        current = this.findTypeOf(b);
+        while (current) {
+            if (aAncestorIndex[current.name]) {
+                return current;
+            }
+            current = current.baseType;
+        }
     };
 }
 
@@ -359,7 +371,7 @@ Unexpected.prototype.equal = function (actual, expected, depth, seen) {
         seen.push(actual);
     }
 
-    return this.findTypeOf(actual, expected).equal(actual, expected, function (a, b) {
+    return this.findCommonType(actual, expected).equal(actual, expected, function (a, b) {
         return that.equal(a, b, depth - 1, seen);
     });
 };
@@ -757,6 +769,7 @@ Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
             wrappedExpect.inspect = that.inspect;
             wrappedExpect.diff = that.diff;
             wrappedExpect.findTypeOf = that.findTypeOf.bind(that);
+            wrappedExpect.findCommonType = that.findCommonType.bind(that);
             wrappedExpect.getType = expect.getType;
             wrappedExpect.output = that.output;
             wrappedExpect.outputFormat = that.outputFormat;
@@ -941,7 +954,7 @@ Unexpected.prototype.diff = function (a, b, depth, seen) {
         seen.push(a);
     }
 
-    return this.findTypeOf(a, b).diff(a, b, output, function (actual, expected) {
+    return this.findCommonType(a, b).diff(a, b, output, function (actual, expected) {
         return that.diff(actual, expected, depth - 1, seen);
     }, function (v, depth) {
         return that.inspect(v, depth || Infinity);
@@ -1983,9 +1996,9 @@ module.exports = function (expect) {
             expect(subject, 'to match', value);
         } else {
             var subjectType = expect.findTypeOf(subject),
-                commonType = expect.findTypeOf(subject, value),
+                commonType = expect.findCommonType(subject, value),
                 valueType = expect.findTypeOf(value),
-                bothAreArrays = commonType.is('array');
+                bothAreArrays = commonType.is('array-like');
             if (commonType.is('array-like') || commonType.is('object')) {
                 expect(subject, 'to be an object');
                 var promiseByKey = {};
@@ -2134,7 +2147,7 @@ module.exports = function (expect) {
     expect.addAssertion('wrapperObject', 'to [exhaustively] satisfy', function (expect, subject, value) {
         var valueType = expect.findTypeOf(value);
         if (valueType.is('wrapperObject')) {
-            var type = expect.findTypeOf(subject, value);
+            var type = expect.findCommonType(subject, value);
             expect(type.is('wrapperObject'), 'to be truthy');
             return expect.withError(function () {
                 return expect(type.unwrap(subject), 'to [exhaustively] satisfy', type.unwrap(value));
