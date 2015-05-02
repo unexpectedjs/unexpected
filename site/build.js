@@ -175,7 +175,9 @@ metalSmith(__dirname)
         files['searchIndex.json'] = { contents: JSON.stringify(indexData, null, 2) };
         next();
     })
-    .use(require('./metalsmith-unexpected-markdown')())
+    .use(require('./metalsmith-unexpected-markdown')({
+        unexpected: require('../lib/')
+    }))
     // permalinks with no options will just make pretty urls...
     .use(require('metalsmith-permalinks')({ relative: false }))
     .use(function (files, metalsmith, next) {
