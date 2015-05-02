@@ -45,7 +45,7 @@
     "metalsmith-permalinks": "0.4.0",
     "metalsmith-static": "0.0.5",
     "metalsmith-templates": "0.6.0",
-    "metalsmith-unexpected-markdown": "1.1.0",
+    "metalsmith-unexpected-markdown": "1.1.1",
     "minimatch": "2.0.7",
     "minimist": "1.1.1",
     "mocha": "2.1.0",
