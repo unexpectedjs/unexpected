@@ -37,8 +37,6 @@
     "glob": "4.3.2",
     "istanbul": "0.3.5",
     "jshint": "2.5.6",
-    "magicpen-prism": "1.1.1",
-    "marked": "^0.3.3",
     "metalsmith": "1.0.1",
     "metalsmith-autoprefixer": "1.0.1",
     "metalsmith-collections": "0.6.0",
@@ -47,13 +45,16 @@
     "metalsmith-permalinks": "0.4.0",
     "metalsmith-static": "0.0.5",
     "metalsmith-templates": "0.6.0",
-    "minimatch": "2.0.1",
+    "metalsmith-unexpected-markdown": "1.0.0",
+    "minimatch": "2.0.7",
+    "minimist": "1.1.1",
     "mocha": "2.1.0",
     "mocha-phantomjs": "3.5.3",
     "mocha-slow-reporter": "*",
     "passerror": "1.1.0",
     "phantomjs": "1.9.15",
     "serve": "*",
-    "stat-mode": "0.2.0"
+    "stat-mode": "0.2.0",
+    "unexpected": "7.0.4"
   }
 }
