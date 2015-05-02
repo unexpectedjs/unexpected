@@ -48,6 +48,7 @@
     "metalsmith-static": "0.0.5",
     "metalsmith-templates": "0.6.0",
     "minimatch": "2.0.1",
+    "minimist": "1.1.1",
     "mocha": "2.1.0",
     "mocha-phantomjs": "3.5.3",
     "mocha-slow-reporter": "*",

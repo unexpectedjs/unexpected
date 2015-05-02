@@ -2,13 +2,24 @@
 var basename = require('path').basename;
 var debug = require('debug')('metalsmith-unexpected-markdown');
 var dirname = require('path').dirname;
+var resolve = require('path').resolve;
 var extname = require('path').extname;
 var marked = require('marked');
 var fs = require('fs');
 var async = require('async');
-var extend = require('../lib/utils').extend;
+var passError = require('passerror');
 
 var vm = require('vm');
+
+function extend(target) {
+    for (var i = 1; i < arguments.length; i += 1) {
+        var source = arguments[i];
+        Object.keys(source).forEach(function (key) {
+            target[key] = source[key];
+        });
+    }
+    return target;
+}
 
 function isPromise(value) {
     return value &&
@@ -247,6 +258,29 @@ function writeTestsToPen(pen, exampleTests) {
     pen.text('});').nl();
 }
 
+var codeBlockRegexp = /^```(\S+)\n([\s\S]*?)\n```/gm;
+function updateCodeBlocks(content, codeBlocks) {
+    var index = 0;
+    return content.replace(codeBlockRegexp, function ($0, lang, code) {
+        var currentIndex = index;
+        index += 1;
+        var codeBlock = codeBlocks[currentIndex];
+        if (codeBlock.lang === 'output') {
+            var exampleBlock = codeBlocks[currentIndex - 1];
+            var output = '';
+            if (exampleBlock && exampleBlock.lang === 'javascript') {
+                var error = exampleBlock.error;
+                if (error) {
+                    output = error.output ? error.output.toString() : error.message;
+                }
+            }
+            return '```' + lang + '\n' + output + '\n```';
+        } else {
+            return $0;
+        }
+    });
+}
+
 module.exports = function plugin(options) {
     options = options || {};
 
@@ -337,8 +371,11 @@ module.exports = function plugin(options) {
         return marked(content, extend({ renderer: renderer }, options));
     }
 
+
     return function(files, metalsmith, next){
         var exampleTests = {};
+        var sourcePath = metalsmith.source();
+
         async.series([
             function (cb) {
                 async.eachSeries(Object.keys(files).sort(), function (file, cb) {
@@ -358,10 +395,22 @@ module.exports = function plugin(options) {
                         var updatedMarkdown = createUpdatedMarkdown(exampleExpect, content, codeBlocks, options);
                         data.contents = new Buffer(updatedMarkdown);
 
-                        debug('converting file: %s', file);
                         delete files[file];
+                        debug('converting file: %s', file);
                         files[html] = data;
-                        cb();
+
+                        if (options.updateExamples) {
+                            debug('updating examples in file: %s', file);
+
+                            var absoluteFilePath = resolve(sourcePath, file);
+                            // read file again to avoid removing metadata from the file
+                            fs.readFile(absoluteFilePath, passError(cb, function (data) {
+                                fs.writeFile(absoluteFilePath,
+                                             updateCodeBlocks(data.toString(), codeBlocks), 'utf8', cb);
+                            }));
+                        } else {
+                            cb();
+                        }
                     });
                 }, cb);
             },
