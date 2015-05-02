@@ -1,5 +1,7 @@
+/*global __dirname*/
 var metalSmith = require('metalsmith');
 var expect = require('../lib/');
+var path = require('path');
 
 function idToName(id) {
     return id.replace(/-/g, ' ');
@@ -93,7 +95,7 @@ metalSmith(__dirname)
             pattern: '*.md'
         }
     }))
-    .use(require('./lib/include-static-assets')({ path: require('path').resolve(__dirname, 'static') }))
+    .use(require('./lib/include-static-assets')({ path: path.resolve(__dirname, 'static') }))
     // Dynamicly generate metadata for assertion files
     .use(function (files, metalsmith, next) {
         Object.keys(files).filter(function (file) {
@@ -176,7 +178,8 @@ metalSmith(__dirname)
         next();
     })
     .use(require('./metalsmith-unexpected-markdown')({
-        unexpected: require('../lib/')
+        unexpected: require('../lib/'),
+        testFile: path.resolve(__dirname, '..', 'test', 'documentation.spec.js')
     }))
     // permalinks with no options will just make pretty urls...
     .use(require('metalsmith-permalinks')({ relative: false }))
