@@ -123,7 +123,7 @@ metalSmith(__dirname)
                 files[file].windowTitle = files[file].title;
             }
 
-            files[file].url = '/' + file.replace(/\.md$/, '/');
+            files[file].url = '/' + file.replace(/(\/?)index.md$/, '$1').replace(/\.md$/, '/');
         });
         next();
     })

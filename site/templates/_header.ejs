@@ -16,9 +16,13 @@
                 <li class="menu-toggle-item">
                     <button class="menu-toggle" onclick="toggleSidebar()"></button>
                 </li>
-                <li class="<%- path === '' ? 'active' : '' %>"><a href="<%= '/' %>">Unexpected</a></li>
+                <% collections.pages.forEach(function (page) { %>
+                <li class="<%- '/' + path === page.url ? 'active' : '' %>"><a href="<%= page.url %>"><%= page.title %></a></li>
+                <% }) %>
                 <li class="<%- path.match(/^assertions\/?/) ? 'active' : '' %>"><a href="<%= assertionsByType.any[0].url %>">Assertions</a></li>
+                <% if (collections.apiPages.length > 0) { %>
                 <li class="<%- path.match(/^api\/?/) ? 'active' : '' %>"><a href="<%= collections.apiPages[0].url %>">API</a></li>
+                <% } %>
             </ul>
         </nav>
         <div class="search" style="visibility: hidden">
