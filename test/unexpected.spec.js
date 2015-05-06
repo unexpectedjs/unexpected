@@ -1,3 +1,4 @@
+/*global unexpected*/
 it.skipIf = function (condition) {
     (condition ? it.skip : it).apply(it, Array.prototype.slice.call(arguments, 1));
 };
@@ -13,8 +14,8 @@ function toArguments() {
 }
 
 describe('unexpected', function () {
-    var expect = typeof weknowhow === 'undefined' ? require('../lib/').clone() : weknowhow.expect.clone();
     var workQueue = typeof weknowhow === 'undefined' ? require('../lib/workQueue') : null;
+    var expect = unexpected.clone();
     expect.output.preferredWidth = 80;
 
     var circular = {};
