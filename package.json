@@ -14,7 +14,9 @@
     "url": "https://github.com/unexpectedjs/unexpected"
   },
   "scripts": {
-    "test": "make test && make test-phantomjs"
+    "test": "make test && make test-phantomjs",
+    "generate-site": "node generate-site.js",
+    "update-examples": "node generate-site.js --update-examples"
   },
   "main": "./lib/index.js",
   "dependencies": {
@@ -26,35 +28,18 @@
     "magicpen": "4.7.0"
   },
   "devDependencies": {
-    "async": "0.9.0",
-    "autoprefixer": "5.1.0",
     "browserify": "5.9.1",
     "bundle-collapser": "1.1.0",
     "coveralls": "2.11.1",
-    "debug": "^2.1.1",
-    "ejs": "1.0.0",
     "es5-shim": "4.0.5",
-    "glob": "4.3.2",
     "istanbul": "0.3.5",
     "jshint": "2.5.6",
-    "metalsmith": "1.0.1",
-    "metalsmith-autoprefixer": "1.0.1",
-    "metalsmith-collections": "0.6.0",
-    "metalsmith-less": "1.0.2",
-    "metalsmith-markdown": "0.2.1",
-    "metalsmith-permalinks": "0.4.0",
-    "metalsmith-static": "0.0.5",
-    "metalsmith-templates": "0.6.0",
-    "metalsmith-unexpected-markdown": "1.1.1",
-    "minimatch": "2.0.7",
     "minimist": "1.1.1",
     "mocha": "2.1.0",
     "mocha-phantomjs": "3.5.3",
     "mocha-slow-reporter": "*",
-    "passerror": "1.1.0",
     "phantomjs": "1.9.15",
     "serve": "*",
-    "stat-mode": "0.2.0",
-    "unexpected": "7.0.4"
+    "unexpected-documentation-site-generator": "1.0.0"
   }
 }

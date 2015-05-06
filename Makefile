@@ -76,8 +76,8 @@ clean:
 
 .PHONY: site-build
 site-build:
-	node site/build.js
+	npm run generate-site
 
 .PHONY: update-examples
 update-examples:
-	node site/build.js --update-examples
+	npm run update-examples
