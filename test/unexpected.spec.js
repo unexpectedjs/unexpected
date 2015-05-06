@@ -1,4 +1,4 @@
-/*global xdescribe, xit, beforeAll, afterAll, before:true, after:true*/
+/*global unexpected, xdescribe, xit, beforeAll, afterAll, before:true, after:true*/
 if (!it.skip && xit) {
     it.skip = function () {
         xit.apply(it, arguments);
@@ -27,8 +27,8 @@ function toArguments() {
 }
 
 describe('unexpected', function () {
-    var expect = typeof weknowhow === 'undefined' ? require('../lib/').clone() : weknowhow.expect.clone();
     var workQueue = typeof weknowhow === 'undefined' ? require('../lib/workQueue') : null;
+    var expect = unexpected.clone();
     expect.output.preferredWidth = 80;
 
     var circular = {};
