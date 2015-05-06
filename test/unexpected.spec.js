@@ -1723,18 +1723,46 @@ describe('unexpected', function () {
             });
         });
 
-        it('should foo', function () {
-            expect(function () {
-                expect(['aa', 'bb', 'cc'], 'to satisfy', {2: /quux/});
-            }, 'to throw',
-                "expected [ 'aa', 'bb', 'cc' ] to satisfy { 2: /quux/ }\n" +
-                "\n" +
-                "Array({\n" +
-                "  0: 'aa',\n" +
-                "  1: 'bb',\n" +
-                "  2: 'cc' // should match /quux/\n" +
-                "})"
-            );
+        describe.skipIf(typeof Buffer === 'undefined', 'with a buffer instance', function () {
+            describe('in an async setting', function () {
+                it('should succeed', function () {
+                    return expect(new Buffer([0, 1, 2]), 'to satisfy', expect.it('when delayed a little bit', 'to equal', new Buffer([0, 1, 2])));
+                });
+
+                it('should fail with a diff', function () {
+                    return expect(
+                        expect(new Buffer([0, 1, 2]), 'to satisfy', expect.it('when delayed a little bit', 'to equal', new Buffer([2, 1, 0]))),
+                        'to be rejected',
+                            "expected Buffer([0x00, 0x01, 0x02])\n" +
+                            "to satisfy expect.it('when delayed a little bit', 'to equal', Buffer([0x02, 0x01, 0x00]))\n" +
+                            "\n" +
+                            "expected Buffer([0x00, 0x01, 0x02]) when delayed a little bit to equal Buffer([0x02, 0x01, 0x00])\n" +
+                            "\n" +
+                            "-00 01 02                                         │...│\n" +
+                            "+02 01 00                                         │...│"
+                    );
+                });
+            });
+        });
+
+        describe('with an array satisfied against an object with a numeric property', function () {
+            it('should succeed', function () {
+                expect(['aa', 'bb', 'cc'], 'to satisfy', {2: /cc/});
+            });
+
+            it('should fail', function () {
+                expect(function () {
+                    expect(['aa', 'bb', 'cc'], 'to satisfy', {2: /quux/});
+                }, 'to throw',
+                    "expected [ 'aa', 'bb', 'cc' ] to satisfy { 2: /quux/ }\n" +
+                    "\n" +
+                    "Array({\n" +
+                    "  0: 'aa',\n" +
+                    "  1: 'bb',\n" +
+                    "  2: 'cc' // should match /quux/\n" +
+                    "})"
+                );
+            });
         });
 
         it.skipIf(!Object.defineProperty, 'should honor the getKeys implementation of a type when building a diff', function () {
