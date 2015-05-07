@@ -50,18 +50,9 @@ ifneq ($(shell git describe --always --dirty | grep -- -dirty),)
 endif
 
 .PHONY: deploy-site
-deploy-site: git-dirty-check site-build
-	git fetch origin site-build
-	git checkout -B site-build origin/site-build
-	rm `git ls-files | grep -v '^\.gitignore$$'`
-	cp -r site-build/* .
-	if [ "`git status --porcelain`" != "" ]; then \
-		(git add -A . && \
-	     git commit -m "Updated site" && \
-	     git push origin +site-build:site-build && \
-		 git push git@github.com:unexpectedjs/unexpectedjs.github.io.git +site-build:master) ; \
-	fi
-	git checkout master
+deploy-site: site-build
+	./node_modules/.bin/deploy-site && \
+    git push git@github.com:unexpectedjs/unexpectedjs.github.io.git +gh-pages:master
 
 .PHONY: commit-unexpected
 commit-unexpected: unexpected.js
