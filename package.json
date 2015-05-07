@@ -40,6 +40,6 @@
     "mocha-slow-reporter": "*",
     "phantomjs": "1.9.15",
     "serve": "*",
-    "unexpected-documentation-site-generator": "2.2.2"
+    "unexpected-documentation-site-generator": "2.2.3"
   }
 }
