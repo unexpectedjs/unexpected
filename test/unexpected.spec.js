@@ -304,6 +304,25 @@ describe('unexpected', function () {
             expect('foo', 'to be a', expect.getType('string'));
         });
 
+        describe('with a type name', function () {
+            it('should succeed when the subject is recognized as having the type', function () {
+                expect(new Error('foo'), 'to be an', 'Error');
+            });
+
+            it('should fail when the subject is not recognized as having the type', function () {
+                expect(function () {
+                    expect(123, 'to be an', 'Error');
+                }, 'to throw', 'expected 123 to be an Error');
+            });
+
+            // Maybe better: throw a non-Unexpected error
+            it('should fail when the type is not defined', function () {
+                expect(function () {
+                    expect(123, 'to be a', 'FoopQuuxDoop');
+                }, 'to throw', 'expected 123 to be a FoopQuuxDoop');
+            });
+        });
+
         it('should fail with the correct error message if the type is given as an anonymous function', function () {
             expect(function () {
                 expect('foo', 'to be a', function () {});
