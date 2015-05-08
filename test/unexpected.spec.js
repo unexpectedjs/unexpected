@@ -4079,7 +4079,13 @@ describe('unexpected', function () {
         it('throws an expection if the type has an empty or undefined name', function () {
             expect(function () {
                 clonedExpect.addType({});
-            }, 'to throw', 'A type must be given a non-empty name');
+            }, 'to throw', 'A type must be given a non-empty name and can only contain [0-9a-zA-Z.-]');
+        });
+
+        it('throws an expection if the type contains non-alphanumeric chars', function () {
+            expect(function () {
+                clonedExpect.addType({name: 'ø'});
+            }, 'to throw', 'A type must be given a non-empty name and can only contain [0-9a-zA-Z.-]');
         });
 
         it('should use the equal defined by the type', function () {
