@@ -3327,13 +3327,13 @@ describe('unexpected', function () {
             it("must be a string", function () {
                 expect(function () {
                     expect.addAssertion(null, function () {});
-                }, 'to throw', "Assertion patterns must be a non empty string");
+                }, 'to throw', "Assertion patterns must be a non-empty string");
             });
 
-            it("must be a non empty", function () {
+            it("must be a non-empty string", function () {
                 expect(function () {
                     expect.addAssertion('', function () {});
-                }, 'to throw', "Assertion patterns must be a non empty string");
+                }, 'to throw', "Assertion patterns must be a non-empty string");
             });
 
             it("can't start or end with whitespace", function () {
