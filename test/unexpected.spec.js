@@ -2208,7 +2208,7 @@ describe('unexpected', function () {
                 }, 'to throw',
                        "expected arguments( { foo: 'foo' }, 2, 3 ) to satisfy [ { foo: 'f00' } ]\n" +
                        "\n" +
-                       "[\n" +
+                       "arguments[\n" +
                        "  {\n" +
                        "    foo: 'foo' // should equal 'f00'\n" +
                        "               // -foo\n" +
