@@ -21,7 +21,7 @@
   "main": "./lib/index.js",
   "dependencies": {
     "ansi-regex": "1.1.1",
-    "array-changes": "1.0.1",
+    "array-changes": "1.0.2",
     "bluebird": "^2.9.13",
     "diff": "1.1.0",
     "leven": "1.0.0",
