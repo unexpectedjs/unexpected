@@ -3380,6 +3380,12 @@ describe('unexpected', function () {
                 }, 'to throw', "Assertion patterns must not only contain flags");
             });
 
+            it('must not use type syntax reserved for future use', function () {
+                expect(function () {
+                    expect.addAssertion('<foobar>', function () {});
+                }, 'to throw', "Assertion patterns cannot use type signature syntax (reserved for future expansion), ^\\(?<[a-z.-]+>");
+            });
+
             describe('flags', function () {
                 it("must not be empty", function () {
                     expect(function () {
