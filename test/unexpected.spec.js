@@ -4104,13 +4104,25 @@ describe('unexpected', function () {
         it('throws an expection if the type has an empty or undefined name', function () {
             expect(function () {
                 clonedExpect.addType({});
-            }, 'to throw', 'A type must be given a non-empty name and can only contain [0-9a-zA-Z.-]');
+            }, 'to throw', 'A type must be given a non-empty name and must match ^[a-z_](?:|[a-z0-9_.-]*[_a-z0-9])$');
+        });
+
+        it('throws an expection if the type starts with .', function () {
+            expect(function () {
+                clonedExpect.addType({name: '.foo'});
+            }, 'to throw', 'A type must be given a non-empty name and must match ^[a-z_](?:|[a-z0-9_.-]*[_a-z0-9])$');
+        });
+
+        it('throws an expection if the type ends with .', function () {
+            expect(function () {
+                clonedExpect.addType({name: 'foo.'});
+            }, 'to throw', 'A type must be given a non-empty name and must match ^[a-z_](?:|[a-z0-9_.-]*[_a-z0-9])$');
         });
 
         it('throws an expection if the type contains non-alphanumeric chars', function () {
             expect(function () {
                 clonedExpect.addType({name: 'ø'});
-            }, 'to throw', 'A type must be given a non-empty name and can only contain [0-9a-zA-Z.-]');
+            }, 'to throw', 'A type must be given a non-empty name and must match ^[a-z_](?:|[a-z0-9_.-]*[_a-z0-9])$');
         });
 
         it('should use the equal defined by the type', function () {
