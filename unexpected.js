@@ -2888,9 +2888,17 @@ module.exports = function (expect) {
                 (equal(a.message, b.message) && this.baseType.equal(a, b));
         },
         inspect: function (value, depth, output, inspect) {
-            var errorObject = this.unwrap(value);
             // TODO: Inspect Error as a built-in once we have the styles defined:
-            output.text((value.name || value.constructor && value.constructor.name  || 'Error') + '(').append(inspect(errorObject, depth)).text(')');
+            output.text((value.name || value.constructor && value.constructor.name || 'Error') + '(');
+            var keys = this.getKeys(value);
+            if (keys.length === 1 && keys[0] === 'message') {
+                if (value.message !== '') {
+                    output.append(inspect(value.message));
+                }
+            } else {
+                output.append(inspect(this.unwrap(value), depth));
+            }
+            output.text(')');
         },
         diff: function (actual, expected, output, diff) {
             var result = diff(this.unwrap(actual), this.unwrap(expected));
