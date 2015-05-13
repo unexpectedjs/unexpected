@@ -42,7 +42,7 @@ function () {
   throw new Error('The error message!');
 }
 to throw 'The error message'
-  expected Error({ message: 'The error message!' }) to satisfy 'The error message'
+  expected Error('The error message!') to satisfy 'The error message'
 
   -The error message!
   +The error message
@@ -71,7 +71,7 @@ function () {
   throw new Error('The error message!');
 }
 to throw /catastrophic failure/
-  expected Error({ message: 'The error message!' }) to satisfy /catastrophic failure/
+  expected Error('The error message!') to satisfy /catastrophic failure/
 ```
 
 You can also provide a function as the second parameter to do
@@ -104,7 +104,7 @@ to throw
 function (e) {
   expect(e, 'to be a', TypeError);
 }
-  expected Error({ message: 'Another error' }) to be a TypeError
+  expected Error('Another error') to be a TypeError
 ```
 
 Actually what happens is, that the thrown error is checked
@@ -131,8 +131,8 @@ expected
 function () {
   throw new Error('Another error');
 }
-to throw TypeError({ message: 'Invalid syntax' })
-  expected Error({ message: 'Another error' }) to satisfy TypeError({ message: 'Invalid syntax' })
+to throw TypeError('Invalid syntax')
+  expected Error('Another error') to satisfy TypeError('Invalid syntax')
 ```
 
 ```javascript
@@ -155,5 +155,5 @@ function () {
   throw new Error('threw anyway');
 }
 not to throw
-  threw: Error({ message: 'threw anyway' })
+  threw: Error('threw anyway')
 ```

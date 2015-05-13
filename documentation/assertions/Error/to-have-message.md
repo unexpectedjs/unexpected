@@ -11,7 +11,7 @@ expect(new Error('foobar'), 'to have message', 'barfoo');
 ```
 
 ```output
-expected Error({ message: 'foobar' }) to have message 'barfoo'
+expected Error('foobar') to have message 'barfoo'
   expected 'foobar' to satisfy 'barfoo'
 
   -foobar

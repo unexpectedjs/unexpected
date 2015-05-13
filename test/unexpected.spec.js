@@ -117,7 +117,7 @@ describe('unexpected', function () {
                     expect(new Error('foo'), 'to equal', new Error('bar'));
                 }, 'to throw exception', function (err) {
                     expect(err.output.toString(), 'to equal',
-                           "expected Error({ message: 'foo' }) to equal Error({ message: 'bar' })\n" +
+                           "expected Error('foo') to equal Error('bar')\n" +
                            "\n" +
                            "Error({\n" +
                            "  message: 'foo' // should equal 'bar'\n" +
@@ -173,7 +173,7 @@ describe('unexpected', function () {
                 expect(function () {
                     expect(error, 'to satisfy', new Error('bar'));
                 }, 'to throw',
-                       "expected Error({ message: 'foo' }) to satisfy Error({ message: 'bar' })\n" +
+                       "expected Error('foo') to satisfy Error('bar')\n" +
                        "\n" +
                        "Error({\n" +
                        "  message: 'foo' // should equal 'bar'\n" +
@@ -535,7 +535,7 @@ describe('unexpected', function () {
 
             expect(function () {
                 expect(new Error('foo'), 'to equal', new Error('bar'));
-            }, 'to throw exception', "expected Error({ message: 'foo' }) to equal Error({ message: 'bar' })\n" +
+            }, 'to throw exception', "expected Error('foo') to equal Error('bar')\n" +
                    "\n" +
                    "Error({\n" +
                    "  message: 'foo' // should equal 'bar'\n" +
@@ -832,7 +832,7 @@ describe('unexpected', function () {
                     '    throw new Error(\'The Error\');\n' +
                     '}\n' +
                     'not to throw\n' +
-                    "  threw: Error({ message: 'The Error' })");
+                    "  threw: Error('The Error')");
         });
 
         it.skipIf(phantomJsErrorWeirdness, 'fails with the correct message when an Unexpected error is thrown', function () {
@@ -900,7 +900,7 @@ describe('unexpected', function () {
                     '    throw new Error(\'bar\');\n' +
                     '}\n' +
                     'to throw \'foo\'\n' +
-                    "  expected Error({ message: 'bar' }) to satisfy 'foo'\n" +
+                    "  expected Error('bar') to satisfy 'foo'\n" +
                     '\n' +
                     '  -bar\n' +
                     '  +foo');
@@ -922,8 +922,8 @@ describe('unexpected', function () {
                    'function testFunction() {\n' +
                    '    throw new Error(\'Custom error\');\n' +
                    '}\n' +
-                   "to throw exception Error({ message: 'My error' })\n" +
-                   "  expected Error({ message: 'Custom error' }) to satisfy Error({ message: 'My error' })\n" +
+                   "to throw exception Error('My error')\n" +
+                   "  expected Error('Custom error') to satisfy Error('My error')\n" +
                    "\n" +
                    "  Error({\n" +
                    "    message: 'Custom error' // should equal 'My error'\n" +
@@ -955,7 +955,27 @@ describe('unexpected', function () {
 
     describe('Error type', function () {
         it('should inspect the constructor name correctly', function () {
-            expect(new TypeError('foo'), 'to inspect as', "TypeError({ message: 'foo' })");
+            expect(new TypeError('foo'), 'to inspect as', "TypeError('foo')");
+        });
+
+        it('should inspect correctly when the message is not set and there are no other properties', function () {
+            expect(new Error(), 'to inspect as', 'Error()');
+        });
+
+        it('should inspect correctly when the message is set and there are no other properties', function () {
+            expect(new Error('foo'), 'to inspect as', "Error('foo')");
+        });
+
+        it('should inspect correctly when the message is set and there are other properties', function () {
+            var err = new Error('foo');
+            err.bar = 123;
+            expect(err, 'to inspect as', "Error({ message: 'foo', bar: 123 })");
+        });
+
+        it('should inspect correctly when the message is not set and there are other properties', function () {
+            var err = new Error();
+            err.bar = 123;
+            expect(err, 'to inspect as', "Error({ message: '', bar: 123 })");
         });
 
         describe('to have message assertion', function () {
@@ -999,7 +1019,7 @@ describe('unexpected', function () {
                     expect(function () {
                         expect(err, 'to have message', 'Dammit!');
                     }, 'to throw',
-                        "expected Error({ message: 'Bummer!' }) to have message 'Dammit!'\n" +
+                        "expected Error('Bummer!') to have message 'Dammit!'\n" +
                         "  expected 'Bummer!' to satisfy 'Dammit!'\n" +
                         "\n" +
                         "  -Bummer!\n" +
@@ -2073,7 +2093,7 @@ describe('unexpected', function () {
             it('should not consider errors with different constructors to satisfy each other, even if all properties are identical', function () {
                 expect(function () {
                     expect(new Error('foo'), 'to satisfy', new TypeError('foo'));
-                }, 'to throw', "expected Error({ message: 'foo' }) to satisfy TypeError({ message: 'foo' })");
+                }, 'to throw', "expected Error('foo') to satisfy TypeError('foo')");
             });
 
             it('should support satisfying against an object', function () {
@@ -2113,7 +2133,7 @@ describe('unexpected', function () {
                         expect(new Error('Custom message'), 'to satisfy', function (err) {
                             expect(err, 'to be a', TypeError);
                         });
-                    }, 'to throw', "expected Error({ message: 'Custom message' }) to be a TypeError");
+                    }, 'to throw', "expected Error('Custom message') to be a TypeError");
                 });
             });
         });
@@ -2335,7 +2355,7 @@ describe('unexpected', function () {
             expect(function () {
                 expect(new Error('foo'), 'to satisfy', new Error('bar'));
             }, 'to throw exception',
-                   "expected Error({ message: 'foo' }) to satisfy Error({ message: 'bar' })\n" +
+                   "expected Error('foo') to satisfy Error('bar')\n" +
                    "\n" +
                    "Error({\n" +
                    "  message: 'foo' // should equal 'bar'\n" +
@@ -2347,7 +2367,7 @@ describe('unexpected', function () {
         it('fails when error message does not match given regexp', function () {
             expect(function () {
                 expect(new Error('foo'), 'to satisfy', /bar/);
-            }, 'to throw exception', "expected Error({ message: 'foo' }) to satisfy /bar/");
+            }, 'to throw exception', "expected Error('foo') to satisfy /bar/");
         });
 
         it('fails when using an unknown assertion', function () {
@@ -2367,7 +2387,7 @@ describe('unexpected', function () {
             expect(function () {
                 expect(new Error('foo'), 'to satisfy', { message: 'bar' });
             }, 'to throw exception',
-                   "expected Error({ message: \'foo\' }) to satisfy { message: \'bar\' }\n" +
+                   "expected Error('foo') to satisfy { message: \'bar\' }\n" +
                    "\n" +
                    "-foo\n" +
                    "+bar");
@@ -5484,7 +5504,7 @@ describe('unexpected', function () {
                         "        }\n" +
                         "    }, 1);\n" +
                         "}, 'to equal', 125\n" +
-                        "  expected Error({ message: 'not a number' }) to be falsy"
+                        "  expected Error('not a number') to be falsy"
                 );
             });
         });
