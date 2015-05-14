@@ -2822,7 +2822,7 @@ describe('unexpected', function () {
                         "⨯ expected 123 when delayed a little bit to equal 456\n" +
                         "or\n" +
                         "⨯ expected 123 when delayed a little bit to be a string and\n" +
-                        "  expected 123 to be greater than 100\n" +
+                        "✓ expected 123 to be greater than 100\n" +
                         "or\n" +
                         "✓ expected 123 when delayed a little bit 'to be a number' and\n" +
                         "⨯ expected 123 when delayed a little bit to be within 100, 110"
@@ -4615,7 +4615,7 @@ describe('unexpected', function () {
                 }, 'to throw',
                        "✓ expected 20 to be a number and\n" +
                        "⨯ expected 20 to be less than 14 and\n" +
-                       "  expected 20 to be negative");
+                       "⨯ expected 20 to be negative");
             });
 
             it('returns a new function', function () {
@@ -4664,7 +4664,7 @@ describe('unexpected', function () {
                     expectation('foobarbaz');
                 }, 'to throw',
                        "⨯ expected 'foobarbaz' to be a number and\n" +
-                       "  expected 'foobarbaz' to be greater than 6\n" +
+                       "⨯ expected 'foobarbaz' to be greater than 6\n" +
                        "or\n" +
                        "✓ expected 'foobarbaz' to be a string and\n" +
                        "⨯ expected 'foobarbaz' to have length 6\n" +
@@ -4758,7 +4758,7 @@ describe('unexpected', function () {
                         'to be rejected',
                             '⨯ expected false to be a number after a short delay and\n' +
                             '    expected false to be a number\n' +
-                            '  expected false to be finite after a short delay'
+                            '⨯ expected false to be finite after a short delay'
                     );
                 });
             });
@@ -4780,7 +4780,7 @@ describe('unexpected', function () {
                         'to be rejected',
                             '⨯ expected false to be a number after a short delay and\n' +
                             '    expected false to be a number\n' +
-                            '  expected false to be finite after a short delay\n' +
+                            '⨯ expected false to be finite after a short delay\n' +
                             'or\n' +
                             '⨯ expected false to be a string after a short delay\n' +
                             '    expected false to be a string'
