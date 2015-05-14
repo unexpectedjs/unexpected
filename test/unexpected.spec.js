@@ -2699,7 +2699,7 @@ describe('unexpected', function () {
                 }, 'to throw', "expected { foo: MysteryBox('abc') } to satisfy { foo: 'def' }\n" +
                        "\n" +
                        "{\n" +
-                       "  foo: MysteryBox('abc') // should satisfy 'def'\n" +
+                       "  foo: MysteryBox('abc') // should equal 'def'\n" +
                        "                         // -abc\n" +
                        "                         // +def\n" +
                        "}");
