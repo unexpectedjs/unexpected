@@ -1,4 +1,4 @@
-Asserts that a value match a given specification.
+Asserts that a value matches a given specification.
 
 All properties and nested objects mentioned in the right-hand side object are
 required to be present. Primitive values are compared with `to equal` semantics:

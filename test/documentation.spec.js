@@ -1006,7 +1006,7 @@ describe("documentation tests", function () {
             });
         } catch (e) {
             expect(e, "to have message",
-                "expected Error({ message: 'foobar' }) to have message 'barfoo'\n" +
+                "expected Error('foobar') to have message 'barfoo'\n" +
                 "  expected 'foobar' to satisfy 'barfoo'\n" +
                 "\n" +
                 "  -foobar\n" +
@@ -1912,7 +1912,7 @@ describe("documentation tests", function () {
                     "  throw new Error('The error message!');\n" +
                     "}\n" +
                     "to throw 'The error message'\n" +
-                    "  expected Error({ message: 'The error message!' }) to satisfy 'The error message'\n" +
+                    "  expected Error('The error message!') to satisfy 'The error message'\n" +
                     "\n" +
                     "  -The error message!\n" +
                     "  +The error message"
@@ -1943,7 +1943,7 @@ describe("documentation tests", function () {
                     "  throw new Error('The error message!');\n" +
                     "}\n" +
                     "to throw /catastrophic failure/\n" +
-                    "  expected Error({ message: 'The error message!' }) to satisfy /catastrophic failure/"
+                    "  expected Error('The error message!') to satisfy /catastrophic failure/"
                 );
             }
         }
@@ -1980,7 +1980,7 @@ describe("documentation tests", function () {
                     "function (e) {\n" +
                     "  expect(e, 'to be a', TypeError);\n" +
                     "}\n" +
-                    "  expected Error({ message: 'Another error' }) to be a TypeError"
+                    "  expected Error('Another error') to be a TypeError"
                 );
             }
         }
@@ -2007,8 +2007,8 @@ describe("documentation tests", function () {
                     "function () {\n" +
                     "  throw new Error('Another error');\n" +
                     "}\n" +
-                    "to throw TypeError({ message: 'Invalid syntax' })\n" +
-                    "  expected Error({ message: 'Another error' }) to satisfy TypeError({ message: 'Invalid syntax' })"
+                    "to throw TypeError('Invalid syntax')\n" +
+                    "  expected Error('Another error') to satisfy TypeError('Invalid syntax')"
                 );
             }
         }
@@ -2036,7 +2036,7 @@ describe("documentation tests", function () {
                     "  throw new Error('threw anyway');\n" +
                     "}\n" +
                     "not to throw\n" +
-                    "  threw: Error({ message: 'threw anyway' })"
+                    "  threw: Error('threw anyway')"
                 );
             }
         }

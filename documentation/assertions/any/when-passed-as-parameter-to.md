@@ -23,5 +23,5 @@ function increment(n) {
 ```
 
 This assertion delegates to the
-[when passed as parameters to](/assertions/array/when-passed-as-parameters-to/)
+[when passed as parameters to](/assertions/array-like/when-passed-as-parameters-to/)
 assertion and also supports the `async` and `constructor` flags.

@@ -1,6 +1,6 @@
 {
   "name": "unexpected",
-  "version": "7.0.5",
+  "version": "7.3.0",
   "author": "Sune Sloth Simonsen <sune@we-knowhow.dk>",
   "keywords": [
     "assertion",
@@ -21,8 +21,8 @@
   "main": "./lib/index.js",
   "dependencies": {
     "ansi-regex": "1.1.1",
-    "array-changes": "1.0.1",
-    "bluebird": "^2.9.13",
+    "array-changes": "1.0.2",
+    "bluebird": "2.9.25",
     "diff": "1.1.0",
     "leven": "1.0.0",
     "magicpen": "4.7.0"
@@ -41,6 +41,6 @@
     "mocha-slow-reporter": "*",
     "phantomjs": "1.9.15",
     "serve": "*",
-    "unexpected-documentation-site-generator": "2.2.2"
+    "unexpected-documentation-site-generator": "2.2.3"
   }
 }

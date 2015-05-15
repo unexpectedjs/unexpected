@@ -189,7 +189,8 @@ function writeGroupEvaluationsToOutput(expect, output, groupEvaluations) {
             if (j > 0) {
                 output.jsComment(' and').nl();
             }
-            if (evaluation.promise.isRejected() && !groupFailed) {
+            var isRejected = evaluation.promise.isRejected();
+            if (isRejected && !groupFailed) {
                 groupFailed = true;
                 var err = evaluation.promise.reason();
 
@@ -202,9 +203,9 @@ function writeGroupEvaluationsToOutput(expect, output, groupEvaluations) {
                 });
             } else {
                 var style;
-                if (groupFailed) {
-                    style = 'text';
-                    output.sp(2);
+                if (isRejected) {
+                    style = 'error';
+                    output.error('⨯ ');
                 } else {
                     style = 'success';
                     output.success('✓ ');
@@ -455,8 +456,8 @@ Unexpected.prototype.addAssertion = function (types, patterns, handler) {
 Unexpected.prototype.addType = function (type) {
     var that = this;
     var baseType;
-    if (typeof type.name !== 'string' || type.name.trim() === '') {
-        throw new Error('A type must be given a non-empty name');
+    if (typeof type.name !== 'string' || !/^[a-z_](?:|[a-z0-9_.-]*[_a-z0-9])$/i.test(type.name)) {
+        throw new Error('A type must be given a non-empty name and must match ^[a-z_](?:|[a-z0-9_.-]*[_a-z0-9])$');
     }
 
     this.assertions[type.name] = {};
@@ -685,7 +686,7 @@ Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
             wrappedExpect.diff = that.diff;
             wrappedExpect.findTypeOf = that.findTypeOf.bind(that);
             wrappedExpect.findCommonType = that.findCommonType.bind(that);
-            wrappedExpect.getType = expect.getType;
+            wrappedExpect.getType = that.getType;
             wrappedExpect.output = that.output;
             wrappedExpect.outputFormat = that.outputFormat;
             wrappedExpect.fail = function () {
@@ -1069,8 +1070,12 @@ function ensureValidUseOfParenthesesOrBrackets(pattern) {
 
 function ensureValidPattern(pattern) {
     if (typeof pattern !== 'string' || pattern === '') {
-        throw new Error("Assertion patterns must be a non empty string");
+        throw new Error("Assertion patterns must be a non-empty string");
     }
+    if (/^\(?<[a-z.-]+>/.test(pattern)) {
+        throw new Error("Assertion patterns cannot use type signature syntax (reserved for future expansion), ^\\(?<[a-z.-]+>");
+    }
+
     if (pattern.match(/^\s|\s$/)) {
         throw new Error("Assertion patterns can't start or end with whitespace");
     }
@@ -1915,7 +1920,7 @@ module.exports = function (expect) {
             var subjectType = expect.findTypeOf(subject),
                 commonType = expect.findCommonType(subject, value),
                 valueType = expect.findTypeOf(value),
-                bothAreArrays = commonType.is('array-like');
+                bothAreArrayLike = commonType.is('array-like');
             if (commonType.is('array-like') || commonType.is('object')) {
                 expect(subject, 'to be an object');
                 var promiseByKey = {};
@@ -1958,7 +1963,10 @@ module.exports = function (expect) {
 
                                 var keys = Object.keys(keyIndex);
 
-                                output.text(bothAreArrays ? '[' : '{').nl().indentLines();
+                                if (bothAreArrayLike && subjectType.name !== 'array') {
+                                    output.text(subjectType.name);
+                                }
+                                output.text(bothAreArrayLike ? '[' : '{').nl().indentLines();
 
                                 keys.forEach(function (key, index) {
                                     output.i().block(function () {
@@ -1969,7 +1977,7 @@ module.exports = function (expect) {
                                         if (promiseByKey[key] && promiseByKey[key].isRejected()) {
                                             conflicting = promiseByKey[key].reason();
                                         }
-                                        var arrayItemOutOfRange = bothAreArrays && (index >= subject.length || index >= value.length);
+                                        var arrayItemOutOfRange = bothAreArrayLike && (index >= subject.length || index >= value.length);
 
                                         var isInlineDiff = true;
 
@@ -1999,20 +2007,20 @@ module.exports = function (expect) {
 
                                         var last = index === keys.length - 1;
                                         if (!valueOutput) {
-                                            if (bothAreArrays && key >= subject.length) {
+                                            if (bothAreArrayLike && key >= subject.length) {
                                                 valueOutput = output.clone();
                                             } else {
                                                 valueOutput = inspect(subject[key], conflicting ? Infinity : 1);
                                             }
                                         }
 
-                                        if (!bothAreArrays) {
+                                        if (!bothAreArrayLike) {
                                             this.key(key).text(':');
                                         }
                                         valueOutput.amend('text', last ? '' : ',');
 
 
-                                        if (!bothAreArrays) {
+                                        if (!bothAreArrayLike) {
                                             if (valueOutput.isBlock() && valueOutput.isMultiline()) {
                                                 this.indentLines();
                                                 this.nl().i();
@@ -2032,9 +2040,9 @@ module.exports = function (expect) {
                                     }).nl();
                                 });
 
-                                output.outdentLines().text(bothAreArrays ? ']' : '}');
+                                output.outdentLines().text(bothAreArrayLike ? ']' : '}');
 
-                                if (!bothAreArrays) {
+                                if (!bothAreArrayLike) {
                                     result.diff = utils.wrapConstructorNameAroundOutput(result.diff, subject);
                                 }
 
@@ -2049,13 +2057,13 @@ module.exports = function (expect) {
         }
     });
 
-    function wrapDiffWithTypePrefixAndSuffix(e, type) {
+    function wrapDiffWithTypePrefixAndSuffix(e, type, subject) {
         var createDiff = e.getDiffMethod();
         if (createDiff) {
             return function (output) { // ...
-                type.prefix.call(e, output);
+                type.prefix.call(type, output, subject);
                 var result = createDiff.apply(this, arguments);
-                type.suffix.call(e, output);
+                type.suffix.call(type, output, subject);
                 return result;
             };
         }
@@ -2071,19 +2079,18 @@ module.exports = function (expect) {
             }, function (e) {
                 expect.fail({
                     label: e.getLabel(),
-                    diff: wrapDiffWithTypePrefixAndSuffix(e, type)
+                    diff: wrapDiffWithTypePrefixAndSuffix(e, type, subject)
                 });
             });
         } else {
             var subjectType = expect.findTypeOf(subject);
-            expect(subjectType.is('wrapperObject'), 'to be truthy');
 
             return expect.withError(function () {
                 return expect(subjectType.unwrap(subject), 'to [exhaustively] satisfy', value);
             }, function (e) {
                 expect.fail({
-                    label: 'should satisfy',
-                    diff: wrapDiffWithTypePrefixAndSuffix(e, subjectType)
+                    label: e.getLabel(),
+                    diff: wrapDiffWithTypePrefixAndSuffix(e, subjectType, subject)
                 });
             });
         }
@@ -2609,16 +2616,16 @@ module.exports = function (expect) {
             return a === b || equal(this.unwrap(a), this.unwrap(b));
         },
         inspect: function (value, depth, output, inspect) {
-            output.append(this.prefix(output.clone()));
-            output.append(inspect(this.unwrap(value)));
-            output.append(this.suffix(output.clone()));
+            output.append(this.prefix(output.clone(), value));
+            output.append(inspect(this.unwrap(value), depth));
+            output.append(this.suffix(output.clone(), value));
         },
         diff: function (actual, expected, output, diff, inspect) {
             actual = this.unwrap(actual);
             expected = this.unwrap(expected);
             var comparison = diff(actual, expected);
-            var prefixOutput = this.prefix(output.clone());
-            var suffixOutput = this.suffix(output.clone());
+            var prefixOutput = this.prefix(output.clone(), actual);
+            var suffixOutput = this.suffix(output.clone(), actual);
             if (comparison && comparison.inline) {
                 return {
                     inline: true,
@@ -2951,14 +2958,9 @@ module.exports = function (expect) {
                 return output.append(prefixOutput).text('...').append(suffixOutput);
             }
 
-            var inspectedItems = new Array(arr.length);
-            for (var i = 0; i < arr.length; i += 1) {
-                if (i in arr) {
-                    inspectedItems[i] = inspect(arr[i]);
-                } else {
-                    inspectedItems[i] = output.clone();
-                }
-            }
+            var inspectedItems = this.getKeys(arr).map(function (key) {
+                return key in arr ? inspect(arr[key]) : output.clone();
+            });
 
             var maxLineLength = output.preferredWidth - (depth === Infinity ? 0 : depth) * 2 - 2;
             var width = 0;
@@ -3017,7 +3019,7 @@ module.exports = function (expect) {
 
             var changes = arrayChanges(actual, expected, equal, structurallySimilar);
 
-            output.append(this.prefix(output.clone())).nl().indentLines();
+            output.append(this.prefix(output.clone(), actual)).nl().indentLines();
 
             changes.forEach(function (diffItem, index) {
                 output.i().block(function () {
@@ -3049,7 +3051,7 @@ module.exports = function (expect) {
                 }).nl();
             });
 
-            output.outdentLines().append(this.suffix(output.clone()));
+            output.outdentLines().append(this.suffix(output.clone(), actual));
 
             return result;
         }
@@ -3106,9 +3108,17 @@ module.exports = function (expect) {
                 (equal(a.message, b.message) && this.baseType.equal(a, b));
         },
         inspect: function (value, depth, output, inspect) {
-            var errorObject = this.unwrap(value);
             // TODO: Inspect Error as a built-in once we have the styles defined:
-            output.text((value.constructor && value.constructor.name || 'Error') + '(').append(inspect(errorObject, depth)).text(')');
+            output.text((value.name || value.constructor && value.constructor.name || 'Error') + '(');
+            var keys = this.getKeys(value);
+            if (keys.length === 1 && keys[0] === 'message') {
+                if (value.message !== '') {
+                    output.append(inspect(value.message));
+                }
+            } else {
+                output.append(inspect(this.unwrap(value), depth));
+            }
+            output.text(')');
         },
         diff: function (actual, expected, output, diff) {
             var result = diff(this.unwrap(actual), this.unwrap(expected));
@@ -3247,6 +3257,12 @@ module.exports = function (expect) {
         digitWidth: 2,
         hexDumpWidth: 16,
         identify: false,
+        prefix: function (output) {
+            output.code(this.name + '([', 'javascript');
+        },
+        suffix: function (output) {
+            output.code('])', 'javascript');
+        },
         equal: function (a, b) {
             if (a === b) {
                 return true;
@@ -3291,7 +3307,8 @@ module.exports = function (expect) {
             return hexDump;
         },
         inspect: function (obj, depth, output) {
-            var codeStr = this.name + '([';
+            this.prefix(output, obj);
+            var codeStr = '';
             for (var i = 0 ; i < Math.min(this.hexDumpWidth, obj.length) ; i += 1) {
                 if (i > 0) {
                     codeStr += ', ';
@@ -3302,8 +3319,8 @@ module.exports = function (expect) {
             if (obj.length > this.hexDumpWidth) {
                 codeStr += ' /* ' + (obj.length - this.hexDumpWidth) + ' more */ ';
             }
-            codeStr += '])';
             output.code(codeStr, 'javascript');
+            this.suffix(output, obj);
         },
         diffLimit: 512,
         diff: function (actual, expected, output, diff, inspect) {
