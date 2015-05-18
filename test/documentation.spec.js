@@ -16,6 +16,7 @@ describe("documentation tests", function () {
 
     });
 
+
     it("api/addAssertion.md contains correct examples", function () {
         var testPromises = [];
         var errorMode = 'default'; // use to control the error mode later in the example
