@@ -5793,4 +5793,27 @@ describe('unexpected', function () {
                 "  }"
         );
     });
+
+    describe('expect.cast', function () {
+        it('should', function () {
+            var clonedExpect = expect.clone().addType({
+                name: 'namedObject',
+                base: 'object',
+                identify: function (obj) {
+                    return obj && typeof obj.name === 'string';
+                },
+                equal: function (person1, person2) {
+                    return person1.name === person2.name;
+                }
+            });
+
+            expect(function () {
+                expect(expect.cast({name: 'Jane Doe', age: 24}, 'object'), 'to equal', { name: 'Jane Doe', age: 42 });
+            }, 'to throw',
+                "expected (object) new Error('foo') to satisfy { message: 'foo' }\n" +
+                "\n" +
+                "{}"
+            );
+        });
+    });
 });
