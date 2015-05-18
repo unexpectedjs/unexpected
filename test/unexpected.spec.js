@@ -5765,4 +5765,32 @@ describe('unexpected', function () {
             expect(new Buffer('æøå', 'utf-8'), 'when decoded as', 'utf-8', 'to equal', 'æøå');
         });
     });
+
+    it('should foo', function () {
+        var clonedExpect = expect.clone().addAssertion('to foobarbaz', function (expect, subject) {
+            this.errorMode = 'nested';
+            expect(subject, 'to satisfy', {foo: 123});
+        });
+
+        expect(function () {
+            clonedExpect({
+                a: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+                b: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+            }, 'to foobarbaz');
+        }, 'to throw',
+                "expected\n" +
+                "{\n" +
+                "  a: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',\n" +
+                "  b: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'\n" +
+                "}\n" +
+                "to foobarbaz\n" +
+                "  expected ... to satisfy { foo: 123 }\n" +
+                "\n" +
+                "  {\n" +
+                "    a: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',\n" +
+                "    b: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',\n" +
+                "    foo: undefined // should equal 123\n" +
+                "  }"
+        );
+    });
 });
