@@ -186,7 +186,8 @@ function writeGroupEvaluationsToOutput(expect, output, groupEvaluations) {
             if (j > 0) {
                 output.jsComment(' and').nl();
             }
-            if (evaluation.promise.isRejected() && !groupFailed) {
+            var isRejected = evaluation.promise.isRejected();
+            if (isRejected && !groupFailed) {
                 groupFailed = true;
                 var err = evaluation.promise.reason();
 
@@ -205,9 +206,9 @@ function writeGroupEvaluationsToOutput(expect, output, groupEvaluations) {
                 });
             } else {
                 var style;
-                if (groupFailed) {
-                    style = 'text';
-                    output.sp(2);
+                if (isRejected) {
+                    style = 'error';
+                    output.error('⨯ ');
                 } else {
                     style = 'success';
                     output.success('✓ ');
@@ -1774,14 +1775,19 @@ module.exports = function (expect) {
                     }
                 });
             });
-        } else if (this.flags.assertion) {
+        }
+
+        if (this.flags.assertion) {
             this.errorMode = 'bubble'; // to satisfy assertion 'to be a number' => to be a number
             if (typeof value === 'string') {
                 return expect.apply(expect, Array.prototype.slice.call(arguments, 1));
             } else {
                 return expect.apply(expect, [subject, this.flags.exhaustively ? 'to exhaustively satisfy' : 'to satisfy'].concat(Array.prototype.slice.call(arguments, 2)));
             }
-        } else if (value && value._expectIt) {
+        }
+
+        var valueType = expect.findTypeOf(value);
+        if (valueType.is('expect.it')) {
             return expect.withError(function () {
                 return value(subject);
             }, function (e) {
@@ -1794,150 +1800,153 @@ module.exports = function (expect) {
                     }
                 });
             });
-        } else if (typeof value === 'function') {
+        }
+
+        if (valueType.is('function')) {
             return expect.promise(function () {
                 return value(subject);
             });
-        } else if (isRegExp(value)) {
-            expect(subject, 'to match', value);
-        } else {
-            var subjectType = expect.findTypeOf(subject),
-                commonType = expect.findCommonType(subject, value),
-                valueType = expect.findTypeOf(value),
-                bothAreArrayLike = commonType.is('array-like');
-            if (commonType.is('array-like') || commonType.is('object')) {
-                expect(subject, 'to be an object');
-                var promiseByKey = {};
-                var keys = valueType.getKeys(value);
-                keys.forEach(function (key, index) {
-                    promiseByKey[key] = expect.promise(function () {
-                        if (typeof value[key] === 'function') {
-                            return value[key](subject[key]);
-                        } else {
-                            return expect(subject[key], 'to [exhaustively] satisfy', value[key]);
-                        }
-                    });
+        }
+
+        if (valueType.is('regexp')) {
+            return expect(subject, 'to match', value);
+        }
+
+        var subjectType = expect.findTypeOf(subject),
+            commonType = expect.findCommonType(subject, value),
+            bothAreArrayLike = commonType.is('array-like');
+        if (commonType.is('array-like') || commonType.is('object')) {
+            expect(subject, 'to be an object');
+            var promiseByKey = {};
+            var keys = valueType.getKeys(value);
+            keys.forEach(function (key, index) {
+                promiseByKey[key] = expect.promise(function () {
+                    if (typeof value[key] === 'function') {
+                        return value[key](subject[key]);
+                    } else {
+                        return expect(subject[key], 'to [exhaustively] satisfy', value[key]);
+                    }
                 });
+            });
 
-                var flags = this.flags;
+            var flags = this.flags;
 
-                return expect.promise.all([
-                    expect.promise(function () {
-                        if (commonType.is('array-like') || flags.exhaustively) {
-                            expect(subject, 'to only have keys', keys);
-                        }
-                    }),
-                    expect.promise.all(promiseByKey)
-                ]).caught(function () {
-                    return expect.promise.settle(promiseByKey).then(function () {
-                        expect.fail({
-                            diff: function (output, diff, inspect, equal) {
-                                var result = {
-                                    diff: output,
-                                    inline: true
-                                };
+            return expect.promise.all([
+                expect.promise(function () {
+                    if (commonType.is('array-like') || flags.exhaustively) {
+                        expect(subject, 'to only have keys', keys);
+                    }
+                }),
+                expect.promise.all(promiseByKey)
+            ]).caught(function () {
+                return expect.promise.settle(promiseByKey).then(function () {
+                    expect.fail({
+                        diff: function (output, diff, inspect, equal) {
+                            var result = {
+                                diff: output,
+                                inline: true
+                            };
 
-                                var valueType = expect.findTypeOf(value),
-                                    keyIndex = {};
-                                subjectType.getKeys(subject).concat(valueType.getKeys(value)).forEach(function (key) {
-                                    if (!(key in keyIndex)) {
-                                        keyIndex[key] = key;
-                                    }
-                                });
-
-                                var keys = Object.keys(keyIndex);
-
-                                if (bothAreArrayLike && subjectType.name !== 'array') {
-                                    output.text(subjectType.name);
+                            var valueType = expect.findTypeOf(value),
+                            keyIndex = {};
+                            subjectType.getKeys(subject).concat(valueType.getKeys(value)).forEach(function (key) {
+                                if (!(key in keyIndex)) {
+                                    keyIndex[key] = key;
                                 }
-                                output.text(bothAreArrayLike ? '[' : '{').nl().indentLines();
+                            });
 
-                                keys.forEach(function (key, index) {
-                                    output.i().block(function () {
-                                        var valueOutput;
-                                        var annotation = output.clone();
-                                        var conflicting;
+                            var keys = Object.keys(keyIndex);
 
-                                        if (promiseByKey[key] && promiseByKey[key].isRejected()) {
-                                            conflicting = promiseByKey[key].reason();
-                                        }
-                                        var arrayItemOutOfRange = bothAreArrayLike && (index >= subject.length || index >= value.length);
-
-                                        var isInlineDiff = true;
-
-                                        if (!(key in value)) {
-                                            if (commonType.is('array-like') || flags.exhaustively) {
-                                                annotation.error('should be removed');
-                                            } else {
-                                                conflicting = null;
-                                            }
-                                        } else if (conflicting || arrayItemOutOfRange) {
-                                            var keyDiff = conflicting && conflicting.createDiff && conflicting.createDiff(output.clone(), diff, inspect, equal);
-                                            isInlineDiff = !keyDiff || keyDiff.inline ;
-                                            if (typeof value[key] === 'function') {
-                                                isInlineDiff = false;
-                                                annotation.append(conflicting.output);
-                                            } else if (!keyDiff || (keyDiff && !keyDiff.inline)) {
-                                                annotation.error((conflicting && conflicting.label) || 'should satisfy').sp()
-                                                    .block(inspect(value[key]));
-
-                                                if (keyDiff) {
-                                                    annotation.nl().append(keyDiff.diff);
-                                                }
-                                            } else {
-                                                valueOutput = keyDiff.diff;
-                                            }
-                                        }
-
-                                        var last = index === keys.length - 1;
-                                        if (!valueOutput) {
-                                            if (bothAreArrayLike && key >= subject.length) {
-                                                valueOutput = output.clone();
-                                            } else {
-                                                valueOutput = inspect(subject[key], conflicting ? Infinity : 1);
-                                            }
-                                        }
-
-                                        if (!bothAreArrayLike) {
-                                            this.key(key).text(':');
-                                        }
-                                        valueOutput.amend('text', last ? '' : ',');
-
-
-                                        if (!bothAreArrayLike) {
-                                            if (valueOutput.isBlock() && valueOutput.isMultiline()) {
-                                                this.indentLines();
-                                                this.nl().i();
-                                            } else {
-                                                this.sp();
-                                            }
-                                        }
-
-                                        if (isInlineDiff) {
-                                            this.append(valueOutput);
-                                        } else {
-                                            this.block(valueOutput);
-                                        }
-                                        if (!annotation.isEmpty()) {
-                                            this.sp(valueOutput.isEmpty() ? 0 : 1).annotationBlock(annotation);
-                                        }
-                                    }).nl();
-                                });
-
-                                output.outdentLines().text(bothAreArrayLike ? ']' : '}');
-
-                                if (!bothAreArrayLike) {
-                                    result.diff = utils.wrapConstructorNameAroundOutput(result.diff, subject);
-                                }
-
-                                return result;
+                            if (bothAreArrayLike && subjectType.name !== 'array') {
+                                output.text(subjectType.name);
                             }
-                        });
+                            output.text(bothAreArrayLike ? '[' : '{').nl().indentLines();
+
+                            keys.forEach(function (key, index) {
+                                output.i().block(function () {
+                                    var valueOutput;
+                                    var annotation = output.clone();
+                                    var conflicting;
+
+                                    if (promiseByKey[key] && promiseByKey[key].isRejected()) {
+                                        conflicting = promiseByKey[key].reason();
+                                    }
+                                    var arrayItemOutOfRange = bothAreArrayLike && (index >= subject.length || index >= value.length);
+
+                                    var isInlineDiff = true;
+
+                                    if (!(key in value)) {
+                                        if (commonType.is('array-like') || flags.exhaustively) {
+                                            annotation.error('should be removed');
+                                        } else {
+                                            conflicting = null;
+                                        }
+                                    } else if (conflicting || arrayItemOutOfRange) {
+                                        var keyDiff = conflicting && conflicting.createDiff && conflicting.createDiff(output.clone(), diff, inspect, equal);
+                                        isInlineDiff = !keyDiff || keyDiff.inline ;
+                                        if (typeof value[key] === 'function') {
+                                            isInlineDiff = false;
+                                            annotation.append(conflicting.output);
+                                        } else if (!keyDiff || (keyDiff && !keyDiff.inline)) {
+                                            annotation.error((conflicting && conflicting.label) || 'should satisfy').sp()
+                                                .block(inspect(value[key]));
+
+                                            if (keyDiff) {
+                                                annotation.nl().append(keyDiff.diff);
+                                            }
+                                        } else {
+                                            valueOutput = keyDiff.diff;
+                                        }
+                                    }
+
+                                    var last = index === keys.length - 1;
+                                    if (!valueOutput) {
+                                        if (bothAreArrayLike && key >= subject.length) {
+                                            valueOutput = output.clone();
+                                        } else {
+                                            valueOutput = inspect(subject[key], conflicting ? Infinity : 1);
+                                        }
+                                    }
+
+                                    if (!bothAreArrayLike) {
+                                        this.key(key).text(':');
+                                    }
+                                    valueOutput.amend('text', last ? '' : ',');
+
+
+                                    if (!bothAreArrayLike) {
+                                        if (valueOutput.isBlock() && valueOutput.isMultiline()) {
+                                            this.indentLines();
+                                            this.nl().i();
+                                        } else {
+                                            this.sp();
+                                        }
+                                    }
+
+                                    if (isInlineDiff) {
+                                        this.append(valueOutput);
+                                    } else {
+                                        this.block(valueOutput);
+                                    }
+                                    if (!annotation.isEmpty()) {
+                                        this.sp(valueOutput.isEmpty() ? 0 : 1).annotationBlock(annotation);
+                                    }
+                                }).nl();
+                            });
+
+                            output.outdentLines().text(bothAreArrayLike ? ']' : '}');
+
+                            if (!bothAreArrayLike) {
+                                result.diff = utils.wrapConstructorNameAroundOutput(result.diff, subject);
+                            }
+
+                            return result;
+                        }
                     });
                 });
-            } else {
-                expect(subject, 'to equal', value);
-            }
+            });
+        } else {
+            expect(subject, 'to equal', value);
         }
     });
 
@@ -1962,7 +1971,7 @@ module.exports = function (expect) {
                 return expect(type.unwrap(subject), 'to [exhaustively] satisfy', type.unwrap(value));
             }, function (e) {
                 expect.fail({
-                    label: e.label,
+                    label: e.label || 'should satisfy',
                     diff: wrapDiffWithTypePrefixAndSuffix(e, type, subject)
                 });
             });
@@ -1973,7 +1982,7 @@ module.exports = function (expect) {
                 return expect(subjectType.unwrap(subject), 'to [exhaustively] satisfy', value);
             }, function (e) {
                 expect.fail({
-                    label: 'should satisfy',
+                    label: e.label || 'should satisfy',
                     diff: wrapDiffWithTypePrefixAndSuffix(e, subjectType, subject)
                 });
             });
