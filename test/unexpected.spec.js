@@ -2073,9 +2073,26 @@ describe('unexpected', function () {
             expect(123, 'to satisfy assertion', 'to satisfy assertion', 'to satisfy assertion', 'to be a number');
         });
 
-        it('should support a regular function in the RHS object (expected to throw an exception if the condition is not met)', function () {
-            expect({foo: 123}, 'to satisfy', function (obj) {
-                expect(obj.foo, 'to equal', 123);
+        describe('with a regular function in the RHS object', function () {
+            it('should throw an exception if the condition is not met', function () {
+                expect({foo: 123}, 'to satisfy', function (obj) {
+                    expect(obj.foo, 'to equal', 123);
+                });
+            });
+
+            it('should only consider functions that are identified as functions by the type system', function () {
+                var clonedExpect = expect.clone().addType({
+                    name: 'functionStartingWithF',
+                    identify: function (obj) {
+                        return typeof obj === 'function' && /^f/i.test(obj.name);
+                    }
+                });
+
+                function foo() {
+                    throw new Error('argh, do not call me');
+                }
+
+                clonedExpect(foo, 'to satisfy', foo);
             });
         });
 
