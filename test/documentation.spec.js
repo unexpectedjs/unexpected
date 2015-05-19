@@ -77,6 +77,49 @@ describe("documentation tests", function () {
                 "+bAr"
             );
         }
+
+        try {
+            expect.addAssertion('detailed to be', function (expect, subject, value) {
+              this.errorMode = 'bubble';
+              expect.withError(function () {
+                expect(subject, 'to be', value);
+              }, function (err) {
+                err.getParents().forEach(function (e){
+                  e.errorMode = 'nested';
+                });
+                expect.fail(err);
+              });
+            });
+
+            expect('f00!', 'detailed to be', 'foo!');
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect.addAssertion('detailed to be', function (expect, subject, value) {").nl();
+                output.code("  this.errorMode = 'bubble';").nl();
+                output.code("  expect.withError(function () {").nl();
+                output.code("    expect(subject, 'to be', value);").nl();
+                output.code("  }, function (err) {").nl();
+                output.code("    err.getParents().forEach(function (e){").nl();
+                output.code("      e.errorMode = 'nested';").nl();
+                output.code("    });").nl();
+                output.code("    expect.fail(err);").nl();
+                output.code("  });").nl();
+                output.code("});").nl();
+                output.code("").nl();
+                output.code("expect('f00!', 'detailed to be', 'foo!');").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected 'f00!' detailed to be 'foo!'\n" +
+                "  expected 'f00!' to be 'foo!'\n" +
+                "    expected 'f00!' to equal 'foo!'\n" +
+                "      Explicit failure\n" +
+                "\n" +
+                "      -f00!\n" +
+                "      +foo!"
+            );
+        }
         return expect.promise.all(testPromises);
     });
 

@@ -73,4 +73,35 @@ expected 'bar' to equal 'bAr'
 
 When assertions delegate to nested `expect` calls the errors that are
 thrown on each level are chained together through the `parent`
-property.
+property. The error message is serialized lazily, so it is possible to
+change the error hierarchy before the error is serialized or extract
+information from the hierarchy and use [expect.fail](./fail/) to throw
+a new error.
+
+We could for example change the error mode for all the errors in the
+chain to `nested`:
+
+```js
+expect.addAssertion('detailed to be', function (expect, subject, value) {
+  this.errorMode = 'bubble';
+  expect.withError(function () {
+    expect(subject, 'to be', value);
+  }, function (err) {
+    err.getParents().forEach(function (e){
+      e.errorMode = 'nested';
+    });
+    expect.fail(err);
+  });
+});
+
+expect('f00!', 'detailed to be', 'foo!');
+```
+
+```output
+expected 'f00!' to be 'foo!'
+  expected 'f00!' to equal 'foo!'
+    Explicit failure
+
+    -f00!
+    +foo!
+```
