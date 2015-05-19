@@ -978,6 +978,45 @@ describe('unexpected', function () {
             expect(err, 'to inspect as', "Error({ message: '', bar: 123 })");
         });
 
+        describe('with a custom Error class inheriting from Error', function () {
+            function inherits(ctor, superCtor) {
+                ctor.super_ = superCtor;
+                ctor.prototype = Object.create(superCtor.prototype, {
+                    constructor: {
+                        value: ctor,
+                        enumerable: false,
+                        writable: true,
+                        configurable: true
+                    }
+                });
+            }
+
+            function MyError(message) {
+                Error.call(this);
+                this.message = message;
+            }
+
+            inherits(MyError, Error);
+
+            it('should consider identical instances to be identical', function () {
+                expect(new MyError('foo'), 'to equal', new MyError('foo'));
+            });
+
+            it('should instances of the custom error different to be different when they have different messages', function () {
+                expect(function () {
+                    expect(new MyError('foo'), 'to equal', new MyError('bar'));
+                }, 'to throw',
+                    "expected MyError('foo') to equal MyError('bar')\n" +
+                    "\n" +
+                    "MyError({\n" +
+                    "  message: 'foo' // should equal 'bar'\n" +
+                    "                 // -foo\n" +
+                    "                 // +bar\n" +
+                    "})"
+                );
+            });
+        });
+
         describe('to have message assertion', function () {
             describe('with an Unexpected error', function () {
                 var err;
