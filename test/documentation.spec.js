@@ -16,6 +16,69 @@ describe("documentation tests", function () {
 
     });
 
+    it("api/UnexpectedError.md contains correct examples", function () {
+        var testPromises = [];
+        expect.addAssertion("array", "to have item satisfying", function (expect, subject) {
+          var args = Array.prototype.slice.call(arguments, 2);
+          var promises = subject.map(function (item) {
+            return expect.promise(function () {
+              return expect.apply(expect, [item].concat(args));
+            });
+          });
+
+          return expect.promise.settle(promises).then(function () {
+            var failed = promises.every(function (promise) {
+              return promise.isRejected();
+            });
+
+            if (failed) {
+              expect.fail({
+                diff: function (output, diff, inspect, equal) {
+                  var result = {
+                    inline: true,
+                    diff: output
+                  };
+                  promises.forEach(function (promise, index) {
+                    if (index > 0) { result.diff.nl(2); }
+                    var error = promise.reason();
+                    // the error is connected to the current scope
+                    // but we are just interested in the nested error
+                    error.errorMode = 'bubble';
+                    result.diff.append(error.getErrorMessage());
+                  });
+                  return result;
+                }
+              });
+            }
+          });
+        });
+
+        try {
+            expect(['foo', 'bar'], 'to have item satisfying', 'to equal', 'bar');
+            expect(['foo', 'bar'], 'to have item satisfying', 'to equal', 'bAr');
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect(['foo', 'bar'], 'to have item satisfying', 'to equal', 'bar');").nl();
+                output.code("expect(['foo', 'bar'], 'to have item satisfying', 'to equal', 'bAr');").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected [ 'foo', 'bar' ] to have item satisfying 'to equal', 'bAr'\n" +
+                "\n" +
+                "expected 'foo' to equal 'bAr'\n" +
+                "\n" +
+                "-foo\n" +
+                "+bAr\n" +
+                "\n" +
+                "expected 'bar' to equal 'bAr'\n" +
+                "\n" +
+                "-bar\n" +
+                "+bAr"
+            );
+        }
+        return expect.promise.all(testPromises);
+    });
 
     it("api/addAssertion.md contains correct examples", function () {
         var testPromises = [];
