@@ -111,13 +111,12 @@ describe("documentation tests", function () {
             });
         } catch (e) {
             expect(e, "to have message",
-                "expected 'f00!' detailed to be 'foo!'\n" +
-                "  expected 'f00!' to be 'foo!'\n" +
-                "    expected 'f00!' to equal 'foo!'\n" +
-                "      Explicit failure\n" +
+                "expected 'f00!' to be 'foo!'\n" +
+                "  expected 'f00!' to equal 'foo!'\n" +
+                "    Explicit failure\n" +
                 "\n" +
-                "      -f00!\n" +
-                "      +foo!"
+                "    -f00!\n" +
+                "    +foo!"
             );
         }
         return expect.promise.all(testPromises);
