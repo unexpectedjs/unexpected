@@ -75,7 +75,7 @@ When assertions delegate to nested `expect` calls the errors that are
 thrown on each level are chained together through the `parent`
 property. The error message is serialized lazily, so it is possible to
 change the error hierarchy before the error is serialized or extract
-information from the hierarchy and use [expect.fail](./fail/) to throw
+information from the hierarchy and use [expect.fail](../fail/) to throw
 a new error.
 
 We could for example change the error mode for all the errors in the
