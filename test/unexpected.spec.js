@@ -1002,6 +1002,16 @@ describe('unexpected', function () {
                 expect(new MyError('foo'), 'to equal', new MyError('foo'));
             });
 
+            it('should consider an instance of the custom error different from an otherwise identical Error instance', function () {
+                expect(function () {
+                    expect(new MyError('foo'), 'to equal', new Error('foo'));
+                }, 'to throw',
+                    "expected MyError('foo') to equal Error('foo')\n" +
+                    "\n" +
+                    "Mismatching constructors MyError should be Error"
+                );
+            });
+
             it('should instances of the custom error different to be different when they have different messages', function () {
                 expect(function () {
                     expect(new MyError('foo'), 'to equal', new MyError('bar'));
