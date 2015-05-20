@@ -1025,6 +1025,41 @@ describe('unexpected', function () {
                     "})"
                 );
             });
+
+            describe('when the custom error has a "name" property', function () {
+                var myError = new MyError('foo');
+                myError.name = 'SomethingElse';
+
+                it('should use the "name" property when inspecting instances', function () {
+                    expect(myError, 'to inspect as', "SomethingElse('foo')");
+                });
+
+                it('should use the "name" property when reporting mismatching constructors', function () {
+                    expect(function () {
+                        expect(myError, 'to equal', new Error('foo'));
+                    }, 'to throw',
+                        "expected SomethingElse('foo') to equal Error('foo')\n" +
+                        "\n" +
+                        "Mismatching constructors SomethingElse should be Error"
+                    );
+                });
+
+                it('should use the "name" property when diffing', function () {
+                    expect(function () {
+                        var otherMyError = new MyError('bar');
+                        otherMyError.name = 'SomethingElse';
+                        expect(myError, 'to equal', otherMyError);
+                    }, 'to throw',
+                        "expected SomethingElse('foo') to equal SomethingElse('bar')\n" +
+                        "\n" +
+                        "SomethingElse({\n" +
+                        "  message: 'foo' // should equal 'bar'\n" +
+                        "                 // -foo\n" +
+                        "                 // +bar\n" +
+                        "})"
+                    );
+                });
+            });
         });
 
         describe('to have message assertion', function () {
