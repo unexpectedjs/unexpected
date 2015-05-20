@@ -2377,6 +2377,16 @@ module.exports = function (expect) {
     expect.addStyle('shouldEqualError', function (expected, inspect) {
         this.error(typeof expected === 'undefined' ? 'should be' : 'should equal').sp().block(inspect(expected));
     });
+
+    expect.addStyle('errorName', function (error) {
+        if (typeof error.name === 'string' && error.name !== 'Error') {
+            this.text(error.name);
+        } else if (error.constructor && typeof error.constructor.name === 'string') {
+            this.text(error.constructor.name);
+        } else {
+            this.text('Error');
+        }
+    });
 };
 
 },{}],8:[function(require,module,exports){
@@ -2898,8 +2908,7 @@ module.exports = function (expect) {
                 (equal(a.message, b.message) && this.baseType.equal(a, b));
         },
         inspect: function (value, depth, output, inspect) {
-            // TODO: Inspect Error as a built-in once we have the styles defined:
-            output.text(((value.constructor && value.constructor.name) || value.name || 'Error') + '(');
+            output.errorName(value).text('(');
             var keys = this.getKeys(value);
             if (keys.length === 1 && keys[0] === 'message') {
                 if (value.message !== '') {
@@ -2912,12 +2921,18 @@ module.exports = function (expect) {
         },
         diff: function (actual, expected, output, diff) {
             if (actual.constructor !== expected.constructor) {
-                return this.baseType.diff(actual, expected, output, diff);
+                return {
+                    diff: output.text('Mismatching constructors ')
+                        .errorName(actual)
+                        .text(' should be ').errorName(expected),
+                    inline: false
+                };
             }
 
             var result = diff(this.unwrap(actual), this.unwrap(expected));
             if (result.diff) {
-                result.diff = utils.wrapConstructorNameAroundOutput(result.diff, actual);
+                result.diff = output.clone().errorName(actual).text('(').append(result.diff).text(')');
+
             }
             return result;
         }
