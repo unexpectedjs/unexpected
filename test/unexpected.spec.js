@@ -42,10 +42,16 @@ describe('unexpected', function () {
         }
     }).addAssertion('Promise', 'to be rejected', function (expect, subject, expectedReason) {
         return subject.then(function () {
-            throw new Error('Promise unexpectedly fulfilled');
+            expect.fail('Promise unexpectedly fulfilled');
         }).caught(function (err) {
             if (typeof expectedReason !== 'undefined') {
                 return expect(err._isUnexpected ? err.output.toString('text') : err.message, 'to satisfy', expectedReason);
+            }
+        });
+    }).addAssertion('Promise', 'to be resolved', function (expect, subject, expectedValue) {
+        return subject.then(function (value) {
+            if (typeof expectedValue !== 'undefined') {
+                return expect(value, 'to equal', expectedValue);
             }
         });
     }).addAssertion('when delayed a little bit', function (expect, subject) {
@@ -5798,7 +5804,7 @@ describe('unexpected', function () {
                     return 'bar';
                 });
             });
-            expect(clonedExpect('foo', 'to foo'), 'to equal', 'bar');
+            expect(clonedExpect('foo', 'to foo'), 'to be resolved', 'bar');
         });
 
         it('should return the resolved value when an assertion returns an oathbreakable promise that resolves with a value', function () {
@@ -5808,7 +5814,7 @@ describe('unexpected', function () {
                     resolve('bar');
                 });
             });
-            expect(clonedExpect('foo', 'to foo'), 'to equal', 'bar');
+            expect(clonedExpect('foo', 'to foo'), 'to be resolved', 'bar');
         });
 
         it('should preserve the resolved value when an assertion contains a non-oathbreakable promise', function (done) {
