@@ -5797,21 +5797,11 @@ describe('unexpected', function () {
             }, 'to throw', 'wat');
         });
 
-        it('should return the resolved value when an assertion returns an oathbreakable promise that returns a value', function () {
+        it('should return the fulfilled promise even if it is oathbreakable', function () {
             var clonedExpect = expect.clone().addAssertion('to foo', function (expect, subject, value) {
                 return expect.promise(function () {
                     expect(subject, 'to equal', 'foo');
                     return 'bar';
-                });
-            });
-            expect(clonedExpect('foo', 'to foo'), 'to be resolved', 'bar');
-        });
-
-        it('should return the resolved value when an assertion returns an oathbreakable promise that resolves with a value', function () {
-            var clonedExpect = expect.clone().addAssertion('to foo', function (expect, subject, value) {
-                return expect.promise(function (resolve, reject) {
-                    expect(subject, 'to equal', 'foo');
-                    resolve('bar');
                 });
             });
             expect(clonedExpect('foo', 'to foo'), 'to be resolved', 'bar');
