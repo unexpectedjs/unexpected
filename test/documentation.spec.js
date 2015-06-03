@@ -1993,6 +1993,98 @@ describe("documentation tests", function () {
         return expect.promise.all(testPromises);
     });
 
+    it("assertions/function/to-error.md contains correct examples", function () {
+        var testPromises = [];
+        function willBeRejected() {
+            return expect.promise(function (resolve, reject) {
+                reject(new Error('The reject message'));
+            });
+        }
+        function willThrow() {
+            throw new Error('The error message');
+        }
+        expect(willBeRejected, 'to error');
+        expect(willThrow, 'to error');
+
+        try {
+            function willNotBeRejected() {
+                return expect.promise(function (resolve, reject) {
+                    resolve('Hello world');
+                });
+            }
+            expect(willNotBeRejected, 'to error');
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("function willNotBeRejected() {").nl();
+                output.code("    return expect.promise(function (resolve, reject) {").nl();
+                output.code("        resolve('Hello world');").nl();
+                output.code("    });").nl();
+                output.code("}").nl();
+                output.code("expect(willNotBeRejected, 'to error');").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected function willNotBeRejected() {} to error"
+            );
+        }
+
+        expect(willBeRejected, 'to error', 'The reject message');
+
+        if (!isPhantom) {
+            try {
+                expect(willBeRejected, 'to error', 'The error message');
+                expect.fail(function (output) {
+                    output.error("expected:").nl();
+                    output.code("expect(willBeRejected, 'to error', 'The error message');").nl();
+                    output.error("to throw");
+                });
+            } catch (e) {
+                expect(e, "to have message",
+                    "expected function willNotBeRejected () {} to error 'The error message'\n" +
+                    "  expected Error('The reject message') to satisfy 'The error message'\n" +
+                    "\n" +
+                    "  -The reject message\n" +
+                    "  +The error message"
+                );
+            }
+        }
+
+        expect(willBeRejected, 'to error', /reject message/);
+
+        if (!isPhantom) {
+            try {
+                expect(willBeRejected, 'to error', /error message/);
+                expect.fail(function (output) {
+                    output.error("expected:").nl();
+                    output.code("expect(willBeRejected, 'to error', /error message/);").nl();
+                    output.error("to throw");
+                });
+            } catch (e) {
+                expect(e, "to have message",
+                    "expected function willBeRejected to throw /error message/\n" +
+                    "  expected Error('The reject message') to satisfy /error message/"
+                );
+            }
+        }
+
+        expect(willNotBeRejected, 'not to error');
+
+        try {
+            expect(willBeRejected, 'not to error');
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect(willBeRejected, 'not to error');").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected function willBeRejected () {} not to error"
+            );
+        }
+        return expect.promise.all(testPromises);
+    });
+
     it("assertions/function/to-have-arity.md contains correct examples", function () {
         var testPromises = [];
         expect(Math.max, 'to have arity', 2);
