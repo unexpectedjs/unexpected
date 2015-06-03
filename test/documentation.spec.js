@@ -2025,7 +2025,13 @@ describe("documentation tests", function () {
             });
         } catch (e) {
             expect(e, "to have message",
-                "expected function willNotBeRejected() {} to error"
+                "expected\n" +
+                "function willNotBeRejected() {\n" +
+                "    return expect.promise(function (resolve, reject) {\n" +
+                "        resolve('Hello world');\n" +
+                "    });\n" +
+                "}\n" +
+                "to error"
             );
         }
 
@@ -2041,7 +2047,13 @@ describe("documentation tests", function () {
                 });
             } catch (e) {
                 expect(e, "to have message",
-                    "expected function willNotBeRejected () {} to error 'The error message'\n" +
+                    "expected\n" +
+                    "function willBeRejected() {\n" +
+                    "    return expect.promise(function (resolve, reject) {\n" +
+                    "        reject(new Error('The reject message'));\n" +
+                    "    });\n" +
+                    "}\n" +
+                    "to error 'The error message'\n" +
                     "  expected Error('The reject message') to satisfy 'The error message'\n" +
                     "\n" +
                     "  -The reject message\n" +
@@ -2062,7 +2074,13 @@ describe("documentation tests", function () {
                 });
             } catch (e) {
                 expect(e, "to have message",
-                    "expected function willBeRejected to throw /error message/\n" +
+                    "expected\n" +
+                    "function willBeRejected() {\n" +
+                    "    return expect.promise(function (resolve, reject) {\n" +
+                    "        reject(new Error('The reject message'));\n" +
+                    "    });\n" +
+                    "}\n" +
+                    "to error /error message/\n" +
                     "  expected Error('The reject message') to satisfy /error message/"
                 );
             }
@@ -2079,7 +2097,14 @@ describe("documentation tests", function () {
             });
         } catch (e) {
             expect(e, "to have message",
-                "expected function willBeRejected () {} not to error"
+                "expected\n" +
+                "function willBeRejected() {\n" +
+                "    return expect.promise(function (resolve, reject) {\n" +
+                "        reject(new Error('The reject message'));\n" +
+                "    });\n" +
+                "}\n" +
+                "not to error\n" +
+                "  errored with: Error('The reject message')"
             );
         }
         return expect.promise.all(testPromises);

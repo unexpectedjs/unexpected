@@ -24,9 +24,14 @@ function willNotBeRejected() {
 }
 expect(willNotBeRejected, 'to error');
 ```
-
 ```output
-expected function willNotBeRejected() {} to error
+expected
+function willNotBeRejected() {
+    return expect.promise(function (resolve, reject) {
+        resolve('Hello world');
+    });
+}
+to error
 ```
 
 You can assert the error message is a given string if you provide a
@@ -41,7 +46,13 @@ expect(willBeRejected, 'to error', 'The error message');
 ```
 
 ```output
-expected function willNotBeRejected () {} to error 'The error message'
+expected
+function willBeRejected() {
+    return expect.promise(function (resolve, reject) {
+        reject(new Error('The reject message'));
+    });
+}
+to error 'The error message'
   expected Error('The reject message') to satisfy 'The error message'
 
   -The reject message
@@ -62,7 +73,13 @@ expect(willBeRejected, 'to error', /error message/);
 ```
 
 ```output
-expected function willBeRejected to throw /error message/
+expected
+function willBeRejected() {
+    return expect.promise(function (resolve, reject) {
+        reject(new Error('The reject message'));
+    });
+}
+to error /error message/
   expected Error('The reject message') to satisfy /error message/
 ```
 
@@ -79,5 +96,12 @@ In case of a failing expectation you get the following output:
 expect(willBeRejected, 'not to error');
 ```
 ```output
-expected function willBeRejected () {} not to error
+expected
+function willBeRejected() {
+    return expect.promise(function (resolve, reject) {
+        reject(new Error('The reject message'));
+    });
+}
+not to error
+  errored with: Error('The reject message')
 ```
