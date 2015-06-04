@@ -133,8 +133,8 @@ The source for Unexpected can be found on
   serialized.
 * Error messages and diffs are now built lazily, improving
   performance.
-* Unexpected now detects created promises that was never returned and
-  fails synchroniously. This will uncover some extremely nasty bugs
+* Unexpected now detects created promises that were never returned and
+  fails synchronously. This will uncover some extremely nasty bugs
   where the test suite succeeds when it should actually fail. This
   feature only works in [Mocha](http://mochajs.org/) and [Jasmine](http://jasmine.github.io/).
 * Deprecated error.output, please use error.getErrorMessage() instead.
