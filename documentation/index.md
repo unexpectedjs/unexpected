@@ -133,6 +133,10 @@ The source for Unexpected can be found on
   serialized.
 * Error messages and diffs are now built lazily, improving
   performance.
+* Unexpected now detects created promises that was never returned and
+  fails synchroniously. This will uncover some extremely nasty bugs
+  where the test suite succeeds when it should actually fail. This
+  feature only works in Mocha and Jasmine.
 * Deprecated error.output, please use error.getErrorMessage() instead.
 * Deprecated error.label, please use error.getLabel() instead.
 * `when decoded as`, `when called with`, `when passed as parameter
@@ -143,6 +147,8 @@ The source for Unexpected can be found on
   to delegate to other assertions.
 * Nested error mode: Don't repeat the subject when it takes up
   multiple lines and is identical to the parent subject.
+* Added a new `bubbleThrough` error mode that will make the error
+  bubble all the way to the top, mainly useful internally.
 * Minor bugfixes and output tweaks.
 
 ### 7.0.0
