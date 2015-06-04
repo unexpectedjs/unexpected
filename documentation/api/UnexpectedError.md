@@ -115,3 +115,45 @@ Return an array with all the ancestor errors to this error. See
 
 Return an array with this error and all it's ancestors. See
 <a href="#unexpectederror-parent">parent</a> for more information.
+
+### UnexpectedError.getDiff()
+
+Finds the first error in the hierarchy that contains a diff and
+returns it. This method if useful if you want to hoist a diff from an
+ancestor error and combine it with a new message.
+
+### UnexpectedError.getDiffMethod()
+
+In case you need to wrap diff with additional information you can
+retrieve a method that will build a diff for you. It will find the
+first ancestor error that contains a diff and return the method to
+create the diff. Now you can delegate to that method from
+`expect.fail`:
+
+```js
+expect.addAssertion('to be completely custom', function (expect, subject) {
+  return expect.withError(function () {
+  expect(subject, 'to satisfy', { custom: true });
+  }, function (err) {
+    var createDiff = err.getDiffMethod();
+    expect.fail({
+      diff: function (output, diff, inspect, equal) {
+        output.text('~~~~~~~~~~~~~~').sp().success('custom').sp().text('~~~~~~~~~~~~~~').nl();
+        var result = createDiff(output, diff, inspect, equal);
+        return result;
+      }
+    });
+  });
+});
+
+expect({ custom: false }, 'to be completely custom');
+```
+
+```output
+expected { custom: false } to be completely custom
+
+~~~~~~~~~~~~~~ custom ~~~~~~~~~~~~~~
+{
+  custom: false // should equal true
+}
+```

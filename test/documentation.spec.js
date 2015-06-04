@@ -119,6 +119,54 @@ describe("documentation tests", function () {
                 "    +foo!"
             );
         }
+
+        try {
+            expect.addAssertion('to be completely custom', function (expect, subject) {
+              return expect.withError(function () {
+              expect(subject, 'to satisfy', { custom: true });
+              }, function (err) {
+                var createDiff = err.getDiffMethod();
+                expect.fail({
+                  diff: function (output, diff, inspect, equal) {
+                    output.text('~~~~~~~~~~~~~~').sp().success('custom').sp().text('~~~~~~~~~~~~~~').nl();
+                    var result = createDiff(output, diff, inspect, equal);
+                    return result;
+                  }
+                });
+              });
+            });
+
+            expect({ custom: false }, 'to be completely custom');
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect.addAssertion('to be completely custom', function (expect, subject) {").nl();
+                output.code("  return expect.withError(function () {").nl();
+                output.code("  expect(subject, 'to satisfy', { custom: true });").nl();
+                output.code("  }, function (err) {").nl();
+                output.code("    var createDiff = err.getDiffMethod();").nl();
+                output.code("    expect.fail({").nl();
+                output.code("      diff: function (output, diff, inspect, equal) {").nl();
+                output.code("        output.text('~~~~~~~~~~~~~~').sp().success('custom').sp().text('~~~~~~~~~~~~~~').nl();").nl();
+                output.code("        var result = createDiff(output, diff, inspect, equal);").nl();
+                output.code("        return result;").nl();
+                output.code("      }").nl();
+                output.code("    });").nl();
+                output.code("  });").nl();
+                output.code("});").nl();
+                output.code("").nl();
+                output.code("expect({ custom: false }, 'to be completely custom');").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected { custom: false } to be completely custom\n" +
+                "\n" +
+                "~~~~~~~~~~~~~~ custom ~~~~~~~~~~~~~~\n" +
+                "{\n" +
+                "  custom: false // should equal true\n" +
+                "}"
+            );
+        }
         return expect.promise.all(testPromises);
     });
 
