@@ -34,8 +34,8 @@ function Assertion(expect, subject, testDescription, flags, alternations, args) 
     this.errorMode = 'default';
 }
 
-Assertion.prototype.standardErrorMessage = function () {
-    return createStandardErrorMessage(this.expect, this.subject, this.testDescription, this.args);
+Assertion.prototype.standardErrorMessage = function (options) {
+    return createStandardErrorMessage(this.expect, this.subject, this.testDescription, this.args, options);
 };
 
 Assertion.prototype.shift = function (subject, assertionIndex) {
@@ -46,10 +46,10 @@ Assertion.prototype.shift = function (subject, assertionIndex) {
     }
     var rest = this.args.slice(assertionIndex);
     this.args[assertionIndex] = this.expect.output.clone().error(this.args[assertionIndex]);
-    if (typeof rest[0] === 'function') {
-        return rest[0](subject);
-    } else {
+    if (typeof rest[0] === 'string') {
         return this.expect.apply(this.expect, [subject].concat(rest));
+    } else {
+        throw new Error('The "' + this.testDescription + '" assertion requires parameter #' + (assertionIndex + 2) + ' to be a string specifying an assertion to delegate to');
     }
 };
 
@@ -322,6 +322,11 @@ Unexpected.prototype.inspect = function (obj, depth) {
 var placeholderSplitRegexp = /(\{(?:\d+)\})/g;
 var placeholderRegexp = /\{(\d+)\}/;
 Unexpected.prototype.fail = function (arg) {
+    if (arg instanceof UnexpectedError) {
+        arg._hasSerializedErrorMessage = false;
+        throw arg;
+    }
+
     if (utils.isError(arg)) {
         throw arg;
     }
@@ -639,9 +644,9 @@ Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
             var callInNestedContext = function (callback) {
                 try {
                     var result = oathbreaker(callback());
-                    if (result && typeof result.then === 'function' && typeof result.caught === 'function') {
+                    if (result && typeof result.then === 'function') {
                         testFrameworkPatch.promiseCreated();
-                        return result.caught(function (e) {
+                        return result.then(undefined, function (e) {
                             if (e && e._isUnexpected) {
                                 var newError = new UnexpectedError(that.expect, assertion, e);
                                 truncateStack(newError, wrappedExpect);
@@ -772,7 +777,7 @@ Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
             }
             var missingAssertionError = new UnexpectedError(that.expect);
             missingAssertionError.output = errorMessage;
-            missingAssertionError.errorMode = 'bubble';
+            missingAssertionError.errorMode = 'bubbleThrough';
             that.fail(missingAssertionError);
         }
     }
@@ -782,7 +787,7 @@ Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
         var promise = executeExpect(subject, testDescriptionString, args);
         if (promise && typeof promise.then === 'function') {
             testFrameworkPatch.promiseCreated();
-            return promise.caught(function (e) {
+            return promise.then(undefined, function (e) {
                 if (e && e._isUnexpected) {
                     that.setErrorMessage(e);
                 }
@@ -848,7 +853,7 @@ Unexpected.prototype.async = function (cb) {
         result.then(function () {
             that._isAsync = false;
             done();
-        }).caught(function (err) {
+        }, function (err) {
             that._isAsync = false;
             done(err);
         });
@@ -1086,6 +1091,8 @@ function ensureValidPattern(pattern) {
 module.exports = Unexpected;
 
 },{}],3:[function(require,module,exports){
+var utils = require(12);
+
 var errorMethodBlacklist = ['message', 'line', 'sourceId', 'sourceURL', 'stack', 'stackArray'].reduce(function (result, prop) {
     result[prop] = true;
     return result;
@@ -1123,10 +1130,10 @@ UnexpectedError.prototype.buildDiff = function () {
     });
 };
 
-UnexpectedError.prototype.getDefaultErrorMessage = function () {
+UnexpectedError.prototype.getDefaultErrorMessage = function (options) {
     var message = this.expect.output.clone();
     if (this.assertion) {
-        message.append(this.assertion.standardErrorMessage());
+        message.append(this.assertion.standardErrorMessage(options));
     } else {
         message.append(this.output);
     }
@@ -1145,17 +1152,25 @@ UnexpectedError.prototype.getDefaultErrorMessage = function () {
     return message;
 };
 
-UnexpectedError.prototype.getNestedErrorMessage = function () {
+UnexpectedError.prototype.getNestedErrorMessage = function (options) {
     var message = this.expect.output.clone();
     if (this.assertion) {
-        message.append(this.assertion.standardErrorMessage());
+        message.append(this.assertion.standardErrorMessage(options));
     } else {
         message.append(this.output);
     }
 
+    var parent = this.parent;
+    while (parent.getErrorMode() === 'bubble') {
+        parent = parent.parent;
+    }
+
     message.nl()
         .indentLines()
-        .i().block(this.parent.getErrorMessage());
+        .i().block(parent.getErrorMessage(utils.extend({}, options || {}, {
+            compact: this.assertion && parent.assertion &&
+                this.assertion.subject === parent.assertion.subject
+        })));
     return message;
 };
 
@@ -1204,30 +1219,37 @@ UnexpectedError.prototype.getErrorMode = function () {
         (this.assertion && this.assertion.errorMode) ||
         'default';
 
-    if (!this.parent && errorMode !== 'default') {
-        return 'default';
+    if (!this.parent) {
+        switch (errorMode) {
+        case 'default':
+        case 'bubbleThrough':
+            return errorMode;
+        default:
+            return 'default';
+        }
     } else {
         return errorMode;
     }
 };
 
 
-UnexpectedError.prototype.getErrorMessage = function () {
-    // Search for any parent error that has mode bubble on the error
-    // these should be bubbled to the top
-    var errorWithBubble = this.parent;
-    while (errorWithBubble && errorWithBubble.errorMode !== 'bubble') {
-        errorWithBubble = errorWithBubble.parent;
+UnexpectedError.prototype.getErrorMessage = function (options) {
+    // Search for any parent error that has mode bubble through on the
+    // error these should be bubbled to the top
+    var errorWithBubbleThough = this.parent;
+    while (errorWithBubbleThough && errorWithBubbleThough.getErrorMode() !== 'bubbleThrough') {
+        errorWithBubbleThough = errorWithBubbleThough.parent;
     }
-    if (errorWithBubble) {
-        return errorWithBubble.getErrorMessage();
+    if (errorWithBubbleThough) {
+        return errorWithBubbleThough.getErrorMessage();
     }
 
     var errorMode = this.getErrorMode();
     switch (errorMode) {
-    case 'nested': return this.getNestedErrorMessage();
-    case 'default': return this.getDefaultErrorMessage();
-    case 'bubble': return this.parent.getErrorMessage();
+    case 'nested': return this.getNestedErrorMessage(options);
+    case 'default': return this.getDefaultErrorMessage(options);
+    case 'bubbleThrough': return this.getDefaultErrorMessage();
+    case 'bubble': return this.parent.getErrorMessage(options);
     case 'diff': return this.getDiffMessage();
     default: throw new Error("Unknown error mode: '" + errorMode + "'");
     }
@@ -1262,6 +1284,22 @@ UnexpectedError.prototype.getLabel = function () {
         currentError = currentError.parent;
     }
     return (currentError && currentError.label) || null;
+};
+
+UnexpectedError.prototype.getParents = function () {
+    var result = [];
+    var parent = this.parent;
+    while (parent) {
+        result.push(parent);
+        parent = parent.parent;
+    }
+    return result;
+};
+
+UnexpectedError.prototype.getAllErrors = function () {
+    var result = this.getParents();
+    result.unshift(this);
+    return result;
 };
 
 
@@ -1890,14 +1928,19 @@ module.exports = function (expect) {
                     }
                 });
             });
-        } else if (this.flags.assertion) {
+        }
+
+        if (this.flags.assertion) {
             this.errorMode = 'bubble'; // to satisfy assertion 'to be a number' => to be a number
             if (typeof value === 'string') {
                 return expect.apply(expect, Array.prototype.slice.call(arguments, 1));
             } else {
                 return expect.apply(expect, [subject, this.flags.exhaustively ? 'to exhaustively satisfy' : 'to satisfy'].concat(Array.prototype.slice.call(arguments, 2)));
             }
-        } else if (value && value._expectIt) {
+        }
+
+        var valueType = expect.findTypeOf(value);
+        if (valueType.is('expect.it')) {
             return expect.withError(function () {
                 return value(subject);
             }, function (e) {
@@ -1910,150 +1953,154 @@ module.exports = function (expect) {
                     }
                 });
             });
-        } else if (typeof value === 'function') {
+        }
+
+        if (valueType.is('function')) {
             return expect.promise(function () {
                 return value(subject);
             });
-        } else if (isRegExp(value)) {
-            expect(subject, 'to match', value);
-        } else {
-            var subjectType = expect.findTypeOf(subject),
-                commonType = expect.findCommonType(subject, value),
-                valueType = expect.findTypeOf(value),
-                bothAreArrayLike = commonType.is('array-like');
-            if (commonType.is('array-like') || commonType.is('object')) {
-                expect(subject, 'to be an object');
-                var promiseByKey = {};
-                var keys = valueType.getKeys(value);
-                keys.forEach(function (key, index) {
-                    promiseByKey[key] = expect.promise(function () {
-                        if (typeof value[key] === 'function') {
-                            return value[key](subject[key]);
-                        } else {
-                            return expect(subject[key], 'to [exhaustively] satisfy', value[key]);
-                        }
-                    });
+        }
+
+        if (valueType.is('regexp')) {
+            return expect(subject, 'to match', value);
+        }
+
+        var subjectType = expect.findTypeOf(subject),
+            commonType = expect.findCommonType(subject, value),
+            bothAreArrayLike = commonType.is('array-like');
+        if (commonType.is('array-like') || commonType.is('object')) {
+            expect(subject, 'to be an object');
+            var promiseByKey = {};
+            var keys = valueType.getKeys(value);
+            keys.forEach(function (key, index) {
+                promiseByKey[key] = expect.promise(function () {
+                    var valueKeyType = expect.findTypeOf(value[key]);
+                    if (valueKeyType.is('function')) {
+                        return value[key](subject[key]);
+                    } else {
+                        return expect(subject[key], 'to [exhaustively] satisfy', value[key]);
+                    }
                 });
+            });
 
-                var flags = this.flags;
+            var flags = this.flags;
 
-                return expect.promise.all([
-                    expect.promise(function () {
-                        if (commonType.is('array-like') || flags.exhaustively) {
-                            expect(subject, 'to only have keys', keys);
-                        }
-                    }),
-                    expect.promise.all(promiseByKey)
-                ]).caught(function () {
-                    return expect.promise.settle(promiseByKey).then(function () {
-                        expect.fail({
-                            diff: function (output, diff, inspect, equal) {
-                                var result = {
-                                    diff: output,
-                                    inline: true
-                                };
+            return expect.promise.all([
+                expect.promise(function () {
+                    if (commonType.is('array-like') || flags.exhaustively) {
+                        expect(subject, 'to only have keys', keys);
+                    }
+                }),
+                expect.promise.all(promiseByKey)
+            ]).caught(function () {
+                return expect.promise.settle(promiseByKey).then(function () {
+                    expect.fail({
+                        diff: function (output, diff, inspect, equal) {
+                            var result = {
+                                diff: output,
+                                inline: true
+                            };
 
-                                var valueType = expect.findTypeOf(value),
-                                    keyIndex = {};
-                                subjectType.getKeys(subject).concat(valueType.getKeys(value)).forEach(function (key) {
-                                    if (!(key in keyIndex)) {
-                                        keyIndex[key] = key;
-                                    }
-                                });
-
-                                var keys = Object.keys(keyIndex);
-
-                                if (bothAreArrayLike && subjectType.name !== 'array') {
-                                    output.text(subjectType.name);
+                            var valueType = expect.findTypeOf(value),
+                            keyIndex = {};
+                            subjectType.getKeys(subject).concat(valueType.getKeys(value)).forEach(function (key) {
+                                if (!(key in keyIndex)) {
+                                    keyIndex[key] = key;
                                 }
-                                output.text(bothAreArrayLike ? '[' : '{').nl().indentLines();
+                            });
 
-                                keys.forEach(function (key, index) {
-                                    output.i().block(function () {
-                                        var valueOutput;
-                                        var annotation = output.clone();
-                                        var conflicting;
+                            var keys = Object.keys(keyIndex);
 
-                                        if (promiseByKey[key] && promiseByKey[key].isRejected()) {
-                                            conflicting = promiseByKey[key].reason();
-                                        }
-                                        var arrayItemOutOfRange = bothAreArrayLike && (index >= subject.length || index >= value.length);
-
-                                        var isInlineDiff = true;
-
-                                        if (!(key in value)) {
-                                            if (commonType.is('array-like') || flags.exhaustively) {
-                                                annotation.error('should be removed');
-                                            } else {
-                                                conflicting = null;
-                                            }
-                                        } else if (conflicting || arrayItemOutOfRange) {
-                                            var keyDiff = conflicting && conflicting.getDiff();
-                                            isInlineDiff = !keyDiff || keyDiff.inline ;
-                                            if (typeof value[key] === 'function') {
-                                                isInlineDiff = false;
-                                                annotation.append(conflicting.getErrorMessage());
-                                            } else if (!keyDiff || (keyDiff && !keyDiff.inline)) {
-                                                annotation.error((conflicting && conflicting.getLabel()) || 'should satisfy').sp()
-                                                    .block(inspect(value[key]));
-
-                                                if (keyDiff) {
-                                                    annotation.nl().append(keyDiff.diff);
-                                                }
-                                            } else {
-                                                valueOutput = keyDiff.diff;
-                                            }
-                                        }
-
-                                        var last = index === keys.length - 1;
-                                        if (!valueOutput) {
-                                            if (bothAreArrayLike && key >= subject.length) {
-                                                valueOutput = output.clone();
-                                            } else {
-                                                valueOutput = inspect(subject[key], conflicting ? Infinity : 1);
-                                            }
-                                        }
-
-                                        if (!bothAreArrayLike) {
-                                            this.key(key).text(':');
-                                        }
-                                        valueOutput.amend('text', last ? '' : ',');
-
-
-                                        if (!bothAreArrayLike) {
-                                            if (valueOutput.isBlock() && valueOutput.isMultiline()) {
-                                                this.indentLines();
-                                                this.nl().i();
-                                            } else {
-                                                this.sp();
-                                            }
-                                        }
-
-                                        if (isInlineDiff) {
-                                            this.append(valueOutput);
-                                        } else {
-                                            this.block(valueOutput);
-                                        }
-                                        if (!annotation.isEmpty()) {
-                                            this.sp(valueOutput.isEmpty() ? 0 : 1).annotationBlock(annotation);
-                                        }
-                                    }).nl();
-                                });
-
-                                output.outdentLines().text(bothAreArrayLike ? ']' : '}');
-
-                                if (!bothAreArrayLike) {
-                                    result.diff = utils.wrapConstructorNameAroundOutput(result.diff, subject);
-                                }
-
-                                return result;
+                            if (bothAreArrayLike && subjectType.name !== 'array') {
+                                output.text(subjectType.name);
                             }
-                        });
+                            output.text(bothAreArrayLike ? '[' : '{').nl().indentLines();
+
+                            keys.forEach(function (key, index) {
+                                output.i().block(function () {
+                                    var valueOutput;
+                                    var annotation = output.clone();
+                                    var conflicting;
+
+                                    if (promiseByKey[key] && promiseByKey[key].isRejected()) {
+                                        conflicting = promiseByKey[key].reason();
+                                    }
+                                    var arrayItemOutOfRange = bothAreArrayLike && (index >= subject.length || index >= value.length);
+
+                                    var isInlineDiff = true;
+
+                                    if (!(key in value)) {
+                                        if (commonType.is('array-like') || flags.exhaustively) {
+                                            annotation.error('should be removed');
+                                        } else {
+                                            conflicting = null;
+                                        }
+                                    } else if (conflicting || arrayItemOutOfRange) {
+                                        var keyDiff = conflicting && conflicting.getDiff();
+                                        isInlineDiff = !keyDiff || keyDiff.inline ;
+                                        if (typeof value[key] === 'function') {
+                                            isInlineDiff = false;
+                                            annotation.append(conflicting.getErrorMessage());
+                                        } else if (!keyDiff || (keyDiff && !keyDiff.inline)) {
+                                            annotation.error((conflicting && conflicting.getLabel()) || 'should satisfy').sp()
+                                                .block(inspect(value[key]));
+
+                                            if (keyDiff) {
+                                                annotation.nl().append(keyDiff.diff);
+                                            }
+                                        } else {
+                                            valueOutput = keyDiff.diff;
+                                        }
+                                    }
+
+                                    var last = index === keys.length - 1;
+                                    if (!valueOutput) {
+                                        if (bothAreArrayLike && key >= subject.length) {
+                                            valueOutput = output.clone();
+                                        } else {
+                                            valueOutput = inspect(subject[key], conflicting ? Infinity : 1);
+                                        }
+                                    }
+
+                                    if (!bothAreArrayLike) {
+                                        this.key(key).text(':');
+                                    }
+                                    valueOutput.amend('text', last ? '' : ',');
+
+
+                                    if (!bothAreArrayLike) {
+                                        if (valueOutput.isBlock() && valueOutput.isMultiline()) {
+                                            this.indentLines();
+                                            this.nl().i();
+                                        } else {
+                                            this.sp();
+                                        }
+                                    }
+
+                                    if (isInlineDiff) {
+                                        this.append(valueOutput);
+                                    } else {
+                                        this.block(valueOutput);
+                                    }
+                                    if (!annotation.isEmpty()) {
+                                        this.sp(valueOutput.isEmpty() ? 0 : 1).annotationBlock(annotation);
+                                    }
+                                }).nl();
+                            });
+
+                            output.outdentLines().text(bothAreArrayLike ? ']' : '}');
+
+                            if (!bothAreArrayLike) {
+                                result.diff = utils.wrapConstructorNameAroundOutput(result.diff, subject);
+                            }
+
+                            return result;
+                        }
                     });
                 });
-            } else {
-                expect(subject, 'to equal', value);
-            }
+            });
+        } else {
+            expect(subject, 'to equal', value);
         }
     });
 
@@ -2142,7 +2189,8 @@ module.exports = function (expect) {
 
 }).call(this,require(19).Buffer)
 },{}],5:[function(require,module,exports){
-module.exports = function createStandardErrorMessage(expect, subject, testDescription, args) {
+module.exports = function createStandardErrorMessage(expect, subject, testDescription, args, options) {
+    options = options || {};
     var output = expect.output.clone();
 
     var preamble = 'expected';
@@ -2174,20 +2222,21 @@ module.exports = function createStandardErrorMessage(expect, subject, testDescri
     var width = preamble.length + subjectSize.width + argsSize.width + testDescription.length;
     var height = Math.max(subjectSize.height, argsSize.height);
 
-    output.error(preamble);
-
-    if (subjectSize.height > 1) {
-        output.nl();
+    if (options.compact && subjectSize.height > 1) {
+        output.error('expected').sp().text('...').sp();
     } else {
-        output.sp();
-    }
-
-    output.append(subjectOutput);
-
-    if (subjectSize.height > 1 || (height === 1 && width > 120)) {
-        output.nl();
-    } else {
-        output.sp();
+        output.error(preamble);
+        if (subjectSize.height > 1) {
+            output.nl();
+        } else {
+            output.sp();
+        }
+        output.append(subjectOutput);
+        if (subjectSize.height > 1 || (height === 1 && width > 120)) {
+            output.nl();
+        } else {
+            output.sp();
+        }
     }
 
     output.error(testDescription);
@@ -2341,7 +2390,7 @@ module.exports = function oathbreaker(value) {
     }
 
     if (value.isFulfilled()) {
-        return value.value();
+        return value;
     }
 
 
@@ -2374,7 +2423,7 @@ module.exports = function oathbreaker(value) {
     if (evaluated && error) {
         throw error;
     } else if (evaluated) {
-        return resolvedValue;
+        return value;
     }
 
     return new Promise(function (resolve, reject) {
@@ -2482,6 +2531,16 @@ module.exports = function (expect) {
 
     expect.addStyle('shouldEqualError', function (expected, inspect) {
         this.error(typeof expected === 'undefined' ? 'should be' : 'should equal').sp().block(inspect(expected));
+    });
+
+    expect.addStyle('errorName', function (error) {
+        if (typeof error.name === 'string' && error.name !== 'Error') {
+            this.text(error.name);
+        } else if (error.constructor && typeof error.constructor.name === 'string') {
+            this.text(error.constructor.name);
+        } else {
+            this.text('Error');
+        }
     });
 };
 
@@ -3108,8 +3167,7 @@ module.exports = function (expect) {
                 (equal(a.message, b.message) && this.baseType.equal(a, b));
         },
         inspect: function (value, depth, output, inspect) {
-            // TODO: Inspect Error as a built-in once we have the styles defined:
-            output.text((value.name || value.constructor && value.constructor.name || 'Error') + '(');
+            output.errorName(value).text('(');
             var keys = this.getKeys(value);
             if (keys.length === 1 && keys[0] === 'message') {
                 if (value.message !== '') {
@@ -3121,15 +3179,25 @@ module.exports = function (expect) {
             output.text(')');
         },
         diff: function (actual, expected, output, diff) {
+            if (actual.constructor !== expected.constructor) {
+                return {
+                    diff: output.text('Mismatching constructors ')
+                        .errorName(actual)
+                        .text(' should be ').errorName(expected),
+                    inline: false
+                };
+            }
+
             var result = diff(this.unwrap(actual), this.unwrap(expected));
             if (result.diff) {
-                result.diff = utils.wrapConstructorNameAroundOutput(result.diff, actual);
+                result.diff = output.clone().errorName(actual).text('(').append(result.diff).text(')');
+
             }
             return result;
         }
     });
 
-    var unexpectedErrorMethodBlacklist = ['output', '_isUnexpected', 'htmlMessage', '_hasSerializedErrorMessage'].reduce(function (result, prop) {
+    var unexpectedErrorMethodBlacklist = ['output', '_isUnexpected', 'htmlMessage', '_hasSerializedErrorMessage', 'expect', 'assertion'].reduce(function (result, prop) {
         result[prop] = true;
         return result;
     }, {});
@@ -3765,7 +3833,7 @@ module.exports = function arrayChanges(actual, expected, equal, similar) {
         return false;
     };
 
-    var itemsDiff = arrayDiff(actual, expected, function (a, b) {
+    var itemsDiff = arrayDiff([].concat(actual), [].concat(expected), function (a, b) {
         return equal(a, b) || similar(a, b);
     });
 
@@ -3791,7 +3859,7 @@ module.exports = function arrayChanges(actual, expected, equal, similar) {
 
     function updateRemoveTable() {
         removedItems = 0;
-        actual.forEach(function (_, index) {
+        Array.prototype.forEach.call(actual, function (_, index) {
             removedItems += removesByIndex[index] || 0;
             removeTable[index] = removedItems;
         });

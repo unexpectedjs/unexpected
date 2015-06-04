@@ -55,10 +55,16 @@ describe('unexpected', function () {
         }
     }).addAssertion('Promise', 'to be rejected', function (expect, subject, expectedReason) {
         return subject.then(function () {
-            throw new Error('Promise unexpectedly fulfilled');
+            expect.fail('Promise unexpectedly fulfilled');
         }).caught(function (err) {
             if (typeof expectedReason !== 'undefined') {
                 return expect(err._isUnexpected ? err.getErrorMessage().toString('text') : err.message, 'to satisfy', expectedReason);
+            }
+        });
+    }).addAssertion('Promise', 'to be resolved', function (expect, subject, expectedValue) {
+        return subject.then(function (value) {
+            if (typeof expectedValue !== 'undefined') {
+                return expect(value, 'to equal', expectedValue);
             }
         });
     }).addAssertion('when delayed a little bit', function (expect, subject) {
@@ -982,6 +988,90 @@ describe('unexpected', function () {
             var err = new Error();
             err.bar = 123;
             expect(err, 'to inspect as', "Error({ message: '', bar: 123 })");
+        });
+
+        describe('with a custom Error class inheriting from Error', function () {
+            function inherits(ctor, superCtor) {
+                ctor.super_ = superCtor;
+                ctor.prototype = Object.create(superCtor.prototype, {
+                    constructor: {
+                        value: ctor,
+                        enumerable: false,
+                        writable: true,
+                        configurable: true
+                    }
+                });
+            }
+
+            function MyError(message) {
+                Error.call(this);
+                this.message = message;
+            }
+
+            inherits(MyError, Error);
+
+            it('should consider identical instances to be identical', function () {
+                expect(new MyError('foo'), 'to equal', new MyError('foo'));
+            });
+
+            it('should consider an instance of the custom error different from an otherwise identical Error instance', function () {
+                expect(function () {
+                    expect(new MyError('foo'), 'to equal', new Error('foo'));
+                }, 'to throw',
+                    "expected MyError('foo') to equal Error('foo')\n" +
+                    "\n" +
+                    "Mismatching constructors MyError should be Error"
+                );
+            });
+
+            it('should instances of the custom error different to be different when they have different messages', function () {
+                expect(function () {
+                    expect(new MyError('foo'), 'to equal', new MyError('bar'));
+                }, 'to throw',
+                    "expected MyError('foo') to equal MyError('bar')\n" +
+                    "\n" +
+                    "MyError({\n" +
+                    "  message: 'foo' // should equal 'bar'\n" +
+                    "                 // -foo\n" +
+                    "                 // +bar\n" +
+                    "})"
+                );
+            });
+
+            describe('when the custom error has a "name" property', function () {
+                var myError = new MyError('foo');
+                myError.name = 'SomethingElse';
+
+                it('should use the "name" property when inspecting instances', function () {
+                    expect(myError, 'to inspect as', "SomethingElse('foo')");
+                });
+
+                it('should use the "name" property when reporting mismatching constructors', function () {
+                    expect(function () {
+                        expect(myError, 'to equal', new Error('foo'));
+                    }, 'to throw',
+                        "expected SomethingElse('foo') to equal Error('foo')\n" +
+                        "\n" +
+                        "Mismatching constructors SomethingElse should be Error"
+                    );
+                });
+
+                it('should use the "name" property when diffing', function () {
+                    expect(function () {
+                        var otherMyError = new MyError('bar');
+                        otherMyError.name = 'SomethingElse';
+                        expect(myError, 'to equal', otherMyError);
+                    }, 'to throw',
+                        "expected SomethingElse('foo') to equal SomethingElse('bar')\n" +
+                        "\n" +
+                        "SomethingElse({\n" +
+                        "  message: 'foo' // should equal 'bar'\n" +
+                        "                 // -foo\n" +
+                        "                 // +bar\n" +
+                        "})"
+                    );
+                });
+            });
         });
 
         describe('to have message assertion', function () {
@@ -2098,9 +2188,27 @@ describe('unexpected', function () {
             expect(123, 'to satisfy assertion', 'to satisfy assertion', 'to satisfy assertion', 'to be a number');
         });
 
-        it('should support a regular function in the RHS object (expected to throw an exception if the condition is not met)', function () {
-            expect({foo: 123}, 'to satisfy', function (obj) {
-                expect(obj.foo, 'to equal', 123);
+        describe('with a regular function in the RHS object', function () {
+            it('should throw an exception if the condition is not met', function () {
+                expect({foo: 123}, 'to satisfy', function (obj) {
+                    expect(obj.foo, 'to equal', 123);
+                });
+            });
+
+            it('should only consider functions that are identified as functions by the type system', function () {
+                var clonedExpect = expect.clone().addType({
+                    name: 'functionStartingWithF',
+                    identify: function (obj) {
+                        return typeof obj === 'function' && /^f/i.test(obj.name);
+                    }
+                });
+
+                function foo() {
+                    throw new Error('argh, do not call me');
+                }
+
+                clonedExpect(foo, 'to satisfy', foo);
+                clonedExpect({ foo: foo }, 'to satisfy', { foo: foo });
             });
         });
 
@@ -5700,24 +5808,14 @@ describe('unexpected', function () {
             }, 'to throw', 'wat');
         });
 
-        it('should return the resolved value when an assertion returns an oathbreakable promise that returns a value', function () {
+        it('should return the fulfilled promise even if it is oathbreakable', function () {
             var clonedExpect = expect.clone().addAssertion('to foo', function (expect, subject, value) {
                 return expect.promise(function () {
                     expect(subject, 'to equal', 'foo');
                     return 'bar';
                 });
             });
-            expect(clonedExpect('foo', 'to foo'), 'to equal', 'bar');
-        });
-
-        it('should return the resolved value when an assertion returns an oathbreakable promise that resolves with a value', function () {
-            var clonedExpect = expect.clone().addAssertion('to foo', function (expect, subject, value) {
-                return expect.promise(function (resolve, reject) {
-                    expect(subject, 'to equal', 'foo');
-                    resolve('bar');
-                });
-            });
-            expect(clonedExpect('foo', 'to foo'), 'to equal', 'bar');
+            expect(clonedExpect('foo', 'to foo'), 'to be resolved', 'bar');
         });
 
         it('should preserve the resolved value when an assertion contains a non-oathbreakable promise', function (done) {
