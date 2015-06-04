@@ -2037,53 +2037,49 @@ describe("documentation tests", function () {
 
         expect(willBeRejected, 'to error', 'The reject message');
 
-        if (!isPhantom) {
-            try {
-                expect(willBeRejected, 'to error', 'The error message');
-                expect.fail(function (output) {
-                    output.error("expected:").nl();
-                    output.code("expect(willBeRejected, 'to error', 'The error message');").nl();
-                    output.error("to throw");
-                });
-            } catch (e) {
-                expect(e, "to have message",
-                    "expected\n" +
-                    "function willBeRejected() {\n" +
-                    "    return expect.promise(function (resolve, reject) {\n" +
-                    "        reject(new Error('The reject message'));\n" +
-                    "    });\n" +
-                    "}\n" +
-                    "to error 'The error message'\n" +
-                    "  expected Error('The reject message') to satisfy 'The error message'\n" +
-                    "\n" +
-                    "  -The reject message\n" +
-                    "  +The error message"
-                );
-            }
+        try {
+            expect(willBeRejected, 'to error', 'The error message');
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect(willBeRejected, 'to error', 'The error message');").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected\n" +
+                "function willBeRejected() {\n" +
+                "    return expect.promise(function (resolve, reject) {\n" +
+                "        reject(new Error('The reject message'));\n" +
+                "    });\n" +
+                "}\n" +
+                "to error 'The error message'\n" +
+                "  expected Error('The reject message') to satisfy 'The error message'\n" +
+                "\n" +
+                "  -The reject message\n" +
+                "  +The error message"
+            );
         }
 
         expect(willBeRejected, 'to error', /reject message/);
 
-        if (!isPhantom) {
-            try {
-                expect(willBeRejected, 'to error', /error message/);
-                expect.fail(function (output) {
-                    output.error("expected:").nl();
-                    output.code("expect(willBeRejected, 'to error', /error message/);").nl();
-                    output.error("to throw");
-                });
-            } catch (e) {
-                expect(e, "to have message",
-                    "expected\n" +
-                    "function willBeRejected() {\n" +
-                    "    return expect.promise(function (resolve, reject) {\n" +
-                    "        reject(new Error('The reject message'));\n" +
-                    "    });\n" +
-                    "}\n" +
-                    "to error /error message/\n" +
-                    "  expected Error('The reject message') to satisfy /error message/"
-                );
-            }
+        try {
+            expect(willBeRejected, 'to error', /error message/);
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect(willBeRejected, 'to error', /error message/);").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected\n" +
+                "function willBeRejected() {\n" +
+                "    return expect.promise(function (resolve, reject) {\n" +
+                "        reject(new Error('The reject message'));\n" +
+                "    });\n" +
+                "}\n" +
+                "to error /error message/\n" +
+                "  expected Error('The reject message') to satisfy /error message/"
+            );
         }
 
         expect(willNotBeRejected, 'not to error');

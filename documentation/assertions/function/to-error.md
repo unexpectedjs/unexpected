@@ -41,7 +41,7 @@ string as the second parameter.
 expect(willBeRejected, 'to error', 'The reject message');
 ```
 
-```javascript#skipPhantom:true
+```javascript
 expect(willBeRejected, 'to error', 'The error message');
 ```
 
@@ -68,7 +68,7 @@ expect(willBeRejected, 'to error', /reject message/);
 
 In case of a failing expectation you get the following output:
 
-```javascript#skipPhantom:true
+```javascript
 expect(willBeRejected, 'to error', /error message/);
 ```
 
