@@ -123,7 +123,7 @@ describe("documentation tests", function () {
         try {
             expect.addAssertion('to be completely custom', function (expect, subject) {
               return expect.withError(function () {
-              expect(subject, 'to satisfy', { custom: true });
+                expect(subject, 'to satisfy', { custom: true });
               }, function (err) {
                 var createDiff = err.getDiffMethod();
                 expect.fail({
@@ -141,7 +141,7 @@ describe("documentation tests", function () {
                 output.error("expected:").nl();
                 output.code("expect.addAssertion('to be completely custom', function (expect, subject) {").nl();
                 output.code("  return expect.withError(function () {").nl();
-                output.code("  expect(subject, 'to satisfy', { custom: true });").nl();
+                output.code("    expect(subject, 'to satisfy', { custom: true });").nl();
                 output.code("  }, function (err) {").nl();
                 output.code("    var createDiff = err.getDiffMethod();").nl();
                 output.code("    expect.fail({").nl();

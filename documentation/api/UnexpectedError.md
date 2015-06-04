@@ -133,7 +133,7 @@ create the diff. Now you can delegate to that method from
 ```js
 expect.addAssertion('to be completely custom', function (expect, subject) {
   return expect.withError(function () {
-  expect(subject, 'to satisfy', { custom: true });
+    expect(subject, 'to satisfy', { custom: true });
   }, function (err) {
     var createDiff = err.getDiffMethod();
     expect.fail({
