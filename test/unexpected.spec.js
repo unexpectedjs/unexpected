@@ -2219,9 +2219,12 @@ describe('unexpected', function () {
                     expect(function () {
                         expect(err, 'to exhaustively satisfy', { message: 'foo' });
                     }, 'to throw',
-                        // Would be nice to have a diff here:
-                        "expected Error({ message: 'foo', bar: 123 }) to exhaustively satisfy { message: 'foo' }"
-                    );
+                           "expected Error({ message: 'foo', bar: 123 }) to exhaustively satisfy { message: 'foo' }\n" +
+                           "\n" +
+                           "{\n" +
+                           "  message: 'foo',\n" +
+                           "  bar: 123 // should be removed\n" +
+                           "}");
                 });
             });
 
@@ -2497,8 +2500,11 @@ describe('unexpected', function () {
             }, 'to throw exception',
                    "expected Error('foo') to satisfy { message: \'bar\' }\n" +
                    "\n" +
-                   "-foo\n" +
-                   "+bar");
+                   "{\n" +
+                   "  message: 'foo' // should equal 'bar'\n" +
+                   "                 // -foo\n" +
+                   "                 // +bar\n" +
+                   "}");
         });
 
         it('includes the constructor name in the diff', function () {
