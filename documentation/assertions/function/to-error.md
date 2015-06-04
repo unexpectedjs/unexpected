@@ -105,3 +105,42 @@ function willBeRejected() {
 not to error
   errored with: Error('The reject message')
 ```
+
+You can pass in a function instead of the error message, and do more
+assertions on the error.
+
+```javascript#async:true
+function willBeRejectedAsync() {
+    return expect.promise(function (resolve, reject) {
+        setImmediate(function () {
+            reject(new Error('async error'));
+        });
+    });
+}
+
+return expect(willBeRejectedAsync, 'to error', function (e) {
+    return expect(e.message, 'to equal', 'async error');
+});
+```
+
+You can even do async assertions in the function that you pass in.
+
+```javascript#async:true
+var errorCount = 0;
+function willBeRejectedAsync() {
+    return expect.promise(function (resolve, reject) {
+        setImmediate(function () {
+            var error = new Error('async error');
+            errorCount += 1;
+            error.errorCount = errorCount;
+            reject(error);
+        });
+    });
+}
+
+return expect(willBeRejectedAsync, 'to error', function (e) {
+    return expect(willBeRejectedAsync, 'to error', function (e2) {
+        return expect(e2.errorCount, 'to be greater than', e.errorCount);
+    });
+});
+```
