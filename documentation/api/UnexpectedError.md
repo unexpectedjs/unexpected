@@ -2,7 +2,7 @@ When assertions fails in Unexpected they yield an
 `UnexpectedError`. This instance has several convenience methods for
 retrieving information about the error.
 
-### unexpectedError.getErrorMessage()
+### UnexpectedError.getErrorMessage()
 
 Returns the error message as a
 [magicpen](https://github.com/sunesimonsen/magicpen) instance. The
@@ -69,7 +69,7 @@ expected 'bar' to equal 'bAr'
 +bAr
 ```
 
-### unexpectedError.parent
+### UnexpectedError.parent
 
 When assertions delegate to nested `expect` calls the errors that are
 thrown on each level are chained together through the `parent`
@@ -105,3 +105,13 @@ expected 'f00!' to be 'foo!'
     -f00!
     +foo!
 ```
+
+### UnexpectedError.getParents()
+
+Return an array with all the ancestor errors to this error. See
+<a href="#unexpectederror-parent">parent</a> for more information.
+
+### UnexpectedError.getAllErrors()
+
+Return an array with this error and all it's ancestors. See
+<a href="#unexpectederror-parent">parent</a> for more information.
