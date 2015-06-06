@@ -2100,7 +2100,7 @@ describe("documentation tests", function () {
                 "    });\n" +
                 "}\n" +
                 "not to error\n" +
-                "  errored with: Error('The reject message')"
+                "  returned promise rejected with: Error('The reject message')"
             );
         }
 

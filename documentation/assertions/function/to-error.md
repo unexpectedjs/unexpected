@@ -103,7 +103,7 @@ function willBeRejected() {
     });
 }
 not to error
-  errored with: Error('The reject message')
+  returned promise rejected with: Error('The reject message')
 ```
 
 You can pass in a function instead of the error message, and do more
