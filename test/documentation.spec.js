@@ -1993,6 +1993,153 @@ describe("documentation tests", function () {
         return expect.promise.all(testPromises);
     });
 
+    it("assertions/function/to-error.md contains correct examples", function () {
+        var testPromises = [];
+        function willBeRejected() {
+            return expect.promise(function (resolve, reject) {
+                reject(new Error('The reject message'));
+            });
+        }
+        function willThrow() {
+            throw new Error('The error message');
+        }
+        expect(willBeRejected, 'to error');
+        expect(willThrow, 'to error');
+
+        try {
+            function willNotBeRejected() {
+                return expect.promise(function (resolve, reject) {
+                    resolve('Hello world');
+                });
+            }
+            expect(willNotBeRejected, 'to error');
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("function willNotBeRejected() {").nl();
+                output.code("    return expect.promise(function (resolve, reject) {").nl();
+                output.code("        resolve('Hello world');").nl();
+                output.code("    });").nl();
+                output.code("}").nl();
+                output.code("expect(willNotBeRejected, 'to error');").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected\n" +
+                "function willNotBeRejected() {\n" +
+                "    return expect.promise(function (resolve, reject) {\n" +
+                "        resolve('Hello world');\n" +
+                "    });\n" +
+                "}\n" +
+                "to error"
+            );
+        }
+
+        expect(willBeRejected, 'to error', 'The reject message');
+
+        try {
+            expect(willBeRejected, 'to error', 'The error message');
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect(willBeRejected, 'to error', 'The error message');").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected\n" +
+                "function willBeRejected() {\n" +
+                "    return expect.promise(function (resolve, reject) {\n" +
+                "        reject(new Error('The reject message'));\n" +
+                "    });\n" +
+                "}\n" +
+                "to error 'The error message'\n" +
+                "  expected Error('The reject message') to satisfy 'The error message'\n" +
+                "\n" +
+                "  -The reject message\n" +
+                "  +The error message"
+            );
+        }
+
+        expect(willBeRejected, 'to error', /reject message/);
+
+        try {
+            expect(willBeRejected, 'to error', /error message/);
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect(willBeRejected, 'to error', /error message/);").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected\n" +
+                "function willBeRejected() {\n" +
+                "    return expect.promise(function (resolve, reject) {\n" +
+                "        reject(new Error('The reject message'));\n" +
+                "    });\n" +
+                "}\n" +
+                "to error /error message/\n" +
+                "  expected Error('The reject message') to satisfy /error message/"
+            );
+        }
+
+        expect(willNotBeRejected, 'not to error');
+
+        try {
+            expect(willBeRejected, 'not to error');
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect(willBeRejected, 'not to error');").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected\n" +
+                "function willBeRejected() {\n" +
+                "    return expect.promise(function (resolve, reject) {\n" +
+                "        reject(new Error('The reject message'));\n" +
+                "    });\n" +
+                "}\n" +
+                "not to error\n" +
+                "  returned promise rejected with: Error('The reject message')"
+            );
+        }
+
+        testPromises.push(expect.promise(function () {
+            function willBeRejectedAsync() {
+                return expect.promise(function (resolve, reject) {
+                    setImmediate(function () {
+                        reject(new Error('async error'));
+                    });
+                });
+            }
+
+            return expect(willBeRejectedAsync, 'to error', function (e) {
+                return expect(e.message, 'to equal', 'async error');
+            });
+        }));
+
+        testPromises.push(expect.promise(function () {
+            var errorCount = 0;
+            function willBeRejectedAsync() {
+                return expect.promise(function (resolve, reject) {
+                    setImmediate(function () {
+                        var error = new Error('async error');
+                        errorCount += 1;
+                        error.errorCount = errorCount;
+                        reject(error);
+                    });
+                });
+            }
+
+            return expect(willBeRejectedAsync, 'to error', function (e) {
+                return expect(willBeRejectedAsync, 'to error', function (e2) {
+                    return expect(e2.errorCount, 'to be greater than', e.errorCount);
+                });
+            });
+        }));
+        return expect.promise.all(testPromises);
+    });
+
     it("assertions/function/to-have-arity.md contains correct examples", function () {
         var testPromises = [];
         expect(Math.max, 'to have arity', 2);
