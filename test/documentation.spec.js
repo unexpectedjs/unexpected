@@ -16,6 +16,160 @@ describe("documentation tests", function () {
 
     });
 
+    it("api/UnexpectedError.md contains correct examples", function () {
+        var testPromises = [];
+        expect.addAssertion("array", "to have item satisfying", function (expect, subject) {
+          var args = Array.prototype.slice.call(arguments, 2);
+          var promises = subject.map(function (item) {
+            return expect.promise(function () {
+              return expect.apply(expect, [item].concat(args));
+            });
+          });
+
+          return expect.promise.settle(promises).then(function () {
+            var failed = promises.every(function (promise) {
+              return promise.isRejected();
+            });
+
+            if (failed) {
+              expect.fail({
+                diff: function (output, diff, inspect, equal) {
+                  var result = {
+                    inline: true,
+                    diff: output
+                  };
+                  promises.forEach(function (promise, index) {
+                    if (index > 0) { result.diff.nl(2); }
+                    var error = promise.reason();
+                    // the error is connected to the current scope
+                    // but we are just interested in the nested error
+                    error.errorMode = 'bubble';
+                    result.diff.append(error.getErrorMessage());
+                  });
+                  return result;
+                }
+              });
+            }
+          });
+        });
+
+        try {
+            expect(['foo', 'bar'], 'to have item satisfying', 'to equal', 'bar');
+            expect(['foo', 'bar'], 'to have item satisfying', 'to equal', 'bAr');
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect(['foo', 'bar'], 'to have item satisfying', 'to equal', 'bar');").nl();
+                output.code("expect(['foo', 'bar'], 'to have item satisfying', 'to equal', 'bAr');").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected [ 'foo', 'bar' ] to have item satisfying 'to equal', 'bAr'\n" +
+                "\n" +
+                "expected 'foo' to equal 'bAr'\n" +
+                "\n" +
+                "-foo\n" +
+                "+bAr\n" +
+                "\n" +
+                "expected 'bar' to equal 'bAr'\n" +
+                "\n" +
+                "-bar\n" +
+                "+bAr"
+            );
+        }
+
+        try {
+            expect.addAssertion('detailed to be', function (expect, subject, value) {
+              this.errorMode = 'bubble';
+              expect.withError(function () {
+                expect(subject, 'to be', value);
+              }, function (err) {
+                err.getParents().forEach(function (e){
+                  e.errorMode = 'nested';
+                });
+                expect.fail(err);
+              });
+            });
+
+            expect('f00!', 'detailed to be', 'foo!');
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect.addAssertion('detailed to be', function (expect, subject, value) {").nl();
+                output.code("  this.errorMode = 'bubble';").nl();
+                output.code("  expect.withError(function () {").nl();
+                output.code("    expect(subject, 'to be', value);").nl();
+                output.code("  }, function (err) {").nl();
+                output.code("    err.getParents().forEach(function (e){").nl();
+                output.code("      e.errorMode = 'nested';").nl();
+                output.code("    });").nl();
+                output.code("    expect.fail(err);").nl();
+                output.code("  });").nl();
+                output.code("});").nl();
+                output.code("").nl();
+                output.code("expect('f00!', 'detailed to be', 'foo!');").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected 'f00!' to be 'foo!'\n" +
+                "  expected 'f00!' to equal 'foo!'\n" +
+                "    Explicit failure\n" +
+                "\n" +
+                "    -f00!\n" +
+                "    +foo!"
+            );
+        }
+
+        try {
+            expect.addAssertion('to be completely custom', function (expect, subject) {
+              return expect.withError(function () {
+                expect(subject, 'to satisfy', { custom: true });
+              }, function (err) {
+                var createDiff = err.getDiffMethod();
+                expect.fail({
+                  diff: function (output, diff, inspect, equal) {
+                    output.text('~~~~~~~~~~~~~~').sp().success('custom').sp().text('~~~~~~~~~~~~~~').nl();
+                    var result = createDiff(output, diff, inspect, equal);
+                    return result;
+                  }
+                });
+              });
+            });
+
+            expect({ custom: false }, 'to be completely custom');
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect.addAssertion('to be completely custom', function (expect, subject) {").nl();
+                output.code("  return expect.withError(function () {").nl();
+                output.code("    expect(subject, 'to satisfy', { custom: true });").nl();
+                output.code("  }, function (err) {").nl();
+                output.code("    var createDiff = err.getDiffMethod();").nl();
+                output.code("    expect.fail({").nl();
+                output.code("      diff: function (output, diff, inspect, equal) {").nl();
+                output.code("        output.text('~~~~~~~~~~~~~~').sp().success('custom').sp().text('~~~~~~~~~~~~~~').nl();").nl();
+                output.code("        var result = createDiff(output, diff, inspect, equal);").nl();
+                output.code("        return result;").nl();
+                output.code("      }").nl();
+                output.code("    });").nl();
+                output.code("  });").nl();
+                output.code("});").nl();
+                output.code("").nl();
+                output.code("expect({ custom: false }, 'to be completely custom');").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected { custom: false } to be completely custom\n" +
+                "\n" +
+                "~~~~~~~~~~~~~~ custom ~~~~~~~~~~~~~~\n" +
+                "{\n" +
+                "  custom: false // should equal true\n" +
+                "}"
+            );
+        }
+        return expect.promise.all(testPromises);
+    });
+
     it("api/addAssertion.md contains correct examples", function () {
         var testPromises = [];
         var errorMode = 'default'; // use to control the error mode later in the example
@@ -562,7 +716,7 @@ describe("documentation tests", function () {
                 });
               },
               diff: function (output, diff, inspect, equal) {
-                return diff('You have been a very bad boy!', 'You have been a very mad boy!')
+                return diff('You have been a very bad boy!', 'You have been a very mad boy!');
               }
             });
             expect.fail(function (output) {
@@ -576,7 +730,7 @@ describe("documentation tests", function () {
                 output.code("    });").nl();
                 output.code("  },").nl();
                 output.code("  diff: function (output, diff, inspect, equal) {").nl();
-                output.code("    return diff('You have been a very bad boy!', 'You have been a very mad boy!')").nl();
+                output.code("    return diff('You have been a very bad boy!', 'You have been a very mad boy!');").nl();
                 output.code("  }").nl();
                 output.code("});").nl();
                 output.error("to throw");
@@ -747,7 +901,7 @@ describe("documentation tests", function () {
 
                 output.indentLines();
                 errors.forEach(function (e, i) {
-                  output.nl().i().text(i + ': ').block(e.output);
+                  output.nl().i().text(i + ': ').block(e.getErrorMessage());
                 });
               });
             });
@@ -781,7 +935,7 @@ describe("documentation tests", function () {
                     output.code("").nl();
                     output.code("    output.indentLines();").nl();
                     output.code("    errors.forEach(function (e, i) {").nl();
-                    output.code("      output.nl().i().text(i + ': ').block(e.output);").nl();
+                    output.code("      output.nl().i().text(i + ': ').block(e.getErrorMessage());").nl();
                     output.code("    });").nl();
                     output.code("  });").nl();
                     output.code("});").nl();
@@ -831,7 +985,7 @@ describe("documentation tests", function () {
                     if (promises[key].isFulfilled()) {
                       output.success('✓');
                     } else {
-                      output.error('⨯ ').block(promises[key].reason().output);
+                      output.error('⨯ ').block(promises[key].reason().getErrorMessage());
                     }
                     output.nl();
                   });
@@ -862,7 +1016,7 @@ describe("documentation tests", function () {
                     output.code("        if (promises[key].isFulfilled()) {").nl();
                     output.code("          output.success('✓');").nl();
                     output.code("        } else {").nl();
-                    output.code("          output.error('⨯ ').block(promises[key].reason().output);").nl();
+                    output.code("          output.error('⨯ ').block(promises[key].reason().getErrorMessage());").nl();
                     output.code("        }").nl();
                     output.code("        output.nl();").nl();
                     output.code("      });").nl();
@@ -1836,6 +1990,153 @@ describe("documentation tests", function () {
                 "expected false to be true"
             );
         }
+        return expect.promise.all(testPromises);
+    });
+
+    it("assertions/function/to-error.md contains correct examples", function () {
+        var testPromises = [];
+        function willBeRejected() {
+            return expect.promise(function (resolve, reject) {
+                reject(new Error('The reject message'));
+            });
+        }
+        function willThrow() {
+            throw new Error('The error message');
+        }
+        expect(willBeRejected, 'to error');
+        expect(willThrow, 'to error');
+
+        try {
+            function willNotBeRejected() {
+                return expect.promise(function (resolve, reject) {
+                    resolve('Hello world');
+                });
+            }
+            expect(willNotBeRejected, 'to error');
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("function willNotBeRejected() {").nl();
+                output.code("    return expect.promise(function (resolve, reject) {").nl();
+                output.code("        resolve('Hello world');").nl();
+                output.code("    });").nl();
+                output.code("}").nl();
+                output.code("expect(willNotBeRejected, 'to error');").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected\n" +
+                "function willNotBeRejected() {\n" +
+                "    return expect.promise(function (resolve, reject) {\n" +
+                "        resolve('Hello world');\n" +
+                "    });\n" +
+                "}\n" +
+                "to error"
+            );
+        }
+
+        expect(willBeRejected, 'to error', 'The reject message');
+
+        try {
+            expect(willBeRejected, 'to error', 'The error message');
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect(willBeRejected, 'to error', 'The error message');").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected\n" +
+                "function willBeRejected() {\n" +
+                "    return expect.promise(function (resolve, reject) {\n" +
+                "        reject(new Error('The reject message'));\n" +
+                "    });\n" +
+                "}\n" +
+                "to error 'The error message'\n" +
+                "  expected Error('The reject message') to satisfy 'The error message'\n" +
+                "\n" +
+                "  -The reject message\n" +
+                "  +The error message"
+            );
+        }
+
+        expect(willBeRejected, 'to error', /reject message/);
+
+        try {
+            expect(willBeRejected, 'to error', /error message/);
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect(willBeRejected, 'to error', /error message/);").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected\n" +
+                "function willBeRejected() {\n" +
+                "    return expect.promise(function (resolve, reject) {\n" +
+                "        reject(new Error('The reject message'));\n" +
+                "    });\n" +
+                "}\n" +
+                "to error /error message/\n" +
+                "  expected Error('The reject message') to satisfy /error message/"
+            );
+        }
+
+        expect(willNotBeRejected, 'not to error');
+
+        try {
+            expect(willBeRejected, 'not to error');
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect(willBeRejected, 'not to error');").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected\n" +
+                "function willBeRejected() {\n" +
+                "    return expect.promise(function (resolve, reject) {\n" +
+                "        reject(new Error('The reject message'));\n" +
+                "    });\n" +
+                "}\n" +
+                "not to error\n" +
+                "  returned promise rejected with: Error('The reject message')"
+            );
+        }
+
+        testPromises.push(expect.promise(function () {
+            function willBeRejectedAsync() {
+                return expect.promise(function (resolve, reject) {
+                    setImmediate(function () {
+                        reject(new Error('async error'));
+                    });
+                });
+            }
+
+            return expect(willBeRejectedAsync, 'to error', function (e) {
+                return expect(e.message, 'to equal', 'async error');
+            });
+        }));
+
+        testPromises.push(expect.promise(function () {
+            var errorCount = 0;
+            function willBeRejectedAsync() {
+                return expect.promise(function (resolve, reject) {
+                    setImmediate(function () {
+                        var error = new Error('async error');
+                        errorCount += 1;
+                        error.errorCount = errorCount;
+                        reject(error);
+                    });
+                });
+            }
+
+            return expect(willBeRejectedAsync, 'to error', function (e) {
+                return expect(willBeRejectedAsync, 'to error', function (e2) {
+                    return expect(e2.errorCount, 'to be greater than', e.errorCount);
+                });
+            });
+        }));
         return expect.promise.all(testPromises);
     });
 

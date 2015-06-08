@@ -16,6 +16,12 @@ test-phantomjs: ${TARGETS}
 	@$(eval QUERY=$(shell node -e "console.log(decodeURIComponent(process.argv.pop()).replace(/\s/g, '%20'))" "${grep}")) \
     ./node_modules/.bin/mocha-phantomjs test/tests.html?grep=${QUERY}
 
+test-jasmine:
+	./node_modules/.bin/jasmine JASMINE_CONFIG_PATH=test/support/jasmine.json
+
+test-jasmine-browser: unexpected.js
+	@./node_modules/.bin/serve .
+
 test: lint
 	mocha
 

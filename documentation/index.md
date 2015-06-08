@@ -126,6 +126,31 @@ The source for Unexpected can be found on
 
 ## Releases
 
+### 8.0.0
+
+* All errors originating from assertions are now instances of
+  `UnexpectedError` (link), which can be manipulated before being
+  serialized.
+* Error messages and diffs are now built lazily, improving
+  performance.
+* Unexpected now detects created promises that were never returned and
+  fails synchronously. This will uncover some extremely nasty bugs
+  where the test suite succeeds when it should actually fail. This
+  feature only works in [Mocha](http://mochajs.org/) and [Jasmine](http://jasmine.github.io/).
+* Deprecated error.output, please use error.getErrorMessage() instead.
+* Deprecated error.label, please use error.getLabel() instead.
+* `when decoded as`, `when called with`, `when passed as parameter
+  to`, `when passed as parameters to`: Require the 4th argument to be
+  a string specifying an assertion. Previously a function was also
+  allowed, which turned out to be error prone. This also affects all
+  plugins that use the internal function `Assertion.prototype.shift`
+  to delegate to other assertions.
+* Nested error mode: Don't repeat the subject when it takes up
+  multiple lines and is identical to the parent subject.
+* Added a new `bubbleThrough` error mode that will make the error
+  bubble all the way to the top, mainly useful internally.
+* Minor bugfixes and output tweaks.
+
 ### 7.0.0
 
 * Support for
