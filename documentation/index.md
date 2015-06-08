@@ -149,6 +149,7 @@ The source for Unexpected can be found on
   multiple lines and is identical to the parent subject.
 * Added a new `bubbleThrough` error mode that will make the error
   bubble all the way to the top, mainly useful internally.
+* Added [`to error`](/assertions/function/to-error/) assertion.
 * Minor bugfixes and output tweaks.
 
 ### 7.0.0
