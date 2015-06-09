@@ -5714,13 +5714,22 @@ describe('unexpected', function () {
     });
 
     describe('assertion.shift', function () {
-        it('should fail when the next argument is not a string', function () {
+        describe('with an expect.it function as the next argument', function () {
+            it('should succeed', function () {
+                var clonedExpect = expect.clone().addAssertion('string', 'when prepended with foo', function (expect, subject) {
+                    return this.shift('foo' + subject, 0);
+                });
+                clonedExpect('foo', 'when prepended with foo', expect.it('to equal', 'foofoo'));
+            });
+        });
+
+        it('should fail when the next argument is a non-expect.it function', function () {
             var clonedExpect = expect.clone().addAssertion('string', 'when prepended with foo', function (expect, subject) {
                 return this.shift('foo' + subject, 0);
             });
             expect(function () {
                 clonedExpect('foo', 'when prepended with foo', function () {});
-            }, 'to throw', 'The "when prepended with foo" assertion requires parameter #2 to be a string specifying an assertion to delegate to');
+            }, 'to throw', 'The "when prepended with foo" assertion requires parameter #2 to be an expect.it function or a string specifying an assertion to delegate to');
         });
 
         describe('with an async assertion', function () {
