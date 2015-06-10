@@ -34,6 +34,7 @@ coverage: lib/*
 		-x **/site/** \
 		-x **/site-build/** \
 		-x **/documentation/** \
+		-x lib/testFrameworkPatch.js \
 	--include-all-sources ./node_modules/mocha/bin/_mocha -- --reporter dot
 
 .PHONY: test-browser
