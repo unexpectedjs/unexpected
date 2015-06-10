@@ -4,9 +4,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0">
-    <link rel="stylesheet" href="/static/normalize.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="/static/main.css" type="text/css" media="screen" />
-    <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="/static/bug-icon-black.ico">
+    <link rel="stylesheet" href="../../static/normalize.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../../static/main.css" type="text/css" media="screen" />
+    <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="../../static/bug-icon-black.ico">
     <title>installPlugin</title>
 </head>
 <body class="sidebar-hidden has-sidebar">
@@ -18,11 +18,13 @@
                     <button class="menu-toggle" onclick="toggleSidebar()"></button>
                 </li>
                 
-                <li class=""><a href="/">Unexpected</a></li>
+                <li class=""><a href="../..">Unexpected</a></li>
                 
-                <li class=""><a href="/assertions/any/to-be/">Assertions</a></li>
                 
-                <li class="active"><a href="/api/addAssertion/">API</a></li>
+                <li class=""><a href="../../assertions/any/to-be">Assertions</a></li>
+                
+                
+                <li class="active"><a href="../addAssertion">API</a></li>
                 
             </ul>
         </nav>
@@ -39,51 +41,55 @@
     <ul>
         
         <li class="">
-            <a href="/api/addAssertion/">addAssertion</a>
+            <a href="../addAssertion">addAssertion</a>
         </li>
         
         <li class="">
-            <a href="/api/addType/">addType</a>
+            <a href="../addType">addType</a>
         </li>
         
         <li class="">
-            <a href="/api/async/">async</a>
+            <a href="../async">async</a>
         </li>
         
         <li class="">
-            <a href="/api/clone/">clone</a>
+            <a href="../clone">clone</a>
         </li>
         
         <li class="">
-            <a href="/api/fail/">fail</a>
+            <a href="../fail">fail</a>
         </li>
         
         <li class="active">
-            <a href="/api/installPlugin/">installPlugin</a>
+            <a href="">installPlugin</a>
         </li>
         
         <li class="">
-            <a href="/api/promise/">promise</a>
+            <a href="../promise">promise</a>
         </li>
         
         <li class="">
-            <a href="/api/promise-all/">promise.all</a>
+            <a href="../promise-all">promise.all</a>
         </li>
         
         <li class="">
-            <a href="/api/promise-any/">promise.any</a>
+            <a href="../promise-any">promise.any</a>
         </li>
         
         <li class="">
-            <a href="/api/promise-settle/">promise.settle</a>
+            <a href="../promise-settle">promise.settle</a>
         </li>
         
         <li class="">
-            <a href="/api/toString/">toString</a>
+            <a href="../toString">toString</a>
         </li>
         
         <li class="">
-            <a href="/api/withError/">withError</a>
+            <a href="../UnexpectedError">UnexpectedError</a>
+        </li>
+        
+        <li class="">
+            <a href="../withError">withError</a>
         </li>
         
     </ul>
@@ -172,10 +178,13 @@ following plugins:</p>
         </div>
     </div>
 </section>
-<script type="text/javascript" src="/static/toggleSidebar.js"></script>
-<script type="text/javascript" src="/static/rememberScrollPosition.js"></script>
-<script type="text/javascript" src="/static/focusMain.js"></script>
-<script type="text/javascript" src="/static/search.js"></script>
+<script type="text/javascript">
+    baseUrl = '../..';
+</script>
+<script type="text/javascript" src="../../static/toggleSidebar.js"></script>
+<script type="text/javascript" src="../../static/rememberScrollPosition.js"></script>
+<script type="text/javascript" src="../../static/focusMain.js"></script>
+<script type="text/javascript" src="../../static/search.js"></script>
 </body>
 </html>
 

@@ -44,12 +44,16 @@
     "url": "/api/toString/"
   },
   {
+    "label": "UnexpectedError (api)",
+    "url": "/api/UnexpectedError/"
+  },
+  {
     "label": "withError (api)",
     "url": "/api/withError/"
   },
   {
-    "label": "to be greater than or equal to (number)",
-    "url": "/assertions/number/to-be-greater-than-or-equal-to/"
+    "label": "to be finite (number)",
+    "url": "/assertions/number/to-be-finite/"
   },
   {
     "label": "when decoded as (Buffer)",
@@ -100,6 +104,14 @@
     "url": "/assertions/any/when-passed-as-parameter-to/"
   },
   {
+    "label": "to be false (boolean)",
+    "url": "/assertions/boolean/to-be-false/"
+  },
+  {
+    "label": "to be true (boolean)",
+    "url": "/assertions/boolean/to-be-true/"
+  },
+  {
     "label": "to be empty (array-like)",
     "url": "/assertions/array-like/to-be-empty/"
   },
@@ -124,12 +136,8 @@
     "url": "/assertions/array-like/when-passed-as-parameters-to/"
   },
   {
-    "label": "to be false (boolean)",
-    "url": "/assertions/boolean/to-be-false/"
-  },
-  {
-    "label": "to be true (boolean)",
-    "url": "/assertions/boolean/to-be-true/"
+    "label": "to error (function)",
+    "url": "/assertions/function/to-error/"
   },
   {
     "label": "to have arity (function)",
@@ -148,12 +156,12 @@
     "url": "/assertions/number/to-be-close-to/"
   },
   {
-    "label": "to be finite (number)",
-    "url": "/assertions/number/to-be-finite/"
-  },
-  {
     "label": "to have message (Error)",
     "url": "/assertions/Error/to-have-message/"
+  },
+  {
+    "label": "to be greater than or equal to (number)",
+    "url": "/assertions/number/to-be-greater-than-or-equal-to/"
   },
   {
     "label": "to be greater than (number)",

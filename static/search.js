@@ -1,4 +1,4 @@
-/*global document, window, XMLHttpRequest, searchIndexPath*/
+/*global baseUrl, document, window, XMLHttpRequest, searchIndexPath*/
 function setupSearch(searchIndex) {
     var search = document.getElementById('search');
     var searchDropDown = document.getElementById('searchDropDown');
@@ -97,7 +97,7 @@ function setupSearch(searchIndex) {
             return false;
         }
 
-        window.location.href = renderedMatches[activeIndex].url;
+        window.location.href = baseUrl + renderedMatches[activeIndex].url;
         clearSearch();
 
         return true;
@@ -170,6 +170,6 @@ var getJSON = function(url, successHandler, errorHandler) {
   xhr.send();
 };
 
-getJSON('/searchIndex.json', function(status, data) {
+getJSON(baseUrl + '/searchIndex.json', function(status, data) {
     setupSearch(data);
 });

@@ -1,0 +1,284 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0">
+    <link rel="stylesheet" href="../../static/normalize.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../../static/main.css" type="text/css" media="screen" />
+    <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="../../static/bug-icon-black.ico">
+    <title>UnexpectedError</title>
+</head>
+<body class="sidebar-hidden has-sidebar">
+    <header>
+        <div class="logo-icon"></div>
+        <nav>
+            <ul>
+                <li class="menu-toggle-item">
+                    <button class="menu-toggle" onclick="toggleSidebar()"></button>
+                </li>
+                
+                <li class=""><a href="../..">Unexpected</a></li>
+                
+                
+                <li class=""><a href="../../assertions/any/to-be">Assertions</a></li>
+                
+                
+                <li class="active"><a href="../addAssertion">API</a></li>
+                
+            </ul>
+        </nav>
+        <div class="search" style="visibility: hidden">
+            <input id="search" placeholder="Search..." value="">
+            <div id="searchDropDown" class="dropDown">
+                <ul id="searchResults"></ul>
+            </div>
+        </div>
+    </header>
+
+<section id="api">
+    <nav id="api-menu" class="sidebar js-remember-scroll-position">
+    <ul>
+        
+        <li class="">
+            <a href="../addAssertion">addAssertion</a>
+        </li>
+        
+        <li class="">
+            <a href="../addType">addType</a>
+        </li>
+        
+        <li class="">
+            <a href="../async">async</a>
+        </li>
+        
+        <li class="">
+            <a href="../clone">clone</a>
+        </li>
+        
+        <li class="">
+            <a href="../fail">fail</a>
+        </li>
+        
+        <li class="">
+            <a href="../installPlugin">installPlugin</a>
+        </li>
+        
+        <li class="">
+            <a href="../promise">promise</a>
+        </li>
+        
+        <li class="">
+            <a href="../promise-all">promise.all</a>
+        </li>
+        
+        <li class="">
+            <a href="../promise-any">promise.any</a>
+        </li>
+        
+        <li class="">
+            <a href="../promise-settle">promise.settle</a>
+        </li>
+        
+        <li class="">
+            <a href="../toString">toString</a>
+        </li>
+        
+        <li class="active">
+            <a href="">UnexpectedError</a>
+        </li>
+        
+        <li class="">
+            <a href="../withError">withError</a>
+        </li>
+        
+    </ul>
+</nav>
+
+    <div class="main" tabindex="-1">
+        <div class="content">
+            <p>When assertions fails in Unexpected they yield an
+<code>UnexpectedError</code>. This instance has several convenience methods for
+retrieving information about the error.</p>
+<h3 id="unexpectederror-geterrormessage-">UnexpectedError.getErrorMessage()</h3>
+<p>Returns the error message as a
+<a href="https://github.com/sunesimonsen/magicpen">magicpen</a> instance. The
+method uses the assertion error modes to produce the correct
+error message.</p>
+<p>This is useful if you want to combine multiple errors in one assertion:</p>
+<div class="code lang-javascript">
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span><span style="color: #df5000">&quot;array&quot;</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">&quot;to&nbsp;have&nbsp;item&nbsp;satisfying&quot;</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>expect<span style="color: #000000">,</span>&nbsp;subject<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #a71d5d">var</span>&nbsp;args&nbsp;<span style="color: #a71d5d">=</span>&nbsp;Array<span style="color: #000000">.</span>prototype<span style="color: #000000">.</span>slice<span style="color: #000000">.</span><span style="color: #000000">call</span><span style="color: #000000">(</span>arguments<span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">2</span><span style="color: #000000">);</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #a71d5d">var</span>&nbsp;promises&nbsp;<span style="color: #a71d5d">=</span>&nbsp;subject<span style="color: #000000">.</span><span style="color: #000000">map</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>item<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">promise</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">apply</span><span style="color: #000000">(</span>expect<span style="color: #000000">,</span>&nbsp;<span style="color: #000000">[</span>item<span style="color: #000000">].</span><span style="color: #000000">concat</span><span style="color: #000000">(</span>args<span style="color: #000000">));</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">});</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #000000">});</span></div>
+  <div>&nbsp;</div>
+  <div>&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;expect<span style="color: #000000">.</span>promise<span style="color: #000000">.</span><span style="color: #000000">settle</span><span style="color: #000000">(</span>promises<span style="color: #000000">).</span><span style="color: #000000">then</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">var</span>&nbsp;failed&nbsp;<span style="color: #a71d5d">=</span>&nbsp;promises<span style="color: #000000">.</span><span style="color: #000000">every</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>promise<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;promise<span style="color: #000000">.</span><span style="color: #000000">isRejected</span><span style="color: #000000">();</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">});</span></div>
+  <div>&nbsp;</div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">if</span>&nbsp;<span style="color: #000000">(</span>failed<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">fail</span><span style="color: #000000">({</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;diff<span style="color: #000000">:</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>output<span style="color: #000000">,</span>&nbsp;diff<span style="color: #000000">,</span>&nbsp;inspect<span style="color: #000000">,</span>&nbsp;equal<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">var</span>&nbsp;result&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inline<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">true</span><span style="color: #000000">,</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;diff<span style="color: #000000">:</span>&nbsp;output</div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">};</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;promises<span style="color: #000000">.</span><span style="color: #000000">forEach</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>promise<span style="color: #000000">,</span>&nbsp;index<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">if</span>&nbsp;<span style="color: #000000">(</span>index&nbsp;<span style="color: #a71d5d">&gt;</span>&nbsp;<span style="color: #0086b3">0</span><span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span>&nbsp;result<span style="color: #000000">.</span>diff<span style="color: #000000">.</span><span style="color: #000000">nl</span><span style="color: #000000">(</span><span style="color: #0086b3">2</span><span style="color: #000000">);</span>&nbsp;<span style="color: #000000">}</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">var</span>&nbsp;error&nbsp;<span style="color: #a71d5d">=</span>&nbsp;promise<span style="color: #000000">.</span><span style="color: #000000">reason</span><span style="color: #000000">();</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #969896">&nbsp;//&nbsp;the&nbsp;error&nbsp;is&nbsp;connected&nbsp;to&nbsp;the&nbsp;current&nbsp;scope</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #969896">&nbsp;//&nbsp;but&nbsp;we&nbsp;are&nbsp;just&nbsp;interested&nbsp;in&nbsp;the&nbsp;nested&nbsp;error</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;error<span style="color: #000000">.</span>errorMode&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #df5000">'bubble'</span><span style="color: #000000">;</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result<span style="color: #000000">.</span>diff<span style="color: #000000">.</span><span style="color: #000000">append</span><span style="color: #000000">(</span>error<span style="color: #000000">.</span><span style="color: #000000">getErrorMessage</span><span style="color: #000000">());</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">});</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;result<span style="color: #000000">;</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">}</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">});</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">}</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #000000">});</span></div>
+  <div><span style="color: #000000">});</span></div>
+</div><p>When the assertion fails we get the following output:</p>
+<div class="code lang-javascript">
+  <div><span style="color: #000000">expect</span><span style="color: #000000">([</span><span style="color: #df5000">'foo'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'bar'</span><span style="color: #000000">],</span>&nbsp;<span style="color: #df5000">'to&nbsp;have&nbsp;item&nbsp;satisfying'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;equal'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'bar'</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #000000">expect</span><span style="color: #000000">([</span><span style="color: #df5000">'foo'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'bar'</span><span style="color: #000000">],</span>&nbsp;<span style="color: #df5000">'to&nbsp;have&nbsp;item&nbsp;satisfying'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;equal'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'bAr'</span><span style="color: #000000">);</span></div>
+</div><div class="output">
+  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;[&nbsp;<span style="color: #df5000">'foo'</span>,&nbsp;<span style="color: #df5000">'bar'</span>&nbsp;]&nbsp;<span style="color: red; font-weight: bold">to&nbsp;have&nbsp;item&nbsp;satisfying</span>&nbsp;<span style="color: #df5000">'to&nbsp;equal'</span>,&nbsp;<span style="color: #df5000">'bAr'</span></div>
+  <div>&nbsp;</div>
+  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #df5000">'foo'</span>&nbsp;<span style="color: red; font-weight: bold">to&nbsp;equal</span>&nbsp;<span style="color: #df5000">'bAr'</span></div>
+  <div>&nbsp;</div>
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red">-</span></div>
+</div><div style="display: inline-block; vertical-align: top">
+  <div><span style="background-color: red; color: white">foo</span></div>
+</div></div>
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: green">+</span></div>
+</div><div style="display: inline-block; vertical-align: top">
+  <div><span style="background-color: green; color: white">bAr</span></div>
+</div></div>
+  <div>&nbsp;</div>
+  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #df5000">'bar'</span>&nbsp;<span style="color: red; font-weight: bold">to&nbsp;equal</span>&nbsp;<span style="color: #df5000">'bAr'</span></div>
+  <div>&nbsp;</div>
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red">-</span></div>
+</div><div style="display: inline-block; vertical-align: top">
+  <div><span style="background-color: red; color: white">bar</span></div>
+</div></div>
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: green">+</span></div>
+</div><div style="display: inline-block; vertical-align: top">
+  <div><span style="background-color: green; color: white">bAr</span></div>
+</div></div>
+</div><h3 id="unexpectederror-parent">UnexpectedError.parent</h3>
+<p>When assertions delegate to nested <code>expect</code> calls the errors that are
+thrown on each level are chained together through the <code>parent</code>
+property. The error message is serialized lazily, so it is possible to
+change the error hierarchy before the error is serialized or extract
+information from the hierarchy and use <a href="../fail/">expect.fail</a> to throw
+a new error.</p>
+<p>We could for example change the error mode for all the errors in the
+chain to <code>nested</code>:</p>
+<div class="code lang-javascript">
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span><span style="color: #df5000">'detailed&nbsp;to&nbsp;be'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>expect<span style="color: #000000">,</span>&nbsp;subject<span style="color: #000000">,</span>&nbsp;value<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #a71d5d">this</span><span style="color: #000000">.</span>errorMode&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #df5000">'bubble'</span><span style="color: #000000">;</span></div>
+  <div>&nbsp;&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">withError</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>subject<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be'</span><span style="color: #000000">,</span>&nbsp;value<span style="color: #000000">);</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #000000">},</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>err<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;err<span style="color: #000000">.</span><span style="color: #000000">getParents</span><span style="color: #000000">().</span><span style="color: #000000">forEach</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>e<span style="color: #000000">){</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e<span style="color: #000000">.</span>errorMode&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #df5000">'nested'</span><span style="color: #000000">;</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">});</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">fail</span><span style="color: #000000">(</span>err<span style="color: #000000">);</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #000000">});</span></div>
+  <div><span style="color: #000000">});</span></div>
+  <div>&nbsp;</div>
+  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #df5000">'f00!'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'detailed&nbsp;to&nbsp;be'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'foo!'</span><span style="color: #000000">);</span></div>
+</div><div class="output">
+  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #df5000">'f00!'</span>&nbsp;<span style="color: red; font-weight: bold">to&nbsp;be</span>&nbsp;<span style="color: #df5000">'foo!'</span></div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #df5000">'f00!'</span>&nbsp;<span style="color: red; font-weight: bold">to&nbsp;equal</span>&nbsp;<span style="color: #df5000">'foo!'</span></div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">Explicit&nbsp;failure</span></div>
+  <div>&nbsp;</div>
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red">-</span></div>
+</div><div style="display: inline-block; vertical-align: top">
+  <div><span style="background-color: red; color: white">f00</span><span style="color: red">!</span></div>
+</div></div>
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: green">+</span></div>
+</div><div style="display: inline-block; vertical-align: top">
+  <div><span style="background-color: green; color: white">foo</span><span style="color: green">!</span></div>
+</div></div>
+</div></div>
+</div></div>
+</div><h3 id="unexpectederror-getparents-">UnexpectedError.getParents()</h3>
+<p>Return an array with all the ancestor errors to this error. See
+<a href="#unexpectederror-parent">parent</a> for more information.</p>
+<h3 id="unexpectederror-getallerrors-">UnexpectedError.getAllErrors()</h3>
+<p>Return an array with this error and all it&#39;s ancestors. See
+<a href="#unexpectederror-parent">parent</a> for more information.</p>
+<h3 id="unexpectederror-getdiff-">UnexpectedError.getDiff()</h3>
+<p>Finds the first error in the hierarchy that contains a diff and
+returns it. This method if useful if you want to hoist a diff from an
+ancestor error and combine it with a new message.</p>
+<h3 id="unexpectederror-getdiffmethod-">UnexpectedError.getDiffMethod()</h3>
+<p>In case you need to wrap diff with additional information you can
+retrieve a method that will build a diff for you. It will find the
+first ancestor error that contains a diff and return the method to
+create the diff. Now you can delegate to that method from
+<code>expect.fail</code>:</p>
+<div class="code lang-javascript">
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span><span style="color: #df5000">'to&nbsp;be&nbsp;completely&nbsp;custom'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>expect<span style="color: #000000">,</span>&nbsp;subject<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">withError</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>subject<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;satisfy'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #000000">{</span>&nbsp;custom<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">true</span>&nbsp;<span style="color: #000000">});</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #000000">},</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>err<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">var</span>&nbsp;createDiff&nbsp;<span style="color: #a71d5d">=</span>&nbsp;err<span style="color: #000000">.</span><span style="color: #000000">getDiffMethod</span><span style="color: #000000">();</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">fail</span><span style="color: #000000">({</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;diff<span style="color: #000000">:</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>output<span style="color: #000000">,</span>&nbsp;diff<span style="color: #000000">,</span>&nbsp;inspect<span style="color: #000000">,</span>&nbsp;equal<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;output<span style="color: #000000">.</span><span style="color: #000000">text</span><span style="color: #000000">(</span><span style="color: #df5000">'~~~~~~~~~~~~~~'</span><span style="color: #000000">).</span><span style="color: #000000">sp</span><span style="color: #000000">().</span><span style="color: #000000">success</span><span style="color: #000000">(</span><span style="color: #df5000">'custom'</span><span style="color: #000000">).</span><span style="color: #000000">sp</span><span style="color: #000000">().</span><span style="color: #000000">text</span><span style="color: #000000">(</span><span style="color: #df5000">'~~~~~~~~~~~~~~'</span><span style="color: #000000">).</span><span style="color: #000000">nl</span><span style="color: #000000">();</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">var</span>&nbsp;result&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #000000">createDiff</span><span style="color: #000000">(</span>output<span style="color: #000000">,</span>&nbsp;diff<span style="color: #000000">,</span>&nbsp;inspect<span style="color: #000000">,</span>&nbsp;equal<span style="color: #000000">);</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;result<span style="color: #000000">;</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">}</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">});</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #000000">});</span></div>
+  <div><span style="color: #000000">});</span></div>
+  <div>&nbsp;</div>
+  <div><span style="color: #000000">expect</span><span style="color: #000000">({</span>&nbsp;custom<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">false</span>&nbsp;<span style="color: #000000">},</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;completely&nbsp;custom'</span><span style="color: #000000">);</span></div>
+</div><div class="output">
+  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;{&nbsp;<span style="color: #555">custom</span>:&nbsp;<span style="color: #0086b3">false</span>&nbsp;}&nbsp;<span style="color: red; font-weight: bold">to&nbsp;be&nbsp;completely&nbsp;custom</span></div>
+  <div>&nbsp;</div>
+  <div>~~~~~~~~~~~~~~&nbsp;<span style="color: green; font-weight: bold">custom</span>&nbsp;~~~~~~~~~~~~~~</div>
+  <div>{</div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #555">custom</span>:&nbsp;<span style="color: #0086b3">false</span>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">//</span></div>
+</div>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">should&nbsp;equal</span>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #0086b3">true</span></div>
+</div></div>
+</div></div>
+</div></div>
+  <div>}</div>
+</div><h3 id="unexpectederror-getlabel-">UnexpectedError.getLabel()</h3>
+<p>Get a shortened representation of the error message that doesn&#39;t
+repeat the subject, for example should equal &#39;bar&#39; rather than
+expected &#39;foo&#39; to equal &#39;bar&#39;. This makes it suitable for display next
+to an existing rendering of the subject, such as inside a diff.</p>
+
+        </div>
+    </div>
+</section>
+<script type="text/javascript">
+    baseUrl = '../..';
+</script>
+<script type="text/javascript" src="../../static/toggleSidebar.js"></script>
+<script type="text/javascript" src="../../static/rememberScrollPosition.js"></script>
+<script type="text/javascript" src="../../static/focusMain.js"></script>
+<script type="text/javascript" src="../../static/search.js"></script>
+</body>
+</html>
+
