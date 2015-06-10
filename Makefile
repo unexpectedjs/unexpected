@@ -53,8 +53,8 @@ endif
 
 .PHONY: deploy-site
 deploy-site: site-build
-	./node_modules/.bin/deploy-site && \
-    git push git@github.com:unexpectedjs/unexpectedjs.github.io.git +gh-pages:master
+	./node_modules/.bin/deploy-site site-build && \
+    git push git@github.com:unexpectedjs/unexpectedjs.github.io.git +site-build:master
 
 .PHONY: commit-unexpected
 commit-unexpected: unexpected.js
