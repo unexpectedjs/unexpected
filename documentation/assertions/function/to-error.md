@@ -112,9 +112,9 @@ assertions on the error.
 ```javascript#async:true
 function willBeRejectedAsync() {
     return expect.promise(function (resolve, reject) {
-        setImmediate(function () {
+        setTimeout(function () {
             reject(new Error('async error'));
-        });
+        }, 1);
     });
 }
 
@@ -129,12 +129,12 @@ You can even do async assertions in the function that you pass in.
 var errorCount = 0;
 function willBeRejectedAsync() {
     return expect.promise(function (resolve, reject) {
-        setImmediate(function () {
+        setTimeout(function () {
             var error = new Error('async error');
             errorCount += 1;
             error.errorCount = errorCount;
             reject(error);
-        });
+        }, 1);
     });
 }
 
