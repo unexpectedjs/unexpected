@@ -129,7 +129,7 @@ The source for Unexpected can be found on
 ### 8.0.0
 
 * All errors originating from assertions are now instances of
-  `UnexpectedError` (link), which can be manipulated before being
+  [`UnexpectedError`](/api/UnexpectedError/), which can be manipulated before being
   serialized.
 * Error messages and diffs are now built lazily, improving
   performance.
