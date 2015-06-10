@@ -3982,6 +3982,30 @@ describe('unexpected', function () {
                     });
                 });
             });
+
+            describe('when the error mode of the assertion changes after the assertion has failed', function () {
+                it('serializes the error with the error mode that was in effect at the time of its creation', function () {
+                    var clonedExpect = expect.clone().addAssertion('to be equal to foo', function (expect, subject) {
+                        this.errorMode = 'nested';
+                        try {
+                            expect(subject, 'to equal', 'foo');
+                        } catch (e) {
+                            this.errorMode = 'default';
+                            throw e;
+                        }
+                    });
+
+                    expect(function () {
+                        clonedExpect('bar', 'to be equal to foo');
+                    }, 'to throw',
+                        "expected 'bar' to be equal to foo\n" +
+                        "  expected 'bar' to equal 'foo'\n" +
+                        "\n" +
+                        "  -bar\n" +
+                        "  +foo"
+                    );
+                });
+            });
         });
 
         it('truncates the stack when a custom assertion throws a regular assertion error', function () {
