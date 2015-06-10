@@ -92,24 +92,16 @@
     "url": "/assertions/any/to-be/"
   },
   {
-    "label": "to equal (any)",
-    "url": "/assertions/any/to-equal/"
-  },
-  {
     "label": "to satisfy (any)",
     "url": "/assertions/any/to-satisfy/"
   },
   {
+    "label": "to equal (any)",
+    "url": "/assertions/any/to-equal/"
+  },
+  {
     "label": "when passed as parameter to (any)",
     "url": "/assertions/any/when-passed-as-parameter-to/"
-  },
-  {
-    "label": "to be false (boolean)",
-    "url": "/assertions/boolean/to-be-false/"
-  },
-  {
-    "label": "to be true (boolean)",
-    "url": "/assertions/boolean/to-be-true/"
   },
   {
     "label": "to be empty (array-like)",
@@ -136,6 +128,14 @@
     "url": "/assertions/array-like/when-passed-as-parameters-to/"
   },
   {
+    "label": "to be true (boolean)",
+    "url": "/assertions/boolean/to-be-true/"
+  },
+  {
+    "label": "to be false (boolean)",
+    "url": "/assertions/boolean/to-be-false/"
+  },
+  {
     "label": "to error (function)",
     "url": "/assertions/function/to-error/"
   },
@@ -148,12 +148,12 @@
     "url": "/assertions/function/to-throw/"
   },
   {
-    "label": "to be NaN (number)",
-    "url": "/assertions/number/to-be-NaN/"
-  },
-  {
     "label": "to be close to (number)",
     "url": "/assertions/number/to-be-close-to/"
+  },
+  {
+    "label": "to be NaN (number)",
+    "url": "/assertions/number/to-be-NaN/"
   },
   {
     "label": "to have message (Error)",
@@ -168,12 +168,12 @@
     "url": "/assertions/number/to-be-greater-than/"
   },
   {
-    "label": "to be infinite (number)",
-    "url": "/assertions/number/to-be-infinite/"
-  },
-  {
     "label": "to be less than or equal to (number)",
     "url": "/assertions/number/to-be-less-than-or-equal-to/"
+  },
+  {
+    "label": "to be infinite (number)",
+    "url": "/assertions/number/to-be-infinite/"
   },
   {
     "label": "to be less than (number)",
