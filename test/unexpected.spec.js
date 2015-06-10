@@ -1427,7 +1427,7 @@ describe('unexpected', function () {
         it('does not support the not-flag in combination with a value argument', function () {
             expect(function () {
                 expect({ a: 'a' }, 'not to have property', 'a', 'a');
-            }, "to throw", "The 'not to have property' assertion does not with a value argument");
+            }, "to throw", "The 'not to have property' assertion does not work with a value argument");
         });
     });
 
