@@ -633,11 +633,12 @@ describe('unexpected', function () {
 
         it("throws an error with a diff when comparing strings and not negated", function () {
             expect(function () {
-                expect('foo', 'to equal', 'bar');
-            }, 'to throw exception', "expected 'foo' to equal 'bar'\n" +
+                expect('foo\t \u0558\x09', 'to equal', 'bar Ѿ\u0559\x08');
+            }, 'to throw exception',
+                   "expected 'foo\\t \u0558\\t' to equal 'bar Ѿՙ\\b'\n" +
                    "\n" +
-                   "-foo\n" +
-                   "+bar");
+                   "-foo\\t \\u0558\\t\n" +
+                   "+bar Ѿՙ\\x08");
         });
 
         it("throws an error without actual and expected comparing strings and negated", function () {
