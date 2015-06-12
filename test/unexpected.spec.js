@@ -3823,7 +3823,7 @@ describe('unexpected', function () {
                            "  b: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'\n" +
                            "}\n" +
                            "to foobarbaz\n" +
-                           "  expected ... to satisfy { foo: 123 }\n" +
+                           "  expected object to satisfy { foo: 123 }\n" +
                            "\n" +
                            "  {\n" +
                            "    a: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',\n" +
