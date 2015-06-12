@@ -1454,7 +1454,7 @@ module.exports = function (expect) {
     expect.addAssertion('object', '[not] to have [own] property', function (expect, subject, key, value) {
         if (arguments.length === 4) {
             if (this.flags.not) {
-                throw new Error("The 'not to have property' assertion does not with a value argument");
+                throw new Error("The 'not to have property' assertion does not work with a value argument");
             }
 
             expect(subject, 'to have [own] property', key);
@@ -1745,6 +1745,7 @@ module.exports = function (expect) {
         'to have values satisfying',
         'to be (a map|a hash|an object) whose values satisfy'
     ], function (expect, subject) {
+        var that = this;
         var extraArgs = Array.prototype.slice.call(arguments, 2);
         if (extraArgs.length === 0) {
             throw new Error('Assertion "' + this.testDescription + '" expects a third argument');
@@ -1753,45 +1754,35 @@ module.exports = function (expect) {
         expect(subject, 'not to equal', {});
         this.errorMode = 'bubble';
 
-        var promiseByKey = {};
-        expect.findTypeOf(subject).getKeys(subject).forEach(function (key, index) {
-            promiseByKey[key] = expect.promise(function () {
-                if (typeof extraArgs[0] === 'function') {
-                    return extraArgs[0](subject[key], index);
-                } else {
-                    return expect.apply(expect, [subject[key], 'to satisfy assertion'].concat(extraArgs));
-                }
+        var subjectType = expect.findTypeOf(subject);
+        var keys = subjectType.getKeys(subject);
+        var expected = Array.isArray(subject) ? [] : {};
+        if (typeof extraArgs[0] === 'function') {
+            keys.forEach(function (key, index) {
+                expected[key] = function (s) {
+                    return extraArgs[0](s, index);
+                };
             });
-        });
+        } else {
+            keys.forEach(function (key, index) {
+                expected[key] = function (s) {
+                    return expect.apply(expect, [s, 'to satisfy assertion'].concat(extraArgs));
+                };
+            });
+        }
 
-        return expect.promise.all(promiseByKey).caught(function () {
-            return expect.promise.settle(promiseByKey).then(function () {
-                expect.fail(function (output) {
-                    var subjectOutput = expect.inspect(subject);
-                    output.error('failed expectation in');
-                    if (subjectOutput.size().height > 1) {
-                        output.nl();
-                    } else {
-                        output.sp();
-                    }
-                    subjectOutput.error(':');
-                    output.block(subjectOutput).nl();
-                    output.indentLines();
-
-                    var seenFirstRejected = false;
-                    Object.keys(promiseByKey).forEach(function (key) {
-                        var promise = promiseByKey[key];
-                        if (promise.isRejected()) {
-                            var error = promise.reason();
-                            if (seenFirstRejected) {
-                                output.nl();
-                            } else {
-                                seenFirstRejected = true;
-                            }
-                            output.i().text(key).text(': ').block(error.getErrorMessage());
-                        }
-                    });
-                });
+        return expect.withError(function () {
+            return expect(subject, 'to satisfy', expected);
+        }, function (err) {
+            expect.fail({
+                message: function (output) {
+                    output.append(that.standardErrorMessage({ compact: true }));
+                },
+                diff: function () {
+                    var diff = err.getDiff();
+                    diff.inline = true;
+                    return diff;
+                }
             });
         });
     });
@@ -1814,6 +1805,7 @@ module.exports = function (expect) {
         'to have keys satisfying',
         'to be (a map|a hash|an object) whose (keys|properties) satisfy'
     ], function (expect, subject) {
+        var that = this;
         var extraArgs = Array.prototype.slice.call(arguments, 2);
         if (extraArgs.length === 0) {
             throw new Error('Assertion "' + this.testDescription + '" expects a third argument');
@@ -1823,40 +1815,35 @@ module.exports = function (expect) {
         expect(subject, 'not to equal', {});
         this.errorMode = 'bubble';
 
-        var subjectKeys = expect.findTypeOf(subject).getKeys(subject),
-            promiseByKey = {};
-        subjectKeys.forEach(function (key) {
-            promiseByKey[key] = expect.promise(function () {
-                if (typeof extraArgs[0] === 'function') {
+        var subjectType = expect.findTypeOf(subject);
+        var keys = subjectType.getKeys(subject);
+        var expected = Array.isArray(subject) ? [] : {};
+        if (typeof extraArgs[0] === 'function') {
+            keys.forEach(function (key, index) {
+                expected[key] = function () {
                     return extraArgs[0](key, subject[key]);
-                } else {
-                    return expect.apply(expect, [key, 'to satisfy assertion'].concat(extraArgs));
-                }
+                };
             });
-        }, this);
+        } else {
+            keys.forEach(function (key, index) {
+                expected[key] = function () {
+                    return expect.apply(expect, [key, 'to satisfy assertion'].concat(extraArgs));
+                };
+            });
+        }
 
-        return expect.promise.all(promiseByKey).caught(function () {
-            return expect.promise.settle(promiseByKey).then(function () {
-                expect.fail(function (output) {
-                    output.error('failed expectation on keys ')
-                          .text(subjectKeys.join(', '))
-                          .error(':').nl()
-                          .indentLines();
-
-                    var seenFirstRejected = false;
-                    Object.keys(promiseByKey).forEach(function (key) {
-                        var promise = promiseByKey[key];
-                        if (promise.isRejected()) {
-                            var error = promise.reason();
-                            if (seenFirstRejected) {
-                                output.nl();
-                            } else {
-                                seenFirstRejected = true;
-                            }
-                            output.i().text(key).text(': ').block(error.getErrorMessage());
-                        }
-                    });
-                });
+        return expect.withError(function () {
+            return expect(subject, 'to satisfy', expected);
+        }, function (err) {
+            expect.fail({
+                message: function (output) {
+                    output.append(that.standardErrorMessage({ compact: true }));
+                },
+                diff: function () {
+                    var diff = err.getDiff();
+                    diff.inline = true;
+                    return diff;
+                }
             });
         });
     });
@@ -1988,7 +1975,7 @@ module.exports = function (expect) {
                 return value(subject);
             }, function (e) {
                 expect.fail({
-                    diff: function (output, diff, inspect, equal) {
+                    diff: function (output) {
                         return {
                             diff: output.append(e.getErrorMessage()),
                             inline: false
@@ -2081,7 +2068,9 @@ module.exports = function (expect) {
                                     } else if (conflicting || arrayItemOutOfRange) {
                                         var keyDiff = conflicting && conflicting.getDiff();
                                         isInlineDiff = !keyDiff || keyDiff.inline ;
-                                        if (typeof value[key] === 'function') {
+                                        if (keyDiff && keyDiff.diff && keyDiff.inline) {
+                                            valueOutput = keyDiff.diff;
+                                        } else if (typeof value[key] === 'function') {
                                             isInlineDiff = false;
                                             annotation.append(conflicting.getErrorMessage());
                                         } else if (!keyDiff || (keyDiff && !keyDiff.inline)) {
@@ -2266,7 +2255,8 @@ module.exports = function createStandardErrorMessage(expect, subject, testDescri
     var height = Math.max(subjectSize.height, argsSize.height);
 
     if (options.compact && subjectSize.height > 1) {
-        output.error('expected').sp().text('...').sp();
+        var subjectType = expect.findTypeOf(subject);
+        output.error('expected').sp().jsFunctionName(subjectType.name).sp();
     } else {
         output.error(preamble);
         if (subjectSize.height > 1) {
@@ -10488,7 +10478,7 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 }(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
 
 },{}],22:[function(require,module,exports){
-exports.read = function(buffer, offset, isLE, mLen, nBytes) {
+exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m,
       eLen = nBytes * 8 - mLen - 1,
       eMax = (1 << eLen) - 1,
@@ -10496,32 +10486,32 @@ exports.read = function(buffer, offset, isLE, mLen, nBytes) {
       nBits = -7,
       i = isLE ? (nBytes - 1) : 0,
       d = isLE ? -1 : 1,
-      s = buffer[offset + i];
+      s = buffer[offset + i]
 
-  i += d;
+  i += d
 
-  e = s & ((1 << (-nBits)) - 1);
-  s >>= (-nBits);
-  nBits += eLen;
-  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8);
+  e = s & ((1 << (-nBits)) - 1)
+  s >>= (-nBits)
+  nBits += eLen
+  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}
 
-  m = e & ((1 << (-nBits)) - 1);
-  e >>= (-nBits);
-  nBits += mLen;
-  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8);
+  m = e & ((1 << (-nBits)) - 1)
+  e >>= (-nBits)
+  nBits += mLen
+  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}
 
   if (e === 0) {
-    e = 1 - eBias;
+    e = 1 - eBias
   } else if (e === eMax) {
-    return m ? NaN : ((s ? -1 : 1) * Infinity);
+    return m ? NaN : ((s ? -1 : 1) * Infinity)
   } else {
-    m = m + Math.pow(2, mLen);
-    e = e - eBias;
+    m = m + Math.pow(2, mLen)
+    e = e - eBias
   }
-  return (s ? -1 : 1) * m * Math.pow(2, e - mLen);
-};
+  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
+}
 
-exports.write = function(buffer, value, offset, isLE, mLen, nBytes) {
+exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   var e, m, c,
       eLen = nBytes * 8 - mLen - 1,
       eMax = (1 << eLen) - 1,
@@ -10529,49 +10519,49 @@ exports.write = function(buffer, value, offset, isLE, mLen, nBytes) {
       rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0),
       i = isLE ? 0 : (nBytes - 1),
       d = isLE ? 1 : -1,
-      s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0;
+      s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
 
-  value = Math.abs(value);
+  value = Math.abs(value)
 
   if (isNaN(value) || value === Infinity) {
-    m = isNaN(value) ? 1 : 0;
-    e = eMax;
+    m = isNaN(value) ? 1 : 0
+    e = eMax
   } else {
-    e = Math.floor(Math.log(value) / Math.LN2);
+    e = Math.floor(Math.log(value) / Math.LN2)
     if (value * (c = Math.pow(2, -e)) < 1) {
-      e--;
-      c *= 2;
+      e--
+      c *= 2
     }
     if (e + eBias >= 1) {
-      value += rt / c;
+      value += rt / c
     } else {
-      value += rt * Math.pow(2, 1 - eBias);
+      value += rt * Math.pow(2, 1 - eBias)
     }
     if (value * c >= 2) {
-      e++;
-      c /= 2;
+      e++
+      c /= 2
     }
 
     if (e + eBias >= eMax) {
-      m = 0;
-      e = eMax;
+      m = 0
+      e = eMax
     } else if (e + eBias >= 1) {
-      m = (value * c - 1) * Math.pow(2, mLen);
-      e = e + eBias;
+      m = (value * c - 1) * Math.pow(2, mLen)
+      e = e + eBias
     } else {
-      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen);
-      e = 0;
+      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
+      e = 0
     }
   }
 
-  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8);
+  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
 
-  e = (e << mLen) | m;
-  eLen += mLen;
-  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8);
+  e = (e << mLen) | m
+  eLen += mLen
+  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
 
-  buffer[offset + i - d] |= s * 128;
-};
+  buffer[offset + i - d] |= s * 128
+}
 
 },{}],23:[function(require,module,exports){
 
