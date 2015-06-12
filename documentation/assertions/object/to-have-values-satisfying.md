@@ -26,10 +26,19 @@ expect({ foo: [0, 1, 2], bar: [4, 5, 6], baz: [7, 8, 9] },
 ```
 
 ```output
-failed expectation in { foo: [ 0, 1, 2 ], bar: [ 4, 5, 6 ], baz: [ 7, 8, 9 ] }:
-  baz: failed expectation in [ 7, 8, 9 ]:
-         1: ✓ expected 8 to be a number and
-            ⨯ expected 8 to be below 8
-         2: ✓ expected 9 to be a number and
-            ⨯ expected 9 to be below 8
+expected { foo: [ 0, 1, 2 ], bar: [ 4, 5, 6 ], baz: [ 7, 8, 9 ] } to have values satisfying
+'to have items satisfying', expect.it('to be a number')
+        .and('to be below', 8)
+
+{
+  foo: [...],
+  bar: [...],
+  baz: [
+    7,
+    8, // ✓ expected 8 to be a number and
+       // ⨯ expected 8 to be below 8
+    9 // ✓ expected 9 to be a number and
+      // ⨯ expected 9 to be below 8
+  ]
+}
 ```

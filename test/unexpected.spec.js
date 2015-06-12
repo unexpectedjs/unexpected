@@ -3092,13 +3092,17 @@ describe('unexpected', function () {
                     });
                 });
             }, 'to throw',
-                    'failed expectation in\n' +
-                    '[\n' +
-                    '  [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 ]\n' +
-                    ']:\n' +
-                    '  0: foo\n' +
-                    '     bar'
-            );
+                   "expected array to have values satisfying\n" +
+                   "function (item) {\n" +
+                   "    expect.fail(function (output) {\n" +
+                   "        output.text('foo').nl().text('bar');\n" +
+                   "    });\n" +
+                   "}\n" +
+                   "\n" +
+                   "[\n" +
+                   "  [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 ] // foo\n" +
+                   "                                                                            // bar\n" +
+                   "]");
         });
 
         it('supports legacy "to be an array whose items satisfy"', function () {
@@ -3132,9 +3136,19 @@ describe('unexpected', function () {
                     expect(item, 'to be less than', 4);
                 });
             }, 'to throw',
-                   "failed expectation in [ 0, 1, '2', 3, 4 ]:\n" +
-                   "  2: expected '2' to be a number\n" +
-                   "  4: expected 4 to be less than 4");
+                   "expected [ 0, 1, '2', 3, 4 ] to have values satisfying\n" +
+                   "function (item) {\n" +
+                   "    expect(item, 'to be a number');\n" +
+                   "    expect(item, 'to be less than', 4);\n" +
+                   "}\n" +
+                   "\n" +
+                   "[\n" +
+                   "  0,\n" +
+                   "  1,\n" +
+                   "  '2', // expected '2' to be a number\n" +
+                   "  3,\n" +
+                   "  4 // expected 4 to be less than 4\n" +
+                   "]");
         });
 
         it('indents failure reports of nested assertions correctly', function () {
@@ -3145,11 +3159,26 @@ describe('unexpected', function () {
                     });
                 });
             }, 'to throw',
-                "failed expectation in [ [ 0, 1, 2 ], [ 4, '5', 6 ], [ 7, 8, '9' ] ]:\n" +
-                "  1: failed expectation in [ 4, '5', 6 ]:\n" +
-                "       1: expected '5' to be a number\n" +
-                "  2: failed expectation in [ 7, 8, '9' ]:\n" +
-                "       2: expected '9' to be a number");
+                   "expected [ [ 0, 1, 2 ], [ 4, '5', 6 ], [ 7, 8, '9' ] ] to have values satisfying\n" +
+                   "function (arr) {\n" +
+                   "    expect(arr, 'to have items satisfying', function (item) {\n" +
+                   "        expect(item, 'to be a number');\n" +
+                   "    });\n" +
+                   "}\n" +
+                   "\n" +
+                   "[\n" +
+                   "  [...],\n" +
+                   "  [\n" +
+                   "    4,\n" +
+                   "    '5', // expected '5' to be a number\n" +
+                   "    6\n" +
+                   "  ],\n" +
+                   "  [\n" +
+                   "    7,\n" +
+                   "    8,\n" +
+                   "    '9' // expected '9' to be a number\n" +
+                   "  ]\n" +
+                   "]");
         });
 
         describe('delegating to an async assertion', function () {
@@ -3172,12 +3201,15 @@ describe('unexpected', function () {
                 return expect(
                     clonedExpect([0, false, 'abc'], 'to have items satisfying', 'to be a number after a short delay'),
                     'to be rejected',
-                        "failed expectation in [ 0, false, 'abc' ]:\n" +
-                        "  1: expected false to be a number after a short delay\n" +
-                        "       expected false to be a number\n" +
-                        "  2: expected 'abc' to be a number after a short delay\n" +
-                        "       expected 'abc' to be a number"
-                );
+                    "expected [ 0, false, 'abc' ] to have values satisfying 'to be a number after a short delay'\n" +
+                        "\n" +
+                        "[\n" +
+                        "  0,\n" +
+                        "  false, // expected false to be a number after a short delay\n" +
+                        "         //   expected false to be a number\n" +
+                        "  'abc' // expected 'abc' to be a number after a short delay\n" +
+                        "        //   expected 'abc' to be a number\n" +
+                        "]");
             });
         });
     });
@@ -3280,9 +3312,19 @@ describe('unexpected', function () {
                     expect(value, 'to be less than', 4);
                 });
             }, 'to throw',
-                   "failed expectation in { foo: 0, bar: 1, baz: '2', qux: 3, quux: 4 }:\n" +
-                   "  baz: expected '2' to be a number\n" +
-                   "  quux: expected 4 to be less than 4");
+                   "expected { foo: 0, bar: 1, baz: '2', qux: 3, quux: 4 } to have values satisfying\n" +
+                   "function (value) {\n" +
+                   "    expect(value, 'to be a number');\n" +
+                   "    expect(value, 'to be less than', 4);\n" +
+                   "}\n" +
+                   "\n" +
+                   "{\n" +
+                   "  foo: 0,\n" +
+                   "  bar: 1,\n" +
+                   "  baz: '2', // expected '2' to be a number\n" +
+                   "  qux: 3,\n" +
+                   "  quux: 4 // expected 4 to be less than 4\n" +
+                   "}");
         });
 
         it('indents failure reports of nested assertions correctly', function () {
@@ -3293,11 +3335,26 @@ describe('unexpected', function () {
                     });
                 });
             }, 'to throw',
-                "failed expectation in { foo: [ 0, 1, 2 ], bar: [ 4, '5', 6 ], baz: [ 7, 8, '9' ] }:\n" +
-                "  bar: failed expectation in [ 4, '5', 6 ]:\n" +
-                "         1: expected '5' to be a number\n" +
-                "  baz: failed expectation in [ 7, 8, '9' ]:\n" +
-                "         2: expected '9' to be a number");
+                   "expected { foo: [ 0, 1, 2 ], bar: [ 4, '5', 6 ], baz: [ 7, 8, '9' ] } to have values satisfying\n" +
+                   "function (arr) {\n" +
+                   "    expect(arr, 'to have items satisfying', function (item) {\n" +
+                   "        expect(item, 'to be a number');\n" +
+                   "    });\n" +
+                   "}\n" +
+                   "\n" +
+                   "{\n" +
+                   "  foo: [...],\n" +
+                   "  bar: [\n" +
+                   "    4,\n" +
+                   "    '5', // expected '5' to be a number\n" +
+                   "    6\n" +
+                   "  ],\n" +
+                   "  baz: [\n" +
+                   "    7,\n" +
+                   "    8,\n" +
+                   "    '9' // expected '9' to be a number\n" +
+                   "  ]\n" +
+                   "}");
         });
 
         describe('delegating to an async assertion', function () {
@@ -3320,12 +3377,15 @@ describe('unexpected', function () {
                 return expect(
                     clonedExpect({0: 0, 1: false, 2: 'abc'}, 'to have values satisfying', 'to be a number after a short delay'),
                     'to be rejected',
-                        "failed expectation in { 0: 0, 1: false, 2: 'abc' }:\n" +
-                        "  1: expected false to be a number after a short delay\n" +
-                        "       expected false to be a number\n" +
-                        "  2: expected 'abc' to be a number after a short delay\n" +
-                        "       expected 'abc' to be a number"
-                );
+                    "expected { 0: 0, 1: false, 2: 'abc' } to have values satisfying 'to be a number after a short delay'\n" +
+                        "\n" +
+                        "{\n" +
+                        "  0: 0,\n" +
+                        "  1: false, // expected false to be a number after a short delay\n" +
+                        "            //   expected false to be a number\n" +
+                        "  2: 'abc' // expected 'abc' to be a number after a short delay\n" +
+                        "           //   expected 'abc' to be a number\n" +
+                        "}");
             });
         });
     });
@@ -3384,9 +3444,11 @@ describe('unexpected', function () {
             expect(function () {
                 expect(new Error('foo'), 'to have keys satisfying', /bar/);
             }, 'to throw',
-                "failed expectation on keys message:\n" +
-                "  message: expected 'message' to satisfy /bar/"
-            );
+                   "expected Error('foo') to have keys satisfying /bar/\n" +
+                   "\n" +
+                   "{\n" +
+                   "  message: 'foo' // expected 'message' to satisfy /bar/\n" +
+                   "}");
         });
 
         it('supports legacy aliases', function () {
@@ -3417,9 +3479,19 @@ describe('unexpected', function () {
                     expect(key, 'to have length', 3);
                 });
             }, 'to throw',
-                   "failed expectation on keys foo, bar, baz, qux, quux:\n" +
-                   "  quux: expected 'quux' to have length 3\n" +
-                   "          expected 4 to be 3");
+                   "expected { foo: 0, bar: 1, baz: 2, qux: 3, quux: 4 } to have keys satisfying\n" +
+                   "function (key) {\n" +
+                   "    expect(key, 'to have length', 3);\n" +
+                   "}\n" +
+                   "\n" +
+                   "{\n" +
+                   "  foo: 0,\n" +
+                   "  bar: 1,\n" +
+                   "  baz: 2,\n" +
+                   "  qux: 3,\n" +
+                   "  quux: 4 // expected 'quux' to have length 3\n" +
+                   "          //   expected 4 to be 3\n" +
+                   "}");
         });
 
         describe('delegating to an async assertion', function () {
@@ -3442,12 +3514,15 @@ describe('unexpected', function () {
                 return expect(
                     clonedExpect({a: 1, foo: 2, bar: 3}, 'to have keys satisfying', 'to be a sequence of as after a short delay'),
                     'to be rejected',
-                        "failed expectation on keys a, foo, bar:\n" +
-                        "  foo: expected 'foo' to be a sequence of as after a short delay\n" +
-                        "         expected 'foo' to match /^a+$/\n" +
-                        "  bar: expected 'bar' to be a sequence of as after a short delay\n" +
-                        "         expected 'bar' to match /^a+$/"
-                );
+                    "expected { a: 1, foo: 2, bar: 3 } to have keys satisfying 'to be a sequence of as after a short delay'\n" +
+                        "\n" +
+                        "{\n" +
+                        "  a: 1,\n" +
+                        "  foo: 2, // expected 'foo' to be a sequence of as after a short delay\n" +
+                        "          //   expected 'foo' to match /^a+$/\n" +
+                        "  bar: 3 // expected 'bar' to be a sequence of as after a short delay\n" +
+                        "         //   expected 'bar' to match /^a+$/\n" +
+                        "}");
             });
         });
     });
@@ -3823,7 +3898,7 @@ describe('unexpected', function () {
                            "  b: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'\n" +
                            "}\n" +
                            "to foobarbaz\n" +
-                           "  expected ... to satisfy { foo: 123 }\n" +
+                           "  expected object to satisfy { foo: 123 }\n" +
                            "\n" +
                            "  {\n" +
                            "    a: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',\n" +

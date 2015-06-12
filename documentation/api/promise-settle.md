@@ -63,7 +63,11 @@ return expect.promise.all(promises).caught(function () {
 {
   foo: ⨯ expected '42' to be a number after a short delay
   bar: ✓
-  baz: ⨯ failed expectation in { a: '1', b: 2 }:
-           a: expected '1' to be a number after a short delay
+  baz: ⨯ expected { a: '1', b: 2 } to have values satisfying 'to be a number after a short delay'
+
+         {
+           a: '1', // expected '1' to be a number after a short delay
+           b: 2
+         }
 }
 ```

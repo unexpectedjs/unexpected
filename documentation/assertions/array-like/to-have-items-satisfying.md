@@ -28,12 +28,22 @@ expect([ [0, 1, 2], [4, '5', '6'], [7, '8', 9] ],
 ```
 
 ```output
-failed expectation in [ [ 0, 1, 2 ], [ 4, '5', '6' ], [ 7, '8', 9 ] ]:
-  1: failed expectation in [ 4, '5', '6' ]:
-       1: expected '5' to be a number
-       2: expected '6' to be a number
-  2: failed expectation in [ 7, '8', 9 ]:
-       1: expected '8' to be a number
+expected [ [ 0, 1, 2 ], [ 4, '5', '6' ], [ 7, '8', 9 ] ]
+to have values satisfying 'to have items satisfying', 'to be a number'
+
+[
+  [...],
+  [
+    4,
+    '5', // expected '5' to be a number
+    '6' // expected '6' to be a number
+  ],
+  [
+    7,
+    '8', // expected '8' to be a number
+    9
+  ]
+]
 ```
 
 Here a another example:
@@ -44,7 +54,16 @@ expect([0, 1, 2, 3, 4], 'to have items satisfying',
 ```
 
 ```output
-failed expectation in [ 0, 1, 2, 3, 4 ]:
-  0: ✓ expected 0 to be a number and
-     ⨯ expected 0 to be positive
+expected [ 0, 1, 2, 3, 4 ] to have values satisfying
+expect.it('to be a number')
+        .and('to be positive')
+
+[
+  0, // ✓ expected 0 to be a number and
+     // ⨯ expected 0 to be positive
+  1,
+  2,
+  3,
+  4
+]
 ```

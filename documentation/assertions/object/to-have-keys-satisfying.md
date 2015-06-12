@@ -25,6 +25,13 @@ expect({ foo: 0, bar: 1, baz: 2, qux: 3, quux: 4 },
 ```
 
 ```output
-failed expectation on keys foo, bar, baz, qux, quux:
-  quux: expected 'quux' to match /^[a-z]{3}$/
+expected { foo: 0, bar: 1, baz: 2, qux: 3, quux: 4 } to have keys satisfying 'to match', /^[a-z]{3}$/
+
+{
+  foo: 0,
+  bar: 1,
+  baz: 2,
+  qux: 3,
+  quux: 4 // expected 'quux' to match /^[a-z]{3}$/
+}
 ```
