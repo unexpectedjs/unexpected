@@ -843,8 +843,12 @@ describe("documentation tests", function () {
             });
         }).caught(function (e) {
             expect(e, "to have message",
-                "failed expectation in { a: '0', b: 1 }:\n" +
-                "  a: expected '0' to be a number after a short delay"
+                "expected { a: '0', b: 1 } to have values satisfying 'to be a number after a short delay'\n" +
+                "\n" +
+                "{\n" +
+                "  a: '0', // expected '0' to be a number after a short delay\n" +
+                "  b: 1\n" +
+                "}"
             );
         }));
 
@@ -946,10 +950,19 @@ describe("documentation tests", function () {
             expect(e, "to have message",
                 "aggregate error\n" +
                 "  0: expected '42' to be a number after a short delay\n" +
-                "  1: failed expectation in [ 0, '1', 2 ]:\n" +
-                "       1: expected '1' to be a number after a short delay\n" +
-                "  2: failed expectation in { a: '0', b: 1 }:\n" +
-                "       a: expected '0' to be a number after a short delay"
+                "  1: expected [ 0, '1', 2 ] to have values satisfying expect.it('to be a number after a short delay')\n" +
+                "\n" +
+                "     [\n" +
+                "       0,\n" +
+                "       '1', // expected '1' to be a number after a short delay\n" +
+                "       2\n" +
+                "     ]\n" +
+                "  2: expected { a: '0', b: 1 } to have values satisfying 'to be a number after a short delay'\n" +
+                "\n" +
+                "     {\n" +
+                "       a: '0', // expected '0' to be a number after a short delay\n" +
+                "       b: 1\n" +
+                "     }"
             );
         }));
 
@@ -1033,8 +1046,12 @@ describe("documentation tests", function () {
                 "{\n" +
                 "  foo: ⨯ expected '42' to be a number after a short delay\n" +
                 "  bar: ✓\n" +
-                "  baz: ⨯ failed expectation in { a: '1', b: 2 }:\n" +
-                "           a: expected '1' to be a number after a short delay\n" +
+                "  baz: ⨯ expected { a: '1', b: 2 } to have values satisfying 'to be a number after a short delay'\n" +
+                "\n" +
+                "         {\n" +
+                "           a: '1', // expected '1' to be a number after a short delay\n" +
+                "           b: 2\n" +
+                "         }\n" +
                 "}"
             );
         }));
@@ -1849,12 +1866,22 @@ describe("documentation tests", function () {
             });
         } catch (e) {
             expect(e, "to have message",
-                "failed expectation in [ [ 0, 1, 2 ], [ 4, '5', '6' ], [ 7, '8', 9 ] ]:\n" +
-                "  1: failed expectation in [ 4, '5', '6' ]:\n" +
-                "       1: expected '5' to be a number\n" +
-                "       2: expected '6' to be a number\n" +
-                "  2: failed expectation in [ 7, '8', 9 ]:\n" +
-                "       1: expected '8' to be a number"
+                "expected [ [ 0, 1, 2 ], [ 4, '5', '6' ], [ 7, '8', 9 ] ]\n" +
+                "to have values satisfying 'to have items satisfying', 'to be a number'\n" +
+                "\n" +
+                "[\n" +
+                "  [...],\n" +
+                "  [\n" +
+                "    4,\n" +
+                "    '5', // expected '5' to be a number\n" +
+                "    '6' // expected '6' to be a number\n" +
+                "  ],\n" +
+                "  [\n" +
+                "    7,\n" +
+                "    '8', // expected '8' to be a number\n" +
+                "    9\n" +
+                "  ]\n" +
+                "]"
             );
         }
 
@@ -1869,9 +1896,18 @@ describe("documentation tests", function () {
             });
         } catch (e) {
             expect(e, "to have message",
-                "failed expectation in [ 0, 1, 2, 3, 4 ]:\n" +
-                "  0: ✓ expected 0 to be a number and\n" +
-                "     ⨯ expected 0 to be positive"
+                "expected [ 0, 1, 2, 3, 4 ] to have values satisfying\n" +
+                "expect.it('to be a number')\n" +
+                "        .and('to be positive')\n" +
+                "\n" +
+                "[\n" +
+                "  0, // ✓ expected 0 to be a number and\n" +
+                "     // ⨯ expected 0 to be positive\n" +
+                "  1,\n" +
+                "  2,\n" +
+                "  3,\n" +
+                "  4\n" +
+                "]"
             );
         }
         return expect.promise.all(testPromises);
@@ -2826,8 +2862,15 @@ describe("documentation tests", function () {
             });
         } catch (e) {
             expect(e, "to have message",
-                "failed expectation on keys foo, bar, baz, qux, quux:\n" +
-                "  quux: expected 'quux' to match /^[a-z]{3}$/"
+                "expected { foo: 0, bar: 1, baz: 2, qux: 3, quux: 4 } to have keys satisfying 'to match', /^[a-z]{3}$/\n" +
+                "\n" +
+                "{\n" +
+                "  foo: 0,\n" +
+                "  bar: 1,\n" +
+                "  baz: 2,\n" +
+                "  qux: 3,\n" +
+                "  quux: 4 // expected 'quux' to match /^[a-z]{3}$/\n" +
+                "}"
             );
         }
         return expect.promise.all(testPromises);
@@ -2993,12 +3036,21 @@ describe("documentation tests", function () {
             });
         } catch (e) {
             expect(e, "to have message",
-                "failed expectation in { foo: [ 0, 1, 2 ], bar: [ 4, 5, 6 ], baz: [ 7, 8, 9 ] }:\n" +
-                "  baz: failed expectation in [ 7, 8, 9 ]:\n" +
-                "         1: ✓ expected 8 to be a number and\n" +
-                "            ⨯ expected 8 to be below 8\n" +
-                "         2: ✓ expected 9 to be a number and\n" +
-                "            ⨯ expected 9 to be below 8"
+                "expected { foo: [ 0, 1, 2 ], bar: [ 4, 5, 6 ], baz: [ 7, 8, 9 ] } to have values satisfying\n" +
+                "'to have items satisfying', expect.it('to be a number')\n" +
+                "        .and('to be below', 8)\n" +
+                "\n" +
+                "{\n" +
+                "  foo: [...],\n" +
+                "  bar: [...],\n" +
+                "  baz: [\n" +
+                "    7,\n" +
+                "    8, // ✓ expected 8 to be a number and\n" +
+                "       // ⨯ expected 8 to be below 8\n" +
+                "    9 // ✓ expected 9 to be a number and\n" +
+                "      // ⨯ expected 9 to be below 8\n" +
+                "  ]\n" +
+                "}"
             );
         }
         return expect.promise.all(testPromises);
