@@ -2041,10 +2041,13 @@ module.exports = function (expect) {
 
                             var keys = Object.keys(keyIndex);
 
-                            if (bothAreArrayLike && subjectType.name !== 'array') {
-                                output.text(subjectType.name);
+                            if (subjectType.is('array-like') && !bothAreArrayLike) {
+                                commonType.prefix(output, subject);
+                            } else {
+                                subjectType.prefix(output, subject);
                             }
-                            output.text(bothAreArrayLike ? '[' : '{').nl().indentLines();
+
+                            output.nl().indentLines();
 
                             keys.forEach(function (key, index) {
                                 output.i().block(function () {
@@ -2120,10 +2123,12 @@ module.exports = function (expect) {
                                 }).nl();
                             });
 
-                            output.outdentLines().text(bothAreArrayLike ? ']' : '}');
+                            output.outdentLines();
 
-                            if (!bothAreArrayLike) {
-                                result.diff = utils.wrapConstructorNameAroundOutput(result.diff, subject);
+                            if (subjectType.is('array-like') && !bothAreArrayLike) {
+                                commonType.suffix(output, subject);
+                            } else {
+                                subjectType.suffix(output, subject);
                             }
 
                             return result;
@@ -2754,6 +2759,23 @@ module.exports = function (expect) {
         identify: function (obj) {
             return obj && (typeof obj === 'object' || typeof obj === 'function');
         },
+        prefix: function (output, obj) {
+            var constructor = obj.constructor;
+            var constructorName = constructor && constructor !== Object && utils.getFunctionName(constructor);
+            if (constructorName && constructorName !== 'Object') {
+                output.text(constructorName + '(');
+            }
+            return output.text('{');
+        },
+        suffix: function (output, obj) {
+            output.text('}');
+            var constructor = obj.constructor;
+            var constructorName = constructor && constructor !== Object && utils.getFunctionName(constructor);
+            if (constructorName && constructorName !== 'Object') {
+                output.text(')');
+            }
+            return output;
+        },
         getKeys: Object.keys,
         equal: function (a, b, equal) {
             if (a === b) {
@@ -2798,7 +2820,9 @@ module.exports = function (expect) {
         inspect: function (obj, depth, output, inspect) {
             var keys = this.getKeys(obj);
             if (keys.length === 0) {
-                return utils.wrapConstructorNameAroundOutput(output.text('{}'), obj);
+                this.prefix(output, obj);
+                this.suffix(output, obj);
+                return output;
             }
             var inspectedItems = keys.map(function (key, index) {
                 var lastIndex = index === keys.length - 1;
@@ -2882,17 +2906,17 @@ module.exports = function (expect) {
                 });
             }
 
+            this.prefix(output, obj);
             if (itemsOutput.isMultiline()) {
-                output.text('{').nl()
+                output.nl()
                       .indentLines()
                       .i().block(itemsOutput)
                       .outdentLines()
-                      .nl().text('}');
+                      .nl();
             } else {
-                output.text('{ ').append(itemsOutput).text(' }');
+                output.sp().append(itemsOutput).sp();
             }
-
-            return utils.wrapConstructorNameAroundOutput(output, obj);
+            this.suffix(output, obj);
         },
         diff: function (actual, expected, output, diff, inspect, equal) {
             if (actual.constructor !== expected.constructor) {
@@ -2918,7 +2942,8 @@ module.exports = function (expect) {
 
             var keys = Object.keys(keyIndex);
 
-            output.text('{').nl().indentLines();
+            this.prefix(output, actual);
+            output.nl().indentLines();
 
             keys.forEach(function (key, index) {
                 output.i().block(function () {
@@ -2973,9 +2998,8 @@ module.exports = function (expect) {
                 }).nl();
             });
 
-            output.outdentLines().text('}');
-
-            result.diff = utils.wrapConstructorNameAroundOutput(output, actual);
+            output.outdentLines();
+            this.suffix(output, actual);
 
             return result;
         }
