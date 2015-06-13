@@ -2431,7 +2431,7 @@ describe('unexpected', function () {
                 }, 'to throw',
                        "expected arguments( { foo: 'foo' }, 2, 3 ) to satisfy [ { foo: 'f00' } ]\n" +
                        "\n" +
-                       "arguments[\n" +
+                       "arguments(\n" +
                        "  {\n" +
                        "    foo: 'foo' // should equal 'f00'\n" +
                        "               // -foo\n" +
@@ -2439,7 +2439,7 @@ describe('unexpected', function () {
                        "  },\n" +
                        "  2, // should be removed\n" +
                        "  3 // should be removed\n" +
-                       "]");
+                       ")");
             });
         });
 
