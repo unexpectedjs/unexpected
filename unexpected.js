@@ -2041,12 +2041,7 @@ module.exports = function (expect) {
 
                             var keys = Object.keys(keyIndex);
 
-                            if (subjectType.is('array-like') && !bothAreArrayLike) {
-                                commonType.prefix(output, subject);
-                            } else {
-                                subjectType.prefix(output, subject);
-                            }
-
+                            subjectType.prefix(output, subject);
                             output.nl().indentLines();
 
                             keys.forEach(function (key, index) {
@@ -2124,12 +2119,7 @@ module.exports = function (expect) {
                             });
 
                             output.outdentLines();
-
-                            if (subjectType.is('array-like') && !bothAreArrayLike) {
-                                commonType.suffix(output, subject);
-                            } else {
-                                subjectType.suffix(output, subject);
-                            }
+                            subjectType.suffix(output, subject);
 
                             return result;
                         }
