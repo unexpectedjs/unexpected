@@ -1952,11 +1952,11 @@ describe('unexpected', function () {
                 }, 'to throw',
                     "expected [ 'aa', 'bb', 'cc' ] to satisfy { 2: /quux/ }\n" +
                     "\n" +
-                    "Array({\n" +
+                    "[\n" +
                     "  0: 'aa',\n" +
                     "  1: 'bb',\n" +
                     "  2: 'cc' // should match /quux/\n" +
-                    "})"
+                    "]"
                 );
             });
         });
