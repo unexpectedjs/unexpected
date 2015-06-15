@@ -64,7 +64,6 @@ var Assertion = require(1);
 var createStandardErrorMessage = require(5);
 var utils = require(13);
 var magicpen = require(30);
-var truncateStack = utils.truncateStack;
 var extend = utils.extend;
 var leven = require(26);
 var makePromise = require(7);
@@ -653,9 +652,7 @@ Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
                         testFrameworkPatch.promiseCreated();
                         return result.then(undefined, function (e) {
                             if (e && e._isUnexpected) {
-                                var newError = new UnexpectedError(that.expect, assertion, e);
-                                truncateStack(newError, wrappedExpect);
-                                throw newError;
+                                throw new UnexpectedError(that.expect, assertion, e);
                             }
                             throw e;
                         });
@@ -664,7 +661,6 @@ Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
                     }
                 } catch (e) {
                     if (e && e._isUnexpected) {
-                        truncateStack(e, wrappedExpect);
                         var wrappedError = new UnexpectedError(that.expect, assertion, e);
                         if (serializeErrorsFromWrappedExpect) {
                             that.setErrorMessage(wrappedError);
@@ -808,7 +804,6 @@ Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
             if (typeof mochaPhantomJS !== 'undefined') {
                 newError = e.clone();
             }
-            truncateStack(newError, that.expect);
             that.setErrorMessage(newError);
             throw newError;
         }
@@ -3606,23 +3601,6 @@ var utils = module.exports = {
             });
         }
         return target;
-    },
-
-    truncateStack: function (err, fn) {
-        if (Error.captureStackTrace) {
-            Error.captureStackTrace(err, fn);
-        } else if ('stack' in err) {
-            // Excludes IE<10, and fn cannot be anonymous for this backup plan to work:
-            var stackEntries = err.stack.split(/\r\n?|\n\r?/),
-            needle = 'at ' + fn.name + ' ';
-            for (var i = 0 ; i < stackEntries.length ; i += 1) {
-                if (stackEntries[i].indexOf(needle) !== -1) {
-                    stackEntries.splice(1, i);
-                    err.stack = stackEntries.join("\n");
-                }
-            }
-        }
-        return err;
     },
 
     findFirst: function (arr, predicate, thisObj) {
