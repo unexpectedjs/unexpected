@@ -6102,6 +6102,43 @@ describe('unexpected', function () {
                 }, 'to throw', expectedError);
             });
         });
+
+        it('should return a promise with an inspect method that returns a suitable representation of the state', function () {
+            var originalDefaultFormat = expect.output.constructor.defaultFormat;
+            expect.output.constructor.defaultFormat = 'text';
+            return expect.promise(function () {
+                var syncSuccessfulPromise = expect.promise(function () {
+                    expect(2, 'to equal', 2);
+                });
+                expect(syncSuccessfulPromise.inspect(), 'to equal', 'Promise (fulfilled)');
+
+                var syncSuccessfulPromiseWithAValue = expect.promise(function () {
+                    return 123;
+                });
+
+                expect(syncSuccessfulPromiseWithAValue.inspect(), 'to equal', 'Promise (fulfilled) => 123');
+
+                var asyncFailingPromise = expect('foo', 'when delayed a little bit', 'to equal', 'bar');
+                expect(asyncFailingPromise.inspect(), 'to equal', 'Promise (pending)');
+                return asyncFailingPromise.then(function () {
+                    throw new Error('Promise expectly fulfilled');
+                }).caught(function () {
+                    expect(
+                        asyncFailingPromise.inspect(),
+                        'to equal',
+                        "Promise (rejected) => UnexpectedError(\n" +
+                        "  expected 'foo' when delayed a little bit to equal 'bar'\n" +
+                        "\n" +
+                        "  -foo\n" +
+                        "  +bar\n" +
+                        ")"
+                    );
+
+                });
+            })['finally'](function () {
+                expect.output.constructor.defaultFormat = originalDefaultFormat;
+            });
+        });
     });
 
     describe.skipIf(typeof Buffer === 'undefined', 'when decoded as assertion', function () {
