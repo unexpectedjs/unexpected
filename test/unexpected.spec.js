@@ -1953,9 +1953,9 @@ describe('unexpected', function () {
                     "expected [ 'aa', 'bb', 'cc' ] to satisfy { 2: /quux/ }\n" +
                     "\n" +
                     "[\n" +
-                    "  0: 'aa',\n" +
-                    "  1: 'bb',\n" +
-                    "  2: 'cc' // should match /quux/\n" +
+                    "  'aa',\n" +
+                    "  'bb',\n" +
+                    "  'cc' // should match /quux/\n" +
                     "]"
                 );
             });

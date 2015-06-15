@@ -2092,7 +2092,7 @@ module.exports = function (expect) {
                                         }
                                     }
 
-                                    if (!bothAreArrayLike) {
+                                    if (!subjectType.is('array-like')) {
                                         this.key(key).text(':');
                                     }
                                     valueOutput.amend('text', last ? '' : ',');
