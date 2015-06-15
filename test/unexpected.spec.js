@@ -1204,6 +1204,14 @@ describe('unexpected', function () {
                 });
             });
         });
+
+        it('#getKeys should return a trimmed-down list', function () {
+            expect(function () {
+                expect('foo', 'to equal', 'bar');
+            }, 'to throw', function (err) {
+                expect(expect.findTypeOf(err).getKeys(err), 'to equal', [ 'message', 'errorMode', 'parent' ]);
+            });
+        });
     });
 
     describe('Date type', function () {
