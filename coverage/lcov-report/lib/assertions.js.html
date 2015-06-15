@@ -1,0 +1,3082 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for lib/assertions.js</title>
+    <meta charset="utf-8">
+
+    <link rel="stylesheet" href="../prettify.css">
+
+    <style>
+        body, html {
+            margin:0; padding: 0;
+        }
+        body {
+            font-family: Helvetica Neue, Helvetica,Arial;
+            font-size: 10pt;
+        }
+        div.header, div.footer {
+            background: #eee;
+            padding: 1em;
+        }
+        div.header {
+            z-index: 100;
+            position: fixed;
+            top: 0;
+            border-bottom: 1px solid #666;
+            width: 100%;
+        }
+        div.footer {
+            border-top: 1px solid #666;
+        }
+        div.body {
+            margin-top: 10em;
+        }
+        div.meta {
+            font-size: 90%;
+            text-align: center;
+        }
+        h1, h2, h3 {
+            font-weight: normal;
+        }
+        h1 {
+            font-size: 12pt;
+        }
+        h2 {
+            font-size: 10pt;
+        }
+        pre {
+            font-family: Consolas, Menlo, Monaco, monospace;
+            margin: 0;
+            padding: 0;
+            line-height: 14px;
+            font-size: 14px;
+            -moz-tab-size: 2;
+            -o-tab-size:  2;
+            tab-size: 2;
+        }
+
+        div.path { font-size: 110%; }
+        div.path a:link, div.path a:visited { color: #000; }
+        table.coverage { border-collapse: collapse; margin:0; padding: 0 }
+
+        table.coverage td {
+            margin: 0;
+            padding: 0;
+            color: #111;
+            vertical-align: top;
+        }
+        table.coverage td.line-count {
+            width: 50px;
+            text-align: right;
+            padding-right: 5px;
+        }
+        table.coverage td.line-coverage {
+            color: #777 !important;
+            text-align: right;
+            border-left: 1px solid #666;
+            border-right: 1px solid #666;
+        }
+
+        table.coverage td.text {
+        }
+
+        table.coverage td span.cline-any {
+            display: inline-block;
+            padding: 0 5px;
+            width: 40px;
+        }
+        table.coverage td span.cline-neutral {
+            background: #eee;
+        }
+        table.coverage td span.cline-yes {
+            background: #b5d592;
+            color: #999;
+        }
+        table.coverage td span.cline-no {
+            background: #fc8c84;
+        }
+
+        .cstat-yes { color: #111; }
+        .cstat-no { background: #fc8c84; color: #111; }
+        .fstat-no { background: #ffc520; color: #111 !important; }
+        .cbranch-no { background:  yellow !important; color: #111; }
+
+        .cstat-skip { background: #ddd; color: #111; }
+        .fstat-skip { background: #ddd; color: #111 !important; }
+        .cbranch-skip { background: #ddd !important; color: #111; }
+
+        .missing-if-branch {
+            display: inline-block;
+            margin-right: 10px;
+            position: relative;
+            padding: 0 4px;
+            background: black;
+            color: yellow;
+        }
+
+        .skip-if-branch {
+            display: none;
+            margin-right: 10px;
+            position: relative;
+            padding: 0 4px;
+            background: #ccc;
+            color: white;
+        }
+
+        .missing-if-branch .typ, .skip-if-branch .typ {
+            color: inherit !important;
+        }
+
+        .entity, .metric { font-weight: bold; }
+        .metric { display: inline-block; border: 1px solid #333; padding: 0.3em; background: white; }
+        .metric small { font-size: 80%; font-weight: normal; color: #666; }
+
+        div.coverage-summary table { border-collapse: collapse; margin: 3em; font-size: 110%; }
+        div.coverage-summary td, div.coverage-summary table  th { margin: 0; padding: 0.25em 1em; border-top: 1px solid #666; border-bottom: 1px solid #666; }
+        div.coverage-summary th { text-align: left; border: 1px solid #666; background: #eee; font-weight: normal; }
+        div.coverage-summary th.file { border-right: none !important; }
+        div.coverage-summary th.pic { border-left: none !important; text-align: right; }
+        div.coverage-summary th.pct { border-right: none !important; }
+        div.coverage-summary th.abs { border-left: none !important; text-align: right; }
+        div.coverage-summary td.pct { text-align: right; border-left: 1px solid #666; }
+        div.coverage-summary td.abs { text-align: right; font-size: 90%; color: #444; border-right: 1px solid #666; }
+        div.coverage-summary td.file { text-align: right; border-left: 1px solid #666; white-space: nowrap;  }
+        div.coverage-summary td.pic { min-width: 120px !important;  }
+        div.coverage-summary a:link { text-decoration: none; color: #000; }
+        div.coverage-summary a:visited { text-decoration: none; color: #333; }
+        div.coverage-summary a:hover { text-decoration: underline; }
+        div.coverage-summary tfoot td { border-top: 1px solid #666; }
+
+        div.coverage-summary .yui3-datatable-sort-indicator, div.coverage-summary .dummy-sort-indicator {
+            height: 10px;
+            width: 7px;
+            display: inline-block;
+            margin-left: 0.5em;
+        }
+        div.coverage-summary .yui3-datatable-sort-indicator {
+            background: url("https://yui-s.yahooapis.com/3.6.0/build/datatable-sort/assets/skins/sam/sort-arrow-sprite.png") no-repeat scroll 0 0 transparent;
+        }
+        div.coverage-summary .yui3-datatable-sorted .yui3-datatable-sort-indicator {
+            background-position: 0 -20px;
+        }
+        div.coverage-summary .yui3-datatable-sorted-desc .yui3-datatable-sort-indicator {
+            background-position: 0 -10px;
+        }
+
+        .high { background: #b5d592 !important; }
+        .medium { background: #ffe87c !important; }
+        .low { background: #fc8c84 !important; }
+
+        span.cover-fill, span.cover-empty {
+            display:inline-block;
+            border:1px solid #444;
+            background: white;
+            height: 12px;
+        }
+        span.cover-fill {
+            background: #ccc;
+            border-right: 1px solid #444;
+        }
+        span.cover-empty {
+            background: white;
+            border-left: none;
+        }
+        span.cover-full {
+            border-right: none !important;
+        }
+        pre.prettyprint {
+            border: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        .com { color: #999 !important; }
+        .ignore-none { color: #999; font-weight: normal; }
+
+    </style>
+</head>
+<body>
+<div class="header high">
+    <h1>Code coverage report for <span class="entity">lib/assertions.js</span></h1>
+    <h2>
+        
+        Statements: <span class="metric">99.6% <small>(499 / 501)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        
+        
+        Branches: <span class="metric">97.42% <small>(264 / 271)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        
+        
+        Functions: <span class="metric">100% <small>(138 / 138)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        
+        
+        Lines: <span class="metric">99.6% <small>(499 / 501)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        
+        Ignored: <span class="metric"><span class="ignore-none">none</span></span> &nbsp;&nbsp;&nbsp;&nbsp;
+    </h2>
+    <div class="path"><a href="../index.html">All files</a> &#187; <a href="index.html">lib/</a> &#187; assertions.js</div>
+</div>
+<div class="body">
+<pre><table class="coverage">
+<tr><td class="line-count">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370
+371
+372
+373
+374
+375
+376
+377
+378
+379
+380
+381
+382
+383
+384
+385
+386
+387
+388
+389
+390
+391
+392
+393
+394
+395
+396
+397
+398
+399
+400
+401
+402
+403
+404
+405
+406
+407
+408
+409
+410
+411
+412
+413
+414
+415
+416
+417
+418
+419
+420
+421
+422
+423
+424
+425
+426
+427
+428
+429
+430
+431
+432
+433
+434
+435
+436
+437
+438
+439
+440
+441
+442
+443
+444
+445
+446
+447
+448
+449
+450
+451
+452
+453
+454
+455
+456
+457
+458
+459
+460
+461
+462
+463
+464
+465
+466
+467
+468
+469
+470
+471
+472
+473
+474
+475
+476
+477
+478
+479
+480
+481
+482
+483
+484
+485
+486
+487
+488
+489
+490
+491
+492
+493
+494
+495
+496
+497
+498
+499
+500
+501
+502
+503
+504
+505
+506
+507
+508
+509
+510
+511
+512
+513
+514
+515
+516
+517
+518
+519
+520
+521
+522
+523
+524
+525
+526
+527
+528
+529
+530
+531
+532
+533
+534
+535
+536
+537
+538
+539
+540
+541
+542
+543
+544
+545
+546
+547
+548
+549
+550
+551
+552
+553
+554
+555
+556
+557
+558
+559
+560
+561
+562
+563
+564
+565
+566
+567
+568
+569
+570
+571
+572
+573
+574
+575
+576
+577
+578
+579
+580
+581
+582
+583
+584
+585
+586
+587
+588
+589
+590
+591
+592
+593
+594
+595
+596
+597
+598
+599
+600
+601
+602
+603
+604
+605
+606
+607
+608
+609
+610
+611
+612
+613
+614
+615
+616
+617
+618
+619
+620
+621
+622
+623
+624
+625
+626
+627
+628
+629
+630
+631
+632
+633
+634
+635
+636
+637
+638
+639
+640
+641
+642
+643
+644
+645
+646
+647
+648
+649
+650
+651
+652
+653
+654
+655
+656
+657
+658
+659
+660
+661
+662
+663
+664
+665
+666
+667
+668
+669
+670
+671
+672
+673
+674
+675
+676
+677
+678
+679
+680
+681
+682
+683
+684
+685
+686
+687
+688
+689
+690
+691
+692
+693
+694
+695
+696
+697
+698
+699
+700
+701
+702
+703
+704
+705
+706
+707
+708
+709
+710
+711
+712
+713
+714
+715
+716
+717
+718
+719
+720
+721
+722
+723
+724
+725
+726
+727
+728
+729
+730
+731
+732
+733
+734
+735
+736
+737
+738
+739
+740
+741
+742
+743
+744
+745
+746
+747
+748
+749
+750
+751
+752
+753
+754
+755
+756
+757
+758
+759
+760
+761
+762
+763
+764
+765
+766
+767
+768
+769
+770
+771
+772
+773
+774
+775
+776
+777
+778
+779
+780
+781
+782
+783
+784
+785
+786
+787
+788
+789
+790
+791
+792
+793
+794
+795
+796
+797
+798
+799
+800
+801
+802
+803
+804
+805
+806
+807
+808
+809
+810
+811
+812
+813
+814
+815
+816
+817
+818
+819
+820
+821
+822
+823
+824
+825
+826
+827
+828
+829
+830
+831
+832
+833
+834
+835
+836
+837
+838
+839
+840
+841
+842
+843
+844
+845
+846
+847
+848
+849
+850
+851
+852
+853
+854
+855
+856
+857
+858
+859
+860
+861
+862
+863
+864
+865
+866
+867
+868
+869
+870
+871
+872
+873
+874
+875
+876
+877
+878
+879
+880
+881
+882
+883
+884
+885
+886
+887
+888
+889
+890
+891
+892
+893
+894
+895
+896
+897
+898
+899
+900
+901
+902
+903
+904
+905
+906
+907
+908
+909
+910
+911
+912
+913
+914
+915
+916
+917
+918
+919
+920
+921</td><td class="line-coverage"><span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">2647</span>
+<span class="cline-any cline-yes">2647</span>
+<span class="cline-any cline-yes">2647</span>
+<span class="cline-any cline-yes">435</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">177</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">19</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">20</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">8</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">16</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">8</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">13</span>
+<span class="cline-any cline-yes">13</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">13</span>
+<span class="cline-any cline-yes">13</span>
+<span class="cline-any cline-yes">13</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">442</span>
+<span class="cline-any cline-yes">420</span>
+<span class="cline-any cline-yes">420</span>
+<span class="cline-any cline-yes">420</span>
+<span class="cline-any cline-yes">420</span>
+<span class="cline-any cline-yes">22</span>
+<span class="cline-any cline-yes">16</span>
+<span class="cline-any cline-yes">16</span>
+<span class="cline-any cline-yes">15</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">135</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">261</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">79</span>
+<span class="cline-any cline-yes">79</span>
+<span class="cline-any cline-yes">79</span>
+<span class="cline-any cline-yes">79</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">19</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">22</span>
+<span class="cline-any cline-yes">16</span>
+<span class="cline-any cline-yes">16</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-yes">12</span>
+<span class="cline-any cline-yes">12</span>
+<span class="cline-any cline-yes">12</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">136</span>
+<span class="cline-any cline-yes">43</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">42</span>
+<span class="cline-any cline-yes">39</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">93</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">47</span>
+<span class="cline-any cline-yes">17</span>
+<span class="cline-any cline-yes">28</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">30</span>
+<span class="cline-any cline-yes">29</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">29</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">28</span>
+<span class="cline-any cline-yes">28</span>
+<span class="cline-any cline-yes">36</span>
+<span class="cline-any cline-yes">36</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">34</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">20</span>
+<span class="cline-any cline-yes">20</span>
+<span class="cline-any cline-yes">20</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">20</span>
+<span class="cline-any cline-yes">26</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">20</span>
+<span class="cline-any cline-yes">30</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">30</span>
+<span class="cline-any cline-yes">26</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">20</span>
+<span class="cline-any cline-yes">20</span>
+<span class="cline-any cline-yes">20</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">107</span>
+<span class="cline-any cline-yes">32</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">107</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">80</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">53</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">59</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">59</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">58</span>
+<span class="cline-any cline-yes">81</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">58</span>
+<span class="cline-any cline-yes">39</span>
+<span class="cline-any cline-yes">34</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">19</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">25</span>
+<span class="cline-any cline-yes">25</span>
+<span class="cline-any cline-yes">25</span>
+<span class="cline-any cline-yes">25</span>
+<span class="cline-any cline-yes">28</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">12</span>
+<span class="cline-any cline-yes">12</span>
+<span class="cline-any cline-yes">12</span>
+<span class="cline-any cline-yes">12</span>
+<span class="cline-any cline-yes">16</span>
+<span class="cline-any cline-yes">27</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">11</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">26</span>
+<span class="cline-any cline-yes">26</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">67</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">31</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">50</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">19</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">18</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1075</span>
+<span class="cline-any cline-yes">1075</span>
+<span class="cline-any cline-yes">1075</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">185</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">314</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">14</span>
+<span class="cline-any cline-yes">14</span>
+<span class="cline-any cline-yes">14</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14</span>
+<span class="cline-any cline-yes">14</span>
+<span class="cline-any cline-yes">14</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-yes">9</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">359</span>
+<span class="cline-any cline-yes">359</span>
+<span class="cline-any cline-yes">359</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">359</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">358</span>
+<span class="cline-any cline-yes">358</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">352</span>
+<span class="cline-any cline-yes">352</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">358</span>
+<span class="cline-any cline-yes">358</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">338</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">338</span>
+<span class="cline-any cline-yes">338</span>
+<span class="cline-any cline-yes">253</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">85</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">20</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">66</span>
+<span class="cline-any cline-yes">66</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">65</span>
+<span class="cline-any cline-yes">65</span>
+<span class="cline-any cline-yes">64</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">64</span>
+<span class="cline-any cline-yes">64</span>
+<span class="cline-any cline-yes">190</span>
+<span class="cline-any cline-yes">190</span>
+<span class="cline-any cline-yes">108</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">82</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">64</span>
+<span class="cline-any cline-yes">25</span>
+<span class="cline-any cline-yes">25</span>
+<span class="cline-any cline-yes">25</span>
+<span class="cline-any cline-yes">25</span>
+<span class="cline-any cline-yes">25</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">24</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">25</span>
+<span class="cline-any cline-yes">25</span>
+<span class="cline-any cline-yes">25</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">25</span>
+<span class="cline-any cline-yes">25</span>
+<span class="cline-any cline-yes">78</span>
+<span class="cline-any cline-yes">78</span>
+<span class="cline-any cline-yes">34</span>
+<span class="cline-any cline-yes">34</span>
+<span class="cline-any cline-yes">9</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">25</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">34</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">48</span>
+<span class="cline-any cline-yes">48</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">47</span>
+<span class="cline-any cline-yes">47</span>
+<span class="cline-any cline-yes">44</span>
+<span class="cline-any cline-yes">44</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">18</span>
+<span class="cline-any cline-yes">18</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17</span>
+<span class="cline-any cline-yes">17</span>
+<span class="cline-any cline-yes">17</span>
+<span class="cline-any cline-yes">16</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16</span>
+<span class="cline-any cline-yes">48</span>
+<span class="cline-any cline-yes">48</span>
+<span class="cline-any cline-yes">25</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">23</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">18</span>
+<span class="cline-any cline-yes">18</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">8</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8</span>
+<span class="cline-any cline-yes">30</span>
+<span class="cline-any cline-yes">30</span>
+<span class="cline-any cline-yes">31</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">29</span>
+<span class="cline-any cline-yes">14</span>
+<span class="cline-any cline-yes">14</span>
+<span class="cline-any cline-yes">14</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11</span>
+<span class="cline-any cline-yes">11</span>
+<span class="cline-any cline-yes">22</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">139</span>
+<span class="cline-any cline-yes">139</span>
+<span class="cline-any cline-yes">134</span>
+<span class="cline-any cline-yes">134</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">133</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">105</span>
+<span class="cline-any cline-yes">105</span>
+<span class="cline-any cline-yes">15</span>
+<span class="cline-any cline-yes">13</span>
+<span class="cline-any cline-yes">90</span>
+<span class="cline-any cline-yes">20</span>
+<span class="cline-any cline-yes">20</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">70</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">9</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">66</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">901</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">891</span>
+<span class="cline-any cline-yes">116</span>
+<span class="cline-any cline-yes">116</span>
+<span class="cline-any cline-yes">112</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">775</span>
+<span class="cline-any cline-yes">775</span>
+<span class="cline-any cline-yes">18</span>
+<span class="cline-any cline-yes">18</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">20</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">757</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">753</span>
+<span class="cline-any cline-yes">29</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">724</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">724</span>
+<span class="cline-any cline-yes">80</span>
+<span class="cline-any cline-yes">80</span>
+<span class="cline-any cline-yes">80</span>
+<span class="cline-any cline-yes">80</span>
+<span class="cline-any cline-yes">96</span>
+<span class="cline-any cline-yes">96</span>
+<span class="cline-any cline-yes">96</span>
+<span class="cline-any cline-yes">31</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">65</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">80</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">80</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">80</span>
+<span class="cline-any cline-yes">25</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">42</span>
+<span class="cline-any cline-yes">42</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">70</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">70</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">70</span>
+<span class="cline-any cline-yes">201</span>
+<span class="cline-any cline-yes">120</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">70</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">70</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">70</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">70</span>
+<span class="cline-any cline-yes">120</span>
+<span class="cline-any cline-yes">120</span>
+<span class="cline-any cline-yes">120</span>
+<span class="cline-any cline-yes">120</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">120</span>
+<span class="cline-any cline-yes">62</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">120</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">120</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">120</span>
+<span class="cline-any cline-yes">32</span>
+<span class="cline-any cline-yes">16</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">88</span>
+<span class="cline-any cline-yes">64</span>
+<span class="cline-any cline-yes">64</span>
+<span class="cline-any cline-yes">64</span>
+<span class="cline-any cline-yes">16</span>
+<span class="cline-any cline-yes">16</span>
+<span class="cline-any cline-yes">48</span>
+<span class="cline-any cline-yes">36</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36</span>
+<span class="cline-any cline-yes">14</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">120</span>
+<span class="cline-any cline-yes">120</span>
+<span class="cline-any cline-yes">108</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">104</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">120</span>
+<span class="cline-any cline-yes">96</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">120</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">120</span>
+<span class="cline-any cline-yes">96</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">94</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">120</span>
+<span class="cline-any cline-yes">90</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">30</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">120</span>
+<span class="cline-any cline-yes">68</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">70</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">70</span>
+<span class="cline-any cline-yes">60</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">70</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">644</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">9</span>
+<span class="cline-any cline-yes">9</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16</span>
+<span class="cline-any cline-yes">16</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12</span>
+<span class="cline-any cline-yes">12</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">var ansiRegex = require('ansi-regex')();
+var utils = require('./utils');
+var objectIs = utils.objectIs;
+var isRegExp = utils.isRegExp;
+var isArray = utils.isArray;
+var extend = utils.extend;
+&nbsp;
+module.exports = function (expect) {
+    expect.addAssertion('[not] to be (ok|truthy)', function (expect, subject) {
+        var not = !!this.flags.not;
+        var condition = !!subject;
+        if (condition === not) {
+            expect.fail();
+        }
+    });
+&nbsp;
+    expect.addAssertion('[not] to be', function (expect, subject, value) {
+        expect(objectIs(subject, value), '[not] to be truthy');
+    });
+&nbsp;
+    expect.addAssertion('string', '[not] to be', function (expect, subject, value) {
+        expect(subject, '[not] to equal', value);
+    });
+&nbsp;
+    expect.addAssertion('boolean', '[not] to be true', function (expect, subject) {
+        expect(subject, '[not] to be', true);
+    });
+&nbsp;
+    expect.addAssertion('boolean', '[not] to be false', function (expect, subject) {
+        expect(subject, '[not] to be', false);
+    });
+&nbsp;
+    expect.addAssertion('[not] to be falsy', function (expect, subject) {
+        expect(subject, '[!not] to be truthy');
+    });
+&nbsp;
+    expect.addAssertion('[not] to be null', function (expect, subject) {
+        expect(subject, '[not] to be', null);
+    });
+&nbsp;
+    expect.addAssertion('[not] to be undefined', function (expect, subject) {
+        expect(typeof subject === 'undefined', '[not] to be truthy');
+    });
+&nbsp;
+    expect.addAssertion('to be defined', function (expect, subject) {
+        expect(subject, 'not to be undefined');
+    });
+&nbsp;
+    expect.addAssertion(['number', 'NaN'], '[not] to be NaN', function (expect, subject) {
+        expect(isNaN(subject), '[not] to be truthy');
+    });
+&nbsp;
+    expect.addAssertion('number', '[not] to be close to', function (expect, subject, value, epsilon) {
+        this.errorMode = 'bubble';
+        if (typeof epsilon !== 'number') {
+            epsilon = 1e-9;
+        }
+&nbsp;
+        var testDescription = this.testDescription;
+        expect.withError(function () {
+            expect(Math.abs(subject - value), '[not] to be less than or equal to', epsilon);
+        }, function (e) {
+            expect.fail(function (output) {
+                output.error('expected ')
+                    .append(expect.inspect(subject)).sp()
+                    .error(testDescription).sp()
+                    .append(expect.inspect(value)).sp()
+                    .text('(epsilon: ')
+                    .jsNumber(epsilon.toExponential())
+                    .text(')');
+            });
+        });
+    });
+&nbsp;
+    expect.addAssertion('[not] to be (a|an)', function (expect, subject, type) {
+        if ('string' === typeof type) {
+            var subjectType = expect.findTypeOf(subject);
+            type = /^reg(?:exp?|ular expression)$/.test(type) ? 'regexp' : type;
+            this.args[0] = expect.output.clone().jsString(type);
+            expect(subjectType.is(type), '[not] to be truthy');
+        } else if ('function' === typeof type) {
+            var functionName = utils.getFunctionName(type);
+            if (functionName) {
+                this.args[0] = expect.output.clone().text(functionName);
+            }
+            expect(subject instanceof type, '[not] to be truthy');
+        } else if ('object' === typeof type &amp;&amp; type) {
+            if (typeof type.identify !== 'function' || typeof type.name !== 'string') {
+                throw new Error("The '" + this.testDescription + "' assertion requires either a string (type name), a type object, or function argument");
+            }
+            this.args[0] = expect.output.clone().text(type.name);
+            expect(type.identify(subject), '[not] to be true');
+        } else {
+            throw new Error("The '" + this.testDescription + "' assertion requires either a string (type name), a type object, or function argument");
+        }
+    });
+&nbsp;
+    // Alias for common '[not] to be (a|an)' assertions
+    expect.addAssertion('[not] to be an (object|array)', function (expect, subject) {
+        expect(subject, '[not] to be an', this.alternations[0]);
+    });
+&nbsp;
+    expect.addAssertion('[not] to be a (boolean|number|string|function|regexp|regex|regular expression)', function (expect, subject) {
+        expect(subject, '[not] to be a', this.alternations[0]);
+    });
+&nbsp;
+    expect.addAssertion('string', 'to be (the empty|an empty|a non-empty) string', function (expect, subject) {
+        expect(subject, this.alternations[0] === 'a non-empty' ? 'not to be empty' : 'to be empty');
+    });
+&nbsp;
+    expect.addAssertion('array-like', 'to be (the empty|an empty|a non-empty) array', function (expect, subject) {
+        expect(subject, this.alternations[0] === 'a non-empty' ? 'not to be empty' : 'to be empty');
+    });
+&nbsp;
+    expect.addAssertion('string', '[not] to match', function (expect, subject, regexp) {
+        var flags = this.flags;
+        subject = String(subject);
+        expect.withError(function () {
+            expect(String(subject).match(regexp), '[not] to be truthy');
+        }, function (e) {
+            expect.fail({
+                label: 'should match',
+                diff: flags.not &amp;&amp; function (output) {
+                    var lastIndex = 0;
+                    function flushUntilIndex(i) {
+                        if (i &gt; lastIndex) {
+                            output.text(subject.substring(lastIndex, i));
+                            lastIndex = i;
+                        }
+                    }
+                    subject.replace(new RegExp(regexp.source, 'g'), function ($0, index) {
+                        flushUntilIndex(index);
+                        lastIndex += $0.length;
+                        output.diffRemovedHighlight($0);
+                    });
+                    flushUntilIndex(subject.length);
+                    return {diff: output};
+                }
+            });
+        });
+    });
+&nbsp;
+    expect.addAssertion('object', '[not] to have [own] property', function (expect, subject, key, value) {
+        if (arguments.length === 4) {
+            if (this.flags.not) {
+                throw new Error("The 'not to have property' assertion does not with a value argument");
+            }
+&nbsp;
+            expect(subject, 'to have [own] property', key);
+            expect(subject[key], '[not] to equal', value);
+        } else {
+            expect(this.flags.own ?
+                   subject &amp;&amp; subject.hasOwnProperty(key) :
+                   subject &amp;&amp; subject[key] !== undefined,
+                   '[not] to be truthy');
+        }
+    });
+&nbsp;
+    expect.addAssertion('object', '[not] to have [own] properties', function (expect, subject, properties) {
+        if (properties &amp;&amp; isArray(properties)) {
+            properties.forEach(function (property) {
+                expect(subject, '[not] to have [own] property', property);
+            });
+        } else if (properties &amp;&amp; typeof properties === 'object') {
+            var flags = this.flags;
+&nbsp;
+            if (flags.not) {
+                throw new Error("Assertion '" + this.testDescription + "' only supports " +
+                                "input in the form of an Array.");
+            }
+&nbsp;
+            expect.withError(function () {
+                Object.keys(properties).forEach(function (property) {
+                    var value = properties[property];
+                    if (typeof value === 'undefined') {
+                        expect(subject, 'not to have [own] property', property);
+                    } else {
+                        expect(subject, 'to have [own] property', property, value);
+                    }
+                });
+            }, function (e) {
+                expect.fail({
+                    diff: function (output, diff) {
+                        var expected = extend({}, properties);
+                        var actual = {};
+                        var propertyNames = expect.findTypeOf(subject).getKeys(subject);
+                        // Might put duplicates into propertyNames, but that does not matter:
+                        for (var propertyName in subject) {
+                            if (!subject.hasOwnProperty(propertyName)) {
+                                propertyNames.push(propertyName);
+                            }
+                        }
+                        propertyNames.forEach(function (propertyName) {
+                            if ((!flags.own || subject.hasOwnProperty(propertyName)) &amp;&amp; !(propertyName in properties)) {
+                                expected[propertyName] = subject[propertyName];
+                            }
+                            if ((!flags.own || subject.hasOwnProperty(propertyName)) &amp;&amp; !(propertyName in actual)) {
+                                actual[propertyName] = subject[propertyName];
+                            }
+                        });
+                        var result = diff(actual, expected);
+                        result.diff = utils.wrapConstructorNameAroundOutput(result.diff, subject);
+                        return result;
+                    }
+                });
+            });
+        } else {
+            throw new Error("Assertion '" + this.testDescription + "' only supports " +
+                            "input in the form of an Array or an Object.");
+        }
+    });
+&nbsp;
+    expect.addAssertion(['string', 'array-like'], '[not] to have length', function (expect, subject, length) {
+        if (!this.flags.not) {
+            this.errorMode = 'nested';
+        }
+&nbsp;
+        expect(subject.length, '[not] to be', length);
+    });
+&nbsp;
+    expect.addAssertion(['string', 'array-like'], '[not] to be empty', function (expect, subject) {
+        expect(subject, '[not] to have length', 0);
+    });
+&nbsp;
+    expect.addAssertion(['string', 'array-like'], 'to be non-empty', function (expect, subject) {
+        expect(subject, 'not to be empty');
+    });
+&nbsp;
+    expect.addAssertion('object', ['to [not] [only] have (key|keys)', '[not] to have (key|keys)'], function (expect, subject, keys) {
+        keys = isArray(keys) ?
+            keys :
+            Array.prototype.slice.call(arguments, 2);
+&nbsp;
+        if (this.flags.not &amp;&amp; keys.length === 0) {
+            return;
+        }
+&nbsp;
+        var hasKeys = subject &amp;&amp; keys.every(function (key) {
+            return subject.hasOwnProperty(key);
+        });
+&nbsp;
+        if (this.flags.only) {
+            expect(hasKeys, 'to be truthy');
+            expect(expect.findTypeOf(subject).getKeys(subject).length === keys.length, '[not] to be truthy');
+        } else {
+            expect(hasKeys, '[not] to be truthy');
+        }
+    });
+&nbsp;
+    expect.addAssertion('string', '[not] to contain', function (expect, subject) {
+        var flags = this.flags;
+        var args = Array.prototype.slice.call(arguments, 2);
+        expect.withError(function () {
+            args.forEach(function (arg) {
+                expect(subject.indexOf(arg) !== -1, '[not] to be truthy');
+            });
+        }, function (e) {
+            expect.fail({
+                diff: flags.not &amp;&amp; function (output) {
+                    var lastIndex = 0;
+                    function flushUntilIndex(i) {
+                        if (i &gt; lastIndex) {
+                            output.text(subject.substring(lastIndex, i));
+                            lastIndex = i;
+                        }
+                    }
+                    subject.replace(new RegExp(args.map(function (arg) {
+                        return utils.escapeRegExpMetaChars(String(arg));
+                    }).join('|'), 'g'), function ($0, index) {
+                        flushUntilIndex(index);
+                        lastIndex += $0.length;
+                        output.diffRemovedHighlight($0);
+                    });
+                    flushUntilIndex(subject.length);
+                    return {diff: output};
+                }
+            });
+        });
+    });
+&nbsp;
+    expect.addAssertion('array-like', '[not] to contain', function (expect, subject) {
+        var flags = this.flags;
+        var args = Array.prototype.slice.call(arguments, 2);
+        expect.withError(function () {
+            args.forEach(function (arg) {
+                expect(subject &amp;&amp; Array.prototype.some.call(subject, function (item) {
+                    return expect.equal(item, arg);
+                }), '[not] to be truthy');
+            });
+        }, function (e) {
+            expect.fail({
+                diff: flags.not &amp;&amp; function (output, diff, inspect, equal) {
+                    return diff(subject, Array.prototype.filter.call(subject, function (item) {
+                        return !args.some(function (arg) {
+                            return equal(item, arg);
+                        });
+                    }));
+                }
+            });
+        });
+    });
+&nbsp;
+    expect.addAssertion('number', '[not] to be finite', function (expect, subject) {
+        expect(isFinite(subject), '[not] to be truthy');
+    });
+&nbsp;
+    expect.addAssertion('number', '[not] to be infinite', function (expect, subject) {
+        expect(!isNaN(subject) &amp;&amp; !isFinite(subject), '[not] to be truthy');
+    });
+&nbsp;
+    expect.addAssertion(['number', 'string'], '[not] to be within', function (expect, subject, start, finish) {
+        this.args = [expect.output.clone().append(expect.inspect(start)).text('..').append(expect.inspect(finish))];
+        expect(subject &gt;= start &amp;&amp; subject &lt;= finish, '[not] to be truthy');
+    });
+&nbsp;
+    expect.addAssertion(['number', 'string'], ['&lt;', '[not] to be (&lt;|less than|below)'], function (expect, subject, value) {
+        expect(subject &lt; value, '[not] to be truthy');
+    });
+&nbsp;
+    expect.addAssertion(['number', 'string'], ['&lt;=', '[not] to be (&lt;=|less than or equal to)'], function (expect, subject, value) {
+        expect(subject &lt;= value, '[not] to be truthy');
+    });
+&nbsp;
+    expect.addAssertion(['number', 'string'], ['&gt;', '[not] to be (&gt;|greater than|above)'], function (expect, subject, value) {
+        expect(subject &gt; value, '[not] to be truthy');
+    });
+&nbsp;
+    expect.addAssertion(['number', 'string'], ['&gt;=', '[not] to be (&gt;=|greater than or equal to)'], function (expect, subject, value) {
+        expect(subject &gt;= value, '[not] to be truthy');
+    });
+&nbsp;
+    expect.addAssertion('number', '[not] to be positive', function (expect, subject) {
+        expect(subject, '[not] to be &gt;', 0);
+    });
+&nbsp;
+    expect.addAssertion('number', '[not] to be negative', function (expect, subject) {
+        expect(subject, '[not] to be &lt;', 0);
+    });
+&nbsp;
+    expect.addAssertion('[not] to equal', function (expect, subject, value) {
+        var flags = this.flags;
+        expect.withError(function () {
+            expect(expect.equal(value, subject), '[not] to be truthy');
+        }, function (e) {
+            expect.fail({
+                label: 'should equal',
+                diff: !flags.not &amp;&amp; function (output, diff) {
+                    return diff(subject, value);
+                }
+            });
+        });
+    });
+&nbsp;
+    expect.addAssertion('function', '[not] to error', function (expect, subject, arg) {
+        var hasArg = arguments.length &gt; 2;
+        var that = this;
+        var threw = false;
+&nbsp;
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (this.flags.not &amp;&amp; hasArg) {
+<span class="cstat-no" title="statement not covered" >            throw new Error("The 'not to error' assertion does not support arguments");</span>
+        }
+&nbsp;
+        return expect.promise(function () {
+            try {
+                return subject();
+            } catch (e) {
+                threw = true;
+                throw e;
+            }
+        }).then(function () {
+            if (!that.flags.not) {
+                return expect.promise(function () {
+                    expect.fail(function (output) {
+                        output.text('expected').sp();
+                        output.append(expect.inspect(subject)).sp().text('to error');
+                    });
+                });
+            }
+        }, function (error) {
+            if (that.flags.not) {
+                that.errorMode = 'nested';
+                expect.fail((threw ? 'threw' : 'returned promise rejected with') + ': {0}', error.isUnexpected ? <span class="branch-0 cbranch-no" title="branch not covered" >error.getErrorMessage() </span>: expect.inspect(error));
+            } else if (hasArg) {
+                that.errorMode = 'nested';
+                <span class="missing-if-branch" title="if path not taken" >I</span>if (error.isUnexpected &amp;&amp; (<span class="branch-1 cbranch-no" title="branch not covered" >typeof arg === 'string' </span>|| <span class="branch-2 cbranch-no" title="branch not covered" >isRegExp(arg))</span>) {
+<span class="cstat-no" title="statement not covered" >                    return expect(error.getErrorMessage().toString(), 'to satisfy', arg);</span>
+                } else {
+                    return expect(error, 'to satisfy', arg);
+                }
+            }
+        });
+    });
+&nbsp;
+    expect.addAssertion('function', '[not] to (throw|throw error|throw exception)', function (expect, subject, arg) {
+        var thrown = false;
+        var error;
+        var hasArg = arguments.length &gt; 2;
+&nbsp;
+        if (this.flags.not &amp;&amp; hasArg) {
+            throw new Error("The 'not to throw' assertion does not support arguments");
+        }
+&nbsp;
+        try {
+            subject();
+        } catch (e) {
+            error = e;
+            thrown = true;
+        }
+&nbsp;
+        var isUnexpected = error &amp;&amp; error._isUnexpected;
+        if (hasArg) {
+            // in the presence of a matcher an error must have been thrown.
+            expect(thrown, 'to be truthy');
+&nbsp;
+            this.errorMode = 'nested';
+            if (isUnexpected &amp;&amp; (typeof arg === 'string' || isRegExp(arg))) {
+                return expect(error.getErrorMessage().toString(), 'to satisfy', arg);
+            } else {
+                return expect(error, 'to satisfy', arg);
+            }
+        } else if (this.flags.not &amp;&amp; thrown) {
+            this.errorMode = 'nested';
+            expect.fail('threw: {0}', isUnexpected ? error.getErrorMessage() : expect.inspect(error));
+        } else {
+            expect(thrown, '[not] to be truthy');
+        }
+    });
+&nbsp;
+    expect.addAssertion('function', 'to have arity', function (expect, subject, value) {
+        expect(subject.length, 'to equal', value);
+    });
+&nbsp;
+    expect.addAssertion('object', [
+        'to have values satisfying',
+        'to be (a map|a hash|an object) whose values satisfy'
+    ], function (expect, subject) {
+        var extraArgs = Array.prototype.slice.call(arguments, 2);
+        if (extraArgs.length === 0) {
+            throw new Error('Assertion "' + this.testDescription + '" expects a third argument');
+        }
+        this.errorMode = 'nested';
+        expect(subject, 'not to equal', {});
+        this.errorMode = 'bubble';
+&nbsp;
+        var promiseByKey = {};
+        expect.findTypeOf(subject).getKeys(subject).forEach(function (key, index) {
+            promiseByKey[key] = expect.promise(function () {
+                if (typeof extraArgs[0] === 'function') {
+                    return extraArgs[0](subject[key], index);
+                } else {
+                    return expect.apply(expect, [subject[key], 'to satisfy assertion'].concat(extraArgs));
+                }
+            });
+        });
+&nbsp;
+        return expect.promise.all(promiseByKey).caught(function () {
+            return expect.promise.settle(promiseByKey).then(function () {
+                expect.fail(function (output) {
+                    var subjectOutput = expect.inspect(subject);
+                    output.error('failed expectation in');
+                    if (subjectOutput.size().height &gt; 1) {
+                        output.nl();
+                    } else {
+                        output.sp();
+                    }
+                    subjectOutput.error(':');
+                    output.block(subjectOutput).nl();
+                    output.indentLines();
+&nbsp;
+                    var seenFirstRejected = false;
+                    Object.keys(promiseByKey).forEach(function (key) {
+                        var promise = promiseByKey[key];
+                        if (promise.isRejected()) {
+                            var error = promise.reason();
+                            if (seenFirstRejected) {
+                                output.nl();
+                            } else {
+                                seenFirstRejected = true;
+                            }
+                            output.i().text(key).text(': ').block(error.getErrorMessage());
+                        }
+                    });
+                });
+            });
+        });
+    });
+&nbsp;
+    expect.addAssertion('array-like', [
+        'to have items satisfying',
+        'to be an array whose items satisfy'
+    ], function (expect, subject) { // ...
+        var extraArgs = Array.prototype.slice.call(arguments, 2);
+        if (extraArgs.length === 0) {
+            throw new Error('Assertion "' + this.testDescription + '" expects a third argument');
+        }
+        this.errorMode = 'nested';
+        expect(subject, 'to be non-empty');
+        this.errorMode = 'bubble';
+        return expect.apply(expect, [subject, 'to have values satisfying'].concat(extraArgs));
+    });
+&nbsp;
+    expect.addAssertion('object', [
+        'to have keys satisfying',
+        'to be (a map|a hash|an object) whose (keys|properties) satisfy'
+    ], function (expect, subject) {
+        var extraArgs = Array.prototype.slice.call(arguments, 2);
+        if (extraArgs.length === 0) {
+            throw new Error('Assertion "' + this.testDescription + '" expects a third argument');
+        }
+        this.errorMode = 'nested';
+        expect(subject, 'to be an object');
+        expect(subject, 'not to equal', {});
+        this.errorMode = 'bubble';
+&nbsp;
+        var subjectKeys = expect.findTypeOf(subject).getKeys(subject),
+            promiseByKey = {};
+        subjectKeys.forEach(function (key) {
+            promiseByKey[key] = expect.promise(function () {
+                if (typeof extraArgs[0] === 'function') {
+                    return extraArgs[0](key, subject[key]);
+                } else {
+                    return expect.apply(expect, [key, 'to satisfy assertion'].concat(extraArgs));
+                }
+            });
+        }, this);
+&nbsp;
+        return expect.promise.all(promiseByKey).caught(function () {
+            return expect.promise.settle(promiseByKey).then(function () {
+                expect.fail(function (output) {
+                    output.error('failed expectation on keys ')
+                          .text(subjectKeys.join(', '))
+                          .error(':').nl()
+                          .indentLines();
+&nbsp;
+                    var seenFirstRejected = false;
+                    Object.keys(promiseByKey).forEach(function (key) {
+                        var promise = promiseByKey[key];
+                        if (promise.isRejected()) {
+                            var error = promise.reason();
+                            if (seenFirstRejected) {
+                                output.nl();
+                            } else {
+                                seenFirstRejected = true;
+                            }
+                            output.i().text(key).text(': ').block(error.getErrorMessage());
+                        }
+                    });
+                });
+            });
+        });
+    });
+&nbsp;
+    expect.addAssertion('object', 'to be canonical', function (expect, subject) {
+        var stack = [];
+&nbsp;
+        (function traverse(obj) {
+            var i;
+            for (i = 0 ; i &lt; stack.length ; i += 1) {
+                if (stack[i] === obj) {
+                    return;
+                }
+            }
+            if (obj &amp;&amp; typeof obj === 'object') {
+                var keys = Object.keys(obj);
+                for (i = 0 ; i &lt; keys.length - 1 ; i += 1) {
+                    expect(keys[i], 'to be less than', keys[i + 1]);
+                }
+                stack.push(obj);
+                keys.forEach(function (key) {
+                    traverse(obj[key]);
+                });
+                stack.pop();
+            }
+        }(subject));
+    });
+&nbsp;
+    expect.addAssertion('Error', 'to have message', function (expect, subject, value) {
+        this.errorMode = 'nested';
+        if (subject._isUnexpected) {
+            return expect.promise(function () {
+                return expect(subject.getErrorMessage().toString('text'), 'to satisfy', value);
+            }).then(function () {
+                return expect(subject.message.replace(ansiRegex, '').replace(/^\n/, ''), 'to satisfy', value);
+            });
+        } else {
+            return expect(subject.message, 'to satisfy', value);
+        }
+    });
+&nbsp;
+    expect.addAssertion('Error', 'to [exhaustively] satisfy', function (expect, subject, value) {
+        var valueType = expect.findTypeOf(value);
+        if (valueType.is('Error')) {
+            expect(subject.constructor, 'to be', value.constructor);
+            expect(subject, 'to have properties', valueType.unwrap(value));
+        } else if (typeof value === 'function') {
+            return expect.promise(function () {
+                return value(subject);
+            });
+        } else if (valueType.is('object')) {
+            var subjectType = expect.findTypeOf(subject);
+            var subjectKeys = subjectType.getKeys(subject);
+            var valueKeys = valueType.getKeys(value);
+            var convertedSubject = {};
+            subjectKeys.concat(valueKeys).forEach(function (key) {
+                convertedSubject[key] = subject[key];
+            });
+            return expect(convertedSubject, 'to [exhaustively] satisfy', value);
+        } else {
+            return expect(subject.message, 'to [exhaustively] satisfy', value);
+        }
+    });
+&nbsp;
+    expect.addAssertion('binaryArray', 'to [exhaustively] satisfy', function (expect, subject, value) {
+        if (typeof value === 'function') {
+            if (value._expectIt) {
+                return expect.withError(function () {
+                    return value(subject);
+                }, function (e) {
+                    expect.fail({
+                        diff: function (output, diff, inspect, equal) {
+                            return {
+                                diff: output.append(e.getErrorMessage()),
+                                inline: false
+                            };
+                        }
+                    });
+                });
+            } else {
+                return expect.promise(function () {
+                    return value(subject);
+                });
+            }
+        } else {
+            expect(subject, 'to equal', value);
+        }
+    });
+&nbsp;
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (typeof Buffer !== 'undefined') {
+        expect.addAssertion('Buffer', 'when decoded as', function (expect, subject, value) {
+            return this.shift(subject.toString(value), 1);
+        });
+    }
+&nbsp;
+    expect.addAssertion('[not] to [exhaustively] satisfy [assertion]', function (expect, subject, value) {
+        if (this.flags.not) {
+            return expect.promise(function (resolve, reject) {
+                return expect.promise(function () {
+                    return expect(subject, 'to [exhaustively] satisfy [assertion]', value);
+                }).then(function () {
+                    try {
+                        expect.fail();
+                    } catch (e) {
+                        reject(e);
+                    }
+                }).caught(function (e) {
+                    if (!e || !e._isUnexpected) {
+                        reject(e);
+                    } else {
+                        resolve();
+                    }
+                });
+            });
+        }
+&nbsp;
+        if (this.flags.assertion) {
+            this.errorMode = 'bubble'; // to satisfy assertion 'to be a number' =&gt; to be a number
+            if (typeof value === 'string') {
+                return expect.apply(expect, Array.prototype.slice.call(arguments, 1));
+            } else {
+                return expect.apply(expect, [subject, this.flags.exhaustively ? 'to exhaustively satisfy' : 'to satisfy'].concat(Array.prototype.slice.call(arguments, 2)));
+            }
+        }
+&nbsp;
+        var valueType = expect.findTypeOf(value);
+        if (valueType.is('expect.it')) {
+            return expect.withError(function () {
+                return value(subject);
+            }, function (e) {
+                expect.fail({
+                    diff: function (output, diff, inspect, equal) {
+                        return {
+                            diff: output.append(e.getErrorMessage()),
+                            inline: false
+                        };
+                    }
+                });
+            });
+        }
+&nbsp;
+        if (valueType.is('function')) {
+            return expect.promise(function () {
+                return value(subject);
+            });
+        }
+&nbsp;
+        if (valueType.is('regexp')) {
+            return expect(subject, 'to match', value);
+        }
+&nbsp;
+        var subjectType = expect.findTypeOf(subject),
+            commonType = expect.findCommonType(subject, value),
+            bothAreArrayLike = commonType.is('array-like');
+        if (commonType.is('array-like') || commonType.is('object')) {
+            expect(subject, 'to be an object');
+            var promiseByKey = {};
+            var keys = valueType.getKeys(value);
+            keys.forEach(function (key, index) {
+                promiseByKey[key] = expect.promise(function () {
+                    var valueKeyType = expect.findTypeOf(value[key]);
+                    if (valueKeyType.is('function')) {
+                        return value[key](subject[key]);
+                    } else {
+                        return expect(subject[key], 'to [exhaustively] satisfy', value[key]);
+                    }
+                });
+            });
+&nbsp;
+            var flags = this.flags;
+&nbsp;
+            return expect.promise.all([
+                expect.promise(function () {
+                    if (commonType.is('array-like') || flags.exhaustively) {
+                        expect(subject, 'to only have keys', keys);
+                    }
+                }),
+                expect.promise.all(promiseByKey)
+            ]).caught(function () {
+                return expect.promise.settle(promiseByKey).then(function () {
+                    expect.fail({
+                        diff: function (output, diff, inspect, equal) {
+                            var result = {
+                                diff: output,
+                                inline: true
+                            };
+&nbsp;
+                            var valueType = expect.findTypeOf(value),
+                            keyIndex = {};
+                            subjectType.getKeys(subject).concat(valueType.getKeys(value)).forEach(function (key) {
+                                if (!(key in keyIndex)) {
+                                    keyIndex[key] = key;
+                                }
+                            });
+&nbsp;
+                            var keys = Object.keys(keyIndex);
+&nbsp;
+                            if (bothAreArrayLike &amp;&amp; subjectType.name !== 'array') {
+                                output.text(subjectType.name);
+                            }
+                            output.text(bothAreArrayLike ? '[' : '{').nl().indentLines();
+&nbsp;
+                            keys.forEach(function (key, index) {
+                                output.i().block(function () {
+                                    var valueOutput;
+                                    var annotation = output.clone();
+                                    var conflicting;
+&nbsp;
+                                    if (promiseByKey[key] &amp;&amp; promiseByKey[key].isRejected()) {
+                                        conflicting = promiseByKey[key].reason();
+                                    }
+                                    var arrayItemOutOfRange = bothAreArrayLike &amp;&amp; (index &gt;= subject.length || index &gt;= value.length);
+&nbsp;
+                                    var isInlineDiff = true;
+&nbsp;
+                                    if (!(key in value)) {
+                                        if (commonType.is('array-like') || flags.exhaustively) {
+                                            annotation.error('should be removed');
+                                        } else {
+                                            conflicting = null;
+                                        }
+                                    } else if (conflicting || arrayItemOutOfRange) {
+                                        var keyDiff = conflicting &amp;&amp; conflicting.getDiff();
+                                        isInlineDiff = !keyDiff || keyDiff.inline ;
+                                        if (typeof value[key] === 'function') {
+                                            isInlineDiff = false;
+                                            annotation.append(conflicting.getErrorMessage());
+                                        } else if (!keyDiff || (keyDiff &amp;&amp; !keyDiff.inline)) {
+                                            annotation.error((conflicting &amp;&amp; conflicting.getLabel()) || 'should satisfy').sp()
+                                                .block(inspect(value[key]));
+&nbsp;
+                                            if (keyDiff) {
+                                                annotation.nl().append(keyDiff.diff);
+                                            }
+                                        } else {
+                                            valueOutput = keyDiff.diff;
+                                        }
+                                    }
+&nbsp;
+                                    var last = index === keys.length - 1;
+                                    if (!valueOutput) {
+                                        if (bothAreArrayLike &amp;&amp; key &gt;= subject.length) {
+                                            valueOutput = output.clone();
+                                        } else {
+                                            valueOutput = inspect(subject[key], conflicting ? Infinity : 1);
+                                        }
+                                    }
+&nbsp;
+                                    if (!bothAreArrayLike) {
+                                        this.key(key).text(':');
+                                    }
+                                    valueOutput.amend('text', last ? '' : ',');
+&nbsp;
+&nbsp;
+                                    if (!bothAreArrayLike) {
+                                        if (valueOutput.isBlock() &amp;&amp; valueOutput.isMultiline()) {
+                                            this.indentLines();
+                                            this.nl().i();
+                                        } else {
+                                            this.sp();
+                                        }
+                                    }
+&nbsp;
+                                    if (isInlineDiff) {
+                                        this.append(valueOutput);
+                                    } else {
+                                        this.block(valueOutput);
+                                    }
+                                    if (!annotation.isEmpty()) {
+                                        this.sp(valueOutput.isEmpty() ? 0 : 1).annotationBlock(annotation);
+                                    }
+                                }).nl();
+                            });
+&nbsp;
+                            output.outdentLines().text(bothAreArrayLike ? ']' : '}');
+&nbsp;
+                            if (!bothAreArrayLike) {
+                                result.diff = utils.wrapConstructorNameAroundOutput(result.diff, subject);
+                            }
+&nbsp;
+                            return result;
+                        }
+                    });
+                });
+            });
+        } else {
+            expect(subject, 'to equal', value);
+        }
+    });
+&nbsp;
+    function wrapDiffWithTypePrefixAndSuffix(e, type, subject) {
+        var createDiff = e.getDiffMethod();
+        <span class="missing-if-branch" title="else path not taken" >E</span>if (createDiff) {
+            return function (output) { // ...
+                type.prefix.call(type, output, subject);
+                var result = createDiff.apply(this, arguments);
+                type.suffix.call(type, output, subject);
+                return result;
+            };
+        }
+    }
+&nbsp;
+    expect.addAssertion('wrapperObject', 'to [exhaustively] satisfy', function (expect, subject, value) {
+        var valueType = expect.findTypeOf(value);
+        if (valueType.is('wrapperObject')) {
+            var type = expect.findCommonType(subject, value);
+            expect(type.is('wrapperObject'), 'to be truthy');
+            return expect.withError(function () {
+                return expect(type.unwrap(subject), 'to [exhaustively] satisfy', type.unwrap(value));
+            }, function (e) {
+                expect.fail({
+                    label: e.getLabel(),
+                    diff: wrapDiffWithTypePrefixAndSuffix(e, type, subject)
+                });
+            });
+        } else {
+            var subjectType = expect.findTypeOf(subject);
+&nbsp;
+            return expect.withError(function () {
+                return expect(subjectType.unwrap(subject), 'to [exhaustively] satisfy', value);
+            }, function (e) {
+                expect.fail({
+                    label: e.getLabel(),
+                    diff: wrapDiffWithTypePrefixAndSuffix(e, subjectType, subject)
+                });
+            });
+        }
+    });
+&nbsp;
+    expect.addAssertion('function', 'when called with', function (expect, subject, args) { // ...
+        this.errorMode = 'nested';
+        return this.shift(subject.apply(subject, args), 1);
+    });
+&nbsp;
+    function instantiate(Constructor, args) {
+        function ProxyConstructor() {
+            return Constructor.apply(this, args);
+        }
+        ProxyConstructor.prototype = Constructor.prototype;
+        return new ProxyConstructor();
+    }
+&nbsp;
+    expect.addAssertion('array-like', [
+        'when passed as parameters to [async]',
+        'when passed as parameters to [constructor]'
+    ], function (expect, subject, fn) { // ...
+        this.errorMode = 'nested';
+        var that = this,
+            args = subject;
+        if (that.flags.async) {
+            return expect.promise(function (run) {
+                args = [].concat(args);
+                args.push(run(function (err, result) {
+                    expect(err, 'to be falsy');
+                    return that.shift(result, 1);
+                }));
+                fn.apply(null, args);
+            });
+        } else {
+            subject = that.flags.constructor ? instantiate(fn, args) : fn.apply(fn, args);
+            return that.shift(subject, 1);
+        }
+    });
+&nbsp;
+    expect.addAssertion([
+        'when passed as parameter to [async]',
+        'when passed as parameter to [constructor]'
+    ], function (expect, subject) {
+        this.errorMode = 'bubble';
+        return expect.apply(expect, [[subject], 'when passed as parameters to [async] [constructor]'].concat(this.args));
+    });
+};
+&nbsp;</pre></td></tr>
+</table></pre>
+
+</div>
+<div class="footer">
+    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Jun 10 2015 11:18:25 GMT+0200 (CEST)</div>
+</div>
+
+<script src="../prettify.js"></script>
+
+<script src="https://yui-s.yahooapis.com/3.6.0/build/yui/yui-min.js"></script>
+<script>
+
+    YUI().use('datatable', function (Y) {
+
+        var formatters = {
+          pct: function (o) {
+              o.className += o.record.get('classes')[o.column.key];
+              try {
+                  return o.value.toFixed(2) + '%';
+              } catch (ex) { return o.value + '%'; }
+          },
+          html: function (o) {
+              o.className += o.record.get('classes')[o.column.key];
+              return o.record.get(o.column.key + '_html');
+          }
+        },
+          defaultFormatter = function (o) {
+              o.className += o.record.get('classes')[o.column.key];
+              return o.value;
+          };
+
+        function getColumns(theadNode) {
+            var colNodes = theadNode.all('tr th'),
+                cols = [],
+                col;
+            colNodes.each(function (colNode) {
+                col = {
+                    key: colNode.getAttribute('data-col'),
+                    label: colNode.get('innerHTML') || ' ',
+                    sortable: !colNode.getAttribute('data-nosort'),
+                    className: colNode.getAttribute('class'),
+                    type: colNode.getAttribute('data-type'),
+                    allowHTML: colNode.getAttribute('data-html') === 'true' || colNode.getAttribute('data-fmt') === 'html'
+                };
+                col.formatter = formatters[colNode.getAttribute('data-fmt')] || defaultFormatter;
+                cols.push(col);
+            });
+            return cols;
+        }
+
+        function getRowData(trNode, cols) {
+            var tdNodes = trNode.all('td'),
+                    i,
+                    row = { classes: {} },
+                    node,
+                    name;
+            for (i = 0; i < cols.length; i += 1) {
+                name = cols[i].key;
+                node = tdNodes.item(i);
+                row[name] = node.getAttribute('data-value') || node.get('innerHTML');
+                row[name + '_html'] = node.get('innerHTML');
+                row.classes[name] = node.getAttribute('class');
+                //Y.log('Name: ' + name + '; Value: ' + row[name]);
+                if (cols[i].type === 'number') { row[name] = row[name] * 1; }
+            }
+            //Y.log(row);
+            return row;
+        }
+
+        function getData(tbodyNode, cols) {
+            var data = [];
+            tbodyNode.all('tr').each(function (trNode) {
+                data.push(getRowData(trNode, cols));
+            });
+            return data;
+        }
+
+        function replaceTable(node) {
+            if (!node) { return; }
+            var cols = getColumns(node.one('thead')),
+                data = getData(node.one('tbody'), cols),
+                table,
+                parent = node.get('parentNode');
+
+            table = new Y.DataTable({
+                columns: cols,
+                data: data,
+                sortBy: 'file'
+            });
+            parent.set('innerHTML', '');
+            table.render(parent);
+        }
+
+        Y.on('domready', function () {
+            replaceTable(Y.one('div.coverage-summary table'));
+            if (typeof prettyPrint === 'function') {
+                prettyPrint();
+            }
+        });
+    });
+</script>
+</body>
+</html>

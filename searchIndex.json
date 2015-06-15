@@ -136,16 +136,16 @@
     "url": "/assertions/boolean/to-be-true/"
   },
   {
-    "label": "to error (function)",
-    "url": "/assertions/function/to-error/"
-  },
-  {
     "label": "to have arity (function)",
     "url": "/assertions/function/to-have-arity/"
   },
   {
     "label": "to throw (function)",
     "url": "/assertions/function/to-throw/"
+  },
+  {
+    "label": "to error (function)",
+    "url": "/assertions/function/to-error/"
   },
   {
     "label": "to be NaN (number)",
@@ -172,10 +172,6 @@
     "url": "/assertions/number/to-be-infinite/"
   },
   {
-    "label": "to be less than or equal to (number)",
-    "url": "/assertions/number/to-be-less-than-or-equal-to/"
-  },
-  {
     "label": "to be less than (number)",
     "url": "/assertions/number/to-be-less-than/"
   },
@@ -190,6 +186,10 @@
   {
     "label": "to be within (number)",
     "url": "/assertions/number/to-be-within/"
+  },
+  {
+    "label": "to be less than or equal to (number)",
+    "url": "/assertions/number/to-be-less-than-or-equal-to/"
   },
   {
     "label": "to be canonical (object)",
