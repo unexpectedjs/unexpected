@@ -2031,8 +2031,9 @@ module.exports = function (expect) {
                                 inline: true
                             };
 
-                            var valueType = expect.findTypeOf(value),
-                            keyIndex = {};
+                            var valueType = expect.findTypeOf(value);
+                            var keyIndex = {};
+                            var subjectIsArrayLike = subjectType.is('array-like');
                             subjectType.getKeys(subject).concat(valueType.getKeys(value)).forEach(function (key) {
                                 if (!(key in keyIndex)) {
                                     keyIndex[key] = key;
@@ -2092,13 +2093,12 @@ module.exports = function (expect) {
                                         }
                                     }
 
-                                    if (!subjectType.is('array-like')) {
+                                    if (!subjectIsArrayLike) {
                                         this.key(key).text(':');
                                     }
                                     valueOutput.amend('text', last ? '' : ',');
 
-
-                                    if (!bothAreArrayLike) {
+                                    if (!subjectIsArrayLike) {
                                         if (valueOutput.isBlock() && valueOutput.isMultiline()) {
                                             this.indentLines();
                                             this.nl().i();
