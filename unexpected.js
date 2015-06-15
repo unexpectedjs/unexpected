@@ -1542,17 +1542,23 @@ module.exports = function (expect) {
             keys :
             Array.prototype.slice.call(arguments, 2);
 
+        var keysInSubject = {};
+        var subjectKeys = expect.findTypeOf(subject).getKeys(subject);
+        subjectKeys.forEach(function (key) {
+            keysInSubject[key] = true;
+        });
+
         if (this.flags.not && keys.length === 0) {
             return;
         }
 
         var hasKeys = subject && keys.every(function (key) {
-            return subject.hasOwnProperty(key);
+            return keysInSubject[key];
         });
 
         if (this.flags.only) {
             expect(hasKeys, 'to be truthy');
-            expect(expect.findTypeOf(subject).getKeys(subject).length === keys.length, '[not] to be truthy');
+            expect(subjectKeys.length === keys.length, '[not] to be truthy');
         } else {
             expect(hasKeys, '[not] to be truthy');
         }
