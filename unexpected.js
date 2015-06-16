@@ -726,12 +726,12 @@ Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
                 errorMessage
                     .append(createStandardErrorMessage(that.expect, subject, testDescriptionString, args)).nl()
                     .indentLines()
-                    .i().error('The assertion "').jsString(testDescriptionString)
-                    .error('" is not defined for the type "').jsString(matchingType.name).error('",').nl()
+                    .i().error("The assertion '").jsString(testDescriptionString)
+                    .error("' is not defined for the type '").jsString(matchingType.name).error("',").nl()
                     .i().error('but it is defined for ')
                     .outdentLines();
                 if (definedForIncompatibleTypes.length === 1) {
-                    errorMessage.error('the type "').jsString(definedForIncompatibleTypes[0].name).error('"');
+                    errorMessage.error("the type '").jsString(definedForIncompatibleTypes[0].name).error("'");
                 } else {
                     errorMessage.error('these types: ');
 
@@ -739,7 +739,7 @@ Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
                         if (index > 0) {
                             errorMessage.error(', ');
                         }
-                        errorMessage.error('"').jsString(incompatibleType.name).error('"');
+                        errorMessage.error("'").jsString(incompatibleType.name).error("'");
                     });
                 }
             } else {
@@ -3266,6 +3266,16 @@ module.exports = function (expect) {
             return this.baseType.getKeys(value).filter(function (key) {
                 return !unexpectedErrorMethodBlacklist[key];
             });
+        },
+        inspect: function (value, depth, output) {
+            output.jsFunctionName(this.name).text('(');
+            var errorMessage = value.getErrorMessage();
+            if (errorMessage.isMultiline()) {
+                output.nl().indentLines().i().block(errorMessage).nl();
+            } else {
+                output.append(errorMessage);
+            }
+            output.text(')');
         }
     });
 
@@ -3840,6 +3850,25 @@ var assertions = require(4);
 styles(unexpected);
 types(unexpected);
 assertions(unexpected);
+
+// Add an inspect method to all the promises we return that will make the REPL, console.log, and util.inspect render it nicely in node.js:
+require(19).prototype.inspect = function () {
+    var output = unexpected.output.clone()
+        .jsFunctionName('Promise')
+        .sp();
+    if (this.isPending()) {
+        output.yellow('(pending)');
+    } else if (this.isFulfilled()) {
+        output.green('(fulfilled)');
+        var value = this.value();
+        if (typeof value !== 'undefined') {
+            output.sp().text('=>').sp().append(unexpected.inspect(value));
+        }
+    } else if (this.isRejected()) {
+        output.red('(rejected)').sp().text('=>').sp().append(unexpected.inspect(this.reason()));
+    }
+    return output.toString(require(30).defaultFormat);
+};
 
 module.exports = unexpected;
 
