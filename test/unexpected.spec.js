@@ -3585,7 +3585,7 @@ describe('unexpected', function () {
     it('throws if the assertion does not exist', function () {
         expect(function () {
             expect({}, "to bee", 2);
-        }, 'to throw exception', 'Unknown assertion "to bee", did you mean: "to be"');
+        }, 'to throw exception', "Unknown assertion 'to bee', did you mean: 'to be'");
     });
 
     describe('addAssertion', function () {
@@ -4138,7 +4138,7 @@ describe('unexpected', function () {
             });
             expect(function () {
                 clonedExpect('foo', 'to be foo');
-            }, 'to throw exception', 'Unknown assertion "to bee", did you mean: "to be"');
+            }, 'to throw exception', "Unknown assertion 'to bee', did you mean: 'to be'");
         });
     });
 
@@ -4173,11 +4173,11 @@ describe('unexpected', function () {
             it('it suggests a similarly named assertion', function () {
                 expect(function () {
                     clonedExpect(null, "to bee", null);
-                }, 'to throw', 'Unknown assertion "to bee", did you mean: "to be"');
+                }, 'to throw', "Unknown assertion 'to bee', did you mean: 'to be'");
 
                 expect(function () {
                     clonedExpect(1, "to be the answer to the ultimate question of life, the universe, and everything");
-                }, 'to throw', 'Unknown assertion "to be the answer to the ultimate question of life, the universe, and everything", did you mean: "to be the answer to the Ultimate Question of Life, the Universe, and Everything"');
+                }, 'to throw', "Unknown assertion 'to be the answer to the ultimate question of life, the universe, and everything', did you mean: 'to be the answer to the Ultimate Question of Life, the Universe, and Everything'");
             });
 
             describe('but exists for another type', function () {
@@ -4241,19 +4241,19 @@ describe('unexpected', function () {
                     }).addAssertion('myMostSpecificType', 'to fooc', function () {});
                     expect(function () {
                         clonedExpect('a', 'to fooo');
-                    }, 'to throw', 'Unknown assertion "to fooo", did you mean: "to fooa"');
+                    }, 'to throw', "Unknown assertion 'to fooo', did you mean: 'to fooa'");
 
                     expect(function () {
                         clonedExpect('aa', 'to fooo');
-                    }, 'to throw', 'Unknown assertion "to fooo", did you mean: "to foob"');
+                    }, 'to throw', "Unknown assertion 'to fooo', did you mean: 'to foob'");
 
                     expect(function () {
                         clonedExpect('aaa', 'to fooo');
-                    }, 'to throw', 'Unknown assertion "to fooo", did you mean: "to fooc"');
+                    }, 'to throw', "Unknown assertion 'to fooo', did you mean: 'to fooc'");
 
                     expect(function () {
                         clonedExpect('aaa', 'to fooaq');
-                    }, 'to throw', 'Unknown assertion "to fooaq", did you mean: "to fooc"');
+                    }, 'to throw', "Unknown assertion 'to fooaq', did you mean: 'to fooc'");
                 });
             });
         });
