@@ -5855,6 +5855,30 @@ describe('unexpected', function () {
         });
     });
 
+    describe('fail', function () {
+        describe('with an object', function () {
+            it('should support specifying a label', function () {
+                expect(function () {
+                    expect.fail({
+                        label: 'to yadda'
+                    });
+                }, 'to throw', {
+                    label: 'to yadda'
+                });
+            });
+
+            it('should set additional properties on the thrown error', function () {
+                expect(function () {
+                    expect.fail({
+                        foobarquux: 123
+                    });
+                }, 'to throw', {
+                    foobarquux: 123
+                });
+            });
+        });
+    });
+
     describe('async', function () {
         before(function () {
             expect = expect.clone()
