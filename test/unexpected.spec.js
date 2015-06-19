@@ -5876,6 +5876,26 @@ describe('unexpected', function () {
                     foobarquux: 123
                 });
             });
+
+            it('should support message passed as a string', function () {
+                expect(function () {
+                    expect.fail({
+                        message: 'hey'
+                    });
+                }, 'to throw', {
+                    message: '\nhey'
+                });
+            });
+
+            it('should support message passed as a MagicPen instance', function () {
+                expect(function () {
+                    expect.fail({
+                        message: expect.output.clone().text('hey')
+                    });
+                }, 'to throw', {
+                    message: '\nhey'
+                });
+            });
         });
     });
 
