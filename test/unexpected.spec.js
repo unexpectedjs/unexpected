@@ -6128,7 +6128,12 @@ describe('unexpected', function () {
                         "  +bar\n" +
                         ")"
                     );
-
+                    var syncFailingPromiseWithNoReason = expect.promise(function (resolve, reject) {
+                        reject();
+                    });
+                    return syncFailingPromiseWithNoReason.caught(function () {
+                        expect(syncFailingPromiseWithNoReason.inspect(), 'to equal', 'Promise (rejected)');
+                    });
                 });
             })['finally'](function () {
                 expect.output.constructor.defaultFormat = originalDefaultFormat;
