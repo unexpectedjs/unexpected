@@ -6098,45 +6098,53 @@ describe('unexpected', function () {
             });
         });
 
-        it('should return a promise with an inspect method that returns a suitable representation of the state', function () {
+        describe('#inspect', function () {
             var originalDefaultFormat = expect.output.constructor.defaultFormat;
-            expect.output.constructor.defaultFormat = 'text';
-            return expect.promise(function () {
-                var syncSuccessfulPromise = expect.promise(function () {
-                    expect(2, 'to equal', 2);
-                });
-                expect(syncSuccessfulPromise.inspect(), 'to equal', 'Promise (fulfilled)');
-
-                var syncSuccessfulPromiseWithAValue = expect.promise(function () {
-                    return 123;
-                });
-
-                expect(syncSuccessfulPromiseWithAValue.inspect(), 'to equal', 'Promise (fulfilled) => 123');
-
-                var asyncFailingPromise = expect('foo', 'when delayed a little bit', 'to equal', 'bar');
-                expect(asyncFailingPromise.inspect(), 'to equal', 'Promise (pending)');
-                return asyncFailingPromise.then(function () {
-                    throw new Error('Promise expectly fulfilled');
-                }).caught(function () {
-                    expect(
-                        asyncFailingPromise.inspect(),
-                        'to equal',
-                        "Promise (rejected) => UnexpectedError(\n" +
-                        "  expected 'foo' when delayed a little bit to equal 'bar'\n" +
-                        "\n" +
-                        "  -foo\n" +
-                        "  +bar\n" +
-                        ")"
-                    );
-                    var syncFailingPromiseWithNoReason = expect.promise(function (resolve, reject) {
-                        reject();
-                    });
-                    return syncFailingPromiseWithNoReason.caught(function () {
-                        expect(syncFailingPromiseWithNoReason.inspect(), 'to equal', 'Promise (rejected)');
-                    });
-                });
-            })['finally'](function () {
+            beforeEach(function () {
+                expect.output.constructor.defaultFormat = 'text';
+            });
+            afterEach(function () {
                 expect.output.constructor.defaultFormat = originalDefaultFormat;
+            });
+
+            it('should inspect a fulfilled promise without a value', function () {
+                expect(expect.promise(function () {
+                    expect(2, 'to equal', 2);
+                }).inspect(), 'to equal', 'Promise (fulfilled)');
+            });
+
+            it('should inspect a fulfilled promise with a value', function () {
+                expect(expect.promise(function () {
+                    return 123;
+                }).inspect(), 'to equal', 'Promise (fulfilled) => 123');
+            });
+
+            it('should inspect a pending promise', function () {
+                var asyncPromise = expect('foo', 'when delayed a little bit', 'to equal', 'foo');
+                expect(asyncPromise.inspect(), 'to equal', 'Promise (pending)');
+                return asyncPromise;
+            });
+
+            it('should inspect a rejected promise without a reason', function () {
+                var promise = expect.promise(function (resolve, reject) {
+                    reject();
+                });
+
+                return promise.caught(function () {
+                    expect(promise.inspect(), 'to equal', 'Promise (rejected)');
+                });
+            });
+
+            it('should inspect a rejected promise with a reason', function () {
+                var promise = expect.promise(function (resolve, reject) {
+                    setTimeout(function () {
+                        reject(new Error('argh'));
+                    }, 0);
+                });
+
+                return promise.caught(function () {
+                    expect(promise.inspect(), 'to equal', "Promise (rejected) => Error('argh')");
+                });
             });
         });
     });
