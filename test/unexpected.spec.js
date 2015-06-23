@@ -1134,7 +1134,7 @@ describe('unexpected', function () {
                             message,
                             'to contain',
                             "to have message 'expected 3 to equal 2'\n" +
-                                "  expected 'expected 1 to equal 2' to satisfy 'expected 3 to equal 2'\n" +
+                                "  expected 'expected 1 to equal 2' to equal 'expected 3 to equal 2'\n" +
                                 "\n" +
                                 "  -expected 1 to equal 2\n" +
                                 "  +expected 3 to equal 2"
@@ -1155,7 +1155,7 @@ describe('unexpected', function () {
                         expect(err, 'to have message', 'Dammit!');
                     }, 'to throw',
                         "expected Error('Bummer!') to have message 'Dammit!'\n" +
-                        "  expected 'Bummer!' to satisfy 'Dammit!'\n" +
+                        "  expected 'Bummer!' to equal 'Dammit!'\n" +
                         "\n" +
                         "  -Bummer!\n" +
                         "  +Dammit!"
@@ -5688,16 +5688,6 @@ describe('unexpected', function () {
                     '}\n' +
                     'when called with [ 3, 4 ] to equal 9\n' +
                     '  expected 7 to equal 9');
-
-            expect(function () {
-                expect(add, 'when called with', [3, 4], 'to satisfy', 'to equal', 9);
-            }, 'to throw',
-                   'expected\n' +
-                   'function add(a, b) {\n' +
-                   '    return a + b;\n' +
-                   '}\n' +
-                   "when called with [ 3, 4 ] to satisfy 'to equal', 9\n" + // DAMN, fix me
-                   "  expected 7 to satisfy 'to equal', 9"); // DAMN, fix me
         });
     });
 

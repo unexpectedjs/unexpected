@@ -1178,7 +1178,7 @@ describe("documentation tests", function () {
         } catch (e) {
             expect(e, "to have message",
                 "expected Error('foobar') to have message 'barfoo'\n" +
-                "  expected 'foobar' to satisfy 'barfoo'\n" +
+                "  expected 'foobar' to equal 'barfoo'\n" +
                 "\n" +
                 "  -foobar\n" +
                 "  +barfoo"

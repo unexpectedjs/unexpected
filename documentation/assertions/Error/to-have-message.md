@@ -12,7 +12,7 @@ expect(new Error('foobar'), 'to have message', 'barfoo');
 
 ```output
 expected Error('foobar') to have message 'barfoo'
-  expected 'foobar' to satisfy 'barfoo'
+  expected 'foobar' to equal 'barfoo'
 
   -foobar
   +barfoo
