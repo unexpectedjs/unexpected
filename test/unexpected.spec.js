@@ -47,26 +47,6 @@ describe('unexpected', function () {
                 a.toString('ansi') === b.toString('ansi') &&
                 a.toString('html') === b.toString('html');
         }
-    }).addType({
-        name: 'Promise',
-        base: 'object',
-        identify: function (obj) {
-            return this.baseType.identify(obj) && typeof obj.then === 'function';
-        }
-    }).addAssertion('Promise', 'to be rejected', function (expect, subject, expectedReason) {
-        return subject.then(function () {
-            expect.fail('Promise unexpectedly fulfilled');
-        }).caught(function (err) {
-            if (typeof expectedReason !== 'undefined') {
-                return expect(err._isUnexpected ? err.getErrorMessage().toString('text') : err.message, 'to satisfy', expectedReason);
-            }
-        });
-    }).addAssertion('Promise', 'to be resolved', function (expect, subject, expectedValue) {
-        return subject.then(function (value) {
-            if (typeof expectedValue !== 'undefined') {
-                return expect(value, 'to equal', expectedValue);
-            }
-        });
     }).addAssertion('when delayed a little bit', function (expect, subject) {
         var that = this;
         return expect.promise(function (run) {
@@ -987,7 +967,7 @@ describe('unexpected', function () {
                                 }, 1);
                             });
                         }, 'not to error'),
-                        'to be rejected',
+                        'to be rejected with',
                             "expected\n" +
                             "function () {\n" +
                             "    return expect.promise(function (resolve, reject) {\n" +
@@ -1219,6 +1199,344 @@ describe('unexpected', function () {
 
         it('inspects with three milliseconds digits when the milliseconds field has three digits', function () {
             expect(new Date(100), 'to inspect as', "new Date('Thu, 01 Jan 1970 00:00:00.100 GMT')");
+        });
+    });
+
+    describe('Promise type', function () {
+        var Promise;
+        if (typeof weknowhow === 'undefined') {
+            Promise = require('rsvp').Promise;
+        } else {
+            Promise = window.RSVP.Promise;
+        }
+
+        describe('"to be resolved" assertion', function () {
+            describe('with no additional argument', function () {
+                it('should succeed if the response is resolved with any value', function () {
+                    return expect(new Promise(function (resolve, reject) {
+                        setTimeout(function () {
+                            resolve('yay');
+                        }, 0);
+                    }), 'to be resolved');
+                });
+
+                it('should fail if the promise is rejected', function () {
+                    return expect(
+                        expect(new Promise(function (resolve, reject) {
+                            setTimeout(function () {
+                                reject('unhappy times');
+                            }, 0);
+                        }), 'to be resolved'),
+                        'to be rejected'
+                    );
+                });
+            });
+
+            describe('with an additional argument', function () {
+                it('should succeed if the response is resolved with a reason satisfying the argument', function () {
+                    return expect(new Promise(function (resolve, reject) {
+                        setTimeout(function () {
+                            resolve(123);
+                        }, 0);
+                    }), 'to be resolved with', 123);
+                });
+
+                it('should fail if the promise is resolved with a value that does not satisfy the argument', function () {
+                    return expect(
+                        expect(new Promise(function (resolve, reject) {
+                            setTimeout(function () {
+                                resolve({ foo: 'bar', baz: 'quux' });
+                            }, 1);
+                        }), 'to be resolved with', { baz: 'qux' }),
+                        'to be rejected with',
+                            "expected Promise to be resolved with { baz: 'qux' }\n" +
+                            "  expected { foo: 'bar', baz: 'quux' } to satisfy { baz: 'qux' }\n" +
+                            "\n" +
+                            "  {\n" +
+                            "    foo: 'bar',\n" +
+                            "    baz: 'quux' // should equal 'qux'\n" +
+                            "                // -quux\n" +
+                            "                // +qux\n" +
+                            "  }"
+
+                    );
+                });
+            });
+        });
+
+        describe('"to be rejected" assertion', function () {
+            describe('with no additional argument', function () {
+                it('should succeed if the response is rejected for any reason', function () {
+                    return expect(new Promise(function (resolve, reject) {
+                        setTimeout(function () {
+                            reject(new Error('OMG!'));
+                        }, 0);
+                    }), 'to be rejected');
+                });
+
+                it('should fail if the promise is fulfilled', function () {
+                    return expect(
+                        expect(new Promise(function (resolve, reject) {
+                            setTimeout(resolve, 0);
+                        }), 'to be rejected'),
+                        'to be rejected with',
+                            'expected Promise to be rejected\n' +
+                            '  Promise unexpectedly fulfilled'
+                    );
+                });
+
+                it('should fail if the promise is fulfilled with a value', function () {
+                    return expect(
+                        expect(new Promise(function (resolve, reject) {
+                            setTimeout(function () {
+                                resolve('happy times');
+                            }, 0);
+                        }), 'to be rejected'),
+                        'to be rejected with',
+                            "expected Promise to be rejected\n" +
+                            "  Promise unexpectedly fulfilled with 'happy times'"
+                    );
+                });
+            });
+
+            describe('with an additional argument', function () {
+                it('should succeed if the response is rejected with a reason satisfying the argument', function () {
+                    return expect(new Promise(function (resolve, reject) {
+                        setTimeout(function () {
+                            reject(new Error('OMG!'));
+                        }, 0);
+                    }), 'to be rejected with', new Error('OMG!'));
+                });
+
+                it('should support matching the error message against a regular expression', function () {
+                    return expect(new Promise(function (resolve, reject) {
+                        setTimeout(function () {
+                            reject(new Error('OMG!'));
+                        }, 0);
+                    }), 'to be rejected with', /MG/);
+                });
+
+                it('should support matching the error message of an UnexpectedError against a regular expression', function () {
+                    return expect(new Promise(function (resolve, reject) {
+                        setTimeout(function () {
+                            try {
+                                expect(false, 'to be truthy');
+                            } catch (err) {
+                                reject(err);
+                            }
+                        }, 0);
+                    }), 'to be rejected with', /to be/);
+                });
+
+                it('should fail if the promise is rejected with a reason that does not satisfy the argument', function () {
+                    return expect(
+                        expect(new Promise(function (resolve, reject) {
+                            setTimeout(function () {
+                                reject(new Error('OMG!'));
+                            }, 1);
+                        }), 'to be rejected with', new Error('foobar')),
+                        'to be rejected with',
+                            "expected Promise to be rejected with Error('foobar')\n" +
+                            "  expected Error('OMG!') to satisfy Error('foobar')\n" +
+                            "\n" +
+                            "  Error({\n" +
+                            "    message: 'OMG!' // should equal 'foobar'\n" +
+                            "                    // -OMG!\n" +
+                            "                    // +foobar\n" +
+                            "  })"
+                    );
+                });
+            });
+        });
+
+        describe('"when resolved" adverbial assertion', function () {
+            it('should delegate to the next assertion with the resolved value', function () {
+                return expect(new Promise(function (resolve, reject) {
+                    setTimeout(function () {
+                        resolve({ foo: 'bar' });
+                    }, 0);
+                }), 'when resolved', 'to satisfy', { foo: 'bar' });
+            });
+
+            it('should fail when the next assertion fails', function () {
+                return expect(
+                    expect(new Promise(function (resolve, reject) {
+                        setTimeout(function () {
+                            resolve({ foo: 'bar' });
+                        }, 0);
+                    }), 'when resolved', 'to satisfy', { foo: 'baz' }),
+                    'to be rejected with',
+                        "expected Promise when resolved to satisfy { foo: 'baz' }\n" +
+                        "  expected { foo: 'bar' } to satisfy { foo: 'baz' }\n" +
+                        "\n" +
+                        "  {\n" +
+                        "    foo: 'bar' // should equal 'baz'\n" +
+                        "               // -bar\n" +
+                        "               // +baz\n" +
+                        "  }"
+                );
+            });
+        });
+
+        describe('"when rejected" adverbial assertion', function () {
+            it('should delegate to the next assertion with the rejection reason', function () {
+                return expect(new Promise(function (resolve, reject) {
+                    setTimeout(function () {
+                        reject({ foo: 'bar' });
+                    }, 0);
+                }), 'when rejected', 'to satisfy', { foo: 'bar' });
+            });
+
+            it('should fail when the next assertion fails', function () {
+                return expect(
+                    expect(new Promise(function (resolve, reject) {
+                        setTimeout(function () {
+                            reject({ foo: 'bar' });
+                        }, 0);
+                    }), 'when rejected', 'to satisfy', { foo: 'baz' }),
+                    'to be rejected with',
+                        "expected Promise when rejected to satisfy { foo: 'baz' }\n" +
+                        "  expected { foo: 'bar' } to satisfy { foo: 'baz' }\n" +
+                        "\n" +
+                        "  {\n" +
+                        "    foo: 'bar' // should equal 'baz'\n" +
+                        "               // -bar\n" +
+                        "               // +baz\n" +
+                        "  }"
+                );
+            });
+
+            it('should fail if the promise is fulfilled', function () {
+                return expect(
+                    expect(new Promise(function (resolve, reject) {
+                        setTimeout(resolve, 0);
+                    }), 'when rejected', 'to equal', new Error('unhappy times')),
+                    'to be rejected with',
+                        "expected Promise when rejected 'to equal', Error('unhappy times')\n" +
+                        "  Promise unexpectedly fulfilled"
+                );
+            });
+
+            it('should fail if the promise is fulfilled with a value', function () {
+                return expect(
+                    expect(new Promise(function (resolve, reject) {
+                        setTimeout(function () {
+                            resolve('happy times');
+                        }, 0);
+                    }), 'when rejected', 'to equal', new Error('unhappy times')),
+                    'to be rejected with',
+                        "expected Promise when rejected 'to equal', Error('unhappy times')\n" +
+                        "  Promise unexpectedly fulfilled with 'happy times'"
+                );
+            });
+        });
+
+        it('should inspect a pending promise', function () {
+            var promise = new Promise(function (resolve, reject) {
+                setTimeout(resolve, 0);
+            });
+            expect(promise, 'to inspect as', 'Promise');
+            return promise;
+        });
+
+        it('should inspect a fulfilled promise without a value', function () {
+            var promise = new Promise(function (resolve, reject) {
+                resolve();
+            });
+
+            return promise.then(function () {
+                expect(promise, 'to inspect as', 'Promise');
+            });
+        });
+
+        it('should inspect a fulfilled promise with a value', function () {
+            var promise = new Promise(function (resolve, reject) {
+                resolve(123);
+            });
+
+            return promise.then(function () {
+                expect(promise, 'to inspect as', 'Promise');
+            });
+        });
+
+        it('should inspect a rejected promise without a value', function () {
+            var promise = new Promise(function (resolve, reject) {
+                reject();
+            });
+
+            return promise.then(undefined, function () {
+                expect(promise, 'to inspect as', 'Promise');
+            });
+        });
+
+        it('should inspect a rejected promise with a value', function () {
+            var promise = new Promise(function (resolve, reject) {
+                setTimeout(function () {
+                    reject(new Error('argh'));
+                }, 0);
+            });
+
+            return promise.then(undefined, function () {
+                expect(promise, 'to inspect as', 'Promise');
+            });
+        });
+
+        describe('with a Bluebird promise (that supports synchronous inspection)', function () {
+            it('should inspect a pending promise', function () {
+                var promise = expect.promise(function (run) {
+                    setTimeout(run(function () {}), 0);
+                });
+                expect(promise, 'to inspect as', 'Promise (pending)');
+                return promise;
+            });
+
+            it('should inspect a fulfilled promise without a value', function () {
+                var promise = expect.promise(function () {});
+
+                return promise.then(function () {
+                    expect(promise, 'to inspect as', 'Promise (fulfilled)');
+                });
+            });
+
+            it('should inspect a fulfilled promise without a value method', function () {
+                var promise = expect.promise(function () {});
+                promise.value = null;
+                return promise.then(function () {
+                    expect(promise, 'to inspect as', 'Promise (fulfilled)');
+                });
+            });
+
+            it('should inspect a fulfilled promise with a value', function () {
+                var promise = expect.promise(function (resolve, reject) {
+                    resolve(123);
+                });
+
+                return promise.then(function () {
+                    expect(promise, 'to inspect as', 'Promise (fulfilled) => 123');
+                });
+            });
+
+            it('should inspect a rejected promise without a value', function () {
+                var promise = expect.promise(function (resolve, reject) {
+                    reject();
+                });
+
+                return promise.caught(function () {
+                    expect(promise, 'to inspect as', 'Promise (rejected)');
+                });
+            });
+
+            it('should inspect a rejected promise with a value', function () {
+                var promise = expect.promise(function (resolve, reject) {
+                    setTimeout(function () {
+                        reject(new Error('argh'));
+                    }, 0);
+                });
+
+                return promise.caught(function () {
+                    expect(promise, 'to inspect as', "Promise (rejected) => Error('argh')");
+                });
+            });
         });
     });
 
@@ -5980,7 +6298,7 @@ describe('unexpected', function () {
         it('has a nice syntax', expect.async(function () {
             return expect(
                 expect([1, 3, 2], 'to be sorted after delay', 20),
-                'to be rejected',
+                'to be rejected with',
                     'expected [ 1, 3, 2 ] to be sorted after delay 20\n' +
                     '  expected [ 1, 3, 2 ] to equal [ 1, 2, 3 ]\n' +
                     '\n' +
