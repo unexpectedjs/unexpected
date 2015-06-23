@@ -1210,14 +1210,14 @@ describe('unexpected', function () {
             Promise = window.RSVP.Promise;
         }
 
-        describe('"to be resolved" assertion', function () {
+        describe('"to be fulfilled" assertion', function () {
             describe('with no additional argument', function () {
                 it('should succeed if the response is resolved with any value', function () {
                     return expect(new Promise(function (resolve, reject) {
                         setTimeout(function () {
                             resolve('yay');
                         }, 0);
-                    }), 'to be resolved');
+                    }), 'to be fulfilled');
                 });
 
                 it('should fail if the promise is rejected', function () {
@@ -1226,7 +1226,7 @@ describe('unexpected', function () {
                             setTimeout(function () {
                                 reject('unhappy times');
                             }, 0);
-                        }), 'to be resolved'),
+                        }), 'to be fulfilled'),
                         'to be rejected'
                     );
                 });
@@ -1238,7 +1238,7 @@ describe('unexpected', function () {
                         setTimeout(function () {
                             resolve(123);
                         }, 0);
-                    }), 'to be resolved with', 123);
+                    }), 'to be fulfilled with', 123);
                 });
 
                 it('should fail if the promise is resolved with a value that does not satisfy the argument', function () {
@@ -1247,9 +1247,9 @@ describe('unexpected', function () {
                             setTimeout(function () {
                                 resolve({ foo: 'bar', baz: 'quux' });
                             }, 1);
-                        }), 'to be resolved with', { baz: 'qux' }),
+                        }), 'to be fulfilled with', { baz: 'qux' }),
                         'to be rejected with',
-                            "expected Promise to be resolved with { baz: 'qux' }\n" +
+                            "expected Promise to be fulfilled with { baz: 'qux' }\n" +
                             "  expected { foo: 'bar', baz: 'quux' } to satisfy { baz: 'qux' }\n" +
                             "\n" +
                             "  {\n" +
@@ -6366,7 +6366,7 @@ describe('unexpected', function () {
                     return 'bar';
                 });
             });
-            expect(clonedExpect('foo', 'to foo'), 'to be resolved', 'bar');
+            expect(clonedExpect('foo', 'to foo'), 'to be fulfilled', 'bar');
         });
 
         it('should preserve the resolved value when an assertion contains a non-oathbreakable promise', function (done) {

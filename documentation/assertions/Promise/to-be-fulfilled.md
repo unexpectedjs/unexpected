@@ -1,11 +1,11 @@
-Asserts that a promise is resolved.
+Asserts that a promise is fulfilled.
 
 ```javascript#async:true
-var promiseThatWillBeResolved = expect.promise(function (resolve, reject) {
+var promiseThatWillBeFulfilled = expect.promise(function (resolve, reject) {
     setTimeout(resolve, 1);
 });
 
-return expect(promiseThatWillBeResolved, 'to be resolved');
+return expect(promiseThatWillBeFulfilled, 'to be fulfilled');
 ```
 
 If the promise is rejected, the assertion will fail with the following output:
@@ -17,18 +17,18 @@ var rejectedPromise = expect.promise(function (resolve, reject) {
     }, 1);
 });
 
-return expect(rejectedPromise, 'to be resolved');
+return expect(rejectedPromise, 'to be fulfilled');
 ```
 
 ```output
-expected Promise (rejected) to be resolved
+expected Promise (rejected) to be fulfilled
 ```
 
-You can assert the promise is resolved with a specific value by
+You can assert the promise is fulfilled with a specific value by
 passing a second parameter:
 
 ```javascript
-var promiseThatWillBeResolvedWithAValue = expect.promise(function (resolve, reject) {
+var promiseThatWillBeFulfilledWithAValue = expect.promise(function (resolve, reject) {
     setTimeout(function () {
         resolve('abc');
     }, 1);
@@ -36,7 +36,7 @@ var promiseThatWillBeResolvedWithAValue = expect.promise(function (resolve, reje
 ```
 
 ```javascript#async:true
-return expect(promiseThatWillBeResolvedWithAValue, 'to be resolved with', 'def');
+return expect(promiseThatWillBeFulfilledWithAValue, 'to be fulfilled with', 'def');
 ```
 
 The expected value will be matched against the value with
@@ -45,17 +45,17 @@ a regular expression, a function, or an object:
 
 
 ```javascript#async:true
-return expect(promiseThatWillBeResolvedWithAValue, 'to be resolved with', /b/);
+return expect(promiseThatWillBeFulfilledWithAValue, 'to be fulfilled with', /b/);
 ```
 
 You get a nice diff if the assertion fails:
 
 ```javascript#async:true
-return expect(promiseThatWillBeResolvedWithAValue, 'to be resolved with', 'def');
+return expect(promiseThatWillBeFulfilledWithAValue, 'to be fulfilled with', 'def');
 ```
 
 ```output
-expected Promise (resolved) => 'abc' to be resolved with 'def'
+expected Promise (fulfilled) => 'abc' to be fulfilled with 'def'
   expected 'abc' to equal 'def'
 
   -def
