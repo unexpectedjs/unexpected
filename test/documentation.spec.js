@@ -1254,7 +1254,7 @@ describe("documentation tests", function () {
         }).caught(function (e) {
             expect(e, "to have message",
                 "expected Promise (fulfilled) => 'abc' to be fulfilled with 'def'\n" +
-                "  expected 'abc' to satisfy 'def'\n" +
+                "  expected 'abc' to equal 'def'\n" +
                 "\n" +
                 "  -abc\n" +
                 "  +def"
@@ -1334,6 +1334,102 @@ describe("documentation tests", function () {
                 "                       // -Oh dear\n" +
                 "                       // +bugger\n" +
                 "  })"
+            );
+        }));
+
+        return expect.promise.all(testPromises);
+    });
+
+    it("assertions/Promise/when-fulfilled.md contains correct examples", function () {
+        var testPromises = [];
+        var fulfilledPromise = expect.promise(function (resolve, reject) {
+            setTimeout(function () {
+                resolve(123);
+            });
+        });
+
+        testPromises.push(expect.promise(function () {
+            return expect(fulfilledPromise, 'when fulfilled', 'to equal', 123);
+        }));
+
+        testPromises.push(expect.promise(function () {
+            return expect(fulfilledPromise, 'when fulfilled', expect.it('to be greater than', 100));
+        }));
+
+        testPromises.push(expect.promise(function () {
+            var rejectedPromise = expect.promise(function (resolve, reject) {
+                setTimeout(function () {
+                    reject(new Error('argh'));
+                });
+            });
+
+            return expect(rejectedPromise, 'when fulfilled', 'to equal', 123);
+        }).then(function () {
+            return expect.promise(function () {
+                expect.fail(function (output) {
+                    output.error("expected:").nl();
+                    output.code("var rejectedPromise = expect.promise(function (resolve, reject) {").nl();
+                    output.code("    setTimeout(function () {").nl();
+                    output.code("        reject(new Error('argh'));").nl();
+                    output.code("    });").nl();
+                    output.code("});").nl();
+                    output.code("").nl();
+                    output.code("return expect(rejectedPromise, 'when fulfilled', 'to equal', 123);").nl();
+                    output.error("to throw");
+                });
+            });
+        }).caught(function (e) {
+            expect(e, "to have message",
+                "expected Promise (rejected) => Error('argh') when fulfilled to equal 123\n" +
+                "  Promise (rejected) => Error('argh') unexpectedly rejected with Error('argh')"
+            );
+        }));
+
+        return expect.promise.all(testPromises);
+    });
+
+    it("assertions/Promise/when-rejected.md contains correct examples", function () {
+        var testPromises = [];
+        var rejectedPromise = expect.promise(function (resolve, reject) {
+            setTimeout(function () {
+                reject(new Error('argh'));
+            });
+        });
+
+        testPromises.push(expect.promise(function () {
+            return expect(rejectedPromise, 'when rejected', 'to equal', new Error('argh'));
+        }));
+
+        testPromises.push(expect.promise(function () {
+            return expect(rejectedPromise, 'when rejected', expect.it('to have message', 'argh'));
+        }));
+
+        testPromises.push(expect.promise(function () {
+            var fulfilledPromise = expect.promise(function (resolve, reject) {
+                setTimeout(function () {
+                    resolve(123);
+                });
+            });
+
+            return expect(fulfilledPromise, 'when rejected', 'to have message', 'argh');
+        }).then(function () {
+            return expect.promise(function () {
+                expect.fail(function (output) {
+                    output.error("expected:").nl();
+                    output.code("var fulfilledPromise = expect.promise(function (resolve, reject) {").nl();
+                    output.code("    setTimeout(function () {").nl();
+                    output.code("        resolve(123);").nl();
+                    output.code("    });").nl();
+                    output.code("});").nl();
+                    output.code("").nl();
+                    output.code("return expect(fulfilledPromise, 'when rejected', 'to have message', 'argh');").nl();
+                    output.error("to throw");
+                });
+            });
+        }).caught(function (e) {
+            expect(e, "to have message",
+                "expected Promise (fulfilled) => 123 when rejected to have message 'argh'\n" +
+                "  Promise (fulfilled) => 123 unexpectedly fulfilled with 123"
             );
         }));
 

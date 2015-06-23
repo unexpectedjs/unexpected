@@ -1440,7 +1440,7 @@ describe('unexpected', function () {
                         setTimeout(resolve, 0);
                     }), 'when rejected', 'to equal', new Error('unhappy times')),
                     'to be rejected with',
-                        "expected Promise when rejected 'to equal', Error('unhappy times')\n" +
+                        "expected Promise when rejected to equal Error('unhappy times')\n" +
                         "  Promise unexpectedly fulfilled"
                 );
             });
@@ -1453,7 +1453,7 @@ describe('unexpected', function () {
                         }, 0);
                     }), 'when rejected', 'to equal', new Error('unhappy times')),
                     'to be rejected with',
-                        "expected Promise when rejected 'to equal', Error('unhappy times')\n" +
+                        "expected Promise when rejected to equal Error('unhappy times')\n" +
                         "  Promise unexpectedly fulfilled with 'happy times'"
                 );
             });
