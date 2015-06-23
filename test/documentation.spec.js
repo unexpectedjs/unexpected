@@ -1187,6 +1187,82 @@ describe("documentation tests", function () {
         return expect.promise.all(testPromises);
     });
 
+    it("assertions/Promise/to-be-rejected.md contains correct examples", function () {
+        var testPromises = [];
+        testPromises.push(expect.promise(function () {
+            var promiseThatWillBeRejected = expect.promise(function (resolve, reject) {
+                setTimeout(reject, 1);
+            });
+
+            return expect(promiseThatWillBeRejected, 'to be rejected');
+        }));
+
+        testPromises.push(expect.promise(function () {
+            var resolvedPromise = expect.promise(function (resolve, reject) {
+                setTimeout(resolve, 1);
+            });
+
+            return expect(resolvedPromise, 'to be rejected');
+        }).then(function () {
+            return expect.promise(function () {
+                expect.fail(function (output) {
+                    output.error("expected:").nl();
+                    output.code("var resolvedPromise = expect.promise(function (resolve, reject) {").nl();
+                    output.code("    setTimeout(resolve, 1);").nl();
+                    output.code("});").nl();
+                    output.code("").nl();
+                    output.code("return expect(resolvedPromise, 'to be rejected');").nl();
+                    output.error("to throw");
+                });
+            });
+        }).caught(function (e) {
+            expect(e, "to have message",
+                "expected Promise (fulfilled) to be rejected\n" +
+                "  Promise (fulfilled) unexpectedly fulfilled"
+            );
+        }));
+
+
+        var promiseThatWillBeRejectedWithAReason = expect.promise(function (resolve, reject) {
+            setTimeout(function () {
+                reject(new Error('Oh dear'));
+            }, 1);
+        });
+
+        testPromises.push(expect.promise(function () {
+            return expect(promiseThatWillBeRejectedWithAReason, 'to be rejected with', new Error('Oh dear'));
+        }));
+
+        testPromises.push(expect.promise(function () {
+            return expect(promiseThatWillBeRejectedWithAReason, 'to be rejected with', /dear/);
+        }));
+
+        testPromises.push(expect.promise(function () {
+            return expect(promiseThatWillBeRejectedWithAReason, 'to be rejected with', new Error('bugger'));
+        }).then(function () {
+            return expect.promise(function () {
+                expect.fail(function (output) {
+                    output.error("expected:").nl();
+                    output.code("return expect(promiseThatWillBeRejectedWithAReason, 'to be rejected with', new Error('bugger'));").nl();
+                    output.error("to throw");
+                });
+            });
+        }).caught(function (e) {
+            expect(e, "to have message",
+                "expected Promise (rejected) => Error('Oh dear') to be rejected with Error('bugger')\n" +
+                "  expected Error('Oh dear') to satisfy Error('bugger')\n" +
+                "\n" +
+                "  Error({\n" +
+                "    message: 'Oh dear' // should equal 'bugger'\n" +
+                "                       // -Oh dear\n" +
+                "                       // +bugger\n" +
+                "  })"
+            );
+        }));
+
+        return expect.promise.all(testPromises);
+    });
+
     it("assertions/any/to-be-a.md contains correct examples", function () {
         var testPromises = [];
         expect(true, 'to be a', 'boolean');
