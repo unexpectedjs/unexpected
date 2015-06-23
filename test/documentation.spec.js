@@ -1187,6 +1187,83 @@ describe("documentation tests", function () {
         return expect.promise.all(testPromises);
     });
 
+    it("assertions/Promise/to-be-fulfilled.md contains correct examples", function () {
+        var testPromises = [];
+        testPromises.push(expect.promise(function () {
+            var promiseThatWillBeFulfilled = expect.promise(function (resolve, reject) {
+                setTimeout(resolve, 1);
+            });
+
+            return expect(promiseThatWillBeFulfilled, 'to be fulfilled');
+        }));
+
+        testPromises.push(expect.promise(function () {
+            var rejectedPromise = expect.promise(function (resolve, reject) {
+                setTimeout(function () {
+                    reject(new Error('argh'));
+                }, 1);
+            });
+
+            return expect(rejectedPromise, 'to be fulfilled');
+        }).then(function () {
+            return expect.promise(function () {
+                expect.fail(function (output) {
+                    output.error("expected:").nl();
+                    output.code("var rejectedPromise = expect.promise(function (resolve, reject) {").nl();
+                    output.code("    setTimeout(function () {").nl();
+                    output.code("        reject(new Error('argh'));").nl();
+                    output.code("    }, 1);").nl();
+                    output.code("});").nl();
+                    output.code("").nl();
+                    output.code("return expect(rejectedPromise, 'to be fulfilled');").nl();
+                    output.error("to throw");
+                });
+            });
+        }).caught(function (e) {
+            expect(e, "to have message",
+                "expected Promise (rejected) => Error('argh') to be fulfilled\n" +
+                "  Promise (rejected) => Error('argh') unexpectedly rejected with Error('argh')"
+            );
+        }));
+
+
+        var promiseThatWillBeFulfilledWithAValue = expect.promise(function (resolve, reject) {
+            setTimeout(function () {
+                resolve('abc');
+            }, 1);
+        });
+
+        testPromises.push(expect.promise(function () {
+            return expect(promiseThatWillBeFulfilledWithAValue, 'to be fulfilled with', 'abc');
+        }));
+
+        testPromises.push(expect.promise(function () {
+            return expect(promiseThatWillBeFulfilledWithAValue, 'to be fulfilled with', /b/);
+        }));
+
+        testPromises.push(expect.promise(function () {
+            return expect(promiseThatWillBeFulfilledWithAValue, 'to be fulfilled with', 'def');
+        }).then(function () {
+            return expect.promise(function () {
+                expect.fail(function (output) {
+                    output.error("expected:").nl();
+                    output.code("return expect(promiseThatWillBeFulfilledWithAValue, 'to be fulfilled with', 'def');").nl();
+                    output.error("to throw");
+                });
+            });
+        }).caught(function (e) {
+            expect(e, "to have message",
+                "expected Promise (fulfilled) => 'abc' to be fulfilled with 'def'\n" +
+                "  expected 'abc' to satisfy 'def'\n" +
+                "\n" +
+                "  -abc\n" +
+                "  +def"
+            );
+        }));
+
+        return expect.promise.all(testPromises);
+    });
+
     it("assertions/Promise/to-be-rejected.md contains correct examples", function () {
         var testPromises = [];
         testPromises.push(expect.promise(function () {

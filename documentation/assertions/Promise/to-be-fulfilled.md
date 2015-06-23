@@ -21,7 +21,8 @@ return expect(rejectedPromise, 'to be fulfilled');
 ```
 
 ```output
-expected Promise (rejected) to be fulfilled
+expected Promise (rejected) => Error('argh') to be fulfilled
+  Promise (rejected) => Error('argh') unexpectedly rejected with Error('argh')
 ```
 
 You can assert the promise is fulfilled with a specific value by
@@ -36,7 +37,7 @@ var promiseThatWillBeFulfilledWithAValue = expect.promise(function (resolve, rej
 ```
 
 ```javascript#async:true
-return expect(promiseThatWillBeFulfilledWithAValue, 'to be fulfilled with', 'def');
+return expect(promiseThatWillBeFulfilledWithAValue, 'to be fulfilled with', 'abc');
 ```
 
 The expected value will be matched against the value with
@@ -56,8 +57,8 @@ return expect(promiseThatWillBeFulfilledWithAValue, 'to be fulfilled with', 'def
 
 ```output
 expected Promise (fulfilled) => 'abc' to be fulfilled with 'def'
-  expected 'abc' to equal 'def'
+  expected 'abc' to satisfy 'def'
 
-  -def
-  +abc
+  -abc
+  +def
 ```

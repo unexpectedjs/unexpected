@@ -1227,7 +1227,9 @@ describe('unexpected', function () {
                                 reject('unhappy times');
                             }, 0);
                         }), 'to be fulfilled'),
-                        'to be rejected'
+                        'to be rejected',
+                            "expected Promise to be fulfilled\n" +
+                            "  Promise unexpectedly rejected with 'unhappy times'"
                     );
                 });
             });
@@ -1269,9 +1271,22 @@ describe('unexpected', function () {
                 it('should succeed if the response is rejected for any reason', function () {
                     return expect(new Promise(function (resolve, reject) {
                         setTimeout(function () {
-                            reject(new Error('OMG!'));
+                            reject();
                         }, 0);
                     }), 'to be rejected');
+                });
+
+                it('should succeed if the promise is rejected without a reason', function () {
+                    return expect(
+                        expect(new Promise(function (resolve, reject) {
+                            setTimeout(function () {
+                                resolve('happy times');
+                            }, 0);
+                        }), 'to be rejected'),
+                        'to be rejected with',
+                            "expected Promise to be rejected\n" +
+                            "  Promise unexpectedly fulfilled with 'happy times'"
+                    );
                 });
 
                 it('should fail if the promise is fulfilled', function () {
