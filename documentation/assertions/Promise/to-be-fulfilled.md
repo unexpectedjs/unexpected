@@ -57,7 +57,7 @@ return expect(promiseThatWillBeFulfilledWithAValue, 'to be fulfilled with', 'def
 
 ```output
 expected Promise (fulfilled) => 'abc' to be fulfilled with 'def'
-  expected 'abc' to satisfy 'def'
+  expected 'abc' to equal 'def'
 
   -abc
   +def
