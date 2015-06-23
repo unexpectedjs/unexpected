@@ -1373,6 +1373,19 @@ describe('unexpected', function () {
                 }), 'when fulfilled', 'to satisfy', { foo: 'bar' });
             });
 
+            it('should fail when the promise is rejected', function () {
+                return expect(
+                    expect(new Promise(function (resolve, reject) {
+                        setTimeout(function () {
+                            reject(new Error('ugh'));
+                        }, 0);
+                    }), 'when fulfilled', 'to satisfy', { foo: 'baz' }),
+                    'to be rejected with',
+                        "expected Promise when fulfilled to satisfy { foo: 'baz' }\n" +
+                        "  Promise unexpectedly rejected with Error('ugh')"
+                );
+            });
+
             it('should fail when the next assertion fails', function () {
                 return expect(
                     expect(new Promise(function (resolve, reject) {
