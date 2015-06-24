@@ -33,7 +33,7 @@ assertion.
 
 If you want the parameters passed to the callback to be the subject of further assertions,
 you might be able to use the
-[when passed as parameters to](/assertions/array/when-passed-as-parameters-to/) assertion.
+[when passed as parameters to](/assertions/array-like/when-passed-as-parameters-to/) assertion.
 
 The parameters passed to the callback are also provided as the value of the returned promise,
 so you can do further assertions like this:
