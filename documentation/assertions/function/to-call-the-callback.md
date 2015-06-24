@@ -35,3 +35,28 @@ If you want the parameters passed to the callback to be the subject of further a
 you might be able to use the
 [when passed as parameters to](/assertions/array/when-passed-as-parameters-to/) assertion.
 
+The parameters passed to the callback are also provided as the value of the returned promise,
+so you can do further assertions like this:
+
+```javascript
+function asyncFn(cb) {
+    setTimeout(function () {
+        cb(null, 'foo');
+    });
+}
+```
+
+```javascript#async:true
+return expect(asyncFn, 'to call the callback').then(function (args) {
+    // args will be [null, 'foo'];
+});
+```
+
+Or using the Bluebird-specific `.spread` extension:
+
+```javascript#async:true
+return expect(asyncFn, 'to call the callback').spread(function (err, result) {
+    // err will be null
+    // result will be 'foo'
+});
+```
