@@ -2339,6 +2339,23 @@ describe("documentation tests", function () {
             );
         }));
 
+
+        function asyncFn(cb) {
+            cb(new Error('yikes'), 123);
+        }
+
+        testPromises.push(expect.promise(function () {
+            return expect(asyncFn, 'to call the callback with error').then(function (args) {
+                // args will be [new Error('yikes'), 123];
+            });
+        }));
+
+        testPromises.push(expect.promise(function () {
+            return expect(asyncFn, 'to call the callback with error').spread(function (err, result) {
+                // err will be Error('yikes')
+                // result will be 123
+            });
+        }));
         return expect.promise.all(testPromises);
     });
 
@@ -2387,6 +2404,23 @@ describe("documentation tests", function () {
             );
         }));
 
+
+        function asyncFn(cb) {
+            cb(null, 123, 456);
+        }
+
+        testPromises.push(expect.promise(function () {
+            return expect(asyncFn, 'to call the callback without error').then(function (args) {
+                // args will be [123, 456];
+            });
+        }));
+
+        testPromises.push(expect.promise(function () {
+            return expect(asyncFn, 'to call the callback without error').spread(function (result1, result2) {
+                // result1 will be 123
+                // result2 will be 456
+            });
+        }));
         return expect.promise.all(testPromises);
     });
 

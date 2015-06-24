@@ -49,3 +49,27 @@ to call the callback with error Error('foo')
                        // +foo
   })
 ```
+
+The parameters passed to the callback are also provided as the value of the returned promise,
+so you can do further assertions like this:
+
+```javascript
+function asyncFn(cb) {
+    cb(new Error('yikes'), 123);
+}
+```
+
+```javascript#async:true
+return expect(asyncFn, 'to call the callback with error').then(function (args) {
+    // args will be [new Error('yikes'), 123];
+});
+```
+
+Or using the Bluebird-specific `.spread` extension:
+
+```javascript#async:true
+return expect(asyncFn, 'to call the callback with error').spread(function (err, result) {
+    // err will be Error('yikes')
+    // result will be 123
+});
+```

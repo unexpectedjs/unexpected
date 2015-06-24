@@ -31,3 +31,28 @@ function myFailingAsyncFunction(cb) {
 to call the callback without error
   called the callback with: Error('Oh dear')
 ```
+
+The parameters passed to the callback (excluding the falsy error) are also
+provided as the value of the returned promise, so you can do further
+assertions like this:
+
+```javascript
+function asyncFn(cb) {
+    cb(null, 123, 456);
+}
+```
+
+```javascript#async:true
+return expect(asyncFn, 'to call the callback without error').then(function (args) {
+    // args will be [123, 456];
+});
+```
+
+Or using the Bluebird-specific `.spread` extension:
+
+```javascript#async:true
+return expect(asyncFn, 'to call the callback without error').spread(function (result1, result2) {
+    // result1 will be 123
+    // result2 will be 456
+});
+```
