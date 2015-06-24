@@ -16,7 +16,7 @@ test-phantomjs: ${TARGETS}
 	@$(eval QUERY=$(shell node -e "console.log(decodeURIComponent(process.argv.pop()).replace(/\s/g, '%20'))" "${grep}")) \
     ./node_modules/.bin/mocha-phantomjs test/tests.html?grep=${QUERY}
 
-test-jasmine:
+test-jasmine: ${TARGETS}
 	./node_modules/.bin/jasmine JASMINE_CONFIG_PATH=test/support/jasmine.json
 
 test-jasmine-browser: unexpected.js
@@ -42,7 +42,7 @@ coverage: lib/*
 test-browser: unexpected.js
 	@./node_modules/.bin/serve .
 
-travis: lint test test-phantomjs coverage
+travis: lint test test-phantomjs test-jasmine coverage
 	-<coverage/lcov.info ./node_modules/coveralls/bin/coveralls.js
 
 .PHONY: git-dirty-check
