@@ -6157,8 +6157,38 @@ describe('unexpected', function () {
         });
     });
 
-    describe('to call the callback with error assertion', function () {
-        describe('without the "no" flag', function () {
+    describe('to call the callback assertion', function () {
+        it('should succeed when the callback is called synchronously', function () {
+            return expect(function (cb) {
+                cb();
+            }, 'to call the callback');
+        });
+
+        it('should succeed when the callback is called asynchronously', function () {
+            return expect(function (cb) {
+                setTimeout(function () {
+                    cb();
+                });
+            }, 'to call the callback');
+        });
+
+        it('should succeed when the callback is called with an error', function () {
+            return expect(function (cb) {
+                setTimeout(function () {
+                    cb(new Error("don't mind me"));
+                });
+            }, 'to call the callback');
+        });
+
+        it('should fail if the function throws an exception', function () {
+            return expect(function () {
+                return expect(function (cb) {
+                    throw new Error('argh');
+                }, 'to call the callback');
+            }, 'to error', 'argh');
+        });
+
+        describe('with error', function () {
             describe('with an expected error', function () {
                 it('should succeed', function () {
                     return expect(function (cb) {
@@ -6306,14 +6336,6 @@ describe('unexpected', function () {
                     }, 'to call the callback with error');
                 });
 
-                it('should succeed when using the "... with an error" alias', function () {
-                    return expect(function (cb) {
-                        setImmediate(function () {
-                            cb(new Error('bla'));
-                        });
-                    }, 'to call the callback with an error');
-                });
-
                 it('should fail with a diff when no error was passed to the callback', function () {
                     return expect(function () {
                         return expect(function (cb) {
@@ -6331,21 +6353,21 @@ describe('unexpected', function () {
             });
         });
 
-        describe('with the "no" flag', function () {
+        describe('without error', function () {
             it('should throw if called with an expected error instance', function () {
                 expect(function () {
                     return expect(function (cb) {
                         setImmediate(function () {
                             cb(new Error('bla'));
                         });
-                    }, 'to call the callback with no error', new Error('bla'));
-                }, 'to throw', "The 'to call the callback with no error' assertion does not support arguments");
+                    }, 'to call the callback without error', new Error('bla'));
+                }, 'to throw', "The 'to call the callback without error' assertion does not support arguments");
             });
 
             it('should succeed', function () {
                 return expect(function (cb) {
                     return setImmediate(cb);
-                }, 'to call the callback with no error');
+                }, 'to call the callback without error');
             });
 
             it('should fail with a diff', function () {
@@ -6354,7 +6376,7 @@ describe('unexpected', function () {
                         return setImmediate(function () {
                             cb(new Error('wat'));
                         });
-                    }, 'to call the callback with no error');
+                    }, 'to call the callback without error');
                 }, 'to error',
                     "expected\n" +
                     "function (cb) {\n" +
@@ -6362,7 +6384,7 @@ describe('unexpected', function () {
                     "        cb(new Error('wat'));\n" +
                     "    });\n" +
                     "}\n" +
-                    "to call the callback with no error\n" +
+                    "to call the callback without error\n" +
                     "  called the callback with: Error('wat')"
                 );
             });
@@ -6377,7 +6399,7 @@ describe('unexpected', function () {
                                 cb(err);
                             }
                         });
-                    }, 'to call the callback with no error');
+                    }, 'to call the callback without error');
                 }, 'to error',
                     "expected\n" +
                     "function (cb) {\n" +
@@ -6389,7 +6411,7 @@ describe('unexpected', function () {
                     "        }\n" +
                     "    });\n" +
                     "}\n" +
-                    "to call the callback with no error\n" +
+                    "to call the callback without error\n" +
                     "  called the callback with: expected false to be truthy"
                 );
             });

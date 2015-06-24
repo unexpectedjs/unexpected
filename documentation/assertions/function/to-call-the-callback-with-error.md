@@ -1,5 +1,5 @@
-Asserts that a node.js-style asynchronous function calls the callback with an
-error.
+Asserts that a node.js-style asynchronous function taking a single callback
+will call it with a truthy value as the first parameter.
 
 ```javascript
 function myFailingAsyncFunction(cb) {
@@ -48,29 +48,4 @@ to call the callback with error Error('foo')
                        // -Oh dear
                        // +foo
   })
-```
-
-```javascript#async:true
-function mySuccessfulAsyncFunction(cb) {
-    setImmediate(cb);
-}
-
-return expect(mySuccessfulAsyncFunction, 'to call the callback with no error');
-```
-
-In case of a failing expectation you get the following output:
-
-```javascript#async:true
-return expect(myFailingAsyncFunction, 'to call the callback with no error');
-```
-
-```output
-expected
-function myFailingAsyncFunction(cb) {
-    setImmediate(function () {
-        cb(new Error('Oh dear'));
-    });
-}
-to call the callback with no error
-  called the callback with: Error('Oh dear')
 ```
