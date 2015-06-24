@@ -467,6 +467,10 @@ Unexpected.prototype.addType = function (type) {
         throw new Error('A type must be given a non-empty name and must match ^[a-z_](?:|[a-z0-9_.-]*[_a-z0-9])$');
     }
 
+    if (this.getType(type.name)) {
+        throw new Error('The type with the name ' + type.name + ' already exists');
+    }
+
     this.assertions[type.name] = {};
     this.typeByName[type.name] = type;
 
@@ -549,6 +553,10 @@ Unexpected.prototype.installPlugin = function (plugin) {
                         '  dependencies: <an optional list of dependencies>,\n' +
                         '  installInto: <a function that will update the given expect instance>\n' +
                         '}');
+    }
+
+    if (plugin.name === 'unexpected-promise') {
+        throw new Error('The unexpected-promise plugin was pulled into Unexpected as of 8.5.0. This means that the plugin is no longer supported.');
     }
 
     if (plugin.dependencies) {
@@ -2126,6 +2134,7 @@ module.exports = function (expect) {
                 });
             });
         } else {
+            this.errorMode = 'bubble';
             expect(subject, 'to equal', value);
         }
     });
@@ -2210,6 +2219,113 @@ module.exports = function (expect) {
     ], function (expect, subject) {
         this.errorMode = 'bubble';
         return expect.apply(expect, [[subject], 'when passed as parameters to [async] [constructor]'].concat(this.args));
+    });
+
+    expect.addAssertion('Promise', 'to be rejected [with]', function (expect, subject, value) {
+        this.errorMode = 'nested';
+        var flags = this.flags;
+        return subject.then(function (obj) {
+            expect.fail(function (output) {
+                output.append(expect.inspect(subject)).sp().text('unexpectedly fulfilled');
+                if (typeof obj !== 'undefined') {
+                    output.sp().text('with').sp().append(expect.inspect(obj));
+                }
+            });
+        }, function (err) {
+            if (flags['with'] || typeof value !== 'undefined') {
+                if (err && err._isUnexpected && (typeof value === 'string' || isRegExp(value))) {
+                    return expect(err.getErrorMessage().toString(), 'to satisfy', value);
+                } else {
+                    return expect(err, 'to satisfy', value);
+                }
+            }
+        });
+    });
+
+    expect.addAssertion('Promise', 'to be fulfilled [with]', function (expect, subject, value) {
+        this.errorMode = 'nested';
+        var flags = this.flags;
+        return subject.then(function (obj) {
+            if (flags['with'] || typeof value !== 'undefined') {
+                return expect(obj, 'to satisfy', value);
+            }
+        }, function (err) {
+            expect.fail(function (output) {
+                output.append(expect.inspect(subject)).sp().text('unexpectedly rejected');
+                if (typeof err !== 'undefined') {
+                    output.sp().text('with').sp().append(expect.inspect(err));
+                }
+            });
+        });
+    });
+
+    expect.addAssertion('Promise', 'when rejected', function (expect, subject, nextAssertion) {
+        this.errorMode = 'nested';
+        var that = this;
+        return subject.then(function (obj) {
+            if (typeof nextAssertion === 'string') {
+                that.args[0] = expect.output.clone().error(nextAssertion);
+            }
+            expect.fail(function (output) {
+                output.append(expect.inspect(subject)).sp().text('unexpectedly fulfilled');
+                if (typeof obj !== 'undefined') {
+                    output.sp().text('with').sp().append(expect.inspect(obj));
+                }
+            });
+        }, function (err) {
+            return that.shift(err, 0);
+        });
+    });
+
+    expect.addAssertion('Promise', 'when fulfilled', function (expect, subject, nextAssertion) {
+        this.errorMode = 'nested';
+        var that = this;
+        return subject.then(function (value) {
+            return that.shift(value, 0);
+        }, function (err) {
+            if (typeof nextAssertion === 'string') {
+                that.args[0] = expect.output.clone().error(nextAssertion);
+            }
+            expect.fail(function (output) {
+                output.append(expect.inspect(subject)).sp().text('unexpectedly rejected');
+                if (typeof err !== 'undefined') {
+                    output.sp().text('with').sp().append(expect.inspect(err));
+                }
+            });
+        });
+    });
+
+    expect.addAssertion('function', [
+        'to call the callback (|without error|with error)'
+    ], function (expect, subject, expectedError) {
+        var alternation = this.alternations[0];
+        if (alternation === 'without error' && typeof expectedError !== 'undefined') {
+            throw new Error("The '" + this.testDescription + "' assertion does not support arguments");
+        }
+
+        this.errorMode = 'nested';
+        return expect.promise(function (run) {
+            subject(run(function (err) {
+                if (alternation !== '') {
+                    if (alternation === 'without error') {
+                        if (err) {
+                            expect.fail('called the callback with: {0}', err._isUnexpected ? err.getErrorMessage() : expect.inspect(err));
+                        }
+                    } else {
+                        if (typeof expectedError !== 'undefined') {
+                            if (err && err.isUnexpected && (typeof expectedError === 'string' || isRegExp(expectedError))) {
+                                return expect(err.getErrorMessage().toString(), 'to satisfy', expectedError);
+                            } else {
+                                return expect(err, 'to satisfy', expectedError);
+                            }
+                        } else {
+                            expect(err, 'to be truthy');
+                        }
+                    }
+                }
+                return Array.prototype.slice.call(arguments, alternation === 'without error' ? 1 : 0);
+            }));
+        });
     });
 };
 
@@ -2302,16 +2418,17 @@ function makePromise(body) {
 
     return new Promise(function (resolve, reject) {
         var runningTasks = 0;
-        var errors = [];
-        var values = [];
+        var resolvedValue;
 
-        function finishWhenDone () {
+        function fulfillIfDone() {
             if (runningTasks === 0) {
-                if (errors.length > 0) {
-                    reject(errors[0]);
-                } else {
-                    resolve(values[0]);
-                }
+                resolve(resolvedValue);
+            }
+        }
+
+        function noteResolvedValue(value) {
+            if (typeof value !== 'undefined' && typeof resolvedValue === 'undefined') {
+                resolvedValue = value;
             }
         }
 
@@ -2325,24 +2442,19 @@ function makePromise(body) {
                     if (isPromise(result)) {
                         runningTasks += 1;
                         result.then(function (value) {
-                            if (typeof value !== 'undefined') {
-                                values.push(value);
-                            }
+                            noteResolvedValue(value);
                             runningTasks -= 1;
-                            finishWhenDone();
+                            fulfillIfDone();
                         }, function (e) {
-                            errors.push(e);
-                            runningTasks -= 1;
-                            finishWhenDone();
+                            reject(e);
                         });
-                    } else if (typeof result !== 'undefined') {
-                        values.push(result);
+                    } else {
+                        noteResolvedValue(result);
                     }
                 } catch (e) {
-                    errors.push(e);
-                } finally {
-                    finishWhenDone();
+                    return reject(e);
                 }
+                fulfillIfDone();
             };
         };
 
@@ -2351,23 +2463,17 @@ function makePromise(body) {
             if (isPromise(result)) {
                 runningTasks += 1;
                 result.then(function (value) {
-                    if (typeof value !== 'undefined') {
-                        values.push(value);
-                    }
+                    noteResolvedValue(value);
                     runningTasks -= 1;
-                    finishWhenDone();
-                }, function (e) {
-                    errors.push(e);
-                    runningTasks -= 1;
-                    finishWhenDone();
-                });
-            } else if (typeof result !== 'undefined') {
-                values.push(result);
+                    fulfillIfDone();
+                }, reject);
+            } else {
+                noteResolvedValue(result);
             }
         } catch (e) {
-            errors.push(e);
+            return reject(e);
         }
-        finishWhenDone();
+        fulfillIfDone();
     });
 }
 
@@ -3379,6 +3485,34 @@ module.exports = function (expect) {
     });
 
     expect.addType({
+        name: 'Promise',
+        base: 'object',
+        identify: function (obj) {
+            return obj && this.baseType.identify(obj) && typeof obj.then === 'function';
+        },
+        inspect: function (promise, depth, output, inspect) {
+            output.jsFunctionName('Promise');
+            if (promise.isPending && promise.isPending()) {
+                output.sp().yellow('(pending)');
+            } else if (promise.isFulfilled && promise.isFulfilled()) {
+                output.sp().green('(fulfilled)');
+                if (promise.value) {
+                    var value = promise.value();
+                    if (typeof value !== 'undefined') {
+                        output.sp().text('=>').sp().append(inspect(value));
+                    }
+                }
+            } else if (promise.isRejected && promise.isRejected()) {
+                output.sp().red('(rejected)');
+                var reason = promise.reason();
+                if (typeof reason !== 'undefined') {
+                    output.sp().text('=>').sp().append(inspect(promise.reason()));
+                }
+            }
+        }
+    });
+
+    expect.addType({
         name: 'regexp',
         identify: isRegExp,
         equal: function (a, b) {
@@ -3854,25 +3988,7 @@ assertions(unexpected);
 
 // Add an inspect method to all the promises we return that will make the REPL, console.log, and util.inspect render it nicely in node.js:
 require(19).prototype.inspect = function () {
-    var output = unexpected.output.clone()
-        .jsFunctionName('Promise')
-        .sp();
-    if (this.isPending()) {
-        output.yellow('(pending)');
-    } else if (this.isFulfilled()) {
-        output.green('(fulfilled)');
-        var value = this.value();
-        if (typeof value !== 'undefined') {
-            output.sp().text('=>').sp().append(unexpected.inspect(value));
-        }
-    } else if (this.isRejected()) {
-        output.red('(rejected)');
-        var reason = this.reason();
-        if (typeof reason !== 'undefined') {
-            output.sp().text('=>').sp().append(unexpected.inspect(this.reason()));
-        }
-    }
-    return output.toString(require(30).defaultFormat);
+    return unexpected.inspect(this).toString(require(30).defaultFormat);
 };
 
 module.exports = unexpected;
@@ -10510,90 +10626,90 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 }(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
 
 },{}],22:[function(require,module,exports){
-exports.read = function(buffer, offset, isLE, mLen, nBytes) {
-  var e, m,
-      eLen = nBytes * 8 - mLen - 1,
-      eMax = (1 << eLen) - 1,
-      eBias = eMax >> 1,
-      nBits = -7,
-      i = isLE ? (nBytes - 1) : 0,
-      d = isLE ? -1 : 1,
-      s = buffer[offset + i];
+exports.read = function (buffer, offset, isLE, mLen, nBytes) {
+  var e, m
+  var eLen = nBytes * 8 - mLen - 1
+  var eMax = (1 << eLen) - 1
+  var eBias = eMax >> 1
+  var nBits = -7
+  var i = isLE ? (nBytes - 1) : 0
+  var d = isLE ? -1 : 1
+  var s = buffer[offset + i]
 
-  i += d;
+  i += d
 
-  e = s & ((1 << (-nBits)) - 1);
-  s >>= (-nBits);
-  nBits += eLen;
-  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8);
+  e = s & ((1 << (-nBits)) - 1)
+  s >>= (-nBits)
+  nBits += eLen
+  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}
 
-  m = e & ((1 << (-nBits)) - 1);
-  e >>= (-nBits);
-  nBits += mLen;
-  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8);
+  m = e & ((1 << (-nBits)) - 1)
+  e >>= (-nBits)
+  nBits += mLen
+  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}
 
   if (e === 0) {
-    e = 1 - eBias;
+    e = 1 - eBias
   } else if (e === eMax) {
-    return m ? NaN : ((s ? -1 : 1) * Infinity);
+    return m ? NaN : ((s ? -1 : 1) * Infinity)
   } else {
-    m = m + Math.pow(2, mLen);
-    e = e - eBias;
+    m = m + Math.pow(2, mLen)
+    e = e - eBias
   }
-  return (s ? -1 : 1) * m * Math.pow(2, e - mLen);
-};
+  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
+}
 
-exports.write = function(buffer, value, offset, isLE, mLen, nBytes) {
-  var e, m, c,
-      eLen = nBytes * 8 - mLen - 1,
-      eMax = (1 << eLen) - 1,
-      eBias = eMax >> 1,
-      rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0),
-      i = isLE ? 0 : (nBytes - 1),
-      d = isLE ? 1 : -1,
-      s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0;
+exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
+  var e, m, c
+  var eLen = nBytes * 8 - mLen - 1
+  var eMax = (1 << eLen) - 1
+  var eBias = eMax >> 1
+  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
+  var i = isLE ? 0 : (nBytes - 1)
+  var d = isLE ? 1 : -1
+  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
 
-  value = Math.abs(value);
+  value = Math.abs(value)
 
   if (isNaN(value) || value === Infinity) {
-    m = isNaN(value) ? 1 : 0;
-    e = eMax;
+    m = isNaN(value) ? 1 : 0
+    e = eMax
   } else {
-    e = Math.floor(Math.log(value) / Math.LN2);
+    e = Math.floor(Math.log(value) / Math.LN2)
     if (value * (c = Math.pow(2, -e)) < 1) {
-      e--;
-      c *= 2;
+      e--
+      c *= 2
     }
     if (e + eBias >= 1) {
-      value += rt / c;
+      value += rt / c
     } else {
-      value += rt * Math.pow(2, 1 - eBias);
+      value += rt * Math.pow(2, 1 - eBias)
     }
     if (value * c >= 2) {
-      e++;
-      c /= 2;
+      e++
+      c /= 2
     }
 
     if (e + eBias >= eMax) {
-      m = 0;
-      e = eMax;
+      m = 0
+      e = eMax
     } else if (e + eBias >= 1) {
-      m = (value * c - 1) * Math.pow(2, mLen);
-      e = e + eBias;
+      m = (value * c - 1) * Math.pow(2, mLen)
+      e = e + eBias
     } else {
-      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen);
-      e = 0;
+      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
+      e = 0
     }
   }
 
-  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8);
+  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
 
-  e = (e << mLen) | m;
-  eLen += mLen;
-  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8);
+  e = (e << mLen) | m
+  eLen += mLen
+  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
 
-  buffer[offset + i - d] |= s * 128;
-};
+  buffer[offset + i - d] |= s * 128
+}
 
 },{}],23:[function(require,module,exports){
 
