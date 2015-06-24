@@ -42,7 +42,7 @@ coverage: lib/*
 test-browser: unexpected.js
 	@./node_modules/.bin/serve .
 
-travis: lint test coverage
+travis: lint test test-phantomjs coverage
 	-<coverage/lcov.info ./node_modules/coveralls/bin/coveralls.js
 
 .PHONY: git-dirty-check
