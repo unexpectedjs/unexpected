@@ -2424,6 +2424,25 @@ describe("documentation tests", function () {
             );
         }));
 
+
+        function asyncFn(cb) {
+            setTimeout(function () {
+                cb(null, 'foo');
+            });
+        }
+
+        testPromises.push(expect.promise(function () {
+            return expect(asyncFn, 'to call the callback').then(function (args) {
+                // args will be [null, 'foo'];
+            });
+        }));
+
+        testPromises.push(expect.promise(function () {
+            return expect(asyncFn, 'to call the callback').spread(function (err, result) {
+                // err will be null
+                // result will be 'foo'
+            });
+        }));
         return expect.promise.all(testPromises);
     });
 

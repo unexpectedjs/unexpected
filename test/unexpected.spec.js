@@ -6170,6 +6170,24 @@ describe('unexpected', function () {
             }, 'to call the callback');
         });
 
+        it('should return a promise that is fulfilled with the values passed to the callback', function () {
+            return expect(function (cb) {
+                cb(1, 2, 3, 4);
+            }, 'to call the callback').then(function (args) {
+                expect(args, 'to equal', [1, 2, 3, 4]);
+            });
+        });
+
+        it('should return a promise that is compatible with Bluebird\'s spread feature', function () {
+            return expect(function (cb) {
+                cb(1, 2);
+            }, 'to call the callback').spread(function (arg1, arg2) {
+                expect(arg1, 'to equal', 1);
+                expect(arg2, 'to equal', 2);
+                expect(arguments, 'to satisfy', [1, 2]);
+            });
+        });
+
         it('should succeed when the callback is called asynchronously', function () {
             return expect(function (cb) {
                 setTimeout(function () {
@@ -6393,6 +6411,14 @@ describe('unexpected', function () {
                     "to call the callback without error\n" +
                     "  called the callback with: Error('wat')"
                 );
+            });
+
+            it('should return a promise that is fulfilled with the values passed to the callback excluding the first (falsy error) parameter', function () {
+                return expect(function (cb) {
+                    cb(null, 1, 2);
+                }, 'to call the callback without error').then(function (args) {
+                    expect(args, 'to equal', [1, 2]);
+                });
             });
 
             it('should support UnexpectedError instances', function () {
