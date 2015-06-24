@@ -2278,6 +2278,143 @@ describe("documentation tests", function () {
         return expect.promise.all(testPromises);
     });
 
+    it("assertions/function/to-call-the-callback-with-error.md contains correct examples", function () {
+        var testPromises = [];
+        function myFailingAsyncFunction(cb) {
+            setImmediate(function () {
+                cb(new Error('Oh dear'));
+            });
+        }
+
+        testPromises.push(expect.promise(function () {
+            return expect(myFailingAsyncFunction, 'to call the callback with error');
+        }));
+
+        testPromises.push(expect.promise(function () {
+            return expect(myFailingAsyncFunction, 'to call the callback with error', 'Oh dear');
+        }));
+
+        testPromises.push(expect.promise(function () {
+            return expect(myFailingAsyncFunction, 'to call the callback with error', /dear/);
+        }));
+
+        testPromises.push(expect.promise(function () {
+            return expect(myFailingAsyncFunction, 'to call the callback with error', new Error('foo'));
+        }).then(function () {
+            return expect.promise(function () {
+                expect.fail(function (output) {
+                    output.error("expected:").nl();
+                    output.code("return expect(myFailingAsyncFunction, 'to call the callback with error', new Error('foo'));").nl();
+                    output.error("to throw");
+                });
+            });
+        }).caught(function (e) {
+            expect(e, "to have message",
+                "expected\n" +
+                "function myFailingAsyncFunction(cb) {\n" +
+                "    setImmediate(function () {\n" +
+                "        cb(new Error('Oh dear'));\n" +
+                "    });\n" +
+                "}\n" +
+                "to call the callback with error Error('foo')\n" +
+                "  expected Error('Oh dear') to satisfy Error('foo')\n" +
+                "\n" +
+                "  Error({\n" +
+                "    message: 'Oh dear' // should equal 'foo'\n" +
+                "                       // -Oh dear\n" +
+                "                       // +foo\n" +
+                "  })"
+            );
+        }));
+
+        return expect.promise.all(testPromises);
+    });
+
+    it("assertions/function/to-call-the-callback-without-error.md contains correct examples", function () {
+        var testPromises = [];
+        testPromises.push(expect.promise(function () {
+            function mySuccessfulAsyncFunction(cb) {
+                setImmediate(cb);
+            }
+
+            return expect(mySuccessfulAsyncFunction, 'to call the callback without error');
+        }));
+
+        testPromises.push(expect.promise(function () {
+            function myFailingAsyncFunction(cb) {
+                setImmediate(function () {
+                    cb(new Error('Oh dear'));
+                });
+            }
+
+            return expect(myFailingAsyncFunction, 'to call the callback without error');
+        }).then(function () {
+            return expect.promise(function () {
+                expect.fail(function (output) {
+                    output.error("expected:").nl();
+                    output.code("function myFailingAsyncFunction(cb) {").nl();
+                    output.code("    setImmediate(function () {").nl();
+                    output.code("        cb(new Error('Oh dear'));").nl();
+                    output.code("    });").nl();
+                    output.code("}").nl();
+                    output.code("").nl();
+                    output.code("return expect(myFailingAsyncFunction, 'to call the callback without error');").nl();
+                    output.error("to throw");
+                });
+            });
+        }).caught(function (e) {
+            expect(e, "to have message",
+                "expected\n" +
+                "function myFailingAsyncFunction(cb) {\n" +
+                "    setImmediate(function () {\n" +
+                "        cb(new Error('Oh dear'));\n" +
+                "    });\n" +
+                "}\n" +
+                "to call the callback without error\n" +
+                "  called the callback with: Error('Oh dear')"
+            );
+        }));
+
+        return expect.promise.all(testPromises);
+    });
+
+    it("assertions/function/to-call-the-callback.md contains correct examples", function () {
+        var testPromises = [];
+        testPromises.push(expect.promise(function () {
+            function mySuccessfulAsyncFunction(cb) {
+                setTimeout(function () {
+                    cb();
+                });
+            }
+
+            return expect(mySuccessfulAsyncFunction, 'to call the callback');
+        }));
+
+        testPromises.push(expect.promise(function () {
+            function errorOut(cb) {
+                throw new Error('ugh');
+            }
+            return expect(errorOut, 'to call the callback');
+        }).then(function () {
+            return expect.promise(function () {
+                expect.fail(function (output) {
+                    output.error("expected:").nl();
+                    output.code("function errorOut(cb) {").nl();
+                    output.code("    throw new Error('ugh');").nl();
+                    output.code("}").nl();
+                    output.code("return expect(errorOut, 'to call the callback');").nl();
+                    output.error("to throw");
+                });
+            });
+        }).caught(function (e) {
+            expect(e, "to have message",
+                "ugh"
+            );
+        }));
+
+        return expect.promise.all(testPromises);
+    });
+
     it("assertions/function/to-error.md contains correct examples", function () {
         var testPromises = [];
         function willBeRejected() {

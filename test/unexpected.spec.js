@@ -6157,6 +6157,267 @@ describe('unexpected', function () {
         });
     });
 
+    describe('to call the callback assertion', function () {
+        it('should succeed when the callback is called synchronously', function () {
+            return expect(function (cb) {
+                cb();
+            }, 'to call the callback');
+        });
+
+        it('should succeed when the callback is called asynchronously', function () {
+            return expect(function (cb) {
+                setTimeout(function () {
+                    cb();
+                });
+            }, 'to call the callback');
+        });
+
+        it('should succeed when the callback is called with an error', function () {
+            return expect(function (cb) {
+                setTimeout(function () {
+                    cb(new Error("don't mind me"));
+                });
+            }, 'to call the callback');
+        });
+
+        it('should fail if the function throws an exception', function () {
+            return expect(function () {
+                return expect(function (cb) {
+                    throw new Error('argh');
+                }, 'to call the callback');
+            }, 'to error', 'argh');
+        });
+
+        describe('with error', function () {
+            describe('with an expected error', function () {
+                it('should succeed', function () {
+                    return expect(function (cb) {
+                        setImmediate(function () {
+                            cb(new Error('bla'));
+                        });
+                    }, 'to call the callback with error', new Error('bla'));
+                });
+
+                describe('given as a string to be tested against the error message', function () {
+                    it('should succeed', function () {
+                        return expect(function (cb) {
+                            setImmediate(function () {
+                                cb(new Error('bla'));
+                            });
+                        }, 'to call the callback with error', 'bla');
+                    });
+
+                    it('should fail with a diff', function () {
+                        return expect(function () {
+                            return expect(function (cb) {
+                                setImmediate(function () {
+                                    cb(new Error('bla'));
+                                });
+                            }, 'to call the callback with error', 'quux');
+                        }, 'to error',
+                            "expected\n" +
+                            "function (cb) {\n" +
+                            "    setImmediate(function () {\n" +
+                            "        cb(new Error('bla'));\n" +
+                            "    });\n" +
+                            "}\n" +
+                            "to call the callback with error 'quux'\n" +
+                            "  expected Error('bla') to satisfy 'quux'\n" +
+                            "\n" +
+                            "  -bla\n" +
+                            "  +quux"
+                        );
+                    });
+                });
+
+                describe('given as a regular expression to be matched against the error message', function () {
+                    it('should succeed', function () {
+                        return expect(function (cb) {
+                            setImmediate(function () {
+                                cb(new Error('bla'));
+                            });
+                        }, 'to call the callback with error', /a/);
+                    });
+
+                    it('should fail with a diff', function () {
+                        return expect(function () {
+                            return expect(function (cb) {
+                                setImmediate(function () {
+                                    cb(new Error('bla'));
+                                });
+                            }, 'to call the callback with error', /q/);
+                        }, 'to error',
+                            "expected\n" +
+                            "function (cb) {\n" +
+                            "    setImmediate(function () {\n" +
+                            "        cb(new Error('bla'));\n" +
+                            "    });\n" +
+                            "}\n" +
+                            "to call the callback with error /q/\n" +
+                            "  expected Error('bla') to satisfy /q/"
+                        );
+                    });
+
+                    it('should support UnexpectedError instances', function () {
+                        return expect(function () {
+                            return expect(function (cb) {
+                                setImmediate(function () {
+                                    try {
+                                        expect(false, 'to be truthy');
+                                    } catch (err) {
+                                        cb(err);
+                                    }
+                                });
+                            }, 'to call the callback with error', /qqxqwxeqw/);
+                        }, 'to error',
+                            "expected\n" +
+                            "function (cb) {\n" +
+                            "    setImmediate(function () {\n" +
+                            "        try {\n" +
+                            "            expect(false, 'to be truthy');\n" +
+                            "        } catch (err) {\n" +
+                            "            cb(err);\n" +
+                            "        }\n" +
+                            "    });\n" +
+                            "}\n" +
+                            "to call the callback with error /qqxqwxeqw/\n" +
+                            "  expected 'expected false to be truthy' to satisfy /qqxqwxeqw/"
+                        );
+                    });
+                });
+
+                it('should fail with a diff when the error does not satisfy the expected error', function () {
+                    return expect(function () {
+                        return expect(function (cb) {
+                            setImmediate(function () {
+                                cb(new Error('foo'));
+                            });
+                        }, 'to call the callback with error', new Error('bla'));
+                    }, 'to error',
+                        "expected\n" +
+                        "function (cb) {\n" +
+                        "    setImmediate(function () {\n" +
+                        "        cb(new Error('foo'));\n" +
+                        "    });\n" +
+                        "}\n" +
+                        "to call the callback with error Error('bla')\n" +
+                        "  expected Error('foo') to satisfy Error('bla')\n" +
+                        "\n" +
+                        "  Error({\n" +
+                        "    message: 'foo' // should equal 'bla'\n" +
+                        "                   // -foo\n" +
+                        "                   // +bla\n" +
+                        "  })"
+                    );
+                });
+
+                it('should fail with a diff when no error was passed to the callback', function () {
+                    return expect(function () {
+                        return expect(function (cb) {
+                            setImmediate(cb);
+                        }, 'to call the callback with error', new Error('bla'));
+                    }, 'to error',
+                        "expected\n" +
+                        "function (cb) {\n" +
+                        "    setImmediate(cb);\n" +
+                        "}\n" +
+                        "to call the callback with error Error('bla')\n" +
+                        "  expected undefined to equal Error('bla')"
+                    );
+                });
+            });
+
+            describe('without an expected error', function () {
+                it('should succeed', function () {
+                    return expect(function (cb) {
+                        setImmediate(function () {
+                            cb(new Error('bla'));
+                        });
+                    }, 'to call the callback with error');
+                });
+
+                it('should fail with a diff when no error was passed to the callback', function () {
+                    return expect(function () {
+                        return expect(function (cb) {
+                            setImmediate(cb);
+                        }, 'to call the callback with error');
+                    }, 'to error',
+                        "expected\n" +
+                        "function (cb) {\n" +
+                        "    setImmediate(cb);\n" +
+                        "}\n" +
+                        "to call the callback with error\n" +
+                        "  expected undefined to be truthy"
+                    );
+                });
+            });
+        });
+
+        describe('without error', function () {
+            it('should throw if called with an expected error instance', function () {
+                expect(function () {
+                    return expect(function (cb) {
+                        setImmediate(function () {
+                            cb(new Error('bla'));
+                        });
+                    }, 'to call the callback without error', new Error('bla'));
+                }, 'to throw', "The 'to call the callback without error' assertion does not support arguments");
+            });
+
+            it('should succeed', function () {
+                return expect(function (cb) {
+                    return setImmediate(cb);
+                }, 'to call the callback without error');
+            });
+
+            it('should fail with a diff', function () {
+                return expect(function () {
+                    return expect(function (cb) {
+                        return setImmediate(function () {
+                            cb(new Error('wat'));
+                        });
+                    }, 'to call the callback without error');
+                }, 'to error',
+                    "expected\n" +
+                    "function (cb) {\n" +
+                    "    return setImmediate(function () {\n" +
+                    "        cb(new Error('wat'));\n" +
+                    "    });\n" +
+                    "}\n" +
+                    "to call the callback without error\n" +
+                    "  called the callback with: Error('wat')"
+                );
+            });
+
+            it('should support UnexpectedError instances', function () {
+                return expect(function () {
+                    return expect(function (cb) {
+                        setImmediate(function () {
+                            try {
+                                expect(false, 'to be truthy');
+                            } catch (err) {
+                                cb(err);
+                            }
+                        });
+                    }, 'to call the callback without error');
+                }, 'to error',
+                    "expected\n" +
+                    "function (cb) {\n" +
+                    "    setImmediate(function () {\n" +
+                    "        try {\n" +
+                    "            expect(false, 'to be truthy');\n" +
+                    "        } catch (err) {\n" +
+                    "            cb(err);\n" +
+                    "        }\n" +
+                    "    });\n" +
+                    "}\n" +
+                    "to call the callback without error\n" +
+                    "  called the callback with: expected false to be truthy"
+                );
+            });
+        });
+    });
+
     describe('assertion.shift', function () {
         describe('with an expect.it function as the next argument', function () {
             it('should succeed', function () {
