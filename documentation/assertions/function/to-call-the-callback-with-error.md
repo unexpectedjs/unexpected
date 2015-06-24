@@ -3,9 +3,9 @@ will call it with a truthy value as the first parameter.
 
 ```javascript
 function myFailingAsyncFunction(cb) {
-    setImmediate(function () {
+    setTimeout(function () {
         cb(new Error('Oh dear'));
-    });
+    }, 0);
 }
 ```
 
@@ -36,9 +36,9 @@ return expect(myFailingAsyncFunction, 'to call the callback with error', new Err
 ```output
 expected
 function myFailingAsyncFunction(cb) {
-    setImmediate(function () {
+    setTimeout(function () {
         cb(new Error('Oh dear'));
-    });
+    }, 0);
 }
 to call the callback with error Error('foo')
   expected Error('Oh dear') to satisfy Error('foo')

@@ -6216,34 +6216,34 @@ describe('unexpected', function () {
             describe('with an expected error', function () {
                 it('should succeed', function () {
                     return expect(function (cb) {
-                        setImmediate(function () {
+                        setTimeout(function () {
                             cb(new Error('bla'));
-                        });
+                        }, 0);
                     }, 'to call the callback with error', new Error('bla'));
                 });
 
                 describe('given as a string to be tested against the error message', function () {
                     it('should succeed', function () {
                         return expect(function (cb) {
-                            setImmediate(function () {
+                            setTimeout(function () {
                                 cb(new Error('bla'));
-                            });
+                            }, 0);
                         }, 'to call the callback with error', 'bla');
                     });
 
                     it('should fail with a diff', function () {
                         return expect(function () {
                             return expect(function (cb) {
-                                setImmediate(function () {
+                                setTimeout(function () {
                                     cb(new Error('bla'));
-                                });
+                                }, 0);
                             }, 'to call the callback with error', 'quux');
                         }, 'to error',
                             "expected\n" +
                             "function (cb) {\n" +
-                            "    setImmediate(function () {\n" +
+                            "    setTimeout(function () {\n" +
                             "        cb(new Error('bla'));\n" +
-                            "    });\n" +
+                            "    }, 0);\n" +
                             "}\n" +
                             "to call the callback with error 'quux'\n" +
                             "  expected Error('bla') to satisfy 'quux'\n" +
@@ -6257,25 +6257,25 @@ describe('unexpected', function () {
                 describe('given as a regular expression to be matched against the error message', function () {
                     it('should succeed', function () {
                         return expect(function (cb) {
-                            setImmediate(function () {
+                            setTimeout(function () {
                                 cb(new Error('bla'));
-                            });
+                            }, 0);
                         }, 'to call the callback with error', /a/);
                     });
 
                     it('should fail with a diff', function () {
                         return expect(function () {
                             return expect(function (cb) {
-                                setImmediate(function () {
+                                setTimeout(function () {
                                     cb(new Error('bla'));
-                                });
+                                }, 0);
                             }, 'to call the callback with error', /q/);
                         }, 'to error',
                             "expected\n" +
                             "function (cb) {\n" +
-                            "    setImmediate(function () {\n" +
+                            "    setTimeout(function () {\n" +
                             "        cb(new Error('bla'));\n" +
-                            "    });\n" +
+                            "    }, 0);\n" +
                             "}\n" +
                             "to call the callback with error /q/\n" +
                             "  expected Error('bla') to satisfy /q/"
@@ -6285,24 +6285,24 @@ describe('unexpected', function () {
                     it('should support UnexpectedError instances', function () {
                         return expect(function () {
                             return expect(function (cb) {
-                                setImmediate(function () {
+                                setTimeout(function () {
                                     try {
                                         expect(false, 'to be truthy');
                                     } catch (err) {
                                         cb(err);
                                     }
-                                });
+                                }, 0);
                             }, 'to call the callback with error', /qqxqwxeqw/);
                         }, 'to error',
                             "expected\n" +
                             "function (cb) {\n" +
-                            "    setImmediate(function () {\n" +
+                            "    setTimeout(function () {\n" +
                             "        try {\n" +
                             "            expect(false, 'to be truthy');\n" +
                             "        } catch (err) {\n" +
                             "            cb(err);\n" +
                             "        }\n" +
-                            "    });\n" +
+                            "    }, 0);\n" +
                             "}\n" +
                             "to call the callback with error /qqxqwxeqw/\n" +
                             "  expected 'expected false to be truthy' to satisfy /qqxqwxeqw/"
@@ -6313,16 +6313,16 @@ describe('unexpected', function () {
                 it('should fail with a diff when the error does not satisfy the expected error', function () {
                     return expect(function () {
                         return expect(function (cb) {
-                            setImmediate(function () {
+                            setTimeout(function () {
                                 cb(new Error('foo'));
-                            });
+                            }, 0);
                         }, 'to call the callback with error', new Error('bla'));
                     }, 'to error',
                         "expected\n" +
                         "function (cb) {\n" +
-                        "    setImmediate(function () {\n" +
+                        "    setTimeout(function () {\n" +
                         "        cb(new Error('foo'));\n" +
-                        "    });\n" +
+                        "    }, 0);\n" +
                         "}\n" +
                         "to call the callback with error Error('bla')\n" +
                         "  expected Error('foo') to satisfy Error('bla')\n" +
@@ -6338,12 +6338,12 @@ describe('unexpected', function () {
                 it('should fail with a diff when no error was passed to the callback', function () {
                     return expect(function () {
                         return expect(function (cb) {
-                            setImmediate(cb);
+                            setTimeout(cb, 0);
                         }, 'to call the callback with error', new Error('bla'));
                     }, 'to error',
                         "expected\n" +
                         "function (cb) {\n" +
-                        "    setImmediate(cb);\n" +
+                        "    setTimeout(cb, 0);\n" +
                         "}\n" +
                         "to call the callback with error Error('bla')\n" +
                         "  expected undefined to equal Error('bla')"
@@ -6354,21 +6354,21 @@ describe('unexpected', function () {
             describe('without an expected error', function () {
                 it('should succeed', function () {
                     return expect(function (cb) {
-                        setImmediate(function () {
+                        setTimeout(function () {
                             cb(new Error('bla'));
-                        });
+                        }, 0);
                     }, 'to call the callback with error');
                 });
 
                 it('should fail with a diff when no error was passed to the callback', function () {
                     return expect(function () {
                         return expect(function (cb) {
-                            setImmediate(cb);
+                            setTimeout(cb, 0);
                         }, 'to call the callback with error');
                     }, 'to error',
                         "expected\n" +
                         "function (cb) {\n" +
-                        "    setImmediate(cb);\n" +
+                        "    setTimeout(cb, 0);\n" +
                         "}\n" +
                         "to call the callback with error\n" +
                         "  expected undefined to be truthy"
@@ -6381,32 +6381,32 @@ describe('unexpected', function () {
             it('should throw if called with an expected error instance', function () {
                 expect(function () {
                     return expect(function (cb) {
-                        setImmediate(function () {
+                        setTimeout(function () {
                             cb(new Error('bla'));
-                        });
+                        }, 0);
                     }, 'to call the callback without error', new Error('bla'));
                 }, 'to throw', "The 'to call the callback without error' assertion does not support arguments");
             });
 
             it('should succeed', function () {
                 return expect(function (cb) {
-                    return setImmediate(cb);
+                    return setTimeout(cb, 0);
                 }, 'to call the callback without error');
             });
 
             it('should fail with a diff', function () {
                 return expect(function () {
                     return expect(function (cb) {
-                        return setImmediate(function () {
+                        return setTimeout(function () {
                             cb(new Error('wat'));
-                        });
+                        }, 0);
                     }, 'to call the callback without error');
                 }, 'to error',
                     "expected\n" +
                     "function (cb) {\n" +
-                    "    return setImmediate(function () {\n" +
+                    "    return setTimeout(function () {\n" +
                     "        cb(new Error('wat'));\n" +
-                    "    });\n" +
+                    "    }, 0);\n" +
                     "}\n" +
                     "to call the callback without error\n" +
                     "  called the callback with: Error('wat')"
@@ -6424,24 +6424,24 @@ describe('unexpected', function () {
             it('should support UnexpectedError instances', function () {
                 return expect(function () {
                     return expect(function (cb) {
-                        setImmediate(function () {
+                        setTimeout(function () {
                             try {
                                 expect(false, 'to be truthy');
                             } catch (err) {
                                 cb(err);
                             }
-                        });
+                        }, 0);
                     }, 'to call the callback without error');
                 }, 'to error',
                     "expected\n" +
                     "function (cb) {\n" +
-                    "    setImmediate(function () {\n" +
+                    "    setTimeout(function () {\n" +
                     "        try {\n" +
                     "            expect(false, 'to be truthy');\n" +
                     "        } catch (err) {\n" +
                     "            cb(err);\n" +
                     "        }\n" +
-                    "    });\n" +
+                    "    }, 0);\n" +
                     "}\n" +
                     "to call the callback without error\n" +
                     "  called the callback with: expected false to be truthy"

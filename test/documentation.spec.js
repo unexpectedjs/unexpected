@@ -2293,9 +2293,9 @@ describe("documentation tests", function () {
     it("assertions/function/to-call-the-callback-with-error.md contains correct examples", function () {
         var testPromises = [];
         function myFailingAsyncFunction(cb) {
-            setImmediate(function () {
+            setTimeout(function () {
                 cb(new Error('Oh dear'));
-            });
+            }, 0);
         }
 
         testPromises.push(expect.promise(function () {
@@ -2324,9 +2324,9 @@ describe("documentation tests", function () {
             expect(e, "to have message",
                 "expected\n" +
                 "function myFailingAsyncFunction(cb) {\n" +
-                "    setImmediate(function () {\n" +
+                "    setTimeout(function () {\n" +
                 "        cb(new Error('Oh dear'));\n" +
-                "    });\n" +
+                "    }, 0);\n" +
                 "}\n" +
                 "to call the callback with error Error('foo')\n" +
                 "  expected Error('Oh dear') to satisfy Error('foo')\n" +
@@ -2363,7 +2363,7 @@ describe("documentation tests", function () {
         var testPromises = [];
         testPromises.push(expect.promise(function () {
             function mySuccessfulAsyncFunction(cb) {
-                setImmediate(cb);
+                setTimeout(cb, 0);
             }
 
             return expect(mySuccessfulAsyncFunction, 'to call the callback without error');
@@ -2371,9 +2371,9 @@ describe("documentation tests", function () {
 
         testPromises.push(expect.promise(function () {
             function myFailingAsyncFunction(cb) {
-                setImmediate(function () {
+                setTimeout(function () {
                     cb(new Error('Oh dear'));
-                });
+                }, 0);
             }
 
             return expect(myFailingAsyncFunction, 'to call the callback without error');
@@ -2382,9 +2382,9 @@ describe("documentation tests", function () {
                 expect.fail(function (output) {
                     output.error("expected:").nl();
                     output.code("function myFailingAsyncFunction(cb) {").nl();
-                    output.code("    setImmediate(function () {").nl();
+                    output.code("    setTimeout(function () {").nl();
                     output.code("        cb(new Error('Oh dear'));").nl();
-                    output.code("    });").nl();
+                    output.code("    }, 0);").nl();
                     output.code("}").nl();
                     output.code("").nl();
                     output.code("return expect(myFailingAsyncFunction, 'to call the callback without error');").nl();
@@ -2395,9 +2395,9 @@ describe("documentation tests", function () {
             expect(e, "to have message",
                 "expected\n" +
                 "function myFailingAsyncFunction(cb) {\n" +
-                "    setImmediate(function () {\n" +
+                "    setTimeout(function () {\n" +
                 "        cb(new Error('Oh dear'));\n" +
-                "    });\n" +
+                "    }, 0);\n" +
                 "}\n" +
                 "to call the callback without error\n" +
                 "  called the callback with: Error('Oh dear')"
