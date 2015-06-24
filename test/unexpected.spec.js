@@ -4767,6 +4767,12 @@ describe('unexpected', function () {
             }, 'to throw', 'A type must be given a non-empty name and must match ^[a-z_](?:|[a-z0-9_.-]*[_a-z0-9])$');
         });
 
+        it('throws an expection if a type of that name already exists', function () {
+            expect(function () {
+                clonedExpect.addType({ name: 'Promise' });
+            }, 'to throw', 'The type with the name Promise already exists');
+        });
+
         it('throws an expection if the type starts with .', function () {
             expect(function () {
                 clonedExpect.addType({name: '.foo'});
