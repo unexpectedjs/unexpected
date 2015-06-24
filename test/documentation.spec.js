@@ -337,6 +337,9 @@ describe("documentation tests", function () {
             );
         }
 
+        expect = unexpected.clone();
+        expect.output.preferredWidth = 80;
+
         expect.addType({
             name: 'Person',
             base: 'object',
@@ -372,6 +375,9 @@ describe("documentation tests", function () {
             );
         }
 
+        expect = unexpected.clone();
+        expect.output.preferredWidth = 80;
+
         expect.addType({
             name: 'Person',
             base: 'object',
@@ -389,6 +395,9 @@ describe("documentation tests", function () {
                 return a === b || equal(a.name, b.name);
             }
         });
+
+        expect = unexpected.clone();
+        expect.output.preferredWidth = 80;
 
         expect.addType({
             name: 'Person',
@@ -429,6 +438,9 @@ describe("documentation tests", function () {
                 "}"
             );
         }
+
+        expect = unexpected.clone();
+        expect.output.preferredWidth = 80;
 
         var inlineDiff = true; // used to change inlining in a later example
 
