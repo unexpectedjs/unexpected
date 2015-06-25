@@ -28,7 +28,7 @@ ugh
 
 The assertion will pass even if the function passes an error to the callback.
 If you want that case to fail, look into the
-[to call the callback without](/assertions/function/to-call-the-callback-without-error/)
+[to call the callback without error](/assertions/function/to-call-the-callback-without-error/)
 assertion.
 
 If you want the parameters passed to the callback to be the subject of further assertions,
