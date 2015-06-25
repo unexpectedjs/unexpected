@@ -37,6 +37,8 @@ coverage:
 		-x **/documentation/** \
 		-x lib/testFrameworkPatch.js \
 		-x generate-site.js \
+		--report text \
+		--report lcov \
 	--include-all-sources ./node_modules/mocha/bin/_mocha -- --reporter dot
 
 .PHONY: test-browser
