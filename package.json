@@ -32,7 +32,7 @@
     "bundle-collapser": "1.1.0",
     "coveralls": "2.11.1",
     "es5-shim": "4.0.5",
-    "istanbul": "0.3.5",
+    "istanbul": "0.3.16",
     "jasmine": "2.2.1",
     "jshint": "2.5.6",
     "minimist": "1.1.1",
