@@ -5,12 +5,12 @@ title: promise.settle
 ### expect.promise.settle(...)
 
 This method will find all promises in the given structure and return a
-promise that resolves when all of the promises has been rejected or
-resolved. When the returned promise resolves you can use
-[synchronious inspection](https://github.com/petkaantonov/bluebird/blob/master/API.md#synchronous-inspection)
+promise that will be fulfilled when all of the promises have been rejected or
+fulfilled. When the returned promise is fulfilled, you can use
+[synchronous inspection](https://github.com/petkaantonov/bluebird/blob/master/API.md#synchronous-inspection)
 on each of the promises to read their values.
 
-Let's make an asynchronous assertion that we can uses for the examples:
+Let's make an asynchronous assertion that we can use for the examples:
 
 ```js
 expect.addAssertion('to be a number after a short delay', function (expect, subject) {

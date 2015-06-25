@@ -1,4 +1,4 @@
-When assertions fails in Unexpected they yield an
+When assertions fail in Unexpected they yield an
 `UnexpectedError`. This instance has several convenience methods for
 retrieving information about the error.
 
@@ -72,9 +72,9 @@ expected 'bar' to equal 'bAr'
 ### UnexpectedError.parent
 
 When assertions delegate to nested `expect` calls the errors that are
-thrown on each level are chained together through the `parent`
+thrown at each level are chained together through the `parent`
 property. The error message is serialized lazily, so it is possible to
-change the error hierarchy before the error is serialized or extract
+change the error hierarchy before the error is serialized, or extract
 information from the hierarchy and use [expect.fail](../fail/) to throw
 a new error.
 
@@ -113,13 +113,13 @@ Return an array with all the ancestor errors to this error. See
 
 ### UnexpectedError.getAllErrors()
 
-Return an array with this error and all it's ancestors. See
+Return an array with this error and all its ancestors. See
 <a href="#unexpectederror-parent">parent</a> for more information.
 
 ### UnexpectedError.getDiff()
 
-Finds the first error in the hierarchy that contains a diff and
-returns it. This method if useful if you want to hoist a diff from an
+Find the first error in the hierarchy that contains a diff and
+return it. This method if useful if you want to hoist a diff from an
 ancestor error and combine it with a new message.
 
 ### UnexpectedError.getDiffMethod()
@@ -161,6 +161,6 @@ expected { custom: false } to be completely custom
 ### UnexpectedError.getLabel()
 
 Get a shortened representation of the error message that doesn't
-repeat the subject, for example should equal 'bar' rather than
-expected 'foo' to equal 'bar'. This makes it suitable for display next
+repeat the subject, for example `should equal 'bar'` rather than
+`expected 'foo' to equal 'bar'`. This makes it suitable for display next
 to an existing rendering of the subject, such as inside a diff.

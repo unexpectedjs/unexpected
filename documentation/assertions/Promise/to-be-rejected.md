@@ -8,14 +8,14 @@ var promiseThatWillBeRejected = expect.promise(function (resolve, reject) {
 return expect(promiseThatWillBeRejected, 'to be rejected');
 ```
 
-If the promise is resolved, the assertion will fail with the following output:
+If the promise is fulfilled, the assertion will fail with the following output:
 
 ```javascript#async:true
-var resolvedPromise = expect.promise(function (resolve, reject) {
+var fulfilledPromise = expect.promise(function (resolve, reject) {
     setTimeout(resolve, 1);
 });
 
-return expect(resolvedPromise, 'to be rejected');
+return expect(fulfilledPromise, 'to be rejected');
 ```
 
 ```output

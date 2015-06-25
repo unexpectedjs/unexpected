@@ -43,7 +43,7 @@ promise will be rejected with the error.
 Notice you can call the run wrapper as many times as you want as long
 as it is within the current tick, the promise will wait for all the
 wrapper functions to finish before the promise will be rejected or
-resolved.
+fulfilled.
 
 When the promise body takes two arguments, it is just an alias for:
 
