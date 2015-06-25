@@ -40,6 +40,7 @@ coverage:
 		--report text \
 		--report lcov \
 	--include-all-sources ./node_modules/mocha/bin/_mocha -- --reporter dot
+	@echo google-chrome coverage/lcov-report/index.html
 
 .PHONY: test-browser
 test-browser: unexpected.js
