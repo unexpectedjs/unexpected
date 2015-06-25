@@ -27,7 +27,8 @@ test: lint
 
 .PHONY: test
 
-coverage: lib/*
+.PHONY: coverage
+coverage:
 	NODE_ENV=development ./node_modules/.bin/istanbul cover \
 		-x unexpected.js \
 		-x **/vendor/** \
