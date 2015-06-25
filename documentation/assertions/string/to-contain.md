@@ -31,4 +31,5 @@ expect('Hello beautiful world!', 'not to contain', 'beautiful', 'ugly');
 expected 'Hello beautiful world!' not to contain 'beautiful', 'ugly'
 
 Hello beautiful world!
+      ^^^^^^^^^
 ```

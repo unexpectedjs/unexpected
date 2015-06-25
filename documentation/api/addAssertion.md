@@ -202,6 +202,7 @@ expected Timelock to satisfy expect.it('not to match', /!/)
 expected 'Hello world!' not to match /!/
 
 Hello world!
+           ^
 ```
 
 The best resource for learning more about custom assertions is to look

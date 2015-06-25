@@ -1607,7 +1607,8 @@ describe('unexpected', function () {
             }, 'to throw',
                    "expected 'barfooquuxfoobaz' not to match /foo/\n" +
                    '\n' +
-                   'barfooquuxfoobaz');
+                   'barfooquuxfoobaz\n' +
+                   '   ^^^    ^^^');
         });
     });
 
@@ -1680,7 +1681,8 @@ describe('unexpected', function () {
             }, 'to throw',
                 "expected 'foobarquuxfoo' not to contain 'foo'\n" +
                 '\n' +
-                'foobarquuxfoo');
+                'foobarquuxfoo\n' +
+                '^^^       ^^^');
         });
     });
 
@@ -2613,6 +2615,7 @@ describe('unexpected', function () {
                    "  foo: 'foo' // expected 'foo' not to match /oo/\n" +
                    "             //\n" +
                    "             // foo\n" +
+                   "             //  ^^\n" +
                    "}");
         });
 
