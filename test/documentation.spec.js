@@ -1970,7 +1970,7 @@ describe("documentation tests", function () {
                 "  baz: 'bogus', // expected 'bogus' not to match /^bog/\n" +
                 "                //\n" +
                 "                // bogus\n" +
-                "                   ^^^\n" +
+                "                // ^^^\n" +
                 "  qux: 42,\n" +
                 "  quux: 'wat' // expected 'wat' to be a number\n" +
                 "}"
