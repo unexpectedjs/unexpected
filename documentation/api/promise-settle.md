@@ -48,7 +48,7 @@ return expect.promise.all(promises).caught(function () {
         if (promises[key].isFulfilled()) {
           output.success('✓');
         } else {
-          output.error('⨯ ').block(promises[key].reason().getErrorMessage());
+          output.error('⨯ ').block(promises[key].reason().getErrorMessage({ output: output }));
         }
         output.nl();
       });

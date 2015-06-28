@@ -38,7 +38,7 @@ expect.addAssertion("array", "to have item satisfying", function (expect, subjec
             // the error is connected to the current scope
             // but we are just interested in the nested error
             error.errorMode = 'bubble';
-            result.diff.append(error.getErrorMessage());
+            result.diff.append(error.getErrorMessage({ output: output }));
           });
           return result;
         }

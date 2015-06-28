@@ -186,7 +186,7 @@ expect.addType({
         return a === b || equal(a.name, b.name);
     },
     diff: function (actual, expected, output, diff, inspect) {
-        return this.baseType.diff({name: actual.name}, {name: expected.name});
+        return this.baseType.diff({name: actual.name}, {name: expected.name}, output);
     }
 });
 ```

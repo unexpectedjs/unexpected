@@ -44,7 +44,7 @@ describe("documentation tests", function () {
                     // the error is connected to the current scope
                     // but we are just interested in the nested error
                     error.errorMode = 'bubble';
-                    result.diff.append(error.getErrorMessage());
+                    result.diff.append(error.getErrorMessage({ output: output }));
                   });
                   return result;
                 }
@@ -417,7 +417,7 @@ describe("documentation tests", function () {
                 return a === b || equal(a.name, b.name);
             },
             diff: function (actual, expected, output, diff, inspect) {
-                return this.baseType.diff({name: actual.name}, {name: expected.name});
+                return this.baseType.diff({name: actual.name}, {name: expected.name}, output);
             }
         });
 
@@ -918,7 +918,7 @@ describe("documentation tests", function () {
 
                 output.indentLines();
                 errors.forEach(function (e, i) {
-                  output.nl().i().text(i + ': ').block(e.getErrorMessage());
+                  output.nl().i().text(i + ': ').block(e.getErrorMessage({ output: output }));
                 });
               });
             });
@@ -952,7 +952,7 @@ describe("documentation tests", function () {
                     output.code("").nl();
                     output.code("    output.indentLines();").nl();
                     output.code("    errors.forEach(function (e, i) {").nl();
-                    output.code("      output.nl().i().text(i + ': ').block(e.getErrorMessage());").nl();
+                    output.code("      output.nl().i().text(i + ': ').block(e.getErrorMessage({ output: output }));").nl();
                     output.code("    });").nl();
                     output.code("  });").nl();
                     output.code("});").nl();
@@ -1011,7 +1011,7 @@ describe("documentation tests", function () {
                     if (promises[key].isFulfilled()) {
                       output.success('✓');
                     } else {
-                      output.error('⨯ ').block(promises[key].reason().getErrorMessage());
+                      output.error('⨯ ').block(promises[key].reason().getErrorMessage({ output: output }));
                     }
                     output.nl();
                   });
@@ -1042,7 +1042,7 @@ describe("documentation tests", function () {
                     output.code("        if (promises[key].isFulfilled()) {").nl();
                     output.code("          output.success('✓');").nl();
                     output.code("        } else {").nl();
-                    output.code("          output.error('⨯ ').block(promises[key].reason().getErrorMessage());").nl();
+                    output.code("          output.error('⨯ ').block(promises[key].reason().getErrorMessage({ output: output }));").nl();
                     output.code("        }").nl();
                     output.code("        output.nl();").nl();
                     output.code("      });").nl();
