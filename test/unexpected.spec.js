@@ -792,7 +792,7 @@ describe('unexpected', function () {
                     // Don't throw
                 }, 'to throw exception');
             }, 'to throw', function (err) {
-                var message = err.getErrorMessage().toString();
+                var message = err.getErrorMessage({ format: 'text' }).toString();
                 // PhantomJS adds a simicolon after the comment
                 message = message.replace(';', '');
                 expect(message, 'to equal',
@@ -1109,7 +1109,7 @@ describe('unexpected', function () {
                     expect(function () {
                         expect(err, 'to have message', 'expected 3 to equal 2');
                     }, 'to throw', function (err) {
-                        var message = err.getErrorMessage().toString('text');
+                        var message = err.getErrorMessage({ format: 'text' }).toString('text');
                         expect(
                             message,
                             'to contain',
@@ -4292,7 +4292,7 @@ describe('unexpected', function () {
                     clonedExpect = expect.clone()
                         .addAssertion('to be sorted after delay', function (expect, subject, delay, done) {
                             this.errorMode = errorMode;
-                            this.args.pop(); // Don't let the function be inspected in case of failure
+                            this.argsOutput.pop(); // Don't let the function be inspected in case of failure
                             setTimeout(function () {
                                 try {
                                     expect(subject, 'to be an array');
@@ -6642,7 +6642,7 @@ describe('unexpected', function () {
 
         it.skipIf(!workQueue, 'throw an unhandled rejection if a promise is not caught by the test', function (done) {
             workQueue.onUnhandledRejection = function (err) {
-                expect(err.getErrorMessage().toString(), 'to equal',
+                expect(err.getErrorMessage({ format: 'text' }).toString(), 'to equal',
                     'expected [ 1, 3, 2 ] to be ordered after delay\n' +
                     '  expected [ 1, 3, 2 ] to be sorted after delay 20\n' +
                     '    expected [ 1, 3, 2 ] to equal [ 1, 2, 3 ]\n' +
