@@ -44,7 +44,7 @@ describe("documentation tests", function () {
                     // the error is connected to the current scope
                     // but we are just interested in the nested error
                     error.errorMode = 'bubble';
-                    result.diff.append(error.getErrorMessage());
+                    result.diff.append(error.getErrorMessage({ output: output }));
                   });
                   return result;
                 }
@@ -295,7 +295,8 @@ describe("documentation tests", function () {
                 "\n" +
                 "expected 'Hello world!' not to match /!/\n" +
                 "\n" +
-                "Hello world!"
+                "Hello world!\n" +
+                "           ^"
             );
         }));
 
@@ -416,7 +417,7 @@ describe("documentation tests", function () {
                 return a === b || equal(a.name, b.name);
             },
             diff: function (actual, expected, output, diff, inspect) {
-                return this.baseType.diff({name: actual.name}, {name: expected.name});
+                return this.baseType.diff({name: actual.name}, {name: expected.name}, output);
             }
         });
 
@@ -917,7 +918,7 @@ describe("documentation tests", function () {
 
                 output.indentLines();
                 errors.forEach(function (e, i) {
-                  output.nl().i().text(i + ': ').block(e.getErrorMessage());
+                  output.nl().i().text(i + ': ').block(e.getErrorMessage({ output: output }));
                 });
               });
             });
@@ -951,7 +952,7 @@ describe("documentation tests", function () {
                     output.code("").nl();
                     output.code("    output.indentLines();").nl();
                     output.code("    errors.forEach(function (e, i) {").nl();
-                    output.code("      output.nl().i().text(i + ': ').block(e.getErrorMessage());").nl();
+                    output.code("      output.nl().i().text(i + ': ').block(e.getErrorMessage({ output: output }));").nl();
                     output.code("    });").nl();
                     output.code("  });").nl();
                     output.code("});").nl();
@@ -1010,7 +1011,7 @@ describe("documentation tests", function () {
                     if (promises[key].isFulfilled()) {
                       output.success('✓');
                     } else {
-                      output.error('⨯ ').block(promises[key].reason().getErrorMessage());
+                      output.error('⨯ ').block(promises[key].reason().getErrorMessage({ output: output }));
                     }
                     output.nl();
                   });
@@ -1041,7 +1042,7 @@ describe("documentation tests", function () {
                     output.code("        if (promises[key].isFulfilled()) {").nl();
                     output.code("          output.success('✓');").nl();
                     output.code("        } else {").nl();
-                    output.code("          output.error('⨯ ').block(promises[key].reason().getErrorMessage());").nl();
+                    output.code("          output.error('⨯ ').block(promises[key].reason().getErrorMessage({ output: output }));").nl();
                     output.code("        }").nl();
                     output.code("        output.nl();").nl();
                     output.code("      });").nl();
@@ -1287,20 +1288,20 @@ describe("documentation tests", function () {
         }));
 
         testPromises.push(expect.promise(function () {
-            var resolvedPromise = expect.promise(function (resolve, reject) {
+            var fulfilledPromise = expect.promise(function (resolve, reject) {
                 setTimeout(resolve, 1);
             });
 
-            return expect(resolvedPromise, 'to be rejected');
+            return expect(fulfilledPromise, 'to be rejected');
         }).then(function () {
             return expect.promise(function () {
                 expect.fail(function (output) {
                     output.error("expected:").nl();
-                    output.code("var resolvedPromise = expect.promise(function (resolve, reject) {").nl();
+                    output.code("var fulfilledPromise = expect.promise(function (resolve, reject) {").nl();
                     output.code("    setTimeout(resolve, 1);").nl();
                     output.code("});").nl();
                     output.code("").nl();
-                    output.code("return expect(resolvedPromise, 'to be rejected');").nl();
+                    output.code("return expect(fulfilledPromise, 'to be rejected');").nl();
                     output.error("to throw");
                 });
             });
@@ -1969,6 +1970,7 @@ describe("documentation tests", function () {
                 "  baz: 'bogus', // expected 'bogus' not to match /^bog/\n" +
                 "                //\n" +
                 "                // bogus\n" +
+                "                // ^^^\n" +
                 "  qux: 42,\n" +
                 "  quux: 'wat' // expected 'wat' to be a number\n" +
                 "}"
@@ -3819,7 +3821,8 @@ describe("documentation tests", function () {
             expect(e, "to have message",
                 "expected 'Hello beautiful world!' not to contain 'beautiful', 'ugly'\n" +
                 "\n" +
-                "Hello beautiful world!"
+                "Hello beautiful world!\n" +
+                "      ^^^^^^^^^"
             );
         }
         return expect.promise.all(testPromises);
@@ -3890,7 +3893,8 @@ describe("documentation tests", function () {
             expect(e, "to have message",
                 "expected 'Hello beautiful world!' not to match /beautiful/\n" +
                 "\n" +
-                "Hello beautiful world!"
+                "Hello beautiful world!\n" +
+                "      ^^^^^^^^^"
             );
         }
         return expect.promise.all(testPromises);

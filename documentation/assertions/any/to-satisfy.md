@@ -75,6 +75,7 @@ expected { foo: 9, bar: 'bar', baz: 'bogus', qux: 42, quux: 'wat' } to satisfy
   baz: 'bogus', // expected 'bogus' not to match /^bog/
                 //
                 // bogus
+                // ^^^
   qux: 42,
   quux: 'wat' // expected 'wat' to be a number
 }

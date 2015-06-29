@@ -30,4 +30,5 @@ expect('Hello beautiful world!', 'not to match', /beautiful/);
 expected 'Hello beautiful world!' not to match /beautiful/
 
 Hello beautiful world!
+      ^^^^^^^^^
 ```
