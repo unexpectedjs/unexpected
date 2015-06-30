@@ -3804,7 +3804,54 @@ describe("documentation tests", function () {
             });
         } catch (e) {
             expect(e, "to have message",
-                "expected 'Hello world!' to contain 'beautiful'"
+                "expected 'Hello world!' to contain 'beautiful'\n" +
+                "\n" +
+                "Hello world!"
+            );
+        }
+
+        try {
+            expect('BEGIN:VEVENT\n' +
+                   'UID:B4D3A0F8-6E38-5F0E-8CE7-BA0171DEAA8D\n' +
+                   'RECURRENCE-ID;TZID=Europe/Copenhagen:20150113T120000\n' +
+                   'DTSTART;TZID=Europe/Copenhagen:20150203T110000\n' +
+                   'DTEND;TZID=Europe/Copenhagen:20150203T120000\n' +
+                   'DTSTAMP:20150114T121235Z\n' +
+                   'SUMMARY:Lunch\n' +
+                   'LOCATION:Kalvebod Brygge 24, Copenhagen\n' +
+                   'END:VEVENT',
+                   'to contain',
+                   'UID:6FA459EA-EE8A-3CA4-894E-DB77E160355E');
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect('BEGIN:VEVENT\\n' +").nl();
+                output.code("       'UID:B4D3A0F8-6E38-5F0E-8CE7-BA0171DEAA8D\\n' +").nl();
+                output.code("       'RECURRENCE-ID;TZID=Europe/Copenhagen:20150113T120000\\n' +").nl();
+                output.code("       'DTSTART;TZID=Europe/Copenhagen:20150203T110000\\n' +").nl();
+                output.code("       'DTEND;TZID=Europe/Copenhagen:20150203T120000\\n' +").nl();
+                output.code("       'DTSTAMP:20150114T121235Z\\n' +").nl();
+                output.code("       'SUMMARY:Lunch\\n' +").nl();
+                output.code("       'LOCATION:Kalvebod Brygge 24, Copenhagen\\n' +").nl();
+                output.code("       'END:VEVENT',").nl();
+                output.code("       'to contain',").nl();
+                output.code("       'UID:6FA459EA-EE8A-3CA4-894E-DB77E160355E');").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected 'BEGIN:VEVENT\\nUID:B4D3A0F8-6E38-5F0E-8CE7-BA0171DEAA8D\\nRECURRENCE-ID;TZID=Europe/Copenhagen:20150113T120000\\nDTSTART;TZID=Europe/Copenhagen:20150203T110000\\nDTEND;TZID=Europe/Copenhagen:20150203T120000\\nDTSTAMP:20150114T121235Z\\nSUMMARY:Lunch\\nLOCATION:Kalvebod Brygge 24, Copenhagen\\nEND:VEVENT'\n" +
+                "to contain 'UID:6FA459EA-EE8A-3CA4-894E-DB77E160355E'\n" +
+                "\n" +
+                "BEGIN:VEVENT\n" +
+                "UID:B4D3A0F8-6E38-5F0E-8CE7-BA0171DEAA8D\n" +
+                "^^^>\n" +
+                "RECURRENCE-ID;TZID=Europe/Copenhagen:20150113T120000\n" +
+                "DTSTART;TZID=Europe/Copenhagen:20150203T110000\n" +
+                "DTEND;TZID=Europe/Copenhagen:20150203T120000\n" +
+                "DTSTAMP:20150114T121235Z\n" +
+                "SUMMARY:Lunch\n" +
+                "LOCATION:Kalvebod Brygge 24, Copenhagen\n" +
+                "END:VEVENT"
             );
         }
 
