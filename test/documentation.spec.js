@@ -44,7 +44,7 @@ describe("documentation tests", function () {
                     // the error is connected to the current scope
                     // but we are just interested in the nested error
                     error.errorMode = 'bubble';
-                    result.diff.append(error.getErrorMessage({ output: output }));
+                    result.diff.append(error.getErrorMessage(output));
                   });
                   return result;
                 }

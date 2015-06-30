@@ -2,12 +2,23 @@ When assertions fail in Unexpected they yield an
 `UnexpectedError`. This instance has several convenience methods for
 retrieving information about the error.
 
-### UnexpectedError.getErrorMessage()
+### UnexpectedError.getErrorMessage(options)
 
 Returns the error message as a
 [magicpen](https://github.com/sunesimonsen/magicpen) instance. The
 method uses the assertion error modes to produce the correct
 error message.
+
+Notice that you must either provide an output or a format in the given
+options. The format can be on of `text`, `ansi` or `html`. As a
+shortcut you can also just pass the output or format directly.
+
+An alternative to calling `getErrorMessage(output)` with an output,
+you can append the error message to an output the following way:
+
+```js#evaluate:false
+output.appendErrorMessage(error);
+```
 
 This is useful if you want to combine multiple errors in one assertion:
 
@@ -38,7 +49,7 @@ expect.addAssertion("array", "to have item satisfying", function (expect, subjec
             // the error is connected to the current scope
             // but we are just interested in the nested error
             error.errorMode = 'bubble';
-            result.diff.append(error.getErrorMessage({ output: output }));
+            result.diff.append(error.getErrorMessage(output));
           });
           return result;
         }
