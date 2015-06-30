@@ -6360,7 +6360,8 @@ describe('unexpected', function () {
                             "    }, 0);\n" +
                             "}\n" +
                             "to call the callback with error /qqxqwxeqw/\n" +
-                            "  expected 'expected false to be truthy' to satisfy /qqxqwxeqw/"
+                            "  expected UnexpectedError(expected false to be truthy) to have text message /qqxqwxeqw/\n" +
+                            "    expected 'expected false to be truthy' to satisfy /qqxqwxeqw/"
                         );
                     });
                 });
