@@ -1122,6 +1122,34 @@ describe('unexpected', function () {
                         expect(message, 'to match', /^expected\sUnexpectedError\([\s\S]*\)/);
                     });
                 });
+
+                it('should support the ansi flag', function () {
+                    expect(function () {
+                        expect(err, 'to have message', 'expected 3 to equal 2');
+                    }, 'to throw', function (err) {
+                        expect(err, 'to have ansi message', expect.it('to contain', "\x1B[36m'expected 1 to equal 2'\x1B[39m"));
+                    });
+                });
+
+                it('should support the html flag', function () {
+                    expect(function () {
+                        expect(err, 'to have message', 'expected 3 to equal 2');
+                    }, 'to throw', function (err) {
+                        expect(err, 'to have html message', expect.it('to contain', 'to&nbsp;have&nbsp;message'));
+                    });
+                });
+
+                it('should throw an error when asked for a non-text representation of a non-Unexpected error', function () {
+                    try {
+                        throw new Error('foo');
+                    } catch (err) {
+                        expect(function () {
+                            expect(err, 'to have html message', 'foo');
+                        }, 'to throw',
+                            "expected Error('foo') to have html message 'foo'\n" +
+                            "  Cannot get the html representation of non-Unexpected error");
+                    }
+                });
             });
 
             describe('with a non-Unexpected error', function () {
