@@ -130,7 +130,7 @@ promise will be rejected with the error.</p>
 <p>Notice you can call the run wrapper as many times as you want as long
 as it is within the current tick, the promise will wait for all the
 wrapper functions to finish before the promise will be rejected or
-resolved.</p>
+fulfilled.</p>
 <p>When the promise body takes two arguments, it is just an alias for:</p>
 <div class="code lang-javascript">
   <div><span style="color: #a71d5d">new</span>&nbsp;Promise<span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>resolve<span style="color: #000000">,</span>&nbsp;reject<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span>&nbsp;<span style="color: #000000">...</span>&nbsp;<span style="color: #000000">})</span></div>

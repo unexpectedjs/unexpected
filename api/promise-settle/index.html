@@ -99,11 +99,11 @@
         <div class="content">
             <h3 id="expect-promise-settle-">expect.promise.settle(...)</h3>
 <p>This method will find all promises in the given structure and return a
-promise that resolves when all of the promises has been rejected or
-resolved. When the returned promise resolves you can use
-<a href="https://github.com/petkaantonov/bluebird/blob/master/API.md#synchronous-inspection">synchronious inspection</a>
+promise that will be fulfilled when all of the promises have been rejected or
+fulfilled. When the returned promise is fulfilled, you can use
+<a href="https://github.com/petkaantonov/bluebird/blob/master/API.md#synchronous-inspection">synchronous inspection</a>
 on each of the promises to read their values.</p>
-<p>Let&#39;s make an asynchronous assertion that we can uses for the examples:</p>
+<p>Let&#39;s make an asynchronous assertion that we can use for the examples:</p>
 <div class="code lang-javascript">
   <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span><span style="color: #df5000">'to&nbsp;be&nbsp;a&nbsp;number&nbsp;after&nbsp;a&nbsp;short&nbsp;delay'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>expect<span style="color: #000000">,</span>&nbsp;subject<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
   <div>&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">promise</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>run<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>

@@ -97,7 +97,7 @@
 
     <div class="main" tabindex="-1">
         <div class="content">
-            <p>When assertions fails in Unexpected they yield an
+            <p>When assertions fail in Unexpected they yield an
 <code>UnexpectedError</code>. This instance has several convenience methods for
 retrieving information about the error.</p>
 <h3 id="unexpectederror-geterrormessage-">UnexpectedError.getErrorMessage()</h3>
@@ -175,9 +175,9 @@ error message.</p>
 </div></div>
 </div><h3 id="unexpectederror-parent">UnexpectedError.parent</h3>
 <p>When assertions delegate to nested <code>expect</code> calls the errors that are
-thrown on each level are chained together through the <code>parent</code>
+thrown at each level are chained together through the <code>parent</code>
 property. The error message is serialized lazily, so it is possible to
-change the error hierarchy before the error is serialized or extract
+change the error hierarchy before the error is serialized, or extract
 information from the hierarchy and use <a href="../fail/">expect.fail</a> to throw
 a new error.</p>
 <p>We could for example change the error mode for all the errors in the
@@ -219,11 +219,11 @@ chain to <code>nested</code>:</p>
 <p>Return an array with all the ancestor errors to this error. See
 <a href="#unexpectederror-parent">parent</a> for more information.</p>
 <h3 id="unexpectederror-getallerrors-">UnexpectedError.getAllErrors()</h3>
-<p>Return an array with this error and all it&#39;s ancestors. See
+<p>Return an array with this error and all its ancestors. See
 <a href="#unexpectederror-parent">parent</a> for more information.</p>
 <h3 id="unexpectederror-getdiff-">UnexpectedError.getDiff()</h3>
-<p>Finds the first error in the hierarchy that contains a diff and
-returns it. This method if useful if you want to hoist a diff from an
+<p>Find the first error in the hierarchy that contains a diff and
+return it. This method if useful if you want to hoist a diff from an
 ancestor error and combine it with a new message.</p>
 <h3 id="unexpectederror-getdiffmethod-">UnexpectedError.getDiffMethod()</h3>
 <p>In case you need to wrap diff with additional information you can
@@ -265,8 +265,8 @@ create the diff. Now you can delegate to that method from
   <div>}</div>
 </div><h3 id="unexpectederror-getlabel-">UnexpectedError.getLabel()</h3>
 <p>Get a shortened representation of the error message that doesn&#39;t
-repeat the subject, for example should equal &#39;bar&#39; rather than
-expected &#39;foo&#39; to equal &#39;bar&#39;. This makes it suitable for display next
+repeat the subject, for example <code>should equal &#39;bar&#39;</code> rather than
+<code>expected &#39;foo&#39; to equal &#39;bar&#39;</code>. This makes it suitable for display next
 to an existing rendering of the subject, such as inside a diff.</p>
 
         </div>

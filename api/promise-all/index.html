@@ -98,13 +98,13 @@
     <div class="main" tabindex="-1">
         <div class="content">
             <h3 id="expect-promise-all-">expect.promise.all(...)</h3>
-<p>This method will find all promises in the given structure and return a
-promise that resolves when all of the promises in the structure have
-resolved. If any of the promises are rejected the resulting promise
-will be rejected with the same error.</p>
+<p>This method will find all promises in the given structure and return a promise
+that will be fulfilled when all of the promises in the structure have been
+fulfilled. If any of the promises is rejected, the resulting promise will be
+rejected with the same error.</p>
 <p>This method is usually used in combination with
 <a href="/api/promise-settle">expect.promise.settle</a>.</p>
-<p>Let&#39;s make an asynchronous assertion that we can uses for the examples:</p>
+<p>Let&#39;s make an asynchronous assertion that we can use for the examples:</p>
 <div class="code lang-javascript">
   <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span><span style="color: #df5000">'to&nbsp;be&nbsp;a&nbsp;number&nbsp;after&nbsp;a&nbsp;short&nbsp;delay'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>expect<span style="color: #000000">,</span>&nbsp;subject<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
   <div>&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">promise</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>run<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
@@ -115,8 +115,8 @@ will be rejected with the same error.</p>
   <div><span style="color: #000000">});</span></div>
 </div><p>See the <a href="/api/promise">promise</a> documentation for more details on how
 expect.promise works.</p>
-<p>The following code snippet creates a promise that resolves when all the
-promises in the nested structure resolves.</p>
+<p>The following code snippet creates a promise that is fulfilled when all the
+promises in the nested structure are fulfilled.</p>
 <div class="code lang-javascript">
   <div><span style="color: #a71d5d">return</span>&nbsp;expect<span style="color: #000000">.</span>promise<span style="color: #000000">.</span><span style="color: #000000">all</span><span style="color: #000000">({</span></div>
   <div>&nbsp;&nbsp;foo<span style="color: #000000">:</span>&nbsp;<span style="color: #000000">[</span></div>
@@ -128,7 +128,7 @@ promises in the nested structure resolves.</p>
   <div>&nbsp;&nbsp;baz<span style="color: #000000">:</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">({</span>&nbsp;a<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">1</span><span style="color: #000000">,</span>&nbsp;b<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">2</span>&nbsp;<span style="color: #000000">},</span>&nbsp;<span style="color: #df5000">'to&nbsp;have&nbsp;values&nbsp;satisfying'</span><span style="color: #000000">,</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;a&nbsp;number&nbsp;after&nbsp;a&nbsp;short&nbsp;delay'</span><span style="color: #000000">)</span></div>
   <div><span style="color: #000000">});</span></div>
-</div><p>The following code snippet create a promise that is rejected when one
+</div><p>The following code snippet creates a promise that is rejected when one
 of the promises in the nested structure is rejected.</p>
 <div class="code lang-javascript">
   <div><span style="color: #a71d5d">return</span>&nbsp;expect<span style="color: #000000">.</span>promise<span style="color: #000000">.</span><span style="color: #000000">all</span><span style="color: #000000">({</span></div>

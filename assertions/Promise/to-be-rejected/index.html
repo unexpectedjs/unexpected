@@ -362,13 +362,13 @@
   <div><span style="color: #000000">});</span></div>
   <div>&nbsp;</div>
   <div><span style="color: #a71d5d">return</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>promiseThatWillBeRejected<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;rejected'</span><span style="color: #000000">);</span></div>
-</div><p>If the promise is resolved, the assertion will fail with the following output:</p>
+</div><p>If the promise is fulfilled, the assertion will fail with the following output:</p>
 <div class="code lang-javascript">
-  <div><span style="color: #a71d5d">var</span>&nbsp;resolvedPromise&nbsp;<span style="color: #a71d5d">=</span>&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">promise</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>resolve<span style="color: #000000">,</span>&nbsp;reject<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div><span style="color: #a71d5d">var</span>&nbsp;fulfilledPromise&nbsp;<span style="color: #a71d5d">=</span>&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">promise</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>resolve<span style="color: #000000">,</span>&nbsp;reject<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">setTimeout</span><span style="color: #000000">(</span>resolve<span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">1</span><span style="color: #000000">);</span></div>
   <div><span style="color: #000000">});</span></div>
   <div>&nbsp;</div>
-  <div><span style="color: #a71d5d">return</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>resolvedPromise<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;rejected'</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #a71d5d">return</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>fulfilledPromise<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;rejected'</span><span style="color: #000000">);</span></div>
 </div><div class="output">
   <div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #795da3">Promise</span>&nbsp;<span style="color: green">(fulfilled)</span>&nbsp;<span style="color: red; font-weight: bold">to&nbsp;be&nbsp;rejected</span></div>
   <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
