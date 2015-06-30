@@ -1709,7 +1709,7 @@ describe('unexpected', function () {
                 expect(err, 'to have ansi message',
                     "\x1B[31m\x1B[1mexpected\x1B[22m\x1B[39m \x1B[36m'foobarquux'\x1B[39m \x1B[31m\x1B[1mto contain\x1B[22m\x1B[39m \x1B[36m'foo'\x1B[39m, \x1B[36m'quuux'\x1B[39m\n" +
                     "\n" +
-                    "\x1B[42m\x1B[30mfoo\x1B[39m\x1B[49mbar\x1B[43mquu\x1B[49mx"
+                    "\x1B[42m\x1B[30mfoo\x1B[39m\x1B[49mbar\x1b[43m\x1b[30mquu\x1b[39m\x1b[49mx"
                 );
             });
         });
