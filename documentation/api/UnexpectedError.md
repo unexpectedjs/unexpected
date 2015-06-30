@@ -133,6 +133,10 @@ Find the first error in the hierarchy that contains a diff and
 return it. This method if useful if you want to hoist a diff from an
 ancestor error and combine it with a new message.
 
+Notice that you must either provide an output or a format in the given
+options. The format can be on of `text`, `ansi` or `html`. As a
+shortcut you can also just pass the output or format directly.
+
 ### UnexpectedError.getDiffMethod()
 
 In case you need to wrap diff with additional information you can
