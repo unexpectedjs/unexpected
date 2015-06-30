@@ -1668,11 +1668,16 @@ describe('unexpected', function () {
 
             expect(function () {
                 expect('hello world', 'to contain', 'foo');
-            }, 'to throw exception', "expected 'hello world' to contain 'foo'");
+            }, 'to throw exception', "expected 'hello world' to contain 'foo'\n\nhello world");
 
             expect(function () {
                 expect('hello world', 'to contain', 'hello', 'foo');
-            }, 'to throw exception', "expected 'hello world' to contain 'hello', 'foo'");
+            }, 'to throw exception',
+                "expected 'hello world' to contain 'hello', 'foo'\n" +
+                "\n" +
+                "hello world\n" +
+                "^^^^^"
+            );
 
             expect(function () {
                 expect([1, 2], 'to contain', 2, 3);
@@ -1688,6 +1693,25 @@ describe('unexpected', function () {
                    "expected 1 to contain 1\n" +
                    "  The assertion 'to contain' is not defined for the type 'number',\n" +
                    "  but it is defined for these types: 'string', 'array-like'");
+        });
+
+        it('produces a diff showing full and partial matches for each needle when the assertion fails', function () {
+            expect(function () {
+                expect('foobarquux', 'to contain', 'foo', 'quuux');
+            }, 'to throw', function (err) {
+                expect(err, 'to have text message',
+                    "expected 'foobarquux' to contain 'foo', 'quuux'\n" +
+                    "\n" +
+                    "foobarquux\n" +
+                    "^^^   ^^>"
+                );
+
+                expect(err, 'to have ansi message',
+                    "\x1B[31m\x1B[1mexpected\x1B[22m\x1B[39m \x1B[36m'foobarquux'\x1B[39m \x1B[31m\x1B[1mto contain\x1B[22m\x1B[39m \x1B[36m'foo'\x1B[39m, \x1B[36m'quuux'\x1B[39m\n" +
+                    "\n" +
+                    "\x1B[42m\x1B[30mfoo\x1B[39m\x1B[49mbar\x1B[43mquu\x1B[49mx"
+                );
+            });
         });
 
         it('produces a diff when the array case fails and the not flag is on', function () {

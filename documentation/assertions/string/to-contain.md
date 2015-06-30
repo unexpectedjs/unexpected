@@ -13,6 +13,21 @@ expect('Hello world!', 'to contain', 'beautiful');
 
 ```output
 expected 'Hello world!' to contain 'beautiful'
+
+Hello world!
+```
+
+The longest matched prefix(es) will be highlighted:
+
+```javascript
+expect('Hello world!', 'to contain', 'Hello, earthlings!');
+```
+
+```output
+expected 'Hello world!' to contain 'Hello, earthlings!'
+
+Hello world!
+^^^^>
 ```
 
 This assertion can be negated using the `not` flag:

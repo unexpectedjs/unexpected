@@ -3804,7 +3804,25 @@ describe("documentation tests", function () {
             });
         } catch (e) {
             expect(e, "to have message",
-                "expected 'Hello world!' to contain 'beautiful'"
+                "expected 'Hello world!' to contain 'beautiful'\n" +
+                "\n" +
+                "Hello world!"
+            );
+        }
+
+        try {
+            expect('Hello world!', 'to contain', 'Hello, earthlings!');
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect('Hello world!', 'to contain', 'Hello, earthlings!');").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected 'Hello world!' to contain 'Hello, earthlings!'\n" +
+                "\n" +
+                "Hello world!\n" +
+                "^^^^>"
             );
         }
 
