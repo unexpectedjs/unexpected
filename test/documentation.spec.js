@@ -1287,20 +1287,20 @@ describe("documentation tests", function () {
         }));
 
         testPromises.push(expect.promise(function () {
-            var resolvedPromise = expect.promise(function (resolve, reject) {
+            var fulfilledPromise = expect.promise(function (resolve, reject) {
                 setTimeout(resolve, 1);
             });
 
-            return expect(resolvedPromise, 'to be rejected');
+            return expect(fulfilledPromise, 'to be rejected');
         }).then(function () {
             return expect.promise(function () {
                 expect.fail(function (output) {
                     output.error("expected:").nl();
-                    output.code("var resolvedPromise = expect.promise(function (resolve, reject) {").nl();
+                    output.code("var fulfilledPromise = expect.promise(function (resolve, reject) {").nl();
                     output.code("    setTimeout(resolve, 1);").nl();
                     output.code("});").nl();
                     output.code("").nl();
-                    output.code("return expect(resolvedPromise, 'to be rejected');").nl();
+                    output.code("return expect(fulfilledPromise, 'to be rejected');").nl();
                     output.error("to throw");
                 });
             });
