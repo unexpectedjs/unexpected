@@ -1684,6 +1684,55 @@ describe('unexpected', function () {
         });
     });
 
+    describe('to begin with assertion', function () {
+        it('asserts equality with a string', function () {
+            expect('hello', 'to begin with', 'hello');
+            expect('hello world', 'to begin with', 'hello');
+        });
+
+        it('should support searching for a non-string inside a string', function () {
+            expect('null', 'to begin with', null);
+            expect('123', 'to begin with', 123);
+            expect('false', 'to begin with', false);
+            expect('Infinity', 'to begin with', Infinity);
+        });
+
+        it('asserts inequality when not flag is turned on', function () {
+            expect('hello', 'not to begin with', 'world');
+            expect('hello world', 'not to begin with', 'world');
+        });
+
+        it('throws when the assertion fails', function () {
+            expect(function () {
+                expect(null, 'to begin with', 'world');
+            }, 'to throw',
+                   "expected null to begin with 'world'\n" +
+                   "  The assertion 'to begin with' is not defined for the type 'null',\n" +
+                   "  but it is defined for the type 'string'");
+
+            expect(function () {
+                expect('hello world', 'to begin with', 'foo');
+            }, 'to throw exception',
+                   "expected 'hello world' to begin with 'foo'\n" +
+                   "\n" +
+                   "-hel\n" +
+                   "+foo");
+
+            expect(function () {
+                expect(1, 'to begin with', 1);
+            }, 'to throw exception',
+                   "expected 1 to begin with 1\n" +
+                   "  The assertion 'to begin with' is not defined for the type 'number',\n" +
+                   "  but it is defined for the type 'string'");
+        });
+
+        it('produces a diff when the string case fails and the not flag is on', function () {
+            expect(function () {
+                expect('foobarquuxfoo', 'not to begin with', 'foo');
+            }, 'to throw', "expected 'foobarquuxfoo' not to begin with 'foo'");
+        });
+    });
+
     describe('length assertion', function () {
         it('asserts array .length', function () {
             expect([], 'to have length', 0);
