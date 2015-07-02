@@ -1691,10 +1691,10 @@ describe('unexpected', function () {
         });
 
         it('should support searching for a non-string inside a string', function () {
-            expect('null', 'to begin with', null);
-            expect('123', 'to begin with', 123);
-            expect('false', 'to begin with', false);
-            expect('Infinity', 'to begin with', Infinity);
+            expect('null modem', 'to begin with', null);
+            expect('123456', 'to begin with', 123);
+            expect('falsehood', 'to begin with', false);
+            expect('Infinity man!', 'to begin with', Infinity);
         });
 
         it('asserts inequality when not flag is turned on', function () {
@@ -1730,6 +1730,55 @@ describe('unexpected', function () {
             expect(function () {
                 expect('foobarquuxfoo', 'not to begin with', 'foo');
             }, 'to throw', "expected 'foobarquuxfoo' not to begin with 'foo'");
+        });
+    });
+
+    describe('to end with assertion', function () {
+        it('asserts equality with a string', function () {
+            expect('hello', 'to end with', 'hello');
+            expect('hello world', 'to end with', 'world');
+        });
+
+        it('should support searching for a non-string inside a string', function () {
+            expect('maybe null', 'to end with', null);
+            expect('0123', 'to end with', 123);
+            expect('unfalse', 'to end with', false);
+            expect('to Infinity', 'to end with', Infinity);
+        });
+
+        it('asserts inequality when not flag is turned on', function () {
+            expect('hello', 'not to end with', 'world');
+            expect('hello worldly', 'not to end with', 'world');
+        });
+
+        it('throws when the assertion fails', function () {
+            expect(function () {
+                expect(null, 'to end with', 'world');
+            }, 'to throw',
+                   "expected null to end with 'world'\n" +
+                   "  The assertion 'to end with' is not defined for the type 'null',\n" +
+                   "  but it is defined for the type 'string'");
+
+            expect(function () {
+                expect('hello world', 'to end with', 'foo');
+            }, 'to throw exception',
+                   "expected 'hello world' to end with 'foo'\n" +
+                   "\n" +
+                   "-rld\n" +
+                   "+foo");
+
+            expect(function () {
+                expect(1, 'to end with', 1);
+            }, 'to throw exception',
+                   "expected 1 to end with 1\n" +
+                   "  The assertion 'to end with' is not defined for the type 'number',\n" +
+                   "  but it is defined for the type 'string'");
+        });
+
+        it('produces a diff when the string case fails and the not flag is on', function () {
+            expect(function () {
+                expect('foobarquuxfoo', 'not to end with', 'foo');
+            }, 'to throw', "expected 'foobarquuxfoo' not to end with 'foo'");
         });
     });
 
