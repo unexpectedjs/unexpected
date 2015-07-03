@@ -1,6 +1,6 @@
 {
   "name": "unexpected",
-  "version": "8.5.0",
+  "version": "8.5.1",
   "author": "Sune Sloth Simonsen <sune@we-knowhow.dk>",
   "keywords": [
     "assertion",
@@ -24,7 +24,7 @@
     "bluebird": "2.9.25",
     "diff": "1.1.0",
     "leven": "1.0.0",
-    "magicpen": "4.8.3"
+    "magicpen": "4.9.0"
   },
   "devDependencies": {
     "browserify": "5.9.1",

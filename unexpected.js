@@ -35,7 +35,7 @@ function Assertion(expect, subject, testDescription, flags, alternations, args) 
 }
 
 Assertion.prototype.standardErrorMessage = function (options) {
-    return createStandardErrorMessage(this.expect, this.subject, this.testDescription, this.args, options);
+    return createStandardErrorMessage(this.expect.output.clone(), this.expect, this.subject, this.testDescription, this.args, options);
 };
 
 Assertion.prototype.shift = function (subject, assertionIndex) {
@@ -361,15 +361,15 @@ Unexpected.prototype.fail = function (arg) {
     } else {
         var that = this;
         var message = arg ? String(arg) : 'Explicit failure';
-        var placeHolderArgs = Array.prototype.slice.call(arguments, 1);
+        var placeholderArgs = Array.prototype.slice.call(arguments, 1);
         var tokens = message.split(placeholderSplitRegexp);
         tokens.forEach(function (token) {
             var match = placeholderRegexp.exec(token);
             if (match) {
                 var index = match[1];
-                if (index in placeHolderArgs) {
-                    var placeholderArg = placeHolderArgs[index];
-                    if (placeholderArg.isMagicPen) {
+                if (index in placeholderArgs) {
+                    var placeholderArg = placeholderArgs[index];
+                    if (placeholderArg && placeholderArg.isMagicPen) {
                         output.append(placeholderArg);
                     } else {
                         output.append(that.inspect(placeholderArg));
@@ -724,68 +724,68 @@ Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
             var result = handler.apply(assertion, [wrappedExpect, subject].concat(args));
             return oathbreaker(result);
         } else {
-            var errorMessage = that.output.clone();
-            var definedForIncompatibleTypes = that.types.filter(function (type) {
-                return that.assertions[type.name][testDescriptionString];
-            }, that);
-            if (definedForIncompatibleTypes.length > 0) {
-                errorMessage
-                    .append(createStandardErrorMessage(that.expect, subject, testDescriptionString, args)).nl()
-                    .indentLines()
-                    .i().error("The assertion '").jsString(testDescriptionString)
-                    .error("' is not defined for the type '").jsString(matchingType.name).error("',").nl()
-                    .i().error('but it is defined for ')
-                    .outdentLines();
-                if (definedForIncompatibleTypes.length === 1) {
-                    errorMessage.error("the type '").jsString(definedForIncompatibleTypes[0].name).error("'");
-                } else {
-                    errorMessage.error('these types: ');
+            that.fail({
+                message: function (output) {
+                    var definedForIncompatibleTypes = that.types.filter(function (type) {
+                        return that.assertions[type.name][testDescriptionString];
+                    }, that);
+                    if (definedForIncompatibleTypes.length > 0) {
+                        output
+                            .append(createStandardErrorMessage(output.clone(), that.expect, subject, testDescriptionString, args)).nl()
+                            .indentLines()
+                            .i().error("The assertion '").jsString(testDescriptionString)
+                            .error("' is not defined for the type '").jsString(matchingType.name).error("',").nl()
+                            .i().error('but it is defined for ')
+                            .outdentLines();
+                        if (definedForIncompatibleTypes.length === 1) {
+                            output.error("the type '").jsString(definedForIncompatibleTypes[0].name).error("'");
+                        } else {
+                            output.error('these types: ');
 
-                    definedForIncompatibleTypes.forEach(function (incompatibleType, index) {
-                        if (index > 0) {
-                            errorMessage.error(', ');
+                            definedForIncompatibleTypes.forEach(function (incompatibleType, index) {
+                                if (index > 0) {
+                                    output.error(', ');
+                                }
+                                output.error("'").jsString(incompatibleType.name).error("'");
+                            });
                         }
-                        errorMessage.error("'").jsString(incompatibleType.name).error("'");
-                    });
-                }
-            } else {
-                var assertionsWithScore = [];
-                var bonusForNextMatchingType = 0;
-                [].concat(that.types).reverse().forEach(function (type) {
-                    var typeMatchBonus = 0;
-                    if (type.identify(subject)) {
-                        typeMatchBonus = bonusForNextMatchingType;
-                        bonusForNextMatchingType += 0.9;
-                    }
-                    Object.keys(that.assertions[type.name]).forEach(function (assertion) {
-                        assertionsWithScore.push({
-                            type: type,
-                            assertion: assertion,
-                            score: typeMatchBonus - leven(testDescriptionString, assertion)
-                        });
-                    });
-                }, that);
-                assertionsWithScore.sort(function (a, b) {
-                    var c = b.score - a.score;
-                    if (c !== 0) {
-                        return c;
-                    }
-
-                    if (a.assertion < b.assertion) {
-                        return -1;
-                    } else if (a.assertion > b.assertion) {
-                        return 1;
                     } else {
-                        return 0;
+                        var assertionsWithScore = [];
+                        var bonusForNextMatchingType = 0;
+                        [].concat(that.types).reverse().forEach(function (type) {
+                            var typeMatchBonus = 0;
+                            if (type.identify(subject)) {
+                                typeMatchBonus = bonusForNextMatchingType;
+                                bonusForNextMatchingType += 0.9;
+                            }
+                            Object.keys(that.assertions[type.name]).forEach(function (assertion) {
+                                assertionsWithScore.push({
+                                    type: type,
+                                    assertion: assertion,
+                                    score: typeMatchBonus - leven(testDescriptionString, assertion)
+                                });
+                            });
+                        }, that);
+                        assertionsWithScore.sort(function (a, b) {
+                            var c = b.score - a.score;
+                            if (c !== 0) {
+                                return c;
+                            }
+
+                            if (a.assertion < b.assertion) {
+                                return -1;
+                            } else if (a.assertion > b.assertion) {
+                                return 1;
+                            } else {
+                                return 0;
+                            }
+                        });
+                        output.error("Unknown assertion '").jsString(testDescriptionString)
+                            .error("', did you mean: '").jsString(assertionsWithScore[0].assertion).error("'");
                     }
-                });
-                errorMessage.error("Unknown assertion '").jsString(testDescriptionString)
-                    .error("', did you mean: '").jsString(assertionsWithScore[0].assertion).error("'");
-            }
-            var missingAssertionError = new UnexpectedError(that.expect);
-            missingAssertionError.output = errorMessage;
-            missingAssertionError.errorMode = 'bubbleThrough';
-            that.fail(missingAssertionError);
+                },
+                errorMode: 'bubbleThrough'
+            });
         }
     }
 
@@ -2331,10 +2331,8 @@ module.exports = function (expect) {
 
 }).call(this,require(20).Buffer)
 },{}],5:[function(require,module,exports){
-module.exports = function createStandardErrorMessage(expect, subject, testDescription, args, options) {
+module.exports = function createStandardErrorMessage(output, expect, subject, testDescription, args, options) {
     options = options || {};
-    var output = expect.output.clone();
-
     var preamble = 'expected';
 
     var subjectOutput = subject && subject.isMagicPen ? subject : expect.inspect(subject);
@@ -10627,14 +10625,14 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 },{}],22:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
-  var e, m
-  var eLen = nBytes * 8 - mLen - 1
-  var eMax = (1 << eLen) - 1
-  var eBias = eMax >> 1
-  var nBits = -7
-  var i = isLE ? (nBytes - 1) : 0
-  var d = isLE ? -1 : 1
-  var s = buffer[offset + i]
+  var e, m,
+      eLen = nBytes * 8 - mLen - 1,
+      eMax = (1 << eLen) - 1,
+      eBias = eMax >> 1,
+      nBits = -7,
+      i = isLE ? (nBytes - 1) : 0,
+      d = isLE ? -1 : 1,
+      s = buffer[offset + i]
 
   i += d
 
@@ -10660,14 +10658,14 @@ exports.read = function (buffer, offset, isLE, mLen, nBytes) {
 }
 
 exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
-  var e, m, c
-  var eLen = nBytes * 8 - mLen - 1
-  var eMax = (1 << eLen) - 1
-  var eBias = eMax >> 1
-  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
-  var i = isLE ? 0 : (nBytes - 1)
-  var d = isLE ? 1 : -1
-  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
+  var e, m, c,
+      eLen = nBytes * 8 - mLen - 1,
+      eMax = (1 << eLen) - 1,
+      eBias = eMax >> 1,
+      rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0),
+      i = isLE ? 0 : (nBytes - 1),
+      d = isLE ? 1 : -1,
+      s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
 
   value = Math.abs(value)
 
@@ -11271,6 +11269,8 @@ function AnsiSerializer(theme) {
 
 AnsiSerializer.prototype = new TextSerializer();
 
+AnsiSerializer.prototype.format = 'ansi';
+
 var colorPalettes = {
     16: {
         '#000000': 'black',
@@ -11402,6 +11402,8 @@ function ColoredConsoleSerializer(theme) {
     this.theme = theme;
 }
 
+ColoredConsoleSerializer.prototype.format = 'coloredConsole';
+
 ColoredConsoleSerializer.prototype.serialize = function (lines) {
     var formatString = '';
     var styleStrings = [];
@@ -11469,6 +11471,10 @@ ColoredConsoleSerializer.prototype.text = function () {
     return result;
 };
 
+ColoredConsoleSerializer.prototype.raw = function (options) {
+    return String(options.content(this));
+};
+
 module.exports = ColoredConsoleSerializer;
 
 },{}],29:[function(require,module,exports){
@@ -11479,6 +11485,8 @@ var themeMapper = require(36);
 function HtmlSerializer(theme) {
     this.theme = theme;
 }
+
+HtmlSerializer.prototype.format = 'html';
 
 HtmlSerializer.prototype.serialize = function (lines) {
     return '<div style="font-family: monospace; white-space: nowrap">\n' + this.serializeLines(lines) + '\n</div>';
@@ -11537,6 +11545,10 @@ HtmlSerializer.prototype.text = function () {
     return content;
 };
 
+HtmlSerializer.prototype.raw = function (options) {
+    return String(options.content(this));
+};
+
 module.exports = HtmlSerializer;
 
 },{}],30:[function(require,module,exports){
@@ -11555,6 +11567,10 @@ function MagicPen(options) {
 
     options = options || {};
 
+    if (typeof options === "string") {
+        options = {format: options };
+    }
+
     var indentationWidth = 'indentationWidth' in options ?
         options.indentationWidth : 2;
     this.indentationWidth = Math.max(indentationWidth, 0);
@@ -11565,6 +11581,9 @@ function MagicPen(options) {
     this.installedPlugins = [];
     this._themes = {};
     this.preferredWidth = (!process.browser && process.stdout.columns) || 80;
+    if (options.format) {
+        this.format = options.format;
+    }
 }
 
 if (typeof window !== 'undefined' && typeof window.navigator !== 'undefined') {
@@ -11594,12 +11613,15 @@ MagicPen.prototype.newline = MagicPen.prototype.nl = function (count) {
     return this;
 };
 
-MagicPen.serializers = {
-    text: require(31),
-    html: require(29),
-    ansi: require(27),
-    coloredConsole: require(28)
-};
+MagicPen.serializers = {};
+[
+    require(31),
+    require(29),
+    require(27),
+    require(28)
+].forEach(function (serializer) {
+    MagicPen.serializers[serializer.prototype.format] = serializer;
+});
 
 function hasSameTextStyling(a, b) {
     if (!a || !b || a.style !== 'text' || b.style !== 'text') {
@@ -11683,7 +11705,11 @@ MagicPen.prototype.addStyle = function (style, handler, allowRedefinition) {
 };
 
 MagicPen.prototype.toString = function (format) {
-    format = format || 'text';
+    if (format && this.format && format !== this.format) {
+        throw new Error('A pen with format: ' + this.format + ' cannot be serialized to: ' + format);
+    }
+
+    format = this.format || format || 'text';
     if (format === 'auto') {
         format = MagicPen.defaultFormat;
     }
@@ -11736,6 +11762,7 @@ MagicPen.prototype.removeFormatting = function () {
 MagicPen.prototype.getContentFromArguments = function (args) {
     var clone;
     if (args[0].isMagicPen) {
+        this.ensureCompatibleFormat(args[0].format);
         return args[0];
     } else if (typeof args[0] === 'function') {
         clone = this.clone();
@@ -11748,7 +11775,7 @@ MagicPen.prototype.getContentFromArguments = function (args) {
     } else {
         throw new Error('Requires the arguments to be:\n' +
                         'a pen or\n' +
-                        'a callback append content to a penor\n' +
+                        'a callback appending content to a pen or\n' +
                         'a style and arguments for that style');
     }
 };
@@ -11763,6 +11790,12 @@ MagicPen.prototype.isBlock = function () {
         this.output[0][0].style === 'block';
 };
 
+MagicPen.prototype.ensureCompatibleFormat = function (format) {
+    if (format && this.format && format !== this.format) {
+        throw new Error('This pen is only compatible with the format: ' + this.format);
+    }
+};
+
 MagicPen.prototype.block = function () {
     var pen = this.getContentFromArguments(arguments);
 
@@ -11770,6 +11803,66 @@ MagicPen.prototype.block = function () {
         return [].concat(line);
     });
     return this.write({ style: 'block', args: [blockOutput] });
+};
+function isRawOutput(options) {
+    return typeof options.width === 'number' &&
+           typeof options.height === 'number' && (
+               typeof options.content === 'function' ||
+               typeof options.content === 'string'
+           );
+}
+
+
+MagicPen.prototype.raw = function (options) {
+    var format = this.format;
+    if (!format) {
+        throw new Error('The raw method is only supported on pen where the format has already been set');
+    }
+
+    var outputProperty = options[format] || options.fallback;
+
+    if (!outputProperty) {
+        throw new Error('Raw output is not specified for format: ' + format + ' and no fallback method is given');
+    }
+
+    var propertyType = typeof outputProperty;
+    if (outputProperty && outputProperty.isMagicPen) {
+        return this.append(outputProperty);
+    }
+
+    if (propertyType === 'string') {
+        return this.text(outputProperty);
+    }
+
+    if (propertyType === 'function') {
+        var pen = this.clone();
+        var originalRaw = pen.raw;
+        pen.raw = function (arg) {
+            if (isRawOutput(arg) || typeof arg !== 'object') {
+                var content = arg;
+                arg = {};
+                arg[format] = content;
+            }
+            return originalRaw.call(this, arg);
+        };
+        outputProperty.call(pen, pen);
+        return this.append(pen);
+    }
+
+    if (isRawOutput(outputProperty)) {
+        if (typeof outputProperty.content === 'string') {
+            outputProperty = extend({}, outputProperty);
+            var content = outputProperty.content;
+            outputProperty.content = function () {
+                return content;
+            };
+        }
+
+        return this.write({ style: 'raw', args: [outputProperty] });
+    }
+
+    throw new Error('Properties on a raw object must be a pen, a function that writes to a pen, a string or an object with the structure\n' +
+                    '{ width: <number>, height: <number>, content: <string function() {}|string> }');
 };
 
 function amend(output, pen) {
@@ -11871,7 +11964,9 @@ MagicPen.prototype.space = MagicPen.prototype.sp = function (count) {
     };
 });
 
-MagicPen.prototype.clone = function () {
+MagicPen.prototype.clone = function (format) {
+    this.ensureCompatibleFormat(format);
+
     function MagicPenClone() {}
     MagicPenClone.prototype = this;
     var clonedPen = new MagicPenClone();
@@ -11880,6 +11975,7 @@ MagicPen.prototype.clone = function () {
     clonedPen.output = [[]];
     clonedPen.installedPlugins = [].concat(this.installedPlugins);
     clonedPen._themes = this._themes;
+    clonedPen.format = format || this.format;
     return clonedPen;
 };
 
@@ -12071,6 +12167,8 @@ var flattenBlocksInLines = require(34);
 
 function TextSerializer() {}
 
+TextSerializer.prototype.format = 'text';
+
 TextSerializer.prototype.serialize = function (lines) {
     lines = flattenBlocksInLines(lines);
     return lines.map(this.serializeLine, this).join('\n');
@@ -12091,6 +12189,11 @@ TextSerializer.prototype.text = function (content) {
 TextSerializer.prototype.block = function (content) {
     return this.serialize(content);
 };
+
+TextSerializer.prototype.raw = function (options) {
+    return String(options.content(this));
+};
+
 
 module.exports = TextSerializer;
 
@@ -12295,6 +12398,9 @@ var utils = {
             return { width: String(outputEntry.args[0]).length, height: 1 };
         case 'block':
             return utils.calculateSize(outputEntry.args[0]);
+        case 'raw':
+            var arg = outputEntry.args[0];
+            return { width: arg.width, height: arg.height };
         default: return { width: 0, height: 0 };
         }
     },
