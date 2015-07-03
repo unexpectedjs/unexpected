@@ -356,6 +356,9 @@
     <div class="main" tabindex="-1">
         <div class="content">
             <p>Asserts that an Error instance has a given message:</p>
+<p>By default the assertion tests on the text representation of the
+error, but you can change that behaviour by providing the <code>ansi</code> or
+<code>html</code> flag.</p>
 <div class="code lang-javascript">
   <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #a71d5d">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'foobar'</span><span style="color: #000000">),</span>&nbsp;<span style="color: #df5000">'to&nbsp;have&nbsp;message'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'foobar'</span><span style="color: #000000">);</span></div>
 </div><p>In case of a failing expectation you get the following output:</p>
@@ -377,6 +380,10 @@
   <div><span style="background-color: green; color: white">barfoo</span></div>
 </div></div>
 </div></div>
+</div><p>You can use the <code>ansi</code> and <code>html</code> the following way:</p>
+<div class="code lang-javascript">
+  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span>err<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;have&nbsp;ansi&nbsp;message'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'foobar'</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span>err<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;have&nbsp;html&nbsp;message'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'foobar'</span><span style="color: #000000">);</span></div>
 </div>
         </div>
     </div>
