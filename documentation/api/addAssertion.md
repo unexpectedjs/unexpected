@@ -82,7 +82,7 @@ completely custom output using [expect.fail](../fail/).
 You can override how the `subject` is displayed by providing a
 `subjectOutput` on the assertion. You can also override the output of
 the arguments by overriding parts of `argsOutput` or provide a
-completely custom output for the arguments by setting `argOutput` to
+completely custom output for the arguments by setting `argsOutput` to
 an output function on the assertion.
 
 Here is a few examples:
