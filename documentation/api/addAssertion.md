@@ -19,7 +19,6 @@ expect.addAssertion('array', '[not] to be (sorted|ordered)', function(expect, su
   this.errorMode = errorMode;
   expect(subject, '[not] to equal', [].concat(subject).sort(cmp));
 });
-
 ```
 
 The above assertion definition makes the following expects possible:
@@ -71,6 +70,57 @@ removed:
 expect.addAssertion('array', '[not] to be (sorted|ordered)', function(expect, [3,2,1], reverse){
     expect([3,2,1], '[not] to equal', [].concat([3,2,1]).sort(reverse));
 });
+```
+
+#### Overriding the standard error message
+
+When you create a new assertion Unexpected will generate an error
+message from the assertion text and the input arguments. In some cases
+it can be preferable to tweak the output instead of creating
+completely custom output using [expect.fail](../fail/).
+
+You can override how the `subject` is displayed by providing a
+`subjectOutput` on the assertion. You can also override the output of
+the arguments by overriding parts of `argsOutput` or provide a
+completely custom output for the arguments by setting `argOutput` to
+an output function on the assertion.
+
+Here is a few examples:
+
+```js
+expect.addAssertion('number', 'to be contained by', function (expect, subject, start, finish) {
+    this.subjectOutput = function (output) {
+        output.text('point ').jsNumber(subject);
+    };
+    this.argsOutput = function (output) {
+        output.text('interval ').text('[').appendInspected(start).text(';').appendInspected(finish).text(']');
+    };
+    expect(subject >= start && subject <= finish, '[not] to be truthy');
+});
+
+expect(4, 'to be contained by', 8, 10);
+```
+
+```output
+expected point 4 to be contained by interval [8;10]
+```
+
+```js
+expect.addAssertion('number', 'to be similar to', function (expect, subject, value, epsilon) {
+    if (typeof epsilon !== 'number') {
+        epsilon = 1e-9;
+    }
+    this.argsOutput[2] = function (output) {
+        output.text('(epsilon: ').jsNumber(epsilon.toExponential()).text(')')
+    }
+    expect(Math.abs(subject - value), 'to be less than or equal to', epsilon);
+});
+
+expect(4, 'to be similar to', 4.0001);
+```
+
+```output
+expected 4 to be similar to 4.0001, (epsilon: 1e-9)
 ```
 
 #### Controlling the output of nested expects
@@ -158,7 +208,7 @@ Timelock.prototype.getValue = function (cb) {
 ```
 
 It would be pretty nice if we could use
-[to satisfy](/assertions/any/to-satisfy/) on the value of a `Timelock`,
+[to satisfy](../../assertions/any/to-satisfy/) on the value of a `Timelock`,
 even if the retrieval is delayed. Then we would be able to do stuff
 like this:
 
@@ -166,7 +216,7 @@ like this:
 return expect(new Timelock('Hello world'), 'to satisfy', expect.it('have length', 11));
 ```
 
-First we need to define a [type](/api/addType/) for handling the `Timelock`:
+First we need to define a [type](../addType/) for handling the `Timelock`:
 
 ```js
 expect.addType({

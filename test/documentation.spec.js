@@ -185,6 +185,72 @@ describe("documentation tests", function () {
         expect([3,2,1], 'to be sorted', function (x, y) { return y - x; });
 
         try {
+            expect.addAssertion('number', 'to be contained by', function (expect, subject, start, finish) {
+                this.subjectOutput = function (output) {
+                    output.text('point ').jsNumber(subject);
+                };
+                this.argsOutput = function (output) {
+                    output.text('interval ').text('[').appendInspected(start).text(';').appendInspected(finish).text(']');
+                };
+                expect(subject >= start && subject <= finish, '[not] to be truthy');
+            });
+
+            expect(4, 'to be contained by', 8, 10);
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect.addAssertion('number', 'to be contained by', function (expect, subject, start, finish) {").nl();
+                output.code("    this.subjectOutput = function (output) {").nl();
+                output.code("        output.text('point ').jsNumber(subject);").nl();
+                output.code("    };").nl();
+                output.code("    this.argsOutput = function (output) {").nl();
+                output.code("        output.text('interval ').text('[').appendInspected(start).text(';').appendInspected(finish).text(']');").nl();
+                output.code("    };").nl();
+                output.code("    expect(subject >= start && subject <= finish, '[not] to be truthy');").nl();
+                output.code("});").nl();
+                output.code("").nl();
+                output.code("expect(4, 'to be contained by', 8, 10);").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected point 4 to be contained by interval [8;10]"
+            );
+        }
+
+        try {
+            expect.addAssertion('number', 'to be similar to', function (expect, subject, value, epsilon) {
+                if (typeof epsilon !== 'number') {
+                    epsilon = 1e-9;
+                }
+                this.argsOutput[2] = function (output) {
+                    output.text('(epsilon: ').jsNumber(epsilon.toExponential()).text(')')
+                }
+                expect(Math.abs(subject - value), 'to be less than or equal to', epsilon);
+            });
+
+            expect(4, 'to be similar to', 4.0001);
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect.addAssertion('number', 'to be similar to', function (expect, subject, value, epsilon) {").nl();
+                output.code("    if (typeof epsilon !== 'number') {").nl();
+                output.code("        epsilon = 1e-9;").nl();
+                output.code("    }").nl();
+                output.code("    this.argsOutput[2] = function (output) {").nl();
+                output.code("        output.text('(epsilon: ').jsNumber(epsilon.toExponential()).text(')')").nl();
+                output.code("    }").nl();
+                output.code("    expect(Math.abs(subject - value), 'to be less than or equal to', epsilon);").nl();
+                output.code("});").nl();
+                output.code("").nl();
+                output.code("expect(4, 'to be similar to', 4.0001);").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected 4 to be similar to 4.0001, (epsilon: 1e-9)"
+            );
+        }
+
+        try {
             expect([ 1, 3, 2, 4 ], 'to be sorted');
             expect.fail(function (output) {
                 output.error("expected:").nl();
