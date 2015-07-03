@@ -15,7 +15,7 @@ expect(1, 'when passed as parameter to', increment, 'to equal', 3);
 ```
 
 ```output
-expected [ 1 ] when passed as parameters to
+expected 1 when passed as parameter to
 function increment(n) {
     return n + 1;
 } to equal 3

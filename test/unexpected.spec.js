@@ -6131,7 +6131,7 @@ describe('unexpected', function () {
                 expect(1, 'when passed as parameter to', add.bind(null, 1), 'to equal', 2);
             });
 
-            it.skip('should fail with the correct error message and diff', function () {
+            it('should fail with the correct error message and diff', function () {
                 function increment(n) {
                     return n + 1;
                 }
