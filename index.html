@@ -140,6 +140,24 @@ and shown/processed by the test runner.</p>
 <p>The source for Unexpected can be found on
 <a href="https://github.com/unexpectedjs/unexpected">Github</a>.</p>
 <h2 id="releases">Releases</h2>
+<h3 id="9-0-0">9.0.0</h3>
+<ul>
+<li>Build all error messages lazily. This is an internal refactoring
+that makes it possible to generate very different output in the
+text, Ansi, and HTML modes using the magicpen
+<a href="https://github.com/sunesimonsen/magicpen#raw">raw</a> feature. This
+change mostly affects plugins, and we have updated all the official
+plugins accordingly, so please upgrade those to the latest version
+when you upgrade to Unexpected 9.</li>
+<li>Made it possible to tweak the default error message when creating
+assertions. See <a href="./api/addAssertion/">addAssertion</a> for more
+information.</li>
+<li>Expanded the <code>to have message</code> assertion defined for <code>Error</code>
+instances to allow matching a serialization other than plain text:
+<code>to have ansi message</code>, <code>to have html message</code>.</li>
+<li>The <code>to contain</code> assertion defined for strings: When the assertion fails,
+display a &quot;diff&quot; where partial matches are highlighted.</li>
+</ul>
 <h3 id="8-0-0">8.0.0</h3>
 <ul>
 <li>All errors originating from assertions are now instances of
@@ -199,7 +217,7 @@ Also, these 3 assertions no longer pass for empty collections.</li>
 <li>Removed grammatically incorrect assertions.</li>
 </ul>
 <h2 id="mit-license">MIT License</h2>
-<p>Copyright (c) 2013 Sune Simonsen <a href="&#x6d;&#x61;&#105;&#108;&#x74;&#x6f;&#x3a;&#x73;&#x75;&#110;&#101;&#x40;&#119;&#x65;&#x2d;&#107;&#x6e;&#111;&#119;&#x68;&#x6f;&#x77;&#46;&#100;&#x6b;">&#x73;&#x75;&#110;&#101;&#x40;&#119;&#x65;&#x2d;&#107;&#x6e;&#111;&#119;&#x68;&#x6f;&#x77;&#46;&#100;&#x6b;</a></p>
+<p>Copyright (c) 2013 Sune Simonsen <a href="&#x6d;&#x61;&#105;&#x6c;&#116;&#111;&#x3a;&#x73;&#x75;&#110;&#101;&#x40;&#119;&#x65;&#x2d;&#107;&#x6e;&#x6f;&#119;&#104;&#111;&#x77;&#x2e;&#100;&#x6b;">&#x73;&#x75;&#110;&#101;&#x40;&#119;&#x65;&#x2d;&#107;&#x6e;&#x6f;&#119;&#104;&#111;&#x77;&#x2e;&#100;&#x6b;</a></p>
 <p>Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
 &#39;Software&#39;), to deal in the Software without restriction, including
