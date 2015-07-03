@@ -126,6 +126,24 @@ The source for Unexpected can be found on
 
 ## Releases
 
+### 9.0.0
+
+* Build all error messages lazily. This is an internal refactoring
+  that makes it possible to generate very different output in the
+  text, Ansi, and HTML modes using the magicpen
+  [raw](https://github.com/sunesimonsen/magicpen#raw) feature. This
+  change mostly affects plugins, and we have updated all the official
+  plugins accordingly, so please upgrade those to the latest version
+  when you upgrade to Unexpected 9.
+* Made it possible to tweak the default error message when creating
+  assertions. See [addAssertion](./api/addAssertion/) for more
+  information.
+* Expanded the `to have message` assertion defined for `Error`
+  instances to allow matching a serialization other than plain text:
+  `to have ansi message`, `to have html message`.
+* The `to contain` assertion defined for strings: When the assertion fails,
+  display a "diff" where partial matches are highlighted.
+
 ### 8.0.0
 
 * All errors originating from assertions are now instances of
