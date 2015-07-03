@@ -100,12 +100,19 @@
             <p>When assertions fail in Unexpected they yield an
 <code>UnexpectedError</code>. This instance has several convenience methods for
 retrieving information about the error.</p>
-<h3 id="unexpectederror-geterrormessage-">UnexpectedError.getErrorMessage()</h3>
+<h3 id="unexpectederror-geterrormessage-options-">UnexpectedError.getErrorMessage(options)</h3>
 <p>Returns the error message as a
 <a href="https://github.com/sunesimonsen/magicpen">magicpen</a> instance. The
 method uses the assertion error modes to produce the correct
 error message.</p>
-<p>This is useful if you want to combine multiple errors in one assertion:</p>
+<p>Notice that you must either provide an output or a format in the given
+options. The format can be on of <code>text</code>, <code>ansi</code> or <code>html</code>. As a
+shortcut you can also just pass the output or format directly.</p>
+<p>An alternative to calling <code>getErrorMessage(output)</code> with an output,
+you can append the error message to an output the following way:</p>
+<div class="code lang-javascript">
+  <div>output<span style="color: #000000">.</span><span style="color: #000000">appendErrorMessage</span><span style="color: #000000">(</span>error<span style="color: #000000">);</span></div>
+</div><p>This is useful if you want to combine multiple errors in one assertion:</p>
 <div class="code lang-javascript">
   <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span><span style="color: #df5000">&quot;array&quot;</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">&quot;to&nbsp;have&nbsp;item&nbsp;satisfying&quot;</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>expect<span style="color: #000000">,</span>&nbsp;subject<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
   <div>&nbsp;&nbsp;<span style="color: #a71d5d">var</span>&nbsp;args&nbsp;<span style="color: #a71d5d">=</span>&nbsp;Array<span style="color: #000000">.</span>prototype<span style="color: #000000">.</span>slice<span style="color: #000000">.</span><span style="color: #000000">call</span><span style="color: #000000">(</span>arguments<span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">2</span><span style="color: #000000">);</span></div>
@@ -133,7 +140,7 @@ error message.</p>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #969896">&nbsp;//&nbsp;the&nbsp;error&nbsp;is&nbsp;connected&nbsp;to&nbsp;the&nbsp;current&nbsp;scope</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #969896">&nbsp;//&nbsp;but&nbsp;we&nbsp;are&nbsp;just&nbsp;interested&nbsp;in&nbsp;the&nbsp;nested&nbsp;error</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;error<span style="color: #000000">.</span>errorMode&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #df5000">'bubble'</span><span style="color: #000000">;</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result<span style="color: #000000">.</span>diff<span style="color: #000000">.</span><span style="color: #000000">append</span><span style="color: #000000">(</span>error<span style="color: #000000">.</span><span style="color: #000000">getErrorMessage</span><span style="color: #000000">());</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result<span style="color: #000000">.</span>diff<span style="color: #000000">.</span><span style="color: #000000">append</span><span style="color: #000000">(</span>error<span style="color: #000000">.</span><span style="color: #000000">getErrorMessage</span><span style="color: #000000">(</span>output<span style="color: #000000">));</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">});</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;result<span style="color: #000000">;</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">}</span></div>
@@ -225,6 +232,9 @@ chain to <code>nested</code>:</p>
 <p>Find the first error in the hierarchy that contains a diff and
 return it. This method if useful if you want to hoist a diff from an
 ancestor error and combine it with a new message.</p>
+<p>Notice that you must either provide an output or a format in the given
+options. The format can be on of <code>text</code>, <code>ansi</code> or <code>html</code>. As a
+shortcut you can also just pass the output or format directly.</p>
 <h3 id="unexpectederror-getdiffmethod-">UnexpectedError.getDiffMethod()</h3>
 <p>In case you need to wrap diff with additional information you can
 retrieve a method that will build a diff for you. It will find the
