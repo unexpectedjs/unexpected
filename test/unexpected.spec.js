@@ -1629,14 +1629,29 @@ describe('unexpected', function () {
             }, 'to throw exception', "expected 'test' to match /foo/");
         });
 
-        it('provides a diff when the not flag is set', function () {
-            expect(function () {
-                expect('barfooquuxfoobaz', 'not to match', /foo/);
-            }, 'to throw',
-                   "expected 'barfooquuxfoobaz' not to match /foo/\n" +
-                   '\n' +
-                   'barfooquuxfoobaz\n' +
-                   '   ^^^    ^^^');
+        describe('with the not flag', function () {
+            it('provides a diff when the assertion fails', function () {
+                expect(function () {
+                    expect('barfooquuxfoobaz', 'not to match', /foo/);
+                }, 'to throw',
+                       "expected 'barfooquuxfoobaz' not to match /foo/\n" +
+                       '\n' +
+                       'barfooquuxfoobaz\n' +
+                       '   ^^^    ^^^');
+            });
+
+            it('handles newlines in the matched text', function () {
+                expect(function () {
+                    expect('barfo\noquuxfoobaz', 'not to match', /fo\no/);
+                }, 'to throw',
+                       "expected 'barfo\\noquuxfoobaz' not to match /fo\\no/\n" +
+                       '\n' +
+                       'barfo\n' +
+                       '   ^^\n' +
+                       'oquuxfoobaz\n' +
+                       '^'
+                );
+            });
         });
     });
 
@@ -1697,44 +1712,64 @@ describe('unexpected', function () {
 
         it('produces a diff showing full and partial matches for each needle when the assertion fails', function () {
             expect(function () {
-                expect('foobarquux', 'to contain', 'foo', 'quuux');
+                expect('foo\nbarquux', 'to contain', 'foo\nb', 'quuux');
             }, 'to throw', function (err) {
                 expect(err, 'to have text message',
-                    "expected 'foobarquux' to contain 'foo', 'quuux'\n" +
+                    "expected 'foo\\nbarquux' to contain 'foo\\nb', 'quuux'\n" +
                     "\n" +
-                    "foobarquux\n" +
-                    "^^^   ^^>"
+                    "foo\n" +
+                    "^^^\n" +
+                    "barquux\n" +
+                    "^  ^^>"
                 );
-
                 expect(err, 'to have ansi message',
-                    "\x1B[31m\x1B[1mexpected\x1B[22m\x1B[39m \x1B[36m'foobarquux'\x1B[39m \x1B[31m\x1B[1mto contain\x1B[22m\x1B[39m \x1B[36m'foo'\x1B[39m, \x1B[36m'quuux'\x1B[39m\n" +
+                    "\x1B[31m\x1B[1mexpected\x1B[22m\x1B[39m \x1B[36m'foo\\nbarquux'\x1B[39m \x1B[31m\x1B[1mto contain\x1B[22m\x1B[39m \x1B[36m'foo\\nb'\x1B[39m, \x1B[36m'quuux'\x1B[39m\n" +
                     "\n" +
-                    "\x1B[42m\x1B[30mfoo\x1B[39m\x1B[49mbar\x1b[43m\x1b[30mquu\x1b[39m\x1b[49mx"
+                    "\x1B[42m\x1B[30mfoo\x1B[39m\x1B[49m\n\x1B[42m\x1B[30mb\x1B[39m\x1B[49mar\x1B[43m\x1B[30mquu\x1B[39m\x1B[49mx"
                 );
             });
         });
 
-        it('produces a diff when the array case fails and the not flag is on', function () {
-            expect(function () {
-                expect([1, 2, 3], 'not to contain', 2);
-            }, 'to throw',
-                'expected [ 1, 2, 3 ] not to contain 2\n' +
-                '\n' +
-                '[\n' +
-                '  1,\n' +
-                '  2, // should be removed\n' +
-                '  3\n' +
-                ']');
-        });
+        describe('with the not flag', function () {
+            it('produces a useful diff in text mode when a match spans multiple lines', function () {
+                expect(function () {
+                    expect('blahfoo\nbar\nquux', 'not to contain', 'foo\nbar\nq');
+                }, 'to throw', function (err) {
+                    expect(err, 'to have text message',
+                        "expected 'blahfoo\\nbar\\nquux' not to contain 'foo\\nbar\\nq'\n" +
+                        "\n" +
+                        "blahfoo\n" +
+                        "    ^^^\n" +
+                        "bar\n" +
+                        "^^^\n" +
+                        "quux\n" +
+                        "^"
+                    );
+                });
+            });
 
-        it('produces a diff when the string case fails and the not flag is on', function () {
-            expect(function () {
-                expect('foobarquuxfoo', 'not to contain', 'foo');
-            }, 'to throw',
-                "expected 'foobarquuxfoo' not to contain 'foo'\n" +
-                '\n' +
-                'foobarquuxfoo\n' +
-                '^^^       ^^^');
+            it('produces a diff when the array case fails', function () {
+                expect(function () {
+                    expect([1, 2, 3], 'not to contain', 2);
+                }, 'to throw',
+                    'expected [ 1, 2, 3 ] not to contain 2\n' +
+                    '\n' +
+                    '[\n' +
+                    '  1,\n' +
+                    '  2, // should be removed\n' +
+                    '  3\n' +
+                    ']');
+            });
+
+            it('produces a diff when the string case fails', function () {
+                expect(function () {
+                    expect('foobarquuxfoo', 'not to contain', 'foo');
+                }, 'to throw',
+                    "expected 'foobarquuxfoo' not to contain 'foo'\n" +
+                    '\n' +
+                    'foobarquuxfoo\n' +
+                    '^^^       ^^^');
+            });
         });
     });
 
