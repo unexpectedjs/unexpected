@@ -54,6 +54,13 @@ describe('unexpected', function () {
                 return that.shift(expect, subject, 0);
             }), 1);
         });
+    }).addAssertion('when delayed', function (expect, subject, value) {
+        var that = this;
+        return expect.promise(function (run) {
+            setTimeout(run(function () {
+                return that.shift(expect, subject, 1);
+            }), value);
+        });
     }).addAssertion('to inspect as', function (expect, subject, value) {
         expect(expect.inspect(subject).toString(), 'to equal', value);
     });
@@ -6795,12 +6802,62 @@ describe('unexpected', function () {
             });
         });
 
-        it('should preserve the return value when an assertion returns a non-promise value', function () {
+        it('should return a promise fulfilled with the return value when an assertion returns a non-promise value', function () {
             var clonedExpect = expect.clone().addAssertion('to foo', function (expect, subject, value) {
                 expect(subject, 'to equal', 'foo');
                 return 'bar';
             });
-            expect(clonedExpect('foo', 'to foo'), 'to equal', 'bar');
+            clonedExpect('foo', 'to foo').then(function (value) {
+                expect(value, 'to equal', 'bar');
+            });
+        });
+
+        describe('#and', function () {
+            describe('with a synchronous assertion', function () {
+                it('should succeed', function () {
+                    return expect('foo', 'to equal', 'foo').and('to be a string');
+                });
+
+                it('should fail with a diff', function () {
+                    return expect(function () {
+                        return expect('foo', 'to equal', 'foo').and('to be a number');
+                    }, 'to error', "expected 'foo' to be a number");
+                });
+            });
+
+            describe('with an asynchronous assertion anded with a synchronous one', function () {
+                it('should succeed', function () {
+                    return expect('foo', 'when delayed', 5, 'to equal', 'foo').and('to be a string');
+                });
+
+                it('should fail with a diff when the asynchronous assertion fails', function () {
+                    return expect(function () {
+                        return expect('foo', 'when delayed', 5, 'to equal', 'bar').and('to be a string');
+                    }, 'to error',
+                        "expected 'foo' when delayed 5 to equal 'bar'\n" +
+                        "\n" +
+                        "-foo\n" +
+                        "+bar"
+                    );
+                });
+
+                it('should fail with a diff when the synchronous assertion fails', function () {
+                    return expect(function () {
+                        return expect('foo', 'when delayed', 5, 'to equal', 'foo').and('to be a number');
+                    }, 'to error', "expected 'foo' to be a number");
+                });
+
+                it('should fail with a diff when both assertions fail', function () {
+                    return expect(function () {
+                        return expect('foo', 'when delayed', 5, 'to equal', 'bar').and('to be a number');
+                    }, 'to error',
+                        "expected 'foo' when delayed 5 to equal 'bar'\n" +
+                        "\n" +
+                        "-foo\n" +
+                        "+bar"
+                    );
+                });
+            });
         });
 
         it('should throw an exception if the argument was not a function', function () {
