@@ -2904,7 +2904,7 @@ module.exports = function (expect) {
     });
 
     expect.addStyle('match', function (content) {
-        this.raw({
+        this.alt({
             text: function () {
                 this.block(function () {
                     this.text(content).nl().text(content.replace(/[\s\S]/g, '^'));
@@ -2917,7 +2917,7 @@ module.exports = function (expect) {
     });
 
     expect.addStyle('partialMatch', function (content) {
-        this.raw({
+        this.alt({
             text: function () {
                 this.block(function () {
                     this.text(content).nl().text(content.replace(/[\s\S]/g, '^').substr(0, content.length - 1) + '>');
@@ -10902,90 +10902,90 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 }(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
 
 },{}],21:[function(require,module,exports){
-exports.read = function(buffer, offset, isLE, mLen, nBytes) {
-  var e, m,
-      eLen = nBytes * 8 - mLen - 1,
-      eMax = (1 << eLen) - 1,
-      eBias = eMax >> 1,
-      nBits = -7,
-      i = isLE ? (nBytes - 1) : 0,
-      d = isLE ? -1 : 1,
-      s = buffer[offset + i];
+exports.read = function (buffer, offset, isLE, mLen, nBytes) {
+  var e, m
+  var eLen = nBytes * 8 - mLen - 1
+  var eMax = (1 << eLen) - 1
+  var eBias = eMax >> 1
+  var nBits = -7
+  var i = isLE ? (nBytes - 1) : 0
+  var d = isLE ? -1 : 1
+  var s = buffer[offset + i]
 
-  i += d;
+  i += d
 
-  e = s & ((1 << (-nBits)) - 1);
-  s >>= (-nBits);
-  nBits += eLen;
-  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8);
+  e = s & ((1 << (-nBits)) - 1)
+  s >>= (-nBits)
+  nBits += eLen
+  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}
 
-  m = e & ((1 << (-nBits)) - 1);
-  e >>= (-nBits);
-  nBits += mLen;
-  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8);
+  m = e & ((1 << (-nBits)) - 1)
+  e >>= (-nBits)
+  nBits += mLen
+  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}
 
   if (e === 0) {
-    e = 1 - eBias;
+    e = 1 - eBias
   } else if (e === eMax) {
-    return m ? NaN : ((s ? -1 : 1) * Infinity);
+    return m ? NaN : ((s ? -1 : 1) * Infinity)
   } else {
-    m = m + Math.pow(2, mLen);
-    e = e - eBias;
+    m = m + Math.pow(2, mLen)
+    e = e - eBias
   }
-  return (s ? -1 : 1) * m * Math.pow(2, e - mLen);
-};
+  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
+}
 
-exports.write = function(buffer, value, offset, isLE, mLen, nBytes) {
-  var e, m, c,
-      eLen = nBytes * 8 - mLen - 1,
-      eMax = (1 << eLen) - 1,
-      eBias = eMax >> 1,
-      rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0),
-      i = isLE ? 0 : (nBytes - 1),
-      d = isLE ? 1 : -1,
-      s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0;
+exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
+  var e, m, c
+  var eLen = nBytes * 8 - mLen - 1
+  var eMax = (1 << eLen) - 1
+  var eBias = eMax >> 1
+  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
+  var i = isLE ? 0 : (nBytes - 1)
+  var d = isLE ? 1 : -1
+  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
 
-  value = Math.abs(value);
+  value = Math.abs(value)
 
   if (isNaN(value) || value === Infinity) {
-    m = isNaN(value) ? 1 : 0;
-    e = eMax;
+    m = isNaN(value) ? 1 : 0
+    e = eMax
   } else {
-    e = Math.floor(Math.log(value) / Math.LN2);
+    e = Math.floor(Math.log(value) / Math.LN2)
     if (value * (c = Math.pow(2, -e)) < 1) {
-      e--;
-      c *= 2;
+      e--
+      c *= 2
     }
     if (e + eBias >= 1) {
-      value += rt / c;
+      value += rt / c
     } else {
-      value += rt * Math.pow(2, 1 - eBias);
+      value += rt * Math.pow(2, 1 - eBias)
     }
     if (value * c >= 2) {
-      e++;
-      c /= 2;
+      e++
+      c /= 2
     }
 
     if (e + eBias >= eMax) {
-      m = 0;
-      e = eMax;
+      m = 0
+      e = eMax
     } else if (e + eBias >= 1) {
-      m = (value * c - 1) * Math.pow(2, mLen);
-      e = e + eBias;
+      m = (value * c - 1) * Math.pow(2, mLen)
+      e = e + eBias
     } else {
-      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen);
-      e = 0;
+      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
+      e = 0
     }
   }
 
-  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8);
+  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
 
-  e = (e << mLen) | m;
-  eLen += mLen;
-  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8);
+  e = (e << mLen) | m
+  eLen += mLen
+  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
 
-  buffer[offset + i - d] |= s * 128;
-};
+  buffer[offset + i - d] |= s * 128
+}
 
 },{}],22:[function(require,module,exports){
 
@@ -12077,6 +12077,10 @@ MagicPen.prototype.getContentFromArguments = function (args) {
         clone = this.clone();
         args[0].call(clone, clone);
         return clone;
+    } else if (typeof args[0] === 'string' && args.length === 1) {
+        clone = this.clone();
+        clone.text(args[0]);
+        return clone;
     } else if (typeof args[0] === 'string') {
         clone = this.clone();
         clone[args[0]].apply(clone, Array.prototype.slice.call(args, 1));
@@ -12085,7 +12089,8 @@ MagicPen.prototype.getContentFromArguments = function (args) {
         throw new Error('Requires the arguments to be:\n' +
                         'a pen or\n' +
                         'a callback appending content to a pen or\n' +
-                        'a style and arguments for that style');
+                        'a style and arguments for that style or\n' +
+                        'just a string.');
     }
 };
 
@@ -12114,72 +12119,70 @@ MagicPen.prototype.block = function () {
     return this.write({ style: 'block', args: blockOutput });
 };
 function isRawOutput(options) {
-    return typeof options.width === 'number' &&
-           typeof options.height === 'number' && (
-               typeof options.content === 'function' ||
-               typeof options.content === 'string'
-           );
+    return options &&
+        typeof options === 'object' &&
+        typeof options.width === 'number' &&
+        typeof options.height === 'number' && (
+            typeof options.content === 'function' ||
+                typeof options.content === 'string'
+        );
 }
 
+MagicPen.prototype.alt = function (options) {
+    var format = this.format;
+    if (!format) {
+        throw new Error('The alt method is only supported on pen where the format has already been set');
+    }
 
-MagicPen.prototype.alt =
+    var outputProperty = options[format];
+
+    if (typeof outputProperty === 'undefined') {
+        if (options.fallback) {
+            return this.append(options.fallback);
+        } else {
+            throw new Error('Output is not specified for format: ' + format + ' and no fallback method is given');
+        }
+    }
+
+    if (typeof outputProperty === 'string' || isRawOutput(outputProperty)) {
+        return this.raw(outputProperty);
+    } else {
+        return this.append(outputProperty);
+    }
+};
+
 MagicPen.prototype.raw = function (options) {
     var format = this.format;
     if (!format) {
         throw new Error('The alt method is only supported on pen where the format has already been set');
     }
 
-    var outputProperty = options[format] || options.fallback;
-
-    if (!outputProperty) {
-        throw new Error('Output is not specified for format: ' + format + ' and no fallback method is given');
-    }
-
-    var propertyType = typeof outputProperty;
-    if (outputProperty && outputProperty.isMagicPen) {
-        return this.append(outputProperty);
-    }
-
-    if (propertyType === 'string') {
+    if (typeof options === 'string') {
         return this.write({ style: 'raw', args: {
             height: 0,
             width: 0,
             content: function () {
-                return outputProperty;
+                return options;
             }
         }});
     }
 
-    if (propertyType === 'function') {
-        var pen = this.clone();
-        var originalAlt = pen.alt;
-        pen.raw = pen.alt = function (arg) {
-            if (isRawOutput(arg) || typeof arg !== 'object') {
-                var content = arg;
-                arg = {};
-                arg[format] = content;
-            }
-            return originalAlt.call(this, arg);
-        };
-        outputProperty.call(pen, pen);
-        return this.append(pen);
-    }
-
-    if (isRawOutput(outputProperty)) {
-        if (typeof outputProperty.content === 'string') {
-            outputProperty = extend({}, outputProperty);
-            var content = outputProperty.content;
-            outputProperty.content = function () {
+    if (isRawOutput(options)) {
+        if (typeof options.content === 'string') {
+            options = extend({}, options);
+            var content = options.content;
+            options.content = function () {
                 return content;
             };
         }
 
-        return this.write({ style: 'raw', args: outputProperty });
+        return this.write({ style: 'raw', args: options });
     }
 
-    throw new Error('Arguments for the alt method must be an object with properties of the form:\n' +
-                    'a pen, a function that writes to a pen, a string or an object with the structure:\n' +
-                    '{ width: <number>, height: <number>, content: <string function() {}|string> }');
+    throw new Error('Raw ' + this.format + ' content needs to adhere to one of the following forms:\n' +
+                    'a string of raw content\n' +
+                    'a function returning a string of raw content or\n' +
+                    'an object with the following form { width: <number>, height: <number>, content: <string function() {}|string> }');
 };
 
 function amend(output, pen) {
