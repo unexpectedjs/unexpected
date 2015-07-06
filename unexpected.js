@@ -1568,7 +1568,13 @@ module.exports = function (expect) {
                     subject.replace(new RegExp(regexp.source, 'g'), function ($0, index) {
                         flushUntilIndex(index);
                         lastIndex += $0.length;
-                        output.removedHighlight($0);
+                        $0.split(/(\n)/).forEach(function (fragment) {
+                            if (fragment === '\n') {
+                                output.nl();
+                            } else {
+                                output.removedHighlight(fragment);
+                            }
+                        });
                     });
                     flushUntilIndex(subject.length);
                     return {diff: output};
@@ -1713,7 +1719,13 @@ module.exports = function (expect) {
                         }).join('|'), 'g'), function ($0, index) {
                             flushUntilIndex(index);
                             lastIndex += $0.length;
-                            output.removedHighlight($0);
+                            $0.split(/(\n)/).forEach(function (fragment) {
+                                if (fragment === '\n') {
+                                    output.nl();
+                                } else {
+                                    output.removedHighlight(fragment);
+                                }
+                            });
                         });
                         flushUntilIndex(subject.length);
                     } else {
@@ -1751,11 +1763,17 @@ module.exports = function (expect) {
                             flushUntilIndex(range.startIndex);
                             var firstUncoveredIndex = Math.max(range.startIndex, lastIndex);
                             if (range.endIndex > firstUncoveredIndex) {
-                                if (range.partial) {
-                                    output.partialMatch(subject.substring(firstUncoveredIndex, range.endIndex));
-                                } else {
-                                    output.match(subject.substring(firstUncoveredIndex, range.endIndex));
-                                }
+                                subject.substring(firstUncoveredIndex, range.endIndex).split(/(\n)/).forEach(function (fragment) {
+                                    if (fragment === '\n') {
+                                        output.nl();
+                                    } else {
+                                        if (range.partial) {
+                                            output.partialMatch(fragment);
+                                        } else {
+                                            output.match(fragment);
+                                        }
+                                    }
+                                });
                                 lastIndex = range.endIndex;
                             }
                         });
@@ -2394,9 +2412,23 @@ module.exports = function (expect) {
     expect.addAssertion([
         'when passed as parameter to [async]',
         'when passed as parameter to [constructor]'
-    ], function (expect, subject) {
-        this.errorMode = 'bubble';
-        return expect.apply(expect, [[subject], 'when passed as parameters to [async] [constructor]'].concat(this.args));
+    ], function (expect, subject, fn) { // ...
+        this.errorMode = 'nested';
+        var that = this,
+            args = [subject];
+        if (that.flags.async) {
+            return expect.promise(function (run) {
+                args = [].concat(args);
+                args.push(run(function (err, result) {
+                    expect(err, 'to be falsy');
+                    return that.shift(result, 1);
+                }));
+                fn.apply(null, args);
+            });
+        } else {
+            subject = that.flags.constructor ? instantiate(fn, args) : fn.apply(fn, args);
+            return that.shift(subject, 1);
+        }
     });
 
     expect.addAssertion('Promise', 'to be rejected [with]', function (expect, subject, value) {
@@ -2859,7 +2891,7 @@ module.exports = function (expect) {
     });
 
     expect.addStyle('removedHighlight', function (content) {
-        this.raw({
+        this.alt({
             text: function () {
                 this.block(function () {
                     this.text(content).nl().text(content.replace(/[\s\S]/g, '^'));
@@ -12090,16 +12122,17 @@ function isRawOutput(options) {
 }
 
 
+MagicPen.prototype.alt =
 MagicPen.prototype.raw = function (options) {
     var format = this.format;
     if (!format) {
-        throw new Error('The raw method is only supported on pen where the format has already been set');
+        throw new Error('The alt method is only supported on pen where the format has already been set');
     }
 
     var outputProperty = options[format] || options.fallback;
 
     if (!outputProperty) {
-        throw new Error('Raw output is not specified for format: ' + format + ' and no fallback method is given');
+        throw new Error('Output is not specified for format: ' + format + ' and no fallback method is given');
     }
 
     var propertyType = typeof outputProperty;
@@ -12108,19 +12141,25 @@ MagicPen.prototype.raw = function (options) {
     }
 
     if (propertyType === 'string') {
-        return this.text(outputProperty);
+        return this.write({ style: 'raw', args: {
+            height: 0,
+            width: 0,
+            content: function () {
+                return outputProperty;
+            }
+        }});
     }
 
     if (propertyType === 'function') {
         var pen = this.clone();
-        var originalRaw = pen.raw;
-        pen.raw = function (arg) {
+        var originalAlt = pen.alt;
+        pen.raw = pen.alt = function (arg) {
             if (isRawOutput(arg) || typeof arg !== 'object') {
                 var content = arg;
                 arg = {};
                 arg[format] = content;
             }
-            return originalRaw.call(this, arg);
+            return originalAlt.call(this, arg);
         };
         outputProperty.call(pen, pen);
         return this.append(pen);
@@ -12138,7 +12177,8 @@ MagicPen.prototype.raw = function (options) {
         return this.write({ style: 'raw', args: outputProperty });
     }
 
-    throw new Error('Properties on a raw object must be a pen, a function that writes to a pen, a string or an object with the structure\n' +
+    throw new Error('Arguments for the alt method must be an object with properties of the form:\n' +
+                    'a pen, a function that writes to a pen, a string or an object with the structure:\n' +
                     '{ width: <number>, height: <number>, content: <string function() {}|string> }');
 };
 
