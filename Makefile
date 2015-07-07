@@ -46,7 +46,7 @@ coverage:
 test-browser: unexpected.js
 	@./node_modules/.bin/serve .
 
-travis: lint test test-phantomjs test-jasmine coverage
+travis: lint test test-phantomjs test-jasmine coverage site-build
 	-<coverage/lcov.info ./node_modules/coveralls/bin/coveralls.js
 
 .PHONY: git-dirty-check
