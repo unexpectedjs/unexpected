@@ -83,4 +83,4 @@ site-build:
 
 .PHONY: update-examples
 update-examples:
-	npm run update-examples
+	npm run update-examples && npm run generate-site
