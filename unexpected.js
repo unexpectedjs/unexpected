@@ -1383,9 +1383,12 @@ UnexpectedError.prototype.serializeMessage = function (outputFormat) {
     if (!this._hasSerializedErrorMessage) {
         if (outputFormat === 'html') {
             outputFormat = 'text';
-            this.htmlMessage = this.getErrorMessage({format: 'html'}).toString();
+            if (!('htmlMessage' in this)) {
+                this.htmlMessage = this.getErrorMessage({format: 'html'}).toString();
+            }
         }
         this.message = '\n' + this.getErrorMessage({format: outputFormat}).toString();
+
         this._hasSerializedErrorMessage = true;
     }
 };
@@ -1425,6 +1428,14 @@ UnexpectedError.prototype.getAllErrors = function () {
     return result;
 };
 
+if (Object.__defineGetter__) {
+    Object.defineProperty(UnexpectedError.prototype, 'htmlMessage', {
+        enumerable: true,
+        get: function () {
+            return this.getErrorMessage({ format: 'html' }).toString();
+        }
+    });
+}
 
 module.exports = UnexpectedError;
 
@@ -4270,7 +4281,7 @@ assertions(unexpected);
 
 // Add an inspect method to all the promises we return that will make the REPL, console.log, and util.inspect render it nicely in node.js:
 require(18).prototype.inspect = function () {
-    return unexpected.inspect(this).toString(require(29).defaultFormat);
+    return unexpected.createOutput(require(29).defaultFormat).appendInspected(this).toString();
 };
 
 module.exports = unexpected;
