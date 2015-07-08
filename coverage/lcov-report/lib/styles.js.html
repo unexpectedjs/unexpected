@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for lib/styles.js</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../prettify.css">
+    <link rel="stylesheet" href="../base.css">
+    <style type='text/css'>
+        div.coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class="header high">
+    <h1>Code coverage report for <span class="entity">lib/styles.js</span></h1>
+    <h2>
+        Statements: <span class="metric">98% <small>(49 / 50)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Branches: <span class="metric">94.12% <small>(32 / 34)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Functions: <span class="metric">100% <small>(9 / 9)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Lines: <span class="metric">98% <small>(49 / 50)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Ignored: <span class="metric"><span class="ignore-none">none</span></span> &nbsp;&nbsp;&nbsp;&nbsp;
+    </h2>
+    <div class="path"><a href="../index.html">All files</a> &#187; <a href="index.html">lib/</a> &#187; styles.js</div>
+</div>
+<div class="body">
+<pre><table class="coverage">
+<tr><td class="line-count">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111</td><td class="line-coverage"><span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1916</span>
+<span class="cline-any cline-yes">1916</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">137</span>
+<span class="cline-any cline-yes">53</span>
+<span class="cline-any cline-yes">84</span>
+<span class="cline-any cline-yes">25</span>
+<span class="cline-any cline-yes">59</span>
+<span class="cline-any cline-yes">22</span>
+<span class="cline-any cline-yes">37</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">36</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">31</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-yes">28</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">27</span>
+<span class="cline-any cline-yes">27</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1317</span>
+<span class="cline-any cline-yes">1317</span>
+<span class="cline-any cline-yes">1266</span>
+<span class="cline-any cline-yes">51</span>
+<span class="cline-any cline-yes">17</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">34</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">297</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">459</span>
+<span class="cline-any cline-yes">459</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">459</span>
+<span class="cline-any cline-yes">459</span>
+<span class="cline-any cline-yes">459</span>
+<span class="cline-any cline-yes">885</span>
+<span class="cline-any cline-yes">426</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">885</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">459</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">275</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">167</span>
+<span class="cline-any cline-yes">18</span>
+<span class="cline-any cline-yes">149</span>
+<span class="cline-any cline-yes">149</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module.exports = function (expect) {
+    expect.installTheme({
+        jsBoolean: 'jsPrimitive',
+        jsNumber: 'jsPrimitive',
+        error: ['red', 'bold'],
+        success: ['green', 'bold'],
+        diffAddedLine: 'green',
+        diffAddedHighlight: ['bgGreen', 'white'],
+        diffAddedSpecialChar: ['bgGreen', 'cyan', 'bold'],
+        diffRemovedLine: 'red',
+        diffRemovedHighlight: ['bgRed', 'white'],
+        diffRemovedSpecialChar: ['bgRed', 'cyan', 'bold']
+    });
+&nbsp;
+    expect.installTheme('html', {
+        jsComment: '#969896',
+        jsFunctionName: '#795da3',
+        jsKeyword: '#a71d5d',
+        jsPrimitive: '#0086b3',
+        jsRegexp: '#183691',
+        jsString: '#df5000',
+        jsKey: '#555'
+    });
+&nbsp;
+    expect.installTheme('ansi', {
+        jsComment: 'gray',
+        jsFunctionName: 'jsKeyword',
+        jsKeyword: 'magenta',
+        jsNumber: [],
+        jsPrimitive: 'cyan',
+        jsRegexp: 'green',
+        jsString: 'cyan',
+        jsKey: '#666',
+        diffAddedHighlight: ['bgGreen', 'black'],
+        diffRemovedHighlight: ['bgRed', 'black']
+    });
+&nbsp;
+    expect.addStyle('singleQuotedString', function (content) {
+        content = String(content);
+        this.jsString("'")
+            .jsString(content.replace(/[\\\x00-\x1f']/g, function ($0) {
+                if ($0 === '\n') {
+                    return '\\n';
+                } else if ($0 === '\r') {
+                    return '\\r';
+                } else if ($0 === "'") {
+                    return "\\'";
+                } else if ($0 === '\\') {
+                    return '\\\\';
+                } else if ($0 === '\t') {
+                    return '\\t';
+                } else if ($0 === '\b') {
+                    return '\\b';
+                } else if ($0 === '\f') {
+                    return '\\f';
+                } else {
+                    var charCode = $0.charCodeAt(0);
+                    return '\\x' + (charCode &lt; 16 ? '0' : '') + charCode.toString(16);
+                }
+            }))
+            .jsString("'");
+    });
+&nbsp;
+    expect.addStyle('key', function (content) {
+        content = String(content);
+        if (/^[a-z\$\_][a-z0-9\$\_]*$/i.test(content)) {
+            this.text(content, 'jsKey');
+        } else if (/^(?:0|[1-9][0-9]*)$/.test(content)) {
+            this.jsNumber(content);
+        } else {
+            this.singleQuotedString(content);
+        }
+    });
+&nbsp;
+    // Intended to be redefined by a plugin that offers syntax highlighting:
+    expect.addStyle('code', function (content, language) {
+        this.text(content);
+    });
+&nbsp;
+    expect.addStyle('annotationBlock', function () {
+        var pen = this.getContentFromArguments(arguments);
+        var height = pen.size().height;
+&nbsp;
+        <span class="missing-if-branch" title="else path not taken" >E</span>if (height &gt; 0) {
+            this.block(function () {
+                for (var i = 0; i &lt; height; i += 1) {
+                    if (0 &lt; i) {
+                        this.nl();
+                    }
+                    this.error('//');
+                }
+            });
+            this.sp().block(pen);
+        }
+    });
+&nbsp;
+    expect.addStyle('shouldEqualError', function (expected, inspect) {
+        this.error(typeof expected === 'undefined' ? 'should be' : 'should equal').sp().block(inspect(expected));
+    });
+&nbsp;
+    expect.addStyle('errorName', function (error) {
+        if (typeof error.name === 'string' &amp;&amp; error.name !== 'Error') {
+            this.text(error.name);
+        } else <span class="missing-if-branch" title="else path not taken" >E</span>if (error.constructor &amp;&amp; typeof error.constructor.name === 'string') {
+            this.text(error.constructor.name);
+        } else {
+<span class="cstat-no" title="statement not covered" >            this.text('Error');</span>
+        }
+    });
+};
+&nbsp;</pre></td></tr>
+</table></pre>
+
+</div>
+<div class="footer">
+    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Thu Jun 25 2015 07:57:35 GMT+0200 (CEST)</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>
