@@ -4065,6 +4065,24 @@ describe('unexpected', function () {
         }, 'to throw exception', "Unknown assertion 'to bee', did you mean: 'to be'");
     });
 
+    describe('expect', function () {
+        it('should catch non-Unexpected error caught from a nested assertion', function () {
+            var clonedExpect = expect.clone().addAssertion('to foo', function (expect, subject) {
+                return expect(subject, 'to bar');
+            }).addAssertion('to bar', function (expect, subject) {
+                return expect.promise(function (run) {
+                    setTimeout(run(function () {
+                        throw new Error('foo');
+                    }), 1);
+                });
+            });
+
+            return expect(function () {
+                return clonedExpect('bar', 'to foo');
+            }, 'to error', new Error('foo'));
+        });
+    });
+
     describe('addAssertion', function () {
         it('is chainable', function () {
             expect.addAssertion('foo', function () {})
@@ -6891,6 +6909,21 @@ describe('unexpected', function () {
                         "-foo\n" +
                         "+bar"
                     );
+                });
+            });
+
+            describe('with a nested asynchronous assertion', function () {
+                it('should mount the and method on an error caught from the nested assertion', function () {
+                    var clonedExpect = expect.clone().addAssertion('to foo', function (expect, subject) {
+                        return expect(subject, 'to bar').and('to equal', 'foo');
+                    }).addAssertion('to bar', function (expect, subject) {
+                        return expect.promise(function (run) {
+                            setTimeout(run(function () {
+                                expect(subject, 'to be truthy');
+                            }), 1);
+                        });
+                    });
+                    return clonedExpect('foo', 'to foo');
                 });
             });
         });
