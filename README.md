@@ -7,4 +7,4 @@ Extensible BDD assertion toolkit
 [![Coverage Status](https://coveralls.io/repos/unexpectedjs/unexpected/badge.svg)](https://coveralls.io/r/unexpectedjs/unexpected)
 [![Dependency Status](https://david-dm.org/unexpectedjs/unexpected.svg)](https://david-dm.org/unexpectedjs/unexpected)
 
-Read [the documentation](https://unexpectedjs.github.io).
+Read [the documentation](http://unexpected.js.org/).
