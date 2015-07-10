@@ -6913,7 +6913,7 @@ describe('unexpected', function () {
             });
 
             describe('with a nested asynchronous assertion', function () {
-                it('should mount the and method on an error caught from the nested assertion', function () {
+                it('should mount the and method on a promise returned from a nested assertion', function () {
                     var clonedExpect = expect.clone().addAssertion('to foo', function (expect, subject) {
                         return expect(subject, 'to bar').and('to equal', 'foo');
                     }).addAssertion('to bar', function (expect, subject) {
