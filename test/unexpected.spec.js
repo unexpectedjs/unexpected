@@ -6259,6 +6259,44 @@ describe('unexpected', function () {
             }, 'to call the callback');
         });
 
+        it('should fail when the callback is called twice synchronously', function () {
+            return expect(function () {
+                return expect(function (cb) {
+                    cb();
+                    cb();
+                }, 'to call the callback');
+            }, 'to error',
+                "expected\n" +
+                "function (cb) {\n" +
+                "    cb();\n" +
+                "    cb();\n" +
+                "}\n" +
+                "to call the callback\n" +
+                "  The callback was called twice"
+            );
+        });
+
+        it('should fail when the callback is called twice asynchronously', function () {
+            return expect(function () {
+                return expect(function (cb) {
+                    setTimeout(function () {
+                        cb();
+                        cb();
+                    }, 0);
+                }, 'to call the callback');
+            }, 'to error',
+                "expected\n" +
+                "function (cb) {\n" +
+                "    setTimeout(function () {\n" +
+                "        cb();\n" +
+                "        cb();\n" +
+                "    }, 0);\n" +
+                "}\n" +
+                "to call the callback\n" +
+                "  The callback was called twice"
+            );
+        });
+
         it('should return a promise that is fulfilled with the values passed to the callback', function () {
             return expect(function (cb) {
                 cb(1, 2, 3, 4);
