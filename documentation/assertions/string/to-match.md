@@ -35,7 +35,7 @@ Hello beautiful world!
 
 The return value of `String.prototype.match` will be provided as the fulfillment
 value of the returned promise, so the values captured by the regular expression
-are available to `then` function:
+are available to the `then` function:
 
 ```javascript#async:true
 return expect('Hello world!', 'to match', /(\w+)!/).then(function (captures) {
