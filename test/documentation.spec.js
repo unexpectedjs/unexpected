@@ -4010,6 +4010,21 @@ describe("documentation tests", function () {
                 "      ^^^^^^^^^"
             );
         }
+
+        testPromises.push(expect.promise(function () {
+            return expect('Hello world!', 'to match', /(\w+)!/).then(function (captures) {
+                expect(captures[0], 'to equal', 'world!');
+                expect(captures[1], 'to equal', 'world');
+                expect(captures.index, 'to equal', 6);
+            });
+        }));
+
+        testPromises.push(expect.promise(function () {
+            return expect('Hello world!', 'to match', /(\w+)!/).spread(function ($0, $1) {
+                expect($0, 'to equal', 'world!');
+                expect($1, 'to equal', 'world');
+            });
+        }));
         return expect.promise.all(testPromises);
     });
 

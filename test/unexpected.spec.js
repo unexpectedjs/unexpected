@@ -54,6 +54,13 @@ describe('unexpected', function () {
                 return that.shift(expect, subject, 0);
             }), 1);
         });
+    }).addAssertion('when delayed', function (expect, subject, value) {
+        var that = this;
+        return expect.promise(function (run) {
+            setTimeout(run(function () {
+                return that.shift(expect, subject, 1);
+            }), value);
+        });
     }).addAssertion('to inspect as', function (expect, subject, value) {
         expect(expect.inspect(subject).toString(), 'to equal', value);
     });
@@ -1627,6 +1634,41 @@ describe('unexpected', function () {
             expect(function () {
                 expect('test', 'to match', /foo/);
             }, 'to throw exception', "expected 'test' to match /foo/");
+        });
+
+        it('should provide the return value of String.prototype.match as the fulfillment value', function () {
+            return expect('foo', 'to match', /(f)(o)/).then(function (captures) {
+                expect(captures, 'to satisfy', {
+                    0: 'fo',
+                    1: 'f',
+                    2: 'o',
+                    input: 'foo',
+                    index: 0
+                });
+            });
+        });
+
+        it('should provide the captured values and the index as the fulfillment value so that the captures are spreadable', function () {
+            return expect('foo', 'to match', /(f)(o)/).spread(function ($0, $1, $2) {
+                expect($0, 'to equal', 'fo');
+                expect($1, 'to equal', 'f');
+                expect($2, 'to equal', 'o');
+            });
+        });
+
+        describe('with a regular expression that has the global flag', function () {
+            it('should provide the return value of String.prototype.match as the fulfillment value', function () {
+                return expect('abc abc', 'to match', /a(b)c/g).then(function (captures) {
+                    expect(captures, 'to equal', ['abc', 'abc']);
+                });
+            });
+
+            it('should provide the captured values and the index as the fulfillment value so that the matched values are spreadable', function () {
+                return expect('abc abc', 'to match', /a(b)c/g).spread(function (firstMatch, secondMatch) {
+                    expect(firstMatch, 'to equal', 'abc');
+                    expect(secondMatch, 'to equal', 'abc');
+                });
+            });
         });
 
         describe('with the not flag', function () {
@@ -4021,6 +4063,24 @@ describe('unexpected', function () {
         expect(function () {
             expect({}, "to bee", 2);
         }, 'to throw exception', "Unknown assertion 'to bee', did you mean: 'to be'");
+    });
+
+    describe('expect', function () {
+        it('should catch non-Unexpected error caught from a nested assertion', function () {
+            var clonedExpect = expect.clone().addAssertion('to foo', function (expect, subject) {
+                return expect(subject, 'to bar');
+            }).addAssertion('to bar', function (expect, subject) {
+                return expect.promise(function (run) {
+                    setTimeout(run(function () {
+                        throw new Error('foo');
+                    }), 1);
+                });
+            });
+
+            return expect(function () {
+                return clonedExpect('bar', 'to foo');
+            }, 'to error', new Error('foo'));
+        });
     });
 
     describe('addAssertion', function () {
@@ -6833,12 +6893,77 @@ describe('unexpected', function () {
             });
         });
 
-        it('should preserve the return value when an assertion returns a non-promise value', function () {
+        it('should return a promise fulfilled with the return value when an assertion returns a non-promise value', function () {
             var clonedExpect = expect.clone().addAssertion('to foo', function (expect, subject, value) {
                 expect(subject, 'to equal', 'foo');
                 return 'bar';
             });
-            expect(clonedExpect('foo', 'to foo'), 'to equal', 'bar');
+            clonedExpect('foo', 'to foo').then(function (value) {
+                expect(value, 'to equal', 'bar');
+            });
+        });
+
+        describe('#and', function () {
+            describe('with a synchronous assertion', function () {
+                it('should succeed', function () {
+                    return expect('foo', 'to equal', 'foo').and('to be a string');
+                });
+
+                it('should fail with a diff', function () {
+                    return expect(function () {
+                        return expect('foo', 'to equal', 'foo').and('to be a number');
+                    }, 'to error', "expected 'foo' to be a number");
+                });
+            });
+
+            describe('with an asynchronous assertion anded with a synchronous one', function () {
+                it('should succeed', function () {
+                    return expect('foo', 'when delayed', 5, 'to equal', 'foo').and('to be a string');
+                });
+
+                it('should fail with a diff when the asynchronous assertion fails', function () {
+                    return expect(function () {
+                        return expect('foo', 'when delayed', 5, 'to equal', 'bar').and('to be a string');
+                    }, 'to error',
+                        "expected 'foo' when delayed 5 to equal 'bar'\n" +
+                        "\n" +
+                        "-foo\n" +
+                        "+bar"
+                    );
+                });
+
+                it('should fail with a diff when the synchronous assertion fails', function () {
+                    return expect(function () {
+                        return expect('foo', 'when delayed', 5, 'to equal', 'foo').and('to be a number');
+                    }, 'to error', "expected 'foo' to be a number");
+                });
+
+                it('should fail with a diff when both assertions fail', function () {
+                    return expect(function () {
+                        return expect('foo', 'when delayed', 5, 'to equal', 'bar').and('to be a number');
+                    }, 'to error',
+                        "expected 'foo' when delayed 5 to equal 'bar'\n" +
+                        "\n" +
+                        "-foo\n" +
+                        "+bar"
+                    );
+                });
+            });
+
+            describe('with a nested asynchronous assertion', function () {
+                it('should mount the and method on a promise returned from a nested assertion', function () {
+                    var clonedExpect = expect.clone().addAssertion('to foo', function (expect, subject) {
+                        return expect(subject, 'to bar').and('to equal', 'foo');
+                    }).addAssertion('to bar', function (expect, subject) {
+                        return expect.promise(function (run) {
+                            setTimeout(run(function () {
+                                expect(subject, 'to be truthy');
+                            }), 1);
+                        });
+                    });
+                    return clonedExpect('foo', 'to foo');
+                });
+            });
         });
 
         it('should throw an exception if the argument was not a function', function () {
