@@ -720,15 +720,22 @@ Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
                     var result = oathbreaker(callback());
                     if (isPendingPromise(result)) {
                         testFrameworkPatch.promiseCreated();
-                        return result.then(undefined, function (e) {
+                        result = result.then(undefined, function (e) {
                             if (e && e._isUnexpected) {
                                 throw new UnexpectedError(that.expect, assertion, e);
                             }
                             throw e;
                         });
-                    } else {
-                        return result;
+                    } else if (!result || typeof result.then !== 'function') {
+                        result = makePromise.resolve(result);
                     }
+                    result.and = function () { // ...
+                        var args = [subject].concat(Array.prototype.slice.call(arguments));
+                        return this.then(function () {
+                            return that.expect.apply(that.expect, args);
+                        });
+                    };
+                    return result;
                 } catch (e) {
                     if (e && e._isUnexpected) {
                         var wrappedError = new UnexpectedError(that.expect, assertion, e);
@@ -864,10 +871,10 @@ Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
 
     var args = Array.prototype.slice.call(arguments, 2);
     try {
-        var promise = executeExpect(subject, testDescriptionString, args);
-        if (isPendingPromise(promise)) {
+        var result = executeExpect(subject, testDescriptionString, args);
+        if (isPendingPromise(result)) {
             testFrameworkPatch.promiseCreated();
-            return promise.then(undefined, function (e) {
+            result = result.then(undefined, function (e) {
                 if (e && e._isUnexpected) {
                     that.setErrorMessage(e);
                 }
@@ -875,8 +882,17 @@ Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
             });
         } else {
             serializeErrorsFromWrappedExpect = true;
+            if (!result || typeof result.then !== 'function') {
+                result = makePromise.resolve(result);
+            }
         }
-        return promise;
+        result.and = function () { // ...
+            var args = [subject].concat(Array.prototype.slice.call(arguments));
+            return this.then(function () {
+                return that.expect.apply(that.expect, args);
+            });
+        };
+        return result;
     } catch (e) {
         if (e && e._isUnexpected) {
             var newError = e;
@@ -1358,14 +1374,14 @@ UnexpectedError.prototype.getErrorMode = function () {
 
 
 UnexpectedError.prototype.getErrorMessage = function (options) {
-    // Search for any parent error that has mode bubble through on the
+    // Search for any parent error that has an error mode of 'bubbleThrough' through on the
     // error these should be bubbled to the top
-    var errorWithBubbleThough = this.parent;
-    while (errorWithBubbleThough && errorWithBubbleThough.getErrorMode() !== 'bubbleThrough') {
-        errorWithBubbleThough = errorWithBubbleThough.parent;
+    var errorWithBubbleThrough = this.parent;
+    while (errorWithBubbleThrough && errorWithBubbleThrough.getErrorMode() !== 'bubbleThrough') {
+        errorWithBubbleThrough = errorWithBubbleThrough.parent;
     }
-    if (errorWithBubbleThough) {
-        return errorWithBubbleThough.getErrorMessage(options);
+    if (errorWithBubbleThrough) {
+        return errorWithBubbleThrough.getErrorMessage(options);
     }
 
     var errorMode = this.getErrorMode();
@@ -1441,6 +1457,7 @@ module.exports = UnexpectedError;
 
 },{}],4:[function(require,module,exports){
 (function (Buffer){
+/*global setTimeout*/
 var utils = require(13);
 var objectIs = utils.objectIs;
 var isRegExp = utils.isRegExp;
@@ -1563,8 +1580,10 @@ module.exports = function (expect) {
     expect.addAssertion('string', '[not] to match', function (expect, subject, regexp) {
         var flags = this.flags;
         subject = String(subject);
-        expect.withError(function () {
-            expect(String(subject).match(regexp), '[not] to be truthy');
+        return expect.withError(function () {
+            var captures = String(subject).match(regexp);
+            expect(captures, '[not] to be truthy');
+            return captures;
         }, function (e) {
             expect.fail({
                 label: 'should match',
@@ -2531,35 +2550,68 @@ module.exports = function (expect) {
     expect.addAssertion('function', [
         'to call the callback (|without error|with error)'
     ], function (expect, subject, expectedError) {
+        var testDescription = this.testDescription;
         var alternation = this.alternations[0];
         if (alternation === 'without error' && typeof expectedError !== 'undefined') {
-            throw new Error("The '" + this.testDescription + "' assertion does not support arguments");
+            throw new Error("The '" + testDescription + "' assertion does not support arguments");
         }
 
         this.errorMode = 'nested';
         return expect.promise(function (run) {
-            subject(run(function (err) {
-                if (alternation !== '') {
-                    if (alternation === 'without error') {
-                        if (err) {
-                            expect.fail(function (output) {
-                                output.error('called the callback with: ').appendErrorMessage(err);
+            var async = false;
+            var calledTwice = false;
+            var callbackArgs;
+            function cb() {
+                if (callbackArgs) {
+                    calledTwice = true;
+                } else {
+                    callbackArgs = arguments;
+                }
+                if (async) {
+                    setTimeout(assert, 0);
+                }
+            }
+
+            var assert = run(function () {
+                if (calledTwice) {
+                    expect.fail(function () {
+                        this.error('The callback was called twice');
+                    });
+                }
+                var err = callbackArgs[0];
+                if (alternation === '') {
+                    return Array.prototype.slice.call(callbackArgs);
+                } else if (alternation === 'without error') {
+                    if (err) {
+                        expect.fail(function (output) {
+                            output.error('called the callback with: ').appendErrorMessage(err);
+                        });
+                    }
+                    return Array.prototype.slice.call(callbackArgs, 1);
+                } else {
+                    // alternation === 'with error'
+                    if (typeof expectedError !== 'undefined') {
+                        if (err && err.isUnexpected && (typeof expectedError === 'string' || isRegExp(expectedError))) {
+                            return expect(err, 'to have text message', expectedError).then(function () {
+                                return err;
+                            });
+                        } else {
+                            return expect(err, 'to satisfy', expectedError).then(function () {
+                                return err;
                             });
                         }
                     } else {
-                        if (typeof expectedError !== 'undefined') {
-                            if (err && err.isUnexpected && (typeof expectedError === 'string' || isRegExp(expectedError))) {
-                                return expect(err, 'to have text message', expectedError);
-                            } else {
-                                return expect(err, 'to satisfy', expectedError);
-                            }
-                        } else {
-                            expect(err, 'to be truthy');
-                        }
+                        expect(err, 'to be truthy');
                     }
+                    return err;
                 }
-                return Array.prototype.slice.call(arguments, alternation === 'without error' ? 1 : 0);
-            }));
+            });
+
+            subject(cb);
+            if (callbackArgs) {
+                assert();
+            }
+            async = true;
         });
     });
 };
@@ -2741,6 +2793,10 @@ function extractPromisesFromObject(obj) {
         }
         return result;
     };
+});
+
+['resolve', 'reject'].forEach(function (staticMethodName) {
+    makePromise[staticMethodName] = Promise[staticMethodName];
 });
 
 module.exports = makePromise;
