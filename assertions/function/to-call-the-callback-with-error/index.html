@@ -413,21 +413,15 @@ matching uses <a href="/assertions/any/to-satisfy/">to satisfy</a> semantics:</p
 </div></div>
   <div>})</div>
 </div></div>
-</div><p>The parameters passed to the callback are also provided as the value of the returned promise,
-so you can do further assertions like this:</p>
+</div><p>The error passed to the callback is also provided as the fulfillment value of
+the returned promise, so you can do further assertions like this:</p>
 <div class="code lang-javascript">
   <div><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">asyncFn</span><span style="color: #000000">(</span>cb<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">cb</span><span style="color: #000000">(</span><span style="color: #a71d5d">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'yikes'</span><span style="color: #000000">),</span>&nbsp;<span style="color: #0086b3">123</span><span style="color: #000000">);</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">cb</span><span style="color: #000000">(</span><span style="color: #a71d5d">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'yikes'</span><span style="color: #000000">));</span></div>
   <div><span style="color: #000000">}</span></div>
 </div><div class="code lang-javascript">
-  <div><span style="color: #a71d5d">return</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>asyncFn<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;call&nbsp;the&nbsp;callback&nbsp;with&nbsp;error'</span><span style="color: #000000">).</span><span style="color: #000000">then</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>args<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
-  <div>&nbsp;&nbsp;&nbsp;<span style="color: #969896">&nbsp;//&nbsp;args&nbsp;will&nbsp;be&nbsp;[new&nbsp;Error('yikes'),&nbsp;123];</span></div>
-  <div><span style="color: #000000">});</span></div>
-</div><p>Or using the Bluebird-specific <code>.spread</code> extension:</p>
-<div class="code lang-javascript">
-  <div><span style="color: #a71d5d">return</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>asyncFn<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;call&nbsp;the&nbsp;callback&nbsp;with&nbsp;error'</span><span style="color: #000000">).</span><span style="color: #000000">spread</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>err<span style="color: #000000">,</span>&nbsp;result<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
-  <div>&nbsp;&nbsp;&nbsp;<span style="color: #969896">&nbsp;//&nbsp;err&nbsp;will&nbsp;be&nbsp;Error('yikes')</span></div>
-  <div>&nbsp;&nbsp;&nbsp;<span style="color: #969896">&nbsp;//&nbsp;result&nbsp;will&nbsp;be&nbsp;123</span></div>
+  <div><span style="color: #a71d5d">return</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>asyncFn<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;call&nbsp;the&nbsp;callback&nbsp;with&nbsp;error'</span><span style="color: #000000">).</span><span style="color: #000000">then</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>err<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;<span style="color: #969896">&nbsp;//&nbsp;err&nbsp;will&nbsp;be&nbsp;new&nbsp;Error('yikes')</span></div>
   <div><span style="color: #000000">});</span></div>
 </div>
         </div>
