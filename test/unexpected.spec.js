@@ -6409,6 +6409,16 @@ describe('unexpected', function () {
                     }, 'to call the callback with error', new Error('bla'));
                 });
 
+                it('should provide the error as the promise fulfillment value', function () {
+                    return expect(function (cb) {
+                        setTimeout(function () {
+                            cb(new Error('bla'));
+                        }, 0);
+                    }, 'to call the callback with error', new Error('bla')).then(function (err) {
+                        expect(err, 'to equal', new Error('bla'));
+                    });
+                });
+
                 describe('given as a string to be tested against the error message', function () {
                     it('should succeed', function () {
                         return expect(function (cb) {

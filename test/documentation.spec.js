@@ -2409,19 +2409,12 @@ describe("documentation tests", function () {
 
 
         function asyncFn(cb) {
-            cb(new Error('yikes'), 123);
+            cb(new Error('yikes'));
         }
 
         testPromises.push(expect.promise(function () {
-            return expect(asyncFn, 'to call the callback with error').then(function (args) {
-                // args will be [new Error('yikes'), 123];
-            });
-        }));
-
-        testPromises.push(expect.promise(function () {
-            return expect(asyncFn, 'to call the callback with error').spread(function (err, result) {
-                // err will be Error('yikes')
-                // result will be 123
+            return expect(asyncFn, 'to call the callback with error').then(function (err) {
+                // err will be new Error('yikes')
             });
         }));
         return expect.promise.all(testPromises);
