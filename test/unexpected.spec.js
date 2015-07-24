@@ -4789,12 +4789,41 @@ describe('unexpected', function () {
         it('throws if the given arguments does not adhere to the plugin interface', function () {
             expect(function () {
                 expect.installPlugin({});
-            }, 'to throw', 'Plugins must adhere to the following interface\n' +
+            }, 'to throw', 'Plugins must be functions or adhere to the following interface\n' +
                    '{\n' +
-                   '  name: <plugin name>,\n' +
+                   '  name: <an optional plugin name>,\n' +
                    '  dependencies: <an optional list of dependencies>,\n' +
                    '  installInto: <a function that will update the given expect instance>\n' +
                    '}');
+        });
+
+        it('allows the installation of a plugin given as an anonymous function', function () {
+            var callCount = 0;
+            var plugin = function () {
+                callCount += 1;
+            };
+            expect.installPlugin(plugin);
+            expect(callCount, 'to equal', 1);
+            expect.installPlugin(plugin);
+            expect(callCount, 'to equal', 1);
+        });
+
+        it('allows the installation of a plugin given as a named function', function () {
+            var callCount = 0;
+            var plugin = function myPlugin() {
+                callCount += 1;
+            };
+            expect.installPlugin(plugin);
+            expect(callCount, 'to equal', 1);
+            expect.installPlugin(plugin);
+            expect(callCount, 'to equal', 1);
+        });
+
+        it('fails if identically named, but different functions are installed ', function () {
+            expect.installPlugin(function myPlugin() {});
+            expect(function () {
+                expect.installPlugin(function myPlugin() {});
+            }, 'to throw', "Another instance of the plugin 'myPlugin' is already installed. Please check your node_modules folder for unmet peerDependencies.");
         });
 
         it('does not fail if all plugin dependencies has been fulfilled', function (done) {
