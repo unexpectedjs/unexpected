@@ -4875,6 +4875,19 @@ describe('unexpected', function () {
             expect.installPlugin(plugin);
             expect(callCount, 'to be', 1);
         });
+
+        it('installing a plugin with the same name as another plugin (but not ===) throws an error', function () {
+            expect.installPlugin({
+                name: 'test',
+                installInto: function () {}
+            });
+            expect(function () {
+                expect.installPlugin({
+                    name: 'test',
+                    installInto: function () {}
+                });
+            }, 'to throw', "Another instance of the plugin 'test' is already installed. Please check your node_modules folder for unmet peerDependencies.");
+        });
     });
 
     describe('addType', function () {
