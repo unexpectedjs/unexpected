@@ -6971,9 +6971,19 @@ describe('unexpected', function () {
                     return expect('foo', 'to equal', 'foo').and('to be a string');
                 });
 
+                it('should work without returning the promise', function () {
+                    expect('foo', 'to equal', 'foo').and('to be a string');
+                });
+
                 it('should fail with a diff', function () {
                     return expect(function () {
                         return expect('foo', 'to equal', 'foo').and('to be a number');
+                    }, 'to error', "expected 'foo' to be a number");
+                });
+
+                it('should fail with a diff even when the promise is not returned', function () {
+                    return expect(function () {
+                        expect('foo', 'to equal', 'foo').and('to be a number');
                     }, 'to error', "expected 'foo' to be a number");
                 });
             });
