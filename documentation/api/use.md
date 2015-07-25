@@ -1,29 +1,33 @@
 ## Plugins
 
-Unexpected is build on an extensible core. Every assertion, type and
+Unexpected is built on an extensible core. Every assertion, type and
 output style provided by the core library is implemented by extending
 the core. Plugins can make use of the exact same extension methods to
 provide new and exciting assertion capabilities.
 
-### expect.installPlugin(typeDefinition)
+### expect.use(pluginDefinition)
 
-Unexpected plugins are objects that adhere to the following interface:
+Unexpected plugins are functions or objects that adhere to the following interface:
 
-Required members:
+Optional properties:
 
 * __name__: `String` - the name of the plugin.
-
-Optional members:
-
 * __dependencies__: `String array` - a list of dependencies.
+
+Required:
+
 * __installInto__: `function(expect)` - a function that will update the given expect instance.
+
+If you pass a function to `use`, it will be used as the `installInto`
+function, and the name of the function will be used as the name of the plugin,
+unless the function is anonymous.
 
 The name of the plugin should be the same as the NPM package name.
 
 A plugin can require a list of other plugins to be installed prior to
 installation of the plugin. If the dependency list is not fulfilled
 the installation will fail. The idea is that you manage your plugin
-versions using NPM. If you install a plugin that is already installed
+versions using NPM. If you install a plugin that is already installed,
 nothing will happen.
 
 The `installInto` function receives an instance of unexpected and uses
@@ -31,18 +35,18 @@ the `addAssertion`, `addStyle`, `installTheme` and `addType` methods
 to extend the instance.
 
 ```js#evaluate:false
-expect.installPlugin(require('unexpected-sinon'));
+expect.use(require('unexpected-sinon'));
 ```
 
 Notice that it is usually a good idea to [clone](../clone) the instance before
-extending it.
+extending it with plugins.
 
 ### Example
 
 Let's say we wanted first class support for a integer intervals and
 provide as a plugin.
 
-An interger interval is defined the following way:
+An integer interval is defined the following way:
 
 ```js
 function IntegerInterval(from, to) {
@@ -54,7 +58,7 @@ function IntegerInterval(from, to) {
 Now we will define an example plugin that will add support for this type:
 
 ```js
-expect.installPlugin({
+expect.use({
   name: 'unexpected-integer-intervals',
   installInto: function (expect) {
       expect.addType({
