@@ -4829,7 +4829,7 @@ describe('unexpected', function () {
             expect(callCount, 'to equal', 1);
         });
 
-        it('fails if identically named, but different functions are installed ', function () {
+        it('fails if identically named, but different functions are installed', function () {
             expect.use(function myPlugin() {});
             expect(function () {
                 expect.use(function myPlugin() {});
