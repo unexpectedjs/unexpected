@@ -704,6 +704,33 @@ describe("documentation tests", function () {
         return expect.promise.all(testPromises);
     });
 
+    it("api/expect.md contains correct examples", function () {
+        var testPromises = [];
+        try {
+            expect(123, 'to equal', 456);
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect(123, 'to equal', 456);").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected 123 to equal 456"
+            );
+        }
+
+        it('should call the callback', function () {
+            return expect(setImmediate, 'to call the callback');
+        });
+
+        expect('abc', 'to be a string').and('to have length', 3);
+
+        it('should do the right thing', function () {
+            return expect(setImmediate, 'to be a function').and('to call the callback');
+        });
+        return expect.promise.all(testPromises);
+    });
+
     it("api/fail.md contains correct examples", function () {
         var testPromises = [];
         try {
@@ -820,50 +847,6 @@ describe("documentation tests", function () {
                 "\n" +
                 "-You have been a very bad boy!\n" +
                 "+You have been a very mad boy!"
-            );
-        }
-        return expect.promise.all(testPromises);
-    });
-
-    it("api/installPlugin.md contains correct examples", function () {
-        var testPromises = [];
-        function IntegerInterval(from, to) {
-          this.from = from;
-          this.to = to;
-        }
-
-        expect.installPlugin({
-          name: 'unexpected-integer-intervals',
-          installInto: function (expect) {
-              expect.addType({
-                name: 'IntegerInterval',
-                base: 'object',
-                identify: function (value) {
-                  return value && value instanceof IntegerInterval;
-                },
-                inspect: function (value, depth, output) {
-                  output.text('[').jsNumber(value.from).text(',').jsNumber(value.to).text(']');
-                }
-              });
-
-             expect.addAssertion('[not] to contain', function (expect, subject, value) {
-               expect(value, '[not] to be within', subject.from, subject.to);
-             });
-          }
-        });
-
-        expect(new IntegerInterval(7, 13), 'to contain', 9);
-
-        try {
-            expect(new IntegerInterval(7, 13), 'to contain', 27);
-            expect.fail(function (output) {
-                output.error("expected:").nl();
-                output.code("expect(new IntegerInterval(7, 13), 'to contain', 27);").nl();
-                output.error("to throw");
-            });
-        } catch (e) {
-            expect(e, "to have message",
-                "expected [7,13] to contain 27"
             );
         }
         return expect.promise.all(testPromises);
@@ -1135,6 +1118,50 @@ describe("documentation tests", function () {
             );
         }));
 
+        return expect.promise.all(testPromises);
+    });
+
+    it("api/use.md contains correct examples", function () {
+        var testPromises = [];
+        function IntegerInterval(from, to) {
+          this.from = from;
+          this.to = to;
+        }
+
+        expect.use({
+          name: 'unexpected-integer-intervals',
+          installInto: function (expect) {
+              expect.addType({
+                name: 'IntegerInterval',
+                base: 'object',
+                identify: function (value) {
+                  return value && value instanceof IntegerInterval;
+                },
+                inspect: function (value, depth, output) {
+                  output.text('[').jsNumber(value.from).text(',').jsNumber(value.to).text(']');
+                }
+              });
+
+             expect.addAssertion('[not] to contain', function (expect, subject, value) {
+               expect(value, '[not] to be within', subject.from, subject.to);
+             });
+          }
+        });
+
+        expect(new IntegerInterval(7, 13), 'to contain', 9);
+
+        try {
+            expect(new IntegerInterval(7, 13), 'to contain', 27);
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect(new IntegerInterval(7, 13), 'to contain', 27);").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected [7,13] to contain 27"
+            );
+        }
         return expect.promise.all(testPromises);
     });
 
