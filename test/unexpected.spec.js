@@ -4770,7 +4770,7 @@ describe('unexpected', function () {
         });
     });
 
-    describe('installPlugin', function () {
+    describe('use', function () {
         var _expect = expect;
         beforeEach(function () {
             expect = _expect.clone();
@@ -4783,18 +4783,57 @@ describe('unexpected', function () {
                     done();
                 }
             };
-            expect.installPlugin(plugin);
+            expect.use(plugin);
+        });
+
+        it('supports installPlugin as a legacy alias', function (done) {
+            expect.installPlugin({
+                name: 'test',
+                installInto: function (expectInstance) {
+                    expect(expectInstance, 'to be', expect);
+                    done();
+                }
+            });
         });
 
         it('throws if the given arguments does not adhere to the plugin interface', function () {
             expect(function () {
-                expect.installPlugin({});
-            }, 'to throw', 'Plugins must adhere to the following interface\n' +
+                expect.use({});
+            }, 'to throw', 'Plugins must be functions or adhere to the following interface\n' +
                    '{\n' +
-                   '  name: <plugin name>,\n' +
+                   '  name: <an optional plugin name>,\n' +
                    '  dependencies: <an optional list of dependencies>,\n' +
                    '  installInto: <a function that will update the given expect instance>\n' +
                    '}');
+        });
+
+        it('allows the installation of a plugin given as an anonymous function', function () {
+            var callCount = 0;
+            var plugin = function () {
+                callCount += 1;
+            };
+            expect.use(plugin);
+            expect(callCount, 'to equal', 1);
+            expect.use(plugin);
+            expect(callCount, 'to equal', 1);
+        });
+
+        it('allows the installation of a plugin given as a named function', function () {
+            var callCount = 0;
+            var plugin = function myPlugin() {
+                callCount += 1;
+            };
+            expect.use(plugin);
+            expect(callCount, 'to equal', 1);
+            expect.use(plugin);
+            expect(callCount, 'to equal', 1);
+        });
+
+        it('fails if identically named, but different functions are installed', function () {
+            expect.use(function myPlugin() {});
+            expect(function () {
+                expect.use(function myPlugin() {});
+            }, 'to throw', "Another instance of the plugin 'myPlugin' is already installed. Please check your node_modules folder for unmet peerDependencies.");
         });
 
         it('does not fail if all plugin dependencies has been fulfilled', function (done) {
@@ -4809,8 +4848,8 @@ describe('unexpected', function () {
                     done();
                 }
             };
-            expect.installPlugin(pluginA);
-            expect.installPlugin(pluginB);
+            expect.use(pluginA);
+            expect.use(pluginB);
         });
 
         it('throws if the plugin has unfulfilled plugin dependencies', function () {
@@ -4821,7 +4860,7 @@ describe('unexpected', function () {
             };
 
             expect(function () {
-                expect.installPlugin(pluginB);
+                expect.use(pluginB);
             }, 'to throw', 'PluginB requires plugin PluginA');
 
             var pluginC = {
@@ -4831,7 +4870,7 @@ describe('unexpected', function () {
             };
 
             expect(function () {
-                expect.installPlugin(pluginC);
+                expect.use(pluginC);
             }, 'to throw', 'PluginC requires plugins PluginA and PluginB');
 
             var pluginD = {
@@ -4841,7 +4880,7 @@ describe('unexpected', function () {
             };
 
             expect(function () {
-                expect.installPlugin(pluginD);
+                expect.use(pluginD);
             }, 'to throw', 'PluginD requires plugins PluginA, PluginB and PluginC');
         });
 
@@ -4857,9 +4896,9 @@ describe('unexpected', function () {
                     done();
                 }
             };
-            expect.installPlugin(pluginA);
+            expect.use(pluginA);
             var clonedExpect = expect.clone();
-            clonedExpect.installPlugin(pluginB);
+            clonedExpect.use(pluginB);
         });
 
         it('installing a plugin more than once is a no-op', function () {
@@ -4870,19 +4909,19 @@ describe('unexpected', function () {
                     callCount += 1;
                 }
             };
-            expect.installPlugin(plugin);
-            expect.installPlugin(plugin);
-            expect.installPlugin(plugin);
+            expect.use(plugin);
+            expect.use(plugin);
+            expect.use(plugin);
             expect(callCount, 'to be', 1);
         });
 
         it('installing a plugin with the same name as another plugin (but not ===) throws an error', function () {
-            expect.installPlugin({
+            expect.use({
                 name: 'test',
                 installInto: function () {}
             });
             expect(function () {
-                expect.installPlugin({
+                expect.use({
                     name: 'test',
                     installInto: function () {}
                 });
