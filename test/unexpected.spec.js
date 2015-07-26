@@ -1934,6 +1934,10 @@ describe('unexpected', function () {
             expect(function () {
                 expect({ a: 'a' }, 'not to have property', 'a', 'a');
             }, "to throw", "The 'not to have property' assertion does not work with a value argument");
+
+            expect(function () {
+                expect({ a: 'a' }, 'not to have own property', 'a', 'a');
+            }, "to throw", "The 'not to have own property' assertion does not work with a value argument");
         });
     });
 
