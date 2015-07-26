@@ -6986,6 +6986,18 @@ describe('unexpected', function () {
                         expect('foo', 'to equal', 'foo').and('to be a number');
                     }, 'to error', "expected 'foo' to be a number");
                 });
+
+                describe('with an expect.it as the second clause', function () {
+                    it('should succeed', function () {
+                        return expect('foo', 'to equal', 'foo').and(expect.it('to be a string'));
+                    });
+
+                    it('should fail with a diff', function () {
+                        return expect(function () {
+                            return expect('foo', 'to equal', 'foo').and(expect.it('to be a number'));
+                        }, 'to error', "expected 'foo' to be a number");
+                    });
+                });
             });
 
             describe('with an asynchronous assertion anded with a synchronous one', function () {
@@ -7019,6 +7031,18 @@ describe('unexpected', function () {
                         "-foo\n" +
                         "+bar"
                     );
+                });
+
+                describe('with an expect.it as the second clause', function () {
+                    it('should succeed', function () {
+                        return expect('foo', 'when delayed', 5, 'to equal', 'foo').and(expect.it('to be a string'));
+                    });
+
+                    it('should fail with a diff', function () {
+                        return expect(function () {
+                            return expect('foo', 'when delayed', 5, 'to equal', 'foo').and(expect.it('to be a number'));
+                        }, 'to error', "expected 'foo' to be a number");
+                    });
                 });
             });
 
