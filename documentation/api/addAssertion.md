@@ -11,7 +11,7 @@ expect.addAssertion([typeName, ...], pattern, handler);
 expect.addAssertion([typeName, ...], [pattern, ...], handler);
 ```
 
-New assertions can be added to Unexpected to following way.
+New assertions can be added to Unexpected the following way.
 
 ```js
 var errorMode = 'default'; // use to control the error mode later in the example
