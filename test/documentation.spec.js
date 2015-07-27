@@ -704,6 +704,33 @@ describe("documentation tests", function () {
         return expect.promise.all(testPromises);
     });
 
+    it("api/expect.md contains correct examples", function () {
+        var testPromises = [];
+        try {
+            expect(123, 'to equal', 456);
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect(123, 'to equal', 456);").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected 123 to equal 456"
+            );
+        }
+
+        it('should call the callback', function () {
+            return expect(setImmediate, 'to call the callback');
+        });
+
+        expect('abc', 'to be a string').and('to have length', 3);
+
+        it('should do the right thing', function () {
+            return expect(setImmediate, 'to be a function').and('to call the callback');
+        });
+        return expect.promise.all(testPromises);
+    });
+
     it("api/fail.md contains correct examples", function () {
         var testPromises = [];
         try {
