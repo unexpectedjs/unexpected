@@ -1900,7 +1900,7 @@ describe('unexpected', function () {
             expect(function () {
                 expect({a: 'b'}, 'to have property', 'a', 'c');
             }, 'to throw exception',
-                   "expected { a: 'b' } to have property 'a', 'c'\n" +
+                   "expected { a: 'b' } to have property 'a' with a value of 'c'\n" +
                   "\n" +
                    "-b\n" +
                    "+c");
@@ -1908,7 +1908,7 @@ describe('unexpected', function () {
             expect(function () {
                 expect({a: 'b'}, 'to have own property', 'a', 'c');
             }, 'to throw exception',
-                   "expected { a: 'b' } to have own property 'a', 'c'\n" +
+                   "expected { a: 'b' } to have own property 'a' with a value of 'c'\n" +
                   "\n" +
                    "-b\n" +
                    "+c");
