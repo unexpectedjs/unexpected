@@ -20,10 +20,6 @@
     "url": "/api/fail/"
   },
   {
-    "label": "installPlugin (api)",
-    "url": "/api/installPlugin/"
-  },
-  {
     "label": "promise (api)",
     "url": "/api/promise/"
   },
@@ -46,6 +42,10 @@
   {
     "label": "UnexpectedError (api)",
     "url": "/api/UnexpectedError/"
+  },
+  {
+    "label": "use (api)",
+    "url": "/api/use/"
   },
   {
     "label": "withError (api)",

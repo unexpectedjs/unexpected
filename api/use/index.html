@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../../static/normalize.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="../../static/main.css" type="text/css" media="screen" />
     <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="../../static/bug-icon-black.ico">
-    <title>installPlugin</title>
+    <title>use</title>
 </head>
 <body class="sidebar-hidden has-sidebar">
     <header>
@@ -60,10 +60,6 @@
             <a href="../fail">fail</a>
         </li>
         
-        <li class="active">
-            <a href="">installPlugin</a>
-        </li>
-        
         <li class="">
             <a href="../promise">promise</a>
         </li>
@@ -88,6 +84,10 @@
             <a href="../UnexpectedError">UnexpectedError</a>
         </li>
         
+        <li class="active">
+            <a href="">use</a>
+        </li>
+        
         <li class="">
             <a href="../withError">withError</a>
         </li>
@@ -98,38 +98,41 @@
     <div class="main" tabindex="-1">
         <div class="content">
             <h2 id="plugins">Plugins</h2>
-<p>Unexpected is build on an extensible core. Every assertion, type and
+<p>Unexpected is built on an extensible core. Every assertion, type and
 output style provided by the core library is implemented by extending
 the core. Plugins can make use of the exact same extension methods to
 provide new and exciting assertion capabilities.</p>
-<h3 id="expect-installplugin-typedefinition-">expect.installPlugin(typeDefinition)</h3>
-<p>Unexpected plugins are objects that adhere to the following interface:</p>
-<p>Required members:</p>
+<h3 id="expect-use-plugindefinition-">expect.use(pluginDefinition)</h3>
+<p>Unexpected plugins are functions or objects that adhere to the following interface:</p>
+<p>Optional properties:</p>
 <ul>
 <li><strong>name</strong>: <code>String</code> - the name of the plugin.</li>
-</ul>
-<p>Optional members:</p>
-<ul>
 <li><strong>dependencies</strong>: <code>String array</code> - a list of dependencies.</li>
+</ul>
+<p>Required:</p>
+<ul>
 <li><strong>installInto</strong>: <code>function(expect)</code> - a function that will update the given expect instance.</li>
 </ul>
+<p>If you pass a function to <code>use</code>, it will be used as the <code>installInto</code>
+function, and the name of the function will be used as the name of the plugin,
+unless the function is anonymous.</p>
 <p>The name of the plugin should be the same as the NPM package name.</p>
 <p>A plugin can require a list of other plugins to be installed prior to
 installation of the plugin. If the dependency list is not fulfilled
 the installation will fail. The idea is that you manage your plugin
-versions using NPM. If you install a plugin that is already installed
+versions using NPM. If you install a plugin that is already installed,
 nothing will happen.</p>
 <p>The <code>installInto</code> function receives an instance of unexpected and uses
 the <code>addAssertion</code>, <code>addStyle</code>, <code>installTheme</code> and <code>addType</code> methods
 to extend the instance.</p>
 <div class="code lang-javascript">
-  <div>expect<span style="color: #000000">.</span><span style="color: #000000">installPlugin</span><span style="color: #000000">(</span><span style="color: #000000">require</span><span style="color: #000000">(</span><span style="color: #df5000">'unexpected-sinon'</span><span style="color: #000000">));</span></div>
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">use</span><span style="color: #000000">(</span><span style="color: #000000">require</span><span style="color: #000000">(</span><span style="color: #df5000">'unexpected-sinon'</span><span style="color: #000000">));</span></div>
 </div><p>Notice that it is usually a good idea to <a href="../clone">clone</a> the instance before
-extending it.</p>
+extending it with plugins.</p>
 <h3 id="example">Example</h3>
 <p>Let&#39;s say we wanted first class support for a integer intervals and
 provide as a plugin.</p>
-<p>An interger interval is defined the following way:</p>
+<p>An integer interval is defined the following way:</p>
 <div class="code lang-javascript">
   <div><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">IntegerInterval</span><span style="color: #000000">(</span>from<span style="color: #000000">,</span>&nbsp;to<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
   <div>&nbsp;&nbsp;<span style="color: #a71d5d">this</span><span style="color: #000000">.</span>from&nbsp;<span style="color: #a71d5d">=</span>&nbsp;from<span style="color: #000000">;</span></div>
@@ -137,7 +140,7 @@ provide as a plugin.</p>
   <div><span style="color: #000000">}</span></div>
 </div><p>Now we will define an example plugin that will add support for this type:</p>
 <div class="code lang-javascript">
-  <div>expect<span style="color: #000000">.</span><span style="color: #000000">installPlugin</span><span style="color: #000000">({</span></div>
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">use</span><span style="color: #000000">({</span></div>
   <div>&nbsp;&nbsp;name<span style="color: #000000">:</span>&nbsp;<span style="color: #df5000">'unexpected-integer-intervals'</span><span style="color: #000000">,</span></div>
   <div>&nbsp;&nbsp;installInto<span style="color: #000000">:</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>expect<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">addType</span><span style="color: #000000">({</span></div>
