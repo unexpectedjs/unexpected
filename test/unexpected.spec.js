@@ -1408,6 +1408,14 @@ describe('unexpected', function () {
                 }), 'when fulfilled', 'to satisfy', { foo: 'bar' });
             });
 
+            it('should support expect.it', function () {
+                return expect(new Promise(function (resolve, reject) {
+                    setTimeout(function () {
+                        resolve({ foo: 'bar' });
+                    }, 0);
+                }), 'when fulfilled', expect.it('to have property', 'foo', 'bar'));
+            });
+
             it('should fail when the promise is rejected', function () {
                 return expect(
                     expect(new Promise(function (resolve, reject) {
@@ -1437,6 +1445,22 @@ describe('unexpected', function () {
                         "               // -bar\n" +
                         "               // +baz\n" +
                         "  }"
+                );
+            });
+
+            it('should fail with the right error message when the next assertion is an expect.it that fails', function () {
+                return expect(
+                    expect(new Promise(function (resolve, reject) {
+                        setTimeout(function () {
+                            resolve({ foo: 'bar' });
+                        }, 0);
+                    }), 'when fulfilled', expect.it('to have property', 'foo', 'quux')),
+                    'to be rejected with',
+                        "expected Promise when fulfilled expect.it('to have property', 'foo', 'quux')\n" +
+                        "  expected { foo: 'bar' } to have property 'foo' with a value of 'quux'\n" +
+                        "\n" +
+                        "  -bar\n" +
+                        "  +quux"
                 );
             });
         });
