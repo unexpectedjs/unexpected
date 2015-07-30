@@ -1847,6 +1847,21 @@ describe('unexpected', function () {
                     );
                 });
 
+                it('builds the diff correctly when the partial match spans more than one line', function () {
+                    expect(function () {
+                        expect('f\no\nobar', 'to begin with', 'f\no\nop');
+                    }, 'to throw exception',
+                           "expected 'f\\no\\nobar' to begin with 'f\\no\\nop'\n" +
+                           "\n" +
+                           "f\n" +
+                           ">\n" +
+                           "o\n" +
+                           ">\n" +
+                           "obar\n" +
+                           ">"
+                    );
+                });
+
                 it('builds the diff correctly when the substring is longer than the subject', function () {
                     expect(function () {
                         expect('foo', 'to begin with', 'foobar');
@@ -1925,6 +1940,21 @@ describe('unexpected', function () {
                            "\n" +
                            "hello world\n" +
                            "     <^^^^^"
+                    );
+                });
+
+                it('builds the diff correctly when the partial match spans more than one line', function () {
+                    expect(function () {
+                        expect('foob\na\nr', 'to end with', 'quuxb\na\nr');
+                    }, 'to throw exception',
+                           "expected 'foob\\na\\nr' to end with 'quuxb\\na\\nr'\n" +
+                           "\n" +
+                           "foob\n" +
+                           "   <\n" +
+                           "a\n" +
+                           "<\n" +
+                           "r\n" +
+                           "<"
                     );
                 });
 
