@@ -1698,6 +1698,12 @@ describe('unexpected', function () {
     });
 
     describe('contain assertion', function () {
+        it('should throw an error when one of the arguments is the empty string', function () {
+            expect(function () {
+                expect('foo', 'to contain', 'bar', '');
+            }, 'to throw', "The 'to contain' assertion does not support the empty string");
+        });
+
         it('asserts indexOf for a string', function () {
             expect('hello world', 'to contain', 'world');
         });
@@ -1816,6 +1822,12 @@ describe('unexpected', function () {
     });
 
     describe('to begin with assertion', function () {
+        it('should throw an error when the expected prefix is the empty string', function () {
+            expect(function () {
+                expect('foo', 'to begin with', '');
+            }, 'to throw', "The 'to begin with' assertion does not support a prefix of the empty string");
+        });
+
         describe('without the "not" flag', function () {
             it('asserts equality with a string', function () {
                 expect('hello', 'to begin with', 'hello');
@@ -1912,6 +1924,12 @@ describe('unexpected', function () {
     });
 
     describe('to end with assertion', function () {
+        it('should throw an error when the expected suffix is the empty string', function () {
+            expect(function () {
+                expect('foo', 'to end with', '');
+            }, 'to throw', "The 'to end with' assertion does not support a suffix of the empty string");
+        });
+
         describe('without the "not" flag', function () {
             it('asserts equality with a string', function () {
                 expect('hello', 'to end with', 'hello');
