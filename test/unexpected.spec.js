@@ -1768,7 +1768,7 @@ describe('unexpected', function () {
                     "foo\n" +
                     "^^^\n" +
                     "barquux\n" +
-                    "^  ^^>"
+                    "^  ^^^"
                 );
                 expect(err, 'to have ansi message',
                     "\x1B[31m\x1B[1mexpected\x1B[22m\x1B[39m \x1B[36m'foo\\nbarquux'\x1B[39m \x1B[31m\x1B[1mto contain\x1B[22m\x1B[39m \x1B[36m'foo\\nb'\x1B[39m, \x1B[36m'quuux'\x1B[39m\n" +
@@ -1855,7 +1855,7 @@ describe('unexpected', function () {
                         "expected 'hello world' to begin with 'hell yeah'\n" +
                         "\n" +
                         "hello world\n" +
-                        "^^^>"
+                        "^^^^"
                     );
                 });
 
@@ -1866,11 +1866,11 @@ describe('unexpected', function () {
                            "expected 'f\\no\\nobar' to begin with 'f\\no\\nop'\n" +
                            "\n" +
                            "f\n" +
-                           ">\n" +
+                           "^\n" +
                            "o\n" +
-                           ">\n" +
+                           "^\n" +
                            "obar\n" +
-                           ">"
+                           "^"
                     );
                 });
 
@@ -1881,7 +1881,7 @@ describe('unexpected', function () {
                            "expected 'foo' to begin with 'foobar'\n" +
                            "\n" +
                            "foo\n" +
-                           "^^>"
+                           "^^^"
                     );
                 });
             });
@@ -1957,7 +1957,7 @@ describe('unexpected', function () {
                            "expected 'hello world' to end with 'wonderful world'\n" +
                            "\n" +
                            "hello world\n" +
-                           "     <^^^^^"
+                           "     ^^^^^^"
                     );
                 });
 
@@ -1968,11 +1968,11 @@ describe('unexpected', function () {
                            "expected 'foob\\na\\nr' to end with 'quuxb\\na\\nr'\n" +
                            "\n" +
                            "foob\n" +
-                           "   <\n" +
+                           "   ^\n" +
                            "a\n" +
-                           "<\n" +
+                           "^\n" +
                            "r\n" +
-                           "<"
+                           "^"
                     );
                 });
 
@@ -1983,7 +1983,7 @@ describe('unexpected', function () {
                            "expected 'foo' to end with 'doublefoo'\n" +
                            "\n" +
                            "foo\n" +
-                           "<^^"
+                           "^^^"
                     );
                 });
             });
