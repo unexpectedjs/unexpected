@@ -1816,86 +1816,161 @@ describe('unexpected', function () {
     });
 
     describe('to begin with assertion', function () {
-        it('asserts equality with a string', function () {
-            expect('hello', 'to begin with', 'hello');
-            expect('hello world', 'to begin with', 'hello');
+        describe('without the "not" flag', function () {
+            it('asserts equality with a string', function () {
+                expect('hello', 'to begin with', 'hello');
+                expect('hello world', 'to begin with', 'hello');
+            });
+
+            it('should support searching for a non-string inside a string', function () {
+                expect('null modem', 'to begin with', null);
+                expect('123456', 'to begin with', 123);
+                expect('falsehood', 'to begin with', false);
+                expect('Infinity man!', 'to begin with', Infinity);
+            });
+
+            describe('when the assertion fails', function () {
+                it('does not include a diff when there is no common prefix', function () {
+                    expect(function () {
+                        expect('hello world', 'to begin with', 'foo');
+                    }, 'to throw exception', "expected 'hello world' to begin with 'foo'");
+                });
+
+                it('includes a diff when there is a common prefix', function () {
+                    expect(function () {
+                        expect('hello world', 'to begin with', 'hell yeah');
+                    }, 'to throw exception',
+                        "expected 'hello world' to begin with 'hell yeah'\n" +
+                        "\n" +
+                        "hello world\n" +
+                        "^^^>"
+                    );
+                });
+
+                it('builds the diff correctly when the substring is longer than the subject', function () {
+                    expect(function () {
+                        expect('foo', 'to begin with', 'foobar');
+                    }, 'to throw exception',
+                           "expected 'foo' to begin with 'foobar'\n" +
+                           "\n" +
+                           "foo\n" +
+                           "^^>"
+                    );
+                });
+            });
         });
 
-        it('should support searching for a non-string inside a string', function () {
-            expect('null modem', 'to begin with', null);
-            expect('123456', 'to begin with', 123);
-            expect('falsehood', 'to begin with', false);
-            expect('Infinity man!', 'to begin with', Infinity);
-        });
+        describe('with the "not" flag', function () {
+            it('asserts inequality', function () {
+                expect('hello', 'not to begin with', 'world');
+                expect('hello world', 'not to begin with', 'world');
+            });
 
-        it('asserts inequality when not flag is turned on', function () {
-            expect('hello', 'not to begin with', 'world');
-            expect('hello world', 'not to begin with', 'world');
-        });
+            describe('when the assertion fails', function () {
+                it('produces a diff when', function () {
+                    expect(function () {
+                        expect('foobarquuxfoo', 'not to begin with', 'foo');
+                    }, 'to throw',
+                        "expected 'foobarquuxfoo' not to begin with 'foo'\n" +
+                        "\n" +
+                        "foobarquuxfoo\n" +
+                        "^^^"
+                    );
+                });
 
-        it('throws when the assertion fails', function () {
-            expect(function () {
-                expect('hello world', 'to begin with', 'foo');
-            }, 'to throw exception',
-                   "expected 'hello world' to begin with 'foo'\n" +
-                   "\n" +
-                   "-hel\n" +
-                   "+foo");
-        });
-
-        it('produces a diff when the string case fails and the not flag is on', function () {
-            expect(function () {
-                expect('foobarquuxfoo', 'not to begin with', 'foo');
-            }, 'to throw', "expected 'foobarquuxfoo' not to begin with 'foo'");
+                it('builds the diff correctly when the prefix contains newlines', function () {
+                    expect(function () {
+                        expect('f\no\nobarquuxfoo', 'not to begin with', 'f\no\no');
+                    }, 'to throw',
+                        "expected 'f\\no\\nobarquuxfoo' not to begin with 'f\\no\\no'\n" +
+                        "\n" +
+                        "f\n" +
+                        "^\n" +
+                        "o\n" +
+                        "^\n" +
+                        "obarquuxfoo\n" +
+                        "^"
+                    );
+                });
+            });
         });
     });
 
     describe('to end with assertion', function () {
-        it('asserts equality with a string', function () {
-            expect('hello', 'to end with', 'hello');
-            expect('hello world', 'to end with', 'world');
+        describe('without the "not" flag', function () {
+            it('asserts equality with a string', function () {
+                expect('hello', 'to end with', 'hello');
+                expect('hello world', 'to end with', 'world');
+            });
+
+            it('should support searching for a non-string inside a string', function () {
+                expect('maybe null', 'to end with', null);
+                expect('0123', 'to end with', 123);
+                expect('unfalse', 'to end with', false);
+                expect('to Infinity', 'to end with', Infinity);
+            });
+
+            describe('when the assertion fails', function () {
+                it('does not include a diff when there is no common suffix', function () {
+                    expect(function () {
+                        expect('hello world', 'to end with', 'foo');
+                    }, 'to throw exception', "expected 'hello world' to end with 'foo'");
+                });
+
+                it('includes a diff when there is a common suffix', function () {
+                    expect(function () {
+                        expect('hello world', 'to end with', 'wonderful world');
+                    }, 'to throw exception',
+                           "expected 'hello world' to end with 'wonderful world'\n" +
+                           "\n" +
+                           "hello world\n" +
+                           "     <^^^^^"
+                    );
+                });
+
+                it('builds the diff correctly when the substring is longer than the subject', function () {
+                    expect(function () {
+                        expect('foo', 'to end with', 'doublefoo');
+                    }, 'to throw exception',
+                           "expected 'foo' to end with 'doublefoo'\n" +
+                           "\n" +
+                           "foo\n" +
+                           "<^^"
+                    );
+                });
+            });
         });
 
-        it('should support searching for a non-string inside a string', function () {
-            expect('maybe null', 'to end with', null);
-            expect('0123', 'to end with', 123);
-            expect('unfalse', 'to end with', false);
-            expect('to Infinity', 'to end with', Infinity);
-        });
+        describe('with the "not" flag', function () {
+            it('asserts inequality', function () {
+                expect('hello', 'not to end with', 'world');
+                expect('hello worldly', 'not to end with', 'world');
+            });
 
-        it('asserts inequality when not flag is turned on', function () {
-            expect('hello', 'not to end with', 'world');
-            expect('hello worldly', 'not to end with', 'world');
-        });
+            it('produces a diff when the string case fails', function () {
+                expect(function () {
+                    expect('foobarquuxfoo', 'not to end with', 'foo');
+                }, 'to throw',
+                    "expected 'foobarquuxfoo' not to end with 'foo'\n" +
+                    "\n" +
+                    "foobarquuxfoo\n" +
+                    "          ^^^");
+            });
 
-        it('throws when the assertion fails', function () {
-            expect(function () {
-                expect(null, 'to end with', 'world');
-            }, 'to throw',
-                   "expected null to end with 'world'\n" +
-                   "  The assertion 'to end with' is not defined for the type 'null',\n" +
-                   "  but it is defined for the type 'string'");
-
-            expect(function () {
-                expect('hello world', 'to end with', 'foo');
-            }, 'to throw exception',
-                   "expected 'hello world' to end with 'foo'\n" +
-                   "\n" +
-                   "-rld\n" +
-                   "+foo");
-
-            expect(function () {
-                expect(1, 'to end with', 1);
-            }, 'to throw exception',
-                   "expected 1 to end with 1\n" +
-                   "  The assertion 'to end with' is not defined for the type 'number',\n" +
-                   "  but it is defined for the type 'string'");
-        });
-
-        it('produces a diff when the string case fails and the not flag is on', function () {
-            expect(function () {
-                expect('foobarquuxfoo', 'not to end with', 'foo');
-            }, 'to throw', "expected 'foobarquuxfoo' not to end with 'foo'");
+            it('builds the diff correctly when the suffix contains newlines', function () {
+                expect(function () {
+                    expect('foobarquuxf\no\no', 'not to end with', 'f\no\no');
+                }, 'to throw',
+                    "expected 'foobarquuxf\\no\\no' not to end with 'f\\no\\no'\n" +
+                    "\n" +
+                    "foobarquuxf\n" +
+                    "          ^\n" +
+                    "o\n" +
+                    "^\n" +
+                    "o\n" +
+                    "^"
+                );
+            });
         });
     });
 
