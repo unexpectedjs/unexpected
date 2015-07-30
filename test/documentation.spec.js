@@ -3876,6 +3876,59 @@ describe("documentation tests", function () {
         return expect.promise.all(testPromises);
     });
 
+    it("assertions/string/to-begin-with.md contains correct examples", function () {
+        var testPromises = [];
+        expect('Hello beautiful world!', 'to begin with', 'Hello');
+
+        try {
+            expect('Hello world!', 'to begin with', 'foo');
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect('Hello world!', 'to begin with', 'foo');").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected 'Hello world!' to begin with 'foo'"
+            );
+        }
+
+        try {
+            expect('Hello world!', 'to begin with', 'Hell yeah');
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect('Hello world!', 'to begin with', 'Hell yeah');").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected 'Hello world!' to begin with 'Hell yeah'\n" +
+                "\n" +
+                "Hello world!\n" +
+                "^^^>"
+            );
+        }
+
+        expect('Hello world!', 'not to begin with', 'Heaven');
+
+        try {
+            expect('Hello beautiful world!', 'not to begin with', 'Hello');
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect('Hello beautiful world!', 'not to begin with', 'Hello');").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected 'Hello beautiful world!' not to begin with 'Hello'\n" +
+                "\n" +
+                "Hello beautiful world!\n" +
+                "^^^^^"
+            );
+        }
+        return expect.promise.all(testPromises);
+    });
+
     it("assertions/string/to-contain.md contains correct examples", function () {
         var testPromises = [];
         expect('Hello beautiful world!', 'to contain', 'beautiful');
@@ -3956,6 +4009,59 @@ describe("documentation tests", function () {
                 "\n" +
                 "Hello beautiful world!\n" +
                 "      ^^^^^^^^^"
+            );
+        }
+        return expect.promise.all(testPromises);
+    });
+
+    it("assertions/string/to-end-with.md contains correct examples", function () {
+        var testPromises = [];
+        expect('Hello beautiful world!', 'to end with', 'world!');
+
+        try {
+            expect('Hello world!', 'to end with', 'foo');
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect('Hello world!', 'to end with', 'foo');").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected 'Hello world!' to end with 'foo'"
+            );
+        }
+
+        try {
+            expect('Hello world!', 'to end with', 'Hola, world!');
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect('Hello world!', 'to end with', 'Hola, world!');").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected 'Hello world!' to end with 'Hola, world!'\n" +
+                "\n" +
+                "Hello world!\n" +
+                "     <^^^^^^"
+            );
+        }
+
+        expect('Hello world!', 'not to end with', 'earth!');
+
+        try {
+            expect('Hello beautiful world!', 'not to end with', 'world!');
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect('Hello beautiful world!', 'not to end with', 'world!');").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected 'Hello beautiful world!' not to end with 'world!'\n" +
+                "\n" +
+                "Hello beautiful world!\n" +
+                "                ^^^^^^"
             );
         }
         return expect.promise.all(testPromises);
