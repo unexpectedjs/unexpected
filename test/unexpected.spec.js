@@ -6664,6 +6664,20 @@ describe('unexpected', function () {
                     });
                 });
 
+                it('should provide the error as the promise fulfillment value when matching against an UnexpectedError', function () {
+                    try {
+                        expect(true, 'to be falsy');
+                    } catch (err) {
+                        return expect(function (cb) {
+                            setTimeout(function () {
+                                cb(err);
+                            }, 0);
+                        }, 'to call the callback with error', 'expected true to be falsy').then(function (err) {
+                            expect(err, 'to have text message', 'expected true to be falsy');
+                        });
+                    }
+                });
+
                 describe('given as a string to be tested against the error message', function () {
                     it('should succeed', function () {
                         return expect(function (cb) {
