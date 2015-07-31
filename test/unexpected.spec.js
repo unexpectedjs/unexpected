@@ -1159,6 +1159,26 @@ describe('unexpected', function () {
                     }));
                 });
 
+                it('should handle the case where the function returns a promise', function () {
+                    return expect(
+                        expect(function () {
+                            expect('abc', 'to equal', 'def');
+                        }, 'to throw', expect.it('to have ansi diff', function (ansiStr) {
+                            return expect(123, 'when delayed a little bit', 'to equal', 456);
+                        })),
+                        'to be rejected with',
+                            "expected\n" +
+                            "function () {\n" +
+                            "    expect('abc', 'to equal', 'def');\n" +
+                            "}\n" +
+                            "to throw\n" +
+                            "expect.it('to have ansi diff', function (ansiStr) {\n" +
+                            "    return expect(123, 'when delayed a little bit', 'to equal', 456);\n" +
+                            "})\n" +
+                            "  expected 123 when delayed a little bit to equal 456"
+                    );
+                });
+
                 it('should throw an error when asked for a non-text representation of a non-Unexpected error', function () {
                     try {
                         throw new Error('foo');
