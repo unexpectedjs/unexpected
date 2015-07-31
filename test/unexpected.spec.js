@@ -34,20 +34,7 @@ describe('unexpected', function () {
     var circular = {};
     circular.self = circular;
 
-    expect.addType({
-        name: 'magicpen',
-        identify: function (obj) {
-            return obj && obj.isMagicPen;
-        },
-        inspect: function (pen, depth, output) {
-            return output.append(pen);
-        },
-        equal: function (a, b) {
-            return a.toString() === b.toString() &&
-                a.toString('ansi') === b.toString('ansi') &&
-                a.toString('html') === b.toString('html');
-        }
-    }).addAssertion('when delayed a little bit', function (expect, subject) {
+    expect.addAssertion('when delayed a little bit', function (expect, subject) {
         var that = this;
         return expect.promise(function (run) {
             setTimeout(run(function () {
@@ -1146,6 +1133,32 @@ describe('unexpected', function () {
                     });
                 });
 
+                it('should support matching the diff instead of the message', function () {
+                    expect(function () {
+                        expect('abc', 'to equal', 'def');
+                    }, 'to throw', expect.it('to have ansi diff',
+                        '\x1B[31m-\x1B[39m\x1B[41m\x1B[30mabc\x1B[39m\x1B[49m\n' +
+                        '\x1B[32m+\x1B[39m\x1B[42m\x1B[30mdef\x1B[39m\x1B[49m'
+                    ));
+                });
+
+                it('should support building the expected output via a function', function () {
+                    expect(function () {
+                        expect('abc', 'to equal', 'def');
+                    }, 'to throw', expect.it('to have ansi diff', function () {
+                        this.red('-').text('abc', ['bgRed', 'black']).nl()
+                            .green('+').text('def', ['bgGreen', 'black']);
+                    }));
+                });
+
+                it('should assume that a function that does not produce any output has run assertions on the stringified diff/message, and thus should not fail', function () {
+                    expect(function () {
+                        expect('abc', 'to equal', 'def');
+                    }, 'to throw', expect.it('to have ansi diff', function (ansiStr) {
+                        expect(ansiStr, 'to contain', 'abc');
+                    }));
+                });
+
                 it('should throw an error when asked for a non-text representation of a non-Unexpected error', function () {
                     try {
                         throw new Error('foo');
@@ -1761,21 +1774,22 @@ describe('unexpected', function () {
         it('produces a diff showing full and partial matches for each needle when the assertion fails', function () {
             expect(function () {
                 expect('foo\nbarquux', 'to contain', 'foo\nb', 'quuux');
-            }, 'to throw', function (err) {
-                expect(err, 'to have text message',
+            }, 'to throw',
+                expect.it('to have text message',
                     "expected 'foo\\nbarquux' to contain 'foo\\nb', 'quuux'\n" +
                     "\n" +
                     "foo\n" +
                     "^^^\n" +
                     "barquux\n" +
                     "^  ^^^"
-                );
-                expect(err, 'to have ansi message',
-                    "\x1B[31m\x1B[1mexpected\x1B[22m\x1B[39m \x1B[36m'foo\\nbarquux'\x1B[39m \x1B[31m\x1B[1mto contain\x1B[22m\x1B[39m \x1B[36m'foo\\nb'\x1B[39m, \x1B[36m'quuux'\x1B[39m\n" +
-                    "\n" +
-                    "\x1B[42m\x1B[30mfoo\x1B[39m\x1B[49m\n\x1B[42m\x1B[30mb\x1B[39m\x1B[49mar\x1B[43m\x1B[30mquu\x1B[39m\x1B[49mx"
-                );
-            });
+                ).and('to have ansi diff', function () {
+                    this.text('foo', ['bgGreen', 'black']).nl()
+                        .text('b', ['bgGreen', 'black'])
+                        .text('ar')
+                        .text('quu', ['bgYellow', 'black'])
+                        .text('x');
+                })
+            );
         });
 
         describe('with the not flag', function () {
@@ -1857,11 +1871,9 @@ describe('unexpected', function () {
                             "\n" +
                             "hello world\n" +
                             "^^^^"
-                        ).and('to have ansi message',
-                            "\x1B[31m\x1B[1mexpected\x1B[22m\x1B[39m \x1B[36m'hello world'\x1B[39m \x1B[31m\x1B[1mto begin with\x1B[22m\x1B[39m \x1B[36m'hell yeah'\x1B[39m\n" +
-                            "\n" +
-                            "\x1B[43m\x1B[30mhell\x1B[39m\x1B[49mo world"
-                        )
+                        ).and('to have ansi diff', function () {
+                            this.text('hell', ['bgYellow', 'black']).text('o world');
+                        })
                     );
                 });
 
@@ -1900,7 +1912,7 @@ describe('unexpected', function () {
             });
 
             describe('when the assertion fails', function () {
-                it('produces a diff when', function () {
+                it('produces a diff', function () {
                     expect(function () {
                         expect('foobarquuxfoo', 'not to begin with', 'foo');
                     }, 'to throw',
@@ -1909,11 +1921,9 @@ describe('unexpected', function () {
                             "\n" +
                             "foobarquuxfoo\n" +
                             "^^^"
-                        ).and('to have ansi message',
-                            "\x1B[31m\x1B[1mexpected\x1B[22m\x1B[39m \x1B[36m'foobarquuxfoo'\x1B[39m \x1B[31m\x1B[1mnot to begin with\x1B[22m\x1B[39m \x1B[36m'foo'\x1B[39m\n" +
-                            "\n" +
-                            "\x1B[41m\x1B[30mfoo\x1B[39m\x1B[49mbarquuxfoo"
-                        )
+                        ).and('to have ansi diff', function () {
+                            this.text('foo', ['bgRed', 'black']).text('barquuxfoo');
+                        })
                     );
                 });
 
@@ -1971,11 +1981,9 @@ describe('unexpected', function () {
                             "\n" +
                             "hello world\n" +
                             "     ^^^^^^"
-                        ).and('to have ansi message',
-                            "\x1B[31m\x1B[1mexpected\x1B[22m\x1B[39m \x1B[36m'hello world'\x1B[39m \x1B[31m\x1B[1mto end with\x1B[22m\x1B[39m \x1B[36m'wonderful world'\x1B[39m\n" +
-                            "\n" +
-                            "hello\x1B[43m\x1B[30m world\x1B[39m\x1B[49m"
-                        )
+                        ).and('to have ansi diff', function () {
+                            this.text('hello').text(' world', ['bgYellow', 'black']);
+                        })
                     );
                 });
 
@@ -2022,11 +2030,9 @@ describe('unexpected', function () {
                         "\n" +
                         "foobarquuxfoo\n" +
                         "          ^^^"
-                    ).and('to have ansi message',
-                        "\x1B[31m\x1B[1mexpected\x1B[22m\x1B[39m \x1B[36m'foobarquuxfoo'\x1B[39m \x1B[31m\x1B[1mnot to end with\x1B[22m\x1B[39m \x1B[36m'foo'\x1B[39m\n" +
-                        "\n" +
-                        "foobarquux\x1B[41m\x1B[30mfoo\x1B[39m\x1B[49m"
-                    )
+                    ).and('to have ansi diff', function () {
+                        this.text('foobarquux').text('foo', ['bgRed', 'black']);
+                    })
                 );
             });
 
