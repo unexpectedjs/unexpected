@@ -1852,10 +1852,16 @@ describe('unexpected', function () {
                     expect(function () {
                         expect('hello world', 'to begin with', 'hell yeah');
                     }, 'to throw exception',
-                        "expected 'hello world' to begin with 'hell yeah'\n" +
-                        "\n" +
-                        "hello world\n" +
-                        "^^^^"
+                        expect.it('to have message',
+                            "expected 'hello world' to begin with 'hell yeah'\n" +
+                            "\n" +
+                            "hello world\n" +
+                            "^^^^"
+                        ).and('to have ansi message',
+                            "\x1B[31m\x1B[1mexpected\x1B[22m\x1B[39m \x1B[36m'hello world'\x1B[39m \x1B[31m\x1B[1mto begin with\x1B[22m\x1B[39m \x1B[36m'hell yeah'\x1B[39m\n" +
+                            "\n" +
+                            "\x1B[43m\x1B[30mhell\x1B[39m\x1B[49mo world"
+                        )
                     );
                 });
 
@@ -1898,10 +1904,16 @@ describe('unexpected', function () {
                     expect(function () {
                         expect('foobarquuxfoo', 'not to begin with', 'foo');
                     }, 'to throw',
-                        "expected 'foobarquuxfoo' not to begin with 'foo'\n" +
-                        "\n" +
-                        "foobarquuxfoo\n" +
-                        "^^^"
+                        expect.it('to have message',
+                            "expected 'foobarquuxfoo' not to begin with 'foo'\n" +
+                            "\n" +
+                            "foobarquuxfoo\n" +
+                            "^^^"
+                        ).and('to have ansi message',
+                            "\x1B[31m\x1B[1mexpected\x1B[22m\x1B[39m \x1B[36m'foobarquuxfoo'\x1B[39m \x1B[31m\x1B[1mnot to begin with\x1B[22m\x1B[39m \x1B[36m'foo'\x1B[39m\n" +
+                            "\n" +
+                            "\x1B[41m\x1B[30mfoo\x1B[39m\x1B[49mbarquuxfoo"
+                        )
                     );
                 });
 
@@ -1954,10 +1966,16 @@ describe('unexpected', function () {
                     expect(function () {
                         expect('hello world', 'to end with', 'wonderful world');
                     }, 'to throw exception',
-                           "expected 'hello world' to end with 'wonderful world'\n" +
-                           "\n" +
-                           "hello world\n" +
-                           "     ^^^^^^"
+                        expect.it('to have message',
+                            "expected 'hello world' to end with 'wonderful world'\n" +
+                            "\n" +
+                            "hello world\n" +
+                            "     ^^^^^^"
+                        ).and('to have ansi message',
+                            "\x1B[31m\x1B[1mexpected\x1B[22m\x1B[39m \x1B[36m'hello world'\x1B[39m \x1B[31m\x1B[1mto end with\x1B[22m\x1B[39m \x1B[36m'wonderful world'\x1B[39m\n" +
+                            "\n" +
+                            "hello\x1B[43m\x1B[30m world\x1B[39m\x1B[49m"
+                        )
                     );
                 });
 
@@ -1999,10 +2017,17 @@ describe('unexpected', function () {
                 expect(function () {
                     expect('foobarquuxfoo', 'not to end with', 'foo');
                 }, 'to throw',
-                    "expected 'foobarquuxfoo' not to end with 'foo'\n" +
-                    "\n" +
-                    "foobarquuxfoo\n" +
-                    "          ^^^");
+                    expect.it('to have message',
+                        "expected 'foobarquuxfoo' not to end with 'foo'\n" +
+                        "\n" +
+                        "foobarquuxfoo\n" +
+                        "          ^^^"
+                    ).and('to have ansi message',
+                        "\x1B[31m\x1B[1mexpected\x1B[22m\x1B[39m \x1B[36m'foobarquuxfoo'\x1B[39m \x1B[31m\x1B[1mnot to end with\x1B[22m\x1B[39m \x1B[36m'foo'\x1B[39m\n" +
+                        "\n" +
+                        "foobarquux\x1B[41m\x1B[30mfoo\x1B[39m\x1B[49m"
+                    )
+                );
             });
 
             it('builds the diff correctly when the suffix contains newlines', function () {
