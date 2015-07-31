@@ -25,7 +25,7 @@ expect('Hello world!', 'to end with', 'Hola, world!');
 expected 'Hello world!' to end with 'Hola, world!'
 
 Hello world!
-     <^^^^^^
+     ^^^^^^^
 ```
 
 This assertion can be negated using the `not` flag:

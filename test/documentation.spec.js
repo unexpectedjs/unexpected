@@ -3905,7 +3905,7 @@ describe("documentation tests", function () {
                 "expected 'Hello world!' to begin with 'Hell yeah'\n" +
                 "\n" +
                 "Hello world!\n" +
-                "^^^>"
+                "^^^^"
             );
         }
 
@@ -3983,7 +3983,7 @@ describe("documentation tests", function () {
                 "\n" +
                 "BEGIN:VEVENT\n" +
                 "UID:B4D3A0F8-6E38-5F0E-8CE7-BA0171DEAA8D\n" +
-                "^^^>\n" +
+                "^^^^\n" +
                 "RECURRENCE-ID;TZID=Europe/Copenhagen:20150113T120000\n" +
                 "DTSTART;TZID=Europe/Copenhagen:20150203T110000\n" +
                 "DTEND;TZID=Europe/Copenhagen:20150203T120000\n" +
@@ -4043,7 +4043,7 @@ describe("documentation tests", function () {
                 "expected 'Hello world!' to end with 'Hola, world!'\n" +
                 "\n" +
                 "Hello world!\n" +
-                "     <^^^^^^"
+                "     ^^^^^^^"
             );
         }
 

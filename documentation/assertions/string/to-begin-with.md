@@ -25,7 +25,7 @@ expect('Hello world!', 'to begin with', 'Hell yeah');
 expected 'Hello world!' to begin with 'Hell yeah'
 
 Hello world!
-^^^>
+^^^^
 ```
 
 This assertion can be negated using the `not` flag:
