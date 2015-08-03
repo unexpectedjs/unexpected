@@ -72,6 +72,63 @@ describe('unexpected', function () {
         });
     });
 
+    describe('magicpen type', function () {
+        describe('#inspect', function () {
+            describe('with a pen in text format', function () {
+                var pen = expect.createOutput('text').green('abc').nl().text('def').block(function () {
+                    this.text('foo').nl().text('bar');
+                });
+
+                it('should inspect correctly', function () {
+                    expect(pen, 'to inspect as',
+                        "magicpen('text')        // abc\n" +
+                        "  .green('abc').nl()    // deffoo\n" +
+                        "  .text('def')          //    bar\n" +
+                        "  .block(function () {\n" +
+                        "    this\n" +
+                        "      .text('foo').nl()\n" +
+                        "      .text('bar');\n" +
+                        "  })"
+                    );
+                });
+            });
+
+            describe('with a pen in ansi format', function () {
+                var pen = expect.createOutput('ansi').green('abc').text('def').block(function () {
+                    this.text('foo');
+                });
+
+                it('should inspect correctly', function () {
+                    expect(pen, 'to inspect as',
+                        "magicpen('ansi')\n" +
+                        "  .green('abc')\n" +
+                        "  .text('def')\n" +
+                        "  .block(function () {\n" +
+                        "    this.text('foo');\n" +
+                        "  })"
+                    );
+                });
+            });
+
+            describe('with a pen in ansi format', function () {
+                var pen = expect.createOutput('html').green('abc').text('def').block(function () {
+                    this.text('foo');
+                });
+
+                it('should inspect correctly', function () {
+                    expect(pen, 'to inspect as',
+                        "magicpen('html')\n" +
+                        "  .green('abc')\n" +
+                        "  .text('def')\n" +
+                        "  .block(function () {\n" +
+                        "    this.text('foo');\n" +
+                        "  })"
+                    );
+                });
+            });
+        });
+    });
+
     describe('ok/truthy/falsy assertion', function () {
         it('assert that the value is truthy or not', function () {
             expect(1, 'to be ok');
@@ -1142,13 +1199,168 @@ describe('unexpected', function () {
                     ));
                 });
 
-                it('should support building the expected output via a function', function () {
+                it('should fail to get the diff from an Unexpected error that does not have one', function () {
                     expect(function () {
-                        expect('abc', 'to equal', 'def');
-                    }, 'to throw', expect.it('to have ansi diff', function () {
-                        this.red('-').text('abc', ['bgRed', 'black']).nl()
+                        expect(function () {
+                            expect(123, 'to equal', 456);
+                        }, 'to throw', expect.it('to have ansi diff', function () {}));
+                    }, 'to throw',
+                        "expected\n" +
+                        "function () {\n" +
+                        "    expect(123, 'to equal', 456);\n" +
+                        "}\n" +
+                        "to throw expect.it('to have ansi diff', function () {})\n" +
+                        "  expected UnexpectedError(expected 123 to equal 456) to have ansi diff function () {}\n" +
+                        "    The UnexpectedError instance does not have a diff"
+                    );
+                });
+
+                it('should fail to get the diff from a non-Unexpected error', function () {
+                    expect(function () {
+                        expect(function () {
+                            throw new Error('foo');
+                        }, 'to throw', expect.it('to have ansi diff', function () {}));
+                    }, 'to throw',
+                        "expected\n" +
+                        "function () {\n" +
+                        "    throw new Error('foo');\n" +
+                        "}\n" +
+                        "to throw expect.it('to have ansi diff', function () {})\n" +
+                        "  expected Error('foo') to have ansi diff function () {}\n" +
+                        "    Cannot get the diff from a non-Unexpected error"
+                    );
+                });
+
+                describe('when comparing against a magicpen instance', function () {
+                    it('should succeed', function () {
+                        var expectedDiff = expect.createOutput('ansi')
+                            .red('-').text('abc', ['bgRed', 'black']).nl()
                             .green('+').text('def', ['bgGreen', 'black']);
-                    }));
+
+                        expect(function () {
+                            expect('abc', 'to equal', 'def');
+                        }, 'to throw', expect.it('to have ansi diff', expectedDiff));
+                    });
+
+                    it('should fail with a diff', function () {
+                        var expectedDiff = expect.createOutput('ansi')
+                            .red('-').text('abc').nl()
+                            .green('+').text('def', ['bgGreen', 'black']);
+
+                        expect(function () {
+                            expect(function () {
+                                expect('abc', 'to equal', 'def');
+                            }, 'to throw', expect.it('to have ansi diff', expectedDiff));
+                        }, 'to throw',
+                            "expected\n" +
+                            "function () {\n" +
+                            "    expect('abc', 'to equal', 'def');\n" +
+                            "}\n" +
+                            "to throw\n" +
+                            "expect.it('to have ansi diff', magicpen('ansi')\n" +
+                            "                                 .red('-')\n" +
+                            "                                 .text('abc').nl()\n" +
+                            "                                 .green('+')\n" +
+                            "                                 .text('def', [ 'bgGreen', 'black' ]))\n" +
+                            "  expected\n" +
+                            "  UnexpectedError(\n" +
+                            "    expected 'abc' to equal 'def'\n" +
+                            "\n" +
+                            "    -abc\n" +
+                            "    +def\n" +
+                            "  )\n" +
+                            "  to have ansi diff\n" +
+                            "  magicpen('ansi')\n" +
+                            "    .red('-')\n" +
+                            "    .text('abc').nl()\n" +
+                            "    .green('+')\n" +
+                            "    .text('def', [ 'bgGreen', 'black' ])\n" +
+                            "    expected\n" +
+                            "    magicpen('ansi')\n" +
+                            "      .block(function () {\n" +
+                            "        this.diffRemovedLine('-');\n" +
+                            "      })\n" +
+                            "      .block(function () {\n" +
+                            "        this.diffRemovedHighlight('abc');\n" +
+                            "      }).nl()\n" +
+                            "      .block(function () {\n" +
+                            "        this.diffAddedLine('+');\n" +
+                            "      })\n" +
+                            "      .block(function () {\n" +
+                            "        this.diffAddedHighlight('def');\n" +
+                            "      })\n" +
+                            "    to equal\n" +
+                            "    magicpen('ansi')\n" +
+                            "      .red('-')\n" +
+                            "      .text('abc').nl()\n" +
+                            "      .green('+')\n" +
+                            "      .text('def', [ 'bgGreen', 'black' ])"
+                        );
+                    });
+                });
+
+                describe('when building the expected output via a function', function () {
+                    it('should succeed', function () {
+                        expect(function () {
+                            expect('abc', 'to equal', 'def');
+                        }, 'to throw', expect.it('to have ansi diff', function () {
+                            this.red('-').text('abc', ['bgRed', 'black']).nl()
+                                .green('+').text('def', ['bgGreen', 'black']);
+                        }));
+                    });
+
+                    it('should fail with a diff', function () {
+                        expect(function () {
+                            expect(function () {
+                                expect('abc', 'to equal', 'def');
+                            }, 'to throw', expect.it('to have ansi diff', function () {
+                                this.red('-').text('abc').nl()
+                                    .green('+').text('def', ['bgGreen', 'black']);
+                            }));
+                        }, 'to throw',
+                            "expected\n" +
+                            "function () {\n" +
+                            "    expect('abc', 'to equal', 'def');\n" +
+                            "}\n" +
+                            "to throw\n" +
+                            "expect.it('to have ansi diff', function () {\n" +
+                            "    this.red('-').text('abc').nl()\n" +
+                            "        .green('+').text('def', ['bgGreen', 'black']);\n" +
+                            "})\n" +
+                            "  expected\n" +
+                            "  UnexpectedError(\n" +
+                            "    expected 'abc' to equal 'def'\n" +
+                            "\n" +
+                            "    -abc\n" +
+                            "    +def\n" +
+                            "  )\n" +
+                            "  to have ansi diff\n" +
+                            "  function () {\n" +
+                            "      this.red('-').text('abc').nl()\n" +
+                            "          .green('+').text('def', ['bgGreen', 'black']);\n" +
+                            "  }\n" +
+                            "    expected\n" +
+                            "    magicpen('ansi')\n" +
+                            "      .block(function () {\n" +
+                            "        this.diffRemovedLine('-');\n" +
+                            "      })\n" +
+                            "      .block(function () {\n" +
+                            "        this.diffRemovedHighlight('abc');\n" +
+                            "      }).nl()\n" +
+                            "      .block(function () {\n" +
+                            "        this.diffAddedLine('+');\n" +
+                            "      })\n" +
+                            "      .block(function () {\n" +
+                            "        this.diffAddedHighlight('def');\n" +
+                            "      })\n" +
+                            "    to equal\n" +
+                            "    magicpen('ansi')\n" +
+                            "      .red('-')\n" +
+                            "      .text('abc').nl()\n" +
+                            "      .green('+')\n" +
+                            "      .text('def', [ 'bgGreen', 'black' ])"
+                        );
+                    });
                 });
 
                 it('should assume that a function that does not produce any output has run assertions on the stringified diff/message, and thus should not fail', function () {
