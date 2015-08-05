@@ -12,6 +12,7 @@ Unexpected plugins are functions or objects that adhere to the following interfa
 Optional properties:
 
 * __name__: `String` - the name of the plugin.
+* __version__: `String` - the semver version of the plugin (string).
 * __dependencies__: `String array` - a list of dependencies.
 
 Required:
