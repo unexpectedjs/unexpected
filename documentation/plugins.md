@@ -138,11 +138,12 @@ it('should spew out the expected image', function () {
 
     return expect(
         myStream,
-        'to yield output',
-        expect.it('to resemble', 'bar.png')
-            .and('to have metadata', {
-                format: 'PNG'
-            })
+        'to yield output satisfying',
+        expect.it('to resemble', 'bar.png', {
+            mismatchPercentage: expect.it('to be less than', 10)
+        }).and('to have metadata satisfying', {
+            format: 'PNG'
+        })
     );
 });
 ```
