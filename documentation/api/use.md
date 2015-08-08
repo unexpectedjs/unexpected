@@ -97,11 +97,5 @@ expect(new IntegerInterval(7, 13), 'to contain', 27);
 expected [7,13] to contain 27
 ```
 
-<!-- TODO create a plugin page -->
-For more inspiration you can look at the source for one of the
-following plugins:
-
-* [unexpected-knockout](https://github.com/unexpectedjs/unexpected-knockout)
-* [unexpected-sinon](https://github.com/unexpectedjs/unexpected-sinon)
-* [unexpected-express](https://github.com/unexpectedjs/unexpected-express)
-* [unexpected-mitm](https://github.com/unexpectedjs/unexpected-mitm)
+For more inspiration you can look at the source for existing plugins.
+See [the plugin page](/plugins/) for a list.
