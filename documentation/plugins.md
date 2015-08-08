@@ -77,7 +77,7 @@ in their package.json. This strategy is carefully thought out to be forward comp
 with how `peerDependencies` work with npm 3. Unfortunately, users of npm 1 and 2 will
 sometimes be in for a bit of a rough ride.
 
-Unexpected's [use method](/api/use/] will throw an error if you install two different
+Unexpected's [use method](/api/use/) will throw an error if you install two different
 versions of unexpected-messy, so there's a stop gap that prevents `expect` from
 ending up in a broken state. Still, recovering from that error condition or an
 `EPEERINVALID` error can be tricky. We recommend trying the following:
