@@ -82,10 +82,10 @@ versions of unexpected-messy, so there's a stop gap that prevents `expect` from
 ending up in a broken state. Still, recovering from that error condition or an
 `EPEERINVALID` error can be tricky. We recommend trying the following:
 
-1) Upgrade to `npm 3`, then remove the `node_modules` folder and run a fresh `npm install`.
-2) If you're stuck on a previous npm version, you should still try to remove `node_modules`
+1. Upgrade to `npm 3`, then remove the `node_modules` folder and run a fresh `npm install`.
+2. If you're stuck on a previous npm version, you should still try to remove `node_modules`
    and run a fresh `npm install`.
-3) If that doesn't work, úpgrade unexpected and the plugins you're using to the newest
+3. If that doesn't work, úpgrade unexpected and the plugins you're using to the newest
    versions at once. The newest versions should be using the same version of
    unexpected-messy, which will resolve the problem in most cases.
 
