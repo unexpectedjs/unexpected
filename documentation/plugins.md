@@ -24,13 +24,13 @@ Here's a partial list of plugins for Unexpected:
 * [unexpected-fs](https://github.com/unexpectedjs/unexpected-fs/): Assertions for
   files and directories on disc, including mock file system support via
   [mock-js](https://github.com/tschaub/mock-fs).
-* [unexpected-stream](http://unexpected.js.org/unexpected-image/): Assertions for
+* [unexpected-stream](http://unexpected.js.org/unexpected-stream/): Assertions for
   node.js streams.
 * [unexpected-exif](http://unexpected.js.org/unexpected-exif/): Assertions for
   EXIF data of images (node.js only).
 * [unexpected-image](http://unexpected.js.org/unexpected-image/): Assertions for
   image metadata (node.js only).
-* [unexpected-resemble](http://unexpected.js.org/unexpected-exif/): Image resemblance
+* [unexpected-resemble](http://unexpected.js.org/unexpected-resemble/): Image resemblance
   assertions based on [resemble.js](http://huddle.github.io/Resemble.js/). Works in
   both node.js and the browser.
 * [unexpected-express](http://github.com/unexpectedjs/unexpected-express/): Express
