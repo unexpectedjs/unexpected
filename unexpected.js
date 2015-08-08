@@ -610,12 +610,18 @@ Unexpected.prototype.use = function (plugin) {
     });
 
     if (existingPlugin) {
-        if (existingPlugin === plugin) {
+        if (existingPlugin === plugin || (typeof plugin.version !== 'undefined' && plugin.version === existingPlugin.version)) {
             // No-op
             return this.expect;
         } else {
-            throw new Error("Another instance of the plugin '" + plugin.name + "' is already installed. " +
-                            "Please check your node_modules folder for unmet peerDependencies.");
+            throw new Error("Another instance of the plugin '" + plugin.name + "' " +
+                            "is already installed" +
+                            (typeof existingPlugin.version !== 'undefined' ?
+                                ' (version ' + existingPlugin.version +
+                                (typeof plugin.version !== 'undefined' ?
+                                    ', trying to install ' + plugin.version : '') +
+                                ')' : '') +
+                            ". Please check your node_modules folder for unmet peerDependencies.");
         }
     }
 
@@ -625,6 +631,7 @@ Unexpected.prototype.use = function (plugin) {
         throw new Error('Plugins must be functions or adhere to the following interface\n' +
                         '{\n' +
                         '  name: <an optional plugin name>,\n' +
+                        '  version: <an optional semver version string>,\n' +
                         '  dependencies: <an optional list of dependencies>,\n' +
                         '  installInto: <a function that will update the given expect instance>\n' +
                         '}');
@@ -1063,11 +1070,7 @@ Unexpected.prototype.createOutput = function (format) {
     var that = this;
     var output = this.output.clone(format || 'text');
     output.addStyle('appendInspected', function (value, depth) {
-        if (value && value.isMagicPen) {
-            this.append(value);
-        } else {
-            this.append(that.inspect(value, depth, this.clone()));
-        }
+        this.append(that.inspect(value, depth, this.clone()));
     });
     return output;
 };
@@ -1625,13 +1628,7 @@ module.exports = function (expect) {
                     subject.replace(new RegExp(regexp.source, 'g'), function ($0, index) {
                         flushUntilIndex(index);
                         lastIndex += $0.length;
-                        $0.split(/(\n)/).forEach(function (fragment) {
-                            if (fragment === '\n') {
-                                output.nl();
-                            } else {
-                                output.removedHighlight(fragment);
-                            }
-                        });
+                        output.removedHighlight($0);
                     });
                     flushUntilIndex(subject.length);
                     return {diff: output};
@@ -1647,6 +1644,9 @@ module.exports = function (expect) {
             }
 
             expect(subject, 'to have [own] property', key);
+            this.argsOutput = function () {
+                this.appendInspected(key).sp().error('with a value of').sp().appendInspected(value);
+            };
             expect(subject[key], '[not] to equal', value);
         } else {
             expect(this.flags.own ?
@@ -1756,6 +1756,11 @@ module.exports = function (expect) {
     expect.addAssertion('string', '[not] to contain', function (expect, subject) {
         var flags = this.flags;
         var args = Array.prototype.slice.call(arguments, 2);
+        args.forEach(function (arg) {
+            if (String(arg) === '') {
+                throw new Error("The '" + this.testDescription + "' assertion does not support the empty string");
+            }
+        }, this);
         expect.withError(function () {
             args.forEach(function (arg) {
                 expect(subject.indexOf(arg) !== -1, '[not] to be truthy');
@@ -1776,13 +1781,7 @@ module.exports = function (expect) {
                         }).join('|'), 'g'), function ($0, index) {
                             flushUntilIndex(index);
                             lastIndex += $0.length;
-                            $0.split(/(\n)/).forEach(function (fragment) {
-                                if (fragment === '\n') {
-                                    output.nl();
-                                } else {
-                                    output.removedHighlight(fragment);
-                                }
-                            });
+                            output.removedHighlight($0);
                         });
                         flushUntilIndex(subject.length);
                     } else {
@@ -1820,17 +1819,11 @@ module.exports = function (expect) {
                             flushUntilIndex(range.startIndex);
                             var firstUncoveredIndex = Math.max(range.startIndex, lastIndex);
                             if (range.endIndex > firstUncoveredIndex) {
-                                subject.substring(firstUncoveredIndex, range.endIndex).split(/(\n)/).forEach(function (fragment) {
-                                    if (fragment === '\n') {
-                                        output.nl();
-                                    } else {
-                                        if (range.partial) {
-                                            output.partialMatch(fragment);
-                                        } else {
-                                            output.match(fragment);
-                                        }
-                                    }
-                                });
+                                if (range.partial) {
+                                    output.partialMatch(subject.substring(firstUncoveredIndex, range.endIndex));
+                                } else {
+                                    output.match(subject.substring(firstUncoveredIndex, range.endIndex));
+                                }
                                 lastIndex = range.endIndex;
                             }
                         });
@@ -1859,6 +1852,71 @@ module.exports = function (expect) {
                             return equal(item, arg);
                         });
                     }));
+                }
+            });
+        });
+    });
+
+    expect.addAssertion('string', '[not] to begin with', function (expect, subject, value) {
+        var flags = this.flags;
+        var stringValue = String(value);
+        if (stringValue === '') {
+            throw new Error("The '" + this.testDescription + "' assertion does not support a prefix of the empty string");
+        }
+        expect.withError(function () {
+            expect(subject.substr(0, stringValue.length), '[not] to equal', stringValue);
+        }, function (err) {
+            expect.fail({
+                diff: function (output) {
+                    if (flags.not) {
+                        output.removedHighlight(stringValue).text(subject.substr(stringValue.length));
+                    } else {
+                        var i = 0;
+                        while (subject[i] === stringValue[i]) {
+                            i += 1;
+                        }
+                        if (i === 0) {
+                            // No common prefix, omit diff
+                            return null;
+                        } else {
+                            output
+                                .partialMatch(subject.substr(0, i))
+                                .text(subject.substr(i));
+                        }
+                    }
+                    return {diff: output};
+                }
+            });
+        });
+    });
+
+    expect.addAssertion('string', '[not] to end with', function (expect, subject, value) {
+        var flags = this.flags;
+        var stringValue = String(value);
+        if (stringValue === '') {
+            throw new Error("The '" + this.testDescription + "' assertion does not support a suffix of the empty string");
+        }
+        expect.withError(function () {
+            expect(subject.substr(-stringValue.length), '[not] to equal', stringValue);
+        }, function (err) {
+            expect.fail({
+                diff: function (output) {
+                    if (flags.not) {
+                        output.text(subject.substr(0, subject.length - stringValue.length)).removedHighlight(stringValue);
+                    } else {
+                        var i = 0;
+                        while (subject[subject.length - 1 - i] === stringValue[stringValue.length - 1 - i]) {
+                            i += 1;
+                        }
+                        if (i === 0) {
+                            // No common suffix, omit diff
+                            return null;
+                        }
+                        output
+                            .text(subject.substr(0, subject.length - i))
+                            .partialMatch(subject.substr(subject.length - i, subject.length));
+                    }
+                    return {diff: output};
                 }
             });
         });
@@ -2132,13 +2190,42 @@ module.exports = function (expect) {
         }(subject));
     });
 
-    expect.addAssertion('Error', 'to have (ansi|html|text|) message', function (expect, subject, value) {
+    expect.addAssertion('Error', 'to have (ansi|html|text|) (message|diff)', function (expect, subject, value) {
         this.errorMode = 'nested';
+        var format = this.alternations[0] || 'text';
+        var useDiff = this.alternations[1] === 'diff';
         if (subject.isUnexpected) {
-            return expect(subject.getErrorMessage({ format: this.alternations[0] || 'text' }).toString(), 'to satisfy', value);
+            var subjectPen;
+            if (useDiff) {
+                var diffResult = subject.getDiff({ format: format });
+                if (diffResult && diffResult.diff) {
+                    subjectPen = diffResult.diff;
+                } else {
+                    expect.fail('The UnexpectedError instance does not have a diff');
+                }
+            } else {
+                subjectPen = subject.getErrorMessage({ format: format });
+            }
+            var valueType = expect.findTypeOf(value);
+            if (valueType.is('magicpen')) {
+                expect(subjectPen, 'to equal', value);
+            } else if (valueType.is('function') && !valueType.is('expect.it')) {
+                var expectedOutput = expect.createOutput(format);
+                var returnValue = value.call(expectedOutput, subjectPen.toString());
+                if (!expectedOutput.isEmpty()) {
+                    // If the function didn't generate any expected output, assume that it ran assertions based on the serialized message
+                    expect(subjectPen, 'to equal', expectedOutput);
+                }
+                return returnValue;
+            } else {
+                return expect(subjectPen.toString(), 'to satisfy', value);
+            }
         } else {
-            if (this.alternations[0] !== '' && this.alternations[0] !== 'text') {
-                expect.fail('Cannot get the html representation of non-Unexpected error');
+            if (useDiff) {
+                expect.fail('Cannot get the diff from a non-Unexpected error');
+            }
+            if (format !== 'text') {
+                expect.fail('Cannot get the ' + format + ' representation of non-Unexpected error');
             } else {
                 return expect(subject.message, 'to satisfy', value);
             }
@@ -2553,17 +2640,23 @@ module.exports = function (expect) {
         this.errorMode = 'nested';
         var that = this;
         return subject.then(function (value) {
-            return that.shift(value, 0);
-        }, function (err) {
-            if (typeof nextAssertion === 'string') {
-                that.argsOutput = function (output) {
-                    output.error(nextAssertion);
-                    var rest = that.args.slice(1);
-                    if (rest.length > 0) {
-                        output.sp().appendItems(rest, ', ');
-                    }
-                };
+            if (expect.findTypeOf(nextAssertion).is('expect.it')) {
+                // Force a failing expect.it error message to be property nested instead of replacing the default error message:
+                return expect.promise(function () {
+                    return that.shift(value, 0);
+                }).caught(expect.fail);
+            } else {
+                return that.shift(value, 0);
             }
+        }, function (err) {
+            // typeof nextAssertion === 'string' because expect.it is handled by the above (and shift only supports those two):
+            that.argsOutput = function (output) {
+                output.error(nextAssertion);
+                var rest = that.args.slice(1);
+                if (rest.length > 0) {
+                    output.sp().appendItems(rest, ', ');
+                }
+            };
             expect.fail(function (output) {
                 output.appendInspected(subject).sp().text('unexpectedly rejected');
                 if (typeof err !== 'undefined') {
@@ -2986,12 +3079,35 @@ module.exports = function (expect) {
         }
     });
 
+    expect.addStyle('commentBlock', function () {
+        var pen = this.getContentFromArguments(arguments);
+        var height = pen.size().height;
+
+        if (height > 0) {
+            this.block(function () {
+                for (var i = 0; i < height; i += 1) {
+                    if (0 < i) {
+                        this.nl();
+                    }
+                    this.jsComment('//');
+                }
+            });
+            this.sp().block(pen);
+        }
+    });
+
     expect.addStyle('removedHighlight', function (content) {
         this.alt({
             text: function () {
-                this.block(function () {
-                    this.text(content).nl().text(content.replace(/[\s\S]/g, '^'));
-                });
+                content.split(/(\n)/).forEach(function (fragment) {
+                    if (fragment === '\n') {
+                        this.nl();
+                    } else {
+                        this.block(function () {
+                            this.text(fragment).nl().text(fragment.replace(/[\s\S]/g, '^'));
+                        });
+                    }
+                }, this);
             },
             fallback: function () {
                 this.diffRemovedHighlight(content);
@@ -3002,9 +3118,15 @@ module.exports = function (expect) {
     expect.addStyle('match', function (content) {
         this.alt({
             text: function () {
-                this.block(function () {
-                    this.text(content).nl().text(content.replace(/[\s\S]/g, '^'));
-                });
+                content.split(/(\n)/).forEach(function (fragment) {
+                    if (fragment === '\n') {
+                        this.nl();
+                    } else {
+                        this.block(function () {
+                            this.text(fragment).nl().text(fragment.replace(/[\s\S]/g, '^'));
+                        });
+                    }
+                }, this);
             },
             fallback: function () {
                 this.diffAddedHighlight(content);
@@ -3015,9 +3137,8 @@ module.exports = function (expect) {
     expect.addStyle('partialMatch', function (content) {
         this.alt({
             text: function () {
-                this.block(function () {
-                    this.text(content).nl().text(content.replace(/[\s\S]/g, '^').substr(0, content.length - 1) + '>');
-                });
+                // We haven't yet come up with a good styling for partial matches in text mode
+                this.match(content);
             },
             fallback: function () {
                 this.partialMatchHighlight(content);
@@ -3058,6 +3179,98 @@ module.exports = function (expect) {
             }
             that.appendInspected(item);
         });
+    });
+
+    expect.addStyle('magicPenLine', function (line, pen) {
+        line.forEach(function (lineEntry, j) {
+            if (j > 0) {
+                this.nl();
+            }
+            if (lineEntry.style === 'text') {
+                var styles = lineEntry.args.styles;
+                if (pen && styles.length === 1 && typeof pen[styles[0]] === 'function') {
+                    // Text with a single style also available as a method on the pen being inspected:
+                    this
+                        .text('.')
+                        .jsFunctionName(styles[0])
+                        .text('(')
+                        .singleQuotedString(lineEntry.args.content)
+                        .text(')');
+                } else {
+                    this
+                        .text('.')
+                        .jsFunctionName('text')
+                        .text('(')
+                        .singleQuotedString(lineEntry.args.content);
+                    if (styles.length > 0) {
+                        this
+                            .text(', ')
+                            .appendInspected(styles.length === 1 && Array.isArray(styles[0]) ? styles[0] : styles);
+                    }
+                    this.text(')');
+                }
+            } else {
+                // lineEntry.style === 'block'
+                this
+                    .text('.')
+                    .jsFunctionName('block').text('(').jsKeyword('function').text(' () {');
+                if (lineEntry.args) {
+                    this
+                        .nl()
+                        .indentLines()
+                        .i()
+                        .magicPen(pen, lineEntry.args)
+                        .outdentLines()
+                        .nl();
+                }
+                this.text('})');
+            }
+        }, this);
+    });
+
+    expect.addStyle('magicPen', function (pen, lines) {
+        var isTopLevel = !lines;
+        lines = lines || pen.output;
+        this.block(function () {
+            if (isTopLevel) {
+                this.jsFunctionName('magicpen').text('(');
+                if (pen.format) {
+                    this.singleQuotedString(pen.format);
+                }
+                this.text(')');
+            } else {
+                this.jsKeyword('this');
+            }
+            if (!pen.isEmpty()) {
+                var inspectOnMultipleLines = lines.length > 1 || lines[0].length > 1;
+                if (inspectOnMultipleLines) {
+                    this
+                        .nl()
+                        .indentLines()
+                        .i();
+                }
+                this.block(function () {
+                    lines.forEach(function (line, i) {
+                        if (i > 0) {
+                            this.text('.').jsFunctionName('nl').text('()').nl();
+                        }
+                        this.magicPenLine(line, pen);
+                    }, this);
+                    if (!isTopLevel) {
+                        this.text(';');
+                    }
+                });
+                if (inspectOnMultipleLines) {
+                    this.outdentLines();
+                }
+            }
+        });
+
+        // If we're at the top level of a non-empty pen compatible with the current output,
+        // render the output of the pen in a comment:
+        if (isTopLevel && !pen.isEmpty() && (pen.format === this.format || !pen.format)) {
+            this.sp().commentBlock(pen);
+        }
     });
 };
 
@@ -3515,6 +3728,30 @@ module.exports = function (expect) {
     }
 
     expect.addType({
+        name: 'magicpen',
+        identify: function (obj) {
+            return obj && obj.isMagicPen;
+        },
+        inspect: function (pen, depth, output) {
+            output.magicPen(pen);
+        },
+        equal: function (a, b) {
+            if (a.format !== b.format) {
+                return false;
+            }
+            if (a.format) {
+                // Both have the same format
+                return a.toString() === b.toString();
+            } else {
+                // Neither have a format, test all serializations
+                return a.toString() === b.toString() &&
+                    a.toString('ansi') === b.toString('ansi') &&
+                    a.toString('html') === b.toString('html');
+            }
+        }
+    });
+
+    expect.addType({
         name: 'array-like',
         base: 'object',
         identify: false,
@@ -3858,7 +4095,7 @@ module.exports = function (expect) {
                 orBranch = false;
             });
 
-            output.text(')');
+            output.amend(')');
         }
     });
 
@@ -12152,22 +12389,34 @@ MagicPen.prototype.size = function () {
     return utils.calculateSize(this.output);
 };
 
-MagicPen.prototype.installPlugin = function (plugin) {
-    var alreadyInstalled = this.installedPlugins.some(function (installedPlugin) {
-        return installedPlugin === plugin.name;
+MagicPen.prototype.use = function (plugin) {
+    var existingPlugin = utils.findFirst(this.installedPlugins, function (installedPlugin) {
+        if (installedPlugin === plugin) {
+            return true;
+        } else if (typeof plugin === 'function' && typeof installedPlugin === 'function') {
+            var pluginName = utils.getFunctionName(plugin);
+            return pluginName !== '' && pluginName === utils.getFunctionName(installedPlugin);
+        } else {
+            return installedPlugin.name === plugin.name;
+        }
     });
 
-    if (alreadyInstalled) {
-        return;
+    if (existingPlugin) {
+        if (existingPlugin === plugin) {
+            // No-op
+            return this;
+        } else {
+            throw new Error("Another instance of the plugin '" + plugin.name + "' is already installed. " +
+                            "Please check your node_modules folder for unmet peerDependencies.");
+        }
     }
 
-    if (typeof plugin !== 'object' ||
-        typeof plugin.name !== 'string' ||
-        typeof plugin.installInto !== 'function' ||
-        (plugin.dependencies && !Array.isArray(plugin.dependencies))) {
-        throw new Error('Plugins must adhere to the following interface\n' +
+    if ((typeof plugin !== 'function' && (typeof plugin !== 'object' || typeof plugin.installInto !== 'function')) ||
+        (typeof plugin.name !== 'undefined' && typeof plugin.name !== 'string') ||
+        (typeof plugin.dependencies !== 'undefined' && !Array.isArray(plugin.dependencies))) {
+        throw new Error('Plugins must be functions or adhere to the following interface\n' +
                         '{\n' +
-                        '  name: <plugin name>,\n' +
+                        '  name: <an optional plugin name>,\n' +
                         '  dependencies: <an optional list of dependencies>,\n' +
                         '  installInto: <a function that will update the given magicpen instance>\n' +
                         '}');
@@ -12177,7 +12426,7 @@ MagicPen.prototype.installPlugin = function (plugin) {
         var installedPlugins = this.installedPlugins;
         var unfulfilledDependencies = plugin.dependencies.filter(function (dependency) {
             return !installedPlugins.some(function (plugin) {
-                return plugin === dependency;
+                return plugin.name === dependency;
             });
         });
 
@@ -12190,12 +12439,17 @@ MagicPen.prototype.installPlugin = function (plugin) {
         }
     }
 
-    this.installedPlugins = this.installedPlugins.slice();
-    this.installedPlugins.push(plugin.name);
-    plugin.installInto(this);
+    this.installedPlugins.push(plugin);
+    if (typeof plugin === 'function') {
+        plugin(this);
+    } else {
+        plugin.installInto(this);
+    }
 
     return this; // for chaining
 };
+
+MagicPen.prototype.installPlugin = MagicPen.prototype.use; // Legacy alias
 
 function replaceText(output, outputArray, regexp, cb) {
     var replacedOutput = output;
@@ -12615,6 +12869,33 @@ var utils = {
 
     escapeRegExp: function (text){
         return text.replace(/([.*+?^${}()|\[\]\/\\])/g, "\\$1");
+    },
+
+    findFirst: function (arr, predicate, thisObj) {
+        var scope = thisObj || null;
+        for (var i = 0 ; i < arr.length ; i += 1) {
+            if (predicate.call(scope, arr[i], i, arr)) {
+                return arr[i];
+            }
+        }
+        return null;
+    },
+
+    getFunctionName: function (f) {
+        if (typeof f.name === 'string') {
+            return f.name;
+        }
+        var matchFunctionName = Function.prototype.toString.call(f).match(/function ([^\(]+)/);
+        if (matchFunctionName) {
+            return matchFunctionName[1];
+        }
+
+        if (f === Object) {
+            return 'Object';
+        }
+        if (f === Function) {
+            return 'Function';
+        }
     }
 };
 
