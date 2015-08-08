@@ -1,0 +1,156 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0">
+    <link rel="stylesheet" href="../../static/normalize.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../../static/main.css" type="text/css" media="screen" />
+    <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="../../static/bug-icon-black.ico">
+    <title>expect</title>
+</head>
+<body class="sidebar-hidden has-sidebar">
+    <header>
+        <div class="logo-icon"></div>
+        <nav>
+            <ul>
+                <li class="menu-toggle-item">
+                    <button class="menu-toggle" onclick="toggleSidebar()"></button>
+                </li>
+                
+                <li class=""><a href="../..">Unexpected</a></li>
+                
+                
+                <li class=""><a href="../../assertions/any/to-be">Assertions</a></li>
+                
+                
+                <li class="active"><a href="../addAssertion">API</a></li>
+                
+            </ul>
+        </nav>
+        <div class="search" style="visibility: hidden">
+            <input id="search" placeholder="Search..." value="">
+            <div id="searchDropDown" class="dropDown">
+                <ul id="searchResults"></ul>
+            </div>
+        </div>
+    </header>
+
+<section id="api">
+    <nav id="api-menu" class="sidebar js-remember-scroll-position">
+    <ul>
+        
+        <li class="">
+            <a href="../addAssertion">addAssertion</a>
+        </li>
+        
+        <li class="">
+            <a href="../addType">addType</a>
+        </li>
+        
+        <li class="">
+            <a href="../async">async</a>
+        </li>
+        
+        <li class="">
+            <a href="../clone">clone</a>
+        </li>
+        
+        <li class="active">
+            <a href="">expect</a>
+        </li>
+        
+        <li class="">
+            <a href="../fail">fail</a>
+        </li>
+        
+        <li class="">
+            <a href="../promise">promise</a>
+        </li>
+        
+        <li class="">
+            <a href="../promise-all">promise.all</a>
+        </li>
+        
+        <li class="">
+            <a href="../promise-any">promise.any</a>
+        </li>
+        
+        <li class="">
+            <a href="../promise-settle">promise.settle</a>
+        </li>
+        
+        <li class="">
+            <a href="../toString">toString</a>
+        </li>
+        
+        <li class="">
+            <a href="../UnexpectedError">UnexpectedError</a>
+        </li>
+        
+        <li class="">
+            <a href="../use">use</a>
+        </li>
+        
+        <li class="">
+            <a href="../withError">withError</a>
+        </li>
+        
+    </ul>
+</nav>
+
+    <div class="main" tabindex="-1">
+        <div class="content">
+            <h3 id="expect-subject-assertionname-value-">expect(subject, assertionName, [value, ...])</h3>
+<p>Perform an assertion about <code>subject</code>.</p>
+<p>The <code>expect</code> function will throw an <code>UnexpectedError</code> if the assertion can be
+decided synchronously and isn&#39;t fulfilled:</p>
+<div class="code lang-javascript">
+  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #0086b3">123</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;equal'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">456</span><span style="color: #000000">);</span></div>
+</div><div class="output">
+  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #0086b3">123</span>&nbsp;<span style="color: red; font-weight: bold">to&nbsp;equal</span>&nbsp;<span style="color: #0086b3">456</span></div>
+</div><p>In all other cases <code>expect</code> will return a
+<a href="https://github.com/petkaantonov/bluebird">Bluebird promise</a> which will either be
+rejected or fulfilled. For consistency, even successful synchronous assertions will
+return a promise.</p>
+<p>The idea is that you can return the promise to your test framework (from an <code>it</code>
+block or equivalent), so that the outcome of the test will be decided by whether
+the promise is fulfilled. This works natively in mocha 1.18+, and Unexpected
+does some unholy trickery so it also works in Jasmine.</p>
+<p>Note that if the assertion is asynchronous, you&#39;ll have to return the promise
+to the <code>it</code> block:</p>
+<div class="code lang-javascript">
+  <div><span style="color: #000000">it</span><span style="color: #000000">(</span><span style="color: #df5000">'should&nbsp;call&nbsp;the&nbsp;callback'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>setImmediate<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;call&nbsp;the&nbsp;callback'</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #000000">});</span></div>
+</div><p>Otherwise your test framework will assume that the test has passed and won&#39;t wait
+for the asynchronous work to complete.</p>
+<p>As of 8.0.0 Unexpected will detect created promises that were never returned
+and make the test fail synchronously. This will uncover some extremely nasty
+bugs where the test suite succeeds when it should actually fail. However, this
+feature only works in Mocha and Jasmine.</p>
+<h3 id="expect-and-assertionname-value-">expect(...).and(assertionName, [value, ...])</h3>
+<p>The returned promise will be augmented with an <code>and</code> method that allows you to
+perform more assertions on the same subject:</p>
+<div class="code lang-javascript">
+  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #df5000">'abc'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;a&nbsp;string'</span><span style="color: #000000">).</span><span style="color: #000000">and</span><span style="color: #000000">(</span><span style="color: #df5000">'to&nbsp;have&nbsp;length'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">3</span><span style="color: #000000">);</span></div>
+</div><p>Again, note that you need to return the value returned by <code>expect</code> to your <code>it</code>
+block if any of the assertions are asynchronous:</p>
+<div class="code lang-javascript">
+  <div><span style="color: #000000">it</span><span style="color: #000000">(</span><span style="color: #df5000">'should&nbsp;do&nbsp;the&nbsp;right&nbsp;thing'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>setImmediate<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;a&nbsp;function'</span><span style="color: #000000">).</span><span style="color: #000000">and</span><span style="color: #000000">(</span><span style="color: #df5000">'to&nbsp;call&nbsp;the&nbsp;callback'</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #000000">});</span></div>
+</div>
+        </div>
+    </div>
+</section>
+<script type="text/javascript">
+    baseUrl = '../..';
+</script>
+<script type="text/javascript" src="../../static/toggleSidebar.js"></script>
+<script type="text/javascript" src="../../static/rememberScrollPosition.js"></script>
+<script type="text/javascript" src="../../static/focusMain.js"></script>
+<script type="text/javascript" src="../../static/search.js"></script>
+</body>
+</html>
+
