@@ -5,7 +5,7 @@ theme: light
 repository: https://github.com/unexpectedjs/unexpected
 ---
 
-## Plugins
+# Plugins
 
 Unexpected is designed to be highly extensible with new data types, assertions,
 output styles and themes.
@@ -46,7 +46,7 @@ Here's a partial list of plugins for Unexpected:
   HTTP messages (requests and responses) and mails (rfc2822). Browser-compatible.
 
 
-### Installation
+## Installation
 
 The recommended way to get plugins is installing them via npm:
 
@@ -66,7 +66,7 @@ use browserify or a script loader instead of the Common.js `require` in the abov
 Please consult the documentation for each individual plugin.
 
 
-### Caveats with plugins that depend on other plugins
+## Caveats with plugins that depend on other plugins
 
 The unexpected-express, unexpected-mitm, and unexpected-http plugins all depend
 on unexpected-messy being available. If you use more than one of these in the same
@@ -90,7 +90,7 @@ ending up in a broken state. Still, recovering from that error condition or an
    unexpected-messy, which will resolve the problem in most cases.
 
 
-### Mixing plugins
+## Mixing plugins
 
 All of these plugins should be able coexist in the same Unexpected instance and
 compose well together. For instance, you can grab a few and assert that an express
