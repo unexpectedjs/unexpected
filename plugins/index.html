@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0">
+    <link rel="stylesheet" href="../static/normalize.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../static/main.css" type="text/css" media="screen" />
+    <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="../static/bug-icon-black.ico">
+    <title>Plugins</title>
+</head>
+<body class="sidebar-hidden">
+    <header>
+        <div class="logo-icon"></div>
+        <nav>
+            <ul>
+                <li class="menu-toggle-item">
+                    <button class="menu-toggle" onclick="toggleSidebar()"></button>
+                </li>
+                
+                <li class=""><a href="..">Unexpected</a></li>
+                
+                
+                <li class=""><a href="../assertions/any/to-be">Assertions</a></li>
+                
+                
+                <li class=""><a href="../api/addAssertion">API</a></li>
+                
+                
+                <li class="active"><a href="">Plugins</a></li>
+                
+            </ul>
+        </nav>
+        <div class="search" style="visibility: hidden">
+            <input id="search" placeholder="Search..." value="">
+            <div id="searchDropDown" class="dropDown">
+                <ul id="searchResults"></ul>
+            </div>
+        </div>
+    </header>
+
+<div class="main theme-light" tabindex="-1">
+    <div class="content">
+        <h2 id="plugins">Plugins</h2>
+<p>Unexpected is designed to be highly extensible with new data types, assertions,
+output styles and themes.</p>
+<p>Here&#39;s a partial list of plugins for Unexpected:</p>
+<ul>
+<li><a href="http://unexpected.js.org/unexpected-color/">unexpected-color</a>: Assertions for
+strings representing colors.</li>
+<li><a href="http://unexpected.js.org/unexpected-knockout/">unexpected-knockout</a>: Add support
+for <a href="http://knockoutjs.com/">Knockout.js</a> observables.</li>
+<li><a href="http://unexpected.js.org/unexpected-sinon/">unexpected-sinon</a>: Add support for
+<a href="http://sinonjs.org/">sinon</a> spies.</li>
+<li><a href="http://github.com/munter/unexpected-dom/">unexpected-dom</a>: Assertions for
+XML/HTML DOM and HTML/XML strings. Works in the browser and in node.js via
+<a href="https://github.com/tmpvar/jsdom/">jsdom</a>.</li>
+<li><a href="https://github.com/unexpectedjs/unexpected-fs/">unexpected-fs</a>: Assertions for
+files and directories on disc, including mock file system support via
+<a href="https://github.com/tschaub/mock-fs">mock-js</a>.</li>
+<li><a href="http://unexpected.js.org/unexpected-image/">unexpected-stream</a>: Assertions for
+node.js streams.</li>
+<li><a href="http://unexpected.js.org/unexpected-exif/">unexpected-exif</a>: Assertions for
+EXIF data of images (node.js only).</li>
+<li><a href="http://unexpected.js.org/unexpected-image/">unexpected-image</a>: Assertions for
+image metadata (node.js only).</li>
+<li><a href="http://unexpected.js.org/unexpected-exif/">unexpected-resemble</a>: Image resemblance
+assertions based on <a href="http://huddle.github.io/Resemble.js/">resemble.js</a>. Works in
+both node.js and the browser.</li>
+<li><a href="http://github.com/unexpectedjs/unexpected-express/">unexpected-express</a>: Express
+app/middleware assertions with a declarative syntax.</li>
+<li><a href="http://github.com/unexpectedjs/unexpected-http/">unexpected-http</a>: Assertions for
+testing local or remote HTTP servers.
+Browser-compatible via browserify (experimental).</li>
+<li><a href="http://github.com/unexpectedjs/unexpected-mitm/">unexpected-mitm</a>: Mock out HTTP
+and make assertions about the HTTP traffic that goes on while executing other
+assertions. Based on the <a href="https://github.com/moll/node-mitm/">mitm</a> module.
+Only works with node.js and io.js.</li>
+<li><a href="http://unexpected.js.org/unexpected-messy/">unexpected-messy</a>: Assertions for
+HTTP messages (requests and responses) and mails (rfc2822). Browser-compatible.</li>
+</ul>
+<h3 id="installation">Installation</h3>
+<p>The recommended way to get plugins is installing them via npm:</p>
+<div class="code lang-">
+  <div>$&nbsp;npm&nbsp;install&nbsp;unexpected-fs</div>
+</div><p>And then in your test suite:</p>
+<div class="code lang-javascript">
+  <div><span style="color: #a71d5d">var</span>&nbsp;expect&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #000000">require</span><span style="color: #000000">(</span><span style="color: #df5000">'unexpected'</span><span style="color: #000000">).</span><span style="color: #000000">clone</span><span style="color: #000000">()</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">.</span><span style="color: #000000">use</span><span style="color: #000000">(</span><span style="color: #000000">require</span><span style="color: #000000">(</span><span style="color: #df5000">'unexpected-fs'</span><span style="color: #000000">));</span></div>
+</div><p>For plugins that work in the browser, you&#39;ll either need to add an extra <code>&lt;script&gt;</code>, or
+use browserify or a script loader instead of the Common.js <code>require</code> in the above example.
+Please consult the documentation for each individual plugin.</p>
+<h3 id="caveats-with-plugins-that-depend-on-other-plugins">Caveats with plugins that depend on other plugins</h3>
+<p>The unexpected-express, unexpected-mitm, and unexpected-http plugins all depend
+on unexpected-messy being available. If you use more than one of these in the same
+test suite, it&#39;s important that only one version of unexpected-messy is installed.</p>
+<p>All three plugins list <code>unexpected-messy</code> under both <code>peerDependencies</code> and <code>dependencies</code>
+in their package.json. This strategy is carefully thought out to be forward compatible
+with how <code>peerDependencies</code> work with npm 3. Unfortunately, users of npm 1 and 2 will
+sometimes be in for a bit of a rough ride.</p>
+<p>Unexpected&#39;s [use method](/api/use/] will throw an error if you install two different
+versions of unexpected-messy, so there&#39;s a stop gap that prevents <code>expect</code> from
+ending up in a broken state. Still, recovering from that error condition or an
+<code>EPEERINVALID</code> error can be tricky. We recommend trying the following:</p>
+<p>1) Upgrading to <code>npm 3</code>, then remove the <code>node_modules</code> folder and run a fresh <code>npm install</code>.
+2) If you&#39;re stuck on a previous npm version, you should still try to remove <code>node_modules</code>
+   and run a fresh <code>npm install</code>.
+3) If that doesn&#39;t work, úpgrade unexpected and the plugins you&#39;re using to the newest
+   versions at once. The newest versions should be using the same version of
+   unexpected-messy, which will resolve the problem in most cases.</p>
+<h3 id="mixing-plugins">Mixing plugins</h3>
+<p>All of these plugins should be able coexist in the same Unexpected instance and
+compose well together. For instance, you can grab a few and assert that an express
+app serves will serve an HTML response body that contains a yellow <code>&lt;div&gt;</code>:</p>
+<div class="code lang-javascript">
+  <div><span style="color: #a71d5d">var</span>&nbsp;expect&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #000000">require</span><span style="color: #000000">(</span><span style="color: #df5000">'unexpected'</span><span style="color: #000000">).</span><span style="color: #000000">clone</span><span style="color: #000000">()</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">.</span><span style="color: #000000">use</span><span style="color: #000000">(</span><span style="color: #000000">require</span><span style="color: #000000">(</span><span style="color: #df5000">'unexpected-express'</span><span style="color: #000000">))</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">.</span><span style="color: #000000">use</span><span style="color: #000000">(</span><span style="color: #000000">require</span><span style="color: #000000">(</span><span style="color: #df5000">'unexpected-dom'</span><span style="color: #000000">))</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">.</span><span style="color: #000000">use</span><span style="color: #000000">(</span><span style="color: #000000">require</span><span style="color: #000000">(</span><span style="color: #df5000">'unexpected-color'</span><span style="color: #000000">));</span></div>
+  <div>&nbsp;</div>
+  <div><span style="color: #a71d5d">var</span>&nbsp;app&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #000000">require</span><span style="color: #000000">(</span><span style="color: #df5000">'express'</span><span style="color: #000000">)()</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">.</span><span style="color: #a71d5d">get</span><span style="color: #000000">(</span><span style="color: #df5000">'/myPage'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>req<span style="color: #000000">,</span>&nbsp;res<span style="color: #000000">,</span>&nbsp;next<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;res<span style="color: #000000">.</span><span style="color: #000000">send</span><span style="color: #000000">(</span><span style="color: #df5000">'&lt;html&gt;&lt;body&gt;&lt;div&nbsp;style=&quot;color:&nbsp;#ff0&quot;&gt;Hey!&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;'</span><span style="color: #000000">);</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">});</span></div>
+  <div>&nbsp;</div>
+  <div><span style="color: #000000">it</span><span style="color: #000000">(</span><span style="color: #df5000">'should&nbsp;deliver&nbsp;something&nbsp;pretty'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>app<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;yield&nbsp;exchange'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;request<span style="color: #000000">:</span>&nbsp;<span style="color: #df5000">'GET&nbsp;/myPage'</span><span style="color: #000000">,</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;response<span style="color: #000000">:</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;headers<span style="color: #000000">:</span>&nbsp;<span style="color: #000000">{</span>&nbsp;<span style="color: #df5000">'Content-Type'</span><span style="color: #000000">:</span>&nbsp;<span style="color: #df5000">'text/html;&nbsp;charset=utf-8'</span>&nbsp;<span style="color: #000000">},</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;body<span style="color: #000000">:</span>&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">it</span><span style="color: #000000">(</span><span style="color: #df5000">'when&nbsp;parsed&nbsp;as&nbsp;HTML'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'queried&nbsp;for&nbsp;first'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'div'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;satisfy'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attributes<span style="color: #000000">:</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;style<span style="color: #000000">:</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;color<span style="color: #000000">:</span>&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">it</span><span style="color: #000000">(</span><span style="color: #df5000">'to&nbsp;be&nbsp;colored'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'yellow'</span><span style="color: #000000">)</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">}</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">}</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">})</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">}</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">});</span></div>
+  <div><span style="color: #000000">});</span></div>
+</div><p>Or you could assert that a node.js readable stream outputs an that&#39;s at most
+10% different from a reference image:</p>
+<div class="code lang-javascript">
+  <div><span style="color: #a71d5d">var</span>&nbsp;expect&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #000000">require</span><span style="color: #000000">(</span><span style="color: #df5000">'unexpected'</span><span style="color: #000000">).</span><span style="color: #000000">clone</span><span style="color: #000000">()</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">.</span><span style="color: #000000">use</span><span style="color: #000000">(</span><span style="color: #000000">require</span><span style="color: #000000">(</span><span style="color: #df5000">'unexpected-stream'</span><span style="color: #000000">))</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">.</span><span style="color: #000000">use</span><span style="color: #000000">(</span><span style="color: #000000">require</span><span style="color: #000000">(</span><span style="color: #df5000">'unexpected-image'</span><span style="color: #000000">))</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">.</span><span style="color: #000000">use</span><span style="color: #000000">(</span><span style="color: #000000">require</span><span style="color: #000000">(</span><span style="color: #df5000">'unexpected-resemble'</span><span style="color: #000000">));</span></div>
+  <div>&nbsp;</div>
+  <div><span style="color: #000000">it</span><span style="color: #000000">(</span><span style="color: #df5000">'should&nbsp;spew&nbsp;out&nbsp;the&nbsp;expected&nbsp;image'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">var</span>&nbsp;myStream&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #000000">require</span><span style="color: #000000">(</span><span style="color: #df5000">'fs'</span><span style="color: #000000">).</span><span style="color: #000000">createReadStream</span><span style="color: #000000">(</span><span style="color: #df5000">'foo.png'</span><span style="color: #000000">);</span></div>
+  <div>&nbsp;</div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;myStream<span style="color: #000000">,</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #df5000">'to&nbsp;yield&nbsp;output'</span><span style="color: #000000">,</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">it</span><span style="color: #000000">(</span><span style="color: #df5000">'to&nbsp;resemble'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'bar.png'</span><span style="color: #000000">)</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">.</span><span style="color: #000000">and</span><span style="color: #000000">(</span><span style="color: #df5000">'to&nbsp;have&nbsp;metadata'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;format<span style="color: #000000">:</span>&nbsp;<span style="color: #df5000">'PNG'</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">})</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">);</span></div>
+  <div><span style="color: #000000">});</span></div>
+</div>
+    </div>
+    <a class="github-ribbon" href="https://github.com/unexpectedjs/unexpected"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
+</div>
+<script type="text/javascript">
+    baseUrl = '..';
+</script>
+<script type="text/javascript" src="../static/toggleSidebar.js"></script>
+<script type="text/javascript" src="../static/rememberScrollPosition.js"></script>
+<script type="text/javascript" src="../static/focusMain.js"></script>
+<script type="text/javascript" src="../static/search.js"></script>
+</body>
+</html>
+
