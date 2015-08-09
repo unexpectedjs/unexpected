@@ -1,4 +1,4 @@
-# expect.addAssertion([typeName, ...], [pattern, ...], handler)
+# expect.addAssertion(...)
 
 Signature:
 
