@@ -40,7 +40,7 @@
 
 <div class="main theme-light" tabindex="-1">
     <div class="content">
-        <h2 id="plugins">Plugins</h2>
+        <h1 id="plugins">Plugins</h1>
 <p>Unexpected is designed to be highly extensible with new data types, assertions,
 output styles and themes.</p>
 <p>Here&#39;s a partial list of plugins for Unexpected:</p>
@@ -57,13 +57,13 @@ XML/HTML DOM and HTML/XML strings. Works in the browser and in node.js via
 <li><a href="https://github.com/unexpectedjs/unexpected-fs/">unexpected-fs</a>: Assertions for
 files and directories on disc, including mock file system support via
 <a href="https://github.com/tschaub/mock-fs">mock-js</a>.</li>
-<li><a href="http://unexpected.js.org/unexpected-image/">unexpected-stream</a>: Assertions for
+<li><a href="http://unexpected.js.org/unexpected-stream/">unexpected-stream</a>: Assertions for
 node.js streams.</li>
 <li><a href="http://unexpected.js.org/unexpected-exif/">unexpected-exif</a>: Assertions for
 EXIF data of images (node.js only).</li>
 <li><a href="http://unexpected.js.org/unexpected-image/">unexpected-image</a>: Assertions for
 image metadata (node.js only).</li>
-<li><a href="http://unexpected.js.org/unexpected-exif/">unexpected-resemble</a>: Image resemblance
+<li><a href="http://unexpected.js.org/unexpected-resemble/">unexpected-resemble</a>: Image resemblance
 assertions based on <a href="http://huddle.github.io/Resemble.js/">resemble.js</a>. Works in
 both node.js and the browser.</li>
 <li><a href="http://github.com/unexpectedjs/unexpected-express/">unexpected-express</a>: Express
@@ -78,7 +78,7 @@ Only works with node.js and io.js.</li>
 <li><a href="http://unexpected.js.org/unexpected-messy/">unexpected-messy</a>: Assertions for
 HTTP messages (requests and responses) and mails (rfc2822). Browser-compatible.</li>
 </ul>
-<h3 id="installation">Installation</h3>
+<h2 id="installation">Installation</h2>
 <p>The recommended way to get plugins is installing them via npm:</p>
 <div class="code lang-">
   <div>$&nbsp;npm&nbsp;install&nbsp;unexpected-fs</div>
@@ -89,7 +89,7 @@ HTTP messages (requests and responses) and mails (rfc2822). Browser-compatible.<
 </div><p>For plugins that work in the browser, you&#39;ll either need to add an extra <code>&lt;script&gt;</code>, or
 use browserify or a script loader instead of the Common.js <code>require</code> in the above example.
 Please consult the documentation for each individual plugin.</p>
-<h3 id="caveats-with-plugins-that-depend-on-other-plugins">Caveats with plugins that depend on other plugins</h3>
+<h2 id="caveats-with-plugins-that-depend-on-other-plugins">Caveats with plugins that depend on other plugins</h2>
 <p>The unexpected-express, unexpected-mitm, and unexpected-http plugins all depend
 on unexpected-messy being available. If you use more than one of these in the same
 test suite, it&#39;s important that only one version of unexpected-messy is installed.</p>
@@ -97,20 +97,22 @@ test suite, it&#39;s important that only one version of unexpected-messy is inst
 in their package.json. This strategy is carefully thought out to be forward compatible
 with how <code>peerDependencies</code> work with npm 3. Unfortunately, users of npm 1 and 2 will
 sometimes be in for a bit of a rough ride.</p>
-<p>Unexpected&#39;s [use method](/api/use/] will throw an error if you install two different
+<p>Unexpected&#39;s <a href="/api/use/">use method</a> will throw an error if you install two different
 versions of unexpected-messy, so there&#39;s a stop gap that prevents <code>expect</code> from
 ending up in a broken state. Still, recovering from that error condition or an
 <code>EPEERINVALID</code> error can be tricky. We recommend trying the following:</p>
-<p>1) Upgrading to <code>npm 3</code>, then remove the <code>node_modules</code> folder and run a fresh <code>npm install</code>.
-2) If you&#39;re stuck on a previous npm version, you should still try to remove <code>node_modules</code>
-   and run a fresh <code>npm install</code>.
-3) If that doesn&#39;t work, úpgrade unexpected and the plugins you&#39;re using to the newest
-   versions at once. The newest versions should be using the same version of
-   unexpected-messy, which will resolve the problem in most cases.</p>
-<h3 id="mixing-plugins">Mixing plugins</h3>
+<ol>
+<li>Upgrade to <code>npm 3</code>, then remove the <code>node_modules</code> folder and run a fresh <code>npm install</code>.</li>
+<li>If you&#39;re stuck on a previous npm version, you should still try to remove <code>node_modules</code>
+and run a fresh <code>npm install</code>.</li>
+<li>If that doesn&#39;t work, úpgrade unexpected and the plugins you&#39;re using to the newest
+versions at once. The newest versions should be using the same version of
+unexpected-messy, which will resolve the problem in most cases.</li>
+</ol>
+<h2 id="mixing-plugins">Mixing plugins</h2>
 <p>All of these plugins should be able coexist in the same Unexpected instance and
 compose well together. For instance, you can grab a few and assert that an express
-app serves will serve an HTML response body that contains a yellow <code>&lt;div&gt;</code>:</p>
+app serves an HTML response body that contains a yellow <code>&lt;div&gt;</code>:</p>
 <div class="code lang-javascript">
   <div><span style="color: #a71d5d">var</span>&nbsp;expect&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #000000">require</span><span style="color: #000000">(</span><span style="color: #df5000">'unexpected'</span><span style="color: #000000">).</span><span style="color: #000000">clone</span><span style="color: #000000">()</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">.</span><span style="color: #000000">use</span><span style="color: #000000">(</span><span style="color: #000000">require</span><span style="color: #000000">(</span><span style="color: #df5000">'unexpected-express'</span><span style="color: #000000">))</span></div>
@@ -150,11 +152,12 @@ app serves will serve an HTML response body that contains a yellow <code>&lt;div
   <div>&nbsp;</div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;myStream<span style="color: #000000">,</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #df5000">'to&nbsp;yield&nbsp;output'</span><span style="color: #000000">,</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">it</span><span style="color: #000000">(</span><span style="color: #df5000">'to&nbsp;resemble'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'bar.png'</span><span style="color: #000000">)</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">.</span><span style="color: #000000">and</span><span style="color: #000000">(</span><span style="color: #df5000">'to&nbsp;have&nbsp;metadata'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #000000">{</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;format<span style="color: #000000">:</span>&nbsp;<span style="color: #df5000">'PNG'</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">})</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #df5000">'to&nbsp;yield&nbsp;output&nbsp;satisfying'</span><span style="color: #000000">,</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">it</span><span style="color: #000000">(</span><span style="color: #df5000">'to&nbsp;resemble'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'bar.png'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mismatchPercentage<span style="color: #000000">:</span>&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">it</span><span style="color: #000000">(</span><span style="color: #df5000">'to&nbsp;be&nbsp;less&nbsp;than'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">10</span><span style="color: #000000">)</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">}).</span><span style="color: #000000">and</span><span style="color: #000000">(</span><span style="color: #df5000">'to&nbsp;have&nbsp;metadata&nbsp;satisfying'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;format<span style="color: #000000">:</span>&nbsp;<span style="color: #df5000">'PNG'</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">})</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">);</span></div>
   <div><span style="color: #000000">});</span></div>
 </div>
