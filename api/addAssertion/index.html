@@ -104,7 +104,7 @@
 
     <div class="main" tabindex="-1">
         <div class="content">
-            <h3 id="expect-addassertion-typename-pattern-handler-">expect.addAssertion([typeName, ...], [pattern, ...], handler)</h3>
+            <h1 id="expect-addassertion-typename-pattern-handler-">expect.addAssertion([typeName, ...], [pattern, ...], handler)</h1>
 <p>Signature:</p>
 <div class="code lang-javascript">
   <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span>pattern<span style="color: #000000">,</span>&nbsp;handler<span style="color: #000000">);</span></div>
@@ -158,7 +158,7 @@ removed:</p>
   <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span><span style="color: #df5000">'array'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'[not]&nbsp;to&nbsp;be&nbsp;(sorted|ordered)'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span><span style="color: #000000">(</span>expect<span style="color: #000000">,</span>&nbsp;<span style="color: #000000">[</span><span style="color: #0086b3">3</span><span style="color: #000000">,</span><span style="color: #0086b3">2</span><span style="color: #000000">,</span><span style="color: #0086b3">1</span><span style="color: #000000">],</span>&nbsp;reverse<span style="color: #000000">){</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">([</span><span style="color: #0086b3">3</span><span style="color: #000000">,</span><span style="color: #0086b3">2</span><span style="color: #000000">,</span><span style="color: #0086b3">1</span><span style="color: #000000">],</span>&nbsp;<span style="color: #df5000">'[not]&nbsp;to&nbsp;equal'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #000000">[].</span><span style="color: #000000">concat</span><span style="color: #000000">([</span><span style="color: #0086b3">3</span><span style="color: #000000">,</span><span style="color: #0086b3">2</span><span style="color: #000000">,</span><span style="color: #0086b3">1</span><span style="color: #000000">]).</span><span style="color: #000000">sort</span><span style="color: #000000">(</span>reverse<span style="color: #000000">));</span></div>
   <div><span style="color: #000000">});</span></div>
-</div><h4 id="overriding-the-standard-error-message">Overriding the standard error message</h4>
+</div><h3 id="overriding-the-standard-error-message">Overriding the standard error message</h3>
 <p>When you create a new assertion Unexpected will generate an error
 message from the assertion text and the input arguments. In some cases
 it can be preferable to tweak the output instead of creating
@@ -197,7 +197,7 @@ an output function on the assertion.</p>
   <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #0086b3">4</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;similar&nbsp;to'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">4.0001</span><span style="color: #000000">);</span></div>
 </div><div class="output">
   <div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #0086b3">4</span>&nbsp;<span style="color: red; font-weight: bold">to&nbsp;be&nbsp;similar&nbsp;to</span>&nbsp;<span style="color: #0086b3">4.0001</span>,&nbsp;(epsilon:&nbsp;<span style="color: #0086b3">1e-9</span>)</div>
-</div><h4 id="controlling-the-output-of-nested-expects">Controlling the output of nested expects</h4>
+</div><h3 id="controlling-the-output-of-nested-expects">Controlling the output of nested expects</h3>
 <p>When a call to <code>expect</code> fails inside your assertion the standard error
 message for the custom assertion will be used. In the case of our
 <em>sorted</em> assertion fails, the output will be:</p>
@@ -327,7 +327,7 @@ message for the custom assertion will be used. In the case of our
 </div></div>
   <div>]</div>
 </div></div>
-</div><h4 id="asynchronous-assertions">Asynchronous assertions</h4>
+</div><h3 id="asynchronous-assertions">Asynchronous assertions</h3>
 <p>Unexpected comes with built-in support for asynchronous
 assertions. You basically just return a promise from the assertion.</p>
 <p>For the purpose of explaining how we can make an asynchronous

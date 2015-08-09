@@ -104,10 +104,11 @@
 
     <div class="main" tabindex="-1">
         <div class="content">
-            <p>When assertions fail in Unexpected they yield an
+            <h1 id="unexpectederror">UnexpectedError</h1>
+<p>When assertions fail in Unexpected they yield an
 <code>UnexpectedError</code>. This instance has several convenience methods for
 retrieving information about the error.</p>
-<h3 id="unexpectederror-geterrormessage-options-">UnexpectedError.getErrorMessage(options)</h3>
+<h2 id="unexpectederror-geterrormessage-options-">UnexpectedError.getErrorMessage(options)</h2>
 <p>Returns the error message as a
 <a href="https://github.com/sunesimonsen/magicpen">magicpen</a> instance. The
 method uses the assertion error modes to produce the correct
@@ -187,7 +188,7 @@ you can append the error message to an output the following way:</p>
 </div><div style="display: inline-block; vertical-align: top">
   <div><span style="background-color: green; color: white">bAr</span></div>
 </div></div>
-</div><h3 id="unexpectederror-parent">UnexpectedError.parent</h3>
+</div><h2 id="unexpectederror-parent">UnexpectedError.parent</h2>
 <p>When assertions delegate to nested <code>expect</code> calls the errors that are
 thrown at each level are chained together through the <code>parent</code>
 property. The error message is serialized lazily, so it is possible to
@@ -229,20 +230,20 @@ chain to <code>nested</code>:</p>
 </div></div>
 </div></div>
 </div></div>
-</div><h3 id="unexpectederror-getparents-">UnexpectedError.getParents()</h3>
+</div><h2 id="unexpectederror-getparents-">UnexpectedError.getParents()</h2>
 <p>Return an array with all the ancestor errors to this error. See
 <a href="#unexpectederror-parent">parent</a> for more information.</p>
-<h3 id="unexpectederror-getallerrors-">UnexpectedError.getAllErrors()</h3>
+<h2 id="unexpectederror-getallerrors-">UnexpectedError.getAllErrors()</h2>
 <p>Return an array with this error and all its ancestors. See
 <a href="#unexpectederror-parent">parent</a> for more information.</p>
-<h3 id="unexpectederror-getdiff-">UnexpectedError.getDiff()</h3>
+<h2 id="unexpectederror-getdiff-">UnexpectedError.getDiff()</h2>
 <p>Find the first error in the hierarchy that contains a diff and
 return it. This method if useful if you want to hoist a diff from an
 ancestor error and combine it with a new message.</p>
 <p>Notice that you must either provide an output or a format in the given
 options. The format can be on of <code>text</code>, <code>ansi</code> or <code>html</code>. As a
 shortcut you can also just pass the output or format directly.</p>
-<h3 id="unexpectederror-getdiffmethod-">UnexpectedError.getDiffMethod()</h3>
+<h2 id="unexpectederror-getdiffmethod-">UnexpectedError.getDiffMethod()</h2>
 <p>In case you need to wrap diff with additional information you can
 retrieve a method that will build a diff for you. It will find the
 first ancestor error that contains a diff and return the method to
@@ -280,7 +281,7 @@ create the diff. Now you can delegate to that method from
 </div></div>
 </div></div>
   <div>}</div>
-</div><h3 id="unexpectederror-getlabel-">UnexpectedError.getLabel()</h3>
+</div><h2 id="unexpectederror-getlabel-">UnexpectedError.getLabel()</h2>
 <p>Get a shortened representation of the error message that doesn&#39;t
 repeat the subject, for example <code>should equal &#39;bar&#39;</code> rather than
 <code>expected &#39;foo&#39; to equal &#39;bar&#39;</code>. This makes it suitable for display next

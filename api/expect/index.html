@@ -104,7 +104,7 @@
 
     <div class="main" tabindex="-1">
         <div class="content">
-            <h3 id="expect-subject-assertionname-value-">expect(subject, assertionName, [value, ...])</h3>
+            <h1 id="expect-subject-assertionname-value-">expect(subject, assertionName, [value, ...])</h1>
 <p>Perform an assertion about <code>subject</code>.</p>
 <p>The <code>expect</code> function will throw an <code>UnexpectedError</code> if the assertion can be
 decided synchronously and isn&#39;t fulfilled:</p>
@@ -132,7 +132,7 @@ for the asynchronous work to complete.</p>
 and make the test fail synchronously. This will uncover some extremely nasty
 bugs where the test suite succeeds when it should actually fail. However, this
 feature only works in Mocha and Jasmine.</p>
-<h3 id="expect-and-assertionname-value-">expect(...).and(assertionName, [value, ...])</h3>
+<h2 id="expect-and-assertionname-value-">expect(...).and(assertionName, [value, ...])</h2>
 <p>The returned promise will be augmented with an <code>and</code> method that allows you to
 perform more assertions on the same subject:</p>
 <div class="code lang-javascript">

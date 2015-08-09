@@ -9,6 +9,9 @@ h3,
 h4 {
   font-weight: normal;
 }
+h1 {
+  font-size: 1.6em;
+}
 h2 {
   font-size: 1.4em;
 }
@@ -128,6 +131,12 @@ nav li.active a {
   margin-left: auto;
   margin-right: auto;
   width: 790px;
+}
+.content > h1 {
+  color: #8b8b8b;
+  margin: 0;
+  margin-bottom: 7px;
+  font-size: 1.5em;
 }
 .has-sidebar .main {
   left: 330px;

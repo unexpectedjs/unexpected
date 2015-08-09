@@ -104,12 +104,11 @@
 
     <div class="main" tabindex="-1">
         <div class="content">
-            <h2 id="plugins">Plugins</h2>
+            <h1 id="expect-use-plugindefinition-">expect.use(pluginDefinition)</h1>
 <p>Unexpected is built on an extensible core. Every assertion, type and
 output style provided by the core library is implemented by extending
 the core. Plugins can make use of the exact same extension methods to
 provide new and exciting assertion capabilities.</p>
-<h3 id="expect-use-plugindefinition-">expect.use(pluginDefinition)</h3>
 <p>Unexpected plugins are functions or objects that adhere to the following interface:</p>
 <p>Optional properties:</p>
 <ul>
@@ -137,7 +136,7 @@ to extend the instance.</p>
   <div>expect<span style="color: #000000">.</span><span style="color: #000000">use</span><span style="color: #000000">(</span><span style="color: #000000">require</span><span style="color: #000000">(</span><span style="color: #df5000">'unexpected-sinon'</span><span style="color: #000000">));</span></div>
 </div><p>Notice that it is usually a good idea to <a href="../clone">clone</a> the instance before
 extending it with plugins.</p>
-<h3 id="example">Example</h3>
+<h2 id="example">Example</h2>
 <p>Let&#39;s say we wanted first class support for a integer intervals and
 provide as a plugin.</p>
 <p>An integer interval is defined the following way:</p>
