@@ -1,11 +1,9 @@
-## Plugins
+# expect.use(pluginDefinition)
 
 Unexpected is built on an extensible core. Every assertion, type and
 output style provided by the core library is implemented by extending
 the core. Plugins can make use of the exact same extension methods to
 provide new and exciting assertion capabilities.
-
-### expect.use(pluginDefinition)
 
 Unexpected plugins are functions or objects that adhere to the following interface:
 
@@ -42,7 +40,7 @@ expect.use(require('unexpected-sinon'));
 Notice that it is usually a good idea to [clone](../clone) the instance before
 extending it with plugins.
 
-### Example
+## Example
 
 Let's say we wanted first class support for a integer intervals and
 provide as a plugin.

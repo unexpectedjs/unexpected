@@ -2,7 +2,7 @@
 title: promise.settle
 ---
 
-### expect.promise.settle(...)
+# expect.promise.settle(...)
 
 This method will find all promises in the given structure and return a
 promise that will be fulfilled when all of the promises have been rejected or

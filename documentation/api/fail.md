@@ -1,4 +1,4 @@
-## expect.fail(...)
+# expect.fail(...)
 
 Explicitly forces failure.
 

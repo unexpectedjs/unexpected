@@ -1,4 +1,4 @@
-### expect.async(...)
+# expect.async(...)
 
 Unexpected comes with build in support for asynchronous assertions.
 

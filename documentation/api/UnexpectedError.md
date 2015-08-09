@@ -1,8 +1,10 @@
+# UnexpectedError
+
 When assertions fail in Unexpected they yield an
 `UnexpectedError`. This instance has several convenience methods for
 retrieving information about the error.
 
-### UnexpectedError.getErrorMessage(options)
+## UnexpectedError.getErrorMessage(options)
 
 Returns the error message as a
 [magicpen](https://github.com/sunesimonsen/magicpen) instance. The
@@ -80,7 +82,7 @@ expected 'bar' to equal 'bAr'
 +bAr
 ```
 
-### UnexpectedError.parent
+## UnexpectedError.parent
 
 When assertions delegate to nested `expect` calls the errors that are
 thrown at each level are chained together through the `parent`
@@ -117,17 +119,17 @@ expected 'f00!' to be 'foo!'
     +foo!
 ```
 
-### UnexpectedError.getParents()
+## UnexpectedError.getParents()
 
 Return an array with all the ancestor errors to this error. See
 <a href="#unexpectederror-parent">parent</a> for more information.
 
-### UnexpectedError.getAllErrors()
+## UnexpectedError.getAllErrors()
 
 Return an array with this error and all its ancestors. See
 <a href="#unexpectederror-parent">parent</a> for more information.
 
-### UnexpectedError.getDiff()
+## UnexpectedError.getDiff()
 
 Find the first error in the hierarchy that contains a diff and
 return it. This method if useful if you want to hoist a diff from an
@@ -137,7 +139,7 @@ Notice that you must either provide an output or a format in the given
 options. The format can be on of `text`, `ansi` or `html`. As a
 shortcut you can also just pass the output or format directly.
 
-### UnexpectedError.getDiffMethod()
+## UnexpectedError.getDiffMethod()
 
 In case you need to wrap diff with additional information you can
 retrieve a method that will build a diff for you. It will find the
@@ -173,7 +175,7 @@ expected { custom: false } to be completely custom
 }
 ```
 
-### UnexpectedError.getLabel()
+## UnexpectedError.getLabel()
 
 Get a shortened representation of the error message that doesn't
 repeat the subject, for example `should equal 'bar'` rather than

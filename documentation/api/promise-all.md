@@ -2,7 +2,7 @@
 title: promise.all
 ---
 
-### expect.promise.all(...)
+# expect.promise.all(...)
 
 This method will find all promises in the given structure and return a promise
 that will be fulfilled when all of the promises in the structure have been

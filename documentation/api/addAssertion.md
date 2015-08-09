@@ -1,4 +1,4 @@
-### expect.addAssertion([typeName, ...], [pattern, ...], handler)
+# expect.addAssertion([typeName, ...], [pattern, ...], handler)
 
 Signature:
 
@@ -72,7 +72,7 @@ expect.addAssertion('array', '[not] to be (sorted|ordered)', function(expect, [3
 });
 ```
 
-#### Overriding the standard error message
+### Overriding the standard error message
 
 When you create a new assertion Unexpected will generate an error
 message from the assertion text and the input arguments. In some cases
@@ -123,7 +123,7 @@ expect(4, 'to be similar to', 4.0001);
 expected 4 to be similar to 4.0001, (epsilon: 1e-9)
 ```
 
-#### Controlling the output of nested expects
+### Controlling the output of nested expects
 
 When a call to `expect` fails inside your assertion the standard error
 message for the custom assertion will be used. In the case of our
@@ -184,7 +184,7 @@ expected [ 1, 3, 2, 4 ] to be sorted
   ]
 ```
 
-#### Asynchronous assertions
+### Asynchronous assertions
 
 Unexpected comes with built-in support for asynchronous
 assertions. You basically just return a promise from the assertion.

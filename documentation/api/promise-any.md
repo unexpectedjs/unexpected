@@ -2,7 +2,7 @@
 title: promise.any
 ---
 
-### expect.promise.any(...)
+# expect.promise.any(...)
 
 This method will find all promises in the given structure and return a promise
 that will be fulfilled when any of the promises in the structure have been

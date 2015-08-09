@@ -1,4 +1,4 @@
-## expect.withError(function () { ... }, function (err) {})
+# expect.withError(function () { ... }, function (err) {})
 
 In some situations you want to modify an error thrown from
 unexpected. This method handles all the details for you.

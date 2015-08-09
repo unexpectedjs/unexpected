@@ -1,4 +1,4 @@
-### expect(subject, assertionName, [value, ...])
+# expect(subject, assertionName, [value, ...])
 
 Perform an assertion about `subject`.
 
@@ -41,7 +41,7 @@ bugs where the test suite succeeds when it should actually fail. However, this
 feature only works in Mocha and Jasmine.
 
 
-### expect(...).and(assertionName, [value, ...])
+## expect(...).and(assertionName, [value, ...])
 
 The returned promise will be augmented with an `and` method that allows you to
 perform more assertions on the same subject:
