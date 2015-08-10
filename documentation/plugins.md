@@ -85,7 +85,7 @@ ending up in a broken state. Still, recovering from that error condition or an
 1. Upgrade to `npm 3`, then remove the `node_modules` folder and run a fresh `npm install`.
 2. If you're stuck on a previous npm version, you should still try to remove `node_modules`
    and run a fresh `npm install`.
-3. If that doesn't work, úpgrade unexpected and the plugins you're using to the newest
+3. If that doesn't work, upgrade unexpected and the plugins you're using to the newest
    versions at once. The newest versions should be using the same version of
    unexpected-messy, which will resolve the problem in most cases.
 
@@ -124,7 +124,7 @@ it('should deliver something pretty', function () {
 });
 ```
 
-Or you could assert that a node.js readable stream outputs an that's at most
+Or you could assert that a node.js readable stream outputs an image that's at most
 10% different from a reference image:
 
 ```js#evaluate:false
