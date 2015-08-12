@@ -96,11 +96,11 @@ chain to `nested`:
 
 ```js
 expect.addAssertion('detailed to be', function (expect, subject, value) {
-  this.errorMode = 'bubble';
+  expect.errorMode = 'bubble';
   expect.withError(function () {
     expect(subject, 'to be', value);
   }, function (err) {
-    err.getParents().forEach(function (e){
+    err.getParents().forEach(function (e) {
       e.errorMode = 'nested';
     });
     expect.fail(err);
