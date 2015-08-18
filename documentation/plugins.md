@@ -18,7 +18,7 @@ Here's a partial list of plugins for Unexpected:
   for [Knockout.js](http://knockoutjs.com/) observables.
 * [unexpected-sinon](http://unexpected.js.org/unexpected-sinon/): Add support for
   [sinon](http://sinonjs.org/) spies.
-* [unexpected-dom](http://github.com/munter/unexpected-dom/): Assertions for
+* [unexpected-dom](https://github.com/munter/unexpected-dom/): Assertions for
   XML/HTML DOM and HTML/XML strings. Works in the browser and in node.js via
   [jsdom](https://github.com/tmpvar/jsdom/).
 * [unexpected-fs](https://github.com/unexpectedjs/unexpected-fs/): Assertions for
@@ -33,14 +33,14 @@ Here's a partial list of plugins for Unexpected:
 * [unexpected-resemble](http://unexpected.js.org/unexpected-resemble/): Image resemblance
   assertions based on [resemble.js](http://huddle.github.io/Resemble.js/). Works in
   both node.js and the browser.
-* [unexpected-couchdb](http://github.com/alexjeffburke/unexpected-couchdb/):
+* [unexpected-couchdb](https://github.com/alexjeffburke/unexpected-couchdb/):
   Run your tests against a mock CouchDB server initialized to a given state.
-* [unexpected-express](http://github.com/unexpectedjs/unexpected-express/): Express
+* [unexpected-express](https://github.com/unexpectedjs/unexpected-express/): Express
   app/middleware assertions with a declarative syntax.
-* [unexpected-http](http://github.com/unexpectedjs/unexpected-http/): Assertions for
+* [unexpected-http](https://github.com/unexpectedjs/unexpected-http/): Assertions for
   testing local or remote HTTP servers.
   Browser-compatible via browserify (experimental).
-* [unexpected-mitm](http://github.com/unexpectedjs/unexpected-mitm/): Mock out HTTP
+* [unexpected-mitm](https://github.com/unexpectedjs/unexpected-mitm/): Mock out HTTP
   and make assertions about the HTTP traffic that goes on while executing other
   assertions. Based on the [mitm](https://github.com/moll/node-mitm/) module.
   Only works with node.js and io.js.
