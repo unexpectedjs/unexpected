@@ -9,6 +9,9 @@ h3,
 h4 {
   font-weight: normal;
 }
+h1 {
+  font-size: 1.6em;
+}
 h2 {
   font-size: 1.4em;
 }
@@ -19,11 +22,13 @@ h3 {
   margin-top: 0px;
   font-size: 1.6em;
   margin-bottom: 2px;
+  color: black;
 }
 #the-extensible-bdd-assertion-toolkit {
   margin-top: 0px;
   margin-bottom: 27px;
   font-size: 1.15em;
+  color: black;
 }
 nav ul {
   padding: 10px;
@@ -78,7 +83,7 @@ header nav li {
 header nav li a {
   color: white;
   text-decoration: none;
-  padding: 10px;
+  padding: 10px 8px;
   display: inline-block;
 }
 header nav li a:hover {
@@ -128,6 +133,12 @@ nav li.active a {
   margin-left: auto;
   margin-right: auto;
   width: 790px;
+}
+.content > h1 {
+  color: #8b8b8b;
+  margin: 0;
+  margin-bottom: 7px;
+  font-size: 1.5em;
 }
 .has-sidebar .main {
   left: 330px;
