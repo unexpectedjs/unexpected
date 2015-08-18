@@ -197,7 +197,8 @@ describe('unexpected', function () {
                 expect(function () {
                     expect(err1, 'to equal', err2);
                 }, 'to throw exception',
-                       "expected Error({ message: 'foo', extra: 'foo' }) to equal Error({ message: 'foo', extra: 'bar' })\n" +
+                       "expected Error({ message: 'foo', extra: 'foo' })\n" +
+                       "to equal Error({ message: 'foo', extra: 'bar' })\n" +
                        "\n" +
                        "Error({\n" +
                        "  message: 'foo',\n" +
@@ -1210,7 +1211,8 @@ describe('unexpected', function () {
                         "    expect(123, 'to equal', 456);\n" +
                         "}\n" +
                         "to throw expect.it('to have ansi diff', function () {})\n" +
-                        "  expected UnexpectedError(expected 123 to equal 456) to have ansi diff function () {}\n" +
+                        "  expected UnexpectedError(expected 123 to equal 456)\n" +
+                        "  to have ansi diff function () {}\n" +
                         "    The UnexpectedError instance does not have a diff"
                     );
                 });
@@ -2958,7 +2960,8 @@ describe('unexpected', function () {
                             "expected Buffer([0x00, 0x01, 0x02])\n" +
                             "to satisfy expect.it('when delayed a little bit', 'to equal', Buffer([0x02, 0x01, 0x00]))\n" +
                             "\n" +
-                            "expected Buffer([0x00, 0x01, 0x02]) when delayed a little bit to equal Buffer([0x02, 0x01, 0x00])\n" +
+                            "expected Buffer([0x00, 0x01, 0x02])\n" +
+                            "when delayed a little bit to equal Buffer([0x02, 0x01, 0x00])\n" +
                             "\n" +
                             "-00 01 02                                         │...│\n" +
                             "+02 01 00                                         │...│"
@@ -3337,7 +3340,8 @@ describe('unexpected', function () {
                     expect(function () {
                         expect(err, 'to exhaustively satisfy', { message: 'foo' });
                     }, 'to throw',
-                           "expected Error({ message: 'foo', bar: 123 }) to exhaustively satisfy { message: 'foo' }\n" +
+                           "expected Error({ message: 'foo', bar: 123 })\n" +
+                           "to exhaustively satisfy { message: 'foo' }\n" +
                            "\n" +
                            "{\n" +
                            "  message: 'foo',\n" +
@@ -3401,7 +3405,8 @@ describe('unexpected', function () {
                     expect(function () {
                         expect(new Buffer('bar'), 'to satisfy', expect.it('to equal', new Buffer('foo')));
                     }, 'to throw',
-                        "expected Buffer([0x62, 0x61, 0x72]) to satisfy expect.it('to equal', Buffer([0x66, 0x6F, 0x6F]))\n" +
+                        "expected Buffer([0x62, 0x61, 0x72])\n" +
+                        "to satisfy expect.it('to equal', Buffer([0x66, 0x6F, 0x6F]))\n" +
                         "\n" +
                         "expected Buffer([0x62, 0x61, 0x72]) to equal Buffer([0x66, 0x6F, 0x6F])\n" +
                         "\n" +
@@ -3862,7 +3867,7 @@ describe('unexpected', function () {
                         foo: { baz: clonedExpect.it('to be a number') }
                     });
                 }, 'to throw',
-                       "expected { foo: MysteryBox({ baz: 123, quux: 987 }) } " +
+                       "expected { foo: MysteryBox({ baz: 123, quux: 987 }) }\n" +
                        "to exhaustively satisfy { foo: { baz: expect.it('to be a number') } }\n" +
                        "\n" +
                        "{\n" +
@@ -3881,7 +3886,7 @@ describe('unexpected', function () {
                         foo: { baz: clonedExpect.it('not to be a number') }
                     });
                 }, 'to throw',
-                       "expected { foo: MysteryBox({ baz: 123, quux: 987 }) } " +
+                       "expected { foo: MysteryBox({ baz: 123, quux: 987 }) }\n" +
                        "to satisfy { foo: { baz: expect.it('not to be a number') } }\n" +
                        "\n" +
                        "{\n" +
@@ -3928,7 +3933,8 @@ describe('unexpected', function () {
                     }, 'to satisfy', {
                         foo: 'def'
                     });
-                }, 'to throw', "expected { foo: MysteryBox('abc') } to satisfy { foo: 'def' }\n" +
+                }, 'to throw',
+                       "expected { foo: MysteryBox('abc') } to satisfy { foo: 'def' }\n" +
                        "\n" +
                        "{\n" +
                        "  foo: MysteryBox('abc') // should equal 'def'\n" +
@@ -4227,15 +4233,16 @@ describe('unexpected', function () {
                 return expect(
                     clonedExpect([0, false, 'abc'], 'to have items satisfying', 'to be a number after a short delay'),
                     'to be rejected',
-                    "expected [ 0, false, 'abc' ] to have values satisfying 'to be a number after a short delay'\n" +
-                        "\n" +
-                        "[\n" +
-                        "  0,\n" +
-                        "  false, // expected false to be a number after a short delay\n" +
-                        "         //   expected false to be a number\n" +
-                        "  'abc' // expected 'abc' to be a number after a short delay\n" +
-                        "        //   expected 'abc' to be a number\n" +
-                        "]");
+                    "expected [ 0, false, 'abc' ]\n" +
+                    "to have values satisfying 'to be a number after a short delay'\n" +
+                    "\n" +
+                    "[\n" +
+                    "  0,\n" +
+                    "  false, // expected false to be a number after a short delay\n" +
+                    "         //   expected false to be a number\n" +
+                    "  'abc' // expected 'abc' to be a number after a short delay\n" +
+                    "        //   expected 'abc' to be a number\n" +
+                    "]");
             });
         });
     });
@@ -4403,15 +4410,16 @@ describe('unexpected', function () {
                 return expect(
                     clonedExpect({0: 0, 1: false, 2: 'abc'}, 'to have values satisfying', 'to be a number after a short delay'),
                     'to be rejected',
-                    "expected { 0: 0, 1: false, 2: 'abc' } to have values satisfying 'to be a number after a short delay'\n" +
-                        "\n" +
-                        "{\n" +
-                        "  0: 0,\n" +
-                        "  1: false, // expected false to be a number after a short delay\n" +
-                        "            //   expected false to be a number\n" +
-                        "  2: 'abc' // expected 'abc' to be a number after a short delay\n" +
-                        "           //   expected 'abc' to be a number\n" +
-                        "}");
+                    "expected { 0: 0, 1: false, 2: 'abc' }\n" +
+                    "to have values satisfying 'to be a number after a short delay'\n" +
+                    "\n" +
+                    "{\n" +
+                    "  0: 0,\n" +
+                    "  1: false, // expected false to be a number after a short delay\n" +
+                    "            //   expected false to be a number\n" +
+                    "  2: 'abc' // expected 'abc' to be a number after a short delay\n" +
+                    "           //   expected 'abc' to be a number\n" +
+                    "}");
             });
         });
     });
@@ -4540,15 +4548,16 @@ describe('unexpected', function () {
                 return expect(
                     clonedExpect({a: 1, foo: 2, bar: 3}, 'to have keys satisfying', 'to be a sequence of as after a short delay'),
                     'to be rejected',
-                    "expected { a: 1, foo: 2, bar: 3 } to have keys satisfying 'to be a sequence of as after a short delay'\n" +
-                        "\n" +
-                        "{\n" +
-                        "  a: 1,\n" +
-                        "  foo: 2, // expected 'foo' to be a sequence of as after a short delay\n" +
-                        "          //   expected 'foo' to match /^a+$/\n" +
-                        "  bar: 3 // expected 'bar' to be a sequence of as after a short delay\n" +
-                        "         //   expected 'bar' to match /^a+$/\n" +
-                        "}");
+                    "expected { a: 1, foo: 2, bar: 3 }\n" +
+                    "to have keys satisfying 'to be a sequence of as after a short delay'\n" +
+                    "\n" +
+                    "{\n" +
+                    "  a: 1,\n" +
+                    "  foo: 2, // expected 'foo' to be a sequence of as after a short delay\n" +
+                    "          //   expected 'foo' to match /^a+$/\n" +
+                    "  bar: 3 // expected 'bar' to be a sequence of as after a short delay\n" +
+                    "         //   expected 'bar' to match /^a+$/\n" +
+                    "}");
             });
         });
     });
@@ -6643,7 +6652,8 @@ describe('unexpected', function () {
                 expect(function () {
                     expect([0, 1, { name: 'John', age: 34 }, 3, 2], 'to equal', [0, { name: 'Jane', age: 24, children: 2 }, 3, 2]);
                 }, 'to throw',
-                       "expected [ 0, 1, { name: 'John', age: 34 }, 3, 2 ] to equal [ 0, { name: 'Jane', age: 24, children: 2 }, 3, 2 ]\n" +
+                       "expected [ 0, 1, { name: 'John', age: 34 }, 3, 2 ]\n" +
+                       "to equal [ 0, { name: 'Jane', age: 24, children: 2 }, 3, 2 ]\n" +
                        "\n" +
                        "[\n" +
                        "  0,\n" +
@@ -6664,7 +6674,8 @@ describe('unexpected', function () {
                 expect(function () {
                     expect([0, 1, { name: 'John'}, 3, 2], 'to equal', [0, { firstName: 'John', lastName: 'Doe' }, 3, 2]);
                 }, 'to throw',
-                       "expected [ 0, 1, { name: 'John' }, 3, 2 ] to equal [ 0, { firstName: 'John', lastName: 'Doe' }, 3, 2 ]\n" +
+                       "expected [ 0, 1, { name: 'John' }, 3, 2 ]\n" +
+                       "to equal [ 0, { firstName: 'John', lastName: 'Doe' }, 3, 2 ]\n" +
                        "\n" +
                        "[\n" +
                        "  0,\n" +
@@ -7140,7 +7151,8 @@ describe('unexpected', function () {
                             "    }, 0);\n" +
                             "}\n" +
                             "to call the callback with error /qqxqwxeqw/\n" +
-                            "  expected UnexpectedError(expected false to be truthy) to have text message /qqxqwxeqw/\n" +
+                            "  expected UnexpectedError(expected false to be truthy)\n" +
+                            "  to have text message /qqxqwxeqw/\n" +
                             "    expected 'expected false to be truthy' to satisfy /qqxqwxeqw/"
                         );
                     });

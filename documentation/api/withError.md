@@ -44,7 +44,8 @@ expect(new Person({ name: 'John Doe', gender: 'male' }),
 ```
 
 ```output
-expected Person({ name: 'John Doe', gender: 'male' }) to have same gender as Person({ name: 'Jane Doe', gender: 'female' })
+expected Person({ name: 'John Doe', gender: 'male' })
+to have same gender as Person({ name: 'Jane Doe', gender: 'female' })
 
 ♂ ≠ ♀
 ```

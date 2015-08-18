@@ -393,7 +393,8 @@ describe("documentation tests", function () {
             });
         } catch (e) {
             expect(e, "to have message",
-                "expected Person({ name: 'John Doe', age: 42 }) to equal Person({ name: 'Jane Doe', age: 24 })\n" +
+                "expected Person({ name: 'John Doe', age: 42 })\n" +
+                "to equal Person({ name: 'Jane Doe', age: 24 })\n" +
                 "\n" +
                 "Person({\n" +
                 "  name: 'John Doe', // should equal 'Jane Doe'\n" +
@@ -905,7 +906,8 @@ describe("documentation tests", function () {
             });
         }).caught(function (e) {
             expect(e, "to have message",
-                "expected { a: '0', b: 1 } to have values satisfying 'to be a number after a short delay'\n" +
+                "expected { a: '0', b: 1 }\n" +
+                "to have values satisfying 'to be a number after a short delay'\n" +
                 "\n" +
                 "{\n" +
                 "  a: '0', // expected '0' to be a number after a short delay\n" +
@@ -1012,14 +1014,16 @@ describe("documentation tests", function () {
             expect(e, "to have message",
                 "aggregate error\n" +
                 "  0: expected '42' to be a number after a short delay\n" +
-                "  1: expected [ 0, '1', 2 ] to have values satisfying expect.it('to be a number after a short delay')\n" +
+                "  1: expected [ 0, '1', 2 ]\n" +
+                "     to have values satisfying expect.it('to be a number after a short delay')\n" +
                 "\n" +
                 "     [\n" +
                 "       0,\n" +
                 "       '1', // expected '1' to be a number after a short delay\n" +
                 "       2\n" +
                 "     ]\n" +
-                "  2: expected { a: '0', b: 1 } to have values satisfying 'to be a number after a short delay'\n" +
+                "  2: expected { a: '0', b: 1 }\n" +
+                "     to have values satisfying 'to be a number after a short delay'\n" +
                 "\n" +
                 "     {\n" +
                 "       a: '0', // expected '0' to be a number after a short delay\n" +
@@ -1108,7 +1112,8 @@ describe("documentation tests", function () {
                 "{\n" +
                 "  foo: ⨯ expected '42' to be a number after a short delay\n" +
                 "  bar: ✓\n" +
-                "  baz: ⨯ expected { a: '1', b: 2 } to have values satisfying 'to be a number after a short delay'\n" +
+                "  baz: ⨯ expected { a: '1', b: 2 }\n" +
+                "         to have values satisfying 'to be a number after a short delay'\n" +
                 "\n" +
                 "         {\n" +
                 "           a: '1', // expected '1' to be a number after a short delay\n" +
@@ -1236,7 +1241,8 @@ describe("documentation tests", function () {
             });
         } catch (e) {
             expect(e, "to have message",
-                "expected Person({ name: 'John Doe', gender: 'male' }) to have same gender as Person({ name: 'Jane Doe', gender: 'female' })\n" +
+                "expected Person({ name: 'John Doe', gender: 'male' })\n" +
+                "to have same gender as Person({ name: 'Jane Doe', gender: 'female' })\n" +
                 "\n" +
                 "♂ ≠ ♀"
             );
@@ -1907,7 +1913,8 @@ describe("documentation tests", function () {
             });
         } catch (e) {
             expect(e, "to have message",
-                "expected { one: 1, two: 2, four: 4, five: 5 } to equal { one: 1, two: 2, three: 3, four: 4 }\n" +
+                "expected { one: 1, two: 2, four: 4, five: 5 }\n" +
+                "to equal { one: 1, two: 2, three: 3, four: 4 }\n" +
                 "\n" +
                 "{\n" +
                 "  one: 1,\n" +
@@ -2167,7 +2174,8 @@ describe("documentation tests", function () {
             });
         } catch (e) {
             expect(e, "to have message",
-                "expected [ { name: 'John Doe' }, { name: 'Jane Doe' } ] to contain { name: 'Jonnie Doe' }"
+                "expected [ { name: 'John Doe' }, { name: 'Jane Doe' } ]\n" +
+                "to contain { name: 'Jonnie Doe' }"
             );
         }
 
@@ -2182,7 +2190,8 @@ describe("documentation tests", function () {
             });
         } catch (e) {
             expect(e, "to have message",
-                "expected [ { name: 'John Doe' }, { name: 'Jane Doe' } ] not to contain { name: 'Jane Doe' }\n" +
+                "expected [ { name: 'John Doe' }, { name: 'Jane Doe' } ]\n" +
+                "not to contain { name: 'Jane Doe' }\n" +
                 "\n" +
                 "[\n" +
                 "  { name: 'John Doe' },\n" +
@@ -3401,7 +3410,8 @@ describe("documentation tests", function () {
             });
         } catch (e) {
             expect(e, "to have message",
-                "expected { foo: 0, bar: 1, baz: 2, qux: 3, quux: 4 } to have keys satisfying 'to match', /^[a-z]{3}$/\n" +
+                "expected { foo: 0, bar: 1, baz: 2, qux: 3, quux: 4 }\n" +
+                "to have keys satisfying 'to match', /^[a-z]{3}$/\n" +
                 "\n" +
                 "{\n" +
                 "  foo: 0,\n" +

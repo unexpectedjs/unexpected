@@ -14,7 +14,8 @@ expect([ { name: 'John Doe' }, { name: 'Jane Doe' } ], 'to contain', { name: 'Jo
 
 
 ```output
-expected [ { name: 'John Doe' }, { name: 'Jane Doe' } ] to contain { name: 'Jonnie Doe' }
+expected [ { name: 'John Doe' }, { name: 'Jane Doe' } ]
+to contain { name: 'Jonnie Doe' }
 ```
 
 This assertion can be negated using the `not` flag:
@@ -30,7 +31,8 @@ expect([ { name: 'John Doe' }, { name: 'Jane Doe' } ], 'not to contain', { name:
 ```
 
 ```output
-expected [ { name: 'John Doe' }, { name: 'Jane Doe' } ] not to contain { name: 'Jane Doe' }
+expected [ { name: 'John Doe' }, { name: 'Jane Doe' } ]
+not to contain { name: 'Jane Doe' }
 
 [
   { name: 'John Doe' },

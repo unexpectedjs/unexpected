@@ -78,7 +78,8 @@ expect(new Person('John Doe', 42), 'to equal', new Person('Jane Doe', 24));
 ```
 
 ```output
-expected Person({ name: 'John Doe', age: 42 }) to equal Person({ name: 'Jane Doe', age: 24 })
+expected Person({ name: 'John Doe', age: 42 })
+to equal Person({ name: 'Jane Doe', age: 24 })
 
 Person({
   name: 'John Doe', // should equal 'Jane Doe'
