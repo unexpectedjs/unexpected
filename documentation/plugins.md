@@ -14,38 +14,38 @@ Here's a partial list of plugins for Unexpected:
 
 * [unexpected-color](http://unexpected.js.org/unexpected-color/): Assertions for
   strings representing colors.
-* [unexpected-knockout](http://unexpected.js.org/unexpected-knockout/): Add support
-  for [Knockout.js](http://knockoutjs.com/) observables.
-* [unexpected-sinon](http://unexpected.js.org/unexpected-sinon/): Add support for
-  [sinon](http://sinonjs.org/) spies.
+* [unexpected-couchdb](https://github.com/alexjeffburke/unexpected-couchdb/):
+  Run your tests against a mock CouchDB server initialized to a given state.
 * [unexpected-dom](https://github.com/munter/unexpected-dom/): Assertions for
   XML/HTML DOM and HTML/XML strings. Works in the browser and in node.js via
-  [jsdom](https://github.com/tmpvar/jsdom/).
+* [unexpected-exif](http://unexpected.js.org/unexpected-exif/): Assertions for
+  EXIF data of images (node.js only).
+* [unexpected-express](https://github.com/unexpectedjs/unexpected-express/): Express
+  app/middleware assertions with a declarative syntax.
 * [unexpected-fs](https://github.com/unexpectedjs/unexpected-fs/): Assertions for
   files and directories on disc, including mock file system support via
   [mock-js](https://github.com/tschaub/mock-fs).
-* [unexpected-stream](http://unexpected.js.org/unexpected-stream/): Assertions for
-  node.js streams.
-* [unexpected-exif](http://unexpected.js.org/unexpected-exif/): Assertions for
-  EXIF data of images (node.js only).
-* [unexpected-image](http://unexpected.js.org/unexpected-image/): Assertions for
-  image metadata (node.js only).
-* [unexpected-resemble](http://unexpected.js.org/unexpected-resemble/): Image resemblance
-  assertions based on [resemble.js](http://huddle.github.io/Resemble.js/). Works in
-  both node.js and the browser.
-* [unexpected-couchdb](https://github.com/alexjeffburke/unexpected-couchdb/):
-  Run your tests against a mock CouchDB server initialized to a given state.
-* [unexpected-express](https://github.com/unexpectedjs/unexpected-express/): Express
-  app/middleware assertions with a declarative syntax.
 * [unexpected-http](https://github.com/unexpectedjs/unexpected-http/): Assertions for
   testing local or remote HTTP servers.
   Browser-compatible via browserify (experimental).
+* [unexpected-image](http://unexpected.js.org/unexpected-image/): Assertions for
+  image metadata (node.js only).
+* [unexpected-knockout](http://unexpected.js.org/unexpected-knockout/): Add support
+  for [Knockout.js](http://knockoutjs.com/) observables.
+* [unexpected-messy](http://unexpected.js.org/unexpected-messy/): Assertions for
+  HTTP messages (requests and responses) and mails (rfc2822). Browser-compatible.
 * [unexpected-mitm](https://github.com/unexpectedjs/unexpected-mitm/): Mock out HTTP
   and make assertions about the HTTP traffic that goes on while executing other
   assertions. Based on the [mitm](https://github.com/moll/node-mitm/) module.
   Only works with node.js and io.js.
-* [unexpected-messy](http://unexpected.js.org/unexpected-messy/): Assertions for
-  HTTP messages (requests and responses) and mails (rfc2822). Browser-compatible.
+* [unexpected-resemble](http://unexpected.js.org/unexpected-resemble/): Image resemblance
+  assertions based on [resemble.js](http://huddle.github.io/Resemble.js/). Works in
+  both node.js and the browser.
+* [unexpected-sinon](http://unexpected.js.org/unexpected-sinon/): Add support for
+  [sinon](http://sinonjs.org/) spies.
+  [jsdom](https://github.com/tmpvar/jsdom/).
+* [unexpected-stream](http://unexpected.js.org/unexpected-stream/): Assertions for
+  node.js streams.
 
 
 ## Installation
