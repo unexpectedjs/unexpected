@@ -24,8 +24,7 @@
     "bluebird": "2.9.34",
     "diff": "1.1.0",
     "leven": "1.0.0",
-    "magicpen": "5.2.0",
-    "unexpected-documentation-site-generator": "2.9.2"
+    "magicpen": "5.2.0"
   },
   "devDependencies": {
     "browserify": "5.9.1",
@@ -42,6 +41,6 @@
     "phantomjs": "1.9.15",
     "rsvp": "3.0.18",
     "serve": "*",
-    "unexpected-documentation-site-generator": "^2.7.0"
+    "unexpected-documentation-site-generator": "2.9.2"
   }
 }
