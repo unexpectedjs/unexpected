@@ -33,6 +33,8 @@ Here's a partial list of plugins for Unexpected:
 * [unexpected-resemble](http://unexpected.js.org/unexpected-resemble/): Image resemblance
   assertions based on [resemble.js](http://huddle.github.io/Resemble.js/). Works in
   both node.js and the browser.
+* [unexpected-couchdb](http://github.com/alexjeffburke/unexpected-couchdb/):
+  Run your tests against a mock CouchDB server initialized to a given state.
 * [unexpected-express](http://github.com/unexpectedjs/unexpected-express/): Express
   app/middleware assertions with a declarative syntax.
 * [unexpected-http](http://github.com/unexpectedjs/unexpected-http/): Assertions for
