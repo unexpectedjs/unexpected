@@ -845,7 +845,7 @@ describe('unexpected', function () {
                 }, 'to throw exception');
             }, 'to throw', function (err) {
                 var message = err.getErrorMessage({ format: 'text' }).toString();
-                // PhantomJS adds a simicolon after the comment
+                // PhantomJS adds a semicolon after the comment
                 message = message.replace(';', '');
                 expect(message, 'to equal',
                        'expected\n' +
