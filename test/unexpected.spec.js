@@ -7732,7 +7732,13 @@ describe('unexpected', function () {
             );
         });
 
-        it('should inspect a short one-line function with leading and trailing newline correctly and a C++-style comment correctly', function () {
+        function singleLineWithComment() {
+            var a = 123; a = 456; // foo
+        }
+
+        var phantomJsBug = singleLineWithComment.toString().indexOf('// foo;') !== -1;
+
+        it.skipIf(phantomJsBug, 'should inspect a short one-line function with leading and trailing newline correctly and a C++-style comment correctly', function () {
             expect(function () {
                 var a = 123; a = 456; // foo
             }, 'to inspect as',
