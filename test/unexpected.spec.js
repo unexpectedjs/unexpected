@@ -862,11 +862,7 @@ describe('unexpected', function () {
                     throw new Error('The Error');
                 }, 'not to throw');
             }, 'to throw',
-                   'expected\n' +
-                    'function testFunction() {\n' +
-                    '  throw new Error(\'The Error\');\n' +
-                    '}\n' +
-                    'not to throw\n' +
+                    "expected function testFunction() { throw new Error('The Error'); } not to throw\n" +
                     "  threw: Error('The Error')");
         });
 
@@ -930,11 +926,7 @@ describe('unexpected', function () {
                     throw new Error('bar');
                 }, 'to throw', 'foo');
             }, 'to throw exception',
-                   'expected\n' +
-                    'function testFunction() {\n' +
-                    '  throw new Error(\'bar\');\n' +
-                    '}\n' +
-                    'to throw \'foo\'\n' +
+                   'expected function testFunction() { throw new Error(\'bar\'); } to throw \'foo\'\n' +
                     "  expected Error('bar') to satisfy 'foo'\n" +
                     '\n' +
                     '  -bar\n' +
@@ -979,11 +971,7 @@ describe('unexpected', function () {
                     throw null;
                 }, 'not to throw');
             }, 'to throw',
-                'expected\n' +
-                'function () {\n' +
-                '  throw null;\n' +
-                '}\n' +
-                'not to throw\n' +
+                'expected function () { throw null; } not to throw\n' +
                 '  threw: null');
         });
     });
@@ -997,11 +985,7 @@ describe('unexpected', function () {
                             throw new Error('yikes');
                         }, 'not to error');
                     }, 'to throw',
-                        "expected\n" +
-                        "function () {\n" +
-                        "  throw new Error('yikes');\n" +
-                        "}\n" +
-                        "not to error\n" +
+                        "expected function () { throw new Error('yikes'); } not to error\n" +
                         "  threw: Error('yikes')"
                     );
                 });
@@ -1206,10 +1190,7 @@ describe('unexpected', function () {
                             expect(123, 'to equal', 456);
                         }, 'to throw', expect.it('to have ansi diff', function () {}));
                     }, 'to throw',
-                        "expected\n" +
-                        "function () {\n" +
-                        "  expect(123, 'to equal', 456);\n" +
-                        "}\n" +
+                        "expected function () { expect(123, 'to equal', 456); }\n" +
                         "to throw expect.it('to have ansi diff', function () {})\n" +
                         "  expected UnexpectedError(expected 123 to equal 456)\n" +
                         "  to have ansi diff function () {}\n" +
@@ -1223,10 +1204,7 @@ describe('unexpected', function () {
                             throw new Error('foo');
                         }, 'to throw', expect.it('to have ansi diff', function () {}));
                     }, 'to throw',
-                        "expected\n" +
-                        "function () {\n" +
-                        "  throw new Error('foo');\n" +
-                        "}\n" +
+                        "expected function () { throw new Error('foo'); }\n" +
                         "to throw expect.it('to have ansi diff', function () {})\n" +
                         "  expected Error('foo') to have ansi diff function () {}\n" +
                         "    Cannot get the diff from a non-Unexpected error"
@@ -5993,7 +5971,7 @@ describe('unexpected', function () {
         });
 
         it('should bail out of removing the indentation of one-liner functions', function () {
-            expect(function () {  var foo = 123; return foo; }, 'to inspect as', 'function () {  var foo = 123; return foo; }');
+            expect(function () {  var foo = 123; return foo; }, 'to inspect as', 'function () { var foo = 123; return foo; }');
         });
 
         it('should not show the body of a function with native code', function () {
@@ -6818,11 +6796,7 @@ describe('unexpected', function () {
             expect(function () {
                 expect(add, 'when called with', [3, 4], 'to equal', 9);
             }, 'to throw',
-                   'expected\n' +
-                    'function add(a, b) {\n' +
-                    '  return a + b;\n' +
-                    '}\n' +
-                    'when called with [ 3, 4 ] to equal 9\n' +
+                   'expected function add(a, b) { return a + b; } when called with [ 3, 4 ] to equal 9\n' +
                     '  expected 7 to equal 9');
         });
     });
@@ -6844,10 +6818,8 @@ describe('unexpected', function () {
             expect(function () {
                 expect([3, 4], 'when passed as parameters to', add, 'to equal', 8);
             }, 'to throw',
-                   'expected [ 3, 4 ] when passed as parameters to\n' +
-                   'function add(a, b) {\n' +
-                   '  return a + b;\n' +
-                   '} to equal 8\n' +
+                   'expected [ 3, 4 ]\n' +
+                   'when passed as parameters to function add(a, b) { return a + b; } to equal 8\n' +
                    '  expected 7 to equal 8');
 
         });
@@ -6868,10 +6840,8 @@ describe('unexpected', function () {
                 expect(function () {
                     expect(1, 'when passed as parameter to', increment, 'to equal', 3);
                 }, 'to throw',
-                       'expected 1 when passed as parameter to\n' +
-                       'function increment(n) {\n' +
-                       '  return n + 1;\n' +
-                       '} to equal 3\n' +
+                       'expected 1\n' +
+                       'when passed as parameter to function increment(n) { return n + 1; } to equal 3\n' +
                        '  expected 2 to equal 3'
                 );
             });
@@ -7189,10 +7159,7 @@ describe('unexpected', function () {
                             setTimeout(cb, 0);
                         }, 'to call the callback with error', new Error('bla'));
                     }, 'to error',
-                        "expected\n" +
-                        "function (cb) {\n" +
-                        "  setTimeout(cb, 0);\n" +
-                        "}\n" +
+                        "expected function (cb) { setTimeout(cb, 0); }\n" +
                         "to call the callback with error Error('bla')\n" +
                         "  expected undefined to equal Error('bla')"
                     );
@@ -7214,11 +7181,7 @@ describe('unexpected', function () {
                             setTimeout(cb, 0);
                         }, 'to call the callback with error');
                     }, 'to error',
-                        "expected\n" +
-                        "function (cb) {\n" +
-                        "  setTimeout(cb, 0);\n" +
-                        "}\n" +
-                        "to call the callback with error\n" +
+                        "expected function (cb) { setTimeout(cb, 0); } to call the callback with error\n" +
                         "  expected undefined to be truthy"
                     );
                 });
@@ -7732,6 +7695,53 @@ describe('unexpected', function () {
     });
 
     describe('function type', function () {
+        it('should inspect an empty function correctly', function () {
+            expect(function () {}, 'to inspect as',
+                'function () {}'
+            );
+        });
+
+        it('should inspect an function with just a newline correctly', function () {
+            expect(function () {
+            }, 'to inspect as',
+                'function () {}'
+            );
+        });
+
+        it('should inspect a one-line function correctly', function () {
+            expect(function () { var a = 123; }, 'to inspect as',
+                'function () { var a = 123; }'
+            );
+        });
+
+        it('should inspect a short one-line function with leading and trailing newline correctly', function () {
+            expect(function () {
+                var a = 123;
+            }, 'to inspect as',
+                'function () { var a = 123; }'
+            );
+        });
+
+        it('should inspect a long one-line function with leading and trailing newline correctly', function () {
+            expect(function () {
+                var a = 123 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2;
+            }, 'to inspect as',
+                'function () {\n' +
+                '  var a = 123 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2;\n' +
+                '}'
+            );
+        });
+
+        it('should inspect a short one-line function with leading and trailing newline correctly and a C++-style comment correctly', function () {
+            expect(function () {
+                var a = 123; // foo
+            }, 'to inspect as',
+                'function () {\n' +
+                '  var a = 123; // foo\n' +
+                '}'
+            );
+        });
+
         it('should reindent a function with an indentation size of 4', function () {
             expect(function () {
                 var a = 4;

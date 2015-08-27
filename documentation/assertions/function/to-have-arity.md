@@ -14,9 +14,5 @@ expect(function wat(foo, bar) {
 ```
 
 ```output
-expected
-function wat(foo, bar) {
-  return foo + bar;
-}
-to have arity 3
+expected function wat(foo, bar) { return foo + bar; } to have arity 3
 ```

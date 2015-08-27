@@ -2096,10 +2096,8 @@ describe("documentation tests", function () {
             });
         } catch (e) {
             expect(e, "to have message",
-                "expected 1 when passed as parameter to\n" +
-                "function increment(n) {\n" +
-                "  return n + 1;\n" +
-                "} to equal 3\n" +
+                "expected 1\n" +
+                "when passed as parameter to function increment(n) { return n + 1; } to equal 3\n" +
                 "  expected 2 to equal 3"
             );
         }
@@ -2330,10 +2328,8 @@ describe("documentation tests", function () {
             });
         } catch (e) {
             expect(e, "to have message",
-                "expected [ 1, 2 ] when passed as parameters to\n" +
-                "function add(a, b) {\n" +
-                "  return a + b;\n" +
-                "} to equal 9\n" +
+                "expected [ 1, 2 ]\n" +
+                "when passed as parameters to function add(a, b) { return a + b; } to equal 9\n" +
                 "  expected 3 to equal 9"
             );
         }
@@ -2742,11 +2738,7 @@ describe("documentation tests", function () {
             });
         } catch (e) {
             expect(e, "to have message",
-                "expected\n" +
-                "function wat(foo, bar) {\n" +
-                "  return foo + bar;\n" +
-                "}\n" +
-                "to have arity 3"
+                "expected function wat(foo, bar) { return foo + bar; } to have arity 3"
             );
         }
         return expect.promise.all(testPromises);
