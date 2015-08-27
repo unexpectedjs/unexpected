@@ -850,7 +850,7 @@ describe('unexpected', function () {
                 expect(message, 'to equal',
                        'expected\n' +
                        'function () {\n' +
-                       '    // Don\'t throw\n' +
+                       '  // Don\'t throw\n' +
                        '}\n' +
                        'to throw exception');
             });
@@ -864,7 +864,7 @@ describe('unexpected', function () {
             }, 'to throw',
                    'expected\n' +
                     'function testFunction() {\n' +
-                    '    throw new Error(\'The Error\');\n' +
+                    '  throw new Error(\'The Error\');\n' +
                     '}\n' +
                     'not to throw\n' +
                     "  threw: Error('The Error')");
@@ -882,11 +882,11 @@ describe('unexpected', function () {
             }, 'to throw',
                    'expected\n' +
                     'function testFunction() {\n' +
-                    "    expect.fail(function (output) {\n" +
-                    "        output.text('foo').block(function () {\n" +
-                    "            this.text('bar').nl().text('baz');\n" +
-                    "        }).text('quux');\n" +
-                    "    });\n" +
+                    "  expect.fail(function (output) {\n" +
+                    "    output.text('foo').block(function () {\n" +
+                    "      this.text('bar').nl().text('baz');\n" +
+                    "    }).text('quux');\n" +
+                    "  });\n" +
                     '}\n' +
                     'not to throw\n' +
                     "  threw: foobarquux\n" +
@@ -932,7 +932,7 @@ describe('unexpected', function () {
             }, 'to throw exception',
                    'expected\n' +
                     'function testFunction() {\n' +
-                    '    throw new Error(\'bar\');\n' +
+                    '  throw new Error(\'bar\');\n' +
                     '}\n' +
                     'to throw \'foo\'\n' +
                     "  expected Error('bar') to satisfy 'foo'\n" +
@@ -955,7 +955,7 @@ describe('unexpected', function () {
             }, 'to throw',
                    'expected\n' +
                    'function testFunction() {\n' +
-                   '    throw new Error(\'Custom error\');\n' +
+                   '  throw new Error(\'Custom error\');\n' +
                    '}\n' +
                    "to throw exception Error('My error')\n" +
                    "  expected Error('Custom error') to satisfy Error('My error')\n" +
@@ -981,7 +981,7 @@ describe('unexpected', function () {
             }, 'to throw',
                 'expected\n' +
                 'function () {\n' +
-                '    throw null;\n' +
+                '  throw null;\n' +
                 '}\n' +
                 'not to throw\n' +
                 '  threw: null');
@@ -999,7 +999,7 @@ describe('unexpected', function () {
                     }, 'to throw',
                         "expected\n" +
                         "function () {\n" +
-                        "    throw new Error('yikes');\n" +
+                        "  throw new Error('yikes');\n" +
                         "}\n" +
                         "not to error\n" +
                         "  threw: Error('yikes')"
@@ -1022,11 +1022,11 @@ describe('unexpected', function () {
                         'to be rejected with',
                             "expected\n" +
                             "function () {\n" +
-                            "    return expect.promise(function (resolve, reject) {\n" +
-                            "        setTimeout(function () {\n" +
-                            "            reject(new Error('wat'));\n" +
-                            "        }, 1);\n" +
-                            "    });\n" +
+                            "  return expect.promise(function (resolve, reject) {\n" +
+                            "    setTimeout(function () {\n" +
+                            "      reject(new Error('wat'));\n" +
+                            "    }, 1);\n" +
+                            "  });\n" +
                             "}\n" +
                             "not to error\n" +
                             "  returned promise rejected with: Error('wat')"
@@ -1208,7 +1208,7 @@ describe('unexpected', function () {
                     }, 'to throw',
                         "expected\n" +
                         "function () {\n" +
-                        "    expect(123, 'to equal', 456);\n" +
+                        "  expect(123, 'to equal', 456);\n" +
                         "}\n" +
                         "to throw expect.it('to have ansi diff', function () {})\n" +
                         "  expected UnexpectedError(expected 123 to equal 456)\n" +
@@ -1225,7 +1225,7 @@ describe('unexpected', function () {
                     }, 'to throw',
                         "expected\n" +
                         "function () {\n" +
-                        "    throw new Error('foo');\n" +
+                        "  throw new Error('foo');\n" +
                         "}\n" +
                         "to throw expect.it('to have ansi diff', function () {})\n" +
                         "  expected Error('foo') to have ansi diff function () {}\n" +
@@ -1256,7 +1256,7 @@ describe('unexpected', function () {
                         }, 'to throw',
                             "expected\n" +
                             "function () {\n" +
-                            "    expect('abc', 'to equal', 'def');\n" +
+                            "  expect('abc', 'to equal', 'def');\n" +
                             "}\n" +
                             "to throw\n" +
                             "expect.it('to have ansi diff', magicpen('ansi')\n" +
@@ -1322,12 +1322,12 @@ describe('unexpected', function () {
                         }, 'to throw',
                             "expected\n" +
                             "function () {\n" +
-                            "    expect('abc', 'to equal', 'def');\n" +
+                            "  expect('abc', 'to equal', 'def');\n" +
                             "}\n" +
                             "to throw\n" +
                             "expect.it('to have ansi diff', function () {\n" +
-                            "    this.red('-').text('abc').nl()\n" +
-                            "        .green('+').text('def', ['bgGreen', 'black']);\n" +
+                            "  this.red('-').text('abc').nl()\n" +
+                            "    .green('+').text('def', ['bgGreen', 'black']);\n" +
                             "})\n" +
                             "  expected\n" +
                             "  UnexpectedError(\n" +
@@ -1338,8 +1338,8 @@ describe('unexpected', function () {
                             "  )\n" +
                             "  to have ansi diff\n" +
                             "  function () {\n" +
-                            "      this.red('-').text('abc').nl()\n" +
-                            "          .green('+').text('def', ['bgGreen', 'black']);\n" +
+                            "    this.red('-').text('abc').nl()\n" +
+                            "      .green('+').text('def', ['bgGreen', 'black']);\n" +
                             "  }\n" +
                             "    expected\n" +
                             "    magicpen('ansi')\n" +
@@ -1383,11 +1383,11 @@ describe('unexpected', function () {
                         'to be rejected with',
                             "expected\n" +
                             "function () {\n" +
-                            "    expect('abc', 'to equal', 'def');\n" +
+                            "  expect('abc', 'to equal', 'def');\n" +
                             "}\n" +
                             "to throw\n" +
                             "expect.it('to have ansi diff', function (ansiStr) {\n" +
-                            "    return expect(123, 'when delayed a little bit', 'to equal', 456);\n" +
+                            "  return expect(123, 'when delayed a little bit', 'to equal', 456);\n" +
                             "})\n" +
                             "  expected 123 when delayed a little bit to equal 456"
                     );
@@ -4093,7 +4093,7 @@ describe('unexpected', function () {
             }, 'to throw',
                    "expected [] to have items satisfying\n" +
                    "function (item) {\n" +
-                   "    expect(item, 'to be a number');\n" +
+                   "  expect(item, 'to be a number');\n" +
                    "}\n" +
                    "  expected [] to be non-empty");
         });
@@ -4126,9 +4126,9 @@ describe('unexpected', function () {
             }, 'to throw',
                    "expected array to have values satisfying\n" +
                    "function (item) {\n" +
-                   "    expect.fail(function (output) {\n" +
-                   "        output.text('foo').nl().text('bar');\n" +
-                   "    });\n" +
+                   "  expect.fail(function (output) {\n" +
+                   "    output.text('foo').nl().text('bar');\n" +
+                   "  });\n" +
                    "}\n" +
                    "\n" +
                    "[\n" +
@@ -4170,8 +4170,8 @@ describe('unexpected', function () {
             }, 'to throw',
                    "expected [ 0, 1, '2', 3, 4 ] to have values satisfying\n" +
                    "function (item) {\n" +
-                   "    expect(item, 'to be a number');\n" +
-                   "    expect(item, 'to be less than', 4);\n" +
+                   "  expect(item, 'to be a number');\n" +
+                   "  expect(item, 'to be less than', 4);\n" +
                    "}\n" +
                    "\n" +
                    "[\n" +
@@ -4193,9 +4193,9 @@ describe('unexpected', function () {
             }, 'to throw',
                    "expected [ [ 0, 1, 2 ], [ 4, '5', 6 ], [ 7, 8, '9' ] ] to have values satisfying\n" +
                    "function (arr) {\n" +
-                   "    expect(arr, 'to have items satisfying', function (item) {\n" +
-                   "        expect(item, 'to be a number');\n" +
-                   "    });\n" +
+                   "  expect(arr, 'to have items satisfying', function (item) {\n" +
+                   "    expect(item, 'to be a number');\n" +
+                   "  });\n" +
                    "}\n" +
                    "\n" +
                    "[\n" +
@@ -4285,7 +4285,7 @@ describe('unexpected', function () {
             }, 'to throw',
                    "expected {} to have values satisfying\n" +
                    "function (value) {\n" +
-                   "    expect(value, 'to equal', '0');\n" +
+                   "  expect(value, 'to equal', '0');\n" +
                    "}\n" +
                    "  expected {} not to equal {}");
         });
@@ -4298,7 +4298,7 @@ describe('unexpected', function () {
             }, 'to throw',
                    "expected [] to have items satisfying\n" +
                    "function (item) {\n" +
-                   "    expect(item, 'to be a number');\n" +
+                   "  expect(item, 'to be a number');\n" +
                    "}\n" +
                    "  expected [] to be non-empty");
         });
@@ -4311,7 +4311,7 @@ describe('unexpected', function () {
             }, 'to throw',
                    "expected [] to have items satisfying\n" +
                    "function (item) {\n" +
-                   "    expect(item, 'to be a number');\n" +
+                   "  expect(item, 'to be a number');\n" +
                    "}\n" +
                    "  expected [] to be non-empty");
         });
@@ -4347,8 +4347,8 @@ describe('unexpected', function () {
             }, 'to throw',
                    "expected { foo: 0, bar: 1, baz: '2', qux: 3, quux: 4 } to have values satisfying\n" +
                    "function (value) {\n" +
-                   "    expect(value, 'to be a number');\n" +
-                   "    expect(value, 'to be less than', 4);\n" +
+                   "  expect(value, 'to be a number');\n" +
+                   "  expect(value, 'to be less than', 4);\n" +
                    "}\n" +
                    "\n" +
                    "{\n" +
@@ -4370,9 +4370,9 @@ describe('unexpected', function () {
             }, 'to throw',
                    "expected { foo: [ 0, 1, 2 ], bar: [ 4, '5', 6 ], baz: [ 7, 8, '9' ] } to have values satisfying\n" +
                    "function (arr) {\n" +
-                   "    expect(arr, 'to have items satisfying', function (item) {\n" +
-                   "        expect(item, 'to be a number');\n" +
-                   "    });\n" +
+                   "  expect(arr, 'to have items satisfying', function (item) {\n" +
+                   "    expect(item, 'to be a number');\n" +
+                   "  });\n" +
                    "}\n" +
                    "\n" +
                    "{\n" +
@@ -4469,7 +4469,7 @@ describe('unexpected', function () {
             }, 'to throw',
                    "expected {} to have keys satisfying\n" +
                    "function (key) {\n" +
-                   "    expect(key, 'to match', /^[a-z]{3}$/);\n" +
+                   "  expect(key, 'to match', /^[a-z]{3}$/);\n" +
                    "}\n" +
                    "  expected {} not to equal {}");
         });
@@ -4515,7 +4515,7 @@ describe('unexpected', function () {
             }, 'to throw',
                    "expected { foo: 0, bar: 1, baz: 2, qux: 3, quux: 4 } to have keys satisfying\n" +
                    "function (key) {\n" +
-                   "    expect(key, 'to have length', 3);\n" +
+                   "  expect(key, 'to have length', 3);\n" +
                    "}\n" +
                    "\n" +
                    "{\n" +
@@ -5936,13 +5936,13 @@ describe('unexpected', function () {
                 return quux;
             }, 'to inspect as',
                 'function () {\n' +
-                '    var foo = \'bar\';\n' +
-                '    var quux = \'baz\';\n' +
-                '    while (foo) {\n' +
-                '        foo = foo\n' +
-                '            .substr(0, foo.length - 1);\n' +
-                '    }\n' +
-                '    return quux;\n' +
+                '  var foo = \'bar\';\n' +
+                '  var quux = \'baz\';\n' +
+                '  while (foo) {\n' +
+                '    foo = foo\n' +
+                '      .substr(0, foo.length - 1);\n' +
+                '  }\n' +
+                '  return quux;\n' +
                 '}');
         });
 
@@ -6820,7 +6820,7 @@ describe('unexpected', function () {
             }, 'to throw',
                    'expected\n' +
                     'function add(a, b) {\n' +
-                    '    return a + b;\n' +
+                    '  return a + b;\n' +
                     '}\n' +
                     'when called with [ 3, 4 ] to equal 9\n' +
                     '  expected 7 to equal 9');
@@ -6846,7 +6846,7 @@ describe('unexpected', function () {
             }, 'to throw',
                    'expected [ 3, 4 ] when passed as parameters to\n' +
                    'function add(a, b) {\n' +
-                   '    return a + b;\n' +
+                   '  return a + b;\n' +
                    '} to equal 8\n' +
                    '  expected 7 to equal 8');
 
@@ -6870,7 +6870,7 @@ describe('unexpected', function () {
                 }, 'to throw',
                        'expected 1 when passed as parameter to\n' +
                        'function increment(n) {\n' +
-                       '    return n + 1;\n' +
+                       '  return n + 1;\n' +
                        '} to equal 3\n' +
                        '  expected 2 to equal 3'
                 );
@@ -6915,13 +6915,13 @@ describe('unexpected', function () {
                     'to be rejected',
                         "expected [ 123 ] when passed as parameters to async\n" +
                         "function delayedIncrement(num, cb) {\n" +
-                        "    setTimeout(function () {\n" +
-                        "        if (typeof num === 'number') {\n" +
-                        "            cb(null, num + 1);\n" +
-                        "        } else {\n" +
-                        "            cb(new Error('not a number'));\n" +
-                        "        }\n" +
-                        "    }, 1);\n" +
+                        "  setTimeout(function () {\n" +
+                        "    if (typeof num === 'number') {\n" +
+                        "      cb(null, num + 1);\n" +
+                        "    } else {\n" +
+                        "      cb(new Error('not a number'));\n" +
+                        "    }\n" +
+                        "  }, 1);\n" +
                         "} to equal 125\n" +
                         "  expected 124 to equal 125"
                 );
@@ -6933,13 +6933,13 @@ describe('unexpected', function () {
                     'to be rejected',
                         "expected [ false ] when passed as parameters to async\n" +
                         "function delayedIncrement(num, cb) {\n" +
-                        "    setTimeout(function () {\n" +
-                        "        if (typeof num === 'number') {\n" +
-                        "            cb(null, num + 1);\n" +
-                        "        } else {\n" +
-                        "            cb(new Error('not a number'));\n" +
-                        "        }\n" +
-                        "    }, 1);\n" +
+                        "  setTimeout(function () {\n" +
+                        "    if (typeof num === 'number') {\n" +
+                        "      cb(null, num + 1);\n" +
+                        "    } else {\n" +
+                        "      cb(new Error('not a number'));\n" +
+                        "    }\n" +
+                        "  }, 1);\n" +
                         "}, 'to equal', 125\n" +
                         "  expected Error('not a number') to be falsy"
                 );
@@ -6963,8 +6963,8 @@ describe('unexpected', function () {
             }, 'to error',
                 "expected\n" +
                 "function (cb) {\n" +
-                "    cb();\n" +
-                "    cb();\n" +
+                "  cb();\n" +
+                "  cb();\n" +
                 "}\n" +
                 "to call the callback\n" +
                 "  The callback was called twice"
@@ -6982,10 +6982,10 @@ describe('unexpected', function () {
             }, 'to error',
                 "expected\n" +
                 "function (cb) {\n" +
-                "    setTimeout(function () {\n" +
-                "        cb();\n" +
-                "        cb();\n" +
-                "    }, 0);\n" +
+                "  setTimeout(function () {\n" +
+                "    cb();\n" +
+                "    cb();\n" +
+                "  }, 0);\n" +
                 "}\n" +
                 "to call the callback\n" +
                 "  The callback was called twice"
@@ -7087,9 +7087,9 @@ describe('unexpected', function () {
                         }, 'to error',
                             "expected\n" +
                             "function (cb) {\n" +
-                            "    setTimeout(function () {\n" +
-                            "        cb(new Error('bla'));\n" +
-                            "    }, 0);\n" +
+                            "  setTimeout(function () {\n" +
+                            "    cb(new Error('bla'));\n" +
+                            "  }, 0);\n" +
                             "}\n" +
                             "to call the callback with error 'quux'\n" +
                             "  expected Error('bla') to satisfy 'quux'\n" +
@@ -7119,9 +7119,9 @@ describe('unexpected', function () {
                         }, 'to error',
                             "expected\n" +
                             "function (cb) {\n" +
-                            "    setTimeout(function () {\n" +
-                            "        cb(new Error('bla'));\n" +
-                            "    }, 0);\n" +
+                            "  setTimeout(function () {\n" +
+                            "    cb(new Error('bla'));\n" +
+                            "  }, 0);\n" +
                             "}\n" +
                             "to call the callback with error /q/\n" +
                             "  expected Error('bla') to satisfy /q/"
@@ -7142,13 +7142,13 @@ describe('unexpected', function () {
                         }, 'to error',
                             "expected\n" +
                             "function (cb) {\n" +
-                            "    setTimeout(function () {\n" +
-                            "        try {\n" +
-                            "            expect(false, 'to be truthy');\n" +
-                            "        } catch (err) {\n" +
-                            "            cb(err);\n" +
-                            "        }\n" +
-                            "    }, 0);\n" +
+                            "  setTimeout(function () {\n" +
+                            "    try {\n" +
+                            "      expect(false, 'to be truthy');\n" +
+                            "    } catch (err) {\n" +
+                            "      cb(err);\n" +
+                            "    }\n" +
+                            "  }, 0);\n" +
                             "}\n" +
                             "to call the callback with error /qqxqwxeqw/\n" +
                             "  expected UnexpectedError(expected false to be truthy)\n" +
@@ -7168,9 +7168,9 @@ describe('unexpected', function () {
                     }, 'to error',
                         "expected\n" +
                         "function (cb) {\n" +
-                        "    setTimeout(function () {\n" +
-                        "        cb(new Error('foo'));\n" +
-                        "    }, 0);\n" +
+                        "  setTimeout(function () {\n" +
+                        "    cb(new Error('foo'));\n" +
+                        "  }, 0);\n" +
                         "}\n" +
                         "to call the callback with error Error('bla')\n" +
                         "  expected Error('foo') to satisfy Error('bla')\n" +
@@ -7191,7 +7191,7 @@ describe('unexpected', function () {
                     }, 'to error',
                         "expected\n" +
                         "function (cb) {\n" +
-                        "    setTimeout(cb, 0);\n" +
+                        "  setTimeout(cb, 0);\n" +
                         "}\n" +
                         "to call the callback with error Error('bla')\n" +
                         "  expected undefined to equal Error('bla')"
@@ -7216,7 +7216,7 @@ describe('unexpected', function () {
                     }, 'to error',
                         "expected\n" +
                         "function (cb) {\n" +
-                        "    setTimeout(cb, 0);\n" +
+                        "  setTimeout(cb, 0);\n" +
                         "}\n" +
                         "to call the callback with error\n" +
                         "  expected undefined to be truthy"
@@ -7252,9 +7252,9 @@ describe('unexpected', function () {
                 }, 'to error',
                     "expected\n" +
                     "function (cb) {\n" +
-                    "    return setTimeout(function () {\n" +
-                    "        cb(new Error('wat'));\n" +
-                    "    }, 0);\n" +
+                    "  return setTimeout(function () {\n" +
+                    "    cb(new Error('wat'));\n" +
+                    "  }, 0);\n" +
                     "}\n" +
                     "to call the callback without error\n" +
                     "  called the callback with: Error('wat')"
@@ -7283,13 +7283,13 @@ describe('unexpected', function () {
                 }, 'to error',
                     "expected\n" +
                     "function (cb) {\n" +
-                    "    setTimeout(function () {\n" +
-                    "        try {\n" +
-                    "            expect(false, 'to be truthy');\n" +
-                    "        } catch (err) {\n" +
-                    "            cb(err);\n" +
-                    "        }\n" +
-                    "    }, 0);\n" +
+                    "  setTimeout(function () {\n" +
+                    "    try {\n" +
+                    "      expect(false, 'to be truthy');\n" +
+                    "    } catch (err) {\n" +
+                    "      cb(err);\n" +
+                    "    }\n" +
+                    "  }, 0);\n" +
                     "}\n" +
                     "to call the callback without error\n" +
                     "  called the callback with: expected false to be truthy"
@@ -7728,6 +7728,56 @@ describe('unexpected', function () {
     describe.skipIf(typeof Buffer === 'undefined', 'when decoded as assertion', function () {
         it('should decode a Buffer instance to utf-8', function () {
             expect(new Buffer('æøå', 'utf-8'), 'when decoded as', 'utf-8', 'to equal', 'æøå');
+        });
+    });
+
+    describe('function type', function () {
+        it('should reindent a function with an indentation size of 4', function () {
+            expect(function () {
+                var a = 4;
+                if (a === 1) {
+                    a();
+                }
+            }, 'to inspect as',
+                'function () {\n' +
+                '  var a = 4;\n' +
+                '  if (a === 1) {\n' +
+                '    a();\n' +
+                '  }\n' +
+                '}'
+            );
+        });
+
+        it('should reindent a function with an indentation size of 3', function () {
+            expect(function () {
+               var a = 4;
+               if (a === 1) {
+                  a();
+               }
+            }, 'to inspect as',
+                'function () {\n' +
+                '  var a = 4;\n' +
+                '  if (a === 1) {\n' +
+                '    a();\n' +
+                '  }\n' +
+                '}'
+            );
+        });
+
+        it('should reindent a function with an indentation size of 1', function () {
+            expect(function () {
+             var a = 4;
+             if (a === 1) {
+              a();
+             }
+            }, 'to inspect as',
+                'function () {\n' +
+                '  var a = 4;\n' +
+                '  if (a === 1) {\n' +
+                '    a();\n' +
+                '  }\n' +
+                '}'
+            );
         });
     });
 });

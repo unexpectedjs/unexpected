@@ -2098,7 +2098,7 @@ describe("documentation tests", function () {
             expect(e, "to have message",
                 "expected 1 when passed as parameter to\n" +
                 "function increment(n) {\n" +
-                "    return n + 1;\n" +
+                "  return n + 1;\n" +
                 "} to equal 3\n" +
                 "  expected 2 to equal 3"
             );
@@ -2332,7 +2332,7 @@ describe("documentation tests", function () {
             expect(e, "to have message",
                 "expected [ 1, 2 ] when passed as parameters to\n" +
                 "function add(a, b) {\n" +
-                "    return a + b;\n" +
+                "  return a + b;\n" +
                 "} to equal 9\n" +
                 "  expected 3 to equal 9"
             );
@@ -2428,9 +2428,9 @@ describe("documentation tests", function () {
             expect(e, "to have message",
                 "expected\n" +
                 "function myFailingAsyncFunction(cb) {\n" +
-                "    setTimeout(function () {\n" +
-                "        cb(new Error('Oh dear'));\n" +
-                "    }, 0);\n" +
+                "  setTimeout(function () {\n" +
+                "    cb(new Error('Oh dear'));\n" +
+                "  }, 0);\n" +
                 "}\n" +
                 "to call the callback with error Error('foo')\n" +
                 "  expected Error('Oh dear') to satisfy Error('foo')\n" +
@@ -2492,9 +2492,9 @@ describe("documentation tests", function () {
             expect(e, "to have message",
                 "expected\n" +
                 "function myFailingAsyncFunction(cb) {\n" +
-                "    setTimeout(function () {\n" +
-                "        cb(new Error('Oh dear'));\n" +
-                "    }, 0);\n" +
+                "  setTimeout(function () {\n" +
+                "    cb(new Error('Oh dear'));\n" +
+                "  }, 0);\n" +
                 "}\n" +
                 "to call the callback without error\n" +
                 "  called the callback with: Error('Oh dear')"
@@ -2611,9 +2611,9 @@ describe("documentation tests", function () {
             expect(e, "to have message",
                 "expected\n" +
                 "function willNotBeRejected() {\n" +
-                "    return expect.promise(function (resolve, reject) {\n" +
-                "        resolve('Hello world');\n" +
-                "    });\n" +
+                "  return expect.promise(function (resolve, reject) {\n" +
+                "    resolve('Hello world');\n" +
+                "  });\n" +
                 "}\n" +
                 "to error"
             );
@@ -2632,9 +2632,9 @@ describe("documentation tests", function () {
             expect(e, "to have message",
                 "expected\n" +
                 "function willBeRejected() {\n" +
-                "    return expect.promise(function (resolve, reject) {\n" +
-                "        reject(new Error('The reject message'));\n" +
-                "    });\n" +
+                "  return expect.promise(function (resolve, reject) {\n" +
+                "    reject(new Error('The reject message'));\n" +
+                "  });\n" +
                 "}\n" +
                 "to error 'The error message'\n" +
                 "  expected Error('The reject message') to satisfy 'The error message'\n" +
@@ -2657,9 +2657,9 @@ describe("documentation tests", function () {
             expect(e, "to have message",
                 "expected\n" +
                 "function willBeRejected() {\n" +
-                "    return expect.promise(function (resolve, reject) {\n" +
-                "        reject(new Error('The reject message'));\n" +
-                "    });\n" +
+                "  return expect.promise(function (resolve, reject) {\n" +
+                "    reject(new Error('The reject message'));\n" +
+                "  });\n" +
                 "}\n" +
                 "to error /error message/\n" +
                 "  expected Error('The reject message') to satisfy /error message/"
@@ -2679,9 +2679,9 @@ describe("documentation tests", function () {
             expect(e, "to have message",
                 "expected\n" +
                 "function willBeRejected() {\n" +
-                "    return expect.promise(function (resolve, reject) {\n" +
-                "        reject(new Error('The reject message'));\n" +
-                "    });\n" +
+                "  return expect.promise(function (resolve, reject) {\n" +
+                "    reject(new Error('The reject message'));\n" +
+                "  });\n" +
                 "}\n" +
                 "not to error\n" +
                 "  returned promise rejected with: Error('The reject message')"

@@ -27,9 +27,9 @@ expect(willNotBeRejected, 'to error');
 ```output
 expected
 function willNotBeRejected() {
-    return expect.promise(function (resolve, reject) {
-        resolve('Hello world');
-    });
+  return expect.promise(function (resolve, reject) {
+    resolve('Hello world');
+  });
 }
 to error
 ```
@@ -48,9 +48,9 @@ expect(willBeRejected, 'to error', 'The error message');
 ```output
 expected
 function willBeRejected() {
-    return expect.promise(function (resolve, reject) {
-        reject(new Error('The reject message'));
-    });
+  return expect.promise(function (resolve, reject) {
+    reject(new Error('The reject message'));
+  });
 }
 to error 'The error message'
   expected Error('The reject message') to satisfy 'The error message'
@@ -75,9 +75,9 @@ expect(willBeRejected, 'to error', /error message/);
 ```output
 expected
 function willBeRejected() {
-    return expect.promise(function (resolve, reject) {
-        reject(new Error('The reject message'));
-    });
+  return expect.promise(function (resolve, reject) {
+    reject(new Error('The reject message'));
+  });
 }
 to error /error message/
   expected Error('The reject message') to satisfy /error message/
@@ -98,9 +98,9 @@ expect(willBeRejected, 'not to error');
 ```output
 expected
 function willBeRejected() {
-    return expect.promise(function (resolve, reject) {
-        reject(new Error('The reject message'));
-    });
+  return expect.promise(function (resolve, reject) {
+    reject(new Error('The reject message'));
+  });
 }
 not to error
   returned promise rejected with: Error('The reject message')

@@ -22,6 +22,7 @@
   "dependencies": {
     "array-changes": "1.0.3",
     "bluebird": "2.9.34",
+    "detect-indent": "3.0.1",
     "diff": "1.1.0",
     "leven": "1.0.0",
     "magicpen": "5.2.0"

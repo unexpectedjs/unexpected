@@ -17,7 +17,7 @@ expect([1, 2], 'when passed as parameters to', add, 'to equal', 9);
 ```output
 expected [ 1, 2 ] when passed as parameters to
 function add(a, b) {
-    return a + b;
+  return a + b;
 } to equal 9
   expected 3 to equal 9
 ```

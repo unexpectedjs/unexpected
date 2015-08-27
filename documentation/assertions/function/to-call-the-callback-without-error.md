@@ -24,9 +24,9 @@ return expect(myFailingAsyncFunction, 'to call the callback without error');
 ```output
 expected
 function myFailingAsyncFunction(cb) {
-    setTimeout(function () {
-        cb(new Error('Oh dear'));
-    }, 0);
+  setTimeout(function () {
+    cb(new Error('Oh dear'));
+  }, 0);
 }
 to call the callback without error
   called the callback with: Error('Oh dear')
