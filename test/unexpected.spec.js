@@ -7709,35 +7709,35 @@ describe('unexpected', function () {
         });
 
         it('should inspect a one-line function correctly', function () {
-            expect(function () { var a = 123; }, 'to inspect as',
-                'function () { var a = 123; }'
+            expect(function () { var a = 123; a = 456; }, 'to inspect as',
+                'function () { var a = 123; a = 456; }'
             );
         });
 
         it('should inspect a short one-line function with leading and trailing newline correctly', function () {
             expect(function () {
-                var a = 123;
+                var a = 123; a = 456;
             }, 'to inspect as',
-                'function () { var a = 123; }'
+                'function () { var a = 123; a = 456; }'
             );
         });
 
         it('should inspect a long one-line function with leading and trailing newline correctly', function () {
             expect(function () {
-                var a = 123 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2;
+                var a = 123 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2; a = 456;
             }, 'to inspect as',
                 'function () {\n' +
-                '  var a = 123 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2;\n' +
+                '  var a = 123 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2; a = 456;\n' +
                 '}'
             );
         });
 
         it('should inspect a short one-line function with leading and trailing newline correctly and a C++-style comment correctly', function () {
             expect(function () {
-                var a = 123; // foo
+                var a = 123; a = 456; // foo
             }, 'to inspect as',
                 'function () {\n' +
-                '  var a = 123; // foo\n' +
+                '  var a = 123; a = 456; // foo\n' +
                 '}'
             );
         });
