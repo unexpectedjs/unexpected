@@ -1,24 +1,20 @@
 Wait for a promise to be rejected, then delegate the reason to another assertion.
 
-```javascript#async:true
+```javascript
 var rejectedPromise = expect.promise(function (resolve, reject) {
     setTimeout(function () {
         reject(new Error('argh'));
     });
 });
+```
 
+```javascript#async:true
 return expect(rejectedPromise, 'when rejected', 'to equal', new Error('argh'));
 ```
 
 It works with any assertion or `expect.it` construct:
 
 ```javascript#async:true
-var rejectedPromise = expect.promise(function (resolve, reject) {
-    setTimeout(function () {
-        reject(new Error('argh'));
-    });
-});
-
 return expect(rejectedPromise, 'when rejected', expect.it('to have message', 'argh'));
 ```
 

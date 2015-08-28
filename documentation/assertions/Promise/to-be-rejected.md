@@ -32,7 +32,9 @@ var promiseThatWillBeRejectedWithAReason = expect.promise(function (resolve, rej
         reject(new Error('Oh dear'));
     }, 1);
 });
+```
 
+```javascript#async:true
 return expect(promiseThatWillBeRejectedWithAReason, 'to be rejected with', new Error('Oh dear'));
 ```
 
@@ -42,12 +44,6 @@ a regular expression, a function, or an object:
 
 
 ```javascript#async:true
-var promiseThatWillBeRejectedWithAReason = expect.promise(function (resolve, reject) {
-    setTimeout(function () {
-        reject(new Error('Oh dear'));
-    }, 1);
-});
-
 return expect(promiseThatWillBeRejectedWithAReason, 'to be rejected with', /dear/);
 ```
 
