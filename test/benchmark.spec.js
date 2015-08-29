@@ -1,3 +1,4 @@
+/*global unexpected*/
 describe('benchmark', function () {
     var expect = unexpected.clone();
     function asyncTestFunction(cb) {
@@ -39,6 +40,12 @@ describe('benchmark', function () {
         it('on same object', function () {
             var obj = { label: 'this is an object', list: [ 0, 1, 2]};
             expect(obj, "to equal", obj);
+        });
+    });
+
+    describe('to match', function () {
+        it('on a small string', function () {
+            expect('foobarbaz', 'to match', /ba./g);
         });
     });
 
