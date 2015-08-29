@@ -7,6 +7,20 @@ describe('benchmark', function () {
         }, 0);
     }
 
+    describe('to be truthy', function () {
+        it('on numbers', function () {
+            expect(42, 'to be truthy');
+        });
+
+        it('on strings', function () {
+            expect('foo', 'to be truthy');
+        });
+
+        it('on object', function () {
+            expect({ label: 'this is an object', list: [ 0, 1, 2]}, 'to be truthy');
+        });
+    });
+
     describe('to be', function () {
         it('on numbers', function () {
             expect(42, "to be", 42);
