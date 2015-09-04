@@ -242,6 +242,7 @@ message for the custom assertion will be used. In the case of our
   <div>]</div>
 </div><p>We can control the output of the nested expects by changing the
 <code>this.errorMode</code> property.</p>
+<p>The <em>bubble</em> error mode will hoist the next level error message to this level.</p>
 <p>If we change the error mode to <em>bubble</em>, we get the following output:</p>
 <div class="code lang-javascript">
   <div>errorMode&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #df5000">'bubble'</span><span style="color: #000000">;</span></div>
@@ -283,7 +284,9 @@ message for the custom assertion will be used. In the case of our
 </div></div>
 </div></div>
   <div>]</div>
-</div><p>If we change the error mode to <em>nested</em>, we get the following output:</p>
+</div><p>In the <em>nested</em> error mode the next level error message is included and
+indented underneath the standard error message.</p>
+<p>If we change the error mode to <em>nested</em>, we get the following output:</p>
 <div class="code lang-javascript">
   <div>errorMode&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #df5000">'nested'</span><span style="color: #000000">;</span></div>
   <div><span style="color: #000000">expect</span><span style="color: #000000">([</span>&nbsp;<span style="color: #0086b3">1</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">3</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">2</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">4</span>&nbsp;<span style="color: #000000">],</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;sorted'</span><span style="color: #000000">);</span></div>
@@ -327,6 +330,90 @@ message for the custom assertion will be used. In the case of our
 </div></div>
   <div>]</div>
 </div></div>
+</div><p>The <em>defaultOrNested</em> error mode uses the default mode if the error chain contains a diff;
+otherwise it the <em>nested</em> error mode will be used.</p>
+<p>If we change the error mode to <em>defaultOrNested</em>, we get the following output:</p>
+<div class="code lang-javascript">
+  <div>errorMode&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #df5000">'defaultOrNested'</span><span style="color: #000000">;</span></div>
+  <div><span style="color: #000000">expect</span><span style="color: #000000">([</span>&nbsp;<span style="color: #0086b3">1</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">3</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">2</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">4</span>&nbsp;<span style="color: #000000">],</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;sorted'</span><span style="color: #000000">);</span></div>
+</div><div class="output">
+  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;[&nbsp;<span style="color: #0086b3">1</span>,&nbsp;<span style="color: #0086b3">3</span>,&nbsp;<span style="color: #0086b3">2</span>,&nbsp;<span style="color: #0086b3">4</span>&nbsp;]&nbsp;<span style="color: red; font-weight: bold">to&nbsp;be&nbsp;sorted</span></div>
+  <div>&nbsp;</div>
+  <div>[</div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #0086b3">1</span>,</div>
+</div></div>
+</div></div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #0086b3">3</span>,&nbsp;</div>
+</div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">//</span></div>
+</div>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">should&nbsp;equal</span>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #0086b3">2</span></div>
+</div></div>
+</div></div>
+</div></div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #0086b3">2</span>,&nbsp;</div>
+</div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">//</span></div>
+</div>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">should&nbsp;equal</span>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #0086b3">3</span></div>
+</div></div>
+</div></div>
+</div></div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #0086b3">4</span></div>
+</div></div>
+</div></div>
+  <div>]</div>
+</div><p>In the <em>diff</em> error mode will hoist the first found diff as the error message.
+If no diff is present, it will fall back to the <em>default</em> error mode.</p>
+<p>If we change the error mode to <em>diff</em>, we get the following output:</p>
+<div class="code lang-javascript">
+  <div>errorMode&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #df5000">'diff'</span><span style="color: #000000">;</span></div>
+  <div><span style="color: #000000">expect</span><span style="color: #000000">([</span>&nbsp;<span style="color: #0086b3">1</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">3</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">2</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">4</span>&nbsp;<span style="color: #000000">],</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;sorted'</span><span style="color: #000000">);</span></div>
+</div><div class="output">
+  <div>[</div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #0086b3">1</span>,</div>
+</div></div>
+</div></div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #0086b3">3</span>,&nbsp;</div>
+</div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">//</span></div>
+</div>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">should&nbsp;equal</span>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #0086b3">2</span></div>
+</div></div>
+</div></div>
+</div></div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #0086b3">2</span>,&nbsp;</div>
+</div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">//</span></div>
+</div>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">should&nbsp;equal</span>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #0086b3">3</span></div>
+</div></div>
+</div></div>
+</div></div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #0086b3">4</span></div>
+</div></div>
+</div></div>
+  <div>]</div>
 </div><h3 id="asynchronous-assertions">Asynchronous assertions</h3>
 <p>Unexpected comes with built-in support for asynchronous
 assertions. You basically just return a promise from the assertion.</p>

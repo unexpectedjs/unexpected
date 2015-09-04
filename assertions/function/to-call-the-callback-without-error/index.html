@@ -387,9 +387,9 @@ will call it without passing a truthy value as the first parameter.</p>
 </div><div class="output">
   <div><span style="color: red; font-weight: bold">expected</span></div>
   <div><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">myFailingAsyncFunction</span><span style="color: #000000">(</span>cb<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">setTimeout</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">cb</span><span style="color: #000000">(</span><span style="color: #a71d5d">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'Oh&nbsp;dear'</span><span style="color: #000000">));</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">},</span>&nbsp;<span style="color: #0086b3">0</span><span style="color: #000000">);</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #000000">setTimeout</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">cb</span><span style="color: #000000">(</span><span style="color: #a71d5d">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'Oh&nbsp;dear'</span><span style="color: #000000">));</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #000000">},</span>&nbsp;<span style="color: #0086b3">0</span><span style="color: #000000">);</span></div>
   <div><span style="color: #000000">}</span></div>
   <div><span style="color: red; font-weight: bold">to&nbsp;call&nbsp;the&nbsp;callback&nbsp;without&nbsp;error</span></div>
   <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">

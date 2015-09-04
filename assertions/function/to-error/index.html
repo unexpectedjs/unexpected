@@ -391,9 +391,9 @@ is rejected.</p>
 </div><div class="output">
   <div><span style="color: red; font-weight: bold">expected</span></div>
   <div><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">willNotBeRejected</span><span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">promise</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>resolve<span style="color: #000000">,</span>&nbsp;reject<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">resolve</span><span style="color: #000000">(</span><span style="color: #df5000">'Hello&nbsp;world'</span><span style="color: #000000">);</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">});</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">promise</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>resolve<span style="color: #000000">,</span>&nbsp;reject<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">resolve</span><span style="color: #000000">(</span><span style="color: #df5000">'Hello&nbsp;world'</span><span style="color: #000000">);</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #000000">});</span></div>
   <div><span style="color: #000000">}</span></div>
   <div><span style="color: red; font-weight: bold">to&nbsp;error</span></div>
 </div><p>You can assert the error message is a given string if you provide a
@@ -405,9 +405,9 @@ string as the second parameter.</p>
 </div><div class="output">
   <div><span style="color: red; font-weight: bold">expected</span></div>
   <div><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">willBeRejected</span><span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">promise</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>resolve<span style="color: #000000">,</span>&nbsp;reject<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">reject</span><span style="color: #000000">(</span><span style="color: #a71d5d">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'The&nbsp;reject&nbsp;message'</span><span style="color: #000000">));</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">});</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">promise</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>resolve<span style="color: #000000">,</span>&nbsp;reject<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">reject</span><span style="color: #000000">(</span><span style="color: #a71d5d">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'The&nbsp;reject&nbsp;message'</span><span style="color: #000000">));</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #000000">});</span></div>
   <div><span style="color: #000000">}</span></div>
   <div><span style="color: red; font-weight: bold">to&nbsp;error</span>&nbsp;<span style="color: #df5000">'The&nbsp;error&nbsp;message'</span></div>
   <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
@@ -434,9 +434,9 @@ assert the error message matches the given regular expression.</p>
 </div><div class="output">
   <div><span style="color: red; font-weight: bold">expected</span></div>
   <div><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">willBeRejected</span><span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">promise</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>resolve<span style="color: #000000">,</span>&nbsp;reject<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">reject</span><span style="color: #000000">(</span><span style="color: #a71d5d">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'The&nbsp;reject&nbsp;message'</span><span style="color: #000000">));</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">});</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">promise</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>resolve<span style="color: #000000">,</span>&nbsp;reject<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">reject</span><span style="color: #000000">(</span><span style="color: #a71d5d">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'The&nbsp;reject&nbsp;message'</span><span style="color: #000000">));</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #000000">});</span></div>
   <div><span style="color: #000000">}</span></div>
   <div><span style="color: red; font-weight: bold">to&nbsp;error</span>&nbsp;<span style="color: #183691">/error&nbsp;message/</span></div>
   <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
@@ -452,9 +452,9 @@ error out. When negating the assertion, you cannot provide a message.</p>
 </div><div class="output">
   <div><span style="color: red; font-weight: bold">expected</span></div>
   <div><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">willBeRejected</span><span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">promise</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>resolve<span style="color: #000000">,</span>&nbsp;reject<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">reject</span><span style="color: #000000">(</span><span style="color: #a71d5d">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'The&nbsp;reject&nbsp;message'</span><span style="color: #000000">));</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">});</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">promise</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>resolve<span style="color: #000000">,</span>&nbsp;reject<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">reject</span><span style="color: #000000">(</span><span style="color: #a71d5d">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'The&nbsp;reject&nbsp;message'</span><span style="color: #000000">));</span></div>
+  <div>&nbsp;&nbsp;<span style="color: #000000">});</span></div>
   <div><span style="color: #000000">}</span></div>
   <div><span style="color: red; font-weight: bold">not&nbsp;to&nbsp;error</span></div>
   <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
