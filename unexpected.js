@@ -43,6 +43,12 @@ function Assertion(expect, subject, testDescription, flags, alternations, args) 
 }
 
 Assertion.prototype.standardErrorMessage = function (output, options) {
+    options = typeof options === 'object' ? options : {};
+
+    if ('omitSubject' in options) {
+        options.subject = this.subject;
+    }
+
     if (options && options.compact) {
         var expect = this.expect;
         var subject = this.subject;
@@ -2127,43 +2133,11 @@ module.exports = function (expect) {
         }
         this.errorMode = 'nested';
         expect(subject, 'to be non-empty');
-        this.errorMode = 'default';
-        return expect.apply(expect, [subject, 'to have values satisfying'].concat(extraArgs));
-    });
-
-    expect.addAssertion('object', [
-        'to have keys satisfying',
-        'to be (a map|a hash|an object) whose (keys|properties) satisfy'
-    ], function (expect, subject) {
-        var that = this;
-        var extraArgs = Array.prototype.slice.call(arguments, 2);
-        if (extraArgs.length === 0) {
-            throw new Error('Assertion "' + this.testDescription + '" expects a third argument');
-        }
-        this.errorMode = 'nested';
-        expect(subject, 'to be an object');
-        expect(subject, 'not to equal', {});
         this.errorMode = 'bubble';
 
-        var subjectType = expect.findTypeOf(subject);
-        var keys = subjectType.getKeys(subject);
-        var expected = Array.isArray(subject) ? [] : {};
-        if (typeof extraArgs[0] === 'function') {
-            keys.forEach(function (key, index) {
-                expected[key] = function () {
-                    return extraArgs[0](key, subject[key]);
-                };
-            });
-        } else {
-            keys.forEach(function (key, index) {
-                expected[key] = function () {
-                    return expect.apply(expect, [key, 'to satisfy assertion'].concat(extraArgs));
-                };
-            });
-        }
-
+        var that = this;
         return expect.withError(function () {
-            return expect(subject, 'to satisfy', expected);
+            return expect.apply(expect, [subject, 'to have values satisfying'].concat(extraArgs));
         }, function (err) {
             expect.fail({
                 message: function (output) {
@@ -2176,6 +2150,24 @@ module.exports = function (expect) {
                 }
             });
         });
+    });
+
+    expect.addAssertion('object', [
+        'to have keys satisfying',
+        'to be (a map|a hash|an object) whose (keys|properties) satisfy'
+    ], function (expect, subject) {
+        var extraArgs = Array.prototype.slice.call(arguments, 2);
+        if (extraArgs.length === 0) {
+            throw new Error('Assertion "' + this.testDescription + '" expects a third argument');
+        }
+        this.errorMode = 'nested';
+        expect(subject, 'to be an object');
+        expect(subject, 'not to equal', {});
+        this.errorMode = 'default';
+
+        var subjectType = expect.findTypeOf(subject);
+        var keys = subjectType.getKeys(subject);
+        return expect.apply(expect, [keys, 'to have items satisfying'].concat(extraArgs));
     });
 
     expect.addAssertion('object', 'to be canonical', function (expect, subject) {
@@ -2429,7 +2421,7 @@ module.exports = function (expect) {
                                             valueOutput = keyDiff.diff;
                                         } else if (typeof value[key] === 'function') {
                                             isInlineDiff = false;
-                                            annotation.appendErrorMessage(conflicting);
+                                            annotation.appendErrorMessage(conflicting, { omitSubject: subject[key] });
                                         } else if (!keyDiff || (keyDiff && !keyDiff.inline)) {
                                             annotation.error((conflicting && conflicting.getLabel()) || 'should satisfy').sp()
                                                 .block(inspect(value[key]));
@@ -2777,7 +2769,14 @@ module.exports = function createStandardErrorMessage(output, expect, subject, te
     var width = preamble.length + subjectSize.width + argsSize.width + testDescription.length;
     var height = Math.max(subjectSize.height, argsSize.height);
 
-    if (options.compactSubject && subjectSize.height > 1) {
+    var m;
+    if ('omitSubject' in options && options.omitSubject === options.subject && (m = /^(not )?to (.*)/.exec(testDescription))) {
+        output.error('should ');
+        if (m[1]) {
+            output.error('not ');
+        }
+        testDescription = m[2];
+    } else if (options.compactSubject && (subjectSize.height > 1 || subjectSize.width > (options.compactWidth || 35))) {
         output.error('expected').sp();
         options.compactSubject.call(output, output);
         output.sp();
@@ -2993,6 +2992,8 @@ module.exports = function oathbreaker(value) {
 };
 
 },{}],9:[function(require,module,exports){
+var utils = require(13);
+
 module.exports = function (expect) {
     expect.installTheme({
         jsBoolean: 'jsPrimitive',
@@ -3174,9 +3175,9 @@ module.exports = function (expect) {
         }
     });
 
-    expect.addStyle('appendErrorMessage', function (error) {
+    expect.addStyle('appendErrorMessage', function (error, options) {
         if (error && error.isUnexpected) {
-            this.append(error.getErrorMessage(this));
+            this.append(error.getErrorMessage(utils.extend({ output: this }, options)));
         } else {
             this.appendInspected(error);
         }
@@ -4384,9 +4385,11 @@ var utils = module.exports = {
     extend: function (target) {
         for (var i = 1; i < arguments.length; i += 1) {
             var source = arguments[i];
-            Object.keys(source).forEach(function (key) {
-                target[key] = source[key];
-            });
+            if (source) {
+                Object.keys(source).forEach(function (key) {
+                    target[key] = source[key];
+                });
+            }
         }
         return target;
     },
