@@ -4102,11 +4102,7 @@ describe('unexpected', function () {
                     });
                 });
             }, 'to throw',
-                "expected\n" +
-                "[\n" +
-                "  [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 ]\n" +
-                "]\n" +
-                "to have items satisfying\n" +
+                "expected array to have items satisfying\n" +
                 "function (item) {\n" +
                 "  expect.fail(function (output) {\n" +
                 "    output.text('foo').nl().text('bar');\n" +
@@ -4173,7 +4169,7 @@ describe('unexpected', function () {
                     });
                 });
             }, 'to throw',
-                   "expected [ [ 0, 1, 2 ], [ 4, '5', 6 ], [ 7, 8, '9' ] ] to have items satisfying\n" +
+                   "expected array to have items satisfying\n" +
                    "function (arr) {\n" +
                    "  expect(arr, 'to have items satisfying', function (item) {\n" +
                    "    expect(item, 'to be a number');\n" +
@@ -4327,7 +4323,7 @@ describe('unexpected', function () {
                     expect(value, 'to be less than', 4);
                 });
             }, 'to throw',
-                   "expected { foo: 0, bar: 1, baz: '2', qux: 3, quux: 4 } to have values satisfying\n" +
+                   "expected object to have values satisfying\n" +
                    "function (value) {\n" +
                    "  expect(value, 'to be a number');\n" +
                    "  expect(value, 'to be less than', 4);\n" +
@@ -4350,7 +4346,7 @@ describe('unexpected', function () {
                     });
                 });
             }, 'to throw',
-                   "expected { foo: [ 0, 1, 2 ], bar: [ 4, '5', 6 ], baz: [ 7, 8, '9' ] } to have values satisfying\n" +
+                   "expected object to have values satisfying\n" +
                    "function (arr) {\n" +
                    "  expect(arr, 'to have items satisfying', function (item) {\n" +
                    "    expect(item, 'to be a number');\n" +
@@ -4495,7 +4491,7 @@ describe('unexpected', function () {
                     expect(key, 'to have length', 3);
                 });
             }, 'to throw',
-                   "expected { foo: 0, bar: 1, baz: 2, qux: 3, quux: 4 } to have keys satisfying\n" +
+                   "expected object to have keys satisfying\n" +
                    "function (key) {\n" +
                    "  expect(key, 'to have length', 3);\n" +
                    "}\n" +

@@ -25,8 +25,7 @@ expect({ foo: 0, bar: 1, baz: 2, qux: 3, quux: 4 },
 ```
 
 ```output
-expected { foo: 0, bar: 1, baz: 2, qux: 3, quux: 4 }
-to have keys satisfying 'to match', /^[a-z]{3}$/
+expected object to have keys satisfying 'to match', /^[a-z]{3}$/
 
 {
   foo: 0,

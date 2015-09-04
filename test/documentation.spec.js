@@ -2271,8 +2271,7 @@ describe("documentation tests", function () {
             });
         } catch (e) {
             expect(e, "to have message",
-                "expected [ [ 0, 1, 2 ], [ 4, '5', '6' ], [ 7, '8', 9 ] ]\n" +
-                "to have items satisfying 'to have items satisfying', 'to be a number'\n" +
+                "expected array to have items satisfying 'to have items satisfying', 'to be a number'\n" +
                 "\n" +
                 "[\n" +
                 "  [...],\n" +
@@ -3444,8 +3443,7 @@ describe("documentation tests", function () {
             });
         } catch (e) {
             expect(e, "to have message",
-                "expected { foo: 0, bar: 1, baz: 2, qux: 3, quux: 4 }\n" +
-                "to have keys satisfying 'to match', /^[a-z]{3}$/\n" +
+                "expected object to have keys satisfying 'to match', /^[a-z]{3}$/\n" +
                 "\n" +
                 "{\n" +
                 "  foo: 0,\n" +
@@ -3619,7 +3617,7 @@ describe("documentation tests", function () {
             });
         } catch (e) {
             expect(e, "to have message",
-                "expected { foo: [ 0, 1, 2 ], bar: [ 4, 5, 6 ], baz: [ 7, 8, 9 ] } to have values satisfying\n" +
+                "expected object to have values satisfying\n" +
                 "'to have items satisfying', expect.it('to be a number')\n" +
                 "        .and('to be below', 8)\n" +
                 "\n" +
