@@ -315,6 +315,48 @@ describe("documentation tests", function () {
             );
         }
 
+        try {
+            errorMode = 'defaultOrNested';
+            expect([ 1, 3, 2, 4 ], 'to be sorted');
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("errorMode = 'defaultOrNested';").nl();
+                output.code("expect([ 1, 3, 2, 4 ], 'to be sorted');").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected [ 1, 3, 2, 4 ] to be sorted\n" +
+                "\n" +
+                "[\n" +
+                "  1,\n" +
+                "  3, // should equal 2\n" +
+                "  2, // should equal 3\n" +
+                "  4\n" +
+                "]"
+            );
+        }
+
+        try {
+            errorMode = 'diff';
+            expect([ 1, 3, 2, 4 ], 'to be sorted');
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("errorMode = 'diff';").nl();
+                output.code("expect([ 1, 3, 2, 4 ], 'to be sorted');").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "[\n" +
+                "  1,\n" +
+                "  3, // should equal 2\n" +
+                "  2, // should equal 3\n" +
+                "  4\n" +
+                "]"
+            );
+        }
+
         function Timelock(value, delay) {
           this.value = value;
           this.delay = delay;

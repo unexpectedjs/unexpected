@@ -147,6 +147,8 @@ expected [ 1, 3, 2, 4 ] to be sorted
 We can control the output of the nested expects by changing the
 `this.errorMode` property.
 
+The _bubble_ error mode will hoist the next level error message to this level.
+
 If we change the error mode to _bubble_, we get the following output:
 
 ```js
@@ -164,6 +166,9 @@ expected [ 1, 3, 2, 4 ] to equal [ 1, 2, 3, 4 ]
   4
 ]
 ```
+
+In the _nested_ error mode the next level error message is included and
+indented underneath the standard error message.
 
 If we change the error mode to _nested_, we get the following output:
 
@@ -183,6 +188,47 @@ expected [ 1, 3, 2, 4 ] to be sorted
     4
   ]
 ```
+
+The _defaultOrNested_ error mode uses the default mode if the error chain contains a diff;
+otherwise it the _nested_ error mode will be used.
+
+If we change the error mode to _defaultOrNested_, we get the following output:
+
+```js
+errorMode = 'defaultOrNested';
+expect([ 1, 3, 2, 4 ], 'to be sorted');
+```
+
+```output
+expected [ 1, 3, 2, 4 ] to be sorted
+
+[
+  1,
+  3, // should equal 2
+  2, // should equal 3
+  4
+]
+```
+
+In the _diff_ error mode will hoist the first found diff as the error message.
+If no diff is present, it will fall back to the _default_ error mode.
+
+If we change the error mode to _diff_, we get the following output:
+
+```js
+errorMode = 'diff';
+expect([ 1, 3, 2, 4 ], 'to be sorted');
+```
+
+```output
+[
+  1,
+  3, // should equal 2
+  2, // should equal 3
+  4
+]
+```
+
 
 ### Asynchronous assertions
 
