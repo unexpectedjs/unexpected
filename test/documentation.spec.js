@@ -3422,7 +3422,7 @@ describe("documentation tests", function () {
     it("assertions/object/to-have-keys-satisfying.md contains correct examples", function () {
         var testPromises = [];
         expect({ foo: 0, bar: 1, baz: 2, qux: 3 },
-               'to have keys satisfying', function (key, value) {
+               'to have keys satisfying', function (key) {
             expect(key, 'to match', /^[a-z]{3}$/);
         });
 
@@ -3443,15 +3443,16 @@ describe("documentation tests", function () {
             });
         } catch (e) {
             expect(e, "to have message",
-                "expected object to have keys satisfying 'to match', /^[a-z]{3}$/\n" +
+                "expected { foo: 0, bar: 1, baz: 2, qux: 3, quux: 4 }\n" +
+                "to have keys satisfying 'to match', /^[a-z]{3}$/\n" +
                 "\n" +
-                "{\n" +
-                "  foo: 0,\n" +
-                "  bar: 1,\n" +
-                "  baz: 2,\n" +
-                "  qux: 3,\n" +
-                "  quux: 4 // expected 'quux' to match /^[a-z]{3}$/\n" +
-                "}"
+                "[\n" +
+                "  'foo',\n" +
+                "  'bar',\n" +
+                "  'baz',\n" +
+                "  'qux',\n" +
+                "  'quux' // expected 'quux' to match /^[a-z]{3}$/\n" +
+                "]"
             );
         }
         return expect.promise.all(testPromises);

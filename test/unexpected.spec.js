@@ -4433,9 +4433,8 @@ describe('unexpected', function () {
         });
 
         it('receives the key and the value when the third argument is a function', function () {
-            expect({ foo: 123 }, 'to have keys satisfying', function (key, value) {
+            expect({ foo: 123 }, 'to have keys satisfying', function (key) {
                 expect(key, 'to equal', 'foo');
-                expect(value, 'to equal', 123);
             });
         });
 
@@ -4458,9 +4457,9 @@ describe('unexpected', function () {
             }, 'to throw',
                    "expected Error('foo') to have keys satisfying /bar/\n" +
                    "\n" +
-                   "{\n" +
-                   "  message: 'foo' // expected 'message' to satisfy /bar/\n" +
-                   "}");
+                   "[\n" +
+                   "  'message' // expected 'message' to satisfy /bar/\n" +
+                   "]");
         });
 
         it('supports legacy aliases', function () {
@@ -4491,19 +4490,19 @@ describe('unexpected', function () {
                     expect(key, 'to have length', 3);
                 });
             }, 'to throw',
-                   "expected object to have keys satisfying\n" +
+                   "expected { foo: 0, bar: 1, baz: 2, qux: 3, quux: 4 } to have keys satisfying\n" +
                    "function (key) {\n" +
                    "  expect(key, 'to have length', 3);\n" +
                    "}\n" +
                    "\n" +
-                   "{\n" +
-                   "  foo: 0,\n" +
-                   "  bar: 1,\n" +
-                   "  baz: 2,\n" +
-                   "  qux: 3,\n" +
-                   "  quux: 4 // expected 'quux' to have length 3\n" +
-                   "          //   expected 4 to be 3\n" +
-                   "}");
+                   "[\n" +
+                   "  'foo',\n" +
+                   "  'bar',\n" +
+                   "  'baz',\n" +
+                   "  'qux',\n" +
+                   "  'quux' // expected 'quux' to have length 3\n" +
+                   "         //   expected 4 to be 3\n" +
+                   "]");
         });
 
         describe('delegating to an async assertion', function () {
@@ -4529,13 +4528,13 @@ describe('unexpected', function () {
                     "expected { a: 1, foo: 2, bar: 3 }\n" +
                     "to have keys satisfying 'to be a sequence of as after a short delay'\n" +
                     "\n" +
-                    "{\n" +
-                    "  a: 1,\n" +
-                    "  foo: 2, // expected 'foo' to be a sequence of as after a short delay\n" +
-                    "          //   expected 'foo' to match /^a+$/\n" +
-                    "  bar: 3 // expected 'bar' to be a sequence of as after a short delay\n" +
-                    "         //   expected 'bar' to match /^a+$/\n" +
-                    "}");
+                    "[\n" +
+                    "  'a',\n" +
+                    "  'foo', // expected 'foo' to be a sequence of as after a short delay\n" +
+                    "         //   expected 'foo' to match /^a+$/\n" +
+                    "  'bar' // expected 'bar' to be a sequence of as after a short delay\n" +
+                    "        //   expected 'bar' to match /^a+$/\n" +
+                    "]");
             });
         });
     });

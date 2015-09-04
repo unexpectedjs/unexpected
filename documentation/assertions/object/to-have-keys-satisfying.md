@@ -7,7 +7,7 @@ Aliases: `to be a map whose keys satisfy`,
 
 ```javascript
 expect({ foo: 0, bar: 1, baz: 2, qux: 3 },
-       'to have keys satisfying', function (key, value) {
+       'to have keys satisfying', function (key) {
     expect(key, 'to match', /^[a-z]{3}$/);
 });
 
@@ -25,13 +25,14 @@ expect({ foo: 0, bar: 1, baz: 2, qux: 3, quux: 4 },
 ```
 
 ```output
-expected object to have keys satisfying 'to match', /^[a-z]{3}$/
+expected { foo: 0, bar: 1, baz: 2, qux: 3, quux: 4 }
+to have keys satisfying 'to match', /^[a-z]{3}$/
 
-{
-  foo: 0,
-  bar: 1,
-  baz: 2,
-  qux: 3,
-  quux: 4 // expected 'quux' to match /^[a-z]{3}$/
-}
+[
+  'foo',
+  'bar',
+  'baz',
+  'qux',
+  'quux' // expected 'quux' to match /^[a-z]{3}$/
+]
 ```
