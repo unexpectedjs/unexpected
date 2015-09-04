@@ -34,12 +34,12 @@ expected array to have items satisfying 'to have items satisfying', 'to be a num
   [...],
   [
     4,
-    '5', // expected '5' to be a number
-    '6' // expected '6' to be a number
+    '5', // should be a number
+    '6' // should be a number
   ],
   [
     7,
-    '8', // expected '8' to be a number
+    '8', // should be a number
     9
   ]
 ]

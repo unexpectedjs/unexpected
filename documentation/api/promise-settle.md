@@ -67,7 +67,7 @@ return expect.promise.all(promises).caught(function () {
          to have values satisfying 'to be a number after a short delay'
 
          {
-           a: '1', // expected '1' to be a number after a short delay
+           a: '1', // should be a number after a short delay
            b: 2
          }
 }

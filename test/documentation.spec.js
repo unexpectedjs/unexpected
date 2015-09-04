@@ -952,7 +952,7 @@ describe("documentation tests", function () {
                 "to have values satisfying 'to be a number after a short delay'\n" +
                 "\n" +
                 "{\n" +
-                "  a: '0', // expected '0' to be a number after a short delay\n" +
+                "  a: '0', // should be a number after a short delay\n" +
                 "  b: 1\n" +
                 "}"
             );
@@ -1068,7 +1068,7 @@ describe("documentation tests", function () {
                 "     to have values satisfying 'to be a number after a short delay'\n" +
                 "\n" +
                 "     {\n" +
-                "       a: '0', // expected '0' to be a number after a short delay\n" +
+                "       a: '0', // should be a number after a short delay\n" +
                 "       b: 1\n" +
                 "     }"
             );
@@ -1158,7 +1158,7 @@ describe("documentation tests", function () {
                 "         to have values satisfying 'to be a number after a short delay'\n" +
                 "\n" +
                 "         {\n" +
-                "           a: '1', // expected '1' to be a number after a short delay\n" +
+                "           a: '1', // should be a number after a short delay\n" +
                 "           b: 2\n" +
                 "         }\n" +
                 "}"
@@ -2114,7 +2114,7 @@ describe("documentation tests", function () {
                 "                // bogus\n" +
                 "                // ^^^\n" +
                 "  qux: 42,\n" +
-                "  quux: 'wat' // expected 'wat' to be a number\n" +
+                "  quux: 'wat' // should be a number\n" +
                 "}"
             );
         }
@@ -2277,12 +2277,12 @@ describe("documentation tests", function () {
                 "  [...],\n" +
                 "  [\n" +
                 "    4,\n" +
-                "    '5', // expected '5' to be a number\n" +
-                "    '6' // expected '6' to be a number\n" +
+                "    '5', // should be a number\n" +
+                "    '6' // should be a number\n" +
                 "  ],\n" +
                 "  [\n" +
                 "    7,\n" +
-                "    '8', // expected '8' to be a number\n" +
+                "    '8', // should be a number\n" +
                 "    9\n" +
                 "  ]\n" +
                 "]"
@@ -3451,7 +3451,7 @@ describe("documentation tests", function () {
                 "  'bar',\n" +
                 "  'baz',\n" +
                 "  'qux',\n" +
-                "  'quux' // expected 'quux' to match /^[a-z]{3}$/\n" +
+                "  'quux' // should match /^[a-z]{3}$/\n" +
                 "]"
             );
         }

@@ -64,7 +64,7 @@ expected { a: '0', b: 1 }
 to have values satisfying 'to be a number after a short delay'
 
 {
-  a: '0', // expected '0' to be a number after a short delay
+  a: '0', // should be a number after a short delay
   b: 1
 }
 ```
