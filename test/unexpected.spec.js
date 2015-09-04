@@ -4102,17 +4102,21 @@ describe('unexpected', function () {
                     });
                 });
             }, 'to throw',
-                   "expected array to have values satisfying\n" +
-                   "function (item) {\n" +
-                   "  expect.fail(function (output) {\n" +
-                   "    output.text('foo').nl().text('bar');\n" +
-                   "  });\n" +
-                   "}\n" +
-                   "\n" +
-                   "[\n" +
-                   "  [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 ] // foo\n" +
-                   "                                                                            // bar\n" +
-                   "]");
+                "expected\n" +
+                "[\n" +
+                "  [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 ]\n" +
+                "]\n" +
+                "to have items satisfying\n" +
+                "function (item) {\n" +
+                "  expect.fail(function (output) {\n" +
+                "    output.text('foo').nl().text('bar');\n" +
+                "  });\n" +
+                "}\n" +
+                "\n" +
+                "[\n" +
+                "  [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 ] // foo\n" +
+                "                                                                            // bar\n" +
+                "]");
         });
 
         it('supports legacy "to be an array whose items satisfy"', function () {
@@ -4146,7 +4150,7 @@ describe('unexpected', function () {
                     expect(item, 'to be less than', 4);
                 });
             }, 'to throw',
-                   "expected [ 0, 1, '2', 3, 4 ] to have values satisfying\n" +
+                   "expected [ 0, 1, '2', 3, 4 ] to have items satisfying\n" +
                    "function (item) {\n" +
                    "  expect(item, 'to be a number');\n" +
                    "  expect(item, 'to be less than', 4);\n" +
@@ -4169,7 +4173,7 @@ describe('unexpected', function () {
                     });
                 });
             }, 'to throw',
-                   "expected [ [ 0, 1, 2 ], [ 4, '5', 6 ], [ 7, 8, '9' ] ] to have values satisfying\n" +
+                   "expected [ [ 0, 1, 2 ], [ 4, '5', 6 ], [ 7, 8, '9' ] ] to have items satisfying\n" +
                    "function (arr) {\n" +
                    "  expect(arr, 'to have items satisfying', function (item) {\n" +
                    "    expect(item, 'to be a number');\n" +
@@ -4212,7 +4216,7 @@ describe('unexpected', function () {
                     clonedExpect([0, false, 'abc'], 'to have items satisfying', 'to be a number after a short delay'),
                     'to be rejected',
                     "expected [ 0, false, 'abc' ]\n" +
-                    "to have values satisfying 'to be a number after a short delay'\n" +
+                    "to have items satisfying 'to be a number after a short delay'\n" +
                     "\n" +
                     "[\n" +
                     "  0,\n" +

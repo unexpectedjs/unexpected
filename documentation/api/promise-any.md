@@ -80,7 +80,7 @@ return expect.promise.any({
 aggregate error
   0: expected '42' to be a number after a short delay
   1: expected [ 0, '1', 2 ]
-     to have values satisfying expect.it('to be a number after a short delay')
+     to have items satisfying expect.it('to be a number after a short delay')
 
      [
        0,

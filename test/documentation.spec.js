@@ -1015,7 +1015,7 @@ describe("documentation tests", function () {
                 "aggregate error\n" +
                 "  0: expected '42' to be a number after a short delay\n" +
                 "  1: expected [ 0, '1', 2 ]\n" +
-                "     to have values satisfying expect.it('to be a number after a short delay')\n" +
+                "     to have items satisfying expect.it('to be a number after a short delay')\n" +
                 "\n" +
                 "     [\n" +
                 "       0,\n" +
@@ -2230,7 +2230,7 @@ describe("documentation tests", function () {
         } catch (e) {
             expect(e, "to have message",
                 "expected [ [ 0, 1, 2 ], [ 4, '5', '6' ], [ 7, '8', 9 ] ]\n" +
-                "to have values satisfying 'to have items satisfying', 'to be a number'\n" +
+                "to have items satisfying 'to have items satisfying', 'to be a number'\n" +
                 "\n" +
                 "[\n" +
                 "  [...],\n" +
@@ -2259,7 +2259,7 @@ describe("documentation tests", function () {
             });
         } catch (e) {
             expect(e, "to have message",
-                "expected [ 0, 1, 2, 3, 4 ] to have values satisfying\n" +
+                "expected [ 0, 1, 2, 3, 4 ] to have items satisfying\n" +
                 "expect.it('to be a number')\n" +
                 "        .and('to be positive')\n" +
                 "\n" +

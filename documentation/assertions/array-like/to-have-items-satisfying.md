@@ -29,7 +29,7 @@ expect([ [0, 1, 2], [4, '5', '6'], [7, '8', 9] ],
 
 ```output
 expected [ [ 0, 1, 2 ], [ 4, '5', '6' ], [ 7, '8', 9 ] ]
-to have values satisfying 'to have items satisfying', 'to be a number'
+to have items satisfying 'to have items satisfying', 'to be a number'
 
 [
   [...],
@@ -54,7 +54,7 @@ expect([0, 1, 2, 3, 4], 'to have items satisfying',
 ```
 
 ```output
-expected [ 0, 1, 2, 3, 4 ] to have values satisfying
+expected [ 0, 1, 2, 3, 4 ] to have items satisfying
 expect.it('to be a number')
         .and('to be positive')
 
