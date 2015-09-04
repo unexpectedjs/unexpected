@@ -7795,4 +7795,24 @@ describe('unexpected', function () {
             );
         });
     });
+
+    describe('with an assertion that has a non-standard name', function () {
+        it('should render the error message sanely in an annotation block inside a satisfy diff', function () {
+            var clonedExpect = expect.clone().addAssertion('foobar', function (expect, subject) {
+                expect(subject, 'to equal', 'foobar');
+            });
+            expect(function () {
+                clonedExpect([ 'barfoo' ], 'to have items satisfying', 'foobar');
+            }, 'to throw',
+                "expected [ 'barfoo' ] to have items satisfying 'foobar'\n" +
+                "\n" +
+                "[\n" +
+                "  'barfoo' // expected: foobar\n" +
+                "           //\n" +
+                "           // -barfoo\n" +
+                "           // +foobar\n" +
+                "]"
+            );
+        });
+    });
 });
