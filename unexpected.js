@@ -2769,13 +2769,17 @@ module.exports = function createStandardErrorMessage(output, expect, subject, te
     var width = preamble.length + subjectSize.width + argsSize.width + testDescription.length;
     var height = Math.max(subjectSize.height, argsSize.height);
 
-    var m;
-    if ('omitSubject' in options && options.omitSubject === options.subject && (m = /^(not )?to (.*)/.exec(testDescription))) {
-        output.error('should ');
-        if (m[1]) {
-            output.error('not ');
+    if ('omitSubject' in options && options.omitSubject === options.subject) {
+        var matchTestDescription = /^(not )?to (.*)/.exec(testDescription);
+        if (matchTestDescription) {
+            output.error('should ');
+            if (matchTestDescription[1]) {
+                output.error('not ');
+            }
+            testDescription = matchTestDescription[2];
+        } else {
+            testDescription = 'expected: ' + testDescription;
         }
-        testDescription = m[2];
     } else if (options.compactSubject && (subjectSize.height > 1 || subjectSize.width > (options.compactWidth || 35))) {
         output.error('expected').sp();
         options.compactSubject.call(output, output);
