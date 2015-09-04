@@ -33,6 +33,6 @@ to have keys satisfying 'to match', /^[a-z]{3}$/
   'bar',
   'baz',
   'qux',
-  'quux' // expected 'quux' to match /^[a-z]{3}$/
+  'quux' // should match /^[a-z]{3}$/
 ]
 ```

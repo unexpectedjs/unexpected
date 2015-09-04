@@ -4132,11 +4132,11 @@ describe('unexpected', function () {
                 expect(['0', 1, '2', '3'], 'to have items satisfying', function (item) {
                     expect(item, 'not to be a number');
                 });
-            }, 'to throw', /expected 1 not to be a number/);
+            }, 'to throw', /1, \/\/ should not be a number/);
 
             expect(function () {
                 expect(['0', 1, '2', '3'], 'to have items satisfying', 'not to be a number');
-            }, 'to throw', /expected 1 not to be a number/);
+            }, 'to throw', /1, \/\/ should not be a number/);
         });
 
         it('provides a detailed report of where failures occur', function () {
@@ -4155,9 +4155,9 @@ describe('unexpected', function () {
                    "[\n" +
                    "  0,\n" +
                    "  1,\n" +
-                   "  '2', // expected '2' to be a number\n" +
+                   "  '2', // should be a number\n" +
                    "  3,\n" +
-                   "  4 // expected 4 to be less than 4\n" +
+                   "  4 // should be less than 4\n" +
                    "]");
         });
 
@@ -4180,13 +4180,13 @@ describe('unexpected', function () {
                    "  [...],\n" +
                    "  [\n" +
                    "    4,\n" +
-                   "    '5', // expected '5' to be a number\n" +
+                   "    '5', // should be a number\n" +
                    "    6\n" +
                    "  ],\n" +
                    "  [\n" +
                    "    7,\n" +
                    "    8,\n" +
-                   "    '9' // expected '9' to be a number\n" +
+                   "    '9' // should be a number\n" +
                    "  ]\n" +
                    "]");
         });
@@ -4216,10 +4216,10 @@ describe('unexpected', function () {
                     "\n" +
                     "[\n" +
                     "  0,\n" +
-                    "  false, // expected false to be a number after a short delay\n" +
-                    "         //   expected false to be a number\n" +
-                    "  'abc' // expected 'abc' to be a number after a short delay\n" +
-                    "        //   expected 'abc' to be a number\n" +
+                    "  false, // should be a number after a short delay\n" +
+                    "         //   should be a number\n" +
+                    "  'abc' // should be a number after a short delay\n" +
+                    "        //   should be a number\n" +
                     "]");
             });
         });
@@ -4313,7 +4313,7 @@ describe('unexpected', function () {
                 expect({ foo: '0', bar: 1, baz: '2', qux: '3' }, 'to have values satisfying', function (value) {
                     expect(value, 'not to be a number');
                 });
-            }, 'to throw', /expected 1 not to be a number/);
+            }, 'to throw', /bar: 1, \/\/ should not be a number/);
         });
 
         it('provides a detailed report of where failures occur', function () {
@@ -4332,9 +4332,9 @@ describe('unexpected', function () {
                    "{\n" +
                    "  foo: 0,\n" +
                    "  bar: 1,\n" +
-                   "  baz: '2', // expected '2' to be a number\n" +
+                   "  baz: '2', // should be a number\n" +
                    "  qux: 3,\n" +
-                   "  quux: 4 // expected 4 to be less than 4\n" +
+                   "  quux: 4 // should be less than 4\n" +
                    "}");
         });
 
@@ -4357,13 +4357,13 @@ describe('unexpected', function () {
                    "  foo: [...],\n" +
                    "  bar: [\n" +
                    "    4,\n" +
-                   "    '5', // expected '5' to be a number\n" +
+                   "    '5', // should be a number\n" +
                    "    6\n" +
                    "  ],\n" +
                    "  baz: [\n" +
                    "    7,\n" +
                    "    8,\n" +
-                   "    '9' // expected '9' to be a number\n" +
+                   "    '9' // should be a number\n" +
                    "  ]\n" +
                    "}");
         });
@@ -4393,10 +4393,10 @@ describe('unexpected', function () {
                     "\n" +
                     "{\n" +
                     "  0: 0,\n" +
-                    "  1: false, // expected false to be a number after a short delay\n" +
-                    "            //   expected false to be a number\n" +
-                    "  2: 'abc' // expected 'abc' to be a number after a short delay\n" +
-                    "           //   expected 'abc' to be a number\n" +
+                    "  1: false, // should be a number after a short delay\n" +
+                    "            //   should be a number\n" +
+                    "  2: 'abc' // should be a number after a short delay\n" +
+                    "           //   should be a number\n" +
                     "}");
             });
         });
@@ -4458,7 +4458,7 @@ describe('unexpected', function () {
                    "expected Error('foo') to have keys satisfying /bar/\n" +
                    "\n" +
                    "[\n" +
-                   "  'message' // expected 'message' to satisfy /bar/\n" +
+                   "  'message' // should satisfy /bar/\n" +
                    "]");
         });
 
@@ -4481,7 +4481,7 @@ describe('unexpected', function () {
                 expect({ foo: 0, bar: 1, Baz: 2, qux: 3 }, 'to have keys satisfying', function (key) {
                     expect(key, 'to match', /^[a-z]{3}$/);
                 });
-            }, 'to throw', /expected 'Baz' to match/);
+            }, 'to throw', /'Baz', \/\/ should match/);
         });
 
         it('provides a detailed report of where failures occur', function () {
@@ -4500,7 +4500,7 @@ describe('unexpected', function () {
                    "  'bar',\n" +
                    "  'baz',\n" +
                    "  'qux',\n" +
-                   "  'quux' // expected 'quux' to have length 3\n" +
+                   "  'quux' // should have length 3\n" +
                    "         //   expected 4 to be 3\n" +
                    "]");
         });
@@ -4530,10 +4530,10 @@ describe('unexpected', function () {
                     "\n" +
                     "[\n" +
                     "  'a',\n" +
-                    "  'foo', // expected 'foo' to be a sequence of as after a short delay\n" +
-                    "         //   expected 'foo' to match /^a+$/\n" +
-                    "  'bar' // expected 'bar' to be a sequence of as after a short delay\n" +
-                    "        //   expected 'bar' to match /^a+$/\n" +
+                    "  'foo', // should be a sequence of as after a short delay\n" +
+                    "         //   should match /^a+$/\n" +
+                    "  'bar' // should be a sequence of as after a short delay\n" +
+                    "        //   should match /^a+$/\n" +
                     "]");
             });
         });

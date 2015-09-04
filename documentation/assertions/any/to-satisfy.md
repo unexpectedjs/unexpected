@@ -77,6 +77,6 @@ expected { foo: 9, bar: 'bar', baz: 'bogus', qux: 42, quux: 'wat' } to satisfy
                 // bogus
                 // ^^^
   qux: 42,
-  quux: 'wat' // expected 'wat' to be a number
+  quux: 'wat' // should be a number
 }
 ```
