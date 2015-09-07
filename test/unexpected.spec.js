@@ -2968,6 +2968,36 @@ describe('unexpected', function () {
             });
         });
 
+        describe('with an array satisfied against an array', function () {
+            it('should render missing items nicely', function () {
+                expect(function () {
+                    expect([], 'to satisfy', [1, 2]);
+                }, 'to throw',
+                    "expected [] to satisfy [ 1, 2 ]\n" +
+                    "\n" +
+                    "[\n" +
+                    "  // missing: should equal 1\n" +
+                    "  // missing: should equal 2\n" +
+                    "]"
+                );
+            });
+        });
+
+        describe('with an array satisfied against an object', function () {
+            it('should render missing items nicely', function () {
+                expect(function () {
+                    expect([], 'to satisfy', {0: 1, 1: 2});
+                }, 'to throw',
+                    "expected [] to satisfy { 0: 1, 1: 2 }\n" +
+                    "\n" +
+                    "[\n" +
+                    "  // missing: should equal 1\n" +
+                    "  // missing: should equal 2\n" +
+                    "]"
+                );
+            });
+        });
+
         it.skipIf(!Object.defineProperty, 'should honor the getKeys implementation of a type when building a diff', function () {
             function MyThing(a, b) {
                 this.a = a;
@@ -3476,7 +3506,7 @@ describe('unexpected', function () {
                     'expected [] to satisfy [ undefined ]\n' +
                     '\n' +
                     '[\n' +
-                    '  // should satisfy undefined\n' +
+                    '  // missing: should satisfy undefined\n' +
                     ']'
                 );
             });
@@ -3503,8 +3533,8 @@ describe('unexpected', function () {
                     '[\n' +
                     '  1,\n' +
                     '  2,\n' +
-                    '  3,\n' +
-                    '  // should equal 4\n' +
+                    '  3\n' +
+                    '  // missing: should equal 4\n' +
                     ']');
             });
         });
