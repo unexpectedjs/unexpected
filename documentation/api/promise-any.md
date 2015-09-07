@@ -84,7 +84,7 @@ aggregate error
 
      [
        0,
-       '1', // expected '1' to be a number after a short delay
+       '1', // should be a number after a short delay
        2
      ]
   2: expected { a: '0', b: 1 }

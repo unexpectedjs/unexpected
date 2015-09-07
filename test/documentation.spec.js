@@ -1061,7 +1061,7 @@ describe("documentation tests", function () {
                 "\n" +
                 "     [\n" +
                 "       0,\n" +
-                "       '1', // expected '1' to be a number after a short delay\n" +
+                "       '1', // should be a number after a short delay\n" +
                 "       2\n" +
                 "     ]\n" +
                 "  2: expected { a: '0', b: 1 }\n" +
@@ -2106,10 +2106,10 @@ describe("documentation tests", function () {
                 "}\n" +
                 "\n" +
                 "{\n" +
-                "  foo: 9, // ✓ expected 9 to be a number and\n" +
-                "          // ⨯ expected 9 to be greater than 10\n" +
+                "  foo: 9, // ✓ should be a number and\n" +
+                "          // ⨯ should be greater than 10\n" +
                 "  bar: 'bar',\n" +
-                "  baz: 'bogus', // expected 'bogus' not to match /^bog/\n" +
+                "  baz: 'bogus', // should not match /^bog/\n" +
                 "                //\n" +
                 "                // bogus\n" +
                 "                // ^^^\n" +
@@ -2305,8 +2305,8 @@ describe("documentation tests", function () {
                 "        .and('to be positive')\n" +
                 "\n" +
                 "[\n" +
-                "  0, // ✓ expected 0 to be a number and\n" +
-                "     // ⨯ expected 0 to be positive\n" +
+                "  0, // ✓ should be a number and\n" +
+                "     // ⨯ should be positive\n" +
                 "  1,\n" +
                 "  2,\n" +
                 "  3,\n" +
@@ -3627,10 +3627,10 @@ describe("documentation tests", function () {
                 "  bar: [...],\n" +
                 "  baz: [\n" +
                 "    7,\n" +
-                "    8, // ✓ expected 8 to be a number and\n" +
-                "       // ⨯ expected 8 to be below 8\n" +
-                "    9 // ✓ expected 9 to be a number and\n" +
-                "      // ⨯ expected 9 to be below 8\n" +
+                "    8, // ✓ should be a number and\n" +
+                "       // ⨯ should be below 8\n" +
+                "    9 // ✓ should be a number and\n" +
+                "      // ⨯ should be below 8\n" +
                 "  ]\n" +
                 "}"
             );
