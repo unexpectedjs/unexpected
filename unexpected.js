@@ -45,7 +45,7 @@ function Assertion(expect, subject, testDescription, flags, alternations, args) 
 Assertion.prototype.standardErrorMessage = function (output, options) {
     options = typeof options === 'object' ? options : {};
 
-    if ('omitSubject' in options) {
+    if ('omitSubject' in output) {
         options.subject = this.subject;
     }
 
@@ -266,11 +266,19 @@ function writeGroupEvaluationsToOutput(expect, output, groupEvaluations) {
 
                 var expectation = evaluation.expectation;
                 output.block(function (output) {
-                    output[style]('expected ');
-                    output.appendInspected(expectation[0]).sp();
-                    output[style](expectation[1]);
-                    expectation.slice(2).forEach(function (v) {
-                        output.sp().appendInspected(v);
+                    var subject = expectation[0];
+                    var subjectOutput = function (output) {
+                        output.appendInspected(subject);
+                    };
+                    var args = expectation.slice(2);
+                    var argsOutput = args.map(function (arg) {
+                        return function (output) {
+                            output.appendInspected(arg);
+                        };
+                    });
+                    var testDescription = expectation[1];
+                    createStandardErrorMessage(output, expect, subjectOutput, testDescription, argsOutput, {
+                        subject: subject
                     });
                 });
             }
@@ -2384,7 +2392,8 @@ module.exports = function (expect) {
                             var valueType = expect.findTypeOf(value);
                             var keyIndex = {};
                             var subjectIsArrayLike = subjectType.is('array-like');
-                            subjectType.getKeys(subject).concat(valueType.getKeys(value)).forEach(function (key) {
+                            var subjectKeys = subjectType.getKeys(subject);
+                            subjectKeys.concat(valueType.getKeys(value)).forEach(function (key) {
                                 if (!(key in keyIndex)) {
                                     keyIndex[key] = key;
                                 }
@@ -2404,24 +2413,29 @@ module.exports = function (expect) {
                                     if (promiseByKey[key] && promiseByKey[key].isRejected()) {
                                         conflicting = promiseByKey[key].reason();
                                     }
+
+                                    var missingArrayIndex = subjectType.is('array-like') && !(key in subject);
                                     var arrayItemOutOfRange = bothAreArrayLike && (index >= subject.length || index >= value.length);
+                                    var missingKey = false;
 
                                     var isInlineDiff = true;
 
+                                    output.omitSubject = subject[key];
                                     if (!(key in value)) {
                                         if (commonType.is('array-like') || flags.exhaustively) {
                                             annotation.error('should be removed');
                                         } else {
                                             conflicting = null;
                                         }
-                                    } else if (conflicting || arrayItemOutOfRange) {
+                                    } else if (conflicting || arrayItemOutOfRange || missingArrayIndex) {
                                         var keyDiff = conflicting && conflicting.getDiff({ output: output });
                                         isInlineDiff = !keyDiff || keyDiff.inline ;
+                                        missingKey = arrayItemOutOfRange || missingArrayIndex;
                                         if (keyDiff && keyDiff.diff && keyDiff.inline) {
                                             valueOutput = keyDiff.diff;
                                         } else if (typeof value[key] === 'function') {
                                             isInlineDiff = false;
-                                            annotation.appendErrorMessage(conflicting, { omitSubject: subject[key] });
+                                            annotation.appendErrorMessage(conflicting);
                                         } else if (!keyDiff || (keyDiff && !keyDiff.inline)) {
                                             annotation.error((conflicting && conflicting.getLabel()) || 'should satisfy').sp()
                                                 .block(inspect(value[key]));
@@ -2434,9 +2448,8 @@ module.exports = function (expect) {
                                         }
                                     }
 
-                                    var last = index === keys.length - 1;
                                     if (!valueOutput) {
-                                        if (bothAreArrayLike && key >= subject.length) {
+                                        if ((bothAreArrayLike && key >= subject.length) || missingArrayIndex) {
                                             valueOutput = output.clone();
                                         } else {
                                             valueOutput = inspect(subject[key], conflicting ? Infinity : 1);
@@ -2446,7 +2459,16 @@ module.exports = function (expect) {
                                     if (!subjectIsArrayLike) {
                                         this.key(key).text(':');
                                     }
-                                    valueOutput.amend('text', last ? '' : ',');
+
+                                    var omitComma =
+                                        missingArrayIndex ||
+                                        subjectType.is('array-like') ?
+                                            index >= subjectKeys.length - 1 :
+                                            index === keys.length - 1;
+
+                                    if (!omitComma) {
+                                        valueOutput.amend('text', ',');
+                                    }
 
                                     if (!subjectIsArrayLike) {
                                         if (valueOutput.isBlock() && valueOutput.isMultiline()) {
@@ -2463,7 +2485,13 @@ module.exports = function (expect) {
                                         this.block(valueOutput);
                                     }
                                     if (!annotation.isEmpty()) {
-                                        this.sp(valueOutput.isEmpty() ? 0 : 1).annotationBlock(annotation);
+                                        this.sp(valueOutput.isEmpty() ? 0 : 1).annotationBlock(function () {
+                                            if (missingKey) {
+                                                this.error('missing: ').block(annotation);
+                                            } else {
+                                                this.append(annotation);
+                                            }
+                                        });
                                     }
                                 }).nl();
                             });
@@ -2769,7 +2797,7 @@ module.exports = function createStandardErrorMessage(output, expect, subject, te
     var width = preamble.length + subjectSize.width + argsSize.width + testDescription.length;
     var height = Math.max(subjectSize.height, argsSize.height);
 
-    if ('omitSubject' in options && options.omitSubject === options.subject) {
+    if ('omitSubject' in output && output.omitSubject === options.subject) {
         var matchTestDescription = /^(not )?to (.*)/.exec(testDescription);
         if (matchTestDescription) {
             output.error('should ');
