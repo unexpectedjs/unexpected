@@ -35,10 +35,10 @@ expected object to have values satisfying
   bar: [...],
   baz: [
     7,
-    8, // ✓ expected 8 to be a number and
-       // ⨯ expected 8 to be below 8
-    9 // ✓ expected 9 to be a number and
-      // ⨯ expected 9 to be below 8
+    8, // ✓ should be a number and
+       // ⨯ should be below 8
+    9 // ✓ should be a number and
+      // ⨯ should be below 8
   ]
 }
 ```

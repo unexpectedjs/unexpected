@@ -69,10 +69,10 @@ expected { foo: 9, bar: 'bar', baz: 'bogus', qux: 42, quux: 'wat' } to satisfy
 }
 
 {
-  foo: 9, // ✓ expected 9 to be a number and
-          // ⨯ expected 9 to be greater than 10
+  foo: 9, // ✓ should be a number and
+          // ⨯ should be greater than 10
   bar: 'bar',
-  baz: 'bogus', // expected 'bogus' not to match /^bog/
+  baz: 'bogus', // should not match /^bog/
                 //
                 // bogus
                 // ^^^

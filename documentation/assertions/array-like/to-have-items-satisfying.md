@@ -58,8 +58,8 @@ expect.it('to be a number')
         .and('to be positive')
 
 [
-  0, // ✓ expected 0 to be a number and
-     // ⨯ expected 0 to be positive
+  0, // ✓ should be a number and
+     // ⨯ should be positive
   1,
   2,
   3,
