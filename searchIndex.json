@@ -232,12 +232,12 @@
     "url": "/assertions/object/to-have-key/"
   },
   {
-    "label": "to have keys satisfying (object)",
-    "url": "/assertions/object/to-have-keys-satisfying/"
-  },
-  {
     "label": "to have keys (object)",
     "url": "/assertions/object/to-have-keys/"
+  },
+  {
+    "label": "to have keys satisfying (object)",
+    "url": "/assertions/object/to-have-keys-satisfying/"
   },
   {
     "label": "to have properties (object)",
