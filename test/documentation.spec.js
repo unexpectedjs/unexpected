@@ -2274,7 +2274,7 @@ describe("documentation tests", function () {
                 "expected array to have items satisfying 'to have items satisfying', 'to be a number'\n" +
                 "\n" +
                 "[\n" +
-                "  [...],\n" +
+                "  [ 0, 1, 2 ],\n" +
                 "  [\n" +
                 "    4,\n" +
                 "    '5', // should be a number\n" +
@@ -3623,8 +3623,8 @@ describe("documentation tests", function () {
                 "        .and('to be below', 8)\n" +
                 "\n" +
                 "{\n" +
-                "  foo: [...],\n" +
-                "  bar: [...],\n" +
+                "  foo: [ 0, 1, 2 ],\n" +
+                "  bar: [ 4, 5, 6 ],\n" +
                 "  baz: [\n" +
                 "    7,\n" +
                 "    8, // ✓ should be a number and\n" +

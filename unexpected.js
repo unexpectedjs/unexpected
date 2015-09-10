@@ -110,6 +110,8 @@ Assertion.prototype.shift = function (subject, assertionIndex) {
 module.exports = Assertion;
 
 },{}],2:[function(require,module,exports){
+(function (process){
+/*global window*/
 var Assertion = require(1);
 var createStandardErrorMessage = require(5);
 var utils = require(13);
@@ -157,6 +159,16 @@ var anyType = {
     }
 };
 
+
+var defaultDepth = 5;
+if (typeof window !== 'undefined' && typeof window.location !== 'undefined') {
+    var m = window.location.search.match(/[?&]depth=(\d+)(?:$|&)/);
+    if (m) {
+        defaultDepth = parseInt(m[1], 10);
+    }
+} else if (typeof process !== 'undefined' && process.env.UNEXPECTED_DEPTH) {
+    defaultDepth = parseInt(process.env.UNEXPECTED_DEPTH, 10);
+}
 
 function Unexpected(options) {
     options = options || {};
@@ -356,8 +368,15 @@ Unexpected.prototype.inspect = function (obj, depth, output) {
     var seen = [];
     var that = this;
     var printOutput = function (obj, currentDepth, output) {
+        if (obj && typeof obj === 'object' && 'of' in obj) {
+            console.log('\n');
+            console.log(currentDepth);
+            console.trace(obj);
+            console.log('\n');
+        }
+
         var objType = that.findTypeOf(obj);
-        if (currentDepth === 0 && objType.is('object') && !objType.is('expect.it')) {
+        if (currentDepth <= 0 && objType.is('object') && !objType.is('expect.it')) {
             return output.text('...');
         }
 
@@ -377,7 +396,7 @@ Unexpected.prototype.inspect = function (obj, depth, output) {
     };
 
     output = output || this.createOutput();
-    return printOutput(obj, depth || 3, output) || output;
+    return printOutput(obj, typeof depth === 'number' ? depth : defaultDepth, output) || output;
 };
 
 var placeholderSplitRegexp = /(\{(?:\d+)\})/g;
@@ -556,7 +575,7 @@ Unexpected.prototype.addType = function (type) {
         }
 
         return baseType.inspect(value, depth, output.clone(), function (value, depth) {
-            return output.clone().appendInspected(value, depth);
+            return output.clone().appendInspected(value, (depth || defaultDepth) - 1);
         });
     };
 
@@ -571,7 +590,7 @@ Unexpected.prototype.addType = function (type) {
                           return that.diff(actual, expected, output.clone());
                       },
                       function (value, depth) {
-                          return output.clone().appendInspected(value, depth);
+                          return output.clone().appendInspected(value, (depth || defaultDepth) - 1);
                       },
                       that.equal.bind(that));
     };
@@ -581,13 +600,14 @@ Unexpected.prototype.addType = function (type) {
     };
 
     var extendedType = extend({}, baseType, type, { baseType: extendedBaseType });
-    var inspect = extendedType.inspect;
+    var originalInspect = extendedType.inspect;
 
-    extendedType.inspect = function () {
+    extendedType.inspect = function (obj, depth, output, inspect) {
         if (arguments.length < 2) {
             return 'type: ' + type.name;
         } else {
-            return inspect.apply(this, arguments);
+            console.log((depth || defaultDepth) - 1);
+            return originalInspect.call(this, obj, (depth || defaultDepth) - 1, output, inspect);
         }
     };
     if (extendedType.identify === false) {
@@ -1002,12 +1022,13 @@ Unexpected.prototype.async = function (cb) {
     };
 };
 
-Unexpected.prototype.diff = function (a, b, output, depth, seen) {
+Unexpected.prototype.diff = function (a, b, output, recursions, seen) {
     output = output || this.createOutput();
     var that = this;
 
-    depth = typeof depth === 'number' ? depth : 100;
-    if (depth <= 0) {
+    var maxRecursions = 100;
+    recursions = typeof recursions === 'number' ? recursions : maxRecursions;
+    if (recursions <= 0) {
         // detect recursive loops in the structure
         seen = seen || [];
         if (seen.indexOf(a) !== -1) {
@@ -1017,9 +1038,9 @@ Unexpected.prototype.diff = function (a, b, output, depth, seen) {
     }
 
     return this.findCommonType(a, b).diff(a, b, output, function (actual, expected) {
-        return that.diff(actual, expected, output.clone(), depth - 1, seen);
+        return that.diff(actual, expected, output.clone(), recursions - 1, seen);
     }, function (v, depth) {
-        return output.clone().appendInspected(v, depth || Infinity);
+        return output.clone().appendInspected(v, depth || defaultDepth - (maxRecursions - recursions));
     }, function (actual, expected) {
         return that.equal(actual, expected);
     });
@@ -1242,6 +1263,7 @@ function ensureValidPattern(pattern) {
 
 module.exports = Unexpected;
 
+}).call(this,require(23))
 },{}],3:[function(require,module,exports){
 var utils = require(13);
 
@@ -2452,7 +2474,7 @@ module.exports = function (expect) {
                                         if ((bothAreArrayLike && key >= subject.length) || missingArrayIndex) {
                                             valueOutput = output.clone();
                                         } else {
-                                            valueOutput = inspect(subject[key], conflicting ? Infinity : 1);
+                                            valueOutput = inspect(subject[key]);
                                         }
                                     }
 
@@ -3713,7 +3735,7 @@ module.exports = function (expect) {
                     }
 
                     if (!valueOutput) {
-                        valueOutput = inspect(actual[key], conflicting ? Infinity : 1);
+                        valueOutput = inspect(actual[key], conflicting ? Infinity : null);
                     }
 
                     this.key(key);

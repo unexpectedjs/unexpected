@@ -31,7 +31,7 @@ expect([ [0, 1, 2], [4, '5', '6'], [7, '8', 9] ],
 expected array to have items satisfying 'to have items satisfying', 'to be a number'
 
 [
-  [...],
+  [ 0, 1, 2 ],
   [
     4,
     '5', // should be a number

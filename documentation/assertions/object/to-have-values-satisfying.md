@@ -31,8 +31,8 @@ expected object to have values satisfying
         .and('to be below', 8)
 
 {
-  foo: [...],
-  bar: [...],
+  foo: [ 0, 1, 2 ],
+  bar: [ 4, 5, 6 ],
   baz: [
     7,
     8, // ✓ should be a number and

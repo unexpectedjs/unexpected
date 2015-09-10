@@ -3659,13 +3659,13 @@ describe('unexpected', function () {
                 expect({
                     pill: {
                         red: "I'll show you how deep the rabbit hole goes",
-                        blue: { ignorance: { of: 'illusion' } },
+                        blue: { ignorance: { of: { illusion: { will: { not: { lead: 'to the truth' } } } } } },
                         purple: { you: 'wat there is another pill', them: 'there is always more choices' }
                     }
                 }, 'to satisfy', {
                     pill: {
                         red: "I'll show you how deep the rabbit hole goes.",
-                        blue: { ignorance: { of: 'illusion' } }
+                        blue: { ignorance: { of: { illusion: { will: { not: { lead: 'to the truth' } } } } } }
                     }
                 });
             }, 'to throw',
@@ -3690,7 +3690,7 @@ describe('unexpected', function () {
                    "    red: 'I\\'ll show you how deep the rabbit hole goes', // should equal 'I\\'ll show you how deep the rabbit hole goes.'\n" +
                    "                                                         // -I'll show you how deep the rabbit hole goes\n" +
                    "                                                         // +I'll show you how deep the rabbit hole goes.\n" +
-                   "    blue: { ignorance: ... },\n" +
+                   "    blue: { ignorance: { of: ... } },\n" +
                    "    purple: { you: 'wat there is another pill', them: 'there is always more choices' }\n" +
                    "  }\n" +
                    "}");
@@ -4207,7 +4207,7 @@ describe('unexpected', function () {
                    "}\n" +
                    "\n" +
                    "[\n" +
-                   "  [...],\n" +
+                   "  [ 0, 1, 2 ],\n" +
                    "  [\n" +
                    "    4,\n" +
                    "    '5', // should be a number\n" +
@@ -4384,7 +4384,7 @@ describe('unexpected', function () {
                    "}\n" +
                    "\n" +
                    "{\n" +
-                   "  foo: [...],\n" +
+                   "  foo: [ 0, 1, 2 ],\n" +
                    "  bar: [\n" +
                    "    4,\n" +
                    "    '5', // should be a number\n" +
@@ -6525,7 +6525,7 @@ describe('unexpected', function () {
                        "    red: 'I\\'ll show you how deep the rabbit hole goes', // should equal 'I\\'ll show you how deep the rabbit hole goes.'\n" +
                        "                                                         // -I'll show you how deep the rabbit hole goes\n" +
                        "                                                         // +I'll show you how deep the rabbit hole goes.\n" +
-                       "    blue: { ignorance: ... }\n" +
+                       "    blue: { ignorance: { of: 'illusion' } }\n" +
                        "  }\n" +
                        "}");
             });
