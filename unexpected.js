@@ -2460,14 +2460,14 @@ module.exports = function (expect) {
                                         this.key(key).text(':');
                                     }
 
-                                    var omitComma =
+                                    var omitDelimiter =
                                         missingArrayIndex ||
                                         subjectType.is('array-like') ?
                                             index >= subjectKeys.length - 1 :
                                             index === keys.length - 1;
 
-                                    if (!omitComma) {
-                                        valueOutput.amend('text', ',');
+                                    if (!omitDelimiter) {
+                                        valueOutput.amend(subjectType.delimiter(output.clone(), index, keys.length));
                                     }
 
                                     if (!subjectIsArrayLike) {
@@ -3512,6 +3512,12 @@ module.exports = function (expect) {
             }
             return output;
         },
+        delimiter: function (output, i, length) {
+            if (i < length - 1) {
+                output.text(',');
+            }
+            return output;
+        },
         getKeys: Object.keys,
         equal: function (a, b, equal) {
             if (a === b) {
@@ -3560,9 +3566,8 @@ module.exports = function (expect) {
                 this.suffix(output, obj);
                 return output;
             }
+            var type = this;
             var inspectedItems = keys.map(function (key, index) {
-                var lastIndex = index === keys.length - 1;
-
                 var propertyDescriptor = Object.getOwnPropertyDescriptor && Object.getOwnPropertyDescriptor(obj, key);
                 var hasGetter = propertyDescriptor && propertyDescriptor.get;
                 var hasSetter = propertyDescriptor && propertyDescriptor.set;
@@ -3577,9 +3582,7 @@ module.exports = function (expect) {
                 var value = (hasSetter && !hasGetter) ? hasSetter : obj[key];
                 var inspectedValue = inspect(value);
 
-                if (!lastIndex) {
-                    inspectedValue.amend('text', ',');
-                }
+                inspectedValue.amend(type.delimiter(output.clone(), index, keys.length));
 
                 if (inspectedValue.isBlock() && inspectedValue.isMultiline()) {
                     propertyOutput.indentLines();
@@ -3681,6 +3684,7 @@ module.exports = function (expect) {
             this.prefix(output, actual);
             output.nl().indentLines();
 
+            var type = this;
             keys.forEach(function (key, index) {
                 output.i().block(function () {
                     var valueOutput;
@@ -3708,14 +3712,13 @@ module.exports = function (expect) {
                         isInlineDiff = true;
                     }
 
-                    var last = index === keys.length - 1;
                     if (!valueOutput) {
                         valueOutput = inspect(actual[key], conflicting ? Infinity : 1);
                     }
 
                     this.key(key);
                     this.text(':');
-                    valueOutput.amend('text', last ? '' : ',');
+                    valueOutput.amend(type.delimiter(output.clone(), index, keys.length));
                     if (valueOutput.isBlock() && valueOutput.isMultiline()) {
                         this.indentLines();
                         this.nl().i();
@@ -3832,7 +3835,8 @@ module.exports = function (expect) {
         inspect: function (arr, depth, output, inspect) {
             var prefixOutput = this.prefix(output.clone(), arr);
             var suffixOutput = this.suffix(output.clone(), arr);
-            if (arr.length === 0) {
+            var keys = this.getKeys(arr);
+            if (keys.length === 0) {
                 return output.append(prefixOutput).append(suffixOutput);
             }
 
@@ -3840,7 +3844,7 @@ module.exports = function (expect) {
                 return output.append(prefixOutput).text('...').append(suffixOutput);
             }
 
-            var inspectedItems = this.getKeys(arr).map(function (key) {
+            var inspectedItems = keys.map(function (key) {
                 return key in arr ? inspect(arr[key]) : output.clone();
             });
 
@@ -3856,11 +3860,9 @@ module.exports = function (expect) {
                 return width > maxLineLength;
             });
 
+            var type = this;
             inspectedItems.forEach(function (inspectedItem, index) {
-                var lastIndex = index === inspectedItems.length - 1;
-                if (!lastIndex) {
-                    inspectedItem.amend('text', ',');
-                }
+                inspectedItem.amend(type.delimiter(output.clone(), index, keys.length));
             });
 
             if (multipleLines) {
@@ -3903,29 +3905,29 @@ module.exports = function (expect) {
 
             output.append(this.prefix(output.clone(), actual)).nl().indentLines();
 
+            var type = this;
             changes.forEach(function (diffItem, index) {
+                var delimiterOutput = type.delimiter(output.clone(), index, changes.length);
                 output.i().block(function () {
                     var type = diffItem.type;
-                    var last = !!diffItem.last;
-
                     if (type === 'insert') {
                         this.annotationBlock(function () {
                             this.error('missing ').block(inspect(diffItem.value));
                         });
                     } else if (type === 'remove') {
-                        this.block(inspect(diffItem.value).amend('text', last ? ' ' : ', ').error('// should be removed'));
+                        this.block(inspect(diffItem.value).amend(delimiterOutput.sp()).error('// should be removed'));
                     } else if (type === 'equal') {
-                        this.block(inspect(diffItem.value).amend('text', last ? '' : ','));
+                        this.block(inspect(diffItem.value).amend(delimiterOutput));
                     } else {
                         var valueDiff = diff(diffItem.value, diffItem.expected);
                         if (valueDiff && valueDiff.inline) {
-                            this.block(valueDiff.diff.amend('text', last ? '' : ','));
+                            this.block(valueDiff.diff.amend(delimiterOutput));
                         } else if (valueDiff) {
-                            this.block(inspect(diffItem.value).amend('text', last ? ' ' : ', ')).annotationBlock(function () {
+                            this.block(inspect(diffItem.value).amend(delimiterOutput.sp())).annotationBlock(function () {
                                 this.shouldEqualError(diffItem.expected, inspect).nl().append(valueDiff.diff);
                             });
                         } else {
-                            this.block(inspect(diffItem.value).amend('text', last ? ' ' : ', ')).annotationBlock(function () {
+                            this.block(inspect(diffItem.value).amend(delimiterOutput.sp())).annotationBlock(function () {
                                 this.shouldEqualError(diffItem.expected, inspect);
                             });
                         }
@@ -4284,14 +4286,6 @@ module.exports = function (expect) {
         }
     });
 
-    if (typeof Buffer !== 'undefined') {
-        expect.addType({
-            name: 'Buffer',
-            base: 'binaryArray',
-            identify: Buffer.isBuffer
-        });
-    }
-
     [8, 16, 32].forEach(function (numBits) {
         ['Int', 'Uint'].forEach(function (intOrUint) {
             var constructorName = intOrUint + numBits + 'Array',
@@ -4309,6 +4303,14 @@ module.exports = function (expect) {
             }
         }, this);
     }, this);
+
+    if (typeof Buffer !== 'undefined') {
+        expect.addType({
+            name: 'Buffer',
+            base: 'binaryArray',
+            identify: Buffer.isBuffer
+        });
+    }
 
     expect.addType({
         name: 'string',
