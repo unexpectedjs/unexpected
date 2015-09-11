@@ -22,107 +22,19 @@
  * SOFTWARE.
  */
 !function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var o;"undefined"!=typeof window?o=window:"undefined"!=typeof global?o=global:"undefined"!=typeof self&&(o=self),(o.weknowhow||(o.weknowhow={})).expect=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var createStandardErrorMessage = require(5);
-
-function Assertion(expect, subject, testDescription, flags, alternations, args) {
-    this.expect = expect;
-    this.subject = subject;
-    this.testDescription = testDescription;
-    this.flags = flags;
-    this.alternations = alternations;
-    this.args = args;
-    this.subjectOutput = function (output) {
-        output.appendInspected(subject);
-    };
-    this.argsOutput = this.args.map(function (arg) {
-        return function (output) {
-            output.appendInspected(arg);
-        };
-    });
-    this.errorMode = 'default';
-}
-
-Assertion.prototype.standardErrorMessage = function (output, options) {
-    options = typeof options === 'object' ? options : {};
-
-    if ('omitSubject' in output) {
-        options.subject = this.subject;
-    }
-
-    if (options && options.compact) {
-        var expect = this.expect;
-        var subject = this.subject;
-        options.compactSubject = function (output) {
-            var subjectType = expect.findTypeOf(subject);
-            output.jsFunctionName(subjectType.name);
-        };
-    }
-
-    return createStandardErrorMessage(output, this.expect, this.subjectOutput, this.testDescription, this.argsOutput, options);
-};
-
-Assertion.prototype.shift = function (subject, assertionIndex) {
-    var expect = this.expect;
-    if (arguments.length === 3) {
-        // The 3-argument syntax for Assertion.prototype.shift is deprecated, please omit the first (expect) arg
-        subject = arguments[1];
-        assertionIndex = arguments[2];
-    }
-
-    var args = this.args.slice(0, assertionIndex);
-    var rest = this.args.slice(assertionIndex);
-    var nextArgumentType = expect.findTypeOf(rest[0]);
-    this.argsOutput = function (output) {
-        args.forEach(function (arg, index) {
-            if (0 < index) {
-                output.text(', ');
-            }
-            output.appendInspected(arg);
-        });
-
-        if (args.length > 0) {
-            output.sp();
-        }
-        if (nextArgumentType.is('string')) {
-            output.error(rest[0]);
-        } else {
-            output.appendInspected(rest[0]);
-        }
-        if (rest.length > 1) {
-            output.sp();
-        }
-        rest.slice(1).forEach(function (arg, index) {
-            if (0 < index) {
-                output.text(', ');
-            }
-            output.appendInspected(arg);
-        });
-    };
-    if (nextArgumentType.is('expect.it')) {
-        return rest[0](subject);
-    } else if (nextArgumentType.is('string')) {
-        return expect.apply(expect, [subject].concat(rest));
-    } else {
-        throw new Error('The "' + this.testDescription + '" assertion requires parameter #' + (assertionIndex + 2) + ' to be an expect.it function or a string specifying an assertion to delegate to');
-    }
-};
-
-module.exports = Assertion;
-
-},{}],2:[function(require,module,exports){
-var Assertion = require(1);
-var createStandardErrorMessage = require(5);
+var createStandardErrorMessage = require(4);
 var utils = require(14);
 var magicpen = require(34);
 var extend = utils.extend;
 var leven = require(30);
 var makePromise = require(8);
-var isPendingPromise = require(7);
+var makeAndMethod = require(7);
+var isPendingPromise = require(6);
 var oathbreaker = require(9);
 var throwIfNonUnexpectedError = require(12);
-var UnexpectedError = require(3);
+var UnexpectedError = require(2);
 var testFrameworkPatch = require(11);
-var defaultDepth = require(6);
+var defaultDepth = require(5);
 
 var anyType = {
     name: 'any',
@@ -278,7 +190,7 @@ function writeGroupEvaluationsToOutput(expect, output, groupEvaluations) {
                         };
                     });
                     var testDescription = expectation[1];
-                    createStandardErrorMessage(output, expect, subjectOutput, testDescription, argsOutput, {
+                    createStandardErrorMessage(output, subjectOutput, testDescription, argsOutput, {
                         subject: subject
                     });
                 });
@@ -733,24 +645,23 @@ Unexpected.prototype.toString = function () {
     return this.message;
 };
 
-function makeAndMethod(expect, subject) {
-    return function () { // ...
-        var args = Array.prototype.slice.call(arguments);
-        function executeAnd() {
-            if (expect.findTypeOf(args[0]).is('expect.it')) {
-                return args[0](subject);
-            } else {
-                return expect.apply(expect, [subject].concat(args));
+function setPrototypeOf(obj, proto) {
+    obj.__proto__ = proto;
+    return obj;
+}
+
+var canSetPrototype = ({ __proto__: [] } instanceof Array);
+
+var setPrototypeOfOrExtend = canSetPrototype ? setPrototypeOf : function extend(target, source) {
+    if (source) {
+        for (var prop in source) {
+            if (source.hasOwnProperty(prop)) {
+                target[prop] = source[prop];
             }
         }
-
-        if (this.isFulfilled()) {
-            return executeAnd();
-        } else {
-            return this.then(executeAnd);
-        }
-    };
-}
+    }
+    return target;
+};
 
 Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
     var that = this;
@@ -758,173 +669,172 @@ Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
         throw new Error('The expect function requires at least two parameters.');
     }
 
-    var serializeErrorsFromWrappedExpect = false;
-    function executeExpect(subject, testDescriptionString, args) {
-        if (typeof testDescriptionString !== 'string') {
-            throw new Error('The expect function requires the second parameter to be a string.');
-        }
-        var matchingType = that.findTypeOf(subject);
-        var typeWithAssertion = matchingType;
-        var assertionRule = that.assertions[typeWithAssertion.name][testDescriptionString];
-        while (!assertionRule && typeWithAssertion.name !== anyType.name) {
-            // FIXME: Detect cycles?
-            typeWithAssertion = typeWithAssertion.baseType;
-            assertionRule = that.assertions[typeWithAssertion.name][testDescriptionString];
-        }
-        if (assertionRule) {
-            var flags = extend({}, assertionRule.flags);
-            var callInNestedContext = function (callback) {
-                try {
-                    var result = oathbreaker(callback());
-                    if (isPendingPromise(result)) {
-                        testFrameworkPatch.promiseCreated();
-                        result = result.then(undefined, function (e) {
-                            if (e && e._isUnexpected) {
-                                throw new UnexpectedError(that.expect, assertion, e);
-                            }
-                            throw e;
-                        });
-                    } else if (!result || typeof result.then !== 'function') {
-                        result = makePromise.resolve(result);
-                    }
-                    result.and = makeAndMethod(that.expect, subject);
-                    return result;
-                } catch (e) {
-                    if (e && e._isUnexpected) {
-                        var wrappedError = new UnexpectedError(that.expect, assertion, e);
-                        if (serializeErrorsFromWrappedExpect) {
-                            that.setErrorMessage(wrappedError);
-                        }
-                        throw wrappedError;
-                    }
-                    throw e;
-                }
-            };
-
-            var wrappedExpect = function wrappedExpect() {
-                var subject = arguments[0];
-                var testDescriptionString = arguments[1].replace(/\[(!?)([^\]]+)\] ?/g, function (match, negate, flag) {
-                    return Boolean(flags[flag]) !== Boolean(negate) ? flag + ' ' : '';
-                }).trim();
-
-                var args = new Array(arguments.length - 2);
-                for (var i = 0; i < arguments.length - 2; i += 1) {
-                    args[i] = arguments[i + 2];
-                }
-                return callInNestedContext(function () {
-                    return executeExpect(subject, testDescriptionString, args);
-                });
-            };
-
-            // Not sure this is the right way to go about this:
-            wrappedExpect.equal = that.equal;
-            wrappedExpect.inspect = that.inspect;
-            wrappedExpect.createOutput = that.createOutput.bind(that);
-            wrappedExpect.diff = that.diff;
-            wrappedExpect.findTypeOf = that.findTypeOf.bind(that);
-            wrappedExpect.findCommonType = that.findCommonType.bind(that);
-            wrappedExpect.getType = that.getType;
-            wrappedExpect.output = that.output;
-            wrappedExpect.outputFormat = that.outputFormat;
-            wrappedExpect.fail = function () {
-                var args = arguments;
-                callInNestedContext(function () {
-                    that.fail.apply(that, args);
-                });
-            };
-            wrappedExpect.promise = makePromise;
-            wrappedExpect.withError = function (body, handler) {
-                return oathbreaker(makePromise(body).caught(function (e) {
-                    throwIfNonUnexpectedError(e);
-                    return handler(e);
-                }));
-            };
-
-            wrappedExpect.format = that.format;
-            wrappedExpect.it = that.it.bind(that);
-
-            var assertion = new Assertion(wrappedExpect, subject, testDescriptionString,
-                                          flags, assertionRule.alternations, args);
-            var handler = assertionRule.handler;
-            var result = handler.apply(assertion, [wrappedExpect, subject].concat(args));
-            return oathbreaker(result);
-        } else {
-            that.fail({
-                message: function (output) {
-                    var definedForIncompatibleTypes = that.types.filter(function (type) {
-                        return that.assertions[type.name][testDescriptionString];
-                    }, that);
-                    if (definedForIncompatibleTypes.length > 0) {
-                        var subjectOutput = function (output) {
-                            output.appendInspected(subject);
-                        };
-                        var argsOutput = args.map(function (arg) {
-                            return function (output) {
-                                output.appendInspected(arg);
-                            };
-                        });
-                        output
-                            .append(createStandardErrorMessage(output.clone(), that.expect, subjectOutput, testDescriptionString, argsOutput)).nl()
-                            .indentLines()
-                            .i().error("The assertion '").jsString(testDescriptionString)
-                            .error("' is not defined for the type '").jsString(matchingType.name).error("',").nl()
-                            .i().error('but it is defined for ')
-                            .outdentLines();
-                        if (definedForIncompatibleTypes.length === 1) {
-                            output.error("the type '").jsString(definedForIncompatibleTypes[0].name).error("'");
-                        } else {
-                            output.error('these types: ');
-
-                            definedForIncompatibleTypes.forEach(function (incompatibleType, index) {
-                                if (index > 0) {
-                                    output.error(', ');
-                                }
-                                output.error("'").jsString(incompatibleType.name).error("'");
-                            });
-                        }
-                    } else {
-                        var assertionsWithScore = [];
-                        var bonusForNextMatchingType = 0;
-                        [].concat(that.types).reverse().forEach(function (type) {
-                            var typeMatchBonus = 0;
-                            if (type.identify(subject)) {
-                                typeMatchBonus = bonusForNextMatchingType;
-                                bonusForNextMatchingType += 0.9;
-                            }
-                            Object.keys(that.assertions[type.name]).forEach(function (assertion) {
-                                assertionsWithScore.push({
-                                    type: type,
-                                    assertion: assertion,
-                                    score: typeMatchBonus - leven(testDescriptionString, assertion)
-                                });
-                            });
-                        }, that);
-                        assertionsWithScore.sort(function (a, b) {
-                            var c = b.score - a.score;
-                            if (c !== 0) {
-                                return c;
-                            }
-
-                            if (a.assertion < b.assertion) {
-                                return -1;
-                            } else if (a.assertion > b.assertion) {
-                                return 1;
-                            } else {
-                                return 0;
-                            }
-                        });
-                        output.error("Unknown assertion '").jsString(testDescriptionString)
-                            .error("', did you mean: '").jsString(assertionsWithScore[0].assertion).error("'");
-                    }
-                },
-                errorMode: 'bubbleThrough'
+    var wrappedExpectProto = {
+        equal: that.equal,
+        inspect: that.inspect,
+        createOutput: that.createOutput.bind(that),
+        diff: that.diff,
+        findTypeOf: that.findTypeOf.bind(that),
+        findCommonType: that.findCommonType.bind(that),
+        getType: that.getType,
+        output: that.output,
+        outputFormat: that.outputFormat,
+        fail: function () {
+            var args = arguments;
+            this.callInNestedContext(executionContext, function () {
+                that.fail.apply(that, args);
             });
+        },
+        promise: makePromise,
+        argsOutput: function () {
+            return this.args.map(function (arg) {
+                return function (output) {
+                    output.appendInspected(arg);
+                };
+            });
+        },
+        withError: function (body, handler) {
+            return oathbreaker(makePromise(body).caught(function (e) {
+                throwIfNonUnexpectedError(e);
+                return handler(e);
+            }));
+        },
+
+        format: that.format,
+        it: that.it.bind(that),
+
+        subjectOutput: function (output) {
+            output.appendInspected(this.subject);
+        },
+        errorMode: 'default',
+        standardErrorMessage: function (output, options) {
+            var that = this;
+            options = typeof options === 'object' ? options : {};
+
+            if ('omitSubject' in output) {
+                options.subject = this.subject;
+            }
+
+            if (options && options.compact) {
+                options.compactSubject = function (output) {
+                    var subjectType = that.findTypeOf(that.subject);
+                    output.jsFunctionName(subjectType.name);
+                };
+            }
+
+            return createStandardErrorMessage(output, that.subjectOutput, that.testDescription, that.argsOutput, options);
+        },
+        callInNestedContext: function (executionContext, callback) {
+            var that = this;
+            try {
+                var result = oathbreaker(callback());
+                if (isPendingPromise(result)) {
+                    testFrameworkPatch.promiseCreated();
+                    result = result.then(undefined, function (e) {
+                        if (e && e._isUnexpected) {
+                            throw new UnexpectedError(that, e);
+                        }
+                        throw e;
+                    });
+                } else if (!result || typeof result.then !== 'function') {
+                    result = makePromise.resolve(result);
+                }
+                result.and = makeAndMethod(that.expect, subject);
+                return result;
+            } catch (e) {
+                if (e && e._isUnexpected) {
+                    var wrappedError = new UnexpectedError(that, e);
+                    if (executionContext.serializeErrorsFromWrappedExpect) {
+                        that.setErrorMessage(wrappedError);
+                    }
+                    throw wrappedError;
+                }
+                throw e;
+            }
         }
+    };
+    if (canSetPrototype) {
+        setPrototypeOf(wrappedExpectProto, Function.prototype);
+    }
+
+    var executionContext = { serializeErrorsFromWrappedExpect: false };
+    function executeExpect(executionContext, subject, testDescriptionString, args) {
+        var assertionRule = that.getAssertionRule(subject, testDescriptionString, args);
+        var flags = extend({}, assertionRule.flags);
+        var wrappedExpect = function () {
+            var subject = arguments[0];
+            var testDescriptionString = arguments[1].replace(/\[(!?)([^\]]+)\] ?/g, function (match, negate, flag) {
+                return Boolean(flags[flag]) !== Boolean(negate) ? flag + ' ' : '';
+            }).trim();
+
+            var args = new Array(arguments.length - 2);
+            for (var i = 0; i < arguments.length - 2; i += 1) {
+                args[i] = arguments[i + 2];
+            }
+            return wrappedExpect.callInNestedContext(executionContext, function () {
+                return executeExpect(executionContext, subject, testDescriptionString, args);
+            });
+        };
+
+        setPrototypeOfOrExtend(wrappedExpect, wrappedExpectProto);
+
+        wrappedExpect.subject = subject;
+        wrappedExpect.alternations = assertionRule.alternations;
+        wrappedExpect.flags = flags;
+        wrappedExpect.args = args;
+
+        wrappedExpect.shift = function (subject, assertionIndex) {
+            if (arguments.length === 3) {
+                // The 3-argument syntax for wrappedExpect.shift is deprecated, please omit the first (expect) arg
+                subject = arguments[1];
+                assertionIndex = arguments[2];
+            }
+
+            var args = this.args.slice(0, assertionIndex);
+            var rest = this.args.slice(assertionIndex);
+            var nextArgumentType = this.findTypeOf(rest[0]);
+            this.argsOutput = function (output) {
+                args.forEach(function (arg, index) {
+                    if (0 < index) {
+                        output.text(', ');
+                    }
+                    output.appendInspected(arg);
+                });
+
+                if (args.length > 0) {
+                    output.sp();
+                }
+                if (nextArgumentType.is('string')) {
+                    output.error(rest[0]);
+                } else {
+                    output.appendInspected(rest[0]);
+                }
+                if (rest.length > 1) {
+                    output.sp();
+                }
+                rest.slice(1).forEach(function (arg, index) {
+                    if (0 < index) {
+                        output.text(', ');
+                    }
+                    output.appendInspected(arg);
+                });
+            };
+            if (nextArgumentType.is('expect.it')) {
+                return rest[0](subject);
+            } else if (nextArgumentType.is('string')) {
+                return wrappedExpect.apply(expect, [subject].concat(rest));
+            } else {
+                throw new Error('The "' + wrappedExpect.testDescription + '" assertion requires parameter #' + (assertionIndex + 2) + ' to be an expect.it function or a string specifying an assertion to delegate to');
+            }
+        };
+
+        var result = assertionRule.handler.apply(wrappedExpect, [wrappedExpect, subject].concat(args));
+        return oathbreaker(result);
     }
 
     var args = Array.prototype.slice.call(arguments, 2);
     try {
-        var result = executeExpect(subject, testDescriptionString, args);
+        var result = executeExpect(executionContext, subject, testDescriptionString, args);
         if (isPendingPromise(result)) {
             testFrameworkPatch.promiseCreated();
             result = result.then(undefined, function (e) {
@@ -934,7 +844,7 @@ Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
                 throw e;
             });
         } else {
-            serializeErrorsFromWrappedExpect = true;
+            executionContext.serializeErrorsFromWrappedExpect = true;
             if (!result || typeof result.then !== 'function') {
                 result = makePromise.resolve(result);
             }
@@ -951,6 +861,95 @@ Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
             throw newError;
         }
         throw e;
+    }
+};
+
+Unexpected.prototype.getAssertionRule = function (subject, testDescriptionString, args) {
+    var that = this;
+    if (typeof testDescriptionString !== 'string') {
+        throw new Error('The expect function requires the second parameter to be a string.');
+    }
+    var matchingType = that.findTypeOf(subject);
+    var typeWithAssertion = matchingType;
+    var assertionRule = that.assertions[typeWithAssertion.name][testDescriptionString];
+    while (!assertionRule && typeWithAssertion.name !== anyType.name) {
+        // FIXME: Detect cycles?
+        typeWithAssertion = typeWithAssertion.baseType;
+        assertionRule = that.assertions[typeWithAssertion.name][testDescriptionString];
+    }
+    if (assertionRule) {
+        return assertionRule;
+    } else {
+        that.fail({
+            message: function (output) {
+                var definedForIncompatibleTypes = that.types.filter(function (type) {
+                    return that.assertions[type.name][testDescriptionString];
+                });
+                if (definedForIncompatibleTypes.length > 0) {
+                    var subjectOutput = function (output) {
+                        output.appendInspected(subject);
+                    };
+                    var argsOutput = args.map(function (arg) {
+                        return function (output) {
+                            output.appendInspected(arg);
+                        };
+                    });
+                    output
+                        .append(createStandardErrorMessage(output.clone(), subjectOutput, testDescriptionString, argsOutput)).nl()
+                        .indentLines()
+                        .i().error("The assertion '").jsString(testDescriptionString)
+                        .error("' is not defined for the type '").jsString(matchingType.name).error("',").nl()
+                        .i().error('but it is defined for ')
+                        .outdentLines();
+                    if (definedForIncompatibleTypes.length === 1) {
+                        output.error("the type '").jsString(definedForIncompatibleTypes[0].name).error("'");
+                    } else {
+                        output.error('these types: ');
+
+                        definedForIncompatibleTypes.forEach(function (incompatibleType, index) {
+                            if (index > 0) {
+                                output.error(', ');
+                            }
+                            output.error("'").jsString(incompatibleType.name).error("'");
+                        });
+                    }
+                } else {
+                    var assertionsWithScore = [];
+                    var bonusForNextMatchingType = 0;
+                    [].concat(that.types).reverse().forEach(function (type) {
+                        var typeMatchBonus = 0;
+                        if (type.identify(subject)) {
+                            typeMatchBonus = bonusForNextMatchingType;
+                            bonusForNextMatchingType += 0.9;
+                        }
+                        Object.keys(that.assertions[type.name]).forEach(function (assertion) {
+                            assertionsWithScore.push({
+                                type: type,
+                                assertion: assertion,
+                                score: typeMatchBonus - leven(testDescriptionString, assertion)
+                            });
+                        });
+                    });
+                    assertionsWithScore.sort(function (a, b) {
+                        var c = b.score - a.score;
+                        if (c !== 0) {
+                            return c;
+                        }
+
+                        if (a.assertion < b.assertion) {
+                            return -1;
+                        } else if (a.assertion > b.assertion) {
+                            return 1;
+                        } else {
+                            return 0;
+                        }
+                    });
+                    output.error("Unknown assertion '").jsString(testDescriptionString)
+                        .error("', did you mean: '").jsString(assertionsWithScore[0].assertion).error("'");
+                }
+            },
+            errorMode: 'bubbleThrough'
+        });
     }
 };
 
@@ -1244,17 +1243,17 @@ function ensureValidPattern(pattern) {
 
 module.exports = Unexpected;
 
-},{}],3:[function(require,module,exports){
+},{}],2:[function(require,module,exports){
 var utils = require(14);
-var defaultDepth = require(6);
+var defaultDepth = require(5);
 
 var errorMethodBlacklist = ['message', 'line', 'sourceId', 'sourceURL', 'stack', 'stackArray'].reduce(function (result, prop) {
     result[prop] = true;
     return result;
 }, {});
 
-function UnexpectedError(expect, assertion, parent) {
-    this.errorMode = (assertion && assertion.errorMode) || 'default';
+function UnexpectedError(expect, parent) {
+    this.errorMode = (expect && expect.errorMode) || 'default';
     var base = Error.call(this, '');
 
     if (Error.captureStackTrace) {
@@ -1266,7 +1265,6 @@ function UnexpectedError(expect, assertion, parent) {
     }
 
     this.expect = expect;
-    this.assertion = assertion || null;
     this.parent = parent || null;
     this.name = 'UnexpectedError';
 }
@@ -1315,8 +1313,8 @@ UnexpectedError.prototype.buildDiff = function (options) {
 
 UnexpectedError.prototype.getDefaultErrorMessage = function (options) {
     var output = this.outputFromOptions(options);
-    if (this.assertion) {
-        output.append(this.assertion.standardErrorMessage(output.clone(), options));
+    if (this.expect.testDescription) {
+        output.append(this.expect.standardErrorMessage(output.clone(), options));
     } else if (typeof this.output === 'function') {
         this.output.call(output, output);
     }
@@ -1338,8 +1336,8 @@ UnexpectedError.prototype.getDefaultErrorMessage = function (options) {
 
 UnexpectedError.prototype.getNestedErrorMessage = function (options) {
     var output = this.outputFromOptions(options);
-    if (this.assertion) {
-        output.append(this.assertion.standardErrorMessage(output.clone(), options));
+    if (this.expect.testDescription) {
+        output.append(this.expect.standardErrorMessage(output.clone(), options));
     } else if (typeof this.output === 'function') {
         this.output.call(output, output);
     }
@@ -1358,8 +1356,7 @@ UnexpectedError.prototype.getNestedErrorMessage = function (options) {
     output.nl()
         .indentLines()
         .i().block(parent.getErrorMessage(utils.extend({}, options || {}, {
-            compact: this.assertion && parent.assertion &&
-                this.assertion.subject === parent.assertion.subject
+            compact: this.expect.subject === parent.expect.subject
         })));
     return output;
 };
@@ -1408,8 +1405,8 @@ UnexpectedError.prototype.getDiffMessage = function (options) {
     var comparison = this.getDiff(options);
     if (comparison) {
         output.append(comparison.diff);
-    } else if (this.assertion) {
-        output.append(this.assertion.standardErrorMessage(output.clone(), options));
+    } else if (this.expect.testDescription) {
+        output.append(this.expect.standardErrorMessage(output.clone(), options));
     } else if (typeof this.output === 'function') {
         this.output.call(output, output);
     }
@@ -1514,7 +1511,7 @@ if (Object.__defineGetter__) {
 
 module.exports = UnexpectedError;
 
-},{}],4:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 (function (Buffer){
 /*global setTimeout*/
 var utils = require(14);
@@ -1525,7 +1522,7 @@ var extend = utils.extend;
 
 module.exports = function (expect) {
     expect.addAssertion('[not] to be (ok|truthy)', function (expect, subject) {
-        var not = !!this.flags.not;
+        var not = !!expect.flags.not;
         var condition = !!subject;
         if (condition === not) {
             expect.fail();
@@ -1569,19 +1566,18 @@ module.exports = function (expect) {
     });
 
     expect.addAssertion('number', '[not] to be close to', function (expect, subject, value, epsilon) {
-        this.errorMode = 'bubble';
+        expect.errorMode = 'bubble';
         if (typeof epsilon !== 'number') {
             epsilon = 1e-9;
         }
 
-        var testDescription = this.testDescription;
         expect.withError(function () {
             expect(Math.abs(subject - value), '[not] to be less than or equal to', epsilon);
         }, function (e) {
             expect.fail(function (output) {
                 output.error('expected ')
                     .appendInspected(subject).sp()
-                    .error(testDescription).sp()
+                    .error(expect.testDescription).sp()
                     .appendInspected(value).sp()
                     .text('(epsilon: ')
                     .jsNumber(epsilon.toExponential())
@@ -1594,50 +1590,49 @@ module.exports = function (expect) {
         if ('string' === typeof type) {
             var subjectType = expect.findTypeOf(subject);
             type = /^reg(?:exp?|ular expression)$/.test(type) ? 'regexp' : type;
-            this.argsOutput[0] = function (output) {
+            expect.argsOutput[0] = function (output) {
                 output.jsString(type);
             };
             expect(subjectType.is(type), '[not] to be truthy');
         } else if ('function' === typeof type) {
             var functionName = utils.getFunctionName(type);
             if (functionName) {
-                this.argsOutput[0] = function (output) {
+                expect.argsOutput[0] = function (output) {
                     output.text(functionName);
                 };
             }
             expect(subject instanceof type, '[not] to be truthy');
         } else if ('object' === typeof type && type) {
             if (typeof type.identify !== 'function' || typeof type.name !== 'string') {
-                throw new Error("The '" + this.testDescription + "' assertion requires either a string (type name), a type object, or function argument");
+                throw new Error("The '" + expect.testDescription + "' assertion requires either a string (type name), a type object, or function argument");
             }
-            this.argsOutput[0] = function (output) {
+            expect.argsOutput[0] = function (output) {
                 output.text(type.name);
             };
             expect(type.identify(subject), '[not] to be true');
         } else {
-            throw new Error("The '" + this.testDescription + "' assertion requires either a string (type name), a type object, or function argument");
+            throw new Error("The '" + expect.testDescription + "' assertion requires either a string (type name), a type object, or function argument");
         }
     });
 
     // Alias for common '[not] to be (a|an)' assertions
     expect.addAssertion('[not] to be an (object|array)', function (expect, subject) {
-        expect(subject, '[not] to be an', this.alternations[0]);
+        expect(subject, '[not] to be an', expect.alternations[0]);
     });
 
     expect.addAssertion('[not] to be a (boolean|number|string|function|regexp|regex|regular expression)', function (expect, subject) {
-        expect(subject, '[not] to be a', this.alternations[0]);
+        expect(subject, '[not] to be a', expect.alternations[0]);
     });
 
     expect.addAssertion('string', 'to be (the empty|an empty|a non-empty) string', function (expect, subject) {
-        expect(subject, this.alternations[0] === 'a non-empty' ? 'not to be empty' : 'to be empty');
+        expect(subject, expect.alternations[0] === 'a non-empty' ? 'not to be empty' : 'to be empty');
     });
 
     expect.addAssertion('array-like', 'to be (the empty|an empty|a non-empty) array', function (expect, subject) {
-        expect(subject, this.alternations[0] === 'a non-empty' ? 'not to be empty' : 'to be empty');
+        expect(subject, expect.alternations[0] === 'a non-empty' ? 'not to be empty' : 'to be empty');
     });
 
     expect.addAssertion('string', '[not] to match', function (expect, subject, regexp) {
-        var flags = this.flags;
         subject = String(subject);
         return expect.withError(function () {
             var captures = String(subject).match(regexp);
@@ -1646,7 +1641,7 @@ module.exports = function (expect) {
         }, function (e) {
             expect.fail({
                 label: 'should match',
-                diff: flags.not && function (output) {
+                diff: expect.flags.not && function (output) {
                     var lastIndex = 0;
                     function flushUntilIndex(i) {
                         if (i > lastIndex) {
@@ -1668,17 +1663,17 @@ module.exports = function (expect) {
 
     expect.addAssertion('object', '[not] to have [own] property', function (expect, subject, key, value) {
         if (arguments.length === 4) {
-            if (this.flags.not) {
-                throw new Error("The '" + this.testDescription + "' assertion does not work with a value argument");
+            if (expect.flags.not) {
+                throw new Error("The '" + expect.testDescription + "' assertion does not work with a value argument");
             }
 
             expect(subject, 'to have [own] property', key);
-            this.argsOutput = function () {
+            expect.argsOutput = function () {
                 this.appendInspected(key).sp().error('with a value of').sp().appendInspected(value);
             };
             expect(subject[key], '[not] to equal', value);
         } else {
-            expect(this.flags.own ?
+            expect(expect.flags.own ?
                    subject && subject.hasOwnProperty(key) :
                    subject && subject[key] !== undefined,
                    '[not] to be truthy');
@@ -1691,10 +1686,8 @@ module.exports = function (expect) {
                 expect(subject, '[not] to have [own] property', property);
             });
         } else if (properties && typeof properties === 'object') {
-            var flags = this.flags;
-
-            if (flags.not) {
-                throw new Error("Assertion '" + this.testDescription + "' only supports " +
+            if (expect.flags.not) {
+                throw new Error("Assertion '" + expect.testDescription + "' only supports " +
                                 "input in the form of an Array.");
             }
 
@@ -1720,10 +1713,10 @@ module.exports = function (expect) {
                             }
                         }
                         propertyNames.forEach(function (propertyName) {
-                            if ((!flags.own || subject.hasOwnProperty(propertyName)) && !(propertyName in properties)) {
+                            if ((!expect.flags.own || subject.hasOwnProperty(propertyName)) && !(propertyName in properties)) {
                                 expected[propertyName] = subject[propertyName];
                             }
-                            if ((!flags.own || subject.hasOwnProperty(propertyName)) && !(propertyName in actual)) {
+                            if ((!expect.flags.own || subject.hasOwnProperty(propertyName)) && !(propertyName in actual)) {
                                 actual[propertyName] = subject[propertyName];
                             }
                         });
@@ -1734,14 +1727,14 @@ module.exports = function (expect) {
                 });
             });
         } else {
-            throw new Error("Assertion '" + this.testDescription + "' only supports " +
+            throw new Error("Assertion '" + expect.testDescription + "' only supports " +
                             "input in the form of an Array or an Object.");
         }
     });
 
     expect.addAssertion(['string', 'array-like'], '[not] to have length', function (expect, subject, length) {
-        if (!this.flags.not) {
-            this.errorMode = 'nested';
+        if (!expect.flags.not) {
+            expect.errorMode = 'nested';
         }
 
         expect(subject.length, '[not] to be', length);
@@ -1766,7 +1759,7 @@ module.exports = function (expect) {
             keysInSubject[key] = true;
         });
 
-        if (this.flags.not && keys.length === 0) {
+        if (expect.flags.not && keys.length === 0) {
             return;
         }
 
@@ -1774,7 +1767,7 @@ module.exports = function (expect) {
             return keysInSubject[key];
         });
 
-        if (this.flags.only) {
+        if (expect.flags.only) {
             expect(hasKeys, 'to be truthy');
             expect(subjectKeys.length === keys.length, '[not] to be truthy');
         } else {
@@ -1783,13 +1776,12 @@ module.exports = function (expect) {
     });
 
     expect.addAssertion('string', '[not] to contain', function (expect, subject) {
-        var flags = this.flags;
         var args = Array.prototype.slice.call(arguments, 2);
         args.forEach(function (arg) {
             if (String(arg) === '') {
-                throw new Error("The '" + this.testDescription + "' assertion does not support the empty string");
+                throw new Error("The '" + expect.testDescription + "' assertion does not support the empty string");
             }
-        }, this);
+        });
         expect.withError(function () {
             args.forEach(function (arg) {
                 expect(subject.indexOf(arg) !== -1, '[not] to be truthy');
@@ -1804,7 +1796,7 @@ module.exports = function (expect) {
                             lastIndex = i;
                         }
                     }
-                    if (flags.not) {
+                    if (expect.flags.not) {
                         subject.replace(new RegExp(args.map(function (arg) {
                             return utils.escapeRegExpMetaChars(String(arg));
                         }).join('|'), 'g'), function ($0, index) {
@@ -1865,7 +1857,6 @@ module.exports = function (expect) {
     });
 
     expect.addAssertion('array-like', '[not] to contain', function (expect, subject) {
-        var flags = this.flags;
         var args = Array.prototype.slice.call(arguments, 2);
         expect.withError(function () {
             args.forEach(function (arg) {
@@ -1875,7 +1866,7 @@ module.exports = function (expect) {
             });
         }, function (e) {
             expect.fail({
-                diff: flags.not && function (output, diff, inspect, equal) {
+                diff: expect.flags.not && function (output, diff, inspect, equal) {
                     return diff(subject, Array.prototype.filter.call(subject, function (item) {
                         return !args.some(function (arg) {
                             return equal(item, arg);
@@ -1887,17 +1878,16 @@ module.exports = function (expect) {
     });
 
     expect.addAssertion('string', '[not] to begin with', function (expect, subject, value) {
-        var flags = this.flags;
         var stringValue = String(value);
         if (stringValue === '') {
-            throw new Error("The '" + this.testDescription + "' assertion does not support a prefix of the empty string");
+            throw new Error("The '" + expect.testDescription + "' assertion does not support a prefix of the empty string");
         }
         expect.withError(function () {
             expect(subject.substr(0, stringValue.length), '[not] to equal', stringValue);
         }, function (err) {
             expect.fail({
                 diff: function (output) {
-                    if (flags.not) {
+                    if (expect.flags.not) {
                         output.removedHighlight(stringValue).text(subject.substr(stringValue.length));
                     } else {
                         var i = 0;
@@ -1920,17 +1910,16 @@ module.exports = function (expect) {
     });
 
     expect.addAssertion('string', '[not] to end with', function (expect, subject, value) {
-        var flags = this.flags;
         var stringValue = String(value);
         if (stringValue === '') {
-            throw new Error("The '" + this.testDescription + "' assertion does not support a suffix of the empty string");
+            throw new Error("The '" + expect.testDescription + "' assertion does not support a suffix of the empty string");
         }
         expect.withError(function () {
             expect(subject.substr(-stringValue.length), '[not] to equal', stringValue);
         }, function (err) {
             expect.fail({
                 diff: function (output) {
-                    if (flags.not) {
+                    if (expect.flags.not) {
                         output.text(subject.substr(0, subject.length - stringValue.length)).removedHighlight(stringValue);
                     } else {
                         var i = 0;
@@ -1960,7 +1949,7 @@ module.exports = function (expect) {
     });
 
     expect.addAssertion(['number', 'string'], '[not] to be within', function (expect, subject, start, finish) {
-        this.argsOutput = function (output) {
+        expect.argsOutput = function (output) {
             output.appendInspected(start).text('..').appendInspected(finish);
         };
         expect(subject >= start && subject <= finish, '[not] to be truthy');
@@ -1991,13 +1980,12 @@ module.exports = function (expect) {
     });
 
     expect.addAssertion('[not] to equal', function (expect, subject, value) {
-        var flags = this.flags;
         expect.withError(function () {
             expect(expect.equal(value, subject), '[not] to be truthy');
         }, function (e) {
             expect.fail({
                 label: 'should equal',
-                diff: !flags.not && function (output, diff) {
+                diff: !expect.flags.not && function (output, diff) {
                     return diff(subject, value);
                 }
             });
@@ -2006,10 +1994,9 @@ module.exports = function (expect) {
 
     expect.addAssertion('function', '[not] to error', function (expect, subject, arg) {
         var hasArg = arguments.length > 2;
-        var that = this;
         var threw = false;
 
-        if (this.flags.not && hasArg) {
+        if (expect.flags.not && hasArg) {
             throw new Error("The 'not to error' assertion does not support arguments");
         }
 
@@ -2021,7 +2008,7 @@ module.exports = function (expect) {
                 throw e;
             }
         }).then(function () {
-            if (!that.flags.not) {
+            if (!expect.flags.not) {
                 return expect.promise(function () {
                     expect.fail(function (output) {
                         output.text('expected').sp();
@@ -2030,14 +2017,14 @@ module.exports = function (expect) {
                 });
             }
         }, function (error) {
-            if (that.flags.not) {
-                that.errorMode = 'nested';
+            if (expect.flags.not) {
+                expect.errorMode = 'nested';
                 expect.fail(function (output) {
                     output.error(threw ? 'threw' : 'returned promise rejected with').error(': ')
                         .appendErrorMessage(error);
                 });
             } else if (hasArg) {
-                that.errorMode = 'nested';
+                expect.errorMode = 'nested';
                 if (error.isUnexpected && (typeof arg === 'string' || isRegExp(arg))) {
                     return expect(error, 'to have text message', arg);
                 } else {
@@ -2052,7 +2039,7 @@ module.exports = function (expect) {
         var error;
         var hasArg = arguments.length > 2;
 
-        if (this.flags.not && hasArg) {
+        if (expect.flags.not && hasArg) {
             throw new Error("The 'not to throw' assertion does not support arguments");
         }
 
@@ -2068,14 +2055,14 @@ module.exports = function (expect) {
             // in the presence of a matcher an error must have been thrown.
             expect(thrown, 'to be truthy');
 
-            this.errorMode = 'nested';
+            expect.errorMode = 'nested';
             if (isUnexpected && (typeof arg === 'string' || isRegExp(arg))) {
                 return expect(error.getErrorMessage('text').toString(), 'to satisfy', arg);
             } else {
                 return expect(error, 'to satisfy', arg);
             }
-        } else if (this.flags.not && thrown) {
-            this.errorMode = 'nested';
+        } else if (expect.flags.not && thrown) {
+            expect.errorMode = 'nested';
             expect.fail(function (output) {
                 output.error('threw: ').appendErrorMessage(error);
             });
@@ -2092,14 +2079,13 @@ module.exports = function (expect) {
         'to have values satisfying',
         'to be (a map|a hash|an object) whose values satisfy'
     ], function (expect, subject) {
-        var that = this;
         var extraArgs = Array.prototype.slice.call(arguments, 2);
         if (extraArgs.length === 0) {
-            throw new Error('Assertion "' + this.testDescription + '" expects a third argument');
+            throw new Error('Assertion "' + expect.testDescription + '" expects a third argument');
         }
-        this.errorMode = 'nested';
+        expect.errorMode = 'nested';
         expect(subject, 'not to equal', {});
-        this.errorMode = 'bubble';
+        expect.errorMode = 'bubble';
 
         var subjectType = expect.findTypeOf(subject);
         var keys = subjectType.getKeys(subject);
@@ -2123,7 +2109,7 @@ module.exports = function (expect) {
         }, function (err) {
             expect.fail({
                 message: function (output) {
-                    output.append(that.standardErrorMessage(output.clone(), { compact: true }));
+                    output.append(expect.standardErrorMessage(output.clone(), { compact: true }));
                 },
                 diff: function (output) {
                     var diff = err.getDiff({ output: output });
@@ -2140,19 +2126,18 @@ module.exports = function (expect) {
     ], function (expect, subject) { // ...
         var extraArgs = Array.prototype.slice.call(arguments, 2);
         if (extraArgs.length === 0) {
-            throw new Error('Assertion "' + this.testDescription + '" expects a third argument');
+            throw new Error('Assertion "' + expect.testDescription + '" expects a third argument');
         }
-        this.errorMode = 'nested';
+        expect.errorMode = 'nested';
         expect(subject, 'to be non-empty');
-        this.errorMode = 'bubble';
+        expect.errorMode = 'bubble';
 
-        var that = this;
         return expect.withError(function () {
             return expect.apply(expect, [subject, 'to have values satisfying'].concat(extraArgs));
         }, function (err) {
             expect.fail({
                 message: function (output) {
-                    output.append(that.standardErrorMessage(output.clone(), { compact: true }));
+                    output.append(expect.standardErrorMessage(output.clone(), { compact: true }));
                 },
                 diff: function (output) {
                     var diff = err.getDiff({ output: output });
@@ -2169,12 +2154,12 @@ module.exports = function (expect) {
     ], function (expect, subject) {
         var extraArgs = Array.prototype.slice.call(arguments, 2);
         if (extraArgs.length === 0) {
-            throw new Error('Assertion "' + this.testDescription + '" expects a third argument');
+            throw new Error('Assertion "' + expect.testDescription + '" expects a third argument');
         }
-        this.errorMode = 'nested';
+        expect.errorMode = 'nested';
         expect(subject, 'to be an object');
         expect(subject, 'not to equal', {});
-        this.errorMode = 'default';
+        expect.errorMode = 'default';
 
         var subjectType = expect.findTypeOf(subject);
         var keys = subjectType.getKeys(subject);
@@ -2206,9 +2191,9 @@ module.exports = function (expect) {
     });
 
     expect.addAssertion('Error', 'to have (ansi|html|text|) (message|diff)', function (expect, subject, value) {
-        this.errorMode = 'nested';
-        var format = this.alternations[0] || 'text';
-        var useDiff = this.alternations[1] === 'diff';
+        expect.errorMode = 'nested';
+        var format = expect.alternations[0] || 'text';
+        var useDiff = expect.alternations[1] === 'diff';
         if (subject.isUnexpected) {
             var subjectPen;
             if (useDiff) {
@@ -2296,12 +2281,12 @@ module.exports = function (expect) {
 
     if (typeof Buffer !== 'undefined') {
         expect.addAssertion('Buffer', 'when decoded as', function (expect, subject, value) {
-            return this.shift(subject.toString(value), 1);
+            return expect.shift(subject.toString(value), 1);
         });
     }
 
     expect.addAssertion('[not] to [exhaustively] satisfy [assertion]', function (expect, subject, value) {
-        if (this.flags.not) {
+        if (expect.flags.not) {
             return expect.promise(function (resolve, reject) {
                 return expect.promise(function () {
                     return expect(subject, 'to [exhaustively] satisfy [assertion]', value);
@@ -2321,12 +2306,12 @@ module.exports = function (expect) {
             });
         }
 
-        if (this.flags.assertion) {
-            this.errorMode = 'bubble'; // to satisfy assertion 'to be a number' => to be a number
+        if (expect.flags.assertion) {
+            expect.errorMode = 'bubble'; // to satisfy assertion 'to be a number' => to be a number
             if (typeof value === 'string') {
                 return expect.apply(expect, Array.prototype.slice.call(arguments, 1));
             } else {
-                return expect.apply(expect, [subject, this.flags.exhaustively ? 'to exhaustively satisfy' : 'to satisfy'].concat(Array.prototype.slice.call(arguments, 2)));
+                return expect.apply(expect, [subject, expect.flags.exhaustively ? 'to exhaustively satisfy' : 'to satisfy'].concat(Array.prototype.slice.call(arguments, 2)));
             }
         }
 
@@ -2374,11 +2359,9 @@ module.exports = function (expect) {
                 });
             });
 
-            var flags = this.flags;
-
             return expect.promise.all([
                 expect.promise(function () {
-                    if (commonType.is('array-like') || flags.exhaustively) {
+                    if (commonType.is('array-like') || expect.flags.exhaustively) {
                         expect(subject, 'to only have keys', keys);
                     }
                 }),
@@ -2425,7 +2408,7 @@ module.exports = function (expect) {
 
                                     output.omitSubject = subject[key];
                                     if (!(key in value)) {
-                                        if (commonType.is('array-like') || flags.exhaustively) {
+                                        if (commonType.is('array-like') || expect.flags.exhaustively) {
                                             annotation.error('should be removed');
                                         } else {
                                             conflicting = null;
@@ -2508,7 +2491,7 @@ module.exports = function (expect) {
                 });
             });
         } else {
-            this.errorMode = 'bubble';
+            expect.errorMode = 'bubble';
             expect(subject, 'to equal', value);
         }
     });
@@ -2553,8 +2536,8 @@ module.exports = function (expect) {
     });
 
     expect.addAssertion('function', 'when called with', function (expect, subject, args) { // ...
-        this.errorMode = 'nested';
-        return this.shift(subject.apply(subject, args), 1);
+        expect.errorMode = 'nested';
+        return expect.shift(subject.apply(subject, args), 1);
     });
 
     function instantiate(Constructor, args) {
@@ -2569,21 +2552,20 @@ module.exports = function (expect) {
         'when passed as parameters to [async]',
         'when passed as parameters to [constructor]'
     ], function (expect, subject, fn) { // ...
-        this.errorMode = 'nested';
-        var that = this,
-            args = subject;
-        if (that.flags.async) {
+        expect.errorMode = 'nested';
+        var args = subject;
+        if (expect.flags.async) {
             return expect.promise(function (run) {
                 args = [].concat(args);
                 args.push(run(function (err, result) {
                     expect(err, 'to be falsy');
-                    return that.shift(result, 1);
+                    return expect.shift(result, 1);
                 }));
                 fn.apply(null, args);
             });
         } else {
-            subject = that.flags.constructor ? instantiate(fn, args) : fn.apply(fn, args);
-            return that.shift(subject, 1);
+            subject = expect.flags.constructor ? instantiate(fn, args) : fn.apply(fn, args);
+            return expect.shift(subject, 1);
         }
     });
 
@@ -2591,27 +2573,25 @@ module.exports = function (expect) {
         'when passed as parameter to [async]',
         'when passed as parameter to [constructor]'
     ], function (expect, subject, fn) { // ...
-        this.errorMode = 'nested';
-        var that = this,
-            args = [subject];
-        if (that.flags.async) {
+        expect.errorMode = 'nested';
+        var args = [subject];
+        if (expect.flags.async) {
             return expect.promise(function (run) {
                 args = [].concat(args);
                 args.push(run(function (err, result) {
                     expect(err, 'to be falsy');
-                    return that.shift(result, 1);
+                    return expect.shift(result, 1);
                 }));
                 fn.apply(null, args);
             });
         } else {
-            subject = that.flags.constructor ? instantiate(fn, args) : fn.apply(fn, args);
-            return that.shift(subject, 1);
+            subject = expect.flags.constructor ? instantiate(fn, args) : fn.apply(fn, args);
+            return expect.shift(subject, 1);
         }
     });
 
     expect.addAssertion('Promise', 'to be rejected [with]', function (expect, subject, value) {
-        this.errorMode = 'nested';
-        var flags = this.flags;
+        expect.errorMode = 'nested';
         return subject.then(function (obj) {
             expect.fail(function (output) {
                 output.appendInspected(subject).sp().text('unexpectedly fulfilled');
@@ -2620,7 +2600,7 @@ module.exports = function (expect) {
                 }
             });
         }, function (err) {
-            if (flags['with'] || typeof value !== 'undefined') {
+            if (expect.flags['with'] || typeof value !== 'undefined') {
                 if (err && err._isUnexpected && (typeof value === 'string' || isRegExp(value))) {
                     return expect(err, 'to have text message', value);
                 } else {
@@ -2631,10 +2611,9 @@ module.exports = function (expect) {
     });
 
     expect.addAssertion('Promise', 'to be fulfilled [with]', function (expect, subject, value) {
-        this.errorMode = 'nested';
-        var flags = this.flags;
+        expect.errorMode = 'nested';
         return subject.then(function (obj) {
-            if (flags['with'] || typeof value !== 'undefined') {
+            if (expect.flags['with'] || typeof value !== 'undefined') {
                 return expect(obj, 'to satisfy', value);
             }
         }, function (err) {
@@ -2648,13 +2627,12 @@ module.exports = function (expect) {
     });
 
     expect.addAssertion('Promise', 'when rejected', function (expect, subject, nextAssertion) {
-        this.errorMode = 'nested';
-        var that = this;
+        expect.errorMode = 'nested';
         return subject.then(function (obj) {
             if (typeof nextAssertion === 'string') {
-                that.argsOutput = function (output) {
+                expect.argsOutput = function (output) {
                     output.error(nextAssertion);
-                    var rest = that.args.slice(1);
+                    var rest = expect.args.slice(1);
                     if (rest.length > 0) {
                         output.sp().appendItems(rest, ', ');
                     }
@@ -2667,27 +2645,26 @@ module.exports = function (expect) {
                 }
             });
         }, function (err) {
-            return that.shift(err, 0);
+            return expect.shift(err, 0);
         });
     });
 
     expect.addAssertion('Promise', 'when fulfilled', function (expect, subject, nextAssertion) {
-        this.errorMode = 'nested';
-        var that = this;
+        expect.errorMode = 'nested';
         return subject.then(function (value) {
             if (expect.findTypeOf(nextAssertion).is('expect.it')) {
                 // Force a failing expect.it error message to be property nested instead of replacing the default error message:
                 return expect.promise(function () {
-                    return that.shift(value, 0);
+                    return expect.shift(value, 0);
                 }).caught(expect.fail);
             } else {
-                return that.shift(value, 0);
+                return expect.shift(value, 0);
             }
         }, function (err) {
             // typeof nextAssertion === 'string' because expect.it is handled by the above (and shift only supports those two):
-            that.argsOutput = function (output) {
+            expect.argsOutput = function (output) {
                 output.error(nextAssertion);
-                var rest = that.args.slice(1);
+                var rest = expect.args.slice(1);
                 if (rest.length > 0) {
                     output.sp().appendItems(rest, ', ');
                 }
@@ -2704,13 +2681,12 @@ module.exports = function (expect) {
     expect.addAssertion('function', [
         'to call the callback (|without error|with error)'
     ], function (expect, subject, expectedError) {
-        var testDescription = this.testDescription;
-        var alternation = this.alternations[0];
+        var alternation = expect.alternations[0];
         if (alternation === 'without error' && typeof expectedError !== 'undefined') {
-            throw new Error("The '" + testDescription + "' assertion does not support arguments");
+            throw new Error("The '" + expect.testDescription + "' assertion does not support arguments");
         }
 
-        this.errorMode = 'nested';
+        expect.errorMode = 'nested';
         return expect.promise(function (run) {
             var async = false;
             var calledTwice = false;
@@ -2771,8 +2747,8 @@ module.exports = function (expect) {
 };
 
 }).call(this,require(20).Buffer)
-},{}],5:[function(require,module,exports){
-module.exports = function createStandardErrorMessage(output, expect, subject, testDescription, args, options) {
+},{}],4:[function(require,module,exports){
+module.exports = function createStandardErrorMessage(output, subject, testDescription, args, options) {
     options = options || {};
     var preamble = 'expected';
 
@@ -2843,7 +2819,7 @@ module.exports = function createStandardErrorMessage(output, expect, subject, te
     return output;
 };
 
-},{}],6:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 (function (process){
 /*global window*/
 var defaultDepth = 3;
@@ -2858,9 +2834,29 @@ if (typeof window !== 'undefined' && typeof window.location !== 'undefined') {
 module.exports = defaultDepth;
 
 }).call(this,require(24))
-},{}],7:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 module.exports = function isPendingPromise(obj) {
     return obj && typeof obj.then === 'function' && typeof obj.isPending === 'function' && obj.isPending();
+};
+
+},{}],7:[function(require,module,exports){
+module.exports = function makeAndMethod(expect, subject) {
+    return function () { // ...
+        var args = Array.prototype.slice.call(arguments);
+        function executeAnd() {
+            if (expect.findTypeOf(args[0]).is('expect.it')) {
+                return args[0](subject);
+            } else {
+                return expect.apply(expect, [subject].concat(args));
+            }
+        }
+
+        if (this.isFulfilled()) {
+            return executeAnd();
+        } else {
+            return this.then(executeAnd);
+        }
+    };
 };
 
 },{}],8:[function(require,module,exports){
@@ -3464,7 +3460,7 @@ var leftPad = utils.leftPad;
 var arrayChanges = require(17);
 var leven = require(30);
 var detectIndent = require(25);
-var defaultDepth = require(6);
+var defaultDepth = require(5);
 
 module.exports = function (expect) {
     expect.addType({
@@ -4683,10 +4679,10 @@ if (testFrameworkPatch.applyPatch() && typeof require === 'function' && require.
     });
 }
 
-module.exports = require(2).create()
+module.exports = require(1).create()
     .use(require(10))
     .use(require(13))
-    .use(require(4));
+    .use(require(3));
 
 // Add an inspect method to all the promises we return that will make the REPL, console.log, and util.inspect render it nicely in node.js:
 require(19).prototype.inspect = function () {
