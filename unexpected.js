@@ -604,6 +604,7 @@ function installExpectMethods(unexpected, expectFunction) {
     expect.findTypeOf = unexpected.findTypeOf; // Already bound
     expect.fail = function () {
         try {
+            console.log('top fail', !!unexpected);
             unexpected.fail.apply(unexpected, arguments);
         } catch (e) {
             if (e && e._isUnexpected) {
@@ -666,6 +667,7 @@ var setPrototypeOfOrExtend = canSetPrototype ? setPrototypeOf : function extend(
 Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
     var that = this;
     if (arguments.length < 2) {
+        console.log(arguments);
         throw new Error('The expect function requires at least two parameters.');
     }
 
@@ -681,18 +683,16 @@ Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
         outputFormat: that.outputFormat,
         fail: function () {
             var args = arguments;
+            if (!this.callInNestedContext) {
+                debugger;
+            }
+            console.log('wrappedExpect.fail', !!this.callInNestedContext);
+            var expect = executionContext.expect;
             this.callInNestedContext(executionContext, function () {
-                that.fail.apply(that, args);
+                expect.fail.apply(expect, args);
             });
         },
         promise: makePromise,
-        argsOutput: function () {
-            return this.args.map(function (arg) {
-                return function (output) {
-                    output.appendInspected(arg);
-                };
-            });
-        },
         withError: function (body, handler) {
             return oathbreaker(makePromise(body).caught(function (e) {
                 throwIfNonUnexpectedError(e);
@@ -703,9 +703,6 @@ Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
         format: that.format,
         it: that.it.bind(that),
 
-        subjectOutput: function (output) {
-            output.appendInspected(this.subject);
-        },
         errorMode: 'default',
         standardErrorMessage: function (output, options) {
             var that = this;
@@ -726,6 +723,7 @@ Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
         },
         callInNestedContext: function (executionContext, callback) {
             var that = this;
+            var expect = executionContext.expect;
             try {
                 var result = oathbreaker(callback());
                 if (isPendingPromise(result)) {
@@ -739,13 +737,13 @@ Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
                 } else if (!result || typeof result.then !== 'function') {
                     result = makePromise.resolve(result);
                 }
-                result.and = makeAndMethod(that.expect, subject);
+                result.and = makeAndMethod(expect, subject);
                 return result;
             } catch (e) {
                 if (e && e._isUnexpected) {
                     var wrappedError = new UnexpectedError(that, e);
                     if (executionContext.serializeErrorsFromWrappedExpect) {
-                        that.setErrorMessage(wrappedError);
+                        expect.setErrorMessage(wrappedError);
                     }
                     throw wrappedError;
                 }
@@ -757,7 +755,10 @@ Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
         setPrototypeOf(wrappedExpectProto, Function.prototype);
     }
 
-    var executionContext = { serializeErrorsFromWrappedExpect: false };
+    var executionContext = {
+        expect: that,
+        serializeErrorsFromWrappedExpect: false
+    };
     function executeExpect(executionContext, subject, testDescriptionString, args) {
         var assertionRule = that.getAssertionRule(subject, testDescriptionString, args);
         var flags = extend({}, assertionRule.flags);
@@ -778,10 +779,21 @@ Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
 
         setPrototypeOfOrExtend(wrappedExpect, wrappedExpectProto);
 
+        wrappedExpect.execute = wrappedExpect;
         wrappedExpect.subject = subject;
         wrappedExpect.alternations = assertionRule.alternations;
         wrappedExpect.flags = flags;
         wrappedExpect.args = args;
+        wrappedExpect.testDescription = testDescriptionString;
+
+        wrappedExpect.subjectOutput = function (output) {
+            output.appendInspected(subject);
+        };
+        wrappedExpect.argsOutput = args.map(function (arg) {
+            return function (output) {
+                output.appendInspected(arg);
+            };
+        });
 
         wrappedExpect.shift = function (subject, assertionIndex) {
             if (arguments.length === 3) {
@@ -820,9 +832,10 @@ Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
                 });
             };
             if (nextArgumentType.is('expect.it')) {
+                console.log('expect.it');
                 return rest[0](subject);
             } else if (nextArgumentType.is('string')) {
-                return wrappedExpect.apply(expect, [subject].concat(rest));
+                return this.execute.apply(expect, [subject].concat(rest));
             } else {
                 throw new Error('The "' + wrappedExpect.testDescription + '" assertion requires parameter #' + (assertionIndex + 2) + ' to be an expect.it function or a string specifying an assertion to delegate to');
             }
