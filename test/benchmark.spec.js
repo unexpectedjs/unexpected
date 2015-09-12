@@ -1,5 +1,5 @@
 /*global unexpected*/
-describe('benchmark', function () {
+describe('benchmark:', function () {
     var expect = unexpected.clone();
     function asyncTestFunction(cb) {
         setTimeout(function () {
