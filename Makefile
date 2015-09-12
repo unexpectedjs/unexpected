@@ -87,4 +87,5 @@ update-examples:
 
 .PHONY: benchmark
 benchmark:
-	./node_modules/.bin/mocha --ui chewbacca/mocha-benchmark-ui --reporter chewbacca/mocha-benchmark-reporter test/benchmark.spec.js
+	./node_modules/.bin/mocha --no-timeouts --ui chewbacca/mocha-benchmark-ui --reporter chewbacca/mocha-benchmark-reporter test/benchmark.spec.js
+
