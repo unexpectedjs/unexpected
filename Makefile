@@ -84,3 +84,7 @@ site-build:
 .PHONY: update-examples
 update-examples:
 	npm run update-examples
+
+.PHONY: benchmark
+benchmark:
+	./node_modules/.bin/mocha --ui chewbacca/mocha-benchmark-ui --reporter chewbacca/mocha-benchmark-reporter test/benchmark.spec.js
