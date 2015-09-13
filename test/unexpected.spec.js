@@ -35,17 +35,15 @@ describe('unexpected', function () {
     circular.self = circular;
 
     expect.addAssertion('when delayed a little bit', function (expect, subject) {
-        var that = this;
         return expect.promise(function (run) {
             setTimeout(run(function () {
-                return that.shift(expect, subject, 0);
+                return expect.shift(subject, 0);
             }), 1);
         });
     }).addAssertion('when delayed', function (expect, subject, value) {
-        var that = this;
         return expect.promise(function (run) {
             setTimeout(run(function () {
-                return that.shift(expect, subject, 1);
+                return expect.shift(subject, 1);
             }), value);
         });
     }).addAssertion('to inspect as', function (expect, subject, value) {
@@ -4012,7 +4010,7 @@ describe('unexpected', function () {
         describe('when delegating to async assertions', function () {
             var clonedExpect = expect.clone()
                 .addAssertion('to be a number after a short delay', function (expect, subject) {
-                    this.errorMode = 'nested';
+                    expect.errorMode = 'nested';
 
                     return expect.promise(function (run) {
                         setTimeout(run(function () {
@@ -4224,7 +4222,7 @@ describe('unexpected', function () {
         describe('delegating to an async assertion', function () {
             var clonedExpect = expect.clone()
                 .addAssertion('to be a number after a short delay', function (expect, subject, delay) {
-                    this.errorMode = 'nested';
+                    expect.errorMode = 'nested';
 
                     return expect.promise(function (run) {
                         setTimeout(run(function () {
@@ -4401,7 +4399,7 @@ describe('unexpected', function () {
         describe('delegating to an async assertion', function () {
             var clonedExpect = expect.clone()
                 .addAssertion('to be a number after a short delay', function (expect, subject, delay) {
-                    this.errorMode = 'nested';
+                    expect.errorMode = 'nested';
 
                     return expect.promise(function (run) {
                         setTimeout(run(function () {
@@ -4538,7 +4536,7 @@ describe('unexpected', function () {
         describe('delegating to an async assertion', function () {
             var clonedExpect = expect.clone()
                 .addAssertion('to be a sequence of as after a short delay', function (expect, subject, delay) {
-                    this.errorMode = 'nested';
+                    expect.errorMode = 'nested';
 
                     return expect.promise(function (run) {
                         setTimeout(run(function () {
@@ -4878,7 +4876,7 @@ describe('unexpected', function () {
                 beforeEach(function () {
                     clonedExpect = expect.clone()
                         .addAssertion('[not] to be sorted', function (expect, subject) {
-                            this.errorMode = errorMode;
+                            expect.errorMode = errorMode;
                             expect(subject, 'to be an array');
                             expect(subject, '[not] to equal', [].concat(subject).sort());
                         });
@@ -4942,7 +4940,7 @@ describe('unexpected', function () {
 
                 it('avoids repeating large subjects', function () {
                     var clonedExpect = expect.clone().addAssertion('to foobarbaz', function (expect, subject) {
-                        this.errorMode = 'nested';
+                        expect.errorMode = 'nested';
                         expect(subject, 'to satisfy', {foo: 123});
                     });
 
@@ -4973,8 +4971,8 @@ describe('unexpected', function () {
                 beforeEach(function () {
                     clonedExpect = expect.clone()
                         .addAssertion('to be sorted after delay', function (expect, subject, delay, done) {
-                            this.errorMode = errorMode;
-                            this.argsOutput.pop(); // Don't let the function be inspected in case of failure
+                            expect.errorMode = errorMode;
+                            expect.argsOutput.pop(); // Don't let the function be inspected in case of failure
                             setTimeout(function () {
                                 try {
                                     expect(subject, 'to be an array');
@@ -5057,7 +5055,7 @@ describe('unexpected', function () {
                 beforeEach(function () {
                     clonedExpect = expect.clone()
                         .addAssertion('to be sorted after delay', function (expect, subject, delay, done) {
-                            this.errorMode = errorMode;
+                            expect.errorMode = errorMode;
                             return expect.promise(function (run) {
                                 setTimeout(run(function () {
                                     expect(subject, 'to be an array');
@@ -5140,11 +5138,11 @@ describe('unexpected', function () {
             describe('when the error mode of the assertion changes after the assertion has failed', function () {
                 it('serializes the error with the error mode that was in effect at the time of its creation', function () {
                     var clonedExpect = expect.clone().addAssertion('to be equal to foo', function (expect, subject) {
-                        this.errorMode = 'nested';
+                        expect.errorMode = 'nested';
                         try {
                             expect(subject, 'to equal', 'foo');
                         } catch (e) {
-                            this.errorMode = 'default';
+                            expect.errorMode = 'default';
                             throw e;
                         }
                     });
@@ -6138,7 +6136,7 @@ describe('unexpected', function () {
         describe('with async assertions', function () {
             var clonedExpect = expect.clone()
                 .addAssertion('to be a number after a short delay', function (expect, subject) {
-                    this.errorMode = 'nested';
+                    expect.errorMode = 'nested';
 
                     return expect.promise(function (run) {
                         setTimeout(run(function () {
@@ -6147,7 +6145,7 @@ describe('unexpected', function () {
                     });
                 })
                 .addAssertion('to be finite after a short delay', function (expect, subject) {
-                    this.errorMode = 'nested';
+                    expect.errorMode = 'nested';
 
                     return expect.promise(function (run) {
                         setTimeout(run(function () {
@@ -6156,7 +6154,7 @@ describe('unexpected', function () {
                     });
                 })
                 .addAssertion('to be a string after a short delay', function (expect, subject) {
-                    this.errorMode = 'nested';
+                    expect.errorMode = 'nested';
 
                     return expect.promise(function (run) {
                         setTimeout(run(function () {
@@ -7294,7 +7292,7 @@ describe('unexpected', function () {
         describe('with an expect.it function as the next argument', function () {
             it('should succeed', function () {
                 var clonedExpect = expect.clone().addAssertion('string', 'when prepended with foo', function (expect, subject) {
-                    return this.shift('foo' + subject, 0);
+                    return expect.shift('foo' + subject, 0);
                 });
                 clonedExpect('foo', 'when prepended with foo', expect.it('to equal', 'foofoo'));
             });
@@ -7302,7 +7300,7 @@ describe('unexpected', function () {
 
         it('should fail when the next argument is a non-expect.it function', function () {
             var clonedExpect = expect.clone().addAssertion('string', 'when prepended with foo', function (expect, subject) {
-                return this.shift('foo' + subject, 0);
+                return expect.shift('foo' + subject, 0);
             });
             expect(function () {
                 clonedExpect('foo', 'when prepended with foo', function () {});
@@ -7372,7 +7370,7 @@ describe('unexpected', function () {
         before(function () {
             expect = expect.clone()
                 .addAssertion('to be sorted after delay', function (expect, subject, delay) {
-                    this.errorMode = 'nested';
+                    expect.errorMode = 'nested';
 
                     return expect.promise(function (run) {
                         setTimeout(run(function () {
@@ -7382,7 +7380,7 @@ describe('unexpected', function () {
                     });
                 })
                 .addAssertion('to be ordered after delay', function (expect, subject) {
-                    this.errorMode = 'nested';
+                    expect.errorMode = 'nested';
                     return expect(subject, 'to be sorted after delay', 20);
                 })
                 .addAssertion('im sync', function (expect, subject) {
