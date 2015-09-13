@@ -5641,6 +5641,20 @@ describe('unexpected', function () {
                        "  123 // should equal 456\n" +
                        "))");
             });
+
+            it('should include the diff when one is available', function () {
+                expect(function () {
+                    clonedExpect(box('abc'), 'to equal', box('abe'));
+                }, 'to throw',
+                    "expected box('abc') to equal box('abe')\n" +
+                    "\n" +
+                    "box(\n" +
+                    "  'abc' // should equal 'abe'\n" +
+                    "        // -abc\n" +
+                    "        // +abe\n" +
+                    ")"
+                );
+            });
         });
     });
 
