@@ -557,7 +557,7 @@ Unexpected.prototype.addType = function (type) {
         }
 
         return baseType.inspect(value, depth, output.clone(), function (value, depth) {
-            return output.clone().appendInspected(value, (depth || defaultDepth) - 1);
+            return output.clone().appendInspected(value, depth);
         });
     };
 
@@ -1021,7 +1021,7 @@ Unexpected.prototype.diff = function (a, b, output, recursions, seen) {
     return this.findCommonType(a, b).diff(a, b, output, function (actual, expected) {
         return that.diff(actual, expected, output.clone(), recursions - 1, seen);
     }, function (v, depth) {
-        return output.clone().appendInspected(v, depth || defaultDepth - (maxRecursions - recursions));
+        return output.clone().appendInspected(v, depth);
     }, function (actual, expected) {
         return that.equal(actual, expected);
     });
