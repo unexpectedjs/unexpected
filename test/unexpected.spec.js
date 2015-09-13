@@ -72,6 +72,16 @@ describe('unexpected', function () {
 
     describe('magicpen type', function () {
         describe('#inspect', function () {
+            it('should find two pens with different formats to not to be identical', function () {
+                var MagicPen = expect.output.constructor;
+                expect(new MagicPen('text').text('foo'), 'not to equal', new MagicPen('ansi').text('foo'));
+            });
+
+            it('should find two format-less pens with the same contents to be identical', function () {
+                var MagicPen = expect.output.constructor;
+                expect(new MagicPen().text('foo'), 'to equal', new MagicPen().text('foo'));
+            });
+
             describe('with a pen in text format', function () {
                 var pen = expect.createOutput('text').green('abc').nl().text('def').block(function () {
                     this.text('foo').nl().text('bar');
