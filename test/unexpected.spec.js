@@ -7883,4 +7883,12 @@ describe('unexpected', function () {
             );
         });
     });
+
+    describe('styles', function () {
+        describe('#magicPen', function () {
+            it('should inspect an empty MagicPen instance', function () {
+                expect(expect.output.clone().magicPen(expect.output.clone()).toString(), 'to equal', 'magicpen()');
+            });
+        });
+    });
 });
