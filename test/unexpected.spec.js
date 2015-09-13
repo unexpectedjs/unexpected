@@ -1103,6 +1103,27 @@ describe('unexpected', function () {
             expect(err, 'to inspect as', "Error({ message: '', bar: 123 })");
         });
 
+        it('should diff instances with unwrapped values that do not produce a diff', function () {
+            var clonedExpect = expect.clone().addType({
+                name: 'numericalError',
+                base: 'Error',
+                identify: function (obj) {
+                    return this.baseType.identify(obj) && /^\d+$/.test(obj.message);
+                },
+                inspect: function (err, depth, output) {
+                    output.text('Error#' + err.message);
+                },
+                unwrap: function (obj) {
+                    return parseInt(obj.message, 10);
+                }
+            });
+            expect(function () {
+                clonedExpect(new Error('1'), 'to equal', new Error('2'));
+            }, 'to throw',
+                'expected Error#1 to equal Error#2'
+            );
+        });
+
         describe('with a custom Error class inheriting from Error', function () {
             function inherits(ctor, superCtor) {
                 ctor.super_ = superCtor;
