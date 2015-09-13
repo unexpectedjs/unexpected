@@ -7300,6 +7300,25 @@ describe('unexpected', function () {
     });
 
     describe('assertion.shift', function () {
+        it('supports the legacy 3 argument version', function () {
+            var clonedExpect = expect.clone().addAssertion('string', 'when prepended with foo', function (expect, subject) {
+                return this.shift(expect, 'foo' + subject, 0);
+            });
+            clonedExpect('foo', 'when prepended with foo', expect.it('to equal', 'foofoo'));
+        });
+
+        it('inspects multiple arguments correctly', function () {
+            var clonedExpect = expect.clone().addAssertion('string', 'when surrounded by', function (expect, subject) {
+                return expect.shift('foo' + subject, 2);
+            });
+
+            return expect(function () {
+                clonedExpect('bar', 'when surrounded by', 'foo', 'quux', 'to be a number');
+            }, 'to throw',
+                "expected 'bar' when surrounded by 'foo', 'quux' to be a number"
+            );
+        });
+
         describe('with an expect.it function as the next argument', function () {
             it('should succeed', function () {
                 var clonedExpect = expect.clone().addAssertion('string', 'when prepended with foo', function (expect, subject) {
