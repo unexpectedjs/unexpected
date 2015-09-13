@@ -7890,5 +7890,23 @@ describe('unexpected', function () {
                 expect(expect.output.clone().magicPen(expect.output.clone()).toString(), 'to equal', 'magicpen()');
             });
         });
+
+        describe('#appendItems', function () {
+            it('should inspect multiple items', function () {
+                var magicPen = expect.output.clone();
+                magicPen.addStyle('appendInspected', function (arg) {
+                    this.text(arg);
+                });
+                expect(magicPen.appendItems([1, 2], ',').toString(), 'to equal', '1,2');
+            });
+
+            it('should default to a separator of the empty string', function () {
+                var magicPen = expect.output.clone();
+                magicPen.addStyle('appendInspected', function (arg) {
+                    this.text(arg);
+                });
+                expect(magicPen.appendItems([1, 2]).toString(), 'to equal', '12');
+            });
+        });
     });
 });
