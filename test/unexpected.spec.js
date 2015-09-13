@@ -4615,6 +4615,17 @@ describe('unexpected', function () {
                 return clonedExpect('bar', 'to foo');
             }, 'to error', new Error('foo'));
         });
+
+        it('should make the wrapped expect available as the context (legacy)', function () {
+            var clonedExpect = expect.clone().addAssertion('to foo', function (expect, subject) {
+                this.errorMode = 'nested';
+                expect(this, 'to be', expect);
+            });
+
+            return expect(function () {
+                return clonedExpect(undefined, 'to foo');
+            }, 'not to error');
+        });
     });
 
     describe('addAssertion', function () {
