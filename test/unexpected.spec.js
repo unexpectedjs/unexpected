@@ -7743,6 +7743,16 @@ describe('unexpected', function () {
                 });
             });
         });
+
+        describe('#settle', function () {
+            it('should support non-Promise leaves', function () {
+                return expect.promise.settle({
+                    a: 123
+                }).then(function (promises) {
+                    expect(promises, 'to equal', []);
+                });
+            });
+        });
     });
 
     describe.skipIf(typeof Buffer === 'undefined', 'when decoded as assertion', function () {
