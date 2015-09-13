@@ -7891,6 +7891,12 @@ describe('unexpected', function () {
             });
         });
 
+        describe('#errorName', function () {
+            it('should inspect an object with an anoymous constructor', function () {
+                expect(expect.output.clone().errorName(Object.create(null)).toString(), 'to equal', 'Error');
+            });
+        });
+
         describe('#appendItems', function () {
             it('should inspect multiple items', function () {
                 var magicPen = expect.output.clone();
