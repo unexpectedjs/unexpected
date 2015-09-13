@@ -1071,6 +1071,13 @@ describe('unexpected', function () {
         });
     });
 
+    describe('array type', function () {
+        it('should find an array instance identical to itself', function () {
+            var arr = [1, 2, 3];
+            expect(arr, 'to equal', arr);
+        });
+    });
+
     describe('Error type', function () {
         it('should inspect the constructor name correctly', function () {
             expect(new TypeError('foo'), 'to inspect as', "TypeError('foo')");
