@@ -80,11 +80,11 @@ describe("documentation tests", function () {
 
         try {
             expect.addAssertion('detailed to be', function (expect, subject, value) {
-              this.errorMode = 'bubble';
+              expect.errorMode = 'bubble';
               expect.withError(function () {
                 expect(subject, 'to be', value);
               }, function (err) {
-                err.getParents().forEach(function (e){
+                err.getParents().forEach(function (e) {
                   e.errorMode = 'nested';
                 });
                 expect.fail(err);
@@ -95,11 +95,11 @@ describe("documentation tests", function () {
             expect.fail(function (output) {
                 output.error("expected:").nl();
                 output.code("expect.addAssertion('detailed to be', function (expect, subject, value) {").nl();
-                output.code("  this.errorMode = 'bubble';").nl();
+                output.code("  expect.errorMode = 'bubble';").nl();
                 output.code("  expect.withError(function () {").nl();
                 output.code("    expect(subject, 'to be', value);").nl();
                 output.code("  }, function (err) {").nl();
-                output.code("    err.getParents().forEach(function (e){").nl();
+                output.code("    err.getParents().forEach(function (e) {").nl();
                 output.code("      e.errorMode = 'nested';").nl();
                 output.code("    });").nl();
                 output.code("    expect.fail(err);").nl();
@@ -173,8 +173,8 @@ describe("documentation tests", function () {
     it("api/addAssertion.md contains correct examples", function () {
         var testPromises = [];
         var errorMode = 'default'; // use to control the error mode later in the example
-        expect.addAssertion('array', '[not] to be (sorted|ordered)', function(expect, subject, cmp) {
-          this.errorMode = errorMode;
+        expect.addAssertion('array', '[not] to be (sorted|ordered)', function (expect, subject, cmp) {
+          expect.errorMode = errorMode;
           expect(subject, '[not] to equal', [].concat(subject).sort(cmp));
         });
 
@@ -186,10 +186,10 @@ describe("documentation tests", function () {
 
         try {
             expect.addAssertion('number', 'to be contained by', function (expect, subject, start, finish) {
-                this.subjectOutput = function (output) {
+                expect.subjectOutput = function (output) {
                     output.text('point ').jsNumber(subject);
                 };
-                this.argsOutput = function (output) {
+                expect.argsOutput = function (output) {
                     output.text('interval ').text('[').appendInspected(start).text(';').appendInspected(finish).text(']');
                 };
                 expect(subject >= start && subject <= finish, '[not] to be truthy');
@@ -199,10 +199,10 @@ describe("documentation tests", function () {
             expect.fail(function (output) {
                 output.error("expected:").nl();
                 output.code("expect.addAssertion('number', 'to be contained by', function (expect, subject, start, finish) {").nl();
-                output.code("    this.subjectOutput = function (output) {").nl();
+                output.code("    expect.subjectOutput = function (output) {").nl();
                 output.code("        output.text('point ').jsNumber(subject);").nl();
                 output.code("    };").nl();
-                output.code("    this.argsOutput = function (output) {").nl();
+                output.code("    expect.argsOutput = function (output) {").nl();
                 output.code("        output.text('interval ').text('[').appendInspected(start).text(';').appendInspected(finish).text(']');").nl();
                 output.code("    };").nl();
                 output.code("    expect(subject >= start && subject <= finish, '[not] to be truthy');").nl();
@@ -222,7 +222,7 @@ describe("documentation tests", function () {
                 if (typeof epsilon !== 'number') {
                     epsilon = 1e-9;
                 }
-                this.argsOutput[2] = function (output) {
+                expect.argsOutput[2] = function (output) {
                     output.text('(epsilon: ').jsNumber(epsilon.toExponential()).text(')')
                 }
                 expect(Math.abs(subject - value), 'to be less than or equal to', epsilon);
@@ -235,7 +235,7 @@ describe("documentation tests", function () {
                 output.code("    if (typeof epsilon !== 'number') {").nl();
                 output.code("        epsilon = 1e-9;").nl();
                 output.code("    }").nl();
-                output.code("    this.argsOutput[2] = function (output) {").nl();
+                output.code("    expect.argsOutput[2] = function (output) {").nl();
                 output.code("        output.text('(epsilon: ').jsNumber(epsilon.toExponential()).text(')')").nl();
                 output.code("    }").nl();
                 output.code("    expect(Math.abs(subject - value), 'to be less than or equal to', epsilon);").nl();
