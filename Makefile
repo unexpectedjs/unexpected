@@ -2,6 +2,8 @@ REPORTER = dot
 
 TARGETS ?= unexpected.js
 
+CHEWBACCA_THRESHOLD ?= 10
+
 lint:
 	@./node_modules/.bin/jshint --exclude test/documentation.spec.js lib/*.js test/*.js
 
@@ -48,7 +50,7 @@ test-browser: unexpected.js
 
 travis: lint test test-phantomjs test-jasmine coverage site-build
 	-<coverage/lcov.info ./node_modules/coveralls/bin/coveralls.js
-	./node_modules/.bin/chewbacca --threshold 10 `echo $TRAVIS_COMMIT_RANGE | sed -e 's/\.\.\..*//;'` -- test/benchmark.spec.js
+	./node_modules/.bin/chewbacca --threshold ${CHEWBACCA_THRESHOLD} `echo $TRAVIS_COMMIT_RANGE | sed -e 's/\.\.\..*//;'` -- test/benchmark.spec.js
 
 .PHONY: git-dirty-check
 git-dirty-check:
@@ -70,6 +72,7 @@ commit-unexpected: unexpected.js
 
 .PHONY: release-%
 release-%: git-dirty-check lint ${TARGETS} test-phantomjs commit-unexpected deploy-site
+	./node_modules/.bin/chewbacca --threshold ${CHEWBACCA_THRESHOLD} `git describe --abbrev=0 --tags --match 'v*'` -- test/benchmark.spec.js
 	npm version $*
 	@echo $* release ready to be publised to NPM
 	@echo Remember to push tags
