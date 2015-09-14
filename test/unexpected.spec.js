@@ -6692,6 +6692,18 @@ describe('unexpected', function () {
                       );
             });
 
+            it('omits comma after last actual entry', function () {
+                expect(function () {
+                    expect([0], 'to equal', [0, 1]);
+                }, 'to throw', 'expected [ 0 ] to equal [ 0, 1 ]\n' +
+                       '\n' +
+                       '[\n' +
+                       '  0\n' +
+                       '  // missing 1\n' +
+                       ']'
+                      );
+            });
+
             it('handles complicated similarities', function () {
                 expect(function () {
                     expect([4, 3, 1, 2], 'to equal', [1, 2, 3, 4]);
