@@ -48,9 +48,12 @@ coverage:
 test-browser: unexpected.js
 	@./node_modules/.bin/serve .
 
-travis: lint test test-phantomjs test-jasmine coverage site-build
-	-<coverage/lcov.info ./node_modules/coveralls/bin/coveralls.js
+.PHONY: travis-chewbacca
+travis-chewbacca:
 	./node_modules/.bin/chewbacca --threshold ${CHEWBACCA_THRESHOLD} `echo $TRAVIS_COMMIT_RANGE | sed -e 's/\.\.\..*//;'` -- test/benchmark.spec.js
+
+travis: lint test travis-chewbacca test-phantomjs test-jasmine coverage site-build
+	-<coverage/lcov.info ./node_modules/coveralls/bin/coveralls.js
 
 .PHONY: git-dirty-check
 git-dirty-check:
