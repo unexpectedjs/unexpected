@@ -48,6 +48,7 @@ test-browser: unexpected.js
 
 travis: lint test test-phantomjs test-jasmine coverage site-build
 	-<coverage/lcov.info ./node_modules/coveralls/bin/coveralls.js
+	./node_modules/.bin/chewbacca --threshold 10 `echo $TRAVIS_COMMIT_RANGE | sed -e 's/\.\.\..*//;'` -- test/benchmarks.spec.js
 
 .PHONY: git-dirty-check
 git-dirty-check:
