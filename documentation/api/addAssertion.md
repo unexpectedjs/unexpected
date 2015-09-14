@@ -15,8 +15,8 @@ New assertions can be added to Unexpected the following way.
 
 ```js
 var errorMode = 'default'; // use to control the error mode later in the example
-expect.addAssertion('array', '[not] to be (sorted|ordered)', function(expect, subject, cmp) {
-  this.errorMode = errorMode;
+expect.addAssertion('array', '[not] to be (sorted|ordered)', function (expect, subject, cmp) {
+  expect.errorMode = errorMode;
   expect(subject, '[not] to equal', [].concat(subject).sort(cmp));
 });
 ```
@@ -44,7 +44,7 @@ section for more information about the type system in Unexpected.
 The second parameter to `addAssertion` is a string or an array stating
 the patterns this assertion should match. A pattern has the following
 syntax. A word in square brackets represents a flag that can either be
-there or not. If the flag is present `this.flags[flag]` will contain
+there or not. If the flag is present `expect.flags[flag]` will contain
 the value `true`. In this case `not` is a flag. When a flag it present
 in a nested `expect` it will be inserted if the flag is present;
 otherwise it will be removed. Text that is in parentheses with
@@ -80,7 +80,7 @@ it can be preferable to tweak the output instead of creating
 completely custom output using [expect.fail](../fail/).
 
 You can override how the `subject` is displayed by providing a
-`subjectOutput` on the assertion. You can also override the output of
+`subjectOutput` for the specific assertion. You can also override the output of
 the arguments by overriding parts of `argsOutput` or provide a
 completely custom output for the arguments by setting `argsOutput` to
 an output function on the assertion.
@@ -89,10 +89,10 @@ Here is a few examples:
 
 ```js
 expect.addAssertion('number', 'to be contained by', function (expect, subject, start, finish) {
-    this.subjectOutput = function (output) {
+    expect.subjectOutput = function (output) {
         output.text('point ').jsNumber(subject);
     };
-    this.argsOutput = function (output) {
+    expect.argsOutput = function (output) {
         output.text('interval ').text('[').appendInspected(start).text(';').appendInspected(finish).text(']');
     };
     expect(subject >= start && subject <= finish, '[not] to be truthy');
@@ -110,7 +110,7 @@ expect.addAssertion('number', 'to be similar to', function (expect, subject, val
     if (typeof epsilon !== 'number') {
         epsilon = 1e-9;
     }
-    this.argsOutput[2] = function (output) {
+    expect.argsOutput[2] = function (output) {
         output.text('(epsilon: ').jsNumber(epsilon.toExponential()).text(')')
     }
     expect(Math.abs(subject - value), 'to be less than or equal to', epsilon);
@@ -145,7 +145,7 @@ expected [ 1, 3, 2, 4 ] to be sorted
 ```
 
 We can control the output of the nested expects by changing the
-`this.errorMode` property.
+`expect.errorMode` property.
 
 The _bubble_ error mode will hoist the next level error message to this level.
 

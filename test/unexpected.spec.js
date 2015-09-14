@@ -35,17 +35,15 @@ describe('unexpected', function () {
     circular.self = circular;
 
     expect.addAssertion('when delayed a little bit', function (expect, subject) {
-        var that = this;
         return expect.promise(function (run) {
             setTimeout(run(function () {
-                return that.shift(expect, subject, 0);
+                return expect.shift(subject, 0);
             }), 1);
         });
     }).addAssertion('when delayed', function (expect, subject, value) {
-        var that = this;
         return expect.promise(function (run) {
             setTimeout(run(function () {
-                return that.shift(expect, subject, 1);
+                return expect.shift(subject, 1);
             }), value);
         });
     }).addAssertion('to inspect as', function (expect, subject, value) {
@@ -74,6 +72,16 @@ describe('unexpected', function () {
 
     describe('magicpen type', function () {
         describe('#inspect', function () {
+            it('should find two pens with different formats to not to be identical', function () {
+                var MagicPen = expect.output.constructor;
+                expect(new MagicPen('text').text('foo'), 'not to equal', new MagicPen('ansi').text('foo'));
+            });
+
+            it('should find two format-less pens with the same contents to be identical', function () {
+                var MagicPen = expect.output.constructor;
+                expect(new MagicPen().text('foo'), 'to equal', new MagicPen().text('foo'));
+            });
+
             describe('with a pen in text format', function () {
                 var pen = expect.createOutput('text').green('abc').nl().text('def').block(function () {
                     this.text('foo').nl().text('bar');
@@ -1020,6 +1028,56 @@ describe('unexpected', function () {
         });
     });
 
+    describe('object type', function () {
+        describe('#diff', function () {
+            it('should show identical multiline values correctly in diffs', function () {
+                var clonedExpect = expect.clone().addType({
+                    name: 'numberNine',
+                    identify: function (obj) {
+                        return obj === 9;
+                    },
+                    inspect: function (value, depth, output) {
+                        output.block(function () {
+                            this.text('NUMBER').nl().text(' NINE ');
+                        });
+                    }
+                });
+                expect(function () {
+                    clonedExpect({a: 123, b: 9}, 'to equal', {a: 456, b: 9});
+                }, 'to throw',
+                    'expected\n' +
+                    '{\n' +
+                    '  a: 123,\n' +
+                    '  b:\n' +
+                    '    NUMBER\n' +
+                    '     NINE \n' +
+                    '}\n' +
+                    'to equal\n' +
+                    '{\n' +
+                    '  a: 456,\n' +
+                    '  b:\n' +
+                    '    NUMBER\n' +
+                    '     NINE \n' +
+                    '}\n' +
+                    '\n' +
+                    '{\n' +
+                    '  a: 123, // should equal 456\n' +
+                    '  b:\n' +
+                    '    NUMBER\n' +
+                    '     NINE \n' +
+                    '}'
+                );
+            });
+        });
+    });
+
+    describe('array type', function () {
+        it('should find an array instance identical to itself', function () {
+            var arr = [1, 2, 3];
+            expect(arr, 'to equal', arr);
+        });
+    });
+
     describe('Error type', function () {
         it('should inspect the constructor name correctly', function () {
             expect(new TypeError('foo'), 'to inspect as', "TypeError('foo')");
@@ -1043,6 +1101,27 @@ describe('unexpected', function () {
             var err = new Error();
             err.bar = 123;
             expect(err, 'to inspect as', "Error({ message: '', bar: 123 })");
+        });
+
+        it('should diff instances with unwrapped values that do not produce a diff', function () {
+            var clonedExpect = expect.clone().addType({
+                name: 'numericalError',
+                base: 'Error',
+                identify: function (obj) {
+                    return this.baseType.identify(obj) && /^\d+$/.test(obj.message);
+                },
+                inspect: function (err, depth, output) {
+                    output.text('Error#' + err.message);
+                },
+                unwrap: function (obj) {
+                    return parseInt(obj.message, 10);
+                }
+            });
+            expect(function () {
+                clonedExpect(new Error('1'), 'to equal', new Error('2'));
+            }, 'to throw',
+                'expected Error#1 to equal Error#2'
+            );
         });
 
         describe('with a custom Error class inheriting from Error', function () {
@@ -4012,7 +4091,7 @@ describe('unexpected', function () {
         describe('when delegating to async assertions', function () {
             var clonedExpect = expect.clone()
                 .addAssertion('to be a number after a short delay', function (expect, subject) {
-                    this.errorMode = 'nested';
+                    expect.errorMode = 'nested';
 
                     return expect.promise(function (run) {
                         setTimeout(run(function () {
@@ -4224,7 +4303,7 @@ describe('unexpected', function () {
         describe('delegating to an async assertion', function () {
             var clonedExpect = expect.clone()
                 .addAssertion('to be a number after a short delay', function (expect, subject, delay) {
-                    this.errorMode = 'nested';
+                    expect.errorMode = 'nested';
 
                     return expect.promise(function (run) {
                         setTimeout(run(function () {
@@ -4401,7 +4480,7 @@ describe('unexpected', function () {
         describe('delegating to an async assertion', function () {
             var clonedExpect = expect.clone()
                 .addAssertion('to be a number after a short delay', function (expect, subject, delay) {
-                    this.errorMode = 'nested';
+                    expect.errorMode = 'nested';
 
                     return expect.promise(function (run) {
                         setTimeout(run(function () {
@@ -4538,7 +4617,7 @@ describe('unexpected', function () {
         describe('delegating to an async assertion', function () {
             var clonedExpect = expect.clone()
                 .addAssertion('to be a sequence of as after a short delay', function (expect, subject, delay) {
-                    this.errorMode = 'nested';
+                    expect.errorMode = 'nested';
 
                     return expect.promise(function (run) {
                         setTimeout(run(function () {
@@ -4616,6 +4695,17 @@ describe('unexpected', function () {
             return expect(function () {
                 return clonedExpect('bar', 'to foo');
             }, 'to error', new Error('foo'));
+        });
+
+        it('should make the wrapped expect available as the context (legacy)', function () {
+            var clonedExpect = expect.clone().addAssertion('to foo', function (expect, subject) {
+                this.errorMode = 'nested';
+                expect(this, 'to be', expect);
+            });
+
+            return expect(function () {
+                return clonedExpect(undefined, 'to foo');
+            }, 'not to error');
         });
     });
 
@@ -4878,7 +4968,7 @@ describe('unexpected', function () {
                 beforeEach(function () {
                     clonedExpect = expect.clone()
                         .addAssertion('[not] to be sorted', function (expect, subject) {
-                            this.errorMode = errorMode;
+                            expect.errorMode = errorMode;
                             expect(subject, 'to be an array');
                             expect(subject, '[not] to equal', [].concat(subject).sort());
                         });
@@ -4942,7 +5032,7 @@ describe('unexpected', function () {
 
                 it('avoids repeating large subjects', function () {
                     var clonedExpect = expect.clone().addAssertion('to foobarbaz', function (expect, subject) {
-                        this.errorMode = 'nested';
+                        expect.errorMode = 'nested';
                         expect(subject, 'to satisfy', {foo: 123});
                     });
 
@@ -4973,8 +5063,8 @@ describe('unexpected', function () {
                 beforeEach(function () {
                     clonedExpect = expect.clone()
                         .addAssertion('to be sorted after delay', function (expect, subject, delay, done) {
-                            this.errorMode = errorMode;
-                            this.argsOutput.pop(); // Don't let the function be inspected in case of failure
+                            expect.errorMode = errorMode;
+                            expect.argsOutput.pop(); // Don't let the function be inspected in case of failure
                             setTimeout(function () {
                                 try {
                                     expect(subject, 'to be an array');
@@ -5057,7 +5147,7 @@ describe('unexpected', function () {
                 beforeEach(function () {
                     clonedExpect = expect.clone()
                         .addAssertion('to be sorted after delay', function (expect, subject, delay, done) {
-                            this.errorMode = errorMode;
+                            expect.errorMode = errorMode;
                             return expect.promise(function (run) {
                                 setTimeout(run(function () {
                                     expect(subject, 'to be an array');
@@ -5140,11 +5230,11 @@ describe('unexpected', function () {
             describe('when the error mode of the assertion changes after the assertion has failed', function () {
                 it('serializes the error with the error mode that was in effect at the time of its creation', function () {
                     var clonedExpect = expect.clone().addAssertion('to be equal to foo', function (expect, subject) {
-                        this.errorMode = 'nested';
+                        expect.errorMode = 'nested';
                         try {
                             expect(subject, 'to equal', 'foo');
                         } catch (e) {
-                            this.errorMode = 'default';
+                            expect.errorMode = 'default';
                             throw e;
                         }
                     });
@@ -5631,6 +5721,20 @@ describe('unexpected', function () {
                        "box(box(\n" +
                        "  123 // should equal 456\n" +
                        "))");
+            });
+
+            it('should include the diff when one is available', function () {
+                expect(function () {
+                    clonedExpect(box('abc'), 'to equal', box('abe'));
+                }, 'to throw',
+                    "expected box('abc') to equal box('abe')\n" +
+                    "\n" +
+                    "box(\n" +
+                    "  'abc' // should equal 'abe'\n" +
+                    "        // -abc\n" +
+                    "        // +abe\n" +
+                    ")"
+                );
             });
         });
     });
@@ -6138,7 +6242,7 @@ describe('unexpected', function () {
         describe('with async assertions', function () {
             var clonedExpect = expect.clone()
                 .addAssertion('to be a number after a short delay', function (expect, subject) {
-                    this.errorMode = 'nested';
+                    expect.errorMode = 'nested';
 
                     return expect.promise(function (run) {
                         setTimeout(run(function () {
@@ -6147,7 +6251,7 @@ describe('unexpected', function () {
                     });
                 })
                 .addAssertion('to be finite after a short delay', function (expect, subject) {
-                    this.errorMode = 'nested';
+                    expect.errorMode = 'nested';
 
                     return expect.promise(function (run) {
                         setTimeout(run(function () {
@@ -6156,7 +6260,7 @@ describe('unexpected', function () {
                     });
                 })
                 .addAssertion('to be a string after a short delay', function (expect, subject) {
-                    this.errorMode = 'nested';
+                    expect.errorMode = 'nested';
 
                     return expect.promise(function (run) {
                         setTimeout(run(function () {
@@ -7291,10 +7395,29 @@ describe('unexpected', function () {
     });
 
     describe('assertion.shift', function () {
+        it('supports the legacy 3 argument version', function () {
+            var clonedExpect = expect.clone().addAssertion('string', 'when prepended with foo', function (expect, subject) {
+                return this.shift(expect, 'foo' + subject, 0);
+            });
+            clonedExpect('foo', 'when prepended with foo', expect.it('to equal', 'foofoo'));
+        });
+
+        it('inspects multiple arguments correctly', function () {
+            var clonedExpect = expect.clone().addAssertion('string', 'when surrounded by', function (expect, subject) {
+                return expect.shift('foo' + subject, 2);
+            });
+
+            return expect(function () {
+                clonedExpect('bar', 'when surrounded by', 'foo', 'quux', 'to be a number');
+            }, 'to throw',
+                "expected 'bar' when surrounded by 'foo', 'quux' to be a number"
+            );
+        });
+
         describe('with an expect.it function as the next argument', function () {
             it('should succeed', function () {
                 var clonedExpect = expect.clone().addAssertion('string', 'when prepended with foo', function (expect, subject) {
-                    return this.shift('foo' + subject, 0);
+                    return expect.shift('foo' + subject, 0);
                 });
                 clonedExpect('foo', 'when prepended with foo', expect.it('to equal', 'foofoo'));
             });
@@ -7302,7 +7425,7 @@ describe('unexpected', function () {
 
         it('should fail when the next argument is a non-expect.it function', function () {
             var clonedExpect = expect.clone().addAssertion('string', 'when prepended with foo', function (expect, subject) {
-                return this.shift('foo' + subject, 0);
+                return expect.shift('foo' + subject, 0);
             });
             expect(function () {
                 clonedExpect('foo', 'when prepended with foo', function () {});
@@ -7372,7 +7495,7 @@ describe('unexpected', function () {
         before(function () {
             expect = expect.clone()
                 .addAssertion('to be sorted after delay', function (expect, subject, delay) {
-                    this.errorMode = 'nested';
+                    expect.errorMode = 'nested';
 
                     return expect.promise(function (run) {
                         setTimeout(run(function () {
@@ -7382,7 +7505,7 @@ describe('unexpected', function () {
                     });
                 })
                 .addAssertion('to be ordered after delay', function (expect, subject) {
-                    this.errorMode = 'nested';
+                    expect.errorMode = 'nested';
                     return expect(subject, 'to be sorted after delay', 20);
                 })
                 .addAssertion('im sync', function (expect, subject) {
@@ -7715,6 +7838,16 @@ describe('unexpected', function () {
                 });
             });
         });
+
+        describe('#settle', function () {
+            it('should support non-Promise leaves', function () {
+                return expect.promise.settle({
+                    a: 123
+                }).then(function (promises) {
+                    expect(promises, 'to equal', []);
+                });
+            });
+        });
     });
 
     describe.skipIf(typeof Buffer === 'undefined', 'when decoded as assertion', function () {
@@ -7843,6 +7976,38 @@ describe('unexpected', function () {
                 "           // +foobar\n" +
                 "]"
             );
+        });
+    });
+
+    describe('styles', function () {
+        describe('#magicPen', function () {
+            it('should inspect an empty MagicPen instance', function () {
+                expect(expect.output.clone().magicPen(expect.output.clone()).toString(), 'to equal', 'magicpen()');
+            });
+        });
+
+        describe('#errorName', function () {
+            it('should inspect an object with an anoymous constructor', function () {
+                expect(expect.output.clone().errorName(Object.create(null)).toString(), 'to equal', 'Error');
+            });
+        });
+
+        describe('#appendItems', function () {
+            it('should inspect multiple items', function () {
+                var magicPen = expect.output.clone();
+                magicPen.addStyle('appendInspected', function (arg) {
+                    this.text(arg);
+                });
+                expect(magicPen.appendItems([1, 2], ',').toString(), 'to equal', '1,2');
+            });
+
+            it('should default to a separator of the empty string', function () {
+                var magicPen = expect.output.clone();
+                magicPen.addStyle('appendInspected', function (arg) {
+                    this.text(arg);
+                });
+                expect(magicPen.appendItems([1, 2]).toString(), 'to equal', '12');
+            });
         });
     });
 });
