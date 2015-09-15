@@ -2,7 +2,7 @@ REPORTER = dot
 
 TARGETS ?= unexpected.js
 
-CHEWBACCA_THRESHOLD ?= 10
+CHEWBACCA_THRESHOLD ?= 25
 
 lint:
 	@./node_modules/.bin/jshint --exclude test/documentation.spec.js lib/*.js test/*.js
