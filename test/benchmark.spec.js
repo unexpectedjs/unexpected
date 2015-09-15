@@ -1,11 +1,6 @@
 /*global unexpected*/
 describe('benchmark:', function () {
     var expect = unexpected.clone();
-    function asyncTestFunction(cb) {
-        setTimeout(function () {
-            cb();
-        }, 0);
-    }
 
     describe('to be truthy', function () {
         it('on numbers', function () {
@@ -72,6 +67,6 @@ describe('benchmark:', function () {
     });
 
     it('to call the callback async', function () {
-        return expect(asyncTestFunction, 'to call the callback');
+        return expect(setImmediate, 'to call the callback');
     });
 });
