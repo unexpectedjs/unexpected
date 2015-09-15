@@ -30,7 +30,7 @@
   "devDependencies": {
     "browserify": "5.9.1",
     "bundle-collapser": "1.1.0",
-    "chewbacca": "1.7.0",
+    "chewbacca": "1.7.1",
     "coveralls": "2.11.1",
     "es5-shim": "4.0.5",
     "istanbul": "0.3.16",
