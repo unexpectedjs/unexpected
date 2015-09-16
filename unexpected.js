@@ -23,18 +23,18 @@
  */
 !function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var o;"undefined"!=typeof window?o=window:"undefined"!=typeof global?o=global:"undefined"!=typeof self&&(o=self),(o.weknowhow||(o.weknowhow={})).expect=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var createStandardErrorMessage = require(4);
-var utils = require(14);
-var magicpen = require(34);
+var utils = require(15);
+var magicpen = require(35);
 var extend = utils.extend;
-var leven = require(30);
-var makePromise = require(8);
-var makeAndMethod = require(7);
-var isPendingPromise = require(6);
-var oathbreaker = require(9);
-var throwIfNonUnexpectedError = require(12);
+var leven = require(31);
+var makePromise = require(9);
+var makeAndMethod = require(8);
+var isPendingPromise = require(7);
+var oathbreaker = require(10);
 var UnexpectedError = require(2);
-var testFrameworkPatch = require(11);
-var defaultDepth = require(5);
+var testFrameworkPatch = require(12);
+var defaultDepth = require(6);
+var createWrappedExpectProto = require(5);
 
 var anyType = {
     name: 'any',
@@ -107,6 +107,7 @@ function Unexpected(options) {
             current = current.baseType;
         }
     };
+    this._wrappedExpectProto = createWrappedExpectProto(this);
 }
 
 var OR = {};
@@ -377,6 +378,7 @@ Unexpected.prototype.addAssertion = function (types, patterns, handler) {
     if (arguments.length !== 2 && arguments.length !== 3) {
         throw new Error('addAssertion: Needs 2 or 3 arguments');
     }
+    this.assertionCache = null;
     if (typeof patterns === 'function') {
         handler = patterns;
         patterns = types;
@@ -446,6 +448,8 @@ Unexpected.prototype.addType = function (type) {
     if (this.getType(type.name)) {
         throw new Error('The type with the name ' + type.name + ' already exists');
     }
+
+    this.assertionCache = null;
 
     this.assertions[type.name] = {};
     this.typeByName[type.name] = type;
@@ -604,7 +608,6 @@ function installExpectMethods(unexpected, expectFunction) {
     expect.findTypeOf = unexpected.findTypeOf; // Already bound
     expect.fail = function () {
         try {
-            console.log('top fail', !!unexpected);
             unexpected.fail.apply(unexpected, arguments);
         } catch (e) {
             if (e && e._isUnexpected) {
@@ -629,8 +632,28 @@ function installExpectMethods(unexpected, expectFunction) {
     expect.use = expect.installPlugin = unexpected.use.bind(unexpected);
     expect.output = unexpected.output;
     expect.outputFormat = unexpected.outputFormat.bind(unexpected);
+
     return expect;
 }
+
+Unexpected.prototype.lookupAssertionRule = function (type, testDescriptionString) {
+    var cacheKey = type.name + '|' + testDescriptionString;
+    this.assertionCache = this.assertionCache || {};
+    var cachedValue = this.assertionCache[cacheKey];
+    if (cachedValue) {
+        return cachedValue;
+    }
+
+    var typeWithAssertion = type;
+    var assertionRule = this.assertions[typeWithAssertion.name][testDescriptionString];
+    while (!assertionRule && typeWithAssertion.name !== anyType.name) {
+        // FIXME: Detect cycles?
+        typeWithAssertion = typeWithAssertion.baseType;
+        assertionRule = this.assertions[typeWithAssertion.name][testDescriptionString];
+    }
+    this.assertionCache[cacheKey] = assertionRule;
+    return assertionRule;
+};
 
 function makeExpectFunction(unexpected) {
     var expect = installExpectMethods(unexpected, unexpected.expect);
@@ -646,119 +669,17 @@ Unexpected.prototype.toString = function () {
     return this.message;
 };
 
-function setPrototypeOf(obj, proto) {
-    obj.__proto__ = proto;
-    return obj;
-}
-
-var canSetPrototype = ({ __proto__: [] } instanceof Array);
-
-var setPrototypeOfOrExtend = canSetPrototype ? setPrototypeOf : function extend(target, source) {
-    if (source) {
-        for (var prop in source) {
-            if (source.hasOwnProperty(prop)) {
-                target[prop] = source[prop];
-            }
-        }
-    }
-    return target;
-};
-
 Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
     var that = this;
     if (arguments.length < 2) {
-        console.log(arguments);
         throw new Error('The expect function requires at least two parameters.');
-    }
-
-    var wrappedExpectProto = {
-        equal: that.equal,
-        inspect: that.inspect,
-        createOutput: that.createOutput.bind(that),
-        diff: that.diff,
-        findTypeOf: that.findTypeOf.bind(that),
-        findCommonType: that.findCommonType.bind(that),
-        getType: that.getType,
-        output: that.output,
-        outputFormat: that.outputFormat,
-        fail: function () {
-            var args = arguments;
-            if (!this.callInNestedContext) {
-                debugger;
-            }
-            console.log('wrappedExpect.fail', !!this.callInNestedContext);
-            var expect = executionContext.expect;
-            this.callInNestedContext(executionContext, function () {
-                expect.fail.apply(expect, args);
-            });
-        },
-        promise: makePromise,
-        withError: function (body, handler) {
-            return oathbreaker(makePromise(body).caught(function (e) {
-                throwIfNonUnexpectedError(e);
-                return handler(e);
-            }));
-        },
-
-        format: that.format,
-        it: that.it.bind(that),
-
-        errorMode: 'default',
-        standardErrorMessage: function (output, options) {
-            var that = this;
-            options = typeof options === 'object' ? options : {};
-
-            if ('omitSubject' in output) {
-                options.subject = this.subject;
-            }
-
-            if (options && options.compact) {
-                options.compactSubject = function (output) {
-                    var subjectType = that.findTypeOf(that.subject);
-                    output.jsFunctionName(subjectType.name);
-                };
-            }
-
-            return createStandardErrorMessage(output, that.subjectOutput, that.testDescription, that.argsOutput, options);
-        },
-        callInNestedContext: function (executionContext, callback) {
-            var that = this;
-            var expect = executionContext.expect;
-            try {
-                var result = oathbreaker(callback());
-                if (isPendingPromise(result)) {
-                    testFrameworkPatch.promiseCreated();
-                    result = result.then(undefined, function (e) {
-                        if (e && e._isUnexpected) {
-                            throw new UnexpectedError(that, e);
-                        }
-                        throw e;
-                    });
-                } else if (!result || typeof result.then !== 'function') {
-                    result = makePromise.resolve(result);
-                }
-                result.and = makeAndMethod(expect, subject);
-                return result;
-            } catch (e) {
-                if (e && e._isUnexpected) {
-                    var wrappedError = new UnexpectedError(that, e);
-                    if (executionContext.serializeErrorsFromWrappedExpect) {
-                        expect.setErrorMessage(wrappedError);
-                    }
-                    throw wrappedError;
-                }
-                throw e;
-            }
-        }
-    };
-    if (canSetPrototype) {
-        setPrototypeOf(wrappedExpectProto, Function.prototype);
     }
 
     var executionContext = {
         expect: that,
         serializeErrorsFromWrappedExpect: false
     };
+
     function executeExpect(executionContext, subject, testDescriptionString, args) {
         var assertionRule = that.getAssertionRule(subject, testDescriptionString, args);
         var flags = extend({}, assertionRule.flags);
@@ -768,23 +689,21 @@ Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
                 return Boolean(flags[flag]) !== Boolean(negate) ? flag + ' ' : '';
             }).trim();
 
-            var args = new Array(arguments.length - 2);
-            for (var i = 0; i < arguments.length - 2; i += 1) {
-                args[i] = arguments[i + 2];
-            }
+            var args = Array.prototype.slice.call(arguments, 2);
             return wrappedExpect.callInNestedContext(executionContext, function () {
                 return executeExpect(executionContext, subject, testDescriptionString, args);
             });
         };
 
-        setPrototypeOfOrExtend(wrappedExpect, wrappedExpectProto);
+        utils.setPrototypeOfOrExtend(wrappedExpect, that._wrappedExpectProto);
 
+        wrappedExpect.executionContext = executionContext;
         wrappedExpect.execute = wrappedExpect;
-        wrappedExpect.subject = subject;
         wrappedExpect.alternations = assertionRule.alternations;
         wrappedExpect.flags = flags;
-        wrappedExpect.args = args;
+        wrappedExpect.subject = subject;
         wrappedExpect.testDescription = testDescriptionString;
+        wrappedExpect.args = args;
 
         wrappedExpect.subjectOutput = function (output) {
             output.appendInspected(subject);
@@ -795,54 +714,7 @@ Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
             };
         });
 
-        wrappedExpect.shift = function (subject, assertionIndex) {
-            if (arguments.length === 3) {
-                // The 3-argument syntax for wrappedExpect.shift is deprecated, please omit the first (expect) arg
-                subject = arguments[1];
-                assertionIndex = arguments[2];
-            }
-
-            var args = this.args.slice(0, assertionIndex);
-            var rest = this.args.slice(assertionIndex);
-            var nextArgumentType = this.findTypeOf(rest[0]);
-            this.argsOutput = function (output) {
-                args.forEach(function (arg, index) {
-                    if (0 < index) {
-                        output.text(', ');
-                    }
-                    output.appendInspected(arg);
-                });
-
-                if (args.length > 0) {
-                    output.sp();
-                }
-                if (nextArgumentType.is('string')) {
-                    output.error(rest[0]);
-                } else {
-                    output.appendInspected(rest[0]);
-                }
-                if (rest.length > 1) {
-                    output.sp();
-                }
-                rest.slice(1).forEach(function (arg, index) {
-                    if (0 < index) {
-                        output.text(', ');
-                    }
-                    output.appendInspected(arg);
-                });
-            };
-            if (nextArgumentType.is('expect.it')) {
-                console.log('expect.it');
-                return rest[0](subject);
-            } else if (nextArgumentType.is('string')) {
-                return this.execute.apply(expect, [subject].concat(rest));
-            } else {
-                throw new Error('The "' + wrappedExpect.testDescription + '" assertion requires parameter #' + (assertionIndex + 2) + ' to be an expect.it function or a string specifying an assertion to delegate to');
-            }
-        };
-
-        var result = assertionRule.handler.apply(wrappedExpect, [wrappedExpect, subject].concat(args));
-        return oathbreaker(result);
+        return oathbreaker(assertionRule.handler.apply(wrappedExpect, [wrappedExpect, subject].concat(args)));
     }
 
     var args = Array.prototype.slice.call(arguments, 2);
@@ -883,13 +755,7 @@ Unexpected.prototype.getAssertionRule = function (subject, testDescriptionString
         throw new Error('The expect function requires the second parameter to be a string.');
     }
     var matchingType = that.findTypeOf(subject);
-    var typeWithAssertion = matchingType;
-    var assertionRule = that.assertions[typeWithAssertion.name][testDescriptionString];
-    while (!assertionRule && typeWithAssertion.name !== anyType.name) {
-        // FIXME: Detect cycles?
-        typeWithAssertion = typeWithAssertion.baseType;
-        assertionRule = that.assertions[typeWithAssertion.name][testDescriptionString];
-    }
+    var assertionRule = this.lookupAssertionRule(matchingType, testDescriptionString);
     if (assertionRule) {
         return assertionRule;
     } else {
@@ -1079,7 +945,8 @@ Unexpected.prototype.clone = function () {
         typeByName: extend({}, this.typeByName),
         output: this.output.clone(),
         format: this.outputFormat(),
-        installedPlugins: [].concat(this.installedPlugins)
+        installedPlugins: [].concat(this.installedPlugins),
+        assertionCache: this.assertionCache
     });
     return makeExpectFunction(unexpected);
 };
@@ -1257,8 +1124,8 @@ function ensureValidPattern(pattern) {
 module.exports = Unexpected;
 
 },{}],2:[function(require,module,exports){
-var utils = require(14);
-var defaultDepth = require(5);
+var utils = require(15);
+var defaultDepth = require(6);
 
 var errorMethodBlacklist = ['message', 'line', 'sourceId', 'sourceURL', 'stack', 'stackArray'].reduce(function (result, prop) {
     result[prop] = true;
@@ -1527,7 +1394,7 @@ module.exports = UnexpectedError;
 },{}],3:[function(require,module,exports){
 (function (Buffer){
 /*global setTimeout*/
-var utils = require(14);
+var utils = require(15);
 var objectIs = utils.objectIs;
 var isRegExp = utils.isRegExp;
 var isArray = utils.isArray;
@@ -2478,19 +2345,30 @@ module.exports = function (expect) {
                                         }
                                     }
 
-                                    if (isInlineDiff) {
-                                        this.append(valueOutput);
-                                    } else {
-                                        this.block(valueOutput);
-                                    }
+                                    var annotationOnNextLine = !isInlineDiff &&
+                                        output.preferredWidth < this.size().width + valueOutput.size().width + annotation.size().width;
                                     if (!annotation.isEmpty()) {
-                                        this.sp(valueOutput.isEmpty() ? 0 : 1).annotationBlock(function () {
+                                        if (!valueOutput.isEmpty()) {
+                                            if (annotationOnNextLine) {
+                                                valueOutput.nl();
+                                            } else {
+                                                valueOutput.sp();
+                                            }
+                                        }
+
+                                        valueOutput.annotationBlock(function () {
                                             if (missingKey) {
                                                 this.error('missing: ').block(annotation);
                                             } else {
                                                 this.append(annotation);
                                             }
                                         });
+                                    }
+
+                                    if (isInlineDiff) {
+                                        this.append(valueOutput);
+                                    } else {
+                                        this.block(valueOutput);
                                     }
                                 }).nl();
                             });
@@ -2669,7 +2547,9 @@ module.exports = function (expect) {
                 // Force a failing expect.it error message to be property nested instead of replacing the default error message:
                 return expect.promise(function () {
                     return expect.shift(value, 0);
-                }).caught(expect.fail);
+                }).caught(function (err) {
+                    expect.fail(err);
+                });
             } else {
                 return expect.shift(value, 0);
             }
@@ -2759,7 +2639,7 @@ module.exports = function (expect) {
     });
 };
 
-}).call(this,require(20).Buffer)
+}).call(this,require(21).Buffer)
 },{}],4:[function(require,module,exports){
 module.exports = function createStandardErrorMessage(output, subject, testDescription, args, options) {
     options = options || {};
@@ -2833,6 +2713,143 @@ module.exports = function createStandardErrorMessage(output, subject, testDescri
 };
 
 },{}],5:[function(require,module,exports){
+var createStandardErrorMessage = require(4);
+var throwIfNonUnexpectedError = require(13);
+var makePromise = require(9);
+var isPendingPromise = require(7);
+var oathbreaker = require(10);
+var UnexpectedError = require(2);
+var testFrameworkPatch = require(12);
+var makeAndMethod = require(8);
+var utils = require(15);
+
+module.exports = function createWrappedExpectProto(unexpected) {
+    var wrappedExpectProto = {
+        promise: makePromise,
+        errorMode: 'default',
+
+        equal: unexpected.equal,
+        inspect: unexpected.inspect,
+        createOutput: unexpected.createOutput.bind(unexpected),
+        findTypeOf: unexpected.findTypeOf.bind(unexpected),
+        findCommonType: unexpected.findCommonType.bind(unexpected),
+        it: unexpected.it.bind(unexpected),
+        diff: unexpected.diff,
+        getType: unexpected.getType,
+        output: unexpected.output,
+        outputFormat: unexpected.outputFormat,
+        format: unexpected.format,
+
+        fail: function () {
+            var args = arguments;
+            var expect = this.executionContext.expect;
+            this.callInNestedContext(this.executionContext, function () {
+                expect.fail.apply(expect, args);
+            });
+        },
+        withError: function (body, handler) {
+            return oathbreaker(makePromise(body).caught(function (e) {
+                throwIfNonUnexpectedError(e);
+                return handler(e);
+            }));
+        },
+        standardErrorMessage: function (output, options) {
+            var that = this;
+            options = typeof options === 'object' ? options : {};
+
+            if ('omitSubject' in output) {
+                options.subject = this.subject;
+            }
+
+            if (options && options.compact) {
+                options.compactSubject = function (output) {
+                    var subjectType = that.findTypeOf(that.subject);
+                    output.jsFunctionName(subjectType.name);
+                };
+            }
+
+            return createStandardErrorMessage(output, that.subjectOutput, that.testDescription, that.argsOutput, options);
+        },
+        callInNestedContext: function (executionContext, callback) {
+            var that = this;
+            var expect = executionContext.expect;
+            try {
+                var result = oathbreaker(callback());
+                if (isPendingPromise(result)) {
+                    testFrameworkPatch.promiseCreated();
+                    result = result.then(undefined, function (e) {
+                        if (e && e._isUnexpected) {
+                            throw new UnexpectedError(that, e);
+                        }
+                        throw e;
+                    });
+                } else if (!result || typeof result.then !== 'function') {
+                    result = makePromise.resolve(result);
+                }
+                result.and = makeAndMethod(that.execute, that.subject);
+                return result;
+            } catch (e) {
+                if (e && e._isUnexpected) {
+                    var wrappedError = new UnexpectedError(that, e);
+                    if (this.executionContext.serializeErrorsFromWrappedExpect) {
+                        expect.setErrorMessage(wrappedError);
+                    }
+                    throw wrappedError;
+                }
+                throw e;
+            }
+        },
+        shift: function (subject, assertionIndex) {
+            if (arguments.length === 3) {
+                // The 3-argument syntax for wrappedExpect.shift is deprecated, please omit the first (expect) arg
+                subject = arguments[1];
+                assertionIndex = arguments[2];
+            }
+
+            var args = this.args.slice(0, assertionIndex);
+            var rest = this.args.slice(assertionIndex);
+            var nextArgumentType = this.findTypeOf(rest[0]);
+            this.argsOutput = function (output) {
+                args.forEach(function (arg, index) {
+                    if (0 < index) {
+                        output.text(', ');
+                    }
+                    output.appendInspected(arg);
+                });
+
+                if (args.length > 0) {
+                    output.sp();
+                }
+                if (nextArgumentType.is('string')) {
+                    output.error(rest[0]);
+                } else {
+                    output.appendInspected(rest[0]);
+                }
+                if (rest.length > 1) {
+                    output.sp();
+                }
+                rest.slice(1).forEach(function (arg, index) {
+                    if (0 < index)  {
+                        output.text(', ');
+                    }
+                    output.appendInspected(arg);
+                });
+            };
+            if (nextArgumentType.is('expect.it')) {
+                return rest[0](subject);
+            } else if (nextArgumentType.is('string')) {
+                return this.execute.apply(this.execute, [subject].concat(rest));
+            } else {
+                throw new Error('The "' + this.testDescription + '" assertion requires parameter #' + (assertionIndex + 2) +
+                                ' to be an expect.it function or a string specifying an assertion to delegate to');
+            }
+        }
+    };
+    utils.setPrototypeOfOrExtend(wrappedExpectProto, Function.prototype);
+    return wrappedExpectProto;
+};
+
+},{}],6:[function(require,module,exports){
 (function (process){
 /*global window*/
 var defaultDepth = 3;
@@ -2846,13 +2863,13 @@ if (typeof window !== 'undefined' && typeof window.location !== 'undefined') {
 }
 module.exports = defaultDepth;
 
-}).call(this,require(24))
-},{}],6:[function(require,module,exports){
+}).call(this,require(25))
+},{}],7:[function(require,module,exports){
 module.exports = function isPendingPromise(obj) {
     return obj && typeof obj.then === 'function' && typeof obj.isPending === 'function' && obj.isPending();
 };
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 module.exports = function makeAndMethod(expect, subject) {
     return function () { // ...
         var args = Array.prototype.slice.call(arguments);
@@ -2872,11 +2889,11 @@ module.exports = function makeAndMethod(expect, subject) {
     };
 };
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 /*global Promise:true*/
-var Promise = require(19);
-var oathbreaker = require(9);
-var throwIfNonUnexpectedError = require(12);
+var Promise = require(20);
+var oathbreaker = require(10);
+var throwIfNonUnexpectedError = require(13);
 
 function makePromise(body) {
     if (typeof body !== 'function') {
@@ -2990,10 +3007,10 @@ function extractPromisesFromObject(obj) {
 
 module.exports = makePromise;
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 /*global Promise:true*/
-var workQueue = require(15);
-var Promise = require(19);
+var workQueue = require(16);
+var Promise = require(20);
 module.exports = function oathbreaker(value) {
     if (!value || typeof value.then !== 'function') {
         return value;
@@ -3050,8 +3067,8 @@ module.exports = function oathbreaker(value) {
     });
 };
 
-},{}],10:[function(require,module,exports){
-var utils = require(14);
+},{}],11:[function(require,module,exports){
+var utils = require(15);
 
 module.exports = function (expect) {
     expect.installTheme({
@@ -3346,7 +3363,7 @@ module.exports = function (expect) {
     });
 };
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 /*global it:true, jasmine, mocha*/
 function isMochaModule(module) {
     return module && (
@@ -3454,7 +3471,7 @@ module.exports = {
     }
 };
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 module.exports = function throwIfNonUnexpectedError(err) {
     if (err && err.message === 'aggregate error') {
         for (var i = 0 ; i < err.length ; i += 1) {
@@ -3465,15 +3482,15 @@ module.exports = function throwIfNonUnexpectedError(err) {
     }
 };
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 (function (Buffer){
-var utils = require(14);
+var utils = require(15);
 var isRegExp = utils.isRegExp;
 var leftPad = utils.leftPad;
-var arrayChanges = require(17);
-var leven = require(30);
-var detectIndent = require(25);
-var defaultDepth = require(5);
+var arrayChanges = require(18);
+var leven = require(31);
+var detectIndent = require(26);
+var defaultDepth = require(6);
 
 module.exports = function (expect) {
     expect.addType({
@@ -3935,8 +3952,11 @@ module.exports = function (expect) {
             output.append(this.prefix(output.clone(), actual)).nl().indentLines();
 
             var type = this;
+            var indexOfLastNonInsert = changes.reduce(function (previousValue, diffItem, index) {
+                return (diffItem.type === 'insert') ? previousValue : index;
+            }, -1);
             changes.forEach(function (diffItem, index) {
-                var delimiterOutput = type.delimiter(output.clone(), index, changes.length);
+                var delimiterOutput = type.delimiter(output.clone(), index, indexOfLastNonInsert + 1);
                 output.i().block(function () {
                     var type = diffItem.type;
                     if (type === 'insert') {
@@ -4043,7 +4063,7 @@ module.exports = function (expect) {
             }
 
             var result = diff(this.unwrap(actual), this.unwrap(expected));
-            if (result.diff) {
+            if (result && result.diff) {
                 result.diff = output.clone().errorName(actual).text('(').append(result.diff).text(')');
 
             }
@@ -4415,11 +4435,20 @@ module.exports = function (expect) {
     });
 };
 
-}).call(this,require(20).Buffer)
-},{}],14:[function(require,module,exports){
-var stringDiff = require(29);
+}).call(this,require(21).Buffer)
+},{}],15:[function(require,module,exports){
+var stringDiff = require(30);
 
 var specialCharRegexp = /([\x00-\x09\x0B-\x1F\x7F-\x9F\xAD\u0378\u0379\u037F-\u0383\u038B\u038D\u03A2\u0528-\u0530\u0557\u0558\u0560\u0588\u058B-\u058E\u0590\u05C8-\u05CF\u05EB-\u05EF\u05F5-\u0605\u061C\u061D\u06DD\u070E\u070F\u074B\u074C\u07B2-\u07BF\u07FB-\u07FF\u082E\u082F\u083F\u085C\u085D\u085F-\u089F\u08A1\u08AD-\u08E3\u08FF\u0978\u0980\u0984\u098D\u098E\u0991\u0992\u09A9\u09B1\u09B3-\u09B5\u09BA\u09BB\u09C5\u09C6\u09C9\u09CA\u09CF-\u09D6\u09D8-\u09DB\u09DE\u09E4\u09E5\u09FC-\u0A00\u0A04\u0A0B-\u0A0E\u0A11\u0A12\u0A29\u0A31\u0A34\u0A37\u0A3A\u0A3B\u0A3D\u0A43-\u0A46\u0A49\u0A4A\u0A4E-\u0A50\u0A52-\u0A58\u0A5D\u0A5F-\u0A65\u0A76-\u0A80\u0A84\u0A8E\u0A92\u0AA9\u0AB1\u0AB4\u0ABA\u0ABB\u0AC6\u0ACA\u0ACE\u0ACF\u0AD1-\u0ADF\u0AE4\u0AE5\u0AF2-\u0B00\u0B04\u0B0D\u0B0E\u0B11\u0B12\u0B29\u0B31\u0B34\u0B3A\u0B3B\u0B45\u0B46\u0B49\u0B4A\u0B4E-\u0B55\u0B58-\u0B5B\u0B5E\u0B64\u0B65\u0B78-\u0B81\u0B84\u0B8B-\u0B8D\u0B91\u0B96-\u0B98\u0B9B\u0B9D\u0BA0-\u0BA2\u0BA5-\u0BA7\u0BAB-\u0BAD\u0BBA-\u0BBD\u0BC3-\u0BC5\u0BC9\u0BCE\u0BCF\u0BD1-\u0BD6\u0BD8-\u0BE5\u0BFB-\u0C00\u0C04\u0C0D\u0C11\u0C29\u0C34\u0C3A-\u0C3C\u0C45\u0C49\u0C4E-\u0C54\u0C57\u0C5A-\u0C5F\u0C64\u0C65\u0C70-\u0C77\u0C80\u0C81\u0C84\u0C8D\u0C91\u0CA9\u0CB4\u0CBA\u0CBB\u0CC5\u0CC9\u0CCE-\u0CD4\u0CD7-\u0CDD\u0CDF\u0CE4\u0CE5\u0CF0\u0CF3-\u0D01\u0D04\u0D0D\u0D11\u0D3B\u0D3C\u0D45\u0D49\u0D4F-\u0D56\u0D58-\u0D5F\u0D64\u0D65\u0D76-\u0D78\u0D80\u0D81\u0D84\u0D97-\u0D99\u0DB2\u0DBC\u0DBE\u0DBF\u0DC7-\u0DC9\u0DCB-\u0DCE\u0DD5\u0DD7\u0DE0-\u0DF1\u0DF5-\u0E00\u0E3B-\u0E3E\u0E5C-\u0E80\u0E83\u0E85\u0E86\u0E89\u0E8B\u0E8C\u0E8E-\u0E93\u0E98\u0EA0\u0EA4\u0EA6\u0EA8\u0EA9\u0EAC\u0EBA\u0EBE\u0EBF\u0EC5\u0EC7\u0ECE\u0ECF\u0EDA\u0EDB\u0EE0-\u0EFF\u0F48\u0F6D-\u0F70\u0F98\u0FBD\u0FCD\u0FDB-\u0FFF\u10C6\u10C8-\u10CC\u10CE\u10CF\u1249\u124E\u124F\u1257\u1259\u125E\u125F\u1289\u128E\u128F\u12B1\u12B6\u12B7\u12BF\u12C1\u12C6\u12C7\u12D7\u1311\u1316\u1317\u135B\u135C\u137D-\u137F\u139A-\u139F\u13F5-\u13FF\u169D-\u169F\u16F1-\u16FF\u170D\u1715-\u171F\u1737-\u173F\u1754-\u175F\u176D\u1771\u1774-\u177F\u17DE\u17DF\u17EA-\u17EF\u17FA-\u17FF\u180F\u181A-\u181F\u1878-\u187F\u18AB-\u18AF\u18F6-\u18FF\u191D-\u191F\u192C-\u192F\u193C-\u193F\u1941-\u1943\u196E\u196F\u1975-\u197F\u19AC-\u19AF\u19CA-\u19CF\u19DB-\u19DD\u1A1C\u1A1D\u1A5F\u1A7D\u1A7E\u1A8A-\u1A8F\u1A9A-\u1A9F\u1AAE-\u1AFF\u1B4C-\u1B4F\u1B7D-\u1B7F\u1BF4-\u1BFB\u1C38-\u1C3A\u1C4A-\u1C4C\u1C80-\u1CBF\u1CC8-\u1CCF\u1CF7-\u1CFF\u1DE7-\u1DFB\u1F16\u1F17\u1F1E\u1F1F\u1F46\u1F47\u1F4E\u1F4F\u1F58\u1F5A\u1F5C\u1F5E\u1F7E\u1F7F\u1FB5\u1FC5\u1FD4\u1FD5\u1FDC\u1FF0\u1FF1\u1FF5\u1FFF\u200B-\u200F\u202A-\u202E\u2060-\u206F\u2072\u2073\u208F\u209D-\u209F\u20BA-\u20CF\u20F1-\u20FF\u218A-\u218F\u23F4-\u23FF\u2427-\u243F\u244B-\u245F\u2700\u2B4D-\u2B4F\u2B5A-\u2BFF\u2C2F\u2C5F\u2CF4-\u2CF8\u2D26\u2D28-\u2D2C\u2D2E\u2D2F\u2D68-\u2D6E\u2D71-\u2D7E\u2D97-\u2D9F\u2DA7\u2DAF\u2DB7\u2DBF\u2DC7\u2DCF\u2DD7\u2DDF\u2E3C-\u2E7F\u2E9A\u2EF4-\u2EFF\u2FD6-\u2FEF\u2FFC-\u2FFF\u3040\u3097\u3098\u3100-\u3104\u312E-\u3130\u318F\u31BB-\u31BF\u31E4-\u31EF\u321F\u32FF\u4DB6-\u4DBF\u9FCD-\u9FFF\uA48D-\uA48F\uA4C7-\uA4CF\uA62C-\uA63F\uA698-\uA69E\uA6F8-\uA6FF\uA78F\uA794-\uA79F\uA7AB-\uA7F7\uA82C-\uA82F\uA83A-\uA83F\uA878-\uA87F\uA8C5-\uA8CD\uA8DA-\uA8DF\uA8FC-\uA8FF\uA954-\uA95E\uA97D-\uA97F\uA9CE\uA9DA-\uA9DD\uA9E0-\uA9FF\uAA37-\uAA3F\uAA4E\uAA4F\uAA5A\uAA5B\uAA7C-\uAA7F\uAAC3-\uAADA\uAAF7-\uAB00\uAB07\uAB08\uAB0F\uAB10\uAB17-\uAB1F\uAB27\uAB2F-\uABBF\uABEE\uABEF\uABFA-\uABFF\uD7A4-\uD7AF\uD7C7-\uD7CA\uD7FC-\uF8FF\uFA6E\uFA6F\uFADA-\uFAFF\uFB07-\uFB12\uFB18-\uFB1C\uFB37\uFB3D\uFB3F\uFB42\uFB45\uFBC2-\uFBD2\uFD40-\uFD4F\uFD90\uFD91\uFDC8-\uFDEF\uFDFE\uFDFF\uFE1A-\uFE1F\uFE27-\uFE2F\uFE53\uFE67\uFE6C-\uFE6F\uFE75\uFEFD-\uFF00\uFFBF-\uFFC1\uFFC8\uFFC9\uFFD0\uFFD1\uFFD8\uFFD9\uFFDD-\uFFDF\uFFE7\uFFEF-\uFFFB\uFFFE\uFFFF])/g;
+
+/* jshint proto:true */
+var canSetPrototype = Object.setPrototypeOf || ({ __proto__: [] } instanceof Array);
+
+var setPrototypeOf = Object.setPrototypeOf || function setPrototypeOf(obj, proto) {
+    obj.__proto__ = proto;
+    return obj;
+};
+/* jshint proto:false */
 
 var utils = module.exports = {
     objectIs: Object.is || function (a, b) {
@@ -4637,12 +4666,21 @@ var utils = module.exports = {
         } else {
             return output;
         }
+    },
+
+    setPrototypeOfOrExtend: canSetPrototype ? setPrototypeOf : function extend(target, source) {
+        for (var prop in source) {
+            if (source.hasOwnProperty(prop)) {
+                target[prop] = source[prop];
+            }
+        }
+        return target;
     }
 };
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 /*global Promise:true*/
-var Promise = require(19);
+var Promise = require(20);
 
 var workQueue = {
     queue: [],
@@ -4677,10 +4715,10 @@ Promise.prototype._notifyUnhandledRejection = function () {
 
 module.exports = workQueue;
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 (function (__filename){
 /*global __filename*/
-var testFrameworkPatch = require(11);
+var testFrameworkPatch = require(12);
 if (testFrameworkPatch.applyPatch() && typeof require === 'function' && require.cache) {
     // Make sure that the 'it' global gets patched in every context where Unexpected is required,
     // but prevent rereading index.js from disc each time:
@@ -4693,18 +4731,18 @@ if (testFrameworkPatch.applyPatch() && typeof require === 'function' && require.
 }
 
 module.exports = require(1).create()
-    .use(require(10))
-    .use(require(13))
+    .use(require(11))
+    .use(require(14))
     .use(require(3));
 
 // Add an inspect method to all the promises we return that will make the REPL, console.log, and util.inspect render it nicely in node.js:
-require(19).prototype.inspect = function () {
-    return module.exports.createOutput(require(34).defaultFormat).appendInspected(this).toString();
+require(20).prototype.inspect = function () {
+    return module.exports.createOutput(require(35).defaultFormat).appendInspected(this).toString();
 };
 
 }).call(this,"/lib/index.js")
-},{}],17:[function(require,module,exports){
-var arrayDiff = require(18);
+},{}],18:[function(require,module,exports){
+var arrayDiff = require(19);
 
 function extend(target) {
     for (var i = 1; i < arguments.length; i += 1) {
@@ -4870,7 +4908,7 @@ module.exports = function arrayChanges(actual, expected, equal, similar) {
     return mutatedArray;
 };
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 module.exports = arrayDiff;
 
 // Based on some rough benchmarking, this algorithm is about O(2n) worst case,
@@ -5053,7 +5091,7 @@ function arrayDiff(before, after, equalFn) {
   return removes.concat(outputMoves, inserts);
 }
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 (function (process,global){
 /* @preserve
  * The MIT License (MIT)
@@ -9912,8 +9950,8 @@ module.exports = ret;
 
 },{"./es5.js":14}]},{},[4])(4)
 });                    ;if (typeof window !== 'undefined' && window !== null) {                               window.P = window.Promise;                                                     } else if (typeof self !== 'undefined' && self !== null) {                             self.P = self.Promise;                                                         }
-}).call(this,require(24),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],20:[function(require,module,exports){
+}).call(this,require(25),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],21:[function(require,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -9921,9 +9959,9 @@ module.exports = ret;
  * @license  MIT
  */
 
-var base64 = require(21)
-var ieee754 = require(22)
-var isArray = require(23)
+var base64 = require(22)
+var ieee754 = require(23)
+var isArray = require(24)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = Buffer
@@ -10967,7 +11005,7 @@ function decodeUtf8Char (str) {
   }
 }
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 ;(function (exports) {
@@ -11089,7 +11127,7 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 	exports.fromByteArray = uint8ToBase64
 }(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = nBytes * 8 - mLen - 1
@@ -11175,7 +11213,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 
 /**
  * isArray
@@ -11210,7 +11248,7 @@ module.exports = isArray || function (val) {
   return !! val && '[object Array]' == str.call(val);
 };
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -11275,9 +11313,9 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 'use strict';
-var repeating = require(26);
+var repeating = require(27);
 
 // detect either spaces or tabs but not both to properly handle tabs
 // for indentation and spaces for alignment
@@ -11396,9 +11434,9 @@ module.exports = function (str) {
 	};
 };
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 'use strict';
-var isFinite = require(27);
+var isFinite = require(28);
 
 module.exports = function (str, n) {
 	if (typeof str !== 'string') {
@@ -11422,21 +11460,21 @@ module.exports = function (str, n) {
 	return ret;
 };
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 'use strict';
-var numberIsNan = require(28);
+var numberIsNan = require(29);
 
 module.exports = Number.isFinite || function (val) {
 	return !(typeof val !== 'number' || numberIsNan(val) || val === Infinity || val === -Infinity);
 };
 
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 'use strict';
 module.exports = Number.isNaN || function (x) {
 	return x !== x;
 };
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 /* See LICENSE file for terms of use */
 
 /*
@@ -11827,7 +11865,7 @@ module.exports = Number.isNaN || function (x) {
   }
 })(this);
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 // intentionally commented out as it makes it slower...
 //'use strict';
 
@@ -11875,17 +11913,17 @@ module.exports = function (a, b) {
 	return ret;
 };
 
-},{}],31:[function(require,module,exports){
-var utils = require(41);
-var TextSerializer = require(35);
-var colorDiff = require(45);
-var rgbRegexp = require(39);
-var themeMapper = require(40);
+},{}],32:[function(require,module,exports){
+var utils = require(42);
+var TextSerializer = require(36);
+var colorDiff = require(46);
+var rgbRegexp = require(40);
+var themeMapper = require(41);
 
 var cacheSize = 0;
 var maxColorCacheSize = 1024;
 
-var ansiStyles = utils.extend({}, require(42));
+var ansiStyles = utils.extend({}, require(43));
 Object.keys(ansiStyles).forEach(function (styleName) {
     ansiStyles[styleName.toLowerCase()] = ansiStyles[styleName];
 });
@@ -12023,11 +12061,11 @@ AnsiSerializer.prototype.text = function (options) {
 
 module.exports = AnsiSerializer;
 
-},{}],32:[function(require,module,exports){
-var cssStyles = require(36);
-var flattenBlocksInLines = require(38);
-var rgbRegexp = require(39);
-var themeMapper = require(40);
+},{}],33:[function(require,module,exports){
+var cssStyles = require(37);
+var flattenBlocksInLines = require(39);
+var rgbRegexp = require(40);
+var themeMapper = require(41);
 
 function ColoredConsoleSerializer(theme) {
     this.theme = theme;
@@ -12109,10 +12147,10 @@ ColoredConsoleSerializer.prototype.raw = function (options) {
 
 module.exports = ColoredConsoleSerializer;
 
-},{}],33:[function(require,module,exports){
-var cssStyles = require(36);
-var rgbRegexp = require(39);
-var themeMapper = require(40);
+},{}],34:[function(require,module,exports){
+var cssStyles = require(37);
+var rgbRegexp = require(40);
+var themeMapper = require(41);
 
 function HtmlSerializer(theme) {
     this.theme = theme;
@@ -12190,14 +12228,14 @@ HtmlSerializer.prototype.raw = function (options) {
 
 module.exports = HtmlSerializer;
 
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 (function (process){
 /*global window*/
-var utils = require(41);
+var utils = require(42);
 var extend = utils.extend;
-var duplicateText = require(37);
-var rgbRegexp = require(39);
-var cssStyles = require(36);
+var duplicateText = require(38);
+var rgbRegexp = require(40);
+var cssStyles = require(37);
 
 function MagicPen(options) {
     if (!(this instanceof MagicPen)) {
@@ -12225,7 +12263,7 @@ function MagicPen(options) {
     }
 }
 
-if (typeof exports === 'object' && typeof exports.nodeName !== 'string' && require(47)) {
+if (typeof exports === 'object' && typeof exports.nodeName !== 'string' && require(48)) {
     MagicPen.defaultFormat = 'ansi'; // colored console
 } else if (typeof window !== 'undefined' && typeof window.navigator !== 'undefined') {
     if (window.mochaPhantomJS || (window.__karma__ && window.__karma__.config.captureConsole)) {
@@ -12254,10 +12292,10 @@ MagicPen.prototype.newline = MagicPen.prototype.nl = function (count) {
 
 MagicPen.serializers = {};
 [
-    require(35),
-    require(33),
-    require(31),
-    require(32)
+    require(36),
+    require(34),
+    require(32),
+    require(33)
 ].forEach(function (serializer) {
     MagicPen.serializers[serializer.prototype.format] = serializer;
 });
@@ -12847,9 +12885,9 @@ MagicPen.prototype.installTheme = function (formats, theme) {
 
 module.exports = MagicPen;
 
-}).call(this,require(24))
-},{}],35:[function(require,module,exports){
-var flattenBlocksInLines = require(38);
+}).call(this,require(25))
+},{}],36:[function(require,module,exports){
+var flattenBlocksInLines = require(39);
 
 function TextSerializer() {}
 
@@ -12883,7 +12921,7 @@ TextSerializer.prototype.raw = function (options) {
 
 module.exports = TextSerializer;
 
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 var cssStyles = {
     bold: 'font-weight: bold',
     dim: 'opacity: 0.7',
@@ -12919,7 +12957,7 @@ Object.keys(cssStyles).forEach(function (styleName) {
 
 module.exports = cssStyles;
 
-},{}],37:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 var whitespaceCacheLength = 256;
 var whitespaceCache = [''];
 for (var i = 1; i <= whitespaceCacheLength; i += 1) {
@@ -12955,9 +12993,9 @@ function duplicateText(content, times) {
 
 module.exports = duplicateText;
 
-},{}],38:[function(require,module,exports){
-var utils = require(41);
-var duplicateText = require(37);
+},{}],39:[function(require,module,exports){
+var utils = require(42);
+var duplicateText = require(38);
 
 function createPadding(length) {
     return { style: 'text', args: { content: duplicateText(' ', length), styles: [] } };
@@ -13040,10 +13078,10 @@ function flattenBlocksInLines(lines) {
 
 module.exports = flattenBlocksInLines;
 
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 module.exports =  /^(?:bg)?#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i;
 
-},{}],40:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 module.exports = function (theme, styles) {
     if (styles.length === 1) {
         var count = 0;
@@ -13067,7 +13105,7 @@ module.exports = function (theme, styles) {
     return styles;
 };
 
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 var utils = {
     extend: function (target) {
         for (var i = 1; i < arguments.length; i += 1) {
@@ -13165,7 +13203,7 @@ var utils = {
 
 module.exports = utils;
 
-},{}],42:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 'use strict';
 
 var styles = module.exports = {
@@ -13223,7 +13261,7 @@ Object.keys(styles).forEach(function (groupName) {
 	});
 });
 
-},{}],43:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 /**
  * @author Markus Ekholm
  * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
@@ -13338,7 +13376,7 @@ function xyz_to_lab(c)
 // js-indent-level: 2
 // End:
 
-},{}],44:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 /**
  * @author Markus Ekholm
  * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
@@ -13504,12 +13542,12 @@ function radians(n) { return n*(PI/180); }
 // js-indent-level: 2
 // End:
 
-},{}],45:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 'use strict';
 
-var diff = require(44);
-var convert = require(43);
-var palette = require(46);
+var diff = require(45);
+var convert = require(44);
+var palette = require(47);
 
 var color = module.exports = {};
 
@@ -13534,7 +13572,7 @@ color.furthest = function(target, relative) {
     return result[key];
 };
 
-},{}],46:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 /**
  * @author Markus Ekholm
  * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
@@ -13572,8 +13610,8 @@ exports.palette_map_key = palette_map_key;
 /**
 * IMPORTS
 */
-var color_diff    = require(44);
-var color_convert = require(43);
+var color_diff    = require(45);
+var color_convert = require(44);
 
 /**
  * API FUNCTIONS
@@ -13643,7 +13681,7 @@ function diff(c1,c2)
 // js-indent-level: 2
 // End:
 
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 (function (process){
 'use strict';
 var argv = process.argv;
@@ -13685,6 +13723,6 @@ module.exports = (function () {
 	return false;
 })();
 
-}).call(this,require(24))
-},{}]},{},[16])(16)
+}).call(this,require(25))
+},{}]},{},[17])(17)
 });
