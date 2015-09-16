@@ -3766,9 +3766,10 @@ describe('unexpected', function () {
                    "\n" +
                    "{\n" +
                    "  pill: {\n" +
-                   "    red: 'I\\'ll show you how deep the rabbit hole goes', // should equal 'I\\'ll show you how deep the rabbit hole goes.'\n" +
-                   "                                                         // -I'll show you how deep the rabbit hole goes\n" +
-                   "                                                         // +I'll show you how deep the rabbit hole goes.\n" +
+                   "    red: 'I\\'ll show you how deep the rabbit hole goes',\n" +
+                   "         // should equal 'I\\'ll show you how deep the rabbit hole goes.'\n" +
+                   "         // -I'll show you how deep the rabbit hole goes\n" +
+                   "         // +I'll show you how deep the rabbit hole goes.\n" +
                    "    blue: { ignorance: { of: ... } },\n" +
                    "    purple: { you: 'wat there is another pill', them: 'there is always more choices' }\n" +
                    "  }\n" +
