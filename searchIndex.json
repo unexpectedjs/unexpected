@@ -80,30 +80,6 @@
     "url": "/assertions/Promise/when-rejected/"
   },
   {
-    "label": "to be empty (array-like)",
-    "url": "/assertions/array-like/to-be-empty/"
-  },
-  {
-    "label": "to be non-empty (array-like)",
-    "url": "/assertions/array-like/to-be-non-empty/"
-  },
-  {
-    "label": "to contain (array-like)",
-    "url": "/assertions/array-like/to-contain/"
-  },
-  {
-    "label": "to have items satisfying (array-like)",
-    "url": "/assertions/array-like/to-have-items-satisfying/"
-  },
-  {
-    "label": "to have length (array-like)",
-    "url": "/assertions/array-like/to-have-length/"
-  },
-  {
-    "label": "when passed as parameters to (array-like)",
-    "url": "/assertions/array-like/when-passed-as-parameters-to/"
-  },
-  {
     "label": "to be a (any)",
     "url": "/assertions/any/to-be-a/"
   },
@@ -146,6 +122,30 @@
   {
     "label": "when passed as parameter to (any)",
     "url": "/assertions/any/when-passed-as-parameter-to/"
+  },
+  {
+    "label": "to be empty (array-like)",
+    "url": "/assertions/array-like/to-be-empty/"
+  },
+  {
+    "label": "to be non-empty (array-like)",
+    "url": "/assertions/array-like/to-be-non-empty/"
+  },
+  {
+    "label": "to contain (array-like)",
+    "url": "/assertions/array-like/to-contain/"
+  },
+  {
+    "label": "to have items satisfying (array-like)",
+    "url": "/assertions/array-like/to-have-items-satisfying/"
+  },
+  {
+    "label": "to have length (array-like)",
+    "url": "/assertions/array-like/to-have-length/"
+  },
+  {
+    "label": "when passed as parameters to (array-like)",
+    "url": "/assertions/array-like/when-passed-as-parameters-to/"
   },
   {
     "label": "to be false (boolean)",
