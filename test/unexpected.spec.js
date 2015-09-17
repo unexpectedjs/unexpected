@@ -5647,23 +5647,25 @@ describe('unexpected', function () {
             }, 'to throw', 'A type must be given a non-empty name and must match ^[a-z_](?:|[a-z0-9_.-]*[_a-z0-9])$');
         });
 
-        it('throws an expection if the type has an empty or undefined name', function () {
+        it('throw an expection if a type tries to inherit the identify method from the any type', function () {
             expect(function () {
                 clonedExpect.addType({ name: 'wat' });
-            }, 'to throw', 'Type wat must specify an identify function or be declared abstract by setting identify to false');
+            }, 'to throw', 'Type wat: cannot inherit the identify method for any type');
+        });
+
+        it('throws an expection if the type specifies an invalid identify method', function () {
+            expect(function () {
+                clonedExpect.addType({ name: 'wat', identify: true, base: 'object'  });
+            }, 'to throw', 'Invalid identify method on type wat: true, must be a function or false');
 
             expect(function () {
-                clonedExpect.addType({ name: 'wat', identify: true });
-            }, 'to throw', 'Type wat must specify an identify function or be declared abstract by setting identify to false');
-
-            expect(function () {
-                clonedExpect.addType({ name: 'wat', identify: 'wat' });
-            }, 'to throw', 'Type wat must specify an identify function or be declared abstract by setting identify to false');
+                clonedExpect.addType({ name: 'wat', identify: 'wat', base: 'object'  });
+            }, 'to throw', 'Invalid identify method on type wat: wat, must be a function or false');
         });
 
         it('throws an expection if a type of that name already exists', function () {
             expect(function () {
-                clonedExpect.addType({ name: 'Promise', identify: false });
+                clonedExpect.addType({ name: 'Promise' });
             }, 'to throw', 'The type with the name Promise already exists');
         });
 
