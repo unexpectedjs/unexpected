@@ -449,6 +449,10 @@ Unexpected.prototype.addType = function (type) {
         throw new Error('The type with the name ' + type.name + ' already exists');
     }
 
+    if ('identify' in type && typeof type.identify !== 'function' && type.identify !== false) {
+        throw new Error('Invalid identify method on type ' + type.name + ': ' + type.identify + ', must be a function or false');
+    }
+
     this.assertionCache = null;
 
     this.assertions[type.name] = {};
@@ -464,6 +468,10 @@ Unexpected.prototype.addType = function (type) {
         }
     } else {
         baseType = anyType;
+    }
+
+    if (baseType.name === 'any' && !('identify' in type)) {
+        throw new Error('Type ' + type.name + ': cannot inherit the identify method for any type');
     }
 
     var extendedBaseType = Object.create(baseType);
