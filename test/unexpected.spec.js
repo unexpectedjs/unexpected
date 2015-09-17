@@ -5647,7 +5647,7 @@ describe('unexpected', function () {
             }, 'to throw', 'A type must be given a non-empty name and must match ^[a-z_](?:|[a-z0-9_.-]*[_a-z0-9])$');
         });
 
-        it('throws an expection if the type has an empty or undefined name', function () {
+        it('throw an expection if the type does not specify a correct identify field', function () {
             expect(function () {
                 clonedExpect.addType({ name: 'wat' });
             }, 'to throw', 'Type wat must specify an identify function or be declared abstract by setting identify to false');
