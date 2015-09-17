@@ -5647,9 +5647,23 @@ describe('unexpected', function () {
             }, 'to throw', 'A type must be given a non-empty name and must match ^[a-z_](?:|[a-z0-9_.-]*[_a-z0-9])$');
         });
 
+        it('throws an expection if the type has an empty or undefined name', function () {
+            expect(function () {
+                clonedExpect.addType({ name: 'wat' });
+            }, 'to throw', 'Type wat must specify an identify function or be declared abstract by setting identify to false');
+
+            expect(function () {
+                clonedExpect.addType({ name: 'wat', identify: true });
+            }, 'to throw', 'Type wat must specify an identify function or be declared abstract by setting identify to false');
+
+            expect(function () {
+                clonedExpect.addType({ name: 'wat', identify: 'wat' });
+            }, 'to throw', 'Type wat must specify an identify function or be declared abstract by setting identify to false');
+        });
+
         it('throws an expection if a type of that name already exists', function () {
             expect(function () {
-                clonedExpect.addType({ name: 'Promise' });
+                clonedExpect.addType({ name: 'Promise', identify: false });
             }, 'to throw', 'The type with the name Promise already exists');
         });
 
