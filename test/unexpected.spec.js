@@ -5989,7 +5989,7 @@ describe('unexpected', function () {
                    "    this: {\n" +
                    "      is: {\n" +
                    "        deeply: { nested: ..., string: 'should be shown', 'a list': ... },\n" +
-                   "        'a list': [...]\n" +
+                   "        'a list': [ 1, 2, 3 ]\n" +
                    "      }\n" +
                    "    }\n" +
                    "  }\n" +
@@ -6038,7 +6038,7 @@ describe('unexpected', function () {
                    "      { id: 4, name: 'Barbara Lynn' },\n" +
                    "      { id: 5, name: 'Sharpe Downs' }\n" +
                    "    ],\n" +
-                   "    circular: { self: [Circular] }, this: { is: { deeply: { nested: ..., string: 'should be shown', 'a list': ... }, 'a list': [...] } }\n" +
+                   "    circular: { self: [Circular] }, this: { is: { deeply: { nested: ..., string: 'should be shown', 'a list': ... }, 'a list': [ 1, 2, 3 ] } }\n" +
                    "  }\n" +
                    "]");
         });
