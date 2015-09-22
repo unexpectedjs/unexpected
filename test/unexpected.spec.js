@@ -2395,7 +2395,7 @@ describe('unexpected', function () {
             expect([], 'to have length', 0);
             expect([1, 2, 3], 'to have length', 3);
             expect([1, 2, 3], 'not to have length', 4);
-            expect(toArguments(1,2,3,4), 'to have length', 4);
+            expect(toArguments(1, 2, 3, 4), 'to have length', 4);
         });
 
         it('asserts string .length', function () {
@@ -3545,7 +3545,7 @@ describe('unexpected', function () {
         describe('on array-like', function () {
             it('should diff correctly against an array on the right hand side', function () {
                 expect(function () {
-                    expect(toArguments({foo: 'foo'},2,3), 'to satisfy', [{foo: 'f00'}]);
+                    expect(toArguments({foo: 'foo'}, 2, 3), 'to satisfy', [{foo: 'f00'}]);
                 }, 'to throw',
                        "expected arguments( { foo: 'foo' }, 2, 3 ) to satisfy [ { foo: 'f00' } ]\n" +
                        "\n" +
@@ -3881,7 +3881,7 @@ describe('unexpected', function () {
                             inspect: function (obj, depth, output) {
                                 return output.block(function () {
                                     this.text('+-+').nl()
-                                      .text('|'+ obj + '|').nl()
+                                      .text('|' + obj + '|').nl()
                                       .text('|_|');
                                 });
                             }
@@ -6119,7 +6119,9 @@ describe('unexpected', function () {
         });
 
         it('should bail out of removing the indentation of one-liner functions', function () {
-            expect(function () {  var foo = 123; return foo; }, 'to inspect as', 'function () { var foo = 123; return foo; }');
+            expect(function () {
+                var foo = 123; return foo;
+            }, 'to inspect as', 'function () { var foo = 123; return foo; }');
         });
 
         it('should not show the body of a function with native code', function () {
@@ -7898,9 +7900,9 @@ describe('unexpected', function () {
         });
 
         it('should inspect a one-line function correctly', function () {
-            expect(function () { var a = 123; a = 456; }, 'to inspect as',
-                'function () { var a = 123; a = 456; }'
-            );
+            expect(function () {
+                var a = 123; a = 456;
+            }, 'to inspect as', 'function () { var a = 123; a = 456; }');
         });
 
         it('should inspect a short one-line function with leading and trailing newline correctly', function () {
@@ -7954,6 +7956,7 @@ describe('unexpected', function () {
         });
 
         it('should reindent a function with an indentation size of 3', function () {
+            // jscs:disable
             expect(function () {
                var a = 4;
                if (a === 1) {
@@ -7965,11 +7968,12 @@ describe('unexpected', function () {
                 '  if (a === 1) {\n' +
                 '    a();\n' +
                 '  }\n' +
-                '}'
-            );
+                '}');
+            // jscs:enable
         });
 
         it('should reindent a function with an indentation size of 1', function () {
+            // jscs:disable
             expect(function () {
              var a = 4;
              if (a === 1) {
@@ -7981,8 +7985,8 @@ describe('unexpected', function () {
                 '  if (a === 1) {\n' +
                 '    a();\n' +
                 '  }\n' +
-                '}'
-            );
+                '}');
+            // jscs:enable
         });
     });
 
