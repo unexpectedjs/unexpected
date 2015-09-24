@@ -266,7 +266,7 @@ Unexpected.prototype.equal = function (actual, expected, depth, seen) {
     });
 };
 
-Unexpected.prototype.inspect = function (obj, depth, output) {
+Unexpected.prototype.inspect = function (obj, depth, outputOrFormat) {
     var seen = [];
     var that = this;
     var printOutput = function (obj, currentDepth, output) {
@@ -290,6 +290,7 @@ Unexpected.prototype.inspect = function (obj, depth, output) {
         });
     };
 
+    var output = typeof outputOrFormat === 'string' ? this.createOutput(outputOrFormat) : outputOrFormat;
     output = output || this.createOutput();
     return printOutput(obj, typeof depth === 'number' ? depth : defaultDepth, output) || output;
 };
@@ -410,7 +411,7 @@ Unexpected.prototype.addAssertion = function (types, patterns, handler) {
         patterns.forEach(ensureValidPattern);
         var expandedPatternArrays = patterns.map(expandPattern);
         var defaultValueByFlag = {};
-        expandedPatternArrays.forEach(function(expandedPatterns) {
+        expandedPatternArrays.forEach(function (expandedPatterns) {
             expandedPatterns.forEach(function (expandedPattern) {
                 Object.keys(expandedPattern.flags).forEach(function (flag) {
                     defaultValueByFlag[flag] = false;
@@ -3075,7 +3076,7 @@ module.exports = function oathbreaker(value) {
 var utils = require(15);
 
 module.exports = function (expect) {
-    expect.installTheme({
+    expect.installTheme({ styles: {
         jsBoolean: 'jsPrimitive',
         jsNumber: 'jsPrimitive',
         error: ['red', 'bold'],
@@ -3087,30 +3088,54 @@ module.exports = function (expect) {
         diffRemovedHighlight: ['bgRed', 'white'],
         diffRemovedSpecialChar: ['bgRed', 'cyan', 'bold'],
         partialMatchHighlight: ['bgYellow']
-    });
+    }});
 
     expect.installTheme('html', {
-        jsComment: '#969896',
-        jsFunctionName: '#795da3',
-        jsKeyword: '#a71d5d',
-        jsPrimitive: '#0086b3',
-        jsRegexp: '#183691',
-        jsString: '#df5000',
-        jsKey: '#555'
+        palette: [
+            '#993333', '#993366', '#D17575', '#669933', '#339999', '#339966',
+            '#75D1D1', '#C24747', '#999933', '#993399', '#996633', '#47C2C2',
+            '#333399', '#339933', '#336699', '#663399'
+        ],
+        styles: {
+            jsComment: '#969896',
+            jsFunctionName: '#795da3',
+            jsKeyword: '#a71d5d',
+            jsPrimitive: '#0086b3',
+            jsRegexp: '#183691',
+            jsString: '#df5000',
+            jsKey: '#555'
+        }
     });
 
     expect.installTheme('ansi', {
-        jsComment: 'gray',
-        jsFunctionName: 'jsKeyword',
-        jsKeyword: 'magenta',
-        jsNumber: [],
-        jsPrimitive: 'cyan',
-        jsRegexp: 'green',
-        jsString: 'cyan',
-        jsKey: '#666',
-        diffAddedHighlight: ['bgGreen', 'black'],
-        diffRemovedHighlight: ['bgRed', 'black'],
-        partialMatchHighlight: ['bgYellow', 'black']
+        palette: [
+            '#FF1A53', '#E494FF', '#1A53FF', '#FF1AC6', '#1AFF53', '#81FF57',
+            '#C6FF1A', '#531AFF', '#AFFF94', '#C61AFF', '#53FF1A', '#FF531A',
+            '#D557FF', '#1AFFC6', '#FFC61A', '#1AC6FF'
+        ],
+        styles: {
+            jsComment: 'gray',
+            jsFunctionName: 'jsKeyword',
+            jsKeyword: 'magenta',
+            jsNumber: [],
+            jsPrimitive: 'cyan',
+            jsRegexp: 'green',
+            jsString: 'cyan',
+            jsKey: '#666',
+            diffAddedHighlight: ['bgGreen', 'black'],
+            diffRemovedHighlight: ['bgRed', 'black'],
+            partialMatchHighlight: ['bgYellow', 'black']
+        }
+    });
+
+    expect.addStyle('colorByIndex', function (content, index) {
+        var palette = this.theme().palette;
+        if (palette) {
+            var color = palette[index % palette.length];
+            this.text(content, color);
+        } else {
+            this.text(content);
+        }
     });
 
     expect.addStyle('singleQuotedString', function (content) {
@@ -4270,10 +4295,10 @@ module.exports = function (expect) {
                 return true;
             }
 
-            if (a.length !== b.length) return false;
+            if (a.length !== b.length) { return false; }
 
             for (var i = 0; i < a.length; i += 1) {
-                if (a[i] !== b[i]) return false;
+                if (a[i] !== b[i]) { return false; }
             }
 
             return true;
@@ -12708,12 +12733,18 @@ MagicPen.prototype.use = function (plugin) {
     });
 
     if (existingPlugin) {
-        if (existingPlugin === plugin) {
+        if (existingPlugin === plugin || (typeof plugin.version !== 'undefined' && plugin.version === existingPlugin.version)) {
             // No-op
             return this;
         } else {
-            throw new Error("Another instance of the plugin '" + plugin.name + "' is already installed. " +
-                            "Please check your node_modules folder for unmet peerDependencies.");
+            throw new Error("Another instance of the plugin '" + plugin.name + "' " +
+                            "is already installed" +
+                            (typeof existingPlugin.version !== 'undefined' ?
+                                ' (version ' + existingPlugin.version +
+                                (typeof plugin.version !== 'undefined' ?
+                                    ', trying to install ' + plugin.version : '') +
+                                ')' : '') +
+                            ". Please check your node_modules folder for unmet peerDependencies.");
         }
     }
 
@@ -12723,6 +12754,7 @@ MagicPen.prototype.use = function (plugin) {
         throw new Error('Plugins must be functions or adhere to the following interface\n' +
                         '{\n' +
                         '  name: <an optional plugin name>,\n' +
+                        '  version: <an optional semver version string>,\n' +
                         '  dependencies: <an optional list of dependencies>,\n' +
                         '  installInto: <a function that will update the given magicpen instance>\n' +
                         '}');
@@ -12842,6 +12874,17 @@ MagicPen.prototype.replaceText = function (regexp, cb) {
     return this;
 };
 
+MagicPen.prototype.theme = function (format) {
+    format = format || this.format;
+    if (!format) {
+        throw new Error("Could not detect which format you want to retrieve " +
+                        "theme information for. Set the format of the pen or " +
+                        "provide it as an argument to the theme method.");
+    }
+
+    return this._themes[format];
+};
+
 MagicPen.prototype.installTheme = function (formats, theme) {
     var that = this;
     if (arguments.length === 1) {
@@ -12866,7 +12909,13 @@ MagicPen.prototype.installTheme = function (formats, theme) {
                         "Install theme for a list of formats: pen.installTheme(['ansi', 'html'], { comment: 'gray' })");
     }
 
-    Object.keys(theme).forEach(function (themeKey) {
+    if (!theme.styles || typeof theme.styles !== 'object') {
+        theme = {
+            styles: theme
+        };
+    }
+
+    Object.keys(theme.styles).forEach(function (themeKey) {
         if (rgbRegexp.test(themeKey) || cssStyles[themeKey]) {
             throw new Error("Invalid theme key: '" + themeKey + "' you can't map build styles.");
         }
@@ -12880,7 +12929,10 @@ MagicPen.prototype.installTheme = function (formats, theme) {
 
     that._themes = extend({}, that._themes);
     formats.forEach(function (format) {
-        that._themes[format] = extend({}, that._themes[format] || {}, theme);
+        var baseTheme = that._themes[format] || { styles: {} };
+        var extendedTheme = extend({}, baseTheme, theme);
+        extendedTheme.styles = extend({}, baseTheme.styles, theme.styles);
+        that._themes[format] = extendedTheme;
     });
 
 
@@ -13091,8 +13143,9 @@ module.exports = function (theme, styles) {
         var count = 0;
         var stack = [];
         var themeMapping = styles[0];
-        while(typeof themeMapping === 'string' && theme[themeMapping]) {
-            themeMapping = theme[themeMapping];
+        var themeStyles = theme.styles || {};
+        while(typeof themeMapping === 'string' && themeStyles[themeMapping]) {
+            themeMapping = themeStyles[themeMapping];
             count += 1;
             if (100 < count) {
                 var index = stack.indexOf(themeMapping);
@@ -13122,16 +13175,27 @@ var utils = {
     },
 
     calculateOutputEntrySize: function (outputEntry) {
+        if (outputEntry.size) {
+            return outputEntry.size;
+        }
+
+        var size;
         switch (outputEntry.style) {
         case 'text':
-            return { width: String(outputEntry.args.content).length, height: 1 };
+            size = { width: String(outputEntry.args.content).length, height: 1 };
+            break;
         case 'block':
-            return utils.calculateSize(outputEntry.args);
+            size = utils.calculateSize(outputEntry.args);
+            break;
         case 'raw':
             var arg = outputEntry.args;
-            return { width: arg.width, height: arg.height };
-        default: return { width: 0, height: 0 };
+            size = { width: arg.width, height: arg.height };
+            break;
+        default: size = { width: 0, height: 0 };
         }
+
+        outputEntry.size = size;
+        return size;
     },
 
     calculateLineSize: function (line) {
