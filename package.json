@@ -15,8 +15,8 @@
   },
   "scripts": {
     "test": "make test && make test-phantomjs",
-    "generate-site": "node generate-site.js",
-    "update-examples": "node generate-site.js --update-examples"
+    "generate-site": "generate-site --require ./bootstrap-unexpected-markdown.js",
+    "update-examples": "generate-site --require ./bootstrap-unexpected-markdown.js --update-examples"
   },
   "main": "./lib/index.js",
   "dependencies": {
@@ -44,6 +44,6 @@
     "phantomjs": "1.9.15",
     "rsvp": "3.0.18",
     "serve": "*",
-    "unexpected-documentation-site-generator": "2.9.2"
+    "unexpected-documentation-site-generator": "3.0.0"
   }
 }
