@@ -1,8 +1,8 @@
 Asserts that the subject is an instance of a given type.
 
-This assertion make use of the type system in Unexpected. That means
-you can assertion that a value is an instance of a type specified by
-it's name.
+This assertion makes use of the type system in Unexpected. That means
+you can assert that a value is an instance of a type specified by
+its name (as a string).
 
 For more information abort the type system see: [Types](/api/addType/)
 
