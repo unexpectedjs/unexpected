@@ -4,7 +4,7 @@ Wait for a promise to be rejected, then delegate the reason to another assertion
 var rejectedPromise = expect.promise(function (resolve, reject) {
     setTimeout(function () {
         reject(new Error('argh'));
-    });
+    }, 1);
 });
 ```
 
@@ -24,7 +24,7 @@ If the response is fulfilled, the assertion fails with the following output:
 var fulfilledPromise = expect.promise(function (resolve, reject) {
     setTimeout(function () {
         resolve(123);
-    });
+    }, 1);
 });
 
 return expect(fulfilledPromise, 'when rejected', 'to have message', 'argh');

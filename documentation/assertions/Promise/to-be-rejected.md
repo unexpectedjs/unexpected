@@ -30,7 +30,7 @@ passing a second parameter:
 var promiseThatWillBeRejectedWithAReason = expect.promise(function (resolve, reject) {
     setTimeout(function () {
         reject(new Error('Oh dear'));
-    }, 1);
+    }, 10);
 });
 ```
 

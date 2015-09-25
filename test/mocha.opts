@@ -2,3 +2,4 @@
 --recursive
 --check-leaks
 --require ./test/common
+--compilers md:unexpected-markdown

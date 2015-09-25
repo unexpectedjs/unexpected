@@ -27,7 +27,7 @@ test-jasmine-browser: unexpected.js
 
 .PHONY: test
 test: lint
-	mocha
+	mocha test/*.spec.js `find documentation -name '*.md'`
 
 .PHONY: coverage
 coverage:

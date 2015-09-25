@@ -45,6 +45,7 @@
     "phantomjs": "1.9.15",
     "rsvp": "3.0.18",
     "serve": "*",
-    "unexpected-documentation-site-generator": "^3.2.0"
+    "unexpected-documentation-site-generator": "^3.2.0",
+    "unexpected-markdown": "1.2.0"
   }
 }
