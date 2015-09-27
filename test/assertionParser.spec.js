@@ -10,4 +10,22 @@ describe('parseAssertion', function () {
             args: [ [ { name: 'string' } ], [ { varargs: { name: 'string' } }, { name: 'object' } ] ]
         });
     });
+
+    it('accepts legacy assertions', function () {
+        var assertion = expect.parseAssertion('[not] to be');
+        expect(assertion, 'to satisfy', {
+            subject: [ { name: 'any' } ],
+            assertion: '[not] to be',
+            args: [ [ { varargs: { name: 'any' } } ] ]
+        });
+    });
+
+    it('accepts assertions with no arguments', function () {
+        var assertion = expect.parseAssertion('<any> [not] to be truthy');
+        expect(assertion, 'to satisfy', {
+            subject: [ { name: 'any' } ],
+            assertion: '[not] to be truthy',
+            args: []
+        });
+    });
 });
