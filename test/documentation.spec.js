@@ -3068,8 +3068,6 @@ describe("documentation tests", function () {
     it("assertions/number/to-be-greater-than-or-equal-to.md contains correct examples", function () {
         var testPromises = [];
         expect(3, 'to be greater than or equal to', 3);
-        expect(4, 'to be >=', 3);
-        expect(4, '>=', 4);
 
         try {
             expect(1, 'to be greater than or equal to', 2);
@@ -3085,7 +3083,6 @@ describe("documentation tests", function () {
         }
 
         expect(1, 'not to be greater than or equal to', 2);
-        expect(3, 'not to be >=', 4);
 
         try {
             expect(2, 'not to be greater than or equal to', 2);
@@ -3106,8 +3103,6 @@ describe("documentation tests", function () {
         var testPromises = [];
         expect(3, 'to be greater than', 2);
         expect(1, 'to be above', 0);
-        expect(4, 'to be >', 3);
-        expect(4, '>', 3);
 
         try {
             expect(2, 'to be greater than', 2);
@@ -3124,7 +3119,6 @@ describe("documentation tests", function () {
 
         expect(2, 'not to be greater than', 2);
         expect(0, 'not to be above', 1);
-        expect(3, 'not to be >', 4);
 
         try {
             expect(3, 'not to be greater than', 2);
@@ -3179,8 +3173,6 @@ describe("documentation tests", function () {
     it("assertions/number/to-be-less-than-or-equal-to.md contains correct examples", function () {
         var testPromises = [];
         expect(3, 'to be less than or equal to', 3);
-        expect(3, 'to be <=', 4);
-        expect(4, '<=', 4);
 
         try {
             expect(2, 'to be less than or equal to', 1);
@@ -3196,7 +3188,6 @@ describe("documentation tests", function () {
         }
 
         expect(2, 'not to be less than or equal to', 1);
-        expect(4, 'not to be <=', 3);
 
         try {
             expect(2, 'not to be less than or equal to', 2);
@@ -3217,8 +3208,6 @@ describe("documentation tests", function () {
         var testPromises = [];
         expect(2, 'to be less than', 3);
         expect(0, 'to be below', 1);
-        expect(3, 'to be <', 4);
-        expect(3, '<', 4);
 
         try {
             expect(2, 'to be less than', 2);
@@ -3235,7 +3224,6 @@ describe("documentation tests", function () {
 
         expect(2, 'not to be less than', 2);
         expect(1, 'not to be below', 0);
-        expect(4, 'not to be <', 3);
 
         try {
             expect(2, 'not to be less than', 3);
@@ -3675,8 +3663,6 @@ describe("documentation tests", function () {
     it("assertions/string/to-be-greater-than-or-equal-to.md contains correct examples", function () {
         var testPromises = [];
         expect('b', 'to be greater than or equal to', 'b');
-        expect('c', 'to be >=', 'b');
-        expect('c', '>=', 'c');
 
         try {
             expect('a', 'to be greater than or equal to', 'b');
@@ -3692,7 +3678,6 @@ describe("documentation tests", function () {
         }
 
         expect('a', 'not to be greater than or equal to', 'b');
-        expect('b', 'not to be >=', 'c');
 
         try {
             expect('a', 'not to be greater than or equal to', 'a');
@@ -3713,8 +3698,6 @@ describe("documentation tests", function () {
         var testPromises = [];
         expect('b', 'to be greater than', 'a');
         expect('b', 'to be above', 'a');
-        expect('b', 'to be >', 'a');
-        expect('b', '>', 'a');
 
         try {
             expect('a', 'to be greater than', 'a');
@@ -3731,7 +3714,6 @@ describe("documentation tests", function () {
 
         expect('a', 'not to be greater than', 'a');
         expect('a', 'not to be above', 'a');
-        expect('a', 'not to be >', 'a');
 
         try {
             expect('b', 'not to be above', 'a');
@@ -3751,8 +3733,6 @@ describe("documentation tests", function () {
     it("assertions/string/to-be-less-than-or-equal-to.md contains correct examples", function () {
         var testPromises = [];
         expect('b', 'to be less than or equal to', 'b');
-        expect('b', 'to be <=', 'c');
-        expect('c', '<=', 'c');
 
         try {
             expect('b', 'to be less than or equal to', 'a');
@@ -3768,7 +3748,6 @@ describe("documentation tests", function () {
         }
 
         expect('b', 'not to be less than or equal to', 'a');
-        expect('c', 'not to be <=', 'b');
 
         try {
             expect('a', 'not to be less than or equal to', 'a');
@@ -3789,8 +3768,6 @@ describe("documentation tests", function () {
         var testPromises = [];
         expect('a', 'to be less than', 'b');
         expect('a', 'to be below', 'b');
-        expect('a', 'to be <', 'b');
-        expect('a', '<', 'b');
 
         try {
             expect('a', 'to be less than', 'a');
@@ -3807,7 +3784,6 @@ describe("documentation tests", function () {
 
         expect('a', 'not to be less than', 'a');
         expect('a', 'not to be below', 'a');
-        expect('a', 'not to be <', 'a');
 
         try {
             expect('a', 'not to be below', 'b');
