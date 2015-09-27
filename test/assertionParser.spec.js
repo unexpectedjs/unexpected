@@ -28,4 +28,10 @@ describe('parseAssertion', function () {
             args: []
         });
     });
+
+    it('throw a type cannot be detected', function () {
+        expect(function () {
+            expect.parseAssertion('<string|function> [not] to be <string> <...foo|object>');
+        }, 'to throw', 'Unknown type: foo in <string|function> [not] to be <string> <...foo|object>');
+    });
 });
