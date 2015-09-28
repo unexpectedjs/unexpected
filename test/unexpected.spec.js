@@ -5318,19 +5318,19 @@ describe('unexpected', function () {
                 it('prefers to suggest a similarly named assertion for a more specific type', function () {
                     clonedExpect.addType({
                         name: 'myType',
-                        baseType: 'string',
+                        base: 'string',
                         identify: function (obj) {
                             return (/^a/).test(obj);
                         }
                     }).addType({
                         name: 'myMoreSpecificType',
-                        baseType: 'myType',
+                        base: 'myType',
                         identify: function (obj) {
                             return (/^aa/).test(obj);
                         }
                     }).addType({
                         name: 'myMostSpecificType',
-                        baseType: 'myMoreSpecificType',
+                        base: 'myMoreSpecificType',
                         identify: function (obj) {
                             return (/^aaa/).test(obj);
                         }
