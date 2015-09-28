@@ -61,4 +61,13 @@ describe('parseAssertion', function () {
             expect.parseAssertion('<any> [not] to be <any*> <string>');
         }, 'to throw', 'Only the last argument type can have varargs: <any> [not] to be <any*> <string>');
     });
+
+    it('handles types with upper case characters', function () {
+        var assertion = expect.parseAssertion('<number|NaN> [not] to be NaN');
+        expect(assertion, 'to satisfy', {
+            subject: [ { type: { name: 'number' }, minimum: 1, maximum: 1 },  { type: { name: 'NaN' }, minimum: 1, maximum: 1 }  ],
+            assertion: '[not] to be NaN',
+            args: []
+        });
+    });
 });
