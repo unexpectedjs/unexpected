@@ -4900,9 +4900,6 @@ describe('unexpected', function () {
                 }).addAssertion('to be foo', function (expect, subject) {
                     expect(String(subject), 'to equal', 'foo');
                 });
-                expect(clonedExpect.assertions.box['to be foo'], 'to be ok');
-                expect(clonedExpect.assertions.string['to be foo'], 'to be ok');
-                expect(clonedExpect.assertions.any['to be foo'], 'to be ok');
                 clonedExpect('foo', 'to be foo');
                 clonedExpect(new Box('foo'), 'to be foo');
                 expect(function () {
@@ -5235,7 +5232,6 @@ describe('unexpected', function () {
         it('nested expects throws if the assertion does not exists', function () {
             var clonedExpect = expect.clone().addAssertion('to be foo', function theCustomAssertion(expect, subject) {
                 expect(subject, 'to bee', 'foo');
-                this(); // Will throw a TypeError
             });
             expect(function () {
                 clonedExpect('foo', 'to be foo');
@@ -5340,6 +5336,7 @@ describe('unexpected', function () {
                     }).addAssertion('myType', 'to fooa', function () {
                     }).addAssertion('myMoreSpecificType', 'to foob', function () {
                     }).addAssertion('myMostSpecificType', 'to fooc', function () {});
+
                     expect(function () {
                         clonedExpect('a', 'to fooo');
                     }, 'to throw', "Unknown assertion 'to fooo', did you mean: 'to fooa'");
