@@ -4383,19 +4383,6 @@ describe('unexpected', function () {
                    "  expected [] to be non-empty");
         });
 
-        it('fails if the given array is empty', function () {
-            expect(function () {
-                expect([], 'to have items satisfying', function (item) {
-                    expect(item, 'to be a number');
-                });
-            }, 'to throw',
-                   "expected [] to have items satisfying\n" +
-                   "function (item) {\n" +
-                   "  expect(item, 'to be a number');\n" +
-                   "}\n" +
-                   "  expected [] to be non-empty");
-        });
-
         it('supports legacy aliases', function () {
             expect({ foo: '0' }, 'to be a map whose values satisfy', function (value) {
                 expect(value, 'not to be a number');
