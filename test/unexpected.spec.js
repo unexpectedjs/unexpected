@@ -902,8 +902,8 @@ describe('unexpected', function () {
                 expect(1, 'to throw exception');
             }, 'to throw exception',
                    "expected 1 to throw exception\n" +
-                   "  The assertion 'to throw exception' is not defined for the type 'number',\n" +
-                   "  but it is defined for the type 'function'");
+                   "  No matching assertion, did you mean:\n" +
+                   "  <function> [not] to (throw|throw error|throw exception) <any*>");
         });
 
         it('given a function the function is called with the exception', function () {
@@ -2076,8 +2076,9 @@ describe('unexpected', function () {
                 expect(null, 'not to contain', 'world');
             }, 'to throw',
                    "expected null not to contain 'world'\n" +
-                   "  The assertion 'not to contain' is not defined for the type 'null',\n" +
-                   "  but it is defined for these types: 'string', 'array-like'");
+                   "  No matching assertion, did you mean:\n" +
+                   "  <string> [not] to contain <any*>\n" +
+                   "  <array-like> [not] to contain <any*>");
 
             expect(function () {
                 expect('hello world', 'to contain', 'foo');
@@ -2104,8 +2105,9 @@ describe('unexpected', function () {
                 expect(1, 'to contain', 1);
             }, 'to throw exception',
                    "expected 1 to contain 1\n" +
-                   "  The assertion 'to contain' is not defined for the type 'number',\n" +
-                   "  but it is defined for these types: 'string', 'array-like'");
+                   "  No matching assertion, did you mean:\n" +
+                   "  <string> [not] to contain <any*>\n" +
+                   "  <array-like> [not] to contain <any*>");
         });
 
         it('produces a diff showing full and partial matches for each needle when the assertion fails', function () {
@@ -2435,15 +2437,15 @@ describe('unexpected', function () {
                 expect(null, 'to have length', 4);
             }, 'to throw exception',
                    "expected null to have length 4\n" +
-                   "  The assertion 'to have length' is not defined for the type 'null',\n" +
-                   "  but it is defined for these types: 'string', 'array-like'");
+                   "  No matching assertion, did you mean:\n" +
+                   "  <string|array-like> [not] to have length <any*>");
 
             expect(function () {
                 expect({ length: 4 }, 'to have length', 4);
             }, 'to throw exception',
                    "expected { length: 4 } to have length 4\n" +
-                   "  The assertion 'to have length' is not defined for the type 'object',\n" +
-                   "  but it is defined for these types: 'string', 'array-like'");
+                   "  No matching assertion, did you mean:\n" +
+                   "  <string|array-like> [not] to have length <any*>");
         });
     });
 
@@ -2469,8 +2471,8 @@ describe('unexpected', function () {
                 expect(null, 'to have property', 'b');
             }, 'to throw exception',
                    "expected null to have property 'b'\n" +
-                   "  The assertion 'to have property' is not defined for the type 'null',\n" +
-                   "  but it is defined for the type 'object'");
+                   "  No matching assertion, did you mean:\n" +
+                   "  <object> [not] to have [own] property <any*>");
 
             expect(function () {
                 expect({a: 'b'}, 'to have property', 'a', 'c');
@@ -2493,16 +2495,16 @@ describe('unexpected', function () {
                 expect(null, 'not to have property', 'a', 'b');
             }, 'to throw exception',
                    "expected null not to have property 'a', 'b'\n" +
-                   "  The assertion 'not to have property' is not defined for the type 'null',\n" +
-                   "  but it is defined for the type 'object'");
+                   "  No matching assertion, did you mean:\n" +
+                   "  <object> [not] to have [own] property <any*>");
 
             expect(function () {
                 // property expectations on value expects the property to be present
                 expect(null, 'not to have own property', 'a', 'b');
             }, 'to throw exception',
                    "expected null not to have own property 'a', 'b'\n" +
-                   "  The assertion 'not to have own property' is not defined for the type 'null',\n" +
-                   "  but it is defined for the type 'object'");
+                   "  No matching assertion, did you mean:\n" +
+                   "  <object> [not] to have [own] property <any*>");
         });
 
         it('does not support the not-flag in combination with a value argument', function () {
@@ -2680,8 +2682,8 @@ describe('unexpected', function () {
                 expect(null, 'to be empty');
             }, 'to throw exception',
                    "expected null to be empty\n" +
-                   "  The assertion 'to be empty' is not defined for the type 'null',\n" +
-                   "  but it is defined for these types: 'string', 'array-like'");
+                   "  No matching assertion, did you mean:\n" +
+                   "  <string|array-like> [not] to be empty <any*>");
         });
     });
 
@@ -2737,8 +2739,8 @@ describe('unexpected', function () {
                 expect(NaN, 'not to be finite');
             }, 'to throw',
                    "expected NaN not to be finite\n" +
-                   "  The assertion 'not to be finite' is not defined for the type 'NaN',\n" +
-                   "  but it is defined for the type 'number'");
+                   "  No matching assertion, did you mean:\n" +
+                   "  <number> [not] to be finite <any*>");
         });
 
         it('throws when the assertion fails', function () {
@@ -2761,8 +2763,8 @@ describe('unexpected', function () {
                 expect(NaN, 'not to be infinite');
             }, 'to throw',
                    "expected NaN not to be infinite\n" +
-                   "  The assertion 'not to be infinite' is not defined for the type 'NaN',\n" +
-                   "  but it is defined for the type 'number'");
+                   "  No matching assertion, did you mean:\n" +
+                   "  <number> [not] to be infinite <any*>");
         });
 
         it('throws when the assertion fails', function () {
@@ -2789,8 +2791,8 @@ describe('unexpected', function () {
                 expect(null, 'not to be within', 0, 4);
             }, 'to throw exception',
                    "expected null not to be within 0, 4\n" +
-                   "  The assertion 'not to be within' is not defined for the type 'null',\n" +
-                   "  but it is defined for these types: 'number', 'string'");
+                   "  No matching assertion, did you mean:\n" +
+                   "  <number|string> [not] to be within <any*>");
         });
 
         it('throws with the correct error message when the end points are strings', function () {
@@ -2842,8 +2844,8 @@ describe('unexpected', function () {
                 expect(NaN, 'not to be greater than', 1);
             }, 'to throw',
                    "expected NaN not to be greater than 1\n" +
-                   "  The assertion 'not to be greater than' is not defined for the type 'NaN',\n" +
-                   "  but it is defined for these types: 'number', 'string'");
+                   "  No matching assertion, did you mean:\n" +
+                   "  <number|string> [not] to be (greater than|above) <any*>");
         });
     });
 
@@ -3691,8 +3693,8 @@ describe('unexpected', function () {
                    "\n" +
                    "{\n" +
                    "  bool: 'true' // expected 'true' to be true\n" +
-                   "               //   The assertion 'to be true' is not defined for the type 'string',\n" +
-                   "               //   but it is defined for the type 'boolean'\n" +
+                   "               //   No matching assertion, did you mean:\n" +
+                   "               //   <boolean> [not] to be true <any*>\n" +
                    "}");
         });
 
@@ -4161,8 +4163,8 @@ describe('unexpected', function () {
                 expect(42, 'to have items satisfying', function (item) {});
             }, 'to throw',
                    "expected 42 to have items satisfying function (item) {}\n" +
-                   "  The assertion 'to have items satisfying' is not defined for the type 'number',\n" +
-                   "  but it is defined for the type 'array-like'");
+                   "  No matching assertion, did you mean:\n" +
+                   "  <array-like> to have items satisfying <any*>");
         });
 
         it('fails if the given array is empty', function () {
@@ -4339,8 +4341,8 @@ describe('unexpected', function () {
                 expect(42, 'to have values satisfying', function (value) {});
             }, 'to throw',
                    "expected 42 to have values satisfying function (value) {}\n" +
-                   "  The assertion 'to have values satisfying' is not defined for the type 'number',\n" +
-                   "  but it is defined for the type 'object'");
+                   "  No matching assertion, did you mean:\n" +
+                   "  <object> to have values satisfying <any*>");
         });
 
         it('asserts that the given callback does not throw for any values in the map', function () {
@@ -4503,8 +4505,8 @@ describe('unexpected', function () {
                 expect(42, 'to have keys satisfying', function (key) {});
             }, 'to throw',
                    "expected 42 to have keys satisfying function (key) {}\n" +
-                   "  The assertion 'to have keys satisfying' is not defined for the type 'number',\n" +
-                   "  but it is defined for the type 'object'");
+                   "  No matching assertion, did you mean:\n" +
+                   "  <object> to have keys satisfying <any*>");
         });
 
         it('asserts that the given callback does not throw for any keys in the map', function () {
@@ -5284,8 +5286,8 @@ describe('unexpected', function () {
                         clonedExpect('foobarquux', 'to foobarquux');
                     }, 'to throw',
                            "expected 'foobarquux' to foobarquux\n" +
-                           "  The assertion 'to foobarquux' is not defined for the type 'string',\n" +
-                           "  but it is defined for the type 'array'");
+                           "  No matching assertion, did you mean:\n" +
+                           "  <array> to foobarquux <any*>");
                 });
 
                 it('prefers to suggest a similarly named assertion defined for the correct type over an exact match defined for other types', function () {
@@ -5298,8 +5300,9 @@ describe('unexpected', function () {
                         clonedExpect(['fooo'], 'to fooo');
                     }, 'to throw',
                            "expected [ 'fooo' ] to fooo\n" +
-                           "  The assertion 'to fooo' is not defined for the type 'array',\n" +
-                           "  but it is defined for the type 'string'");
+                           "  No matching assertion, did you mean:\n" +
+                           "  <string> to fooo <any*>");
+
                     clonedExpect.addAssertion('null', 'to fooo', function (expect, subject) {
                         expect(subject.message, 'to equal', 'fooo');
                     });
@@ -5307,8 +5310,9 @@ describe('unexpected', function () {
                         clonedExpect(['fooo'], 'to fooo');
                     }, 'to throw',
                            "expected [ 'fooo' ] to fooo\n" +
-                           "  The assertion 'to fooo' is not defined for the type 'array',\n" +
-                           "  but it is defined for these types: 'null', 'string'");
+                           "  No matching assertion, did you mean:\n" +
+                           "  <string> to fooo <any*>\n" +
+                           "  <null> to fooo <any*>");
                 });
 
                 it('prefers to suggest a similarly named assertion for a more specific type', function () {
