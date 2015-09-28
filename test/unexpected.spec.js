@@ -4694,7 +4694,7 @@ describe('unexpected', function () {
             expect.addAssertion('foo', function () {})
                   .addAssertion('bar', function () {});
 
-            expect(expect.assertions.any, 'to have keys',
+            expect(expect.assertions, 'to have keys',
                    'foo',
                    'bar');
         });
@@ -5255,9 +5255,6 @@ describe('unexpected', function () {
         });
 
         it('assertions can be added to the clone', function () {
-            expect(clonedExpect.assertions.any, 'to have keys',
-                   'to be the answer to the Ultimate Question of Life, the Universe, and Everything',
-                   'not to be the answer to the Ultimate Question of Life, the Universe, and Everything');
             clonedExpect(42, 'to be the answer to the Ultimate Question of Life, the Universe, and Everything');
             clonedExpect(41, 'not to be the answer to the Ultimate Question of Life, the Universe, and Everything');
 
