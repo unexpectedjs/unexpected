@@ -7301,7 +7301,7 @@ describe('unexpected', function () {
                             "to call the callback with error /qqxqwxeqw/\n" +
                             "  expected UnexpectedError(expected false to be truthy)\n" +
                             "  to have text message /qqxqwxeqw/\n" +
-                            "    expected 'expected false to be truthy' to satisfy /qqxqwxeqw/"
+                            "    expected 'expected false to be truthy' to match /qqxqwxeqw/"
                         );
                     });
                 });
@@ -7338,8 +7338,7 @@ describe('unexpected', function () {
                         }, 'to call the callback with error', new Error('bla'));
                     }, 'to error',
                         "expected function (cb) { setTimeout(cb, 0); }\n" +
-                        "to call the callback with error Error('bla')\n" +
-                        "  expected undefined to equal Error('bla')"
+                        "to call the callback with error Error('bla')"
                     );
                 });
             });
@@ -7359,8 +7358,7 @@ describe('unexpected', function () {
                             setTimeout(cb, 0);
                         }, 'to call the callback with error');
                     }, 'to error',
-                        "expected function (cb) { setTimeout(cb, 0); } to call the callback with error\n" +
-                        "  expected undefined to be truthy"
+                        "expected function (cb) { setTimeout(cb, 0); } to call the callback with error"
                     );
                 });
             });
