@@ -7704,7 +7704,7 @@ describe('unexpected', function () {
                     return 'bar';
                 });
             });
-            expect(clonedExpect('foo', 'to foo'), 'to be fulfilled', 'bar');
+            expect(clonedExpect('foo', 'to foo'), 'to be fulfilled with', 'bar');
         });
 
         it('should preserve the resolved value when an assertion contains a non-oathbreakable promise', function (done) {
