@@ -5399,9 +5399,9 @@ describe('unexpected', function () {
         describe('toString', function () {
             it('returns a string containing all the expanded assertions', function () {
                 expect(clonedExpect.toString(), 'to contain', 'to be');
-                expect(clonedExpect.toString(), 'to contain', 'not to be');
+                expect(clonedExpect.toString(), 'to contain', '[not] to be');
                 expect(clonedExpect.toString(), 'to contain', 'to be the answer to the Ultimate Question of Life, the Universe, and Everything');
-                expect(clonedExpect.toString(), 'to contain', 'not to be the answer to the Ultimate Question of Life, the Universe, and Everything');
+                expect(clonedExpect.toString(), 'to contain', '[not] to be the answer to the Ultimate Question of Life, the Universe, and Everything');
             });
         });
     });
@@ -5409,7 +5409,7 @@ describe('unexpected', function () {
     describe('toString', function () {
         it('returns a string containing all the expanded assertions', function () {
             expect(expect.toString(), 'to contain', 'to be');
-            expect(expect.toString(), 'to contain', 'not to be');
+            expect(expect.toString(), 'to contain', '[not] to be');
         });
     });
 
