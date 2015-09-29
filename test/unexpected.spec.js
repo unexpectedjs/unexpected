@@ -379,31 +379,56 @@ describe('unexpected', function () {
         it('should throw when the type is specified as undefined', function () {
             expect(function () {
                 expect('foo', 'to be an', undefined);
-            }, 'to throw', "The 'to be an' assertion requires either a string (type name), a type object, or function argument");
+            }, 'to throw',
+                   "expected 'foo' to be an undefined\n" +
+                   "  No matching assertion, did you mean:\n" +
+                   "  <any> [not] to be (a|an) <function>\n" +
+                   "  <any> [not] to be (a|an) <string>\n" +
+                   "  <any> [not] to be (a|an) <type>");
         });
 
         it('should throw when the type is specified as null', function () {
             expect(function () {
                 expect('foo', 'to be a', null);
-            }, 'to throw', "The 'to be a' assertion requires either a string (type name), a type object, or function argument");
+            }, 'to throw',
+                   "expected 'foo' to be a null\n" +
+                   "  No matching assertion, did you mean:\n" +
+                   "  <any> [not] to be (a|an) <function>\n" +
+                   "  <any> [not] to be (a|an) <string>\n" +
+                   "  <any> [not] to be (a|an) <type>");
         });
 
         it('should not consider a string a to be an instance of an object without a name property', function () {
             expect(function () {
                 expect('foo', 'to be a', {});
-            }, 'to throw', "The 'to be a' assertion requires either a string (type name), a type object, or function argument");
+            }, 'to throw',
+                   "expected 'foo' to be a {}\n" +
+                   "  No matching assertion, did you mean:\n" +
+                   "  <any> [not] to be (a|an) <function>\n" +
+                   "  <any> [not] to be (a|an) <string>\n" +
+                   "  <any> [not] to be (a|an) <type>");
         });
 
         it('should throw when the type is specified as an object without an identify function', function () {
             expect(function () {
                 expect('foo', 'to be a', { name: 'bar' });
-            }, 'to throw', "The 'to be a' assertion requires either a string (type name), a type object, or function argument");
+            }, 'to throw',
+                   "expected 'foo' to be a { name: 'bar' }\n" +
+                   "  No matching assertion, did you mean:\n" +
+                   "  <any> [not] to be (a|an) <function>\n" +
+                   "  <any> [not] to be (a|an) <string>\n" +
+                   "  <any> [not] to be (a|an) <type>");
         });
 
         it('should throw when the type is specified as an object with an identify function, but without a name property', function () {
             expect(function () {
                 expect('foo', 'to be a', { identify: function () { return true; } });
-            }, 'to throw', "The 'to be a' assertion requires either a string (type name), a type object, or function argument");
+            }, 'to throw',
+                   "expected 'foo' to be a { identify: function () { return true; } }\n" +
+                   "  No matching assertion, did you mean:\n" +
+                   "  <any> [not] to be (a|an) <function>\n" +
+                   "  <any> [not] to be (a|an) <string>\n" +
+                   "  <any> [not] to be (a|an) <type>");
         });
 
         it('throws when the assertion fails', function () {
@@ -903,7 +928,8 @@ describe('unexpected', function () {
             }, 'to throw exception',
                    "expected 1 to throw exception\n" +
                    "  No matching assertion, did you mean:\n" +
-                   "  <function> [not] to (throw|throw error|throw exception) <any*>");
+                   "  <function> to (throw|throw error|throw exception)\n" +
+                   "  <function> to (throw|throw error|throw exception) <any>");
         });
 
         it('given a function the function is called with the exception', function () {
@@ -925,7 +951,14 @@ describe('unexpected', function () {
                 expect(function () {
                     throw new Error('matches the exception message');
                 }, 'not to throw', /matches the exception message/);
-            }, 'to throw', "The 'not to throw' assertion does not support arguments");
+            }, 'to throw',
+                   "expected\n" +
+                   "function () {\n" +
+                   "  throw new Error('matches the exception message');\n" +
+                   "}\n" +
+                   "not to throw /matches the exception message/\n" +
+                   "  No matching assertion, did you mean:\n" +
+                   "  <function> not to throw");
         });
 
         it('provides a diff when the exception message does not match the given string', function () {
@@ -1566,7 +1599,7 @@ describe('unexpected', function () {
                                 reject('unhappy times');
                             }, 0);
                         }), 'to be fulfilled'),
-                        'to be rejected',
+                        'to be rejected with',
                             "expected Promise to be fulfilled\n" +
                             "  Promise unexpectedly rejected with 'unhappy times'"
                     );
@@ -2058,13 +2091,6 @@ describe('unexpected', function () {
             expect('hello world', 'to contain', 'world');
         });
 
-        it('should support searching for a non-string inside a string', function () {
-            expect('hello null', 'to contain', null);
-            expect('hello 123', 'to contain', 123);
-            expect('hello false', 'to contain', false);
-            expect('hello Infinity', 'to contain', Infinity);
-        });
-
         it('asserts item equality for an array', function () {
             expect([1, 2], 'to contain', 1);
             expect([1, 2], 'to contain', 2, 1);
@@ -2077,8 +2103,8 @@ describe('unexpected', function () {
             }, 'to throw',
                    "expected null not to contain 'world'\n" +
                    "  No matching assertion, did you mean:\n" +
-                   "  <array-like> [not] to contain <any*>\n" +
-                   "  <string> [not] to contain <any*>");
+                   "  <array-like> [not] to contain <any+>\n" +
+                   "  <string> [not] to contain <string+>");
 
             expect(function () {
                 expect('hello world', 'to contain', 'foo');
@@ -2106,8 +2132,8 @@ describe('unexpected', function () {
             }, 'to throw exception',
                    "expected 1 to contain 1\n" +
                    "  No matching assertion, did you mean:\n" +
-                   "  <array-like> [not] to contain <any*>\n" +
-                   "  <string> [not] to contain <any*>");
+                   "  <array-like> [not] to contain <any+>\n" +
+                   "  <string> [not] to contain <string+>");
         });
 
         it('produces a diff showing full and partial matches for each needle when the assertion fails', function () {
@@ -2185,13 +2211,6 @@ describe('unexpected', function () {
             it('asserts equality with a string', function () {
                 expect('hello', 'to begin with', 'hello');
                 expect('hello world', 'to begin with', 'hello');
-            });
-
-            it('should support searching for a non-string inside a string', function () {
-                expect('null modem', 'to begin with', null);
-                expect('123456', 'to begin with', 123);
-                expect('falsehood', 'to begin with', false);
-                expect('Infinity man!', 'to begin with', Infinity);
             });
 
             describe('when the assertion fails', function () {
@@ -2295,13 +2314,6 @@ describe('unexpected', function () {
             it('asserts equality with a string', function () {
                 expect('hello', 'to end with', 'hello');
                 expect('hello world', 'to end with', 'world');
-            });
-
-            it('should support searching for a non-string inside a string', function () {
-                expect('maybe null', 'to end with', null);
-                expect('0123', 'to end with', 123);
-                expect('unfalse', 'to end with', false);
-                expect('to Infinity', 'to end with', Infinity);
             });
 
             describe('when the assertion fails', function () {
@@ -2438,14 +2450,14 @@ describe('unexpected', function () {
             }, 'to throw exception',
                    "expected null to have length 4\n" +
                    "  No matching assertion, did you mean:\n" +
-                   "  <string|array-like> [not] to have length <any*>");
+                   "  <string|array-like> [not] to have length <number>");
 
             expect(function () {
                 expect({ length: 4 }, 'to have length', 4);
             }, 'to throw exception',
                    "expected { length: 4 } to have length 4\n" +
                    "  No matching assertion, did you mean:\n" +
-                   "  <string|array-like> [not] to have length <any*>");
+                   "  <string|array-like> [not] to have length <number>");
         });
     });
 
@@ -2472,7 +2484,8 @@ describe('unexpected', function () {
             }, 'to throw exception',
                    "expected null to have property 'b'\n" +
                    "  No matching assertion, did you mean:\n" +
-                   "  <object> [not] to have [own] property <any*>");
+                   "  <object> [not] to have property <string>\n" +
+                   "  <object> to have [own] property <string> <any>");
 
             expect(function () {
                 expect({a: 'b'}, 'to have property', 'a', 'c');
@@ -2496,7 +2509,7 @@ describe('unexpected', function () {
             }, 'to throw exception',
                    "expected null not to have property 'a', 'b'\n" +
                    "  No matching assertion, did you mean:\n" +
-                   "  <object> [not] to have [own] property <any*>");
+                   "  <object> [not] to have property <string>");
 
             expect(function () {
                 // property expectations on value expects the property to be present
@@ -2504,17 +2517,23 @@ describe('unexpected', function () {
             }, 'to throw exception',
                    "expected null not to have own property 'a', 'b'\n" +
                    "  No matching assertion, did you mean:\n" +
-                   "  <object> [not] to have [own] property <any*>");
+                   "  <object> [not] to have own property <string>");
         });
 
         it('does not support the not-flag in combination with a value argument', function () {
             expect(function () {
                 expect({ a: 'a' }, 'not to have property', 'a', 'a');
-            }, "to throw", "The 'not to have property' assertion does not work with a value argument");
+            }, "to throw",
+                   "expected { a: 'a' } not to have property 'a', 'a'\n" +
+                   "  No matching assertion, did you mean:\n" +
+                   "  <object> [not] to have property <string>");
 
             expect(function () {
                 expect({ a: 'a' }, 'not to have own property', 'a', 'a');
-            }, "to throw", "The 'not to have own property' assertion does not work with a value argument");
+            }, "to throw",
+                   "expected { a: 'a' } not to have own property 'a', 'a'\n" +
+                   "  No matching assertion, did you mean:\n" +
+                   "  <object> [not] to have own property <string>");
         });
     });
 
@@ -2652,11 +2671,18 @@ describe('unexpected', function () {
         it('throws when given invalid input', function () {
             expect(function () {
                 expect({a: 'foo', b: 'bar'}, 'to have properties', 'a', 'b');
-            }, 'to throw', "Assertion 'to have properties' only supports input in the form of an Array or an Object.");
+            }, 'to throw',
+                   "expected { a: 'foo', b: 'bar' } to have properties 'a', 'b'\n" +
+                   "  No matching assertion, did you mean:\n" +
+                   "  <object> [not] to have [own] properties <array>\n" +
+                   "  <object> to have [own] properties <object>");
 
             expect(function () {
                 expect({a: 'foo', b: 'bar'}, 'not to have properties', {a: 'foo', b: 'bar'});
-            }, 'to throw', "Assertion 'not to have properties' only supports input in the form of an Array.");
+            }, 'to throw',
+                   "expected { a: 'foo', b: 'bar' } not to have properties { a: 'foo', b: 'bar' }\n" +
+                   "  No matching assertion, did you mean:\n" +
+                   "  <object> [not] to have [own] properties <array>");
         });
     });
 
@@ -2683,7 +2709,7 @@ describe('unexpected', function () {
             }, 'to throw exception',
                    "expected null to be empty\n" +
                    "  No matching assertion, did you mean:\n" +
-                   "  <string|array-like> [not] to be empty <any*>");
+                   "  <string|array-like> [not] to be empty");
         });
     });
 
@@ -2691,7 +2717,7 @@ describe('unexpected', function () {
         it('asserts the presence of a key', function () {
             expect({ a: 'b' }, 'to have key', 'a');
             expect({ a: 'b' }, 'not to have key', 'b');
-            expect({ a: 'b' }, 'not to have key', []);
+            expect({ a: 'b' }, 'not to have keys', []);
             expect({ a: 'b', c: 'd' }, 'not to have key', 'b');
             expect({ a: 'b', c: 'd' }, 'to not only have key', 'a');
             expect({ a: 'b', c: 'd' }, 'to only have keys', 'a', 'c');
@@ -2740,7 +2766,7 @@ describe('unexpected', function () {
             }, 'to throw',
                    "expected NaN not to be finite\n" +
                    "  No matching assertion, did you mean:\n" +
-                   "  <number> [not] to be finite <any*>");
+                   "  <number> [not] to be finite");
         });
 
         it('throws when the assertion fails', function () {
@@ -2764,7 +2790,7 @@ describe('unexpected', function () {
             }, 'to throw',
                    "expected NaN not to be infinite\n" +
                    "  No matching assertion, did you mean:\n" +
-                   "  <number> [not] to be infinite <any*>");
+                   "  <number> [not] to be infinite");
         });
 
         it('throws when the assertion fails', function () {
@@ -2792,7 +2818,8 @@ describe('unexpected', function () {
             }, 'to throw exception',
                    "expected null not to be within 0, 4\n" +
                    "  No matching assertion, did you mean:\n" +
-                   "  <number|string> [not] to be within <any*>");
+                   "  <number> [not] to be within <number> <number>\n" +
+                   "  <string> [not] to be within <string> <string>");
         });
 
         it('throws with the correct error message when the end points are strings', function () {
@@ -2845,7 +2872,8 @@ describe('unexpected', function () {
             }, 'to throw',
                    "expected NaN not to be greater than 1\n" +
                    "  No matching assertion, did you mean:\n" +
-                   "  <number|string> [not] to be (greater than|above) <any*>");
+                   "  <number> [not] to be (greater than|above) <number>\n" +
+                   "  <string> [not] to be (greater than|above) <string>");
         });
     });
 
@@ -3694,7 +3722,7 @@ describe('unexpected', function () {
                    "{\n" +
                    "  bool: 'true' // expected 'true' to be true\n" +
                    "               //   No matching assertion, did you mean:\n" +
-                   "               //   <boolean> [not] to be true <any*>\n" +
+                   "               //   <boolean> [not] to be true\n" +
                    "}");
         });
 
