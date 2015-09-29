@@ -3035,7 +3035,7 @@ describe('unexpected', function () {
                 it('should fail with a diff', function () {
                     return expect(
                         expect(new Buffer([0, 1, 2]), 'to satisfy', expect.it('when delayed a little bit', 'to equal', new Buffer([2, 1, 0]))),
-                        'to be rejected',
+                        'to be rejected with',
                             "expected Buffer([0x00, 0x01, 0x02])\n" +
                             "to satisfy expect.it('when delayed a little bit', 'to equal', Buffer([0x02, 0x01, 0x00]))\n" +
                             "\n" +
@@ -3146,14 +3146,14 @@ describe('unexpected', function () {
 
             describe('and the exhaustively flag', function () {
                 it('should succeed', function () {
-                    expect({foo: 123}, 'to exhaustively satisfy assertion', {foo: 123});
+                    expect({foo: 123}, 'to exhaustively satisfy assertion', 'to equal', {foo: 123});
                 });
 
                 it('should fail with a diff', function () {
                     expect(function () {
-                        expect({foo: 123}, 'to exhaustively satisfy assertion', {foo: 456});
+                        expect({foo: 123}, 'to exhaustively satisfy assertion', 'to equal', {foo: 456});
                     }, 'to throw',
-                        "expected { foo: 123 } to exhaustively satisfy { foo: 456 }\n" +
+                        "expected { foo: 123 } to equal { foo: 456 }\n" +
                         "\n" +
                         "{\n" +
                         "  foo: 123 // should equal 456\n" +
@@ -3283,7 +3283,7 @@ describe('unexpected', function () {
             it('should fail with an or group where both assertions fail asynchronously', function () {
                 return expect(
                     expect(3, 'to satisfy', expect.it('when delayed a little bit', 'to equal', 2).or('when delayed a little bit', 'to equal', 1)),
-                    'to be rejected',
+                    'to be rejected with',
                         "expected 3 to satisfy\n" +
                         "expect.it('when delayed a little bit', 'to equal', 2)\n" +
                         "      .or('when delayed a little bit', 'to equal', 1)\n" +
@@ -3296,7 +3296,7 @@ describe('unexpected', function () {
             it('should fail with an or group where the first one fails synchronously and the second one fails asynchronously', function () {
                 return expect(
                     expect(3, 'to satisfy', expect.it('to equal', 2).or('when delayed a little bit', 'to equal', 1)),
-                    'to be rejected',
+                    'to be rejected with',
                         "expected 3 to satisfy\n" +
                         "expect.it('to equal', 2)\n" +
                         "      .or('when delayed a little bit', 'to equal', 1)\n" +
@@ -3309,7 +3309,7 @@ describe('unexpected', function () {
             it('should fail with an or group where the first one fails asynchronously and the second one fails synchronously', function () {
                 return expect(
                     expect(3, 'to satisfy', expect.it('when delayed a little bit', 'to equal', 2).or('to equal', 1)),
-                    'to be rejected',
+                    'to be rejected with',
                         "expected 3 to satisfy\n" +
                         "expect.it('when delayed a little bit', 'to equal', 2)\n" +
                         "      .or('to equal', 1)\n" +
@@ -3489,17 +3489,7 @@ describe('unexpected', function () {
                 expect(function () {
                     expect(new Buffer([1, 2, 3]), 'to satisfy', new Buffer([1, 2, 4]));
                 }, 'to throw',
-                    'expected Buffer([0x01, 0x02, 0x03]) to satisfy Buffer([0x01, 0x02, 0x04])\n' +
-                    '\n' +
-                    '-01 02 03                                         │...│\n' +
-                    '+01 02 04                                         │...│');
-            });
-
-            it('should fail with a binary diff when the assertion fails with the assertion flag on', function () {
-                expect(function () {
-                    expect(new Buffer([1, 2, 3]), 'to satisfy assertion', new Buffer([1, 2, 4]));
-                }, 'to throw',
-                    'expected Buffer([0x01, 0x02, 0x03]) to satisfy Buffer([0x01, 0x02, 0x04])\n' +
+                    'expected Buffer([0x01, 0x02, 0x03]) to equal Buffer([0x01, 0x02, 0x04])\n' +
                     '\n' +
                     '-01 02 03                                         │...│\n' +
                     '+01 02 04                                         │...│');
@@ -3541,7 +3531,7 @@ describe('unexpected', function () {
                 expect(function () {
                     expect(new Uint8Array([1, 2, 3]), 'to satisfy', new Uint8Array([1, 2, 4]));
                 }, 'to throw',
-                    'expected Uint8Array([0x01, 0x02, 0x03]) to satisfy Uint8Array([0x01, 0x02, 0x04])\n' +
+                    'expected Uint8Array([0x01, 0x02, 0x03]) to equal Uint8Array([0x01, 0x02, 0x04])\n' +
                     '\n' +
                     '-01 02 03                                         │...│\n' +
                     '+01 02 04                                         │...│');
@@ -3940,7 +3930,7 @@ describe('unexpected', function () {
                     '\n' +
                     '{\n' +
                     '  foo: {\n' +
-                    '    bar: 123 // should satisfy /d/\n' +
+                    '    bar: 123 // should equal /d/\n' +
                     '  }\n' +
                     '}'
                 );
@@ -4090,7 +4080,7 @@ describe('unexpected', function () {
 
             expect(function () {
                 expect('foobar', 'to satisfy', /quux/i);
-            }, 'to throw', "expected 'foobar' to satisfy /quux/i");
+            }, 'to throw', "expected 'foobar' to match /quux/i");
 
             // FIXME: Could this error message be improved?
             expect(function () {
@@ -4129,7 +4119,7 @@ describe('unexpected', function () {
 
             it('returns a promise that is rejected if the assertion fails', function () {
                 return expect(clonedExpect('wat', 'to satisfy', clonedExpect.it('to be a number after a short delay')),
-                       'to be rejected',
+                       'to be rejected with',
                        "expected 'wat' to satisfy expect.it('to be a number after a short delay')\n" +
                        "\n" +
                        "expected 'wat' to be a number after a short delay\n" +
@@ -4139,7 +4129,7 @@ describe('unexpected', function () {
             it('supports many levels of asynchronous assertions', function () {
                 return expect(
                     expect('abc', 'when delayed a little bit', 'when delayed a little bit', 'to satisfy', expect.it('when delayed a little bit', 'to equal', 'def')),
-                    'to be rejected',
+                    'to be rejected with',
                         "expected 'abc'\n" +
                         "when delayed a little bit when delayed a little bit 'to satisfy', expect.it('when delayed a little bit', 'to equal', 'def')\n" +
                         "\n" +
@@ -4159,7 +4149,7 @@ describe('unexpected', function () {
                             .or('when delayed a little bit', 'to be a number')
                             .and('when delayed a little bit', 'to be within', 100, 110)
                     ),
-                    'to be rejected',
+                    'to be rejected with',
                         "expected 123 to satisfy\n" +
                         "expect.it('when delayed a little bit', 'to equal', 456)\n" +
                         "      .or('when delayed a little bit', 'to be a string')\n" +
@@ -4183,7 +4173,10 @@ describe('unexpected', function () {
         it('requires a third argument', function () {
             expect(function () {
                 expect([1, 2, 3], 'to have items satisfying');
-            }, 'to throw', 'Assertion "to have items satisfying" expects a third argument');
+            }, 'to throw',
+                   "expected [ 1, 2, 3 ] to have items satisfying\n" +
+                   "  No matching assertion, did you mean:\n" +
+                   "  <array-like> to have items satisfying <any+>");
         });
 
         it('only accepts arrays as the target object', function () {
@@ -4192,7 +4185,7 @@ describe('unexpected', function () {
             }, 'to throw',
                    "expected 42 to have items satisfying function (item) {}\n" +
                    "  No matching assertion, did you mean:\n" +
-                   "  <array-like> to have items satisfying <any*>");
+                   "  <array-like> to have items satisfying <any+>");
         });
 
         it('fails if the given array is empty', function () {
@@ -4342,7 +4335,7 @@ describe('unexpected', function () {
             it('should fail with a diff', function () {
                 return expect(
                     clonedExpect([0, false, 'abc'], 'to have items satisfying', 'to be a number after a short delay'),
-                    'to be rejected',
+                    'to be rejected with',
                     "expected [ 0, false, 'abc' ]\n" +
                     "to have items satisfying 'to be a number after a short delay'\n" +
                     "\n" +
@@ -4361,7 +4354,10 @@ describe('unexpected', function () {
         it('requires a third argument', function () {
             expect(function () {
                 expect([1, 2, 3], 'to have values satisfying');
-            }, 'to throw', 'Assertion "to have values satisfying" expects a third argument');
+            }, 'to throw',
+                   "expected [ 1, 2, 3 ] to have values satisfying\n" +
+                   "  No matching assertion, did you mean:\n" +
+                   "  <object> to have values satisfying <any+>");
         });
 
         it('only accepts objects and arrays as the target', function () {
@@ -4370,7 +4366,7 @@ describe('unexpected', function () {
             }, 'to throw',
                    "expected 42 to have values satisfying function (value) {}\n" +
                    "  No matching assertion, did you mean:\n" +
-                   "  <object> to have values satisfying <any*>");
+                   "  <object> to have values satisfying <any+>");
         });
 
         it('asserts that the given callback does not throw for any values in the map', function () {
@@ -4506,7 +4502,7 @@ describe('unexpected', function () {
             it('should fail with a diff', function () {
                 return expect(
                     clonedExpect({0: 0, 1: false, 2: 'abc'}, 'to have values satisfying', 'to be a number after a short delay'),
-                    'to be rejected',
+                    'to be rejected with',
                     "expected { 0: 0, 1: false, 2: 'abc' }\n" +
                     "to have values satisfying 'to be a number after a short delay'\n" +
                     "\n" +
@@ -4525,7 +4521,10 @@ describe('unexpected', function () {
         it('requires a third argument', function () {
             expect(function () {
                 expect([1, 2, 3], 'to have keys satisfying');
-            }, 'to throw', 'Assertion "to have keys satisfying" expects a third argument');
+            }, 'to throw',
+                   "expected [ 1, 2, 3 ] to have keys satisfying\n" +
+                   "  No matching assertion, did you mean:\n" +
+                   "  <object> to have keys satisfying <any+>");
         });
 
         it('only accepts objects as the target', function () {
@@ -4534,7 +4533,7 @@ describe('unexpected', function () {
             }, 'to throw',
                    "expected 42 to have keys satisfying function (key) {}\n" +
                    "  No matching assertion, did you mean:\n" +
-                   "  <object> to have keys satisfying <any*>");
+                   "  <object> to have keys satisfying <any+>");
         });
 
         it('asserts that the given callback does not throw for any keys in the map', function () {
@@ -4577,7 +4576,7 @@ describe('unexpected', function () {
                    "expected Error('foo') to have keys satisfying /bar/\n" +
                    "\n" +
                    "[\n" +
-                   "  'message' // should satisfy /bar/\n" +
+                   "  'message' // should match /bar/\n" +
                    "]");
         });
 
@@ -4643,7 +4642,7 @@ describe('unexpected', function () {
             it('should fail with a diff', function () {
                 return expect(
                     clonedExpect({a: 1, foo: 2, bar: 3}, 'to have keys satisfying', 'to be a sequence of as after a short delay'),
-                    'to be rejected',
+                    'to be rejected with',
                     "expected { a: 1, foo: 2, bar: 3 }\n" +
                     "to have keys satisfying 'to be a sequence of as after a short delay'\n" +
                     "\n" +
@@ -5180,7 +5179,7 @@ describe('unexpected', function () {
                     errorMode = 'nested';
                     return expect(
                         clonedExpect(42, 'to be sorted after delay', 1),
-                        'to be rejected',
+                        'to be rejected with',
                             'expected 42 to be sorted after delay 1\n  expected 42 to be an array'
                     );
                 });
@@ -5189,7 +5188,7 @@ describe('unexpected', function () {
                     errorMode = 'bubble';
                     return expect(
                         clonedExpect(42, 'to be sorted after delay', 1),
-                        'to be rejected',
+                        'to be rejected with',
                             'expected 42 to be an array'
                     );
                 });
@@ -5198,7 +5197,7 @@ describe('unexpected', function () {
                     errorMode = 'default';
                     return expect(
                         clonedExpect(42, 'to be sorted after delay', 1),
-                        'to be rejected',
+                        'to be rejected with',
                             'expected 42 to be sorted after delay 1'
                     );
                 });
@@ -5208,7 +5207,7 @@ describe('unexpected', function () {
                         errorMode = 'nested';
                         return expect(
                             clonedExpect(42, 'to be sorted after delay', 1),
-                            'to be rejected',
+                            'to be rejected with',
                                 'expected 42 to be sorted after delay 1\n  expected 42 to be an array'
                         );
                     });
@@ -5217,7 +5216,7 @@ describe('unexpected', function () {
                         errorMode = 'bubble';
                         return expect(
                             clonedExpect(42, 'to be sorted after delay', 1),
-                            'to be rejected',
+                            'to be rejected with',
                                 'expected 42 to be an array'
                         );
                     });
@@ -5226,7 +5225,7 @@ describe('unexpected', function () {
                         errorMode = 'diff';
                         return expect(
                             clonedExpect([3, 2, 1], 'to be sorted after delay', 1),
-                            'to be rejected',
+                            'to be rejected with',
                                 '[\n' +
                                 "  3, // should equal 1\n" +
                                 "  2,\n" +
@@ -5239,7 +5238,7 @@ describe('unexpected', function () {
                         errorMode = 'default';
                         return expect(
                             clonedExpect(42, 'to be sorted after delay', 1),
-                            'to be rejected',
+                            'to be rejected with',
                                 'expected 42 to be sorted after delay 1'
                         );
                     });
@@ -6310,7 +6309,7 @@ describe('unexpected', function () {
             it('should fail with a diff', function () {
                 return expect(
                     clonedExpect.it('to be a number after a short delay')(false),
-                    'to be rejected',
+                    'to be rejected with',
                         'expected false to be a number after a short delay\n' +
                         '  expected false to be a number'
                 );
@@ -6328,7 +6327,7 @@ describe('unexpected', function () {
                         clonedExpect
                             .it('to be a number after a short delay')
                             .and('to be finite after a short delay')(false),
-                        'to be rejected',
+                        'to be rejected with',
                             '⨯ expected false to be a number after a short delay and\n' +
                             '    expected false to be a number\n' +
                             '⨯ expected false to be finite after a short delay'
@@ -6350,7 +6349,7 @@ describe('unexpected', function () {
                             .it('to be a number after a short delay')
                                 .and('to be finite after a short delay')
                             .or('to be a string after a short delay')(false),
-                        'to be rejected',
+                        'to be rejected with',
                             '⨯ expected false to be a number after a short delay and\n' +
                             '    expected false to be a number\n' +
                             '⨯ expected false to be finite after a short delay\n' +
@@ -7061,7 +7060,7 @@ describe('unexpected', function () {
             it('should fail if the result of the async function does not meet the criteria', function () {
                 return expect(
                     expect([123], 'when passed as parameters to async', delayedIncrement, 'to equal', 125),
-                    'to be rejected',
+                    'to be rejected with',
                         "expected [ 123 ] when passed as parameters to async\n" +
                         "function delayedIncrement(num, cb) {\n" +
                         "  setTimeout(function () {\n" +
@@ -7079,7 +7078,7 @@ describe('unexpected', function () {
             it('should fail if the async function calls the callback with an error', function () {
                 return expect(
                     expect([false], 'when passed as parameters to async', delayedIncrement, 'to equal', 125),
-                    'to be rejected',
+                    'to be rejected with',
                         "expected [ false ] when passed as parameters to async\n" +
                         "function delayedIncrement(num, cb) {\n" +
                         "  setTimeout(function () {\n" +
@@ -7486,7 +7485,7 @@ describe('unexpected', function () {
             it('should fail with a diff', function () {
                 return expect(
                     expect(false, 'when delayed a little bit', 'to be a number'),
-                    'to be rejected',
+                    'to be rejected with',
                     'expected false when delayed a little bit to be a number'
                 );
             });
@@ -7612,7 +7611,7 @@ describe('unexpected', function () {
         it('supports composition', expect.async(function () {
             return expect(
                 expect([1, 3, 2], 'to be ordered after delay'),
-                'to be rejected',
+                'to be rejected with',
                     'expected [ 1, 3, 2 ] to be ordered after delay\n' +
                     '  expected [ 1, 3, 2 ] to be sorted after delay 20\n' +
                     '    expected [ 1, 3, 2 ] to equal [ 1, 2, 3 ]\n' +
