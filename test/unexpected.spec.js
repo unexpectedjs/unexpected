@@ -2077,8 +2077,8 @@ describe('unexpected', function () {
             }, 'to throw',
                    "expected null not to contain 'world'\n" +
                    "  No matching assertion, did you mean:\n" +
-                   "  <string> [not] to contain <any*>\n" +
-                   "  <array-like> [not] to contain <any*>");
+                   "  <array-like> [not] to contain <any*>\n" +
+                   "  <string> [not] to contain <any*>");
 
             expect(function () {
                 expect('hello world', 'to contain', 'foo');
@@ -2106,8 +2106,8 @@ describe('unexpected', function () {
             }, 'to throw exception',
                    "expected 1 to contain 1\n" +
                    "  No matching assertion, did you mean:\n" +
-                   "  <string> [not] to contain <any*>\n" +
-                   "  <array-like> [not] to contain <any*>");
+                   "  <array-like> [not] to contain <any*>\n" +
+                   "  <string> [not] to contain <any*>");
         });
 
         it('produces a diff showing full and partial matches for each needle when the assertion fails', function () {
@@ -4715,20 +4715,38 @@ describe('unexpected', function () {
             }, 'to throw', 'expected [ 1, 2, 3 ] not to be sorted');
         });
 
-        it('throws when attempting to redefine an assertion', function () {
-            var clonedExpect = expect.clone()
-                .addAssertion('to foo', function () {});
-            expect(function () {
-                clonedExpect.addAssertion('to foo', function () {});
-            }, 'to throw', 'Cannot redefine assertion: to foo');
-        });
+        describe('when overriding an assertion', function () {
+            it('uses the most specific version', function () {
+                var clonedExpect = expect.clone()
+                    .addAssertion('<string> to foo', function (expect, subject) {
+                        expect.errorMode = 'bubble';
+                        expect.fail('old');
+                    }).addAssertion('<any> to foo', function (expect, subject) {
+                        expect.errorMode = 'bubble';
+                        expect.fail('new');
+                    });
 
-        it('throws when implicitly attempting to redefine an assertion', function () {
-            var clonedExpect = expect.clone()
-                .addAssertion('to foo [bar]', function () {});
-            expect(function () {
-                clonedExpect.addAssertion('to foo (bar|quux)', function () {});
-            }, 'to throw', 'Cannot redefine assertion: to foo bar');
+                expect(function () {
+                    clonedExpect('bar', 'to foo');
+                }, 'to throw', 'old');
+            });
+
+            describe('with the same specificity', function () {
+                it('uses the most recently added version', function () {
+                    var clonedExpect = expect.clone()
+                        .addAssertion('to foo', function (expect, subject) {
+                            expect.errorMode = 'bubble';
+                            expect.fail('old');
+                        }).addAssertion('to foo', function (expect, subject) {
+                            expect.errorMode = 'bubble';
+                            expect.fail('new');
+                        });
+
+                    expect(function () {
+                        clonedExpect('bar', 'to foo');
+                    }, 'to throw', 'new');
+                });
+            });
         });
 
         it('allows overlapping patterns within a single addAssertion call', function () {
@@ -5305,8 +5323,8 @@ describe('unexpected', function () {
                     }, 'to throw',
                            "expected [ 'fooo' ] to fooo\n" +
                            "  No matching assertion, did you mean:\n" +
-                           "  <string> to fooo <any*>\n" +
-                           "  <null> to fooo <any*>");
+                           "  <null> to fooo <any*>\n" +
+                           "  <string> to fooo <any*>");
                 });
 
                 it('prefers to suggest a similarly named assertion for a more specific type', function () {
