@@ -7374,7 +7374,16 @@ describe('unexpected', function () {
                             cb(new Error('bla'));
                         }, 0);
                     }, 'to call the callback without error', new Error('bla'));
-                }, 'to throw', "The 'to call the callback without error' assertion does not support arguments");
+                }, 'to throw',
+                       "expected\n" +
+                       "function (cb) {\n" +
+                       "  setTimeout(function () {\n" +
+                       "    cb(new Error('bla'));\n" +
+                       "  }, 0);\n" +
+                       "}\n" +
+                       "to call the callback without error Error('bla')\n" +
+                       "  No matching assertion, did you mean:\n" +
+                       "  <function> to call the callback without error");
             });
 
             it('should succeed', function () {

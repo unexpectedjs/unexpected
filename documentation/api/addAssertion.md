@@ -277,7 +277,7 @@ expect.addType({
 ```
 
 ```js
-expect.addAssertion('Timelock', 'to satisfy', function (expect, subject, spec) {
+expect.addAssertion('<Timelock> to satisfy <any|regexp|expect.it>', function (expect, subject, spec) {
   return expect.promise(function (run) {
     subject.getValue(run(function (value) {
       return expect(value, 'to satisfy', spec);
