@@ -25,5 +25,5 @@ originalExpect(42, 'to be an integer');
 ```
 
 ```output
-Unknown assertion 'to be an integer', did you mean: 'to be a number'
+Unknown assertion 'to be an integer', did you mean: 'to be infinite'
 ```

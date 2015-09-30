@@ -741,7 +741,7 @@ describe("documentation tests", function () {
             });
         } catch (e) {
             expect(e, "to have message",
-                "Unknown assertion 'to be an integer', did you mean: 'to be a number'"
+                "Unknown assertion 'to be an integer', did you mean: 'to be infinite'"
             );
         }
         return expect.promise.all(testPromises);
