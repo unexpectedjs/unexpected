@@ -128,4 +128,53 @@ describe('parseAssertion', function () {
             }
         ]);
     });
+
+    describe('with an assertion that has <assertion>', function () {
+        it('should accept it as the last argument', function () {
+            var assertion = expect.parseAssertion('<Buffer> when decoded as <string> <assertion>');
+            expect(assertion, 'to satisfy', [
+                {
+                    subject: { type: { name: 'Buffer' }, minimum: 1, maximum: 1 },
+                    assertion: 'when decoded as',
+                    args: [
+                        { type: { name: 'string' }, minimum: 1, maximum: 1 },
+                        { type: { name: 'string' }, minimum: 1, maximum: 1 },
+                        { type: { name: 'any' }, minimum: 0, maximum: Infinity }
+                    ]
+                },
+                {
+                    subject: { type: { name: 'Buffer' }, minimum: 1, maximum: 1 },
+                    assertion: 'when decoded as',
+                    args: [
+                        { type: { name: 'string' }, minimum: 1, maximum: 1 },
+                        { type: { name: 'expect.it' }, minimum: 1, maximum: 1 }
+                    ]
+                }
+            ]);
+        });
+
+        it('should not accept it as the subject type', function () {
+            expect(function () {
+                expect.parseAssertion('<assertion> to foo');
+            }, 'to throw', 'Only the last argument type can be <assertion>: <assertion> to foo');
+        });
+
+        it('should not accept it as the non-last argument', function () {
+            expect(function () {
+                expect.parseAssertion('<Buffer> when decoded as <assertion> <string>');
+            }, 'to throw', 'Only the last argument type can be <assertion>: <Buffer> when decoded as <assertion> <string>');
+        });
+
+        it('should not accept it with a varargs operator', function () {
+            expect(function () {
+                expect.parseAssertion('<Buffer> when decoded as <string> <assertion+>');
+            }, 'to throw', '<assertion> cannot have varargs: <Buffer> when decoded as <string> <assertion+>');
+        });
+
+        it('should not accept it alternated with other types', function () {
+            expect(function () {
+                expect.parseAssertion('<Buffer> when decoded as <string> <assertion|any+>');
+            }, 'to throw', '<assertion> can be alternated with other types: <Buffer> when decoded as <string> <assertion|any+>');
+        });
+    });
 });

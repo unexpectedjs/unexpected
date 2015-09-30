@@ -5663,6 +5663,12 @@ describe('unexpected', function () {
             }, 'to throw', 'A type must be given a non-empty name and must match ^[a-z_](?:|[a-z0-9_.-]*[_a-z0-9])$');
         });
 
+        it('throws an expection if the type has a name of "assertion"', function () {
+            expect(function () {
+                clonedExpect.addType({ name: 'assertion', identify: false });
+            }, 'to throw', 'The type with the name assertion already exists');
+        });
+
         it('throw an expection if the type does not specify a correct identify field', function () {
             expect(function () {
                 clonedExpect.addType({ name: 'wat' });
