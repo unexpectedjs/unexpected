@@ -174,7 +174,7 @@ describe('parseAssertion', function () {
         it('should not accept it alternated with other types', function () {
             expect(function () {
                 expect.parseAssertion('<Buffer> when decoded as <string> <assertion|any+>');
-            }, 'to throw', '<assertion> can be alternated with other types: <Buffer> when decoded as <string> <assertion|any+>');
+            }, 'to throw', '<assertion> cannot be alternated with other types: <Buffer> when decoded as <string> <assertion|any+>');
         });
     });
 });
