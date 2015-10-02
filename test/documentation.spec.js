@@ -1603,8 +1603,8 @@ describe("documentation tests", function () {
         expect(/regex/, 'to be a', 'regular expression');
         expect(new Error(), 'to be an', 'Error');
 
-        expect(expect, 'to be a', 'function');
-        expect(expect, 'to be an', 'object');
+        expect(/foo/, 'to be an', 'object');
+        expect(/foo/, 'to be an', 'any');
 
         expect(true, 'to be a boolean');
         expect(5, 'to be a number');

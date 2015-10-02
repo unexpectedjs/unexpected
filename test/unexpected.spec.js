@@ -2484,8 +2484,8 @@ describe('unexpected', function () {
             }, 'to throw exception',
                    "expected null to have property 'b'\n" +
                    "  No matching assertion, did you mean:\n" +
-                   "  <object> [not] to have property <string>\n" +
-                   "  <object> to have [own] property <string> <any>");
+                   "  <object|function> [not] to have property <string>\n" +
+                   "  <object|function> to have [own] property <string> <any>");
 
             expect(function () {
                 expect({a: 'b'}, 'to have property', 'a', 'c');
@@ -2509,7 +2509,7 @@ describe('unexpected', function () {
             }, 'to throw exception',
                    "expected null not to have property 'a', 'b'\n" +
                    "  No matching assertion, did you mean:\n" +
-                   "  <object> [not] to have property <string>");
+                   "  <object|function> [not] to have property <string>");
 
             expect(function () {
                 // property expectations on value expects the property to be present
@@ -2517,7 +2517,7 @@ describe('unexpected', function () {
             }, 'to throw exception',
                    "expected null not to have own property 'a', 'b'\n" +
                    "  No matching assertion, did you mean:\n" +
-                   "  <object> [not] to have own property <string>");
+                   "  <object|function> [not] to have own property <string>");
         });
 
         it('does not support the not-flag in combination with a value argument', function () {
@@ -2526,14 +2526,14 @@ describe('unexpected', function () {
             }, "to throw",
                    "expected { a: 'a' } not to have property 'a', 'a'\n" +
                    "  No matching assertion, did you mean:\n" +
-                   "  <object> [not] to have property <string>");
+                   "  <object|function> [not] to have property <string>");
 
             expect(function () {
                 expect({ a: 'a' }, 'not to have own property', 'a', 'a');
             }, "to throw",
                    "expected { a: 'a' } not to have own property 'a', 'a'\n" +
                    "  No matching assertion, did you mean:\n" +
-                   "  <object> [not] to have own property <string>");
+                   "  <object|function> [not] to have own property <string>");
         });
     });
 
@@ -2674,15 +2674,15 @@ describe('unexpected', function () {
             }, 'to throw',
                    "expected { a: 'foo', b: 'bar' } to have properties 'a', 'b'\n" +
                    "  No matching assertion, did you mean:\n" +
-                   "  <object> [not] to have [own] properties <array>\n" +
-                   "  <object> to have [own] properties <object>");
+                   "  <object|function> [not] to have [own] properties <array>\n" +
+                   "  <object|function> to have [own] properties <object>");
 
             expect(function () {
                 expect({a: 'foo', b: 'bar'}, 'not to have properties', {a: 'foo', b: 'bar'});
             }, 'to throw',
                    "expected { a: 'foo', b: 'bar' } not to have properties { a: 'foo', b: 'bar' }\n" +
                    "  No matching assertion, did you mean:\n" +
-                   "  <object> [not] to have [own] properties <array>");
+                   "  <object|function> [not] to have [own] properties <array>");
         });
     });
 
