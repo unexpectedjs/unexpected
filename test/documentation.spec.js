@@ -18,7 +18,7 @@ describe("documentation tests", function () {
 
     it("api/UnexpectedError.md contains correct examples", function () {
         var testPromises = [];
-        expect.addAssertion("array", "to have item satisfying", function (expect, subject) {
+        expect.addAssertion("<array> to have item satisfying <any+>", function (expect, subject) {
           var args = Array.prototype.slice.call(arguments, 2);
           var promises = subject.map(function (item) {
             return expect.promise(function () {
@@ -79,7 +79,7 @@ describe("documentation tests", function () {
         }
 
         try {
-            expect.addAssertion('detailed to be', function (expect, subject, value) {
+            expect.addAssertion('<any> detailed to be <any>', function (expect, subject, value) {
               expect.errorMode = 'bubble';
               expect.withError(function () {
                 expect(subject, 'to be', value);
@@ -94,7 +94,7 @@ describe("documentation tests", function () {
             expect('f00!', 'detailed to be', 'foo!');
             expect.fail(function (output) {
                 output.error("expected:").nl();
-                output.code("expect.addAssertion('detailed to be', function (expect, subject, value) {").nl();
+                output.code("expect.addAssertion('<any> detailed to be <any>', function (expect, subject, value) {").nl();
                 output.code("  expect.errorMode = 'bubble';").nl();
                 output.code("  expect.withError(function () {").nl();
                 output.code("    expect(subject, 'to be', value);").nl();
@@ -121,7 +121,7 @@ describe("documentation tests", function () {
         }
 
         try {
-            expect.addAssertion('to be completely custom', function (expect, subject) {
+            expect.addAssertion('<any> to be completely custom', function (expect, subject) {
               return expect.withError(function () {
                 expect(subject, 'to satisfy', { custom: true });
               }, function (err) {
@@ -139,7 +139,7 @@ describe("documentation tests", function () {
             expect({ custom: false }, 'to be completely custom');
             expect.fail(function (output) {
                 output.error("expected:").nl();
-                output.code("expect.addAssertion('to be completely custom', function (expect, subject) {").nl();
+                output.code("expect.addAssertion('<any> to be completely custom', function (expect, subject) {").nl();
                 output.code("  return expect.withError(function () {").nl();
                 output.code("    expect(subject, 'to satisfy', { custom: true });").nl();
                 output.code("  }, function (err) {").nl();
@@ -173,7 +173,7 @@ describe("documentation tests", function () {
     it("api/addAssertion.md contains correct examples", function () {
         var testPromises = [];
         var errorMode = 'default'; // use to control the error mode later in the example
-        expect.addAssertion('array', '[not] to be (sorted|ordered)', function (expect, subject, cmp) {
+        expect.addAssertion('<array> [not] to be (sorted|ordered) <function?>', function (expect, subject, cmp) {
           expect.errorMode = errorMode;
           expect(subject, '[not] to equal', [].concat(subject).sort(cmp));
         });
@@ -185,7 +185,7 @@ describe("documentation tests", function () {
         expect([3,2,1], 'to be sorted', function (x, y) { return y - x; });
 
         try {
-            expect.addAssertion('number', 'to be contained by', function (expect, subject, start, finish) {
+            expect.addAssertion('<number> to be contained by', function (expect, subject, start, finish) {
                 expect.subjectOutput = function (output) {
                     output.text('point ').jsNumber(subject);
                 };
@@ -198,7 +198,7 @@ describe("documentation tests", function () {
             expect(4, 'to be contained by', 8, 10);
             expect.fail(function (output) {
                 output.error("expected:").nl();
-                output.code("expect.addAssertion('number', 'to be contained by', function (expect, subject, start, finish) {").nl();
+                output.code("expect.addAssertion('<number> to be contained by', function (expect, subject, start, finish) {").nl();
                 output.code("    expect.subjectOutput = function (output) {").nl();
                 output.code("        output.text('point ').jsNumber(subject);").nl();
                 output.code("    };").nl();
@@ -213,12 +213,14 @@ describe("documentation tests", function () {
             });
         } catch (e) {
             expect(e, "to have message",
-                "expected point 4 to be contained by interval [8;10]"
+                "expected 4 to be contained by 8, 10\n" +
+                "  No matching assertion, did you mean:\n" +
+                "  <number> to be contained by"
             );
         }
 
         try {
-            expect.addAssertion('number', 'to be similar to', function (expect, subject, value, epsilon) {
+            expect.addAssertion('<number> to be similar to', function (expect, subject, value, epsilon) {
                 if (typeof epsilon !== 'number') {
                     epsilon = 1e-9;
                 }
@@ -231,7 +233,7 @@ describe("documentation tests", function () {
             expect(4, 'to be similar to', 4.0001);
             expect.fail(function (output) {
                 output.error("expected:").nl();
-                output.code("expect.addAssertion('number', 'to be similar to', function (expect, subject, value, epsilon) {").nl();
+                output.code("expect.addAssertion('<number> to be similar to', function (expect, subject, value, epsilon) {").nl();
                 output.code("    if (typeof epsilon !== 'number') {").nl();
                 output.code("        epsilon = 1e-9;").nl();
                 output.code("    }").nl();
@@ -246,7 +248,9 @@ describe("documentation tests", function () {
             });
         } catch (e) {
             expect(e, "to have message",
-                "expected 4 to be similar to 4.0001, (epsilon: 1e-9)"
+                "expected 4 to be similar to 4.0001\n" +
+                "  No matching assertion, did you mean:\n" +
+                "  <number> to be similar to"
             );
         }
 
@@ -707,7 +711,7 @@ describe("documentation tests", function () {
             );
         }
 
-        expect.addAssertion('Person', 'to be above legal age', function (expect, subject) {
+        expect.addAssertion('<Person> to be above legal age', function (expect, subject) {
             expect(subject.age, 'to be greater than or equal to', 18);
         });
 

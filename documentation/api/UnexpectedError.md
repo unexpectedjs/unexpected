@@ -25,7 +25,7 @@ output.appendErrorMessage(error);
 This is useful if you want to combine multiple errors in one assertion:
 
 ```js
-expect.addAssertion("array", "to have item satisfying", function (expect, subject) {
+expect.addAssertion("<array> to have item satisfying <any+>", function (expect, subject) {
   var args = Array.prototype.slice.call(arguments, 2);
   var promises = subject.map(function (item) {
     return expect.promise(function () {
@@ -95,7 +95,7 @@ We could for example change the error mode for all the errors in the
 chain to `nested`:
 
 ```js
-expect.addAssertion('detailed to be', function (expect, subject, value) {
+expect.addAssertion('<any> detailed to be <any>', function (expect, subject, value) {
   expect.errorMode = 'bubble';
   expect.withError(function () {
     expect(subject, 'to be', value);
@@ -148,7 +148,7 @@ create the diff. Now you can delegate to that method from
 `expect.fail`:
 
 ```js
-expect.addAssertion('to be completely custom', function (expect, subject) {
+expect.addAssertion('<any> to be completely custom', function (expect, subject) {
   return expect.withError(function () {
     expect(subject, 'to satisfy', { custom: true });
   }, function (err) {

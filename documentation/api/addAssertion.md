@@ -15,7 +15,7 @@ New assertions can be added to Unexpected the following way.
 
 ```js
 var errorMode = 'default'; // use to control the error mode later in the example
-expect.addAssertion('array', '[not] to be (sorted|ordered)', function (expect, subject, cmp) {
+expect.addAssertion('<array> [not] to be (sorted|ordered) <function?>', function (expect, subject, cmp) {
   expect.errorMode = errorMode;
   expect(subject, '[not] to equal', [].concat(subject).sort(cmp));
 });
@@ -34,16 +34,16 @@ expect([3,2,1], 'to be sorted', function (x, y) { return y - x; });
 Let's dissect the different parts of the custom assertion we just
 introduced.
 
-The first parameter to `addAssertion` is a string or an array
-specifying which types the assertion should be defined on. In this
-case the assertion in only defined for arrays. In case the type is not
-specified the assertion will be defined for the type `any`, and would
+The first parameter to `addAssertion` is a string or an array of strings
+stating the patterns this assertion should match. A pattern has the following
+syntax. A word in angle brackets represents a type of either the subject
+or one of the parameters to the assertion. In this case the assertion
+is only defined for arrays. If no subject type is specified,
+the assertion will be defined for the type `any`, and would
 be applicable any type. See the `Extending Unexpected with new types`
 section for more information about the type system in Unexpected.
 
-The second parameter to `addAssertion` is a string or an array stating
-the patterns this assertion should match. A pattern has the following
-syntax. A word in square brackets represents a flag that can either be
+A word in square brackets represents a flag that can either be
 there or not. If the flag is present `expect.flags[flag]` will contain
 the value `true`. In this case `not` is a flag. When a flag it present
 in a nested `expect` it will be inserted if the flag is present;
@@ -52,9 +52,9 @@ vertical bars between them are treated as alternative texts that can
 be used. In this case you can write _ordered_ as an alternative to
 _sorted_.
 
-The last parameter to `addAssertion` is function that will be called
-when `expect` is invoked with an expectation matching the type and
-pattern of the assertion.
+The second and last parameter to `addAssertion` is function that will
+be called when `expect` is invoked with an expectation matching the
+type and pattern of the assertion.
 
 So in this case, when `expect` is called the following way:
 
@@ -67,7 +67,7 @@ following way, where the _not_ flag in the nested expect will be
 removed:
 
 ```js#evaluate:false
-expect.addAssertion('array', '[not] to be (sorted|ordered)', function(expect, [3,2,1], reverse){
+expect.addAssertion('<array> [not] to be (sorted|ordered)', function(expect, [3,2,1], reverse){
     expect([3,2,1], '[not] to equal', [].concat([3,2,1]).sort(reverse));
 });
 ```
@@ -88,7 +88,7 @@ an output function on the assertion.
 Here is a few examples:
 
 ```js
-expect.addAssertion('number', 'to be contained by', function (expect, subject, start, finish) {
+expect.addAssertion('<number> to be contained by', function (expect, subject, start, finish) {
     expect.subjectOutput = function (output) {
         output.text('point ').jsNumber(subject);
     };
@@ -102,11 +102,13 @@ expect(4, 'to be contained by', 8, 10);
 ```
 
 ```output
-expected point 4 to be contained by interval [8;10]
+expected 4 to be contained by 8, 10
+  No matching assertion, did you mean:
+  <number> to be contained by
 ```
 
 ```js
-expect.addAssertion('number', 'to be similar to', function (expect, subject, value, epsilon) {
+expect.addAssertion('<number> to be similar to', function (expect, subject, value, epsilon) {
     if (typeof epsilon !== 'number') {
         epsilon = 1e-9;
     }
@@ -120,7 +122,9 @@ expect(4, 'to be similar to', 4.0001);
 ```
 
 ```output
-expected 4 to be similar to 4.0001, (epsilon: 1e-9)
+expected 4 to be similar to 4.0001
+  No matching assertion, did you mean:
+  <number> to be similar to
 ```
 
 ### Controlling the output of nested expects
