@@ -185,7 +185,7 @@ describe("documentation tests", function () {
         expect([3,2,1], 'to be sorted', function (x, y) { return y - x; });
 
         try {
-            expect.addAssertion('<number> to be contained by', function (expect, subject, start, finish) {
+            expect.addAssertion('<number> to be contained by <number> <number>', function (expect, subject, start, finish) {
                 expect.subjectOutput = function (output) {
                     output.text('point ').jsNumber(subject);
                 };
@@ -198,7 +198,7 @@ describe("documentation tests", function () {
             expect(4, 'to be contained by', 8, 10);
             expect.fail(function (output) {
                 output.error("expected:").nl();
-                output.code("expect.addAssertion('<number> to be contained by', function (expect, subject, start, finish) {").nl();
+                output.code("expect.addAssertion('<number> to be contained by <number> <number>', function (expect, subject, start, finish) {").nl();
                 output.code("    expect.subjectOutput = function (output) {").nl();
                 output.code("        output.text('point ').jsNumber(subject);").nl();
                 output.code("    };").nl();
@@ -213,14 +213,12 @@ describe("documentation tests", function () {
             });
         } catch (e) {
             expect(e, "to have message",
-                "expected 4 to be contained by 8, 10\n" +
-                "  No matching assertion, did you mean:\n" +
-                "  <number> to be contained by"
+                "expected point 4 to be contained by interval [8;10]"
             );
         }
 
         try {
-            expect.addAssertion('<number> to be similar to', function (expect, subject, value, epsilon) {
+            expect.addAssertion('<number> to be similar to <number> <number?>', function (expect, subject, value, epsilon) {
                 if (typeof epsilon !== 'number') {
                     epsilon = 1e-9;
                 }
@@ -233,7 +231,7 @@ describe("documentation tests", function () {
             expect(4, 'to be similar to', 4.0001);
             expect.fail(function (output) {
                 output.error("expected:").nl();
-                output.code("expect.addAssertion('<number> to be similar to', function (expect, subject, value, epsilon) {").nl();
+                output.code("expect.addAssertion('<number> to be similar to <number> <number?>', function (expect, subject, value, epsilon) {").nl();
                 output.code("    if (typeof epsilon !== 'number') {").nl();
                 output.code("        epsilon = 1e-9;").nl();
                 output.code("    }").nl();
@@ -248,9 +246,7 @@ describe("documentation tests", function () {
             });
         } catch (e) {
             expect(e, "to have message",
-                "expected 4 to be similar to 4.0001\n" +
-                "  No matching assertion, did you mean:\n" +
-                "  <number> to be similar to"
+                "expected 4 to be similar to 4.0001, (epsilon: 1e-9)"
             );
         }
 

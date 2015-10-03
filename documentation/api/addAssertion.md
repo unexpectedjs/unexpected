@@ -67,7 +67,7 @@ following way, where the _not_ flag in the nested expect will be
 removed:
 
 ```js#evaluate:false
-expect.addAssertion('<array> [not] to be (sorted|ordered)', function(expect, [3,2,1], reverse){
+expect.addAssertion('<array> [not] to be (sorted|ordered) <function?>', function(expect, [3,2,1], reverse){
     expect([3,2,1], '[not] to equal', [].concat([3,2,1]).sort(reverse));
 });
 ```
@@ -88,7 +88,7 @@ an output function on the assertion.
 Here is a few examples:
 
 ```js
-expect.addAssertion('<number> to be contained by', function (expect, subject, start, finish) {
+expect.addAssertion('<number> to be contained by <number> <number>', function (expect, subject, start, finish) {
     expect.subjectOutput = function (output) {
         output.text('point ').jsNumber(subject);
     };
@@ -102,13 +102,11 @@ expect(4, 'to be contained by', 8, 10);
 ```
 
 ```output
-expected 4 to be contained by 8, 10
-  No matching assertion, did you mean:
-  <number> to be contained by
+expected point 4 to be contained by interval [8;10]
 ```
 
 ```js
-expect.addAssertion('<number> to be similar to', function (expect, subject, value, epsilon) {
+expect.addAssertion('<number> to be similar to <number> <number?>', function (expect, subject, value, epsilon) {
     if (typeof epsilon !== 'number') {
         epsilon = 1e-9;
     }
@@ -122,9 +120,7 @@ expect(4, 'to be similar to', 4.0001);
 ```
 
 ```output
-expected 4 to be similar to 4.0001
-  No matching assertion, did you mean:
-  <number> to be similar to
+expected 4 to be similar to 4.0001, (epsilon: 1e-9)
 ```
 
 ### Controlling the output of nested expects
