@@ -3949,6 +3949,10 @@ describe('unexpected', function () {
                 );
             });
 
+            it('@foo', function () {
+                clonedExpect(new MysteryBox({ baz: 123 }), 'to satisfy', { baz: expect.it('to be a number') });
+            });
+
             it('should delegate to the "to satisfies" assertion defined for the custom type', function () {
                 clonedExpect({
                     foo: new MysteryBox({ baz: 123, quux: 987 }),
