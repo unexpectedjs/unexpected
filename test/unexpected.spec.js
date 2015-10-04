@@ -34,19 +34,19 @@ describe('unexpected', function () {
     var circular = {};
     circular.self = circular;
 
-    expect.addAssertion('when delayed a little bit', function (expect, subject) {
+    expect.addAssertion('<any> when delayed a little bit <assertion>', function (expect, subject) {
         return expect.promise(function (run) {
             setTimeout(run(function () {
-                return expect.shift(subject, 0);
+                return expect.shift();
             }), 1);
         });
-    }).addAssertion('when delayed', function (expect, subject, value) {
+    }).addAssertion('<any> when delayed <number> <assertion>', function (expect, subject, value) {
         return expect.promise(function (run) {
             setTimeout(run(function () {
-                return expect.shift(subject, 1);
+                return expect.shift();
             }), value);
         });
-    }).addAssertion('to inspect as', function (expect, subject, value) {
+    }).addAssertion('<any> to inspect as <string>', function (expect, subject, value) {
         expect(expect.inspect(subject).toString(), 'to equal', value);
     });
 
@@ -4135,7 +4135,7 @@ describe('unexpected', function () {
                     expect('abc', 'when delayed a little bit', 'when delayed a little bit', 'to satisfy', expect.it('when delayed a little bit', 'to equal', 'def')),
                     'to be rejected with',
                         "expected 'abc'\n" +
-                        "when delayed a little bit when delayed a little bit 'to satisfy', expect.it('when delayed a little bit', 'to equal', 'def')\n" +
+                        "when delayed a little bit when delayed a little bit to satisfy expect.it('when delayed a little bit', 'to equal', 'def')\n" +
                         "\n" +
                         "expected 'abc' when delayed a little bit to equal 'def'\n" +
                         "\n" +
@@ -5893,6 +5893,7 @@ describe('unexpected', function () {
         describe('block items as inspected correctly in', function () {
             var clonedExpect = expect.clone().addType({
                 name: 'multiline',
+                base: 'string',
                 identify: function (value) {
                     return typeof value === 'string' && value.indexOf('\n') !== -1;
                 },
@@ -7554,22 +7555,24 @@ describe('unexpected', function () {
             clonedExpect('foo', 'when prepended with foo', expect.it('to equal', 'foofoo'));
         });
 
-        it('inspects multiple arguments correctly', function () {
-            var clonedExpect = expect.clone().addAssertion('<string> when surrounded by <string> <string> <assertion>', function (expect, subject) {
-                return expect.shift('foo' + subject, 2);
-            });
+        describe('with the legacy 2 argument version', function () {
+            it('inspects multiple arguments correctly', function () {
+                var clonedExpect = expect.clone().addAssertion('<string> when surrounded by <string> <string> <assertion>', function (expect, subject) {
+                    return expect.shift('foo' + subject, 2);
+                });
 
-            return expect(function () {
-                clonedExpect('bar', 'when surrounded by', 'foo', 'quux', 'to be a number');
-            }, 'to throw',
-                "expected 'bar' when surrounded by 'foo', 'quux' to be a number"
-            );
+                return expect(function () {
+                    clonedExpect('bar', 'when surrounded by', 'foo', 'quux', 'to be a number');
+                }, 'to throw',
+                    "expected 'bar' when surrounded by 'foo', 'quux' to be a number"
+                );
+            });
         });
 
         describe('with an expect.it function as the next argument', function () {
             it('should succeed', function () {
                 var clonedExpect = expect.clone().addAssertion('<string> when prepended with foo <assertion>', function (expect, subject) {
-                    return expect.shift('foo' + subject, 0);
+                    return expect.shift('foo' + subject);
                 });
                 clonedExpect('foo', 'when prepended with foo', expect.it('to equal', 'foofoo'));
             });
@@ -7577,7 +7580,7 @@ describe('unexpected', function () {
 
         it('should fail when the next argument is a non-expect.it function', function () {
             var clonedExpect = expect.clone().addAssertion('<string> when prepended with foo <assertion>', function (expect, subject) {
-                return expect.shift('foo' + subject, 0);
+                return expect.shift('foo' + subject);
             });
             expect(function () {
                 clonedExpect('foo', 'when prepended with foo', function () {});
