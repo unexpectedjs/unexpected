@@ -7128,7 +7128,7 @@ describe('unexpected', function () {
                         "      cb(new Error('not a number'));\n" +
                         "    }\n" +
                         "  }, 1);\n" +
-                        "}, 'to equal', 125\n" +
+                        "} to equal 125\n" +
                         "  expected Error('not a number') to be falsy"
                 );
             });
@@ -7486,7 +7486,67 @@ describe('unexpected', function () {
         });
     });
 
-    describe('assertion.shift', function () {
+    describe('expect.shift', function () {
+        describe('when preserving the subject by passing no arguments', function () {
+            it('should succeed', function () {
+                var clonedExpect = expect.clone().addAssertion('<string> blabla <assertion>', function (expect, subject) {
+                    return expect.shift();
+                });
+                clonedExpect('foo', 'blabla', 'to equal', 'foo');
+            });
+
+            it('should fail with a diff', function () {
+                var clonedExpect = expect.clone().addAssertion('<string> blabla <assertion>', function (expect, subject) {
+                    return expect.shift();
+                });
+                expect(function () {
+                    clonedExpect('foo', 'blabla', 'to equal', 'foobar');
+                }, 'to throw',
+                  "expected 'foo' blabla to equal 'foobar'\n" +
+                  "\n" +
+                  "-foo\n" +
+                  "+foobar"
+                );
+            });
+        });
+
+        describe('when substituting a different subject by passing a single argument', function () {
+            it('should succeed', function () {
+                var clonedExpect = expect.clone().addAssertion('<string> when appended with bar <assertion>', function (expect, subject) {
+                    return expect.shift(subject + 'bar');
+                });
+                clonedExpect('foo', 'when appended with bar', 'to equal', 'foobar');
+            });
+
+            it('should fail with a diff', function () {
+                var clonedExpect = expect.clone().addAssertion('<string> when appended with bar <assertion>', function (expect, subject) {
+                    return expect.shift(subject + 'bar');
+                });
+                expect(function () {
+                    clonedExpect('crow', 'when appended with bar', 'to equal', 'foobar');
+                }, 'to throw',
+                  "expected 'crow' when appended with bar to equal 'foobar'\n" +
+                  "\n" +
+                  "-crowbar\n" +
+                  "+foobar"
+                );
+            });
+        });
+
+        it('should identify the assertions even when the next assertion fails before shifting', function () {
+            var clonedExpect = expect.clone().addAssertion('<string> when appended with bar <assertion>', function (expect, subject) {
+                if (subject === 'crow') {
+                    expect.fail();
+                }
+                return expect.shift(subject + 'bar');
+            });
+            expect(function () {
+                clonedExpect('crow', 'when appended with bar', 'when appended with bar', 'to equal', 'foobarbar');
+            }, 'to throw',
+              "expected 'crow' when appended with bar when appended with bar to equal 'foobarbar'"
+          );
+        });
+
         it('supports the legacy 3 argument version', function () {
             var clonedExpect = expect.clone().addAssertion('<string> when prepended with foo <assertion>', function (expect, subject) {
                 return this.shift(expect, 'foo' + subject, 0);
