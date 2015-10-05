@@ -7713,6 +7713,10 @@ describe('unexpected', function () {
                     return expect('foo', 'to equal', 'foo').and('to be a string');
                 });
 
+                it('should succeed when another clause is added', function () {
+                    return expect('foo', 'to equal', 'foo').and('to be a string').and('to match', /^f/);
+                });
+
                 it('should work without returning the promise', function () {
                     expect('foo', 'to equal', 'foo').and('to be a string');
                 });
@@ -7747,6 +7751,10 @@ describe('unexpected', function () {
                     return expect('foo', 'when delayed', 5, 'to equal', 'foo').and('to be a string');
                 });
 
+                it('should succeed when another clause is added', function () {
+                    return expect('foo', 'when delayed', 5, 'to equal', 'foo').and('when delayed', 5, 'to be a string').and('when delayed', 2, 'to be a string');
+                });
+
                 it('should fail with a diff when the asynchronous assertion fails', function () {
                     return expect(function () {
                         return expect('foo', 'when delayed', 5, 'to equal', 'bar').and('to be a string');
@@ -7778,6 +7786,10 @@ describe('unexpected', function () {
                 describe('with an expect.it as the second clause', function () {
                     it('should succeed', function () {
                         return expect('foo', 'when delayed', 5, 'to equal', 'foo').and(expect.it('to be a string'));
+                    });
+
+                    it('should succeed when more clauses are added', function () {
+                        return expect('foo', 'when delayed', 5, 'to equal', 'foo').and(expect.it('to be a string')).and('to be a string').and('to be a string');
                     });
 
                     it('should fail with a diff', function () {
