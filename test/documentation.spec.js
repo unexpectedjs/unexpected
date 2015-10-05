@@ -2961,6 +2961,30 @@ describe("documentation tests", function () {
         return expect.promise.all(testPromises);
     });
 
+    it("assertions/function/when-called-with.md contains correct examples", function () {
+        var testPromises = [];
+        function add(a, b) {
+            return a + b;
+        }
+
+        expect(add, 'when called with', [1, 2], 'to equal', 3);
+
+        try {
+            expect(add, 'when called with', [1, 2], 'to equal', 9);
+            expect.fail(function (output) {
+                output.error("expected:").nl();
+                output.code("expect(add, 'when called with', [1, 2], 'to equal', 9);").nl();
+                output.error("to throw");
+            });
+        } catch (e) {
+            expect(e, "to have message",
+                "expected function add(a, b) { return a + b; } when called with [ 1, 2 ] to equal 9\n" +
+                "  expected 3 to equal 9"
+            );
+        }
+        return expect.promise.all(testPromises);
+    });
+
     it("assertions/number/to-be-NaN.md contains correct examples", function () {
         var testPromises = [];
         expect(NaN, 'to be NaN');
