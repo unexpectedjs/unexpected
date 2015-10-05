@@ -685,7 +685,7 @@ Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
         serializeErrorsFromWrappedExpect: false
     };
 
-    function executeExpect(executionContext, subject, testDescriptionString, args) {
+    function executeExpect(subject, testDescriptionString, args) {
         var assertionRule = that.getAssertionRule(subject, testDescriptionString, args);
         var flags = extend({}, assertionRule.flags);
         var wrappedExpect = function () {
@@ -695,14 +695,14 @@ Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
             }).trim();
 
             var args = Array.prototype.slice.call(arguments, 2);
-            return wrappedExpect.callInNestedContext(executionContext, function () {
-                return executeExpect(executionContext, subject, testDescriptionString, args);
+            return wrappedExpect.callInNestedContext(function () {
+                return executeExpect(subject, testDescriptionString, args);
             });
         };
 
         utils.setPrototypeOfOrExtend(wrappedExpect, that._wrappedExpectProto);
 
-        wrappedExpect.executionContext = executionContext;
+        wrappedExpect._context = executionContext;
         wrappedExpect.execute = wrappedExpect;
         wrappedExpect.alternations = assertionRule.alternations;
         wrappedExpect.flags = flags;
@@ -724,7 +724,7 @@ Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
 
     var args = Array.prototype.slice.call(arguments, 2);
     try {
-        var result = executeExpect(executionContext, subject, testDescriptionString, args);
+        var result = executeExpect(subject, testDescriptionString, args);
         if (isPendingPromise(result)) {
             testFrameworkPatch.promiseCreated();
             result = result.then(undefined, function (e) {
@@ -2747,8 +2747,8 @@ module.exports = function createWrappedExpectProto(unexpected) {
 
         fail: function () {
             var args = arguments;
-            var expect = this.executionContext.expect;
-            this.callInNestedContext(this.executionContext, function () {
+            var expect = this._context.expect;
+            this.callInNestedContext(function () {
                 expect.fail.apply(expect, args);
             });
         },
@@ -2775,9 +2775,9 @@ module.exports = function createWrappedExpectProto(unexpected) {
 
             return createStandardErrorMessage(output, that.subjectOutput, that.testDescription, that.argsOutput, options);
         },
-        callInNestedContext: function (executionContext, callback) {
+        callInNestedContext: function (callback) {
             var that = this;
-            var expect = executionContext.expect;
+            var expect = that._context.expect;
             try {
                 var result = oathbreaker(callback());
                 if (isPendingPromise(result)) {
@@ -2796,7 +2796,7 @@ module.exports = function createWrappedExpectProto(unexpected) {
             } catch (e) {
                 if (e && e._isUnexpected) {
                     var wrappedError = new UnexpectedError(that, e);
-                    if (this.executionContext.serializeErrorsFromWrappedExpect) {
+                    if (that._context.serializeErrorsFromWrappedExpect) {
                         expect.setErrorMessage(wrappedError);
                     }
                     throw wrappedError;
@@ -2880,7 +2880,9 @@ module.exports = function makeAndMethod(expect, subject) {
         var args = Array.prototype.slice.call(arguments);
         function executeAnd() {
             if (expect.findTypeOf(args[0]).is('expect.it')) {
-                return args[0](subject);
+                var result = args[0](subject);
+                result.and = makeAndMethod(expect, subject);
+                return result;
             } else {
                 return expect.apply(expect, [subject].concat(args));
             }
@@ -2889,7 +2891,9 @@ module.exports = function makeAndMethod(expect, subject) {
         if (this.isFulfilled()) {
             return executeAnd();
         } else {
-            return this.then(executeAnd);
+            var result = this.then(executeAnd);
+            result.and = makeAndMethod(expect, subject);
+            return result;
         }
     };
 };
@@ -2939,9 +2943,7 @@ function makePromise(body) {
                             noteResolvedValue(value);
                             runningTasks -= 1;
                             fulfillIfDone();
-                        }, function (e) {
-                            reject(e);
-                        });
+                        }, reject);
                     } else {
                         noteResolvedValue(result);
                     }
