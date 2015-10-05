@@ -56,20 +56,20 @@
     "url": "/api/withError/"
   },
   {
-    "label": "to be NaN (number)",
-    "url": "/assertions/number/to-be-NaN/"
+    "label": "when called with (function)",
+    "url": "/assertions/function/when-called-with/"
   },
   {
     "label": "when decoded as (Buffer)",
     "url": "/assertions/Buffer/when-decoded-as/"
   },
   {
-    "label": "to be rejected (Promise)",
-    "url": "/assertions/Promise/to-be-rejected/"
-  },
-  {
     "label": "to be fulfilled (Promise)",
     "url": "/assertions/Promise/to-be-fulfilled/"
+  },
+  {
+    "label": "to be rejected (Promise)",
+    "url": "/assertions/Promise/to-be-rejected/"
   },
   {
     "label": "when fulfilled (Promise)",
@@ -184,6 +184,10 @@
     "url": "/assertions/Error/to-have-message/"
   },
   {
+    "label": "to be NaN (number)",
+    "url": "/assertions/number/to-be-NaN/"
+  },
+  {
     "label": "to be close to (number)",
     "url": "/assertions/number/to-be-close-to/"
   },
@@ -256,12 +260,12 @@
     "url": "/assertions/string/to-be-empty/"
   },
   {
-    "label": "to be greater than (string)",
-    "url": "/assertions/string/to-be-greater-than/"
-  },
-  {
     "label": "to be greater than or equal to (string)",
     "url": "/assertions/string/to-be-greater-than-or-equal-to/"
+  },
+  {
+    "label": "to be greater than (string)",
+    "url": "/assertions/string/to-be-greater-than/"
   },
   {
     "label": "to be less than or equal to (string)",
