@@ -7321,6 +7321,18 @@ describe('unexpected', function () {
                 expect(sum, 'to equal', 7);
             });
         });
+
+        it('should preserve the scope of the containing object when used with "to satisfy"', function () {
+            var myObj = {
+                value: 123,
+                getValue: function () {
+                    return this.value;
+                }
+            };
+            expect(myObj, 'to satisfy', {
+                getValue: expect.it('when called with', [], 'to equal', 123)
+            });
+        });
     });
 
     describe('when passed as parameters to assertion', function () {
