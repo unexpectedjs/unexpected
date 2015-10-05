@@ -7018,11 +7018,23 @@ describe('unexpected', function () {
                    'expected function add(a, b) { return a + b; } when called with [ 3, 4 ] to equal 9\n' +
                     '  expected 7 to equal 9');
         });
+
+        it('should should provide the result as the fulfillment value if no assertion is provided', function () {
+            return expect(add, 'when called with', [3, 4]).then(function (sum) {
+                expect(sum, 'to equal', 7);
+            });
+        });
     });
 
     describe('when passed as parameters to assertion', function () {
         it('should assert that the function invocation produces the correct output', function () {
             expect([3, 4], 'when passed as parameters to', add, 'to equal', 7);
+        });
+
+        it('should should provide the result as the fulfillment value if no assertion is provided', function () {
+            return expect([3, 4], 'passed as parameters to', add).then(function (sum) {
+                expect(sum, 'to equal', 7);
+            });
         });
 
         it('works with an array-like object', function () {
@@ -7050,6 +7062,12 @@ describe('unexpected', function () {
         describe('when invoked as "when passed as parameter to"', function () {
             it('should pass the subject as a single parameter', function () {
                 expect(1, 'when passed as parameter to', add.bind(null, 1), 'to equal', 2);
+            });
+
+            it('should should provide the result as the fulfillment value if no assertion is provided', function () {
+                return expect(2, 'passed as parameter to', add.bind(null, 1)).then(function (sum) {
+                    expect(sum, 'to equal', 3);
+                });
             });
 
             it('should fail with the correct error message and diff', function () {
@@ -8012,6 +8030,12 @@ describe('unexpected', function () {
     describe.skipIf(typeof Buffer === 'undefined', 'when decoded as assertion', function () {
         it('should decode a Buffer instance to utf-8', function () {
             expect(new Buffer('æøå', 'utf-8'), 'when decoded as', 'utf-8', 'to equal', 'æøå');
+        });
+
+        it('should should provide the result as the fulfillment value if no assertion is provided', function () {
+            return expect(new Buffer('æøå', 'utf-8'), 'decoded as', 'utf-8').then(function (result) {
+                expect(result, 'to equal', 'æøå');
+            });
         });
     });
 

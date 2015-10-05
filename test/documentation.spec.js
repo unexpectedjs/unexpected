@@ -1315,6 +1315,12 @@ describe("documentation tests", function () {
                 );
             }
         }
+
+        if (!isBrowser) {
+            return expect(new Buffer([0xe2, 0x98, 0xba]), 'decoded as', 'utf-8').then(function (result) {
+                expect(result, 'to equal', '☺');
+            });
+        }
         return expect.promise.all(testPromises);
     });
 
@@ -2143,6 +2149,10 @@ describe("documentation tests", function () {
                 "  expected 2 to equal 3"
             );
         }
+
+        return expect(10, 'passed as parameter to', increment).then(function (result) {
+            expect(result, 'to equal', 11);
+        });
         return expect.promise.all(testPromises);
     });
 
@@ -2389,7 +2399,11 @@ describe("documentation tests", function () {
             this.value = value;
         }
 
-        expect(123, 'when passed as parameter to constructor', Foo, 'to be a', Foo);
+        expect([123], 'when passed as parameters to constructor', Foo, 'to be a', Foo);
+
+        return expect([1, 3], 'passed as parameters to', add).then(function (result) {
+            expect(result, 'to equal', 4);
+        });
         return expect.promise.all(testPromises);
     });
 
@@ -2982,6 +2996,10 @@ describe("documentation tests", function () {
                 "  expected 3 to equal 9"
             );
         }
+
+        return expect(add, 'called with', [1, 2]).then(function (result) {
+            expect(result, 'to equal', 3);
+        });
         return expect.promise.all(testPromises);
     });
 

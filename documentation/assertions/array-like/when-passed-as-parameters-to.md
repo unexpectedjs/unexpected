@@ -44,5 +44,14 @@ function Foo(value) {
     this.value = value;
 }
 
-expect(123, 'when passed as parameter to constructor', Foo, 'to be a', Foo);
+expect([123], 'when passed as parameters to constructor', Foo, 'to be a', Foo);
+```
+
+If you don't provide an assertion to delegate to, the return value will be provided
+as the fulfillment value of the promise:
+
+```js
+return expect([1, 3], 'passed as parameters to', add).then(function (result) {
+    expect(result, 'to equal', 4);
+});
 ```
