@@ -38,7 +38,6 @@ describe('parseAssertion', function () {
                 ]
             }
         ]);
-
     });
 
     it('accepts assertions without alternations', function () {
@@ -49,6 +48,7 @@ describe('parseAssertion', function () {
             args: [ { minimum: 0, maximum: Infinity, type: { name: 'any' } } ]
         }]);
     });
+
     it('accepts assertions with alternations on the subject', function () {
         var assertion = expect.parseAssertion("<string|array-like> [not] to be empty <any*>");
         expect(assertion, 'to satisfy', [
