@@ -168,7 +168,7 @@ describe('parseAssertion', function () {
         it('should not accept it with a varargs operator', function () {
             expect(function () {
                 expect.parseAssertion('<Buffer> when decoded as <string> <assertion+>');
-            }, 'to throw', '<assertion> cannot have varargs: <Buffer> when decoded as <string> <assertion+>');
+            }, 'to throw', '<assertion+> and <assertion*> are not allowed: <Buffer> when decoded as <string> <assertion+>');
         });
 
         it('should not accept it alternated with other types', function () {
