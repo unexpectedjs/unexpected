@@ -5,10 +5,6 @@ Signature:
 ```js#evaluate:false
 expect.addAssertion(pattern, handler);
 expect.addAssertion([pattern, ...]], handler);
-expect.addAssertion(typeName, pattern, handler);
-expect.addAssertion(typeName, [pattern, ...], handler);
-expect.addAssertion([typeName, ...], pattern, handler);
-expect.addAssertion([typeName, ...], [pattern, ...], handler);
 ```
 
 New assertions can be added to Unexpected the following way.
