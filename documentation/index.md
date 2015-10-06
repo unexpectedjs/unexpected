@@ -126,6 +126,29 @@ The source for Unexpected can be found on
 
 ## Releases
 
+### 10.0.0
+
+* Assertions are now declared with explicit type requirements for
+  the arguments as part of the pattern. This is a breaking change
+  that removes support for the old `addAssertion` syntax where the
+  subject type(s) were passed as the first argument.
+  See [addAssertion](./api/addAssertion/) for more
+  information.
+* The `to be >`, `to be >=`, `to be <`, and `to be <=` assertions
+  have been removed as they clashed with the new type syntax.
+  Please use the fully spelled-out variants: `to be greater than`,
+  `to be less than or equal to`, etc.
+* Inside an assertion you can now access the `errorMode`, `shift`,
+  `flags`, `alternations` properties etc. via the `expect` passed
+  to the assertion. They can still be accessed via `this` as
+  previously, but that is deprecated. (This change actually
+  debuted in 9.12.0).
+* The `when passed as parameter(s) to`, `when called with`,
+  `when decoded as` can now be used standalone, ie. without delegating
+  the result to another assertion in the same `expect` call.
+  In that case they will provide the result as the fulfillment
+  value of the promise.
+
 ### 9.0.0
 
 * Build all error messages lazily. This is an internal refactoring
