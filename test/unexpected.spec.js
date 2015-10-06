@@ -7529,6 +7529,28 @@ describe('unexpected', function () {
             });
         });
 
+        it('should support calling shift multiple times', function () {
+            var clonedExpect = expect.clone().addAssertion('<number> up to [and including] <number> <assertion>', function (expect, subject, value) {
+                expect.errorMode = 'nested';
+                var numbers = [];
+                for (var i = subject ; i < (expect.flags['and including'] ? value + 1 : value) ; i += 1) {
+                    numbers.push(i);
+                }
+                return expect.promise.all(numbers.map(function (number) {
+                    return expect.promise(function () {
+                        return expect.shift(number);
+                    });
+                }));
+            });
+
+            return expect(function () {
+                clonedExpect(5, 'up to and including', 100, 'to be within', 1, 90);
+            }, 'to error',
+                'expected 5 up to and including 100 to be within 1, 90\n' +
+                '  expected 91 to be within 1..90'
+            );
+        });
+
         describe('when substituting a different subject by passing a single argument', function () {
             it('should succeed', function () {
                 var clonedExpect = expect.clone().addAssertion('<string> when appended with bar <assertion>', function (expect, subject) {
