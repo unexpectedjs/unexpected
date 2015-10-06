@@ -34,19 +34,19 @@ describe('unexpected', function () {
     var circular = {};
     circular.self = circular;
 
-    expect.addAssertion('when delayed a little bit', function (expect, subject) {
+    expect.addAssertion('<any> when delayed a little bit <assertion>', function (expect, subject) {
         return expect.promise(function (run) {
             setTimeout(run(function () {
-                return expect.shift(subject, 0);
+                return expect.shift();
             }), 1);
         });
-    }).addAssertion('when delayed', function (expect, subject, value) {
+    }).addAssertion('<any> when delayed <number> <assertion>', function (expect, subject, value) {
         return expect.promise(function (run) {
             setTimeout(run(function () {
-                return expect.shift(subject, 1);
+                return expect.shift();
             }), value);
         });
-    }).addAssertion('to inspect as', function (expect, subject, value) {
+    }).addAssertion('<any> to inspect as <string>', function (expect, subject, value) {
         expect(expect.inspect(subject).toString(), 'to equal', value);
     });
 
@@ -3949,6 +3949,10 @@ describe('unexpected', function () {
                 );
             });
 
+            it('@foo', function () {
+                clonedExpect(new MysteryBox({ baz: 123 }), 'to satisfy', { baz: expect.it('to be a number') });
+            });
+
             it('should delegate to the "to satisfies" assertion defined for the custom type', function () {
                 clonedExpect({
                     foo: new MysteryBox({ baz: 123, quux: 987 }),
@@ -4131,7 +4135,7 @@ describe('unexpected', function () {
                     expect('abc', 'when delayed a little bit', 'when delayed a little bit', 'to satisfy', expect.it('when delayed a little bit', 'to equal', 'def')),
                     'to be rejected with',
                         "expected 'abc'\n" +
-                        "when delayed a little bit when delayed a little bit 'to satisfy', expect.it('when delayed a little bit', 'to equal', 'def')\n" +
+                        "when delayed a little bit when delayed a little bit to satisfy expect.it('when delayed a little bit', 'to equal', 'def')\n" +
                         "\n" +
                         "expected 'abc' when delayed a little bit to equal 'def'\n" +
                         "\n" +
@@ -5889,6 +5893,7 @@ describe('unexpected', function () {
         describe('block items as inspected correctly in', function () {
             var clonedExpect = expect.clone().addType({
                 name: 'multiline',
+                base: 'string',
                 identify: function (value) {
                     return typeof value === 'string' && value.indexOf('\n') !== -1;
                 },
@@ -7013,11 +7018,23 @@ describe('unexpected', function () {
                    'expected function add(a, b) { return a + b; } when called with [ 3, 4 ] to equal 9\n' +
                     '  expected 7 to equal 9');
         });
+
+        it('should should provide the result as the fulfillment value if no assertion is provided', function () {
+            return expect(add, 'when called with', [3, 4]).then(function (sum) {
+                expect(sum, 'to equal', 7);
+            });
+        });
     });
 
     describe('when passed as parameters to assertion', function () {
         it('should assert that the function invocation produces the correct output', function () {
             expect([3, 4], 'when passed as parameters to', add, 'to equal', 7);
+        });
+
+        it('should should provide the result as the fulfillment value if no assertion is provided', function () {
+            return expect([3, 4], 'passed as parameters to', add).then(function (sum) {
+                expect(sum, 'to equal', 7);
+            });
         });
 
         it('works with an array-like object', function () {
@@ -7045,6 +7062,12 @@ describe('unexpected', function () {
         describe('when invoked as "when passed as parameter to"', function () {
             it('should pass the subject as a single parameter', function () {
                 expect(1, 'when passed as parameter to', add.bind(null, 1), 'to equal', 2);
+            });
+
+            it('should should provide the result as the fulfillment value if no assertion is provided', function () {
+                return expect(2, 'passed as parameter to', add.bind(null, 1)).then(function (sum) {
+                    expect(sum, 'to equal', 3);
+                });
             });
 
             it('should fail with the correct error message and diff', function () {
@@ -7124,7 +7147,7 @@ describe('unexpected', function () {
                         "      cb(new Error('not a number'));\n" +
                         "    }\n" +
                         "  }, 1);\n" +
-                        "}, 'to equal', 125\n" +
+                        "} to equal 125\n" +
                         "  expected Error('not a number') to be falsy"
                 );
             });
@@ -7482,7 +7505,89 @@ describe('unexpected', function () {
         });
     });
 
-    describe('assertion.shift', function () {
+    describe('expect.shift', function () {
+        describe('when preserving the subject by passing no arguments', function () {
+            it('should succeed', function () {
+                var clonedExpect = expect.clone().addAssertion('<string> blabla <assertion>', function (expect, subject) {
+                    return expect.shift();
+                });
+                clonedExpect('foo', 'blabla', 'to equal', 'foo');
+            });
+
+            it('should fail with a diff', function () {
+                var clonedExpect = expect.clone().addAssertion('<string> blabla <assertion>', function (expect, subject) {
+                    return expect.shift();
+                });
+                expect(function () {
+                    clonedExpect('foo', 'blabla', 'to equal', 'foobar');
+                }, 'to throw',
+                  "expected 'foo' blabla to equal 'foobar'\n" +
+                  "\n" +
+                  "-foo\n" +
+                  "+foobar"
+                );
+            });
+        });
+
+        it('should support calling shift multiple times', function () {
+            var clonedExpect = expect.clone().addAssertion('<number> up to [and including] <number> <assertion>', function (expect, subject, value) {
+                expect.errorMode = 'nested';
+                var numbers = [];
+                for (var i = subject ; i < (expect.flags['and including'] ? value + 1 : value) ; i += 1) {
+                    numbers.push(i);
+                }
+                return expect.promise.all(numbers.map(function (number) {
+                    return expect.promise(function () {
+                        return expect.shift(number);
+                    });
+                }));
+            });
+
+            return expect(function () {
+                clonedExpect(5, 'up to and including', 100, 'to be within', 1, 90);
+            }, 'to error',
+                'expected 5 up to and including 100 to be within 1, 90\n' +
+                '  expected 91 to be within 1..90'
+            );
+        });
+
+        describe('when substituting a different subject by passing a single argument', function () {
+            it('should succeed', function () {
+                var clonedExpect = expect.clone().addAssertion('<string> when appended with bar <assertion>', function (expect, subject) {
+                    return expect.shift(subject + 'bar');
+                });
+                clonedExpect('foo', 'when appended with bar', 'to equal', 'foobar');
+            });
+
+            it('should fail with a diff', function () {
+                var clonedExpect = expect.clone().addAssertion('<string> when appended with bar <assertion>', function (expect, subject) {
+                    return expect.shift(subject + 'bar');
+                });
+                expect(function () {
+                    clonedExpect('crow', 'when appended with bar', 'to equal', 'foobar');
+                }, 'to throw',
+                  "expected 'crow' when appended with bar to equal 'foobar'\n" +
+                  "\n" +
+                  "-crowbar\n" +
+                  "+foobar"
+                );
+            });
+        });
+
+        it('should identify the assertions even when the next assertion fails before shifting', function () {
+            var clonedExpect = expect.clone().addAssertion('<string> when appended with bar <assertion>', function (expect, subject) {
+                if (subject === 'crow') {
+                    expect.fail();
+                }
+                return expect.shift(subject + 'bar');
+            });
+            expect(function () {
+                clonedExpect('crow', 'when appended with bar', 'when appended with bar', 'to equal', 'foobarbar');
+            }, 'to throw',
+              "expected 'crow' when appended with bar when appended with bar to equal 'foobarbar'"
+          );
+        });
+
         it('supports the legacy 3 argument version', function () {
             var clonedExpect = expect.clone().addAssertion('<string> when prepended with foo <assertion>', function (expect, subject) {
                 return this.shift(expect, 'foo' + subject, 0);
@@ -7490,22 +7595,24 @@ describe('unexpected', function () {
             clonedExpect('foo', 'when prepended with foo', expect.it('to equal', 'foofoo'));
         });
 
-        it('inspects multiple arguments correctly', function () {
-            var clonedExpect = expect.clone().addAssertion('<string> when surrounded by <string> <string> <assertion>', function (expect, subject) {
-                return expect.shift('foo' + subject, 2);
-            });
+        describe('with the legacy 2 argument version', function () {
+            it('inspects multiple arguments correctly', function () {
+                var clonedExpect = expect.clone().addAssertion('<string> when surrounded by <string> <string> <assertion>', function (expect, subject) {
+                    return expect.shift('foo' + subject, 2);
+                });
 
-            return expect(function () {
-                clonedExpect('bar', 'when surrounded by', 'foo', 'quux', 'to be a number');
-            }, 'to throw',
-                "expected 'bar' when surrounded by 'foo', 'quux' to be a number"
-            );
+                return expect(function () {
+                    clonedExpect('bar', 'when surrounded by', 'foo', 'quux', 'to be a number');
+                }, 'to throw',
+                    "expected 'bar' when surrounded by 'foo', 'quux' to be a number"
+                );
+            });
         });
 
         describe('with an expect.it function as the next argument', function () {
             it('should succeed', function () {
                 var clonedExpect = expect.clone().addAssertion('<string> when prepended with foo <assertion>', function (expect, subject) {
-                    return expect.shift('foo' + subject, 0);
+                    return expect.shift('foo' + subject);
                 });
                 clonedExpect('foo', 'when prepended with foo', expect.it('to equal', 'foofoo'));
             });
@@ -7513,7 +7620,7 @@ describe('unexpected', function () {
 
         it('should fail when the next argument is a non-expect.it function', function () {
             var clonedExpect = expect.clone().addAssertion('<string> when prepended with foo <assertion>', function (expect, subject) {
-                return expect.shift('foo' + subject, 0);
+                return expect.shift('foo' + subject);
             });
             expect(function () {
                 clonedExpect('foo', 'when prepended with foo', function () {});
@@ -7945,6 +8052,12 @@ describe('unexpected', function () {
     describe.skipIf(typeof Buffer === 'undefined', 'when decoded as assertion', function () {
         it('should decode a Buffer instance to utf-8', function () {
             expect(new Buffer('æøå', 'utf-8'), 'when decoded as', 'utf-8', 'to equal', 'æøå');
+        });
+
+        it('should should provide the result as the fulfillment value if no assertion is provided', function () {
+            return expect(new Buffer('æøå', 'utf-8'), 'decoded as', 'utf-8').then(function (result) {
+                expect(result, 'to equal', 'æøå');
+            });
         });
     });
 
