@@ -1168,6 +1168,50 @@ describe("documentation tests", function () {
         return expect.promise.all(testPromises);
     });
 
+    it("api/shift.md contains correct examples", function () {
+        var testPromises = [];
+        expect.addAssertion('<string> when parsed as an integer <assertion>', function (expect, subject) {
+            expect(subject, 'to match', /^[1-9][0-9]*$/);
+            return expect.shift(parseInt(subject, 10));
+        });
+
+        expect('42', 'when parsed as an integer', 'to be greater than', 10);
+
+        expect = unexpected.clone();
+        expect.output.preferredWidth = 80;
+
+        expect.addAssertion('<string> [when] parsed as an integer <assertion?>', function (expect, subject) {
+            expect(subject, 'to match', /^[1-9][0-9]*$/);
+            return expect.shift(parseInt(subject, 10));
+        });
+
+        return expect('42', 'parsed as an integer').then(function (integer) {
+            return expect(integer, 'to be within', 30, 50);
+        });
+
+        expect.addAssertion('<number> up to [and including] <number> <assertion?>', function (expect, subject, value) {
+            expect.errorMode = 'nested';
+            var numbers = [];
+            for (var i = subject ; i < (expect.flags['and including'] ? value + 1 : value) ; i += 1) {
+                numbers.push(i);
+            }
+            return expect.promise.all(numbers.map(function (number) {
+                return expect.promise(function () {
+                    return expect.shift(number);
+                });
+            }));
+        });
+
+        expect(5, 'up to and including', 100, 'to be greater than', 4);
+
+        testPromises.push(expect.promise(function () {
+            return expect(10, 'up to', 20).then(function (numbers) {
+                expect(numbers, 'to have length', 10);
+            });
+        }));
+        return expect.promise.all(testPromises);
+    });
+
     it("api/use.md contains correct examples", function () {
         var testPromises = [];
         function IntegerInterval(from, to) {
