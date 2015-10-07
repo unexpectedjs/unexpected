@@ -65,7 +65,7 @@ Include `unexpected.js`.
 <script src="unexpected.js"></script>
 ```
 
-this will expose the expect function under the following namespace:
+This will expose the `expect` function under the following namespace:
 
 ```js#evaluate:false
 var expect = weknowhow.expect;
@@ -109,7 +109,7 @@ describe('math.js', function () {
       expect(add, 'to be a', 'function');
     });
 
-    it('does addition on numbers', function () {
+    it('adds numbers', function () {
       expect(add(1, 3), 'to be', 4);
     });
   });
