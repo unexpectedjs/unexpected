@@ -4508,7 +4508,7 @@ describe('unexpected', function () {
                     clonedExpect({0: 0, 1: false, 2: 'abc'}, 'to have values satisfying', 'to be a number after a short delay'),
                     'to be rejected with',
                     "expected { 0: 0, 1: false, 2: 'abc' }\n" +
-                    "to have values satisfying 'to be a number after a short delay'\n" +
+                    "to have values satisfying to be a number after a short delay\n" +
                     "\n" +
                     "{\n" +
                     "  0: 0,\n" +

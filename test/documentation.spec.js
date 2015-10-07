@@ -949,7 +949,7 @@ describe("documentation tests", function () {
         }).caught(function (e) {
             expect(e, "to have message",
                 "expected { a: '0', b: 1 }\n" +
-                "to have values satisfying 'to be a number after a short delay'\n" +
+                "to have values satisfying to be a number after a short delay\n" +
                 "\n" +
                 "{\n" +
                 "  a: '0', // should be a number after a short delay\n" +
@@ -1065,7 +1065,7 @@ describe("documentation tests", function () {
                 "       2\n" +
                 "     ]\n" +
                 "  2: expected { a: '0', b: 1 }\n" +
-                "     to have values satisfying 'to be a number after a short delay'\n" +
+                "     to have values satisfying to be a number after a short delay\n" +
                 "\n" +
                 "     {\n" +
                 "       a: '0', // should be a number after a short delay\n" +
@@ -1155,7 +1155,7 @@ describe("documentation tests", function () {
                 "  foo: ⨯ expected '42' to be a number after a short delay\n" +
                 "  bar: ✓\n" +
                 "  baz: ⨯ expected { a: '1', b: 2 }\n" +
-                "         to have values satisfying 'to be a number after a short delay'\n" +
+                "         to have values satisfying to be a number after a short delay\n" +
                 "\n" +
                 "         {\n" +
                 "           a: '1', // should be a number after a short delay\n" +
@@ -3693,7 +3693,7 @@ describe("documentation tests", function () {
         } catch (e) {
             expect(e, "to have message",
                 "expected object to have values satisfying\n" +
-                "'to have items satisfying', expect.it('to be a number')\n" +
+                "to have items satisfying expect.it('to be a number')\n" +
                 "        .and('to be below', 8)\n" +
                 "\n" +
                 "{\n" +

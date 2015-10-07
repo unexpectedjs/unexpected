@@ -61,7 +61,7 @@ return expect.promise.all({
 
 ```output
 expected { a: '0', b: 1 }
-to have values satisfying 'to be a number after a short delay'
+to have values satisfying to be a number after a short delay
 
 {
   a: '0', // should be a number after a short delay
