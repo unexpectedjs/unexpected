@@ -138,7 +138,7 @@ describe('parseAssertion', function () {
                     assertion: 'when decoded as',
                     args: [
                         { type: { name: 'string' }, minimum: 1, maximum: 1 },
-                        { type: { name: 'string' }, minimum: 1, maximum: 1 },
+                        { type: { name: 'assertion-string' }, minimum: 1, maximum: 1 },
                         { type: { name: 'any' }, minimum: 0, maximum: Infinity }
                     ]
                 },
