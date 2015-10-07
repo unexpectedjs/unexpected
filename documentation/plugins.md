@@ -22,9 +22,6 @@ Here's a partial list of plugins for Unexpected:
   EXIF data of images (node.js only).
 * [unexpected-express](https://github.com/unexpectedjs/unexpected-express/): Express
   app/middleware assertions with a declarative syntax.
-* [unexpected-fs](https://github.com/unexpectedjs/unexpected-fs/): Assertions for
-  files and directories on disc, including mock file system support via
-  [mock-js](https://github.com/tschaub/mock-fs).
 * [unexpected-http](https://github.com/unexpectedjs/unexpected-http/): Assertions for
   testing local or remote HTTP servers.
   Browser-compatible via browserify (experimental).
@@ -54,14 +51,14 @@ Here's a partial list of plugins for Unexpected:
 The recommended way to get plugins is installing them via npm:
 
 ```
-$ npm install unexpected-fs
+$ npm install unexpected-dom
 ```
 
 And then in your test suite:
 
 ```js#evaluate:false
 var expect = require('unexpected').clone()
-    .use(require('unexpected-fs'));
+    .use(require('unexpected-dom'));
 ```
 
 For plugins that work in the browser, you'll either need to add an extra `<script>`, or
