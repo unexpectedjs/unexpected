@@ -138,6 +138,9 @@ The source for Unexpected can be found on
   have been removed as they clashed with the new type syntax.
   Please use the fully spelled-out variants: `to be greater than`,
   `to be less than or equal to`, etc.
+* The `[not] to begin with`, `[not] to end with`, and
+  `[not] to contain` assertions now require strings as the needle(s).
+  Previously they supported any type, which would then be stringified.
 * Inside an assertion you can now access the `errorMode`, `shift`,
   `flags`, `alternations` properties etc. via the `expect` passed
   to the assertion. They can still be accessed via `this` as
