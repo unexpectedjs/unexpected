@@ -40,6 +40,10 @@
     "url": "/api/promise-settle/"
   },
   {
+    "label": "shift (api)",
+    "url": "/api/shift/"
+  },
+  {
     "label": "toString (api)",
     "url": "/api/toString/"
   },
@@ -188,12 +192,12 @@
     "url": "/assertions/number/to-be-NaN/"
   },
   {
-    "label": "to be close to (number)",
-    "url": "/assertions/number/to-be-close-to/"
-  },
-  {
     "label": "to be finite (number)",
     "url": "/assertions/number/to-be-finite/"
+  },
+  {
+    "label": "to be close to (number)",
+    "url": "/assertions/number/to-be-close-to/"
   },
   {
     "label": "to be greater than or equal to (number)",
@@ -260,12 +264,12 @@
     "url": "/assertions/string/to-be-empty/"
   },
   {
-    "label": "to be greater than or equal to (string)",
-    "url": "/assertions/string/to-be-greater-than-or-equal-to/"
-  },
-  {
     "label": "to be greater than (string)",
     "url": "/assertions/string/to-be-greater-than/"
+  },
+  {
+    "label": "to be greater than or equal to (string)",
+    "url": "/assertions/string/to-be-greater-than-or-equal-to/"
   },
   {
     "label": "to be less than or equal to (string)",

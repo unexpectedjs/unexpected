@@ -140,6 +140,12 @@ nav li.active a {
   margin-bottom: 7px;
   font-size: 1.5em;
 }
+.content > .declarations {
+  list-style: none;
+  padding: 0;
+  color: #646464;
+  line-height: .6;
+}
 .has-sidebar .main {
   left: 330px;
 }

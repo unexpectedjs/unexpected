@@ -205,6 +205,41 @@
         </li>
         
         <li>
+            <h3>function</h3>
+            <ul>
+                
+                <li class="">
+                    <a href="../to-call-the-callback">to call the callback</a>
+                </li>
+                
+                <li class="">
+                    <a href="../to-call-the-callback-with-error">to call the callback with error</a>
+                </li>
+                
+                <li class="">
+                    <a href="../to-call-the-callback-without-error">to call the callback without error</a>
+                </li>
+                
+                <li class="">
+                    <a href="../to-error">to error</a>
+                </li>
+                
+                <li class="">
+                    <a href="../to-have-arity">to have arity</a>
+                </li>
+                
+                <li class="">
+                    <a href="../to-throw">to throw</a>
+                </li>
+                
+                <li class="active">
+                    <a href="">when called with</a>
+                </li>
+                
+            </ul>
+        </li>
+        
+        <li>
             <h3>boolean</h3>
             <ul>
                 
@@ -249,41 +284,6 @@
                 
                 <li class="">
                     <a href="../../object/to-have-values-satisfying">to have values satisfying</a>
-                </li>
-                
-            </ul>
-        </li>
-        
-        <li>
-            <h3>function</h3>
-            <ul>
-                
-                <li class="">
-                    <a href="../to-call-the-callback">to call the callback</a>
-                </li>
-                
-                <li class="">
-                    <a href="../to-call-the-callback-with-error">to call the callback with error</a>
-                </li>
-                
-                <li class="">
-                    <a href="../to-call-the-callback-without-error">to call the callback without error</a>
-                </li>
-                
-                <li class="">
-                    <a href="../to-error">to error</a>
-                </li>
-                
-                <li class="">
-                    <a href="../to-have-arity">to have arity</a>
-                </li>
-                
-                <li class="">
-                    <a href="../to-throw">to throw</a>
-                </li>
-                
-                <li class="active">
-                    <a href="">when called with</a>
                 </li>
                 
             </ul>
@@ -371,6 +371,13 @@
     <div class="main" tabindex="-1">
         <div class="content">
             <h1>when called with</h1>
+            
+                <ul class="declarations">
+                </p>
+                    <li>&lt;function&gt; when called with &lt;array-like&gt; &lt;assertion?&gt;</li>
+                
+                </ul>
+            
             <p>Apply the subject function to an array of parameters, then delegate the return value to another assertion.</p>
 <div class="code lang-javascript">
   <div><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">add</span><span style="color: #000000">(</span>a<span style="color: #000000">,</span>&nbsp;b<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
@@ -386,6 +393,12 @@
   <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
   <div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #0086b3">3</span>&nbsp;<span style="color: red; font-weight: bold">to&nbsp;equal</span>&nbsp;<span style="color: #0086b3">9</span></div>
 </div></div>
+</div><p>If you don&#39;t provide an assertion to delegate to, the return value will be provided
+as the fulfillment value of the promise:</p>
+<div class="code lang-javascript">
+  <div><span style="color: #a71d5d">return</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>add<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'called&nbsp;with'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #000000">[</span><span style="color: #0086b3">1</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">2</span><span style="color: #000000">]).</span><span style="color: #000000">then</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>result<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>result<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;equal'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">3</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #000000">});</span></div>
 </div>
         </div>
     </div>

@@ -84,6 +84,10 @@
         </li>
         
         <li class="">
+            <a href="../shift">shift</a>
+        </li>
+        
+        <li class="">
             <a href="../toString">toString</a>
         </li>
         
@@ -122,7 +126,7 @@ you can append the error message to an output the following way:</p>
   <div>output<span style="color: #000000">.</span><span style="color: #000000">appendErrorMessage</span><span style="color: #000000">(</span>error<span style="color: #000000">);</span></div>
 </div><p>This is useful if you want to combine multiple errors in one assertion:</p>
 <div class="code lang-javascript">
-  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span><span style="color: #df5000">&quot;array&quot;</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">&quot;to&nbsp;have&nbsp;item&nbsp;satisfying&quot;</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>expect<span style="color: #000000">,</span>&nbsp;subject<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span><span style="color: #df5000">&quot;&lt;array&gt;&nbsp;to&nbsp;have&nbsp;item&nbsp;satisfying&nbsp;&lt;any+&gt;&quot;</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>expect<span style="color: #000000">,</span>&nbsp;subject<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
   <div>&nbsp;&nbsp;<span style="color: #a71d5d">var</span>&nbsp;args&nbsp;<span style="color: #a71d5d">=</span>&nbsp;Array<span style="color: #000000">.</span>prototype<span style="color: #000000">.</span>slice<span style="color: #000000">.</span><span style="color: #000000">call</span><span style="color: #000000">(</span>arguments<span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">2</span><span style="color: #000000">);</span></div>
   <div>&nbsp;&nbsp;<span style="color: #a71d5d">var</span>&nbsp;promises&nbsp;<span style="color: #a71d5d">=</span>&nbsp;subject<span style="color: #000000">.</span><span style="color: #000000">map</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>item<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">promise</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
@@ -198,7 +202,7 @@ a new error.</p>
 <p>We could for example change the error mode for all the errors in the
 chain to <code>nested</code>:</p>
 <div class="code lang-javascript">
-  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span><span style="color: #df5000">'detailed&nbsp;to&nbsp;be'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>expect<span style="color: #000000">,</span>&nbsp;subject<span style="color: #000000">,</span>&nbsp;value<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span><span style="color: #df5000">'&lt;any&gt;&nbsp;detailed&nbsp;to&nbsp;be&nbsp;&lt;any&gt;'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>expect<span style="color: #000000">,</span>&nbsp;subject<span style="color: #000000">,</span>&nbsp;value<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
   <div>&nbsp;&nbsp;expect<span style="color: #000000">.</span>errorMode&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #df5000">'bubble'</span><span style="color: #000000">;</span></div>
   <div>&nbsp;&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">withError</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>subject<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be'</span><span style="color: #000000">,</span>&nbsp;value<span style="color: #000000">);</span></div>
@@ -250,7 +254,7 @@ first ancestor error that contains a diff and return the method to
 create the diff. Now you can delegate to that method from
 <code>expect.fail</code>:</p>
 <div class="code lang-javascript">
-  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span><span style="color: #df5000">'to&nbsp;be&nbsp;completely&nbsp;custom'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>expect<span style="color: #000000">,</span>&nbsp;subject<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span><span style="color: #df5000">'&lt;any&gt;&nbsp;to&nbsp;be&nbsp;completely&nbsp;custom'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>expect<span style="color: #000000">,</span>&nbsp;subject<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
   <div>&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">withError</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>subject<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;satisfy'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #000000">{</span>&nbsp;custom<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">true</span>&nbsp;<span style="color: #000000">});</span></div>
   <div>&nbsp;&nbsp;<span style="color: #000000">},</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>err<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>

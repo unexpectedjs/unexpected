@@ -205,6 +205,41 @@
         </li>
         
         <li>
+            <h3>function</h3>
+            <ul>
+                
+                <li class="">
+                    <a href="../../function/to-call-the-callback">to call the callback</a>
+                </li>
+                
+                <li class="">
+                    <a href="../../function/to-call-the-callback-with-error">to call the callback with error</a>
+                </li>
+                
+                <li class="">
+                    <a href="../../function/to-call-the-callback-without-error">to call the callback without error</a>
+                </li>
+                
+                <li class="">
+                    <a href="../../function/to-error">to error</a>
+                </li>
+                
+                <li class="">
+                    <a href="../../function/to-have-arity">to have arity</a>
+                </li>
+                
+                <li class="">
+                    <a href="../../function/to-throw">to throw</a>
+                </li>
+                
+                <li class="">
+                    <a href="../../function/when-called-with">when called with</a>
+                </li>
+                
+            </ul>
+        </li>
+        
+        <li>
             <h3>boolean</h3>
             <ul>
                 
@@ -249,41 +284,6 @@
                 
                 <li class="">
                     <a href="../../object/to-have-values-satisfying">to have values satisfying</a>
-                </li>
-                
-            </ul>
-        </li>
-        
-        <li>
-            <h3>function</h3>
-            <ul>
-                
-                <li class="">
-                    <a href="../../function/to-call-the-callback">to call the callback</a>
-                </li>
-                
-                <li class="">
-                    <a href="../../function/to-call-the-callback-with-error">to call the callback with error</a>
-                </li>
-                
-                <li class="">
-                    <a href="../../function/to-call-the-callback-without-error">to call the callback without error</a>
-                </li>
-                
-                <li class="">
-                    <a href="../../function/to-error">to error</a>
-                </li>
-                
-                <li class="">
-                    <a href="../../function/to-have-arity">to have arity</a>
-                </li>
-                
-                <li class="">
-                    <a href="../../function/to-throw">to throw</a>
-                </li>
-                
-                <li class="">
-                    <a href="../../function/when-called-with">when called with</a>
                 </li>
                 
             </ul>
@@ -371,12 +371,17 @@
     <div class="main" tabindex="-1">
         <div class="content">
             <h1>to be greater than or equal to</h1>
+            
+                <ul class="declarations">
+                </p>
+                    <li>&lt;string&gt; not to be greater than or equal to &lt;string&gt;</li>
+                
+                </ul>
+            
             <p>Asserts that a string is greater than or equal to another string using
 the <code>&gt;=</code> operator.</p>
 <div class="code lang-javascript">
   <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #df5000">'b'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;greater&nbsp;than&nbsp;or&nbsp;equal&nbsp;to'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'b'</span><span style="color: #000000">);</span></div>
-  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #df5000">'c'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;&gt;='</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'b'</span><span style="color: #000000">);</span></div>
-  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #df5000">'c'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'&gt;='</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'c'</span><span style="color: #000000">);</span></div>
 </div><p>In case of a failing expectation you get the following output:</p>
 <div class="code lang-javascript">
   <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #df5000">'a'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;greater&nbsp;than&nbsp;or&nbsp;equal&nbsp;to'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'b'</span><span style="color: #000000">);</span></div>
@@ -385,7 +390,6 @@ the <code>&gt;=</code> operator.</p>
 </div><p>This assertion can be negated using the <code>not</code> flag:</p>
 <div class="code lang-javascript">
   <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #df5000">'a'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'not&nbsp;to&nbsp;be&nbsp;greater&nbsp;than&nbsp;or&nbsp;equal&nbsp;to'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'b'</span><span style="color: #000000">);</span></div>
-  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #df5000">'b'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'not&nbsp;to&nbsp;be&nbsp;&gt;='</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'c'</span><span style="color: #000000">);</span></div>
 </div><p>In case of a failing expectation you get the following output:</p>
 <div class="code lang-javascript">
   <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #df5000">'a'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'not&nbsp;to&nbsp;be&nbsp;greater&nbsp;than&nbsp;or&nbsp;equal&nbsp;to'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'a'</span><span style="color: #000000">);</span></div>

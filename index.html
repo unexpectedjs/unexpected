@@ -102,7 +102,7 @@
 <p>Include <code>unexpected.js</code>.</p>
 <div class="code lang-html">
   <div><span style="color: #999">&lt;</span><span style="color: white">script&nbsp;</span><span style="color: #3CDAFF">src</span><span style="color: #999">=&quot;</span><span style="color: #FFAA27">unexpected.js</span><span style="color: #999">&quot;&gt;&lt;/</span><span style="color: white">script</span><span style="color: #999">&gt;</span></div>
-</div><p>this will expose the expect function under the following namespace:</p>
+</div><p>This will expose the <code>expect</code> function under the following namespace:</p>
 <div class="code lang-javascript">
   <div><span style="color: #FFAA27">var</span>&nbsp;expect&nbsp;<span style="color: #3CDAFF">=</span>&nbsp;weknowhow<span style="color: #999">.</span>expect<span style="color: #999">;</span></div>
 </div><h3 id="requirejs">RequireJS</h3>
@@ -132,7 +132,7 @@
   <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect<span style="color: #999">(</span>add<span style="color: #999">,</span>&nbsp;<span style="color: #3CDAFF">'to&nbsp;be&nbsp;a'</span><span style="color: #999">,</span>&nbsp;<span style="color: #3CDAFF">'function'</span><span style="color: #999">);</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #999">});</span></div>
   <div>&nbsp;</div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;it<span style="color: #999">(</span><span style="color: #3CDAFF">'does&nbsp;addition&nbsp;on&nbsp;numbers'</span><span style="color: #999">,</span>&nbsp;<span style="color: #FFAA27">function</span>&nbsp;<span style="color: #999">()</span>&nbsp;<span style="color: #999">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;it<span style="color: #999">(</span><span style="color: #3CDAFF">'adds&nbsp;numbers'</span><span style="color: #999">,</span>&nbsp;<span style="color: #FFAA27">function</span>&nbsp;<span style="color: #999">()</span>&nbsp;<span style="color: #999">{</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect<span style="color: #999">(</span>add<span style="color: #999">(</span><span style="color: white">1</span><span style="color: #999">,</span>&nbsp;<span style="color: white">3</span><span style="color: #999">),</span>&nbsp;<span style="color: #3CDAFF">'to&nbsp;be'</span><span style="color: #999">,</span>&nbsp;<span style="color: white">4</span><span style="color: #999">);</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #999">});</span></div>
   <div>&nbsp;&nbsp;<span style="color: #999">});</span></div>
@@ -143,6 +143,32 @@ and shown/processed by the test runner.</p>
 <p>The source for Unexpected can be found on
 <a href="https://github.com/unexpectedjs/unexpected">Github</a>.</p>
 <h2 id="releases">Releases</h2>
+<h3 id="10-0-0">10.0.0</h3>
+<ul>
+<li>Assertions are now declared with explicit type requirements for
+the arguments as part of the pattern. This is a breaking change
+that removes support for the old <code>addAssertion</code> syntax where the
+subject type(s) were passed as the first argument.
+See <a href="./api/addAssertion/">addAssertion</a> for more
+information.</li>
+<li>The <code>to be &gt;</code>, <code>to be &gt;=</code>, <code>to be &lt;</code>, and <code>to be &lt;=</code> assertions
+have been removed as they clashed with the new type syntax.
+Please use the fully spelled-out variants: <code>to be greater than</code>,
+<code>to be less than or equal to</code>, etc.</li>
+<li>The <code>[not] to begin with</code>, <code>[not] to end with</code>, and
+<code>[not] to contain</code> assertions now require strings as the needle(s).
+Previously they supported any type, which would then be stringified.</li>
+<li>Inside an assertion you can now access the <code>errorMode</code>, <code>shift</code>,
+<code>flags</code>, <code>alternations</code> properties etc. via the <code>expect</code> passed
+to the assertion. They can still be accessed via <code>this</code> as
+previously, but that is deprecated. (This change actually
+debuted in 9.12.0).</li>
+<li>The <code>when passed as parameter(s) to</code>, <code>when called with</code>,
+<code>when decoded as</code> can now be used standalone, ie. without delegating
+the result to another assertion in the same <code>expect</code> call.
+In that case they will provide the result as the fulfillment
+value of the promise.</li>
+</ul>
 <h3 id="9-0-0">9.0.0</h3>
 <ul>
 <li>Build all error messages lazily. This is an internal refactoring
@@ -220,7 +246,7 @@ Also, these 3 assertions no longer pass for empty collections.</li>
 <li>Removed grammatically incorrect assertions.</li>
 </ul>
 <h2 id="mit-license">MIT License</h2>
-<p>Copyright (c) 2013 Sune Simonsen <a href="&#109;&#x61;&#105;&#x6c;&#x74;&#x6f;&#x3a;&#115;&#x75;&#x6e;&#x65;&#x40;&#x77;&#x65;&#45;&#x6b;&#x6e;&#111;&#x77;&#104;&#x6f;&#x77;&#46;&#x64;&#107;">&#115;&#x75;&#x6e;&#x65;&#x40;&#x77;&#x65;&#45;&#x6b;&#x6e;&#111;&#x77;&#104;&#x6f;&#x77;&#46;&#x64;&#107;</a></p>
+<p>Copyright (c) 2013 Sune Simonsen <a href="&#109;&#x61;&#x69;&#x6c;&#116;&#x6f;&#58;&#x73;&#117;&#110;&#x65;&#64;&#119;&#101;&#x2d;&#x6b;&#x6e;&#111;&#119;&#104;&#111;&#119;&#46;&#x64;&#107;">&#x73;&#117;&#110;&#x65;&#64;&#119;&#101;&#x2d;&#x6b;&#x6e;&#111;&#119;&#104;&#111;&#119;&#46;&#x64;&#107;</a></p>
 <p>Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
 &#39;Software&#39;), to deal in the Software without restriction, including

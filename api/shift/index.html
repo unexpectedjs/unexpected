@@ -1,0 +1,183 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0">
+    <link rel="stylesheet" href="../../static/normalize.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../../static/main.css" type="text/css" media="screen" />
+    <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="../../static/bug-icon-black.ico">
+    <title>shift</title>
+</head>
+<body class="sidebar-hidden has-sidebar">
+    <header>
+        <div class="logo-icon"></div>
+        <nav>
+            <ul>
+                <li class="menu-toggle-item">
+                    <button class="menu-toggle" onclick="toggleSidebar()"></button>
+                </li>
+                
+                <li class=""><a href="../..">Unexpected</a></li>
+                
+                
+                <li class=""><a href="../../assertions/any/to-be">Assertions</a></li>
+                
+                
+                <li class="active"><a href="../addAssertion">API</a></li>
+                
+                
+                <li class=""><a href="../../plugins">Plugins</a></li>
+                
+            </ul>
+        </nav>
+        <div class="search" style="visibility: hidden">
+            <input id="search" placeholder="Search..." value="">
+            <div id="searchDropDown" class="dropDown">
+                <ul id="searchResults"></ul>
+            </div>
+        </div>
+    </header>
+
+<section id="api">
+    <nav id="api-menu" class="sidebar js-remember-scroll-position">
+    <ul>
+        
+        <li class="">
+            <a href="../addAssertion">addAssertion</a>
+        </li>
+        
+        <li class="">
+            <a href="../addType">addType</a>
+        </li>
+        
+        <li class="">
+            <a href="../async">async</a>
+        </li>
+        
+        <li class="">
+            <a href="../clone">clone</a>
+        </li>
+        
+        <li class="">
+            <a href="../expect">expect</a>
+        </li>
+        
+        <li class="">
+            <a href="../fail">fail</a>
+        </li>
+        
+        <li class="">
+            <a href="../promise">promise</a>
+        </li>
+        
+        <li class="">
+            <a href="../promise-all">promise.all</a>
+        </li>
+        
+        <li class="">
+            <a href="../promise-any">promise.any</a>
+        </li>
+        
+        <li class="">
+            <a href="../promise-settle">promise.settle</a>
+        </li>
+        
+        <li class="active">
+            <a href="">shift</a>
+        </li>
+        
+        <li class="">
+            <a href="../toString">toString</a>
+        </li>
+        
+        <li class="">
+            <a href="../UnexpectedError">UnexpectedError</a>
+        </li>
+        
+        <li class="">
+            <a href="../use">use</a>
+        </li>
+        
+        <li class="">
+            <a href="../withError">withError</a>
+        </li>
+        
+    </ul>
+</nav>
+
+    <div class="main" tabindex="-1">
+        <div class="content">
+            <h1 id="expect-shift-newsubject-">expect.shift([newSubject])</h1>
+<p>Inside an assertion that takes another assertion as the last parameter via
+the <code>&lt;assertion&gt;</code> type, you can use <code>expect.shift</code> to invoke that assertion,
+optionally replacing the subject with an alternative one.</p>
+<div class="code lang-javascript">
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span><span style="color: #df5000">'&lt;string&gt;&nbsp;when&nbsp;parsed&nbsp;as&nbsp;an&nbsp;integer&nbsp;&lt;assertion&gt;'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>expect<span style="color: #000000">,</span>&nbsp;subject<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>subject<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;match'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #183691">/^[1-9][0-9]*$/</span><span style="color: #000000">);</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">shift</span><span style="color: #000000">(</span><span style="color: #000000">parseInt</span><span style="color: #000000">(</span>subject<span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">10</span><span style="color: #000000">));</span></div>
+  <div><span style="color: #000000">});</span></div>
+  <div>&nbsp;</div>
+  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #df5000">'42'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'when&nbsp;parsed&nbsp;as&nbsp;an&nbsp;integer'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;greater&nbsp;than'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">10</span><span style="color: #000000">);</span></div>
+</div><p>If you omit the <code>newSubject</code> parameter to <code>expect.shift</code>, the current subject
+will be preserved. This is mainly useful for assertions that have side effects,
+for example mocking out parts of the environment.</p>
+<p>It is important that the return value of <code>expect.shift</code> is returned (or yielded
+as the fulfillment value of a promise) from your assertion. That way everything
+will work out when delegating to an asynchronous assertion, ie. one that returns
+a promise. The promise will then be propagated correctly.</p>
+<h2 id="promise-based-flows">Promise-based flows</h2>
+<p>If your assertion does not take an <code>&lt;assertion&gt;</code> as a parameter, or if it
+optionally takes one via <code>&lt;assertion?&gt;</code> and is invoked without,
+<code>expect.shift</code> will propagate its argument as the fulfillment value of the
+promise returned from your assertion:</p>
+<div class="code lang-javascript">
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span><span style="color: #df5000">'&lt;string&gt;&nbsp;[when]&nbsp;parsed&nbsp;as&nbsp;an&nbsp;integer&nbsp;&lt;assertion?&gt;'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>expect<span style="color: #000000">,</span>&nbsp;subject<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>subject<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;match'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #183691">/^[1-9][0-9]*$/</span><span style="color: #000000">);</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">shift</span><span style="color: #000000">(</span><span style="color: #000000">parseInt</span><span style="color: #000000">(</span>subject<span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">10</span><span style="color: #000000">));</span></div>
+  <div><span style="color: #000000">});</span></div>
+  <div>&nbsp;</div>
+  <div><span style="color: #a71d5d">return</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #df5000">'42'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'parsed&nbsp;as&nbsp;an&nbsp;integer'</span><span style="color: #000000">).</span><span style="color: #000000">then</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>integer<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>integer<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;within'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">30</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">50</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #000000">});</span></div>
+</div><h2 id="multiple-invocations">Multiple invocations</h2>
+<p>You can call <code>expect.shift()</code> multiple times in your assertion if you want
+to delegate to the other assertion several times, optionally with different
+subjects. Remember that each invocation could result in a promise -- make
+sure to gather up the return values and use <code>expect.promise.all</code> or a similar
+construct to resolve them all, for example:</p>
+<div class="code lang-javascript">
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span><span style="color: #df5000">'&lt;number&gt;&nbsp;up&nbsp;to&nbsp;[and&nbsp;including]&nbsp;&lt;number&gt;&nbsp;&lt;assertion?&gt;'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>expect<span style="color: #000000">,</span>&nbsp;subject<span style="color: #000000">,</span>&nbsp;value<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;expect<span style="color: #000000">.</span>errorMode&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #df5000">'nested'</span><span style="color: #000000">;</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">var</span>&nbsp;numbers&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #000000">[];</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">for</span>&nbsp;<span style="color: #000000">(</span><span style="color: #a71d5d">var</span>&nbsp;i&nbsp;<span style="color: #a71d5d">=</span>&nbsp;subject&nbsp;<span style="color: #000000">;</span>&nbsp;i&nbsp;<span style="color: #a71d5d">&lt;</span>&nbsp;<span style="color: #000000">(</span>expect<span style="color: #000000">.</span>flags<span style="color: #000000">[</span><span style="color: #df5000">'and&nbsp;including'</span><span style="color: #000000">]</span>&nbsp;<span style="color: #a71d5d">?</span>&nbsp;value&nbsp;<span style="color: #a71d5d">+</span>&nbsp;<span style="color: #0086b3">1</span>&nbsp;<span style="color: #000000">:</span>&nbsp;value<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">;</span>&nbsp;i&nbsp;<span style="color: #a71d5d">+=</span>&nbsp;<span style="color: #0086b3">1</span><span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;numbers<span style="color: #000000">.</span><span style="color: #000000">push</span><span style="color: #000000">(</span>i<span style="color: #000000">);</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">}</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;expect<span style="color: #000000">.</span>promise<span style="color: #000000">.</span><span style="color: #000000">all</span><span style="color: #000000">(</span>numbers<span style="color: #000000">.</span><span style="color: #000000">map</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>number<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">promise</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">shift</span><span style="color: #000000">(</span>number<span style="color: #000000">);</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">});</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">}));</span></div>
+  <div><span style="color: #000000">});</span></div>
+  <div>&nbsp;</div>
+  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #0086b3">5</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'up&nbsp;to&nbsp;and&nbsp;including'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">100</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;greater&nbsp;than'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">4</span><span style="color: #000000">);</span></div>
+</div><p>Again, this has the nice property that the shifted values will be provided as
+the fulfillment value of the promise if invoked without an assertion:</p>
+<div class="code lang-javascript">
+  <div><span style="color: #a71d5d">return</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #0086b3">10</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'up&nbsp;to'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">20</span><span style="color: #000000">).</span><span style="color: #000000">then</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>numbers<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>numbers<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;have&nbsp;length'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">10</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #000000">});</span></div>
+</div>
+        </div>
+    </div>
+</section>
+<script type="text/javascript">
+    baseUrl = '../..';
+</script>
+<script type="text/javascript" src="../../static/toggleSidebar.js"></script>
+<script type="text/javascript" src="../../static/rememberScrollPosition.js"></script>
+<script type="text/javascript" src="../../static/focusMain.js"></script>
+<script type="text/javascript" src="../../static/search.js"></script>
+</body>
+</html>
+

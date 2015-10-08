@@ -55,9 +55,6 @@ XML/HTML DOM and HTML/XML strings. Works in the browser and in node.js via</li>
 EXIF data of images (node.js only).</li>
 <li><a href="https://github.com/unexpectedjs/unexpected-express/">unexpected-express</a>: Express
 app/middleware assertions with a declarative syntax.</li>
-<li><a href="https://github.com/unexpectedjs/unexpected-fs/">unexpected-fs</a>: Assertions for
-files and directories on disc, including mock file system support via
-<a href="https://github.com/tschaub/mock-fs">mock-js</a>.</li>
 <li><a href="https://github.com/unexpectedjs/unexpected-http/">unexpected-http</a>: Assertions for
 testing local or remote HTTP servers.
 Browser-compatible via browserify (experimental).</li>
@@ -84,11 +81,11 @@ node.js streams.</li>
 <h2 id="installation">Installation</h2>
 <p>The recommended way to get plugins is installing them via npm:</p>
 <div class="code lang-">
-  <div>$&nbsp;npm&nbsp;install&nbsp;unexpected-fs</div>
+  <div>$&nbsp;npm&nbsp;install&nbsp;unexpected-dom</div>
 </div><p>And then in your test suite:</p>
 <div class="code lang-javascript">
   <div><span style="color: #a71d5d">var</span>&nbsp;expect&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #000000">require</span><span style="color: #000000">(</span><span style="color: #df5000">'unexpected'</span><span style="color: #000000">).</span><span style="color: #000000">clone</span><span style="color: #000000">()</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">.</span><span style="color: #000000">use</span><span style="color: #000000">(</span><span style="color: #000000">require</span><span style="color: #000000">(</span><span style="color: #df5000">'unexpected-fs'</span><span style="color: #000000">));</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">.</span><span style="color: #000000">use</span><span style="color: #000000">(</span><span style="color: #000000">require</span><span style="color: #000000">(</span><span style="color: #df5000">'unexpected-dom'</span><span style="color: #000000">));</span></div>
 </div><p>For plugins that work in the browser, you&#39;ll either need to add an extra <code>&lt;script&gt;</code>, or
 use browserify or a script loader instead of the Common.js <code>require</code> in the above example.
 Please consult the documentation for each individual plugin.</p>

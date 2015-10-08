@@ -205,6 +205,41 @@
         </li>
         
         <li>
+            <h3>function</h3>
+            <ul>
+                
+                <li class="">
+                    <a href="../../function/to-call-the-callback">to call the callback</a>
+                </li>
+                
+                <li class="">
+                    <a href="../../function/to-call-the-callback-with-error">to call the callback with error</a>
+                </li>
+                
+                <li class="">
+                    <a href="../../function/to-call-the-callback-without-error">to call the callback without error</a>
+                </li>
+                
+                <li class="">
+                    <a href="../../function/to-error">to error</a>
+                </li>
+                
+                <li class="">
+                    <a href="../../function/to-have-arity">to have arity</a>
+                </li>
+                
+                <li class="">
+                    <a href="../../function/to-throw">to throw</a>
+                </li>
+                
+                <li class="">
+                    <a href="../../function/when-called-with">when called with</a>
+                </li>
+                
+            </ul>
+        </li>
+        
+        <li>
             <h3>boolean</h3>
             <ul>
                 
@@ -249,41 +284,6 @@
                 
                 <li class="">
                     <a href="../../object/to-have-values-satisfying">to have values satisfying</a>
-                </li>
-                
-            </ul>
-        </li>
-        
-        <li>
-            <h3>function</h3>
-            <ul>
-                
-                <li class="">
-                    <a href="../../function/to-call-the-callback">to call the callback</a>
-                </li>
-                
-                <li class="">
-                    <a href="../../function/to-call-the-callback-with-error">to call the callback with error</a>
-                </li>
-                
-                <li class="">
-                    <a href="../../function/to-call-the-callback-without-error">to call the callback without error</a>
-                </li>
-                
-                <li class="">
-                    <a href="../../function/to-error">to error</a>
-                </li>
-                
-                <li class="">
-                    <a href="../../function/to-have-arity">to have arity</a>
-                </li>
-                
-                <li class="">
-                    <a href="../../function/to-throw">to throw</a>
-                </li>
-                
-                <li class="">
-                    <a href="../../function/when-called-with">when called with</a>
                 </li>
                 
             </ul>
@@ -371,6 +371,17 @@
     <div class="main" tabindex="-1">
         <div class="content">
             <h1>to be a</h1>
+            
+                <ul class="declarations">
+                </p>
+                    <li>&lt;any&gt; not to be (a|an) &lt;type&gt;</li>
+                </p>
+                    <li>&lt;any&gt; not to be (a|an) &lt;function&gt;</li>
+                </p>
+                    <li>&lt;any&gt; not to be (a|an) &lt;string&gt;</li>
+                
+                </ul>
+            
             <p>Asserts that the subject is an instance of a given type.</p>
 <p>This assertion makes use of the type system in Unexpected. That means
 you can assert that a value is an instance of a type specified by
@@ -389,8 +400,8 @@ its name (as a string).</p>
   <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #a71d5d">new</span>&nbsp;Error<span style="color: #000000">(),</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;an'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'Error'</span><span style="color: #000000">);</span></div>
 </div><p>The assertions also respect the inheritance chain:</p>
 <div class="code lang-javascript">
-  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span>expect<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;a'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'function'</span><span style="color: #000000">);</span></div>
-  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span>expect<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;an'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'object'</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #183691">/foo/</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;an'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'object'</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #183691">/foo/</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;an'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'any'</span><span style="color: #000000">);</span></div>
 </div><p>Aliases are provided for common types:</p>
 <div class="code lang-javascript">
   <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #0086b3">true</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;a&nbsp;boolean'</span><span style="color: #000000">);</span></div>

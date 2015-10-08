@@ -84,6 +84,10 @@
         </li>
         
         <li class="">
+            <a href="../shift">shift</a>
+        </li>
+        
+        <li class="">
             <a href="../toString">toString</a>
         </li>
         
@@ -109,14 +113,10 @@
 <div class="code lang-javascript">
   <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span>pattern<span style="color: #000000">,</span>&nbsp;handler<span style="color: #000000">);</span></div>
   <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">([</span>pattern<span style="color: #000000">,</span>&nbsp;<span style="color: #000000">...]],</span>&nbsp;handler<span style="color: #000000">);</span></div>
-  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span>typeName<span style="color: #000000">,</span>&nbsp;pattern<span style="color: #000000">,</span>&nbsp;handler<span style="color: #000000">);</span></div>
-  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span>typeName<span style="color: #000000">,</span>&nbsp;<span style="color: #000000">[</span>pattern<span style="color: #000000">,</span>&nbsp;<span style="color: #000000">...],</span>&nbsp;handler<span style="color: #000000">);</span></div>
-  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">([</span>typeName<span style="color: #000000">,</span>&nbsp;<span style="color: #000000">...],</span>&nbsp;pattern<span style="color: #000000">,</span>&nbsp;handler<span style="color: #000000">);</span></div>
-  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">([</span>typeName<span style="color: #000000">,</span>&nbsp;<span style="color: #000000">...],</span>&nbsp;<span style="color: #000000">[</span>pattern<span style="color: #000000">,</span>&nbsp;<span style="color: #000000">...],</span>&nbsp;handler<span style="color: #000000">);</span></div>
 </div><p>New assertions can be added to Unexpected the following way.</p>
 <div class="code lang-javascript">
   <div><span style="color: #a71d5d">var</span>&nbsp;errorMode&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #df5000">'default'</span><span style="color: #000000">;</span><span style="color: #969896">&nbsp;//&nbsp;use&nbsp;to&nbsp;control&nbsp;the&nbsp;error&nbsp;mode&nbsp;later&nbsp;in&nbsp;the&nbsp;example</span></div>
-  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span><span style="color: #df5000">'array'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'[not]&nbsp;to&nbsp;be&nbsp;(sorted|ordered)'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>expect<span style="color: #000000">,</span>&nbsp;subject<span style="color: #000000">,</span>&nbsp;cmp<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span><span style="color: #df5000">'&lt;array&gt;&nbsp;[not]&nbsp;to&nbsp;be&nbsp;(sorted|ordered)&nbsp;&lt;function?&gt;'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>expect<span style="color: #000000">,</span>&nbsp;subject<span style="color: #000000">,</span>&nbsp;cmp<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
   <div>&nbsp;&nbsp;expect<span style="color: #000000">.</span>errorMode&nbsp;<span style="color: #a71d5d">=</span>&nbsp;errorMode<span style="color: #000000">;</span></div>
   <div>&nbsp;&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>subject<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'[not]&nbsp;to&nbsp;equal'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #000000">[].</span><span style="color: #000000">concat</span><span style="color: #000000">(</span>subject<span style="color: #000000">).</span><span style="color: #000000">sort</span><span style="color: #000000">(</span>cmp<span style="color: #000000">));</span></div>
   <div><span style="color: #000000">});</span></div>
@@ -129,15 +129,15 @@
   <div><span style="color: #000000">expect</span><span style="color: #000000">([</span><span style="color: #0086b3">3</span><span style="color: #000000">,</span><span style="color: #0086b3">2</span><span style="color: #000000">,</span><span style="color: #0086b3">1</span><span style="color: #000000">],</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;sorted'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>x<span style="color: #000000">,</span>&nbsp;y<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span>&nbsp;<span style="color: #a71d5d">return</span>&nbsp;y&nbsp;<span style="color: #a71d5d">-</span>&nbsp;x<span style="color: #000000">;</span>&nbsp;<span style="color: #000000">});</span></div>
 </div><p>Let&#39;s dissect the different parts of the custom assertion we just
 introduced.</p>
-<p>The first parameter to <code>addAssertion</code> is a string or an array
-specifying which types the assertion should be defined on. In this
-case the assertion in only defined for arrays. In case the type is not
-specified the assertion will be defined for the type <code>any</code>, and would
+<p>The first parameter to <code>addAssertion</code> is a string or an array of strings
+stating the patterns this assertion should match. A pattern has the following
+syntax. A word in angle brackets represents a type of either the subject
+or one of the parameters to the assertion. In this case the assertion
+is only defined for arrays. If no subject type is specified,
+the assertion will be defined for the type <code>any</code>, and would
 be applicable any type. See the <code>Extending Unexpected with new types</code>
 section for more information about the type system in Unexpected.</p>
-<p>The second parameter to <code>addAssertion</code> is a string or an array stating
-the patterns this assertion should match. A pattern has the following
-syntax. A word in square brackets represents a flag that can either be
+<p>A word in square brackets represents a flag that can either be
 there or not. If the flag is present <code>expect.flags[flag]</code> will contain
 the value <code>true</code>. In this case <code>not</code> is a flag. When a flag it present
 in a nested <code>expect</code> it will be inserted if the flag is present;
@@ -145,9 +145,9 @@ otherwise it will be removed. Text that is in parentheses with
 vertical bars between them are treated as alternative texts that can
 be used. In this case you can write <em>ordered</em> as an alternative to
 <em>sorted</em>.</p>
-<p>The last parameter to <code>addAssertion</code> is function that will be called
-when <code>expect</code> is invoked with an expectation matching the type and
-pattern of the assertion.</p>
+<p>The second and last parameter to <code>addAssertion</code> is function that will
+be called when <code>expect</code> is invoked with an expectation matching the
+type and pattern of the assertion.</p>
 <p>So in this case, when <code>expect</code> is called the following way:</p>
 <div class="code lang-javascript">
   <div><span style="color: #000000">expect</span><span style="color: #000000">([</span><span style="color: #0086b3">3</span><span style="color: #000000">,</span><span style="color: #0086b3">2</span><span style="color: #000000">,</span><span style="color: #0086b3">1</span><span style="color: #000000">],</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;sorted'</span><span style="color: #000000">,</span>&nbsp;reverse<span style="color: #000000">);</span></div>
@@ -155,7 +155,7 @@ pattern of the assertion.</p>
 following way, where the <em>not</em> flag in the nested expect will be
 removed:</p>
 <div class="code lang-javascript">
-  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span><span style="color: #df5000">'array'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'[not]&nbsp;to&nbsp;be&nbsp;(sorted|ordered)'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span><span style="color: #000000">(</span>expect<span style="color: #000000">,</span>&nbsp;<span style="color: #000000">[</span><span style="color: #0086b3">3</span><span style="color: #000000">,</span><span style="color: #0086b3">2</span><span style="color: #000000">,</span><span style="color: #0086b3">1</span><span style="color: #000000">],</span>&nbsp;reverse<span style="color: #000000">){</span></div>
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span><span style="color: #df5000">'&lt;array&gt;&nbsp;[not]&nbsp;to&nbsp;be&nbsp;(sorted|ordered)&nbsp;&lt;function?&gt;'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span><span style="color: #000000">(</span>expect<span style="color: #000000">,</span>&nbsp;<span style="color: #000000">[</span><span style="color: #0086b3">3</span><span style="color: #000000">,</span><span style="color: #0086b3">2</span><span style="color: #000000">,</span><span style="color: #0086b3">1</span><span style="color: #000000">],</span>&nbsp;reverse<span style="color: #000000">){</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">([</span><span style="color: #0086b3">3</span><span style="color: #000000">,</span><span style="color: #0086b3">2</span><span style="color: #000000">,</span><span style="color: #0086b3">1</span><span style="color: #000000">],</span>&nbsp;<span style="color: #df5000">'[not]&nbsp;to&nbsp;equal'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #000000">[].</span><span style="color: #000000">concat</span><span style="color: #000000">([</span><span style="color: #0086b3">3</span><span style="color: #000000">,</span><span style="color: #0086b3">2</span><span style="color: #000000">,</span><span style="color: #0086b3">1</span><span style="color: #000000">]).</span><span style="color: #000000">sort</span><span style="color: #000000">(</span>reverse<span style="color: #000000">));</span></div>
   <div><span style="color: #000000">});</span></div>
 </div><h3 id="overriding-the-standard-error-message">Overriding the standard error message</h3>
@@ -170,7 +170,7 @@ completely custom output for the arguments by setting <code>argsOutput</code> to
 an output function on the assertion.</p>
 <p>Here is a few examples:</p>
 <div class="code lang-javascript">
-  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span><span style="color: #df5000">'number'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;contained&nbsp;by'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>expect<span style="color: #000000">,</span>&nbsp;subject<span style="color: #000000">,</span>&nbsp;start<span style="color: #000000">,</span>&nbsp;finish<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span><span style="color: #df5000">'&lt;number&gt;&nbsp;to&nbsp;be&nbsp;contained&nbsp;by&nbsp;&lt;number&gt;&nbsp;&lt;number&gt;'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>expect<span style="color: #000000">,</span>&nbsp;subject<span style="color: #000000">,</span>&nbsp;start<span style="color: #000000">,</span>&nbsp;finish<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;expect<span style="color: #000000">.</span>subjectOutput&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>output<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;output<span style="color: #000000">.</span><span style="color: #000000">text</span><span style="color: #000000">(</span><span style="color: #df5000">'point&nbsp;'</span><span style="color: #000000">).</span><span style="color: #000000">jsNumber</span><span style="color: #000000">(</span>subject<span style="color: #000000">);</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">};</span></div>
@@ -184,7 +184,7 @@ an output function on the assertion.</p>
 </div><div class="output">
   <div><span style="color: red; font-weight: bold">expected</span>&nbsp;point&nbsp;<span style="color: #0086b3">4</span>&nbsp;<span style="color: red; font-weight: bold">to&nbsp;be&nbsp;contained&nbsp;by</span>&nbsp;interval&nbsp;[<span style="color: #0086b3">8</span>;<span style="color: #0086b3">10</span>]</div>
 </div><div class="code lang-javascript">
-  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span><span style="color: #df5000">'number'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;similar&nbsp;to'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>expect<span style="color: #000000">,</span>&nbsp;subject<span style="color: #000000">,</span>&nbsp;value<span style="color: #000000">,</span>&nbsp;epsilon<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span><span style="color: #df5000">'&lt;number&gt;&nbsp;to&nbsp;be&nbsp;similar&nbsp;to&nbsp;&lt;number&gt;&nbsp;&lt;number?&gt;'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>expect<span style="color: #000000">,</span>&nbsp;subject<span style="color: #000000">,</span>&nbsp;value<span style="color: #000000">,</span>&nbsp;epsilon<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">if</span>&nbsp;<span style="color: #000000">(</span><span style="color: #a71d5d">typeof</span>&nbsp;epsilon&nbsp;<span style="color: #a71d5d">!==</span>&nbsp;<span style="color: #df5000">'number'</span><span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;epsilon&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #0086b3">1e-9</span><span style="color: #000000">;</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">}</span></div>
@@ -450,7 +450,7 @@ like this:</p>
   <div>&nbsp;&nbsp;<span style="color: #000000">}</span></div>
   <div><span style="color: #000000">});</span></div>
 </div><div class="code lang-javascript">
-  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span><span style="color: #df5000">'Timelock'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;satisfy'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>expect<span style="color: #000000">,</span>&nbsp;subject<span style="color: #000000">,</span>&nbsp;spec<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>expect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span><span style="color: #df5000">'&lt;Timelock&gt;&nbsp;to&nbsp;satisfy&nbsp;&lt;any&gt;'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>expect<span style="color: #000000">,</span>&nbsp;subject<span style="color: #000000">,</span>&nbsp;spec<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
   <div>&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">promise</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>run<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;subject<span style="color: #000000">.</span><span style="color: #000000">getValue</span><span style="color: #000000">(</span><span style="color: #000000">run</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>value<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>value<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;satisfy'</span><span style="color: #000000">,</span>&nbsp;spec<span style="color: #000000">);</span></div>
