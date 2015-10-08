@@ -726,25 +726,25 @@ describe('unexpected', function () {
                 expect(/foq/i, 'to equal', /fob/i);
             }, 'to throw', expect.it('to have ansi diff', function () {
                 this
-                  .block(function () {
-                    this.diffRemovedLine('-');
-                  })
-                  .block(function () {
-                    this
-                      .diffRemovedLine('/fo')
-                      .diffRemovedHighlight('q')
-                      .diffRemovedLine('/i');
-                  }).nl()
-                  .block(function () {
-                    this.diffAddedLine('+');
-                  })
-                  .block(function () {
-                    this
-                      .diffAddedLine('/fo')
-                      .diffAddedHighlight('b')
-                      .diffAddedLine('/i');
-                  });
-              }));
+                    .block(function () {
+                        this.diffRemovedLine('-');
+                    })
+                    .block(function () {
+                        this
+                            .diffRemovedLine('/fo')
+                            .diffRemovedHighlight('q')
+                            .diffRemovedLine('/i');
+                    }).nl()
+                    .block(function () {
+                        this.diffAddedLine('+');
+                    })
+                    .block(function () {
+                        this
+                            .diffAddedLine('/fo')
+                            .diffAddedHighlight('b')
+                            .diffAddedLine('/i');
+                    });
+            }));
         });
 
 
