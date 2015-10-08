@@ -18,7 +18,7 @@ describe("documentation tests", function () {
 
     it("api/UnexpectedError.md contains correct examples", function () {
         var testPromises = [];
-        expect.addAssertion("array", "to have item satisfying", function (expect, subject) {
+        expect.addAssertion("<array> to have item satisfying <any+>", function (expect, subject) {
           var args = Array.prototype.slice.call(arguments, 2);
           var promises = subject.map(function (item) {
             return expect.promise(function () {
@@ -79,7 +79,7 @@ describe("documentation tests", function () {
         }
 
         try {
-            expect.addAssertion('detailed to be', function (expect, subject, value) {
+            expect.addAssertion('<any> detailed to be <any>', function (expect, subject, value) {
               expect.errorMode = 'bubble';
               expect.withError(function () {
                 expect(subject, 'to be', value);
@@ -94,7 +94,7 @@ describe("documentation tests", function () {
             expect('f00!', 'detailed to be', 'foo!');
             expect.fail(function (output) {
                 output.error("expected:").nl();
-                output.code("expect.addAssertion('detailed to be', function (expect, subject, value) {").nl();
+                output.code("expect.addAssertion('<any> detailed to be <any>', function (expect, subject, value) {").nl();
                 output.code("  expect.errorMode = 'bubble';").nl();
                 output.code("  expect.withError(function () {").nl();
                 output.code("    expect(subject, 'to be', value);").nl();
@@ -121,7 +121,7 @@ describe("documentation tests", function () {
         }
 
         try {
-            expect.addAssertion('to be completely custom', function (expect, subject) {
+            expect.addAssertion('<any> to be completely custom', function (expect, subject) {
               return expect.withError(function () {
                 expect(subject, 'to satisfy', { custom: true });
               }, function (err) {
@@ -139,7 +139,7 @@ describe("documentation tests", function () {
             expect({ custom: false }, 'to be completely custom');
             expect.fail(function (output) {
                 output.error("expected:").nl();
-                output.code("expect.addAssertion('to be completely custom', function (expect, subject) {").nl();
+                output.code("expect.addAssertion('<any> to be completely custom', function (expect, subject) {").nl();
                 output.code("  return expect.withError(function () {").nl();
                 output.code("    expect(subject, 'to satisfy', { custom: true });").nl();
                 output.code("  }, function (err) {").nl();
@@ -173,7 +173,7 @@ describe("documentation tests", function () {
     it("api/addAssertion.md contains correct examples", function () {
         var testPromises = [];
         var errorMode = 'default'; // use to control the error mode later in the example
-        expect.addAssertion('array', '[not] to be (sorted|ordered)', function (expect, subject, cmp) {
+        expect.addAssertion('<array> [not] to be (sorted|ordered) <function?>', function (expect, subject, cmp) {
           expect.errorMode = errorMode;
           expect(subject, '[not] to equal', [].concat(subject).sort(cmp));
         });
@@ -185,7 +185,7 @@ describe("documentation tests", function () {
         expect([3,2,1], 'to be sorted', function (x, y) { return y - x; });
 
         try {
-            expect.addAssertion('number', 'to be contained by', function (expect, subject, start, finish) {
+            expect.addAssertion('<number> to be contained by <number> <number>', function (expect, subject, start, finish) {
                 expect.subjectOutput = function (output) {
                     output.text('point ').jsNumber(subject);
                 };
@@ -198,7 +198,7 @@ describe("documentation tests", function () {
             expect(4, 'to be contained by', 8, 10);
             expect.fail(function (output) {
                 output.error("expected:").nl();
-                output.code("expect.addAssertion('number', 'to be contained by', function (expect, subject, start, finish) {").nl();
+                output.code("expect.addAssertion('<number> to be contained by <number> <number>', function (expect, subject, start, finish) {").nl();
                 output.code("    expect.subjectOutput = function (output) {").nl();
                 output.code("        output.text('point ').jsNumber(subject);").nl();
                 output.code("    };").nl();
@@ -218,7 +218,7 @@ describe("documentation tests", function () {
         }
 
         try {
-            expect.addAssertion('number', 'to be similar to', function (expect, subject, value, epsilon) {
+            expect.addAssertion('<number> to be similar to <number> <number?>', function (expect, subject, value, epsilon) {
                 if (typeof epsilon !== 'number') {
                     epsilon = 1e-9;
                 }
@@ -231,7 +231,7 @@ describe("documentation tests", function () {
             expect(4, 'to be similar to', 4.0001);
             expect.fail(function (output) {
                 output.error("expected:").nl();
-                output.code("expect.addAssertion('number', 'to be similar to', function (expect, subject, value, epsilon) {").nl();
+                output.code("expect.addAssertion('<number> to be similar to <number> <number?>', function (expect, subject, value, epsilon) {").nl();
                 output.code("    if (typeof epsilon !== 'number') {").nl();
                 output.code("        epsilon = 1e-9;").nl();
                 output.code("    }").nl();
@@ -379,7 +379,7 @@ describe("documentation tests", function () {
           }
         });
 
-        expect.addAssertion('Timelock', 'to satisfy', function (expect, subject, spec) {
+        expect.addAssertion('<Timelock> to satisfy <any>', function (expect, subject, spec) {
           return expect.promise(function (run) {
             subject.getValue(run(function (value) {
               return expect(value, 'to satisfy', spec);
@@ -707,7 +707,7 @@ describe("documentation tests", function () {
             );
         }
 
-        expect.addAssertion('Person', 'to be above legal age', function (expect, subject) {
+        expect.addAssertion('<Person> to be above legal age', function (expect, subject) {
             expect(subject.age, 'to be greater than or equal to', 18);
         });
 
@@ -741,7 +741,7 @@ describe("documentation tests", function () {
             });
         } catch (e) {
             expect(e, "to have message",
-                "Unknown assertion 'to be an integer', did you mean: 'to be a number'"
+                "Unknown assertion 'to be an integer', did you mean: 'to be infinite'"
             );
         }
         return expect.promise.all(testPromises);
@@ -949,7 +949,7 @@ describe("documentation tests", function () {
         }).caught(function (e) {
             expect(e, "to have message",
                 "expected { a: '0', b: 1 }\n" +
-                "to have values satisfying 'to be a number after a short delay'\n" +
+                "to have values satisfying to be a number after a short delay\n" +
                 "\n" +
                 "{\n" +
                 "  a: '0', // should be a number after a short delay\n" +
@@ -1065,7 +1065,7 @@ describe("documentation tests", function () {
                 "       2\n" +
                 "     ]\n" +
                 "  2: expected { a: '0', b: 1 }\n" +
-                "     to have values satisfying 'to be a number after a short delay'\n" +
+                "     to have values satisfying to be a number after a short delay\n" +
                 "\n" +
                 "     {\n" +
                 "       a: '0', // should be a number after a short delay\n" +
@@ -1155,7 +1155,7 @@ describe("documentation tests", function () {
                 "  foo: ⨯ expected '42' to be a number after a short delay\n" +
                 "  bar: ✓\n" +
                 "  baz: ⨯ expected { a: '1', b: 2 }\n" +
-                "         to have values satisfying 'to be a number after a short delay'\n" +
+                "         to have values satisfying to be a number after a short delay\n" +
                 "\n" +
                 "         {\n" +
                 "           a: '1', // should be a number after a short delay\n" +
@@ -1165,6 +1165,50 @@ describe("documentation tests", function () {
             );
         }));
 
+        return expect.promise.all(testPromises);
+    });
+
+    it("api/shift.md contains correct examples", function () {
+        var testPromises = [];
+        expect.addAssertion('<string> when parsed as an integer <assertion>', function (expect, subject) {
+            expect(subject, 'to match', /^[1-9][0-9]*$/);
+            return expect.shift(parseInt(subject, 10));
+        });
+
+        expect('42', 'when parsed as an integer', 'to be greater than', 10);
+
+        expect = unexpected.clone();
+        expect.output.preferredWidth = 80;
+
+        expect.addAssertion('<string> [when] parsed as an integer <assertion?>', function (expect, subject) {
+            expect(subject, 'to match', /^[1-9][0-9]*$/);
+            return expect.shift(parseInt(subject, 10));
+        });
+
+        return expect('42', 'parsed as an integer').then(function (integer) {
+            return expect(integer, 'to be within', 30, 50);
+        });
+
+        expect.addAssertion('<number> up to [and including] <number> <assertion?>', function (expect, subject, value) {
+            expect.errorMode = 'nested';
+            var numbers = [];
+            for (var i = subject ; i < (expect.flags['and including'] ? value + 1 : value) ; i += 1) {
+                numbers.push(i);
+            }
+            return expect.promise.all(numbers.map(function (number) {
+                return expect.promise(function () {
+                    return expect.shift(number);
+                });
+            }));
+        });
+
+        expect(5, 'up to and including', 100, 'to be greater than', 4);
+
+        testPromises.push(expect.promise(function () {
+            return expect(10, 'up to', 20).then(function (numbers) {
+                expect(numbers, 'to have length', 10);
+            });
+        }));
         return expect.promise.all(testPromises);
     });
 
@@ -1314,6 +1358,12 @@ describe("documentation tests", function () {
                     "+happy face"
                 );
             }
+        }
+
+        if (!isBrowser) {
+            return expect(new Buffer([0xe2, 0x98, 0xba]), 'decoded as', 'utf-8').then(function (result) {
+                expect(result, 'to equal', '☺');
+            });
         }
         return expect.promise.all(testPromises);
     });
@@ -1603,8 +1653,8 @@ describe("documentation tests", function () {
         expect(/regex/, 'to be a', 'regular expression');
         expect(new Error(), 'to be an', 'Error');
 
-        expect(expect, 'to be a', 'function');
-        expect(expect, 'to be an', 'object');
+        expect(/foo/, 'to be an', 'object');
+        expect(/foo/, 'to be an', 'any');
 
         expect(true, 'to be a boolean');
         expect(5, 'to be a number');
@@ -2143,6 +2193,10 @@ describe("documentation tests", function () {
                 "  expected 2 to equal 3"
             );
         }
+
+        return expect(10, 'passed as parameter to', increment).then(function (result) {
+            expect(result, 'to equal', 11);
+        });
         return expect.promise.all(testPromises);
     });
 
@@ -2389,7 +2443,11 @@ describe("documentation tests", function () {
             this.value = value;
         }
 
-        expect(123, 'when passed as parameter to constructor', Foo, 'to be a', Foo);
+        expect([123], 'when passed as parameters to constructor', Foo, 'to be a', Foo);
+
+        return expect([1, 3], 'passed as parameters to', add).then(function (result) {
+            expect(result, 'to equal', 4);
+        });
         return expect.promise.all(testPromises);
     });
 
@@ -2982,6 +3040,10 @@ describe("documentation tests", function () {
                 "  expected 3 to equal 9"
             );
         }
+
+        return expect(add, 'called with', [1, 2]).then(function (result) {
+            expect(result, 'to equal', 3);
+        });
         return expect.promise.all(testPromises);
     });
 
@@ -3092,8 +3154,6 @@ describe("documentation tests", function () {
     it("assertions/number/to-be-greater-than-or-equal-to.md contains correct examples", function () {
         var testPromises = [];
         expect(3, 'to be greater than or equal to', 3);
-        expect(4, 'to be >=', 3);
-        expect(4, '>=', 4);
 
         try {
             expect(1, 'to be greater than or equal to', 2);
@@ -3109,7 +3169,6 @@ describe("documentation tests", function () {
         }
 
         expect(1, 'not to be greater than or equal to', 2);
-        expect(3, 'not to be >=', 4);
 
         try {
             expect(2, 'not to be greater than or equal to', 2);
@@ -3130,8 +3189,6 @@ describe("documentation tests", function () {
         var testPromises = [];
         expect(3, 'to be greater than', 2);
         expect(1, 'to be above', 0);
-        expect(4, 'to be >', 3);
-        expect(4, '>', 3);
 
         try {
             expect(2, 'to be greater than', 2);
@@ -3148,7 +3205,6 @@ describe("documentation tests", function () {
 
         expect(2, 'not to be greater than', 2);
         expect(0, 'not to be above', 1);
-        expect(3, 'not to be >', 4);
 
         try {
             expect(3, 'not to be greater than', 2);
@@ -3203,8 +3259,6 @@ describe("documentation tests", function () {
     it("assertions/number/to-be-less-than-or-equal-to.md contains correct examples", function () {
         var testPromises = [];
         expect(3, 'to be less than or equal to', 3);
-        expect(3, 'to be <=', 4);
-        expect(4, '<=', 4);
 
         try {
             expect(2, 'to be less than or equal to', 1);
@@ -3220,7 +3274,6 @@ describe("documentation tests", function () {
         }
 
         expect(2, 'not to be less than or equal to', 1);
-        expect(4, 'not to be <=', 3);
 
         try {
             expect(2, 'not to be less than or equal to', 2);
@@ -3241,8 +3294,6 @@ describe("documentation tests", function () {
         var testPromises = [];
         expect(2, 'to be less than', 3);
         expect(0, 'to be below', 1);
-        expect(3, 'to be <', 4);
-        expect(3, '<', 4);
 
         try {
             expect(2, 'to be less than', 2);
@@ -3259,7 +3310,6 @@ describe("documentation tests", function () {
 
         expect(2, 'not to be less than', 2);
         expect(1, 'not to be below', 0);
-        expect(4, 'not to be <', 3);
 
         try {
             expect(2, 'not to be less than', 3);
@@ -3643,7 +3693,7 @@ describe("documentation tests", function () {
         } catch (e) {
             expect(e, "to have message",
                 "expected object to have values satisfying\n" +
-                "'to have items satisfying', expect.it('to be a number')\n" +
+                "to have items satisfying expect.it('to be a number')\n" +
                 "        .and('to be below', 8)\n" +
                 "\n" +
                 "{\n" +
@@ -3699,8 +3749,6 @@ describe("documentation tests", function () {
     it("assertions/string/to-be-greater-than-or-equal-to.md contains correct examples", function () {
         var testPromises = [];
         expect('b', 'to be greater than or equal to', 'b');
-        expect('c', 'to be >=', 'b');
-        expect('c', '>=', 'c');
 
         try {
             expect('a', 'to be greater than or equal to', 'b');
@@ -3716,7 +3764,6 @@ describe("documentation tests", function () {
         }
 
         expect('a', 'not to be greater than or equal to', 'b');
-        expect('b', 'not to be >=', 'c');
 
         try {
             expect('a', 'not to be greater than or equal to', 'a');
@@ -3737,8 +3784,6 @@ describe("documentation tests", function () {
         var testPromises = [];
         expect('b', 'to be greater than', 'a');
         expect('b', 'to be above', 'a');
-        expect('b', 'to be >', 'a');
-        expect('b', '>', 'a');
 
         try {
             expect('a', 'to be greater than', 'a');
@@ -3755,7 +3800,6 @@ describe("documentation tests", function () {
 
         expect('a', 'not to be greater than', 'a');
         expect('a', 'not to be above', 'a');
-        expect('a', 'not to be >', 'a');
 
         try {
             expect('b', 'not to be above', 'a');
@@ -3775,8 +3819,6 @@ describe("documentation tests", function () {
     it("assertions/string/to-be-less-than-or-equal-to.md contains correct examples", function () {
         var testPromises = [];
         expect('b', 'to be less than or equal to', 'b');
-        expect('b', 'to be <=', 'c');
-        expect('c', '<=', 'c');
 
         try {
             expect('b', 'to be less than or equal to', 'a');
@@ -3792,7 +3834,6 @@ describe("documentation tests", function () {
         }
 
         expect('b', 'not to be less than or equal to', 'a');
-        expect('c', 'not to be <=', 'b');
 
         try {
             expect('a', 'not to be less than or equal to', 'a');
@@ -3813,8 +3854,6 @@ describe("documentation tests", function () {
         var testPromises = [];
         expect('a', 'to be less than', 'b');
         expect('a', 'to be below', 'b');
-        expect('a', 'to be <', 'b');
-        expect('a', '<', 'b');
 
         try {
             expect('a', 'to be less than', 'a');
@@ -3831,7 +3870,6 @@ describe("documentation tests", function () {
 
         expect('a', 'not to be less than', 'a');
         expect('a', 'not to be below', 'a');
-        expect('a', 'not to be <', 'a');
 
         try {
             expect('a', 'not to be below', 'b');

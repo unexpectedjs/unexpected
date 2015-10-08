@@ -22,8 +22,8 @@ expect(new Error(), 'to be an', 'Error');
 The assertions also respect the inheritance chain:
 
 ```javascript
-expect(expect, 'to be a', 'function');
-expect(expect, 'to be an', 'object');
+expect(/foo/, 'to be an', 'object');
+expect(/foo/, 'to be an', 'any');
 ```
 
 Aliases are provided for common types:

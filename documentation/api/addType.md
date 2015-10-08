@@ -364,7 +364,7 @@ it. These assertions will only work on this type or types inheriting
 from the type.
 
 ```javascript
-expect.addAssertion('Person', 'to be above legal age', function (expect, subject) {
+expect.addAssertion('<Person> to be above legal age', function (expect, subject) {
     expect(subject.age, 'to be greater than or equal to', 18);
 });
 

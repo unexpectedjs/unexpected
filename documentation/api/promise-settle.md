@@ -64,7 +64,7 @@ return expect.promise.all(promises).caught(function () {
   foo: ⨯ expected '42' to be a number after a short delay
   bar: ✓
   baz: ⨯ expected { a: '1', b: 2 }
-         to have values satisfying 'to be a number after a short delay'
+         to have values satisfying to be a number after a short delay
 
          {
            a: '1', // should be a number after a short delay
