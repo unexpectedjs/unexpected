@@ -60,12 +60,28 @@
     "url": "/api/withError/"
   },
   {
-    "label": "to be close to (number)",
-    "url": "/assertions/number/to-be-close-to/"
+    "label": "when called with (function)",
+    "url": "/assertions/function/when-called-with/"
   },
   {
     "label": "when decoded as (Buffer)",
     "url": "/assertions/Buffer/when-decoded-as/"
+  },
+  {
+    "label": "to be fulfilled (Promise)",
+    "url": "/assertions/Promise/to-be-fulfilled/"
+  },
+  {
+    "label": "to be rejected (Promise)",
+    "url": "/assertions/Promise/to-be-rejected/"
+  },
+  {
+    "label": "when fulfilled (Promise)",
+    "url": "/assertions/Promise/when-fulfilled/"
+  },
+  {
+    "label": "when rejected (Promise)",
+    "url": "/assertions/Promise/when-rejected/"
   },
   {
     "label": "to be a (any)",
@@ -112,22 +128,6 @@
     "url": "/assertions/any/when-passed-as-parameter-to/"
   },
   {
-    "label": "to be fulfilled (Promise)",
-    "url": "/assertions/Promise/to-be-fulfilled/"
-  },
-  {
-    "label": "to be rejected (Promise)",
-    "url": "/assertions/Promise/to-be-rejected/"
-  },
-  {
-    "label": "when fulfilled (Promise)",
-    "url": "/assertions/Promise/when-fulfilled/"
-  },
-  {
-    "label": "when rejected (Promise)",
-    "url": "/assertions/Promise/when-rejected/"
-  },
-  {
     "label": "to be empty (array-like)",
     "url": "/assertions/array-like/to-be-empty/"
   },
@@ -150,6 +150,14 @@
   {
     "label": "when passed as parameters to (array-like)",
     "url": "/assertions/array-like/when-passed-as-parameters-to/"
+  },
+  {
+    "label": "to be false (boolean)",
+    "url": "/assertions/boolean/to-be-false/"
+  },
+  {
+    "label": "to be true (boolean)",
+    "url": "/assertions/boolean/to-be-true/"
   },
   {
     "label": "to call the callback with error (function)",
@@ -176,16 +184,16 @@
     "url": "/assertions/function/to-throw/"
   },
   {
-    "label": "when called with (function)",
-    "url": "/assertions/function/when-called-with/"
+    "label": "to have message (Error)",
+    "url": "/assertions/Error/to-have-message/"
   },
   {
     "label": "to be NaN (number)",
     "url": "/assertions/number/to-be-NaN/"
   },
   {
-    "label": "to have message (Error)",
-    "url": "/assertions/Error/to-have-message/"
+    "label": "to be close to (number)",
+    "url": "/assertions/number/to-be-close-to/"
   },
   {
     "label": "to be finite (number)",
@@ -222,14 +230,6 @@
   {
     "label": "to be within (number)",
     "url": "/assertions/number/to-be-within/"
-  },
-  {
-    "label": "to be true (boolean)",
-    "url": "/assertions/boolean/to-be-true/"
-  },
-  {
-    "label": "to be false (boolean)",
-    "url": "/assertions/boolean/to-be-false/"
   },
   {
     "label": "to be canonical (object)",
