@@ -721,6 +721,33 @@ describe('unexpected', function () {
             });
         });
 
+        it('outputs a character-based diff when two regular expressions do not equal', function () {
+            expect(function () {
+                expect(/foq/i, 'to equal', /fob/i);
+            }, 'to throw', expect.it('to have ansi diff', function () {
+                this
+                  .block(function () {
+                    this.diffRemovedLine('-');
+                  })
+                  .block(function () {
+                    this
+                      .diffRemovedLine('/fo')
+                      .diffRemovedHighlight('q')
+                      .diffRemovedLine('/i');
+                  }).nl()
+                  .block(function () {
+                    this.diffAddedLine('+');
+                  })
+                  .block(function () {
+                    this
+                      .diffAddedLine('/fo')
+                      .diffAddedHighlight('b')
+                      .diffAddedLine('/i');
+                  });
+              }));
+        });
+
+
         it.skipIf(typeof Buffer === 'undefined', 'produces a hex-diff in JSON when Buffers differ', function () {
             expect(function () {
                 expect(
