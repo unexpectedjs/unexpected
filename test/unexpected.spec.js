@@ -3229,6 +3229,34 @@ describe('unexpected', function () {
 
         });
 
+        describe('with a regexp satisfied against a regexp', function () {
+            it('should succeed', function () {
+                expect(/wat/igm, 'to satisfy', /wat/igm);
+            });
+
+            it('should fail when the regular expressions have different sets of flags', function () {
+                expect(function () {
+                    expect(/wat/mi, 'to satisfy', /wat/ig);
+                }, 'to throw',
+                    'expected /wat/im to satisfy /wat/gi\n' +
+                    '\n' +
+                    '-/wat/im\n' +
+                    '+/wat/gi'
+                );
+            });
+
+            it('should fail when the regular expressions have different patterns', function () {
+                expect(function () {
+                    expect(/foo/i, 'to satisfy', /bar/i);
+                }, 'to throw',
+                    'expected /foo/i to satisfy /bar/i\n' +
+                    '\n' +
+                    '-/foo/i\n' +
+                    '+/bar/i'
+                );
+            });
+        });
+
         describe('with a synchronous expect.it in the RHS object', function () {
             it('should support an object with a property value of expect.it', function () {
                 expect({foo: 'bar'}, 'to satisfy', {
