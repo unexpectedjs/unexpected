@@ -147,7 +147,7 @@ The source for Unexpected can be found on
   previously, but that is deprecated. (This change actually
   debuted in 9.12.0).
 * The `when passed as parameter(s) to`, `when called with`,
-  `when decoded as` can now be used standalone, ie. without delegating
+  `when decoded as` assertions can now be used standalone, ie. without delegating
   the result to another assertion in the same `expect` call.
   In that case they will provide the result as the fulfillment
   value of the promise.
