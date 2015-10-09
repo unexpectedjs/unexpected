@@ -128,6 +128,14 @@
     "url": "/assertions/any/when-passed-as-parameter-to/"
   },
   {
+    "label": "to be false (boolean)",
+    "url": "/assertions/boolean/to-be-false/"
+  },
+  {
+    "label": "to be true (boolean)",
+    "url": "/assertions/boolean/to-be-true/"
+  },
+  {
     "label": "to be empty (array-like)",
     "url": "/assertions/array-like/to-be-empty/"
   },
@@ -150,14 +158,6 @@
   {
     "label": "when passed as parameters to (array-like)",
     "url": "/assertions/array-like/when-passed-as-parameters-to/"
-  },
-  {
-    "label": "to be false (boolean)",
-    "url": "/assertions/boolean/to-be-false/"
-  },
-  {
-    "label": "to be true (boolean)",
-    "url": "/assertions/boolean/to-be-true/"
   },
   {
     "label": "to call the callback with error (function)",
