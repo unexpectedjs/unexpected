@@ -32,7 +32,7 @@ h3 {
 }
 nav ul {
   padding: 10px;
-  padding-right: 0;
+  margin: 0;
 }
 nav li {
   list-style: none;
@@ -42,6 +42,9 @@ nav a {
   text-decoration: none;
 }
 nav a:hover {
+  text-decoration: underline;
+}
+nav .active a {
   text-decoration: underline;
 }
 header {
@@ -107,7 +110,7 @@ header nav li.active a {
   top: 40px;
   right: auto;
   width: 330px;
-  padding: 0 20px;
+  padding: 30px;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -124,9 +127,6 @@ header nav li.active a {
 }
 .main:focus {
   outline: none;
-}
-nav li.active a {
-  text-decoration: underline;
 }
 .content {
   margin-top: 27px;
@@ -242,21 +242,34 @@ code {
   .has-sidebar .sidebar h3 {
     margin: 0;
     font-weight: bold;
-    padding: 9px 0;
+    padding: 0;
     padding-left: 20px;
+  }
+  .has-sidebar .sidebar h3:hover {
+    background-color: #1d1d1d;
+  }
+  .has-sidebar .sidebar h3.active {
+    background-color: #292929;
   }
   .has-sidebar .sidebar a {
     display: block;
     color: white;
     padding: 9px 0;
-    padding-left: 35px;
   }
   .has-sidebar .sidebar a:hover {
     text-decoration: none;
   }
-  .has-sidebar .sidebar li.active a {
-    background-color: #292929;
+  .has-sidebar .sidebar .active a {
     text-decoration: none;
+  }
+  .has-sidebar .sidebar li a {
+    padding-left: 35px;
+  }
+  .has-sidebar .sidebar li:hover {
+    background-color: #1d1d1d;
+  }
+  .has-sidebar .sidebar li.active {
+    background-color: #292929;
   }
   .has-sidebar .sidebar ul {
     margin: 0;

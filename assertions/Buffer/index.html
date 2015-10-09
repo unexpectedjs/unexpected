@@ -1,0 +1,369 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0">
+    <link rel="stylesheet" href="../../static/normalize.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../../static/main.css" type="text/css" media="screen" />
+    <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="../../static/bug-icon-black.ico">
+    <title>Buffer</title>
+</head>
+<body class="sidebar-hidden has-sidebar">
+    <header>
+        <div class="logo-icon"></div>
+        <nav>
+            <ul>
+                <li class="menu-toggle-item">
+                    <button class="menu-toggle" onclick="toggleSidebar()"></button>
+                </li>
+                
+                <li class=""><a href="../..">Unexpected</a></li>
+                
+                
+                <li class="active"><a href="../any/to-be">Assertions</a></li>
+                
+                
+                <li class=""><a href="../../api/addAssertion">API</a></li>
+                
+                
+                <li class=""><a href="../../plugins">Plugins</a></li>
+                
+            </ul>
+        </nav>
+        <div class="search" style="visibility: hidden">
+            <input id="search" placeholder="Search..." value="">
+            <div id="searchDropDown" class="dropDown">
+                <ul id="searchResults"></ul>
+            </div>
+        </div>
+    </header>
+
+<section id="assertions">
+    <nav id="assertion-menu" class="sidebar js-remember-scroll-position">
+    
+        <h3 class=""><a href="../any">any</a></h3>
+        <ul>
+            
+            <li class="">
+                <a href="../any/to-be">to be</a>
+            </li>
+            
+            <li class="">
+                <a href="../any/to-be-a">to be a</a>
+            </li>
+            
+            <li class="">
+                <a href="../any/to-be-defined">to be defined</a>
+            </li>
+            
+            <li class="">
+                <a href="../any/to-be-falsy">to be falsy</a>
+            </li>
+            
+            <li class="">
+                <a href="../any/to-be-null">to be null</a>
+            </li>
+            
+            <li class="">
+                <a href="../any/to-be-ok">to be ok</a>
+            </li>
+            
+            <li class="">
+                <a href="../any/to-be-truthy">to be truthy</a>
+            </li>
+            
+            <li class="">
+                <a href="../any/to-be-undefined">to be undefined</a>
+            </li>
+            
+            <li class="">
+                <a href="../any/to-equal">to equal</a>
+            </li>
+            
+            <li class="">
+                <a href="../any/to-satisfy">to satisfy</a>
+            </li>
+            
+            <li class="">
+                <a href="../any/when-passed-as-parameter-to">when passed as parameter to</a>
+            </li>
+            
+        </ul>
+    
+        <h3 class=""><a href="../string">string</a></h3>
+        <ul>
+            
+            <li class="">
+                <a href="../string/to-be">to be</a>
+            </li>
+            
+            <li class="">
+                <a href="../string/to-be-empty">to be empty</a>
+            </li>
+            
+            <li class="">
+                <a href="../string/to-be-greater-than">to be greater than</a>
+            </li>
+            
+            <li class="">
+                <a href="../string/to-be-greater-than-or-equal-to">to be greater than or equal to</a>
+            </li>
+            
+            <li class="">
+                <a href="../string/to-be-less-than">to be less than</a>
+            </li>
+            
+            <li class="">
+                <a href="../string/to-be-less-than-or-equal-to">to be less than or equal to</a>
+            </li>
+            
+            <li class="">
+                <a href="../string/to-be-non-empty">to be non-empty</a>
+            </li>
+            
+            <li class="">
+                <a href="../string/to-be-within">to be within</a>
+            </li>
+            
+            <li class="">
+                <a href="../string/to-begin-with">to begin with</a>
+            </li>
+            
+            <li class="">
+                <a href="../string/to-contain">to contain</a>
+            </li>
+            
+            <li class="">
+                <a href="../string/to-end-with">to end with</a>
+            </li>
+            
+            <li class="">
+                <a href="../string/to-have-length">to have length</a>
+            </li>
+            
+            <li class="">
+                <a href="../string/to-match">to match</a>
+            </li>
+            
+        </ul>
+    
+        <h3 class=""><a href="../number">number</a></h3>
+        <ul>
+            
+            <li class="">
+                <a href="../number/to-be-close-to">to be close to</a>
+            </li>
+            
+            <li class="">
+                <a href="../number/to-be-finite">to be finite</a>
+            </li>
+            
+            <li class="">
+                <a href="../number/to-be-greater-than">to be greater than</a>
+            </li>
+            
+            <li class="">
+                <a href="../number/to-be-greater-than-or-equal-to">to be greater than or equal to</a>
+            </li>
+            
+            <li class="">
+                <a href="../number/to-be-infinite">to be infinite</a>
+            </li>
+            
+            <li class="">
+                <a href="../number/to-be-less-than">to be less than</a>
+            </li>
+            
+            <li class="">
+                <a href="../number/to-be-less-than-or-equal-to">to be less than or equal to</a>
+            </li>
+            
+            <li class="">
+                <a href="../number/to-be-NaN">to be NaN</a>
+            </li>
+            
+            <li class="">
+                <a href="../number/to-be-negative">to be negative</a>
+            </li>
+            
+            <li class="">
+                <a href="../number/to-be-positive">to be positive</a>
+            </li>
+            
+            <li class="">
+                <a href="../number/to-be-within">to be within</a>
+            </li>
+            
+        </ul>
+    
+        <h3 class=""><a href="../function">function</a></h3>
+        <ul>
+            
+            <li class="">
+                <a href="../function/to-call-the-callback">to call the callback</a>
+            </li>
+            
+            <li class="">
+                <a href="../function/to-call-the-callback-with-error">to call the callback with error</a>
+            </li>
+            
+            <li class="">
+                <a href="../function/to-call-the-callback-without-error">to call the callback without error</a>
+            </li>
+            
+            <li class="">
+                <a href="../function/to-error">to error</a>
+            </li>
+            
+            <li class="">
+                <a href="../function/to-have-arity">to have arity</a>
+            </li>
+            
+            <li class="">
+                <a href="../function/to-throw">to throw</a>
+            </li>
+            
+            <li class="">
+                <a href="../function/when-called-with">when called with</a>
+            </li>
+            
+        </ul>
+    
+        <h3 class=""><a href="../boolean">boolean</a></h3>
+        <ul>
+            
+            <li class="">
+                <a href="../boolean/to-be-false">to be false</a>
+            </li>
+            
+            <li class="">
+                <a href="../boolean/to-be-true">to be true</a>
+            </li>
+            
+        </ul>
+    
+        <h3 class=""><a href="../object">object</a></h3>
+        <ul>
+            
+            <li class="">
+                <a href="../object/to-be-canonical">to be canonical</a>
+            </li>
+            
+            <li class="">
+                <a href="../object/to-have-key">to have key</a>
+            </li>
+            
+            <li class="">
+                <a href="../object/to-have-keys">to have keys</a>
+            </li>
+            
+            <li class="">
+                <a href="../object/to-have-keys-satisfying">to have keys satisfying</a>
+            </li>
+            
+            <li class="">
+                <a href="../object/to-have-properties">to have properties</a>
+            </li>
+            
+            <li class="">
+                <a href="../object/to-have-property">to have property</a>
+            </li>
+            
+            <li class="">
+                <a href="../object/to-have-values-satisfying">to have values satisfying</a>
+            </li>
+            
+        </ul>
+    
+        <h3 class=""><a href="../Promise">Promise</a></h3>
+        <ul>
+            
+            <li class="">
+                <a href="../Promise/to-be-fulfilled">to be fulfilled</a>
+            </li>
+            
+            <li class="">
+                <a href="../Promise/to-be-rejected">to be rejected</a>
+            </li>
+            
+            <li class="">
+                <a href="../Promise/when-fulfilled">when fulfilled</a>
+            </li>
+            
+            <li class="">
+                <a href="../Promise/when-rejected">when rejected</a>
+            </li>
+            
+        </ul>
+    
+        <h3 class=""><a href="../Error">Error</a></h3>
+        <ul>
+            
+            <li class="">
+                <a href="../Error/to-have-message">to have message</a>
+            </li>
+            
+        </ul>
+    
+        <h3 class=""><a href="../array-like">array-like</a></h3>
+        <ul>
+            
+            <li class="">
+                <a href="../array-like/to-be-empty">to be empty</a>
+            </li>
+            
+            <li class="">
+                <a href="../array-like/to-be-non-empty">to be non-empty</a>
+            </li>
+            
+            <li class="">
+                <a href="../array-like/to-contain">to contain</a>
+            </li>
+            
+            <li class="">
+                <a href="../array-like/to-have-items-satisfying">to have items satisfying</a>
+            </li>
+            
+            <li class="">
+                <a href="../array-like/to-have-length">to have length</a>
+            </li>
+            
+            <li class="">
+                <a href="../array-like/when-passed-as-parameters-to">when passed as parameters to</a>
+            </li>
+            
+        </ul>
+    
+        <h3 class="active"><a href="">Buffer</a></h3>
+        <ul>
+            
+            <li class="">
+                <a href="when-decoded-as">when decoded as</a>
+            </li>
+            
+        </ul>
+    
+</nav>
+
+    <div class="main" tabindex="-1">
+        <div class="content">
+            <h1>Buffer</h1>
+            <ul class="declarations">
+                
+                <li>&lt;Buffer&gt; [when] decoded as &lt;string&gt; &lt;assertion?&gt;</li>
+                
+            </ul>
+        </div>
+    </div>
+</section>
+<script type="text/javascript">
+    baseUrl = '../..';
+</script>
+<script type="text/javascript" src="../../static/toggleSidebar.js"></script>
+<script type="text/javascript" src="../../static/rememberScrollPosition.js"></script>
+<script type="text/javascript" src="../../static/focusMain.js"></script>
+<script type="text/javascript" src="../../static/search.js"></script>
+</body>
+</html>
+

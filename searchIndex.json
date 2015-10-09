@@ -128,14 +128,6 @@
     "url": "/assertions/any/when-passed-as-parameter-to/"
   },
   {
-    "label": "to be false (boolean)",
-    "url": "/assertions/boolean/to-be-false/"
-  },
-  {
-    "label": "to be true (boolean)",
-    "url": "/assertions/boolean/to-be-true/"
-  },
-  {
     "label": "to be empty (array-like)",
     "url": "/assertions/array-like/to-be-empty/"
   },
@@ -158,6 +150,14 @@
   {
     "label": "when passed as parameters to (array-like)",
     "url": "/assertions/array-like/when-passed-as-parameters-to/"
+  },
+  {
+    "label": "to be false (boolean)",
+    "url": "/assertions/boolean/to-be-false/"
+  },
+  {
+    "label": "to be true (boolean)",
+    "url": "/assertions/boolean/to-be-true/"
   },
   {
     "label": "to call the callback with error (function)",
@@ -212,12 +212,12 @@
     "url": "/assertions/number/to-be-infinite/"
   },
   {
-    "label": "to be less than or equal to (number)",
-    "url": "/assertions/number/to-be-less-than-or-equal-to/"
-  },
-  {
     "label": "to be less than (number)",
     "url": "/assertions/number/to-be-less-than/"
+  },
+  {
+    "label": "to be less than or equal to (number)",
+    "url": "/assertions/number/to-be-less-than-or-equal-to/"
   },
   {
     "label": "to be negative (number)",
@@ -272,12 +272,12 @@
     "url": "/assertions/string/to-be-greater-than/"
   },
   {
-    "label": "to be less than or equal to (string)",
-    "url": "/assertions/string/to-be-less-than-or-equal-to/"
-  },
-  {
     "label": "to be less than (string)",
     "url": "/assertions/string/to-be-less-than/"
+  },
+  {
+    "label": "to be less than or equal to (string)",
+    "url": "/assertions/string/to-be-less-than-or-equal-to/"
   },
   {
     "label": "to be non-empty (string)",
