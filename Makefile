@@ -39,7 +39,7 @@ coverage:
 		-x **/site-build/** \
 		-x **/documentation/** \
 		-x lib/testFrameworkPatch.js \
-		-x generate-site.js \
+		-x bootstrap-unexpected-markdown.js \
 		--report text \
 		--report lcov \
 	--include-all-sources ./node_modules/mocha/bin/_mocha -- --reporter dot
