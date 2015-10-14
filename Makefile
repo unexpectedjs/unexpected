@@ -25,10 +25,9 @@ test-jasmine: ${TARGETS}
 test-jasmine-browser: unexpected.js
 	@./node_modules/.bin/serve .
 
+.PHONY: test
 test: lint
 	mocha
-
-.PHONY: test
 
 .PHONY: coverage
 coverage:
@@ -42,7 +41,7 @@ coverage:
 		-x bootstrap-unexpected-markdown.js \
 		--report text \
 		--report lcov \
-	--include-all-sources ./node_modules/mocha/bin/_mocha -- --reporter dot
+		--include-all-sources ./node_modules/mocha/bin/_mocha -- --reporter dot
 	@echo google-chrome coverage/lcov-report/index.html
 
 .PHONY: test-browser
