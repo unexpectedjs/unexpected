@@ -18,10 +18,6 @@ it.skipIf = function (condition) {
     (condition ? it.skip : it).apply(it, Array.prototype.slice.call(arguments, 1));
 };
 
-describe.skipIf = function (condition) {
-    (condition ? describe.skip : describe).apply(describe, Array.prototype.slice.call(arguments, 1));
-};
-
 function toArguments() {
     return arguments;
 }
@@ -3053,7 +3049,9 @@ describe('unexpected', function () {
             });
         });
 
-        describe.skipIf(typeof Buffer === 'undefined', 'with a buffer instance', function () {
+        describe('with a buffer instance', function () {
+            this.pending = typeof Buffer === 'undefined';
+
             describe('in an async setting', function () {
                 it('should succeed', function () {
                     return expect(new Buffer([0, 1, 2]), 'to satisfy', expect.it('when delayed a little bit', 'to equal', new Buffer([0, 1, 2])));
@@ -3535,7 +3533,9 @@ describe('unexpected', function () {
             });
         });
 
-        describe.skipIf(typeof Buffer === 'undefined', 'on Buffer instances', function () {
+        describe('on Buffer instances', function () {
+            this.pending = typeof Buffer === 'undefined';
+
             it('should assert equality', function () {
                 expect(new Buffer([1, 2, 3]), 'to satisfy', new Buffer([1, 2, 3]));
             });
@@ -8116,7 +8116,9 @@ describe('unexpected', function () {
         });
     });
 
-    describe.skipIf(typeof Buffer === 'undefined', 'when decoded as assertion', function () {
+    describe('when decoded as assertion', function () {
+        this.pending = typeof Buffer === 'undefined';
+
         it('should decode a Buffer instance to utf-8', function () {
             expect(new Buffer('æøå', 'utf-8'), 'when decoded as', 'utf-8', 'to equal', 'æøå');
         });
