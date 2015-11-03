@@ -88,12 +88,12 @@
     "url": "/assertions/any/to-be-a/"
   },
   {
-    "label": "to be defined (any)",
-    "url": "/assertions/any/to-be-defined/"
-  },
-  {
     "label": "to be falsy (any)",
     "url": "/assertions/any/to-be-falsy/"
+  },
+  {
+    "label": "to be defined (any)",
+    "url": "/assertions/any/to-be-defined/"
   },
   {
     "label": "to be null (any)",
@@ -212,12 +212,12 @@
     "url": "/assertions/number/to-be-infinite/"
   },
   {
-    "label": "to be less than or equal to (number)",
-    "url": "/assertions/number/to-be-less-than-or-equal-to/"
-  },
-  {
     "label": "to be less than (number)",
     "url": "/assertions/number/to-be-less-than/"
+  },
+  {
+    "label": "to be less than or equal to (number)",
+    "url": "/assertions/number/to-be-less-than-or-equal-to/"
   },
   {
     "label": "to be negative (number)",
@@ -230,34 +230,6 @@
   {
     "label": "to be within (number)",
     "url": "/assertions/number/to-be-within/"
-  },
-  {
-    "label": "to be canonical (object)",
-    "url": "/assertions/object/to-be-canonical/"
-  },
-  {
-    "label": "to have key (object)",
-    "url": "/assertions/object/to-have-key/"
-  },
-  {
-    "label": "to have keys satisfying (object)",
-    "url": "/assertions/object/to-have-keys-satisfying/"
-  },
-  {
-    "label": "to have keys (object)",
-    "url": "/assertions/object/to-have-keys/"
-  },
-  {
-    "label": "to have properties (object)",
-    "url": "/assertions/object/to-have-properties/"
-  },
-  {
-    "label": "to have property (object)",
-    "url": "/assertions/object/to-have-property/"
-  },
-  {
-    "label": "to have values satisfying (object)",
-    "url": "/assertions/object/to-have-values-satisfying/"
   },
   {
     "label": "to be empty (string)",
@@ -310,5 +282,33 @@
   {
     "label": "to match (string)",
     "url": "/assertions/string/to-match/"
+  },
+  {
+    "label": "to be canonical (object)",
+    "url": "/assertions/object/to-be-canonical/"
+  },
+  {
+    "label": "to have key (object)",
+    "url": "/assertions/object/to-have-key/"
+  },
+  {
+    "label": "to have keys satisfying (object)",
+    "url": "/assertions/object/to-have-keys-satisfying/"
+  },
+  {
+    "label": "to have keys (object)",
+    "url": "/assertions/object/to-have-keys/"
+  },
+  {
+    "label": "to have properties (object)",
+    "url": "/assertions/object/to-have-properties/"
+  },
+  {
+    "label": "to have property (object)",
+    "url": "/assertions/object/to-have-property/"
+  },
+  {
+    "label": "to have values satisfying (object)",
+    "url": "/assertions/object/to-have-values-satisfying/"
   }
 ]
