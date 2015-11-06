@@ -167,6 +167,7 @@ code {
   background-color: #f7f7f7;
   padding: 0 3px;
   border-radius: 2px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 .output,
 .code {
