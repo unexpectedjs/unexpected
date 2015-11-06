@@ -60,12 +60,12 @@
     "url": "/api/withError/"
   },
   {
-    "label": "when called with (function)",
-    "url": "/assertions/function/when-called-with/"
+    "label": "to be true (boolean)",
+    "url": "/assertions/boolean/to-be-true/"
   },
   {
-    "label": "when decoded as (Buffer)",
-    "url": "/assertions/Buffer/when-decoded-as/"
+    "label": "to have message (Error)",
+    "url": "/assertions/Error/to-have-message/"
   },
   {
     "label": "to be fulfilled (Promise)",
@@ -152,14 +152,6 @@
     "url": "/assertions/array-like/when-passed-as-parameters-to/"
   },
   {
-    "label": "to be false (boolean)",
-    "url": "/assertions/boolean/to-be-false/"
-  },
-  {
-    "label": "to be true (boolean)",
-    "url": "/assertions/boolean/to-be-true/"
-  },
-  {
     "label": "to call the callback with error (function)",
     "url": "/assertions/function/to-call-the-callback-with-error/"
   },
@@ -184,8 +176,16 @@
     "url": "/assertions/function/to-throw/"
   },
   {
-    "label": "to have message (Error)",
-    "url": "/assertions/Error/to-have-message/"
+    "label": "when called with (function)",
+    "url": "/assertions/function/when-called-with/"
+  },
+  {
+    "label": "to be false (boolean)",
+    "url": "/assertions/boolean/to-be-false/"
+  },
+  {
+    "label": "when decoded as (Buffer)",
+    "url": "/assertions/Buffer/when-decoded-as/"
   },
   {
     "label": "to be NaN (number)",
@@ -260,12 +260,12 @@
     "url": "/assertions/object/to-have-values-satisfying/"
   },
   {
-    "label": "to be empty (string)",
-    "url": "/assertions/string/to-be-empty/"
-  },
-  {
     "label": "to be greater than or equal to (string)",
     "url": "/assertions/string/to-be-greater-than-or-equal-to/"
+  },
+  {
+    "label": "to be empty (string)",
+    "url": "/assertions/string/to-be-empty/"
   },
   {
     "label": "to be greater than (string)",
