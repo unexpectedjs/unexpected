@@ -35,7 +35,7 @@ Here's a partial list of plugins for Unexpected:
   and make assertions about the HTTP traffic that goes on while executing other
   assertions. Based on the [mitm](https://github.com/moll/node-mitm/) module.
   Only works with node.js and io.js.
-* [unexpected-moment](https://unexpected.js.org/unexpected-moment/):
+* [unexpected-moment](http://unexpected.js.org/unexpected-moment/):
   Assertions for testing [moment.js](http://momentjs.com/) instances.
 * [unexpected-react-shallow](http://github.com/bruderstein/unexpected-react-shallow/): Assertions for the [React.js shallow renderer](http://facebook.github.io/react/docs/test-utils.html#shallow-rendering). Assert using JSX.
 * [unexpected-resemble](http://unexpected.js.org/unexpected-resemble/): Image resemblance
