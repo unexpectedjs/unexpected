@@ -3023,6 +3023,12 @@ describe('unexpected', function () {
     });
 
     describe('to satisfy assertion', function () {
+        it('passes when an object is tested against itself, even in the presence of  circular references', function () {
+            var circular = {};
+            circular.loop = circular;
+            expect(circular, 'to satisfy', circular);
+        });
+
         describe('with the not flag', function () {
             it('should succeed when the assertion fails without the not flag', function () {
                 expect({foo: 123}, 'not to satisfy', {foo: 456});
