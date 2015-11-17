@@ -375,9 +375,6 @@ throws an exception synchronously:</p>
   <div><span style="color: #000000">}</span></div>
   <div><span style="color: #a71d5d">return</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>errorOut<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;call&nbsp;the&nbsp;callback'</span><span style="color: #000000">);</span></div>
 </div><div class="output">
-  <div><span style="color: red; font-weight: bold">/Users/sunesimonsen/Code/unexpected/lib/Unexpected.js:1092</span></div>
-  <div><span style="color: red; font-weight: bold">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;throw&nbsp;e;</span></div>
-  <div><span style="color: red; font-weight: bold">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;^</span></div>
   <div><span style="color: red; font-weight: bold">ugh</span></div>
 </div><p>The assertion will pass even if the function passes an error to the callback.
 If you want that case to fail, look into the

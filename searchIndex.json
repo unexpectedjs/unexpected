@@ -60,8 +60,8 @@
     "url": "/api/withError/"
   },
   {
-    "label": "to throw (function)",
-    "url": "/assertions/function/to-throw/"
+    "label": "when called with (function)",
+    "url": "/assertions/function/when-called-with/"
   },
   {
     "label": "when decoded as (Buffer)",
@@ -160,12 +160,12 @@
     "url": "/assertions/boolean/to-be-true/"
   },
   {
-    "label": "to call the callback without error (function)",
-    "url": "/assertions/function/to-call-the-callback-without-error/"
-  },
-  {
     "label": "to call the callback with error (function)",
     "url": "/assertions/function/to-call-the-callback-with-error/"
+  },
+  {
+    "label": "to call the callback without error (function)",
+    "url": "/assertions/function/to-call-the-callback-without-error/"
   },
   {
     "label": "to call the callback (function)",
@@ -180,8 +180,8 @@
     "url": "/assertions/function/to-have-arity/"
   },
   {
-    "label": "when called with (function)",
-    "url": "/assertions/function/when-called-with/"
+    "label": "to throw (function)",
+    "url": "/assertions/function/to-throw/"
   },
   {
     "label": "to have message (Error)",
