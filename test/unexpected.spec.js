@@ -3108,8 +3108,8 @@ describe('unexpected', function () {
                     "expected [] to satisfy [ 1, 2 ]\n" +
                     "\n" +
                     "[\n" +
-                    "  // missing: should equal 1\n" +
-                    "  // missing: should equal 2\n" +
+                    "  // missing 1\n" +
+                    "  // missing 2\n" +
                     "]"
                 );
             });
@@ -3123,8 +3123,8 @@ describe('unexpected', function () {
                     "expected [] to satisfy { 0: 1, 1: 2 }\n" +
                     "\n" +
                     "[\n" +
-                    "  // missing: should equal 1\n" +
-                    "  // missing: should equal 2\n" +
+                    "  // missing 1\n" +
+                    "  // missing 2\n" +
                     "]"
                 );
             });
@@ -3156,6 +3156,32 @@ describe('unexpected', function () {
                 '  a: 123,\n' +
                 '  b: 456 // should equal 654\n' +
                 '})'
+            );
+        });
+
+        it('renders missing properties correctly', function () {
+            expect(function () {
+                expect({foo: 'bar'}, 'to satisfy', {foo: 'bar', baz: 123});
+            }, 'to throw',
+                "expected { foo: 'bar' } to satisfy { foo: 'bar', baz: 123 }\n" +
+                "\n" +
+                "{\n" +
+                "  foo: 'bar'\n" +
+                "  // missing baz: 123\n" +
+                "}"
+            );
+        });
+
+        it('renders missing properties correctly with expect.it', function () {
+            expect(function () {
+                expect({foo: 'bar'}, 'to satisfy', {foo: 'bar', baz: expect.it('to equal', 123)});
+            }, 'to throw',
+                "expected { foo: 'bar' } to satisfy { foo: 'bar', baz: expect.it('to equal', 123) }\n" +
+                "\n" +
+                "{\n" +
+                "  foo: 'bar'\n" +
+                "  // missing baz: expect.it('to equal', 123)\n" +
+                "}"
             );
         });
 
@@ -3658,7 +3684,7 @@ describe('unexpected', function () {
                     'expected [] to satisfy [ undefined ]\n' +
                     '\n' +
                     '[\n' +
-                    '  // missing: should satisfy undefined\n' +
+                    '  // missing undefined\n' +
                     ']'
                 );
             });
@@ -3686,7 +3712,7 @@ describe('unexpected', function () {
                     '  1,\n' +
                     '  2,\n' +
                     '  3\n' +
-                    '  // missing: should equal 4\n' +
+                    '  // missing 4\n' +
                     ']');
             });
         });
@@ -5129,8 +5155,8 @@ describe('unexpected', function () {
                            "\n" +
                            "  {\n" +
                            "    a: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',\n" +
-                           "    b: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',\n" +
-                           "    foo: undefined // should equal 123\n" +
+                           "    b: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'\n" +
+                           "    // missing foo: 123\n" +
                            "  }"
                           );
                 });
