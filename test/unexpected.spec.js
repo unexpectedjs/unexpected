@@ -2612,8 +2612,8 @@ describe('unexpected', function () {
                    "\n" +
                    "{\n" +
                    "  a: 'foo',\n" +
-                   "  b: 'bar',\n" +
-                   "  c: undefined // should equal 'baz'\n" +
+                   "  b: 'bar'\n" +
+                   "  // missing c: 'baz'\n" +
                    "}");
             expect(function () {
                 expect({a: 'foo', b: 'bar'}, 'to have properties', {b: 'baz'});
@@ -2636,8 +2636,8 @@ describe('unexpected', function () {
             }, 'to throw', "expected {} to have own properties { a: 'foo', b: 'bar' }\n" +
                    "\n" +
                    "{\n" +
-                   "  a: undefined, // should equal 'foo'\n" +
-                   "  b: undefined // should equal 'bar'\n" +
+                   "  // missing a: 'foo'\n" +
+                   "  // missing b: 'bar'\n" +
                    "}");
 
             expect(function () {
@@ -2672,8 +2672,8 @@ describe('unexpected', function () {
                    "expected Foo({}) to have properties { a: 123 }\n" +
                    "\n" +
                    "Foo({\n" +
-                   "  doSomething: function () {},\n" +
-                   "  a: undefined // should equal 123\n" +
+                   "  doSomething: function () {}\n" +
+                   "  // missing a: 123\n" +
                    "})");
         });
 
@@ -6687,8 +6687,8 @@ describe('unexpected', function () {
                        "\n" +
                        "{\n" +
                        "  one: 1,\n" +
-                       "  three: 3,\n" +
-                       "  two: undefined // should equal 2\n" +
+                       "  three: 3\n" +
+                       "  // missing two: 2\n" +
                        "}");
             });
 
@@ -6920,8 +6920,8 @@ describe('unexpected', function () {
                        "    name: 'John', // should equal 'Jane'\n" +
                        "                  // -John\n" +
                        "                  // +Jane\n" +
-                       "    age: 34, // should equal 24\n" +
-                       "    children: undefined // should equal 2\n" +
+                       "    age: 34 // should equal 24\n" +
+                       "    // missing children: 2\n" +
                        "  },\n" +
                        "  3,\n" +
                        "  2\n" +

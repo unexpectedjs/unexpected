@@ -41,8 +41,8 @@ to equal { one: 1, two: 2, three: 3, four: 4 }
   one: 1,
   two: 2,
   four: 4,
-  five: 5, // should be removed
-  three: undefined // should equal 3
+  five: 5 // should be removed
+  // missing three: 3
 }
 ```
 
