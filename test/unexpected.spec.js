@@ -3114,6 +3114,48 @@ describe('unexpected', function () {
                 );
             });
 
+            it('should fall back to comparing index-by-index if one of the arrays has more than 10 entries', function () {
+                expect(function () {
+                    expect([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 'to satisfy', [2, 3, 4, 5, 6, 7, 8, 9, 10]);
+                }, 'to throw',
+                    "expected [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ]\n" +
+                    "to satisfy [ 2, 3, 4, 5, 6, 7, 8, 9, 10 ]\n" +
+                    "\n" +
+                    "[\n" +
+                    "  1, // should equal 2\n" +
+                    "  2, // should equal 3\n" +
+                    "  3, // should equal 4\n" +
+                    "  4, // should equal 5\n" +
+                    "  5, // should equal 6\n" +
+                    "  6, // should equal 7\n" +
+                    "  7, // should equal 8\n" +
+                    "  8, // should equal 9\n" +
+                    "  9, // should equal 10\n" +
+                    "  10, // should be removed\n" +
+                    "  11 // should be removed\n" +
+                    "]"
+                );
+
+                expect(function () {
+                    expect([1, 2, 3, 4, 5, 6, 7, 8], 'to satisfy', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+                }, 'to throw',
+                    "expected [ 1, 2, 3, 4, 5, 6, 7, 8 ] to satisfy [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]\n" +
+                    "\n" +
+                    "[\n" +
+                    "  1,\n" +
+                    "  2,\n" +
+                    "  3,\n" +
+                    "  4,\n" +
+                    "  5,\n" +
+                    "  6,\n" +
+                    "  7,\n" +
+                    "  8\n" +
+                    "  // missing 9\n" +
+                    "  // missing 10\n" +
+                    "]"
+                );
+            });
+
             describe('with sync expect.it entries in the value', function () {
                 it('should render missing entries', function () {
                     expect(function () {
