@@ -3113,6 +3113,212 @@ describe('unexpected', function () {
                     "]"
                 );
             });
+
+            it('should fall back to comparing index-by-index if one of the arrays has more than 10 entries', function () {
+                expect(function () {
+                    expect([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ], 'to satisfy', [0, 2, 3, 4, 5, 6, 7, 8, 9 ]);
+                }, 'to throw',
+                    "expected [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]\n" +
+                    "to satisfy [ 0, 2, 3, 4, 5, 6, 7, 8, 9 ]\n" +
+                    "\n" +
+                    "[\n" +
+                    "  0,\n" +
+                    "  1, // should equal 2\n" +
+                    "  2, // should equal 3\n" +
+                    "  3, // should equal 4\n" +
+                    "  4, // should equal 5\n" +
+                    "  5, // should equal 6\n" +
+                    "  6, // should equal 7\n" +
+                    "  7, // should equal 8\n" +
+                    "  8, // should equal 9\n" +
+                    "  9, // should be removed\n" +
+                    "  10 // should be removed\n" +
+                    "]"
+                );
+
+                expect(function () {
+                    expect([1, 2, 3, 4, 5, 6, 7, 8], 'to satisfy', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
+                }, 'to throw',
+                    "expected [ 1, 2, 3, 4, 5, 6, 7, 8 ]\n" +
+                    "to satisfy [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ]\n" +
+                    "\n" +
+                    "[\n" +
+                    "  1,\n" +
+                    "  2,\n" +
+                    "  3,\n" +
+                    "  4,\n" +
+                    "  5,\n" +
+                    "  6,\n" +
+                    "  7,\n" +
+                    "  8\n" +
+                    "  // missing 9\n" +
+                    "  // missing 10\n" +
+                    "  // missing 11\n" +
+                    "]"
+                );
+            });
+
+            describe('with sync expect.it entries in the value', function () {
+                it('should render missing entries', function () {
+                    expect(function () {
+                        expect([1, 2], 'to satisfy', [expect.it('to be a number'), 2, expect.it('to be a string')]);
+                    }, 'to throw',
+                        "expected [ 1, 2 ]\n" +
+                        "to satisfy [ expect.it('to be a number'), 2, expect.it('to be a string') ]\n" +
+                        "\n" +
+                        "[\n" +
+                        "  1,\n" +
+                        "  2\n" +
+                        "  // missing: should be a string\n" +
+                        "]"
+                    );
+                });
+
+                it('should render moved entries', function () {
+                    return expect(function () {
+                        expect(['a', 'b'], 'to satisfy', [expect.it('to equal', 'b')]);
+                    }, 'to throw',
+                        "expected [ 'a', 'b' ] to satisfy [ expect.it('to equal', 'b') ]\n" +
+                        "\n" +
+                        "[\n" +
+                        "  'a', // should be removed\n" +
+                        "  'b'\n" +
+                        "]"
+                    );
+                });
+
+                it('should render entries that do not satisfy the RHS entry', function () {
+                    return expect(function () {
+                        expect(['a', 'b'], 'to satisfy', ['e', expect.it('to equal', 'c')]);
+                    }, 'to throw',
+                        "expected [ 'a', 'b' ] to satisfy [ 'e', expect.it('to equal', 'c') ]\n" +
+                        "\n" +
+                        "[\n" +
+                        "  'a', // should equal 'e'\n" +
+                        "       //\n" +
+                        "       // -a\n" +
+                        "       // +e\n" +
+                        "  'b' // should equal 'c'\n" +
+                        "      //\n" +
+                        "      // -b\n" +
+                        "      // +c\n" +
+                        "]"
+                    );
+                });
+
+                it('should render extraneous entries', function () {
+                    expect(function () {
+                        expect([1, 2, 3], 'to satisfy', [1, 2]);
+                    }, 'to throw',
+                        "expected [ 1, 2, 3 ] to satisfy [ 1, 2 ]\n" +
+                        "\n" +
+                        "[\n" +
+                        "  1,\n" +
+                        "  2,\n" +
+                        "  3 // should be removed\n" +
+                        "]"
+                    );
+                });
+            });
+
+            describe('with async expect.it entries in the value', function () {
+                it('should render missing entries', function () {
+                    return expect(function () {
+                        return expect([1, 2], 'to satisfy', [expect.it('when delayed a little bit', 'to be a number'), 2, expect.it('when delayed a little bit', 'to be a string')]);
+                    }, 'to error',
+                        "expected [ 1, 2 ] to satisfy\n" +
+                        "[\n" +
+                        "  expect.it('when delayed a little bit', 'to be a number'),\n" +
+                        "  2,\n" +
+                        "  expect.it('when delayed a little bit', 'to be a string')\n" +
+                        "]\n" +
+                        "\n" +
+                        "[\n" +
+                        "  1,\n" +
+                        "  2\n" +
+                        "  // missing: expected: when delayed a little bit to be a string\n" +
+                        "]"
+                    );
+                });
+
+                it('should render unsatisfied entries', function () {
+                    return expect(function () {
+                        return expect([1, 2, 3, 4, 5, 6], 'to satisfy', [
+                            expect.it('when delayed a little bit', 'to be a number'),
+                            2,
+                            expect.it('when delayed a little bit', 'to be a string'),
+                            expect.it('when delayed a little bit', 'to be a boolean'),
+                            expect.it('when delayed a little bit', 'to be a regular expression'),
+                            expect.it('when delayed a little bit', 'to be a function')
+                        ]);
+                    }, 'to error',
+                        "expected [ 1, 2, 3, 4, 5, 6 ] to satisfy\n" +
+                        "[\n" +
+                        "  expect.it('when delayed a little bit', 'to be a number'),\n" +
+                        "  2,\n" +
+                        "  expect.it('when delayed a little bit', 'to be a string'),\n" +
+                        "  expect.it('when delayed a little bit', 'to be a boolean'),\n" +
+                        "  expect.it('when delayed a little bit', 'to be a regular expression'),\n" +
+                        "  expect.it('when delayed a little bit', 'to be a function')\n" +
+                        "]\n" +
+                        "\n" +
+                        "[\n" +
+                        "  1,\n" +
+                        "  2,\n" +
+                        "  3, // expected: when delayed a little bit to be a string\n" +
+                        "  4, // expected: when delayed a little bit to be a boolean\n" +
+                        "  5, // expected: when delayed a little bit to be a regular expression\n" +
+                        "  6 // expected: when delayed a little bit to be a function\n" +
+                        "]"
+                    );
+                });
+
+                it('should render moved entries', function () {
+                    return expect(function () {
+                        return expect(['a', 'b'], 'to satisfy', [expect.it('when delayed a little bit', 'to equal', 'b')]);
+                    }, 'to error',
+                        "expected [ 'a', 'b' ]\n" +
+                        "to satisfy [ expect.it('when delayed a little bit', 'to equal', 'b') ]\n" +
+                        "\n" +
+                        "[\n" +
+                        "  'a', // should be removed\n" +
+                        "  'b'\n" +
+                        "]"
+                    );
+                });
+
+                it('should render entries that do not satisfy the RHS entry', function () {
+                    return expect(function () {
+                        return expect(['a', 'b'], 'to satisfy', ['a', expect.it('when delayed a little bit', 'to equal', 'c')]);
+                    }, 'to error',
+                        "expected [ 'a', 'b' ]\n" +
+                        "to satisfy [ 'a', expect.it('when delayed a little bit', 'to equal', 'c') ]\n" +
+                        "\n" +
+                        "[\n" +
+                        "  'a',\n" +
+                        "  'b' // expected: when delayed a little bit to equal 'c'\n" +
+                        "      //\n" +
+                        "      // -b\n" +
+                        "      // +c\n" +
+                        "]"
+                    );
+                });
+
+                it('should render extraneous entries', function () {
+                    return expect(function () {
+                        return expect([1, 2, 3], 'to satisfy', [expect.it('when delayed a little bit', 'to be a number'), 2]);
+                    }, 'to error',
+                        "expected [ 1, 2, 3 ]\n" +
+                        "to satisfy [ expect.it('when delayed a little bit', 'to be a number'), 2 ]\n" +
+                        "\n" +
+                        "[\n" +
+                        "  1,\n" +
+                        "  2,\n" +
+                        "  3 // should be removed\n" +
+                        "]"
+                    );
+                });
+            });
         });
 
         describe('with an array satisfied against an object', function () {
