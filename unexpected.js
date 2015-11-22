@@ -39,9 +39,9 @@ module.exports = {
 },{}],3:[function(require,module,exports){
 var createStandardErrorMessage = require(6);
 var utils = require(17);
-var magicpen = require(37);
+var magicpen = require(39);
 var extend = utils.extend;
-var leven = require(33);
+var leven = require(35);
 var makePromise = require(11);
 var makeAndMethod = require(10);
 var isPendingPromise = require(9);
@@ -541,7 +541,7 @@ Unexpected.prototype.fail = function (arg) {
                 var match = placeholderRegexp.exec(token);
                 if (match) {
                     var index = match[1];
-                    if (placeholderArgs && index in placeholderArgs) {
+                    if (index in placeholderArgs) {
                         var placeholderArg = placeholderArgs[index];
                         if (placeholderArg && placeholderArg.isMagicPen) {
                             output.append(placeholderArg);
@@ -1699,6 +1699,9 @@ module.exports = UnexpectedError;
 (function (Buffer){
 /*global setTimeout*/
 var utils = require(17);
+var arrayChanges = require(21);
+var arrayChangesAsync = require(20);
+var throwIfNonUnexpectedError = require(15);
 var objectIs = utils.objectIs;
 var isRegExp = utils.isRegExp;
 var isArray = utils.isArray;
@@ -2331,7 +2334,7 @@ module.exports = function (expect) {
         expect.errorMode = 'bubble';
 
         var keys = expect.subjectType.getKeys(subject);
-        var expected = Array.isArray(subject) ? [] : {};
+        var expected = {};
         keys.forEach(function (key, index) {
             if (typeof nextArg === 'string') {
                 expected[key] = function (s) {
@@ -2591,7 +2594,180 @@ module.exports = function (expect) {
         expect(subject, 'to equal', value);
     });
 
-    expect.addAssertion('<object> to [exhaustively] satisfy <array-like|object>', function (expect, subject, value) {
+    expect.addAssertion('<array-like> to [exhaustively] satisfy <array-like>', function (expect, subject, value) {
+        expect.errorMode = 'bubble';
+        var keyPromises = new Array(value.length);
+        var i;
+        var valueKeys = new Array(value.length);
+        for (i = 0 ; i < value.length ; i += 1) {
+            valueKeys[i] = i;
+            keyPromises[i] = expect.promise(function () {
+                var valueKeyType = expect.findTypeOf(value[i]);
+                if (valueKeyType.is('function')) {
+                    return value[i](subject[i]);
+                } else {
+                    return expect(subject[i], 'to [exhaustively] satisfy', value[i]);
+                }
+            });
+        }
+        return expect.promise.all([
+            expect.promise(function () {
+                expect(subject, 'to only have keys', valueKeys);
+            }),
+            expect.promise.all(keyPromises)
+        ]).caught(function () {
+            var subjectType = expect.subjectType;
+            return expect.promise.settle(keyPromises).then(function () {
+                var toSatisfyMatrix = new Array(subject.length * value.length);
+                for (i = 0 ; i < subject.length ; i += 1) {
+                    if (i < value.length) {
+                        toSatisfyMatrix[i + i * subject.length] = keyPromises[i].isFulfilled() || keyPromises[i].reason();
+                    }
+                }
+                if (subject.length > 10 || value.length > 10) {
+                    var indexByIndexChanges = [];
+                    for (i = 0 ; i < subject.length ; i += 1) {
+                        var promise = keyPromises[i];
+                        if (i < value.length) {
+                            indexByIndexChanges.push({
+                                type: promise.isFulfilled() ? 'equal' : 'similar',
+                                value: subject[i],
+                                expected: value[i],
+                                actualIndex: i,
+                                expectedIndex: i,
+                                last: i === Math.max(subject.length, value.length) - 1
+                            });
+                        } else {
+                            indexByIndexChanges.push({
+                                type: 'remove',
+                                value: subject[i],
+                                actualIndex: i,
+                                last: i === subject.length - 1
+                            });
+                        }
+                    }
+                    for (i = subject.length ; i < value.length ; i += 1) {
+                        indexByIndexChanges.push({
+                            type: 'insert',
+                            value: value[i],
+                            expectedIndex: i
+                        });
+                    }
+                    return failWithChanges(indexByIndexChanges);
+                }
+
+                var isAsync = false;
+                var changes = arrayChanges(subject, value, function equal(a, b, aIndex, bIndex) {
+                    var existingResult = toSatisfyMatrix[aIndex + subject.length * bIndex];
+                    if (typeof existingResult !== 'undefined') {
+                        return existingResult === true;
+                    }
+                    var result;
+                    try {
+                        result = expect(a, 'to [exhaustively] satisfy', b);
+                    } catch (err) {
+                        throwIfNonUnexpectedError(err);
+                        toSatisfyMatrix[aIndex + subject.length * bIndex] = err;
+                        return false;
+                    }
+                    result.then(function () {}, function () {});
+                    if (result.isPending()) {
+                        isAsync = true;
+                        return false;
+                    }
+                    toSatisfyMatrix[aIndex + subject.length * bIndex] = true;
+                    return true;
+                }, function (a, b) {
+                    return subjectType.similar(a, b);
+                });
+                if (isAsync) {
+                    return expect.promise(function (resolve, reject) {
+                        arrayChangesAsync(subject, value, function equal(a, b, aIndex, bIndex, cb) {
+                            var existingResult = toSatisfyMatrix[aIndex + subject.length * bIndex];
+                            if (typeof existingResult !== 'undefined') {
+                                return cb(existingResult === true);
+                            }
+                            expect.promise(function () {
+                                return expect(a, 'to [exhaustively] satisfy', b);
+                            }).then(function () {
+                                toSatisfyMatrix[aIndex + subject.length * bIndex] = true;
+                                cb(true);
+                            }, function (err) {
+                                toSatisfyMatrix[aIndex + subject.length * bIndex] = err;
+                                cb(false);
+                            });
+                        }, function (a, b, aIndex, bIndex, cb) {
+                            cb(subjectType.similar(a, b));
+                        }, resolve);
+                    }).then(failWithChanges);
+                } else {
+                    return failWithChanges(changes);
+                }
+
+                function failWithChanges(changes) {
+                    expect.errorMode = 'default';
+                    expect.fail({
+                        diff: function (output, diff, inspect, equal) {
+                            var result = {
+                                diff: output,
+                                inline: true
+                            };
+                            var indexOfLastNonInsert = changes.reduce(function (previousValue, diffItem, index) {
+                                return (diffItem.type === 'insert') ? previousValue : index;
+                            }, -1);
+                            output.append(subjectType.prefix(output.clone(), subject)).nl().indentLines();
+                            changes.forEach(function (diffItem, index) {
+                                var delimiterOutput = subjectType.delimiter(output.clone(), index, indexOfLastNonInsert + 1);
+                                output.i().block(function () {
+                                    var type = diffItem.type;
+                                    if (type === 'insert') {
+                                        this.annotationBlock(function () {
+                                            if (expect.findTypeOf(diffItem.value).is('function')) {
+                                                this.error('missing: ').block(function () {
+                                                    this.omitSubject = undefined;
+                                                    this.appendErrorMessage(keyPromises[diffItem.expectedIndex].reason());
+                                                });
+                                            } else {
+                                                this.error('missing ').block(inspect(diffItem.value));
+                                            }
+                                        });
+                                    } else if (type === 'remove') {
+                                        this.block(inspect(diffItem.value).amend(delimiterOutput.sp()).error('// should be removed'));
+                                    } else if (type === 'equal') {
+                                        this.block(inspect(diffItem.value).amend(delimiterOutput));
+                                    } else {
+                                        var toSatisfyResult = toSatisfyMatrix[diffItem.actualIndex + subject.length * diffItem.expectedIndex];
+                                        var valueDiff = toSatisfyResult && toSatisfyResult !== true && toSatisfyResult.getDiff({ output: output.clone() });
+                                        if (valueDiff && valueDiff.inline) {
+                                            this.block(valueDiff.diff.amend(delimiterOutput));
+                                        } else {
+                                            this.block(inspect(diffItem.value).amend(delimiterOutput)).sp().annotationBlock(function () {
+                                                this.omitSubject = diffItem.value;
+                                                var label = toSatisfyResult.getLabel();
+                                                if (label) {
+                                                    this.error(label).sp()
+                                                        .block(inspect(diffItem.expected));
+                                                    if (valueDiff) {
+                                                        this.nl(2).append(valueDiff.diff);
+                                                    }
+                                                } else {
+                                                    this.appendErrorMessage(toSatisfyResult);
+                                                }
+                                            });
+                                        }
+                                    }
+                                }).nl();
+                            });
+                            output.outdentLines().append(subjectType.suffix(output.clone(), subject));
+                            return result;
+                        }
+                    });
+                }
+            });
+        });
+    });
+
+    expect.addAssertion('<object> to [exhaustively] satisfy <object>', function (expect, subject, value) {
         var valueType = expect.argTypes[0];
         var subjectType = expect.subjectType;
         if (subject === value) {
@@ -2666,6 +2842,9 @@ module.exports = function (expect) {
                                     } else {
                                         conflicting = null;
                                     }
+                                } else if (!(key in subject)) {
+                                    valueOutput = inspect(value[key]);
+                                    missingKey = true;
                                 } else if (conflicting || arrayItemOutOfRange || missingArrayIndex) {
                                     var keyDiff = conflicting && conflicting.getDiff({ output: output });
                                     isInlineDiff = !keyDiff || keyDiff.inline ;
@@ -2701,9 +2880,7 @@ module.exports = function (expect) {
 
                                 var omitDelimiter =
                                     missingArrayIndex ||
-                                    subjectType.is('array-like') ?
-                                        index >= subjectKeys.length - 1 :
-                                        index === keys.length - 1;
+                                    index >= subjectKeys.length - 1;
 
                                 if (!omitDelimiter) {
                                     valueOutput.amend(subjectType.delimiter(output.clone(), index, keys.length));
@@ -2720,6 +2897,11 @@ module.exports = function (expect) {
 
                                 var annotationOnNextLine = !isInlineDiff &&
                                     output.preferredWidth < this.size().width + valueOutput.size().width + annotation.size().width;
+
+                                if (missingKey) {
+                                    output.error('// missing').sp();
+                                }
+
                                 if (!annotation.isEmpty()) {
                                     if (!valueOutput.isEmpty()) {
                                         if (annotationOnNextLine) {
@@ -2730,11 +2912,7 @@ module.exports = function (expect) {
                                     }
 
                                     valueOutput.annotationBlock(function () {
-                                        if (missingKey) {
-                                            this.error('missing: ').block(annotation);
-                                        } else {
-                                            this.append(annotation);
-                                        }
+                                        this.append(annotation);
                                     });
                                 }
 
@@ -2928,7 +3106,7 @@ module.exports = function (expect) {
             return subject;
         }).then(function (fulfillmentValue) {
             if (expect.findTypeOf(nextAssertion).is('expect.it')) {
-                // Force a failing expect.it error message to be property nested instead of replacing the default error message:
+                // Force a failing expect.it error message to be properly nested instead of replacing the default error message:
                 return expect.promise(function () {
                     return expect.shift(fulfillmentValue, 0);
                 }).caught(function (err) {
@@ -3033,7 +3211,7 @@ module.exports = function (expect) {
     });
 };
 
-}).call(this,require(23).Buffer)
+}).call(this,require(25).Buffer)
 },{}],6:[function(require,module,exports){
 var AssertionString = require(1);
 
@@ -3340,7 +3518,7 @@ if (typeof window !== 'undefined' && typeof window.location !== 'undefined') {
 }
 module.exports = defaultDepth;
 
-}).call(this,require(27))
+}).call(this,require(29))
 },{}],9:[function(require,module,exports){
 module.exports = function isPendingPromise(obj) {
     return obj && typeof obj.then === 'function' && typeof obj.isPending === 'function' && obj.isPending();
@@ -3372,7 +3550,7 @@ module.exports = function makeAndMethod(expect, subject) {
 
 },{}],11:[function(require,module,exports){
 /*global Promise:true*/
-var Promise = require(22);
+var Promise = require(24);
 var oathbreaker = require(12);
 var throwIfNonUnexpectedError = require(15);
 
@@ -3489,7 +3667,7 @@ module.exports = makePromise;
 },{}],12:[function(require,module,exports){
 /*global Promise:true*/
 var workQueue = require(18);
-var Promise = require(22);
+var Promise = require(24);
 module.exports = function oathbreaker(value) {
     if (!value || typeof value.then !== 'function') {
         return value;
@@ -3990,9 +4168,9 @@ module.exports = function throwIfNonUnexpectedError(err) {
 var utils = require(17);
 var isRegExp = utils.isRegExp;
 var leftPad = utils.leftPad;
-var arrayChanges = require(20);
-var leven = require(33);
-var detectIndent = require(28);
+var arrayChanges = require(21);
+var leven = require(35);
+var detectIndent = require(30);
 var defaultDepth = require(8);
 
 module.exports = function (expect) {
@@ -4221,7 +4399,8 @@ module.exports = function (expect) {
             };
 
             var keyIndex = {};
-            expect.findTypeOf(actual).getKeys(actual).concat(expect.findTypeOf(expected).getKeys(expected)).forEach(function (key) {
+            var actualKeys = expect.findTypeOf(actual).getKeys(actual);
+            actualKeys.concat(expect.findTypeOf(expected).getKeys(expected)).forEach(function (key) {
                 if (!(key in keyIndex)) {
                     keyIndex[key] = key;
                 }
@@ -4243,11 +4422,14 @@ module.exports = function (expect) {
                         if (!(key in expected)) {
                             annotation.error('should be removed');
                             isInlineDiff = true;
+                        } else if (!(key in actual)) {
+                            this.error('// missing').sp();
+                            valueOutput = output.clone().appendInspected(expected[key]);
+                            isInlineDiff = true;
                         } else {
                             var keyDiff = diff(actual[key], expected[key]);
                             if (!keyDiff || (keyDiff && !keyDiff.inline)) {
                                 annotation.shouldEqualError(expected[key]);
-
                                 if (keyDiff) {
                                     annotation.nl().append(keyDiff.diff);
                                 }
@@ -4266,7 +4448,7 @@ module.exports = function (expect) {
 
                     this.key(key);
                     this.text(':');
-                    valueOutput.amend(type.delimiter(output.clone(), index, keys.length));
+                    valueOutput.amend(type.delimiter(output.clone(), index, actualKeys.length));
                     if (valueOutput.isBlock() && valueOutput.isMultiline()) {
                         this.indentLines();
                         this.nl().i();
@@ -4289,6 +4471,38 @@ module.exports = function (expect) {
             this.suffix(output, actual);
 
             return result;
+        },
+
+        similar: function (a, b) {
+            var typeA = typeof a;
+            var typeB = typeof b;
+
+            if (typeA !== typeB) {
+                return false;
+            }
+
+            if (typeA === 'string') {
+                return leven(a, b) < a.length / 2;
+            }
+
+            if (typeA !== 'object' || !a) {
+                return false;
+            }
+
+            if (utils.isArray(a) && utils.isArray(b)) {
+                return true;
+            }
+
+            var aKeys = expect.findTypeOf(a).getKeys(a);
+            var bKeys = expect.findTypeOf(b).getKeys(b);
+            var numberOfSimilarKeys = 0;
+            var requiredSimilarKeys = Math.round(Math.max(aKeys.length, bKeys.length) / 2);
+            return aKeys.concat(bKeys).some(function (key) {
+                if (key in a && key in b) {
+                    numberOfSimilarKeys += 1;
+                }
+                return numberOfSimilarKeys >= requiredSimilarKeys;
+            });
         }
     });
 
@@ -4302,39 +4516,6 @@ module.exports = function (expect) {
             output.text('type: ').jsKeyword(value.name);
         }
     });
-
-    function structurallySimilar(a, b) {
-        var typeA = typeof a;
-        var typeB = typeof b;
-
-        if (typeA !== typeB) {
-            return false;
-        }
-
-        if (typeA === 'string') {
-            return leven(a, b) < a.length / 2;
-        }
-
-        if (typeA !== 'object' || !a) {
-            return false;
-        }
-
-        if (utils.isArray(a) && utils.isArray(b)) {
-            return true;
-        }
-
-        var aKeys = expect.findTypeOf(a).getKeys(a);
-        var bKeys = expect.findTypeOf(b).getKeys(b);
-        var numberOfSimilarKeys = 0;
-        var requiredSimilarKeys = Math.round(Math.max(aKeys.length, bKeys.length) / 2);
-        return aKeys.concat(bKeys).some(function (key) {
-            if (key in a && key in b) {
-                numberOfSimilarKeys += 1;
-            }
-
-            return numberOfSimilarKeys >= requiredSimilarKeys;
-        });
-    }
 
     expect.addType({
         name: 'magicpen',
@@ -4461,11 +4642,12 @@ module.exports = function (expect) {
                 return this.baseType.diff(actual, expected, output);
             }
 
-            var changes = arrayChanges(actual, expected, equal, structurallySimilar);
-
             output.append(this.prefix(output.clone(), actual)).nl().indentLines();
 
             var type = this;
+            var changes = arrayChanges(actual, expected, equal, function (a, b) {
+                return type.similar(a, b);
+            });
             var indexOfLastNonInsert = changes.reduce(function (previousValue, diffItem, index) {
                 return (diffItem.type === 'insert') ? previousValue : index;
             }, -1);
@@ -4958,9 +5140,9 @@ module.exports = function (expect) {
     });
 };
 
-}).call(this,require(23).Buffer)
+}).call(this,require(25).Buffer)
 },{}],17:[function(require,module,exports){
-var stringDiff = require(32);
+var stringDiff = require(34);
 
 var specialCharRegexp = /([\x00-\x09\x0B-\x1F\x7F-\x9F\xAD\u0378\u0379\u037F-\u0383\u038B\u038D\u03A2\u0528-\u0530\u0557\u0558\u0560\u0588\u058B-\u058E\u0590\u05C8-\u05CF\u05EB-\u05EF\u05F5-\u0605\u061C\u061D\u06DD\u070E\u070F\u074B\u074C\u07B2-\u07BF\u07FB-\u07FF\u082E\u082F\u083F\u085C\u085D\u085F-\u089F\u08A1\u08AD-\u08E3\u08FF\u0978\u0980\u0984\u098D\u098E\u0991\u0992\u09A9\u09B1\u09B3-\u09B5\u09BA\u09BB\u09C5\u09C6\u09C9\u09CA\u09CF-\u09D6\u09D8-\u09DB\u09DE\u09E4\u09E5\u09FC-\u0A00\u0A04\u0A0B-\u0A0E\u0A11\u0A12\u0A29\u0A31\u0A34\u0A37\u0A3A\u0A3B\u0A3D\u0A43-\u0A46\u0A49\u0A4A\u0A4E-\u0A50\u0A52-\u0A58\u0A5D\u0A5F-\u0A65\u0A76-\u0A80\u0A84\u0A8E\u0A92\u0AA9\u0AB1\u0AB4\u0ABA\u0ABB\u0AC6\u0ACA\u0ACE\u0ACF\u0AD1-\u0ADF\u0AE4\u0AE5\u0AF2-\u0B00\u0B04\u0B0D\u0B0E\u0B11\u0B12\u0B29\u0B31\u0B34\u0B3A\u0B3B\u0B45\u0B46\u0B49\u0B4A\u0B4E-\u0B55\u0B58-\u0B5B\u0B5E\u0B64\u0B65\u0B78-\u0B81\u0B84\u0B8B-\u0B8D\u0B91\u0B96-\u0B98\u0B9B\u0B9D\u0BA0-\u0BA2\u0BA5-\u0BA7\u0BAB-\u0BAD\u0BBA-\u0BBD\u0BC3-\u0BC5\u0BC9\u0BCE\u0BCF\u0BD1-\u0BD6\u0BD8-\u0BE5\u0BFB-\u0C00\u0C04\u0C0D\u0C11\u0C29\u0C34\u0C3A-\u0C3C\u0C45\u0C49\u0C4E-\u0C54\u0C57\u0C5A-\u0C5F\u0C64\u0C65\u0C70-\u0C77\u0C80\u0C81\u0C84\u0C8D\u0C91\u0CA9\u0CB4\u0CBA\u0CBB\u0CC5\u0CC9\u0CCE-\u0CD4\u0CD7-\u0CDD\u0CDF\u0CE4\u0CE5\u0CF0\u0CF3-\u0D01\u0D04\u0D0D\u0D11\u0D3B\u0D3C\u0D45\u0D49\u0D4F-\u0D56\u0D58-\u0D5F\u0D64\u0D65\u0D76-\u0D78\u0D80\u0D81\u0D84\u0D97-\u0D99\u0DB2\u0DBC\u0DBE\u0DBF\u0DC7-\u0DC9\u0DCB-\u0DCE\u0DD5\u0DD7\u0DE0-\u0DF1\u0DF5-\u0E00\u0E3B-\u0E3E\u0E5C-\u0E80\u0E83\u0E85\u0E86\u0E89\u0E8B\u0E8C\u0E8E-\u0E93\u0E98\u0EA0\u0EA4\u0EA6\u0EA8\u0EA9\u0EAC\u0EBA\u0EBE\u0EBF\u0EC5\u0EC7\u0ECE\u0ECF\u0EDA\u0EDB\u0EE0-\u0EFF\u0F48\u0F6D-\u0F70\u0F98\u0FBD\u0FCD\u0FDB-\u0FFF\u10C6\u10C8-\u10CC\u10CE\u10CF\u1249\u124E\u124F\u1257\u1259\u125E\u125F\u1289\u128E\u128F\u12B1\u12B6\u12B7\u12BF\u12C1\u12C6\u12C7\u12D7\u1311\u1316\u1317\u135B\u135C\u137D-\u137F\u139A-\u139F\u13F5-\u13FF\u169D-\u169F\u16F1-\u16FF\u170D\u1715-\u171F\u1737-\u173F\u1754-\u175F\u176D\u1771\u1774-\u177F\u17DE\u17DF\u17EA-\u17EF\u17FA-\u17FF\u180F\u181A-\u181F\u1878-\u187F\u18AB-\u18AF\u18F6-\u18FF\u191D-\u191F\u192C-\u192F\u193C-\u193F\u1941-\u1943\u196E\u196F\u1975-\u197F\u19AC-\u19AF\u19CA-\u19CF\u19DB-\u19DD\u1A1C\u1A1D\u1A5F\u1A7D\u1A7E\u1A8A-\u1A8F\u1A9A-\u1A9F\u1AAE-\u1AFF\u1B4C-\u1B4F\u1B7D-\u1B7F\u1BF4-\u1BFB\u1C38-\u1C3A\u1C4A-\u1C4C\u1C80-\u1CBF\u1CC8-\u1CCF\u1CF7-\u1CFF\u1DE7-\u1DFB\u1F16\u1F17\u1F1E\u1F1F\u1F46\u1F47\u1F4E\u1F4F\u1F58\u1F5A\u1F5C\u1F5E\u1F7E\u1F7F\u1FB5\u1FC5\u1FD4\u1FD5\u1FDC\u1FF0\u1FF1\u1FF5\u1FFF\u200B-\u200F\u202A-\u202E\u2060-\u206F\u2072\u2073\u208F\u209D-\u209F\u20BA-\u20CF\u20F1-\u20FF\u218A-\u218F\u23F4-\u23FF\u2427-\u243F\u244B-\u245F\u2700\u2B4D-\u2B4F\u2B5A-\u2BFF\u2C2F\u2C5F\u2CF4-\u2CF8\u2D26\u2D28-\u2D2C\u2D2E\u2D2F\u2D68-\u2D6E\u2D71-\u2D7E\u2D97-\u2D9F\u2DA7\u2DAF\u2DB7\u2DBF\u2DC7\u2DCF\u2DD7\u2DDF\u2E3C-\u2E7F\u2E9A\u2EF4-\u2EFF\u2FD6-\u2FEF\u2FFC-\u2FFF\u3040\u3097\u3098\u3100-\u3104\u312E-\u3130\u318F\u31BB-\u31BF\u31E4-\u31EF\u321F\u32FF\u4DB6-\u4DBF\u9FCD-\u9FFF\uA48D-\uA48F\uA4C7-\uA4CF\uA62C-\uA63F\uA698-\uA69E\uA6F8-\uA6FF\uA78F\uA794-\uA79F\uA7AB-\uA7F7\uA82C-\uA82F\uA83A-\uA83F\uA878-\uA87F\uA8C5-\uA8CD\uA8DA-\uA8DF\uA8FC-\uA8FF\uA954-\uA95E\uA97D-\uA97F\uA9CE\uA9DA-\uA9DD\uA9E0-\uA9FF\uAA37-\uAA3F\uAA4E\uAA4F\uAA5A\uAA5B\uAA7C-\uAA7F\uAAC3-\uAADA\uAAF7-\uAB00\uAB07\uAB08\uAB0F\uAB10\uAB17-\uAB1F\uAB27\uAB2F-\uABBF\uABEE\uABEF\uABFA-\uABFF\uD7A4-\uD7AF\uD7C7-\uD7CA\uD7FC-\uF8FF\uFA6E\uFA6F\uFADA-\uFAFF\uFB07-\uFB12\uFB18-\uFB1C\uFB37\uFB3D\uFB3F\uFB42\uFB45\uFBC2-\uFBD2\uFD40-\uFD4F\uFD90\uFD91\uFDC8-\uFDEF\uFDFE\uFDFF\uFE1A-\uFE1F\uFE27-\uFE2F\uFE53\uFE67\uFE6C-\uFE6F\uFE75\uFEFD-\uFF00\uFFBF-\uFFC1\uFFC8\uFFC9\uFFD0\uFFD1\uFFD8\uFFD9\uFFDD-\uFFDF\uFFE7\uFFEF-\uFFFB\uFFFE\uFFFF])/g;
 
@@ -5203,7 +5385,7 @@ var utils = module.exports = {
 
 },{}],18:[function(require,module,exports){
 /*global Promise:true*/
-var Promise = require(22);
+var Promise = require(24);
 
 var workQueue = {
     queue: [],
@@ -5265,12 +5447,243 @@ module.exports = require(3).create()
     .use(require(5));
 
 // Add an inspect method to all the promises we return that will make the REPL, console.log, and util.inspect render it nicely in node.js:
-require(22).prototype.inspect = function () {
-    return module.exports.createOutput(require(37).defaultFormat).appendInspected(this).toString();
+require(24).prototype.inspect = function () {
+    return module.exports.createOutput(require(39).defaultFormat).appendInspected(this).toString();
 };
 
 },{}],20:[function(require,module,exports){
-var arrayDiff = require(21);
+/*global setTimeout */
+var arrayDiff = require(23);
+
+var MAX_STACK_DEPTH = 1000;
+
+function extend(target) {
+    for (var i = 1; i < arguments.length; i += 1) {
+        var source = arguments[i];
+        Object.keys(source).forEach(function (key) {
+            target[key] = source[key];
+        });
+    }
+    return target;
+}
+
+module.exports = function arrayChanges(actual, expected, equal, similar, arrayChangesCallback) {
+    var mutatedArray = new Array(actual.length);
+
+    for (var k = 0; k < actual.length; k += 1) {
+        mutatedArray[k] = {
+            type: 'similar',
+            actualIndex: k,
+            value: actual[k]
+        };
+    }
+
+    if (mutatedArray.length > 0) {
+        mutatedArray[mutatedArray.length - 1].last = true;
+    }
+
+    similar = similar || function (a, b, aIndex, bIndex, callback) {
+            return callback(false);
+        };
+
+    arrayDiff([].concat(actual), [].concat(expected), function (a, b, aIndex, bIndex, callback) {
+        equal(a, b, aIndex, bIndex, function (isEqual) {
+            if (isEqual) {
+                return callback(true);
+            }
+            similar(a, b, aIndex, bIndex, function (isSimilar) {
+                return callback(isSimilar);
+            });
+        });
+    }, function (itemsDiff) {
+
+        var removeTable = [];
+        function offsetIndex(index) {
+            return index + (removeTable[index - 1] || 0);
+        }
+
+        var removes = itemsDiff.filter(function (diffItem) {
+            return diffItem.type === 'remove';
+        });
+
+        var removesByIndex = {};
+        var removedItems = 0;
+        removes.forEach(function (diffItem) {
+            var removeIndex = removedItems + diffItem.index;
+            mutatedArray.slice(removeIndex, diffItem.howMany + removeIndex).forEach(function (v) {
+                v.type = 'remove';
+            });
+            removedItems += diffItem.howMany;
+            removesByIndex[diffItem.index] = removedItems;
+        });
+
+        function updateRemoveTable() {
+            removedItems = 0;
+            Array.prototype.forEach.call(actual, function (_, index) {
+                removedItems += removesByIndex[index] || 0;
+                removeTable[index] = removedItems;
+            });
+        }
+
+        updateRemoveTable();
+
+        var moves = itemsDiff.filter(function (diffItem) {
+            return diffItem.type === 'move';
+        });
+
+        var movedItems = 0;
+        moves.forEach(function (diffItem) {
+            var moveFromIndex = offsetIndex(diffItem.from);
+            var removed = mutatedArray.slice(moveFromIndex, diffItem.howMany + moveFromIndex);
+            var added = removed.map(function (v) {
+                return extend({}, v, { last: false, type: 'insert' });
+            });
+            removed.forEach(function (v) {
+                v.type = 'remove';
+            });
+            Array.prototype.splice.apply(mutatedArray, [offsetIndex(diffItem.to), 0].concat(added));
+            movedItems += diffItem.howMany;
+            removesByIndex[diffItem.from] = movedItems;
+            updateRemoveTable();
+        });
+
+        var inserts = itemsDiff.filter(function (diffItem) {
+            return diffItem.type === 'insert';
+        });
+
+        inserts.forEach(function (diffItem) {
+            var added = new Array(diffItem.values.length);
+            for (var i = 0 ; i < diffItem.values.length ; i += 1) {
+                added[i] = {
+                    type: 'insert',
+                    value: diffItem.values[i]
+                };
+            }
+            Array.prototype.splice.apply(mutatedArray, [offsetIndex(diffItem.index), 0].concat(added));
+        });
+
+        var offset = 0;
+        mutatedArray.forEach(function (diffItem, index) {
+            var type = diffItem.type;
+            if (type === 'remove') {
+                offset -= 1;
+            } else if (type === 'similar') {
+                diffItem.expected = expected[offset + index];
+            }
+        });
+
+        var conflicts = mutatedArray.reduce(function (conflicts, item) {
+            return item.type === 'similar' ? conflicts : conflicts + 1;
+        }, 0);
+
+        var end = Math.max(actual.length, expected.length);
+
+        var stackCallsRemaining = MAX_STACK_DEPTH;
+
+        var countConflicts = function (i, c, stackCallsRemaining, callback) {
+
+            if (i >= end || c > conflicts) {
+                // Do a setTimeout to let the stack unwind
+                return setTimeout(function () {
+                    callback(c);
+                }, 0);
+            }
+
+            similar(actual[i], expected[i], i, i, function (areSimilar) {
+                if (!areSimilar) {
+                    c += 1;
+                    if (stackCallsRemaining === 0) {
+                        return setTimeout(function () {
+                            countConflicts(i + 1, c, MAX_STACK_DEPTH, callback);
+                        });
+                    }
+                    return countConflicts(i + 1, c, stackCallsRemaining - 1, callback);
+                }
+                equal(actual[i], expected[i], i, i, function (areEqual) {
+                    if (!areEqual) {
+                        c += 1;
+                    }
+                    if (stackCallsRemaining === 0) {
+                        return setTimeout(function () {
+                            countConflicts(i + 1, c, MAX_STACK_DEPTH, callback);
+                        });
+                    }
+                    return countConflicts(i + 1, c, stackCallsRemaining - 1, callback);
+                });
+            });
+        };
+
+        countConflicts(0, 0, MAX_STACK_DEPTH, function (c) {
+            if (c <= conflicts) {
+                mutatedArray = [];
+                var j;
+                for (j = 0; j < Math.min(actual.length, expected.length); j += 1) {
+                    mutatedArray.push({
+                        type: 'similar',
+                        actualIndex: j,
+                        expectedIndex: j,
+                        value: actual[j],
+                        expected: expected[j]
+                    });
+                }
+
+                if (actual.length < expected.length) {
+                    for (; j < Math.max(actual.length, expected.length); j += 1) {
+                        mutatedArray.push({
+                            type: 'insert',
+                            value: expected[j]
+                        });
+                    }
+                } else {
+                    for (; j < Math.max(actual.length, expected.length); j += 1) {
+                        mutatedArray.push({
+                            type: 'remove',
+                            value: actual[j]
+                        });
+                    }
+                }
+                if (mutatedArray.length > 0) {
+                    mutatedArray[mutatedArray.length - 1].last = true;
+                }
+            }
+
+            var mutatedArrayLength = mutatedArray.length;
+            var setEqual = function (i, stackCallsRemaining, callback) {
+                if (i >= mutatedArrayLength) {
+                    return callback();
+                }
+                var diffItem = mutatedArray[i];
+                if (diffItem.type === 'similar') {
+                    return equal(diffItem.value, diffItem.expected, diffItem.actualIndex, diffItem.expectedIndex, function (areEqual) {
+                       if (areEqual) {
+                           mutatedArray[i].type = 'equal';
+                       }
+                        if (stackCallsRemaining === 0) {
+                            return setTimeout(function () {
+                                setEqual(i + 1, MAX_STACK_DEPTH, callback);
+                            })
+                        }
+                        setEqual(i + 1, stackCallsRemaining - 1, callback);
+                    });
+                }
+                if (stackCallsRemaining === 0) {
+                    return setTimeout(function () {
+                        setEqual(i + 1, MAX_STACK_DEPTH, callback);
+                    })
+                }
+                return setEqual(i + 1, stackCallsRemaining - 1, callback);
+            };
+
+            setEqual(0, MAX_STACK_DEPTH, function () {
+                arrayChangesCallback(mutatedArray);
+            });
+
+        });
+    });
+};
+
+},{}],21:[function(require,module,exports){
+var arrayDiff = require(22);
 
 function extend(target) {
     for (var i = 1; i < arguments.length; i += 1) {
@@ -5288,7 +5701,8 @@ module.exports = function arrayChanges(actual, expected, equal, similar) {
     for (var k = 0; k < actual.length; k += 1) {
         mutatedArray[k] = {
             type: 'similar',
-            value: actual[k]
+            value: actual[k],
+            actualIndex: k
         };
     }
 
@@ -5300,8 +5714,8 @@ module.exports = function arrayChanges(actual, expected, equal, similar) {
         return false;
     };
 
-    var itemsDiff = arrayDiff([].concat(actual), [].concat(expected), function (a, b) {
-        return equal(a, b) || similar(a, b);
+    var itemsDiff = arrayDiff(Array.prototype.slice.call(actual), Array.prototype.slice.call(expected), function (a, b, aIndex, bIndex) {
+        return equal(a, b, aIndex, bIndex) || similar(a, b, aIndex, bIndex);
     });
 
     var removeTable = [];
@@ -5363,7 +5777,8 @@ module.exports = function arrayChanges(actual, expected, equal, similar) {
         for (var i = 0 ; i < diffItem.values.length ; i += 1) {
             added[i] = {
                 type: 'insert',
-                value: diffItem.values[i]
+                value: diffItem.values[i],
+                expectedIndex: diffItem.index
             };
         }
         Array.prototype.splice.apply(mutatedArray, [offsetIndex(diffItem.index), 0].concat(added));
@@ -5376,6 +5791,7 @@ module.exports = function arrayChanges(actual, expected, equal, similar) {
             offset -= 1;
         } else if (type === 'similar') {
             diffItem.expected = expected[offset + index];
+            diffItem.expectedIndex = offset + index;
         }
     });
 
@@ -5383,14 +5799,9 @@ module.exports = function arrayChanges(actual, expected, equal, similar) {
         return item.type === 'similar' ? conflicts : conflicts + 1;
     }, 0);
 
-    for (var i = 0, c = 0; i < Math.max(actual.length, expected.length) &&  c <= conflicts; i += 1) {
-        var expectedType = typeof expected[i];
-        var actualType = typeof actual[i];
-
+    for (var i = 0, c = 0; i < Math.max(actual.length, expected.length) && c <= conflicts; i += 1) {
         if (
-            actualType !== expectedType ||
-                ((actualType === 'object' || actualType === 'string') && !similar(actual[i], expected[i])) ||
-                (actualType !== 'object' && actualType !== 'string' && !equal(actual[i], expected[i]))
+            i >= actual.length || i >= expected.length || (!equal(actual[i], expected[i], i, i) && !similar(actual[i], expected[i], i, i))
         ) {
             c += 1;
         }
@@ -5403,7 +5814,9 @@ module.exports = function arrayChanges(actual, expected, equal, similar) {
             mutatedArray.push({
                 type: 'similar',
                 value: actual[j],
-                expected: expected[j]
+                expected: expected[j],
+                actualIndex: j,
+                expectedIndex: j
             });
         }
 
@@ -5411,14 +5824,16 @@ module.exports = function arrayChanges(actual, expected, equal, similar) {
             for (; j < Math.max(actual.length, expected.length); j += 1) {
                 mutatedArray.push({
                     type: 'insert',
-                    value: expected[j]
+                    value: expected[j],
+                    expectedIndex: j
                 });
             }
         } else {
             for (; j < Math.max(actual.length, expected.length); j += 1) {
                 mutatedArray.push({
                     type: 'remove',
-                    value: actual[j]
+                    value: actual[j],
+                    actualIndex: j
                 });
             }
         }
@@ -5428,7 +5843,7 @@ module.exports = function arrayChanges(actual, expected, equal, similar) {
     }
 
     mutatedArray.forEach(function (diffItem) {
-        if (diffItem.type === 'similar' && equal(diffItem.value, diffItem.expected)) {
+        if (diffItem.type === 'similar' && equal(diffItem.value, diffItem.expected, diffItem.actualIndex, diffItem.expectedIndex)) {
             diffItem.type = 'equal';
         }
     });
@@ -5436,7 +5851,7 @@ module.exports = function arrayChanges(actual, expected, equal, similar) {
     return mutatedArray;
 };
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 module.exports = arrayDiff;
 
 // Based on some rough benchmarking, this algorithm is about O(2n) worst case,
@@ -5499,8 +5914,8 @@ function arrayDiff(before, after, equalFn) {
   // as moves. Many of these "moves" may end up being discarded in the last
   // pass if they are from an index to the same index, but we don't know this
   // up front, since we haven't yet offset the indices.
-  // 
-  // Also keep a map of all the indicies accounted for in the before and after
+  //
+  // Also keep a map of all the indices accounted for in the before and after
   // arrays. These maps are used next to create insert and remove diffs.
   var beforeLength = before.length;
   var afterLength = after.length;
@@ -5511,7 +5926,7 @@ function arrayDiff(before, after, equalFn) {
     var beforeItem = before[beforeIndex];
     for (var afterIndex = 0; afterIndex < afterLength; afterIndex++) {
       if (afterMarked[afterIndex]) continue;
-      if (!equalFn(beforeItem, after[afterIndex])) continue;
+      if (!equalFn(beforeItem, after[afterIndex], beforeIndex, afterIndex)) continue;
       var from = beforeIndex;
       var to = afterIndex;
       var howMany = 0;
@@ -5521,7 +5936,7 @@ function arrayDiff(before, after, equalFn) {
       } while (
         beforeIndex < beforeLength &&
         afterIndex < afterLength &&
-        equalFn(before[beforeIndex], after[afterIndex]) &&
+        equalFn(before[beforeIndex], after[afterIndex], beforeIndex, afterIndex) &&
         !afterMarked[afterIndex]
       );
       moves.push(new MoveDiff(from, to, howMany));
@@ -5619,7 +6034,248 @@ function arrayDiff(before, after, equalFn) {
   return removes.concat(outputMoves, inserts);
 }
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
+
+module.exports = arrayDiff;
+
+var MAX_STACK_DEPTH = 1000;
+
+// Based on some rough benchmarking, this algorithm is about O(2n) worst case,
+// and it can compute diffs on random arrays of length 1024 in about 34ms,
+// though just a few changes on an array of length 1024 takes about 0.5ms
+
+arrayDiff.InsertDiff = InsertDiff;
+arrayDiff.RemoveDiff = RemoveDiff;
+arrayDiff.MoveDiff = MoveDiff;
+
+function InsertDiff(index, values) {
+    this.index = index;
+    this.values = values;
+}
+InsertDiff.prototype.type = 'insert';
+InsertDiff.prototype.toJSON = function() {
+    return {
+        type: this.type
+        , index: this.index
+        , values: this.values
+    };
+};
+
+function RemoveDiff(index, howMany) {
+    this.index = index;
+    this.howMany = howMany;
+}
+RemoveDiff.prototype.type = 'remove';
+RemoveDiff.prototype.toJSON = function() {
+    return {
+        type: this.type
+        , index: this.index
+        , howMany: this.howMany
+    };
+};
+
+function MoveDiff(from, to, howMany) {
+    this.from = from;
+    this.to = to;
+    this.howMany = howMany;
+}
+MoveDiff.prototype.type = 'move';
+MoveDiff.prototype.toJSON = function() {
+    return {
+        type: this.type
+        , from: this.from
+        , to: this.to
+        , howMany: this.howMany
+    };
+};
+
+function strictEqual(a, b, indexA, indexB, callback) {
+    return callback(a === b);
+}
+
+
+function arrayDiff(before, after, equalFn, callback) {
+    if (!equalFn) equalFn = strictEqual;
+
+    // Find all items in both the before and after array, and represent them
+    // as moves. Many of these "moves" may end up being discarded in the last
+    // pass if they are from an index to the same index, but we don't know this
+    // up front, since we haven't yet offset the indices.
+    //
+    // Also keep a map of all the indices accounted for in the before and after
+    // arrays. These maps are used next to create insert and remove diffs.
+    var beforeLength = before.length;
+    var afterLength = after.length;
+    var moves = [];
+    var beforeMarked = {};
+    var afterMarked = {};
+
+    function findMatching(beforeIndex, afterIndex, howMany, callback) {
+
+        beforeMarked[beforeIndex++] = afterMarked[afterIndex++] = true;
+        howMany++;
+
+        if (beforeIndex < beforeLength &&
+            afterIndex < afterLength &&
+            !afterMarked[afterIndex]) {
+
+            equalFn(before[beforeIndex], after[afterIndex], beforeIndex, afterIndex, function (areEqual) {
+                if (areEqual) {
+//                    setTimeout(function () {
+                        findMatching(beforeIndex, afterIndex, howMany, callback);
+//                    }, 0);
+                } else {
+                    callback(beforeIndex, afterIndex, howMany);
+                }
+            });
+        } else {
+            callback(beforeIndex, afterIndex, howMany);
+        }
+
+
+    }
+
+    function compare(beforeIndex, afterIndex, stackDepthRemaining, callback) {
+        if (afterIndex >= afterLength) {
+            beforeIndex++;
+            afterIndex = 0;
+        }
+        if (beforeIndex >= beforeLength) {
+            callback();
+            return;
+        }
+
+        if (!afterMarked[afterIndex]) {
+            equalFn(before[beforeIndex], after[afterIndex], beforeIndex, afterIndex, function (areEqual) {
+                if (areEqual) {
+
+                    var from = beforeIndex;
+                    var to = afterIndex;
+                    findMatching(beforeIndex, afterIndex, 0, function (newBeforeIndex, newAfterIndex, howMany) {
+
+                        moves.push(new MoveDiff(from, to, howMany));
+                        if (stackDepthRemaining) {
+                            compare(newBeforeIndex, 0, stackDepthRemaining - 1, callback);
+                        } else {
+//                            setTimeout(function () {
+                                compare(newBeforeIndex, 0, MAX_STACK_DEPTH, callback);
+//                            }, 0);
+                        }
+                    });
+                } else {
+                    if (stackDepthRemaining) {
+                        compare(beforeIndex, afterIndex + 1, stackDepthRemaining - 1, callback);
+                    } else {
+//                        setTimeout(function () {
+                            compare(beforeIndex, afterIndex + 1, MAX_STACK_DEPTH, callback);
+//                        }, 0);
+                    }
+                }
+            });
+        } else {
+            if (stackDepthRemaining) {
+                compare(beforeIndex, afterIndex + 1, stackDepthRemaining - 1, callback);
+            } else {
+//                setTimeout(function () {
+                    compare(beforeIndex, afterIndex + 1, MAX_STACK_DEPTH, callback);
+//                }, 0);
+            }
+        }
+    }
+
+    compare(0, 0, MAX_STACK_DEPTH, function () {
+
+        // Create a remove for all of the items in the before array that were
+        // not marked as being matched in the after array as well
+        var removes = [];
+        for (var beforeIndex = 0; beforeIndex < beforeLength;) {
+            if (beforeMarked[beforeIndex]) {
+                beforeIndex++;
+                continue;
+            }
+            var index = beforeIndex;
+            var howMany = 0;
+            while (beforeIndex < beforeLength && !beforeMarked[beforeIndex++]) {
+                howMany++;
+            }
+            removes.push(new RemoveDiff(index, howMany));
+        }
+
+        // Create an insert for all of the items in the after array that were
+        // not marked as being matched in the before array as well
+        var inserts = [];
+        for (var afterIndex = 0; afterIndex < afterLength;) {
+            if (afterMarked[afterIndex]) {
+                afterIndex++;
+                continue;
+            }
+            var index = afterIndex;
+            var howMany = 0;
+            while (afterIndex < afterLength && !afterMarked[afterIndex++]) {
+                howMany++;
+            }
+            var values = after.slice(index, index + howMany);
+            inserts.push(new InsertDiff(index, values));
+        }
+
+        var insertsLength = inserts.length;
+        var removesLength = removes.length;
+        var movesLength = moves.length;
+        var i, j;
+
+        // Offset subsequent removes and moves by removes
+        var count = 0;
+        for (i = 0; i < removesLength; i++) {
+            var remove = removes[i];
+            remove.index -= count;
+            count += remove.howMany;
+            for (j = 0; j < movesLength; j++) {
+                var move = moves[j];
+                if (move.from >= remove.index) move.from -= remove.howMany;
+            }
+        }
+
+        // Offset moves by inserts
+        for (i = insertsLength; i--;) {
+            var insert = inserts[i];
+            var howMany = insert.values.length;
+            for (j = movesLength; j--;) {
+                var move = moves[j];
+                if (move.to >= insert.index) move.to -= howMany;
+            }
+        }
+
+        // Offset the to of moves by later moves
+        for (i = movesLength; i-- > 1;) {
+            var move = moves[i];
+            if (move.to === move.from) continue;
+            for (j = i; j--;) {
+                var earlier = moves[j];
+                if (earlier.to >= move.to) earlier.to -= move.howMany;
+                if (earlier.to >= move.from) earlier.to += move.howMany;
+            }
+        }
+
+        // Only output moves that end up having an effect after offsetting
+        var outputMoves = [];
+
+        // Offset the from of moves by earlier moves
+        for (i = 0; i < movesLength; i++) {
+            var move = moves[i];
+            if (move.to === move.from) continue;
+            outputMoves.push(move);
+            for (j = i + 1; j < movesLength; j++) {
+                var later = moves[j];
+                if (later.from >= move.from) later.from -= move.howMany;
+                if (later.from >= move.to) later.from += move.howMany;
+            }
+        }
+
+        callback(removes.concat(outputMoves, inserts));
+    });
+}
+
+},{}],24:[function(require,module,exports){
 (function (process,global){
 /* @preserve
  * The MIT License (MIT)
@@ -10478,8 +11134,8 @@ module.exports = ret;
 
 },{"./es5.js":14}]},{},[4])(4)
 });                    ;if (typeof window !== 'undefined' && window !== null) {                               window.P = window.Promise;                                                     } else if (typeof self !== 'undefined' && self !== null) {                             self.P = self.Promise;                                                         }
-}).call(this,require(27),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],23:[function(require,module,exports){
+}).call(this,require(29),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],25:[function(require,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -10487,9 +11143,9 @@ module.exports = ret;
  * @license  MIT
  */
 
-var base64 = require(24)
-var ieee754 = require(25)
-var isArray = require(26)
+var base64 = require(26)
+var ieee754 = require(27)
+var isArray = require(28)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = Buffer
@@ -11533,7 +12189,7 @@ function decodeUtf8Char (str) {
   }
 }
 
-},{}],24:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 ;(function (exports) {
@@ -11655,7 +12311,7 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 	exports.fromByteArray = uint8ToBase64
 }(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
 
-},{}],25:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = nBytes * 8 - mLen - 1
@@ -11741,7 +12397,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],26:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 
 /**
  * isArray
@@ -11776,7 +12432,7 @@ module.exports = isArray || function (val) {
   return !! val && '[object Array]' == str.call(val);
 };
 
-},{}],27:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -11841,9 +12497,9 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],28:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 'use strict';
-var repeating = require(29);
+var repeating = require(31);
 
 // detect either spaces or tabs but not both to properly handle tabs
 // for indentation and spaces for alignment
@@ -11962,9 +12618,9 @@ module.exports = function (str) {
 	};
 };
 
-},{}],29:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 'use strict';
-var isFinite = require(30);
+var isFinite = require(32);
 
 module.exports = function (str, n) {
 	if (typeof str !== 'string') {
@@ -11988,21 +12644,21 @@ module.exports = function (str, n) {
 	return ret;
 };
 
-},{}],30:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 'use strict';
-var numberIsNan = require(31);
+var numberIsNan = require(33);
 
 module.exports = Number.isFinite || function (val) {
 	return !(typeof val !== 'number' || numberIsNan(val) || val === Infinity || val === -Infinity);
 };
 
-},{}],31:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 'use strict';
 module.exports = Number.isNaN || function (x) {
 	return x !== x;
 };
 
-},{}],32:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 /* See LICENSE file for terms of use */
 
 /*
@@ -12393,7 +13049,7 @@ module.exports = Number.isNaN || function (x) {
   }
 })(this);
 
-},{}],33:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 // intentionally commented out as it makes it slower...
 //'use strict';
 
@@ -12441,17 +13097,17 @@ module.exports = function (a, b) {
 	return ret;
 };
 
-},{}],34:[function(require,module,exports){
-var utils = require(44);
-var TextSerializer = require(38);
-var colorDiff = require(48);
-var rgbRegexp = require(42);
-var themeMapper = require(43);
+},{}],36:[function(require,module,exports){
+var utils = require(46);
+var TextSerializer = require(40);
+var colorDiff = require(50);
+var rgbRegexp = require(44);
+var themeMapper = require(45);
 
 var cacheSize = 0;
 var maxColorCacheSize = 1024;
 
-var ansiStyles = utils.extend({}, require(45));
+var ansiStyles = utils.extend({}, require(47));
 Object.keys(ansiStyles).forEach(function (styleName) {
     ansiStyles[styleName.toLowerCase()] = ansiStyles[styleName];
 });
@@ -12589,11 +13245,11 @@ AnsiSerializer.prototype.text = function (options) {
 
 module.exports = AnsiSerializer;
 
-},{}],35:[function(require,module,exports){
-var cssStyles = require(39);
-var flattenBlocksInLines = require(41);
-var rgbRegexp = require(42);
-var themeMapper = require(43);
+},{}],37:[function(require,module,exports){
+var cssStyles = require(41);
+var flattenBlocksInLines = require(43);
+var rgbRegexp = require(44);
+var themeMapper = require(45);
 
 function ColoredConsoleSerializer(theme) {
     this.theme = theme;
@@ -12675,10 +13331,10 @@ ColoredConsoleSerializer.prototype.raw = function (options) {
 
 module.exports = ColoredConsoleSerializer;
 
-},{}],36:[function(require,module,exports){
-var cssStyles = require(39);
-var rgbRegexp = require(42);
-var themeMapper = require(43);
+},{}],38:[function(require,module,exports){
+var cssStyles = require(41);
+var rgbRegexp = require(44);
+var themeMapper = require(45);
 
 function HtmlSerializer(theme) {
     this.theme = theme;
@@ -12756,14 +13412,14 @@ HtmlSerializer.prototype.raw = function (options) {
 
 module.exports = HtmlSerializer;
 
-},{}],37:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 (function (process){
 /*global window*/
-var utils = require(44);
+var utils = require(46);
 var extend = utils.extend;
-var duplicateText = require(40);
-var rgbRegexp = require(42);
-var cssStyles = require(39);
+var duplicateText = require(42);
+var rgbRegexp = require(44);
+var cssStyles = require(41);
 
 function MagicPen(options) {
     if (!(this instanceof MagicPen)) {
@@ -12791,7 +13447,7 @@ function MagicPen(options) {
     }
 }
 
-if (typeof exports === 'object' && typeof exports.nodeName !== 'string' && require(50)) {
+if (typeof exports === 'object' && typeof exports.nodeName !== 'string' && require(52)) {
     MagicPen.defaultFormat = 'ansi'; // colored console
 } else if (typeof window !== 'undefined' && typeof window.navigator !== 'undefined') {
     if (window.mochaPhantomJS || (window.__karma__ && window.__karma__.config.captureConsole)) {
@@ -12820,10 +13476,10 @@ MagicPen.prototype.newline = MagicPen.prototype.nl = function (count) {
 
 MagicPen.serializers = {};
 [
+    require(40),
     require(38),
     require(36),
-    require(34),
-    require(35)
+    require(37)
 ].forEach(function (serializer) {
     MagicPen.serializers[serializer.prototype.format] = serializer;
 });
@@ -13442,9 +14098,9 @@ MagicPen.prototype.installTheme = function (formats, theme) {
 
 module.exports = MagicPen;
 
-}).call(this,require(27))
-},{}],38:[function(require,module,exports){
-var flattenBlocksInLines = require(41);
+}).call(this,require(29))
+},{}],40:[function(require,module,exports){
+var flattenBlocksInLines = require(43);
 
 function TextSerializer() {}
 
@@ -13478,7 +14134,7 @@ TextSerializer.prototype.raw = function (options) {
 
 module.exports = TextSerializer;
 
-},{}],39:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 var cssStyles = {
     bold: 'font-weight: bold',
     dim: 'opacity: 0.7',
@@ -13514,7 +14170,7 @@ Object.keys(cssStyles).forEach(function (styleName) {
 
 module.exports = cssStyles;
 
-},{}],40:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 var whitespaceCacheLength = 256;
 var whitespaceCache = [''];
 for (var i = 1; i <= whitespaceCacheLength; i += 1) {
@@ -13550,9 +14206,9 @@ function duplicateText(content, times) {
 
 module.exports = duplicateText;
 
-},{}],41:[function(require,module,exports){
-var utils = require(44);
-var duplicateText = require(40);
+},{}],43:[function(require,module,exports){
+var utils = require(46);
+var duplicateText = require(42);
 
 function createPadding(length) {
     return { style: 'text', args: { content: duplicateText(' ', length), styles: [] } };
@@ -13635,10 +14291,10 @@ function flattenBlocksInLines(lines) {
 
 module.exports = flattenBlocksInLines;
 
-},{}],42:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 module.exports =  /^(?:bg)?#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i;
 
-},{}],43:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 module.exports = function (theme, styles) {
     if (styles.length === 1) {
         var count = 0;
@@ -13663,7 +14319,7 @@ module.exports = function (theme, styles) {
     return styles;
 };
 
-},{}],44:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 var utils = {
     extend: function (target) {
         for (var i = 1; i < arguments.length; i += 1) {
@@ -13772,7 +14428,7 @@ var utils = {
 
 module.exports = utils;
 
-},{}],45:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 'use strict';
 
 var styles = module.exports = {
@@ -13830,7 +14486,7 @@ Object.keys(styles).forEach(function (groupName) {
 	});
 });
 
-},{}],46:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 /**
  * @author Markus Ekholm
  * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
@@ -13945,7 +14601,7 @@ function xyz_to_lab(c)
 // js-indent-level: 2
 // End:
 
-},{}],47:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 /**
  * @author Markus Ekholm
  * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
@@ -14111,12 +14767,12 @@ function radians(n) { return n*(PI/180); }
 // js-indent-level: 2
 // End:
 
-},{}],48:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 'use strict';
 
-var diff = require(47);
-var convert = require(46);
-var palette = require(49);
+var diff = require(49);
+var convert = require(48);
+var palette = require(51);
 
 var color = module.exports = {};
 
@@ -14141,7 +14797,7 @@ color.furthest = function(target, relative) {
     return result[key];
 };
 
-},{}],49:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 /**
  * @author Markus Ekholm
  * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
@@ -14179,8 +14835,8 @@ exports.palette_map_key = palette_map_key;
 /**
 * IMPORTS
 */
-var color_diff    = require(47);
-var color_convert = require(46);
+var color_diff    = require(49);
+var color_convert = require(48);
 
 /**
  * API FUNCTIONS
@@ -14250,7 +14906,7 @@ function diff(c1,c2)
 // js-indent-level: 2
 // End:
 
-},{}],50:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 (function (process){
 'use strict';
 var argv = process.argv;
@@ -14292,6 +14948,6 @@ module.exports = (function () {
 	return false;
 })();
 
-}).call(this,require(27))
+}).call(this,require(29))
 },{}]},{},[19])(19)
 });
