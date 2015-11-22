@@ -3116,12 +3116,13 @@ describe('unexpected', function () {
 
             it('should fall back to comparing index-by-index if one of the arrays has more than 10 entries', function () {
                 expect(function () {
-                    expect([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 'to satisfy', [2, 3, 4, 5, 6, 7, 8, 9, 10]);
+                    expect([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ], 'to satisfy', [0, 2, 3, 4, 5, 6, 7, 8, 9 ]);
                 }, 'to throw',
-                    "expected [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ]\n" +
-                    "to satisfy [ 2, 3, 4, 5, 6, 7, 8, 9, 10 ]\n" +
+                    "expected [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]\n" +
+                    "to satisfy [ 0, 2, 3, 4, 5, 6, 7, 8, 9 ]\n" +
                     "\n" +
                     "[\n" +
+                    "  0,\n" +
                     "  1, // should equal 2\n" +
                     "  2, // should equal 3\n" +
                     "  3, // should equal 4\n" +
@@ -3130,16 +3131,16 @@ describe('unexpected', function () {
                     "  6, // should equal 7\n" +
                     "  7, // should equal 8\n" +
                     "  8, // should equal 9\n" +
-                    "  9, // should equal 10\n" +
-                    "  10, // should be removed\n" +
-                    "  11 // should be removed\n" +
+                    "  9, // should be removed\n" +
+                    "  10 // should be removed\n" +
                     "]"
                 );
 
                 expect(function () {
-                    expect([1, 2, 3, 4, 5, 6, 7, 8], 'to satisfy', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+                    expect([1, 2, 3, 4, 5, 6, 7, 8], 'to satisfy', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
                 }, 'to throw',
-                    "expected [ 1, 2, 3, 4, 5, 6, 7, 8 ] to satisfy [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]\n" +
+                    "expected [ 1, 2, 3, 4, 5, 6, 7, 8 ]\n" +
+                    "to satisfy [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ]\n" +
                     "\n" +
                     "[\n" +
                     "  1,\n" +
@@ -3152,6 +3153,7 @@ describe('unexpected', function () {
                     "  8\n" +
                     "  // missing 9\n" +
                     "  // missing 10\n" +
+                    "  // missing 11\n" +
                     "]"
                 );
             });
@@ -3233,6 +3235,38 @@ describe('unexpected', function () {
                         "  2\n" +
                         "  // missing: should satisfy expect.it('when delayed a little bit', 'to be a string')\n" +
                         "]"
+                    );
+                });
+
+                it('should render unsatisfied entries', function () {
+                    return expect(function () {
+                        return expect([1, 2, 3, 4, 5, 6], 'to satisfy', [
+                            expect.it('when delayed a little bit', 'to be a number'),
+                            2,
+                            expect.it('when delayed a little bit', 'to be a string'),
+                            expect.it('when delayed a little bit', 'to be a boolean'),
+                            expect.it('when delayed a little bit', 'to be a regular expression'),
+                            expect.it('when delayed a little bit', 'to be a function')
+                        ]);
+                    }, 'to error',
+                        "expected [ 1, 2, 3, 4, 5, 6 ] to satisfy\n" +
+                        "[\n" +
+                        "  expect.it('when delayed a little bit', 'to be a number'),\n" +
+                        "  2,\n" +
+                        "  expect.it('when delayed a little bit', 'to be a string'),\n" +
+                        "  expect.it('when delayed a little bit', 'to be a boolean'),\n" +
+                        "  expect.it('when delayed a little bit', 'to be a regular expression'),\n" +
+                        "  expect.it('when delayed a little bit', 'to be a function')\n" +
+                        "]\n" +
+                        "\n" +
+                        "[\n" +
+                        "  1,\n" +
+                        "  2,\n" +
+                        "  3, // expected: when delayed a little bit to be a string\n" +
+                        "  4, // expected: when delayed a little bit to be a boolean\n" +
+                        "  5, // expected: when delayed a little bit to be a regular expression\n" +
+                        "  6 // expected: when delayed a little bit to be a function\n" +
+                        "]\n"
                     );
                 });
 
