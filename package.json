@@ -20,7 +20,7 @@
   },
   "main": "./lib/index.js",
   "dependencies": {
-    "array-changes": "unexpectedjs/array-changes#feature/includeIndices",
+    "array-changes": "1.2.0",
     "array-changes-async": "2.0.2",
     "bluebird": "2.9.34",
     "detect-indent": "3.0.1",
