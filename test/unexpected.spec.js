@@ -3189,12 +3189,15 @@ describe('unexpected', function () {
 
                 it('should render entries that do not satisfy the RHS entry', function () {
                     return expect(function () {
-                        expect(['a', 'b'], 'to satisfy', ['a', expect.it('to equal', 'c')]);
+                        expect(['a', 'b'], 'to satisfy', ['e', expect.it('to equal', 'c')]);
                     }, 'to throw',
-                        "expected [ 'a', 'b' ] to satisfy [ 'a', expect.it('to equal', 'c') ]\n" +
+                        "expected [ 'a', 'b' ] to satisfy [ 'e', expect.it('to equal', 'c') ]\n" +
                         "\n" +
                         "[\n" +
-                        "  'a',\n" +
+                        "  'a', // should equal 'e'\n" +
+                        "       //\n" +
+                        "       // -a\n" +
+                        "       // +e\n" +
                         "  'b' // should equal 'c'\n" +
                         "      //\n" +
                         "      // -b\n" +
