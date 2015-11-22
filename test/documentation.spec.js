@@ -2012,8 +2012,8 @@ describe("documentation tests", function () {
                 "  one: 1,\n" +
                 "  two: 2,\n" +
                 "  four: 4,\n" +
-                "  five: 5, // should be removed\n" +
-                "  three: undefined // should equal 3\n" +
+                "  five: 5 // should be removed\n" +
+                "  // missing three: 3\n" +
                 "}"
             );
         }
@@ -3611,8 +3611,8 @@ describe("documentation tests", function () {
                 "  a: 'f00', // should equal 'foo'\n" +
                 "            // -f00\n" +
                 "            // +foo\n" +
-                "  b: 'bar',\n" +
-                "  c: undefined // should equal 'baz'\n" +
+                "  b: 'bar'\n" +
+                "  // missing c: 'baz'\n" +
                 "}"
             );
         }
