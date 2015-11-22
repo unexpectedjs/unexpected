@@ -2831,7 +2831,6 @@ module.exports = function (expect) {
 
                                 var missingArrayIndex = subjectType.is('array-like') && !(key in subject);
                                 var arrayItemOutOfRange = bothAreArrayLike && (index >= subject.length || index >= value.length);
-                                var missingKey = false;
 
                                 var isInlineDiff = true;
 
@@ -2843,12 +2842,19 @@ module.exports = function (expect) {
                                         conflicting = null;
                                     }
                                 } else if (!(key in subject)) {
-                                    valueOutput = inspect(value[key]);
-                                    missingKey = true;
+                                    if (expect.findTypeOf(value[key]).is('function')) {
+                                        output.error('// missing:').sp();
+                                        valueOutput = output.clone().appendErrorMessage(promiseByKey[key].reason());
+                                    } else {
+                                        output.error('// missing').sp();
+                                        valueOutput = inspect(value[key]);
+                                    }
                                 } else if (conflicting || arrayItemOutOfRange || missingArrayIndex) {
                                     var keyDiff = conflicting && conflicting.getDiff({ output: output });
                                     isInlineDiff = !keyDiff || keyDiff.inline ;
-                                    missingKey = arrayItemOutOfRange || missingArrayIndex;
+                                    if (arrayItemOutOfRange || missingArrayIndex) {
+                                        output.error('// missing').sp();
+                                    }
                                     if (keyDiff && keyDiff.diff && keyDiff.inline) {
                                         valueOutput = keyDiff.diff;
                                     } else if (typeof value[key] === 'function') {
@@ -2897,10 +2903,6 @@ module.exports = function (expect) {
 
                                 var annotationOnNextLine = !isInlineDiff &&
                                     output.preferredWidth < this.size().width + valueOutput.size().width + annotation.size().width;
-
-                                if (missingKey) {
-                                    output.error('// missing').sp();
-                                }
 
                                 if (!annotation.isEmpty()) {
                                     if (!valueOutput.isEmpty()) {
