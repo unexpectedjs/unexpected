@@ -3386,7 +3386,7 @@ describe('unexpected', function () {
                 "\n" +
                 "{\n" +
                 "  foo: 'bar'\n" +
-                "  // missing baz: expect.it('to equal', 123)\n" +
+                "  // missing: baz: should equal 123\n" +
                 "}"
             );
         });
