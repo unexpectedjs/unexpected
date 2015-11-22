@@ -3169,7 +3169,7 @@ describe('unexpected', function () {
                         "[\n" +
                         "  1,\n" +
                         "  2\n" +
-                        "  // missing: should satisfy expect.it('to be a string')\n" +
+                        "  // missing: should be a string\n" +
                         "]"
                     );
                 });
@@ -3236,7 +3236,7 @@ describe('unexpected', function () {
                         "[\n" +
                         "  1,\n" +
                         "  2\n" +
-                        "  // missing: should satisfy expect.it('when delayed a little bit', 'to be a string')\n" +
+                        "  // missing: expected: when delayed a little bit to be a string\n" +
                         "]"
                     );
                 });
