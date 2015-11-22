@@ -3266,7 +3266,7 @@ describe('unexpected', function () {
                         "  4, // expected: when delayed a little bit to be a boolean\n" +
                         "  5, // expected: when delayed a little bit to be a regular expression\n" +
                         "  6 // expected: when delayed a little bit to be a function\n" +
-                        "]\n"
+                        "]"
                     );
                 });
 
