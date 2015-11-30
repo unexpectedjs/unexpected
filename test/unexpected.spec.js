@@ -4473,7 +4473,8 @@ describe('unexpected', function () {
             }, 'to throw',
                    "expected [ 1, 2, 3 ] to have items satisfying\n" +
                    "  No matching assertion, did you mean:\n" +
-                   "  <array-like> to have items satisfying <any+>");
+                   "  <array-like> to have items satisfying <any+>\n" +
+                   "  <array-like> to have items satisfying <assertion>");
         });
 
         it('only accepts arrays as the target object', function () {
@@ -4482,7 +4483,8 @@ describe('unexpected', function () {
             }, 'to throw',
                    "expected 42 to have items satisfying function (item) {}\n" +
                    "  No matching assertion, did you mean:\n" +
-                   "  <array-like> to have items satisfying <any+>");
+                   "  <array-like> to have items satisfying <any+>\n" +
+                   "  <array-like> to have items satisfying <assertion>");
         });
 
         it('fails if the given array is empty', function () {
@@ -4634,7 +4636,7 @@ describe('unexpected', function () {
                     clonedExpect([0, false, 'abc'], 'to have items satisfying', 'to be a number after a short delay'),
                     'to be rejected with',
                     "expected [ 0, false, 'abc' ]\n" +
-                    "to have items satisfying 'to be a number after a short delay'\n" +
+                    "to have items satisfying to be a number after a short delay\n" +
                     "\n" +
                     "[\n" +
                     "  0,\n" +
@@ -4654,7 +4656,8 @@ describe('unexpected', function () {
             }, 'to throw',
                    "expected [ 1, 2, 3 ] to have values satisfying\n" +
                    "  No matching assertion, did you mean:\n" +
-                   "  <object> to have values satisfying <any+>");
+                   "  <object> to have values satisfying <any+>\n" +
+                   "  <object> to have values satisfying <assertion>");
         });
 
         it('only accepts objects and arrays as the target', function () {
@@ -4663,7 +4666,8 @@ describe('unexpected', function () {
             }, 'to throw',
                    "expected 42 to have values satisfying function (value) {}\n" +
                    "  No matching assertion, did you mean:\n" +
-                   "  <object> to have values satisfying <any+>");
+                   "  <object> to have values satisfying <any+>\n" +
+                   "  <object> to have values satisfying <assertion>");
         });
 
         it('asserts that the given callback does not throw for any values in the map', function () {
@@ -8481,7 +8485,7 @@ describe('unexpected', function () {
             expect(function () {
                 clonedExpect([ 'barfoo' ], 'to have items satisfying', 'foobar');
             }, 'to throw',
-                "expected [ 'barfoo' ] to have items satisfying 'foobar'\n" +
+                "expected [ 'barfoo' ] to have items satisfying foobar\n" +
                 "\n" +
                 "[\n" +
                 "  'barfoo' // expected: foobar\n" +

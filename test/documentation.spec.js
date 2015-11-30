@@ -2325,7 +2325,7 @@ describe("documentation tests", function () {
             });
         } catch (e) {
             expect(e, "to have message",
-                "expected array to have items satisfying 'to have items satisfying', 'to be a number'\n" +
+                "expected array to have items satisfying to have items satisfying to be a number\n" +
                 "\n" +
                 "[\n" +
                 "  [ 0, 1, 2 ],\n" +

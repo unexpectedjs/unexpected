@@ -28,7 +28,7 @@ expect([ [0, 1, 2], [4, '5', '6'], [7, '8', 9] ],
 ```
 
 ```output
-expected array to have items satisfying 'to have items satisfying', 'to be a number'
+expected array to have items satisfying to have items satisfying to be a number
 
 [
   [ 0, 1, 2 ],
