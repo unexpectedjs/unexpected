@@ -8,19 +8,19 @@ var fulfilledPromise = expect.promise(function (resolve, reject) {
 });
 ```
 
-```javascript#async:true
+```javascript
 return expect(fulfilledPromise, 'when fulfilled', 'to equal', 123);
 ```
 
 It works with any assertion or `expect.it` construct:
 
-```javascript#async:true
+```javascript
 return expect(fulfilledPromise, 'when fulfilled', expect.it('to be greater than', 100));
 ```
 
 If the response is rejected, the assertion fails with the following output:
 
-```javascript#async:true
+```javascript
 var rejectedPromise = expect.promise(function (resolve, reject) {
     setTimeout(function () {
         reject(new Error('argh'));

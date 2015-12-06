@@ -1,7 +1,7 @@
 Asserts that a node.js-style asynchronous function taking a single callback
 will call it without passing a truthy value as the first parameter.
 
-```javascript#async:true
+```javascript
 function mySuccessfulAsyncFunction(cb) {
     setTimeout(cb, 0);
 }
@@ -11,7 +11,7 @@ return expect(mySuccessfulAsyncFunction, 'to call the callback without error');
 
 In case of a failing expectation you get the following output:
 
-```javascript#async:true
+```javascript
 function myFailingAsyncFunction(cb) {
     setTimeout(function () {
         cb(new Error('Oh dear'));
@@ -42,7 +42,7 @@ function asyncFn(cb) {
 }
 ```
 
-```javascript#async:true
+```javascript
 return expect(asyncFn, 'to call the callback without error').then(function (args) {
     // args will be [123, 456];
 });
@@ -50,7 +50,7 @@ return expect(asyncFn, 'to call the callback without error').then(function (args
 
 Or using the Bluebird-specific `.spread` extension:
 
-```javascript#async:true
+```javascript
 return expect(asyncFn, 'to call the callback without error').spread(function (result1, result2) {
     // result1 will be 123
     // result2 will be 456

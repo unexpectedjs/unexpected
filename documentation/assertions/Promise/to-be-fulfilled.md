@@ -1,6 +1,6 @@
 Asserts that a promise is fulfilled.
 
-```javascript#async:true
+```javascript
 var promiseThatWillBeFulfilled = expect.promise(function (resolve, reject) {
     setTimeout(resolve, 1);
 });
@@ -10,7 +10,7 @@ return expect(promiseThatWillBeFulfilled, 'to be fulfilled');
 
 If the promise is rejected, the assertion will fail with the following output:
 
-```javascript#async:true
+```javascript
 var rejectedPromise = expect.promise(function (resolve, reject) {
     setTimeout(function () {
         reject(new Error('argh'));
@@ -36,7 +36,7 @@ var promiseThatWillBeFulfilledWithAValue = expect.promise(function (resolve, rej
 });
 ```
 
-```javascript#async:true
+```javascript
 return expect(promiseThatWillBeFulfilledWithAValue, 'to be fulfilled with', 'abc');
 ```
 
@@ -45,13 +45,13 @@ The expected value will be matched against the value with
 a regular expression, a function, or an object:
 
 
-```javascript#async:true
+```javascript
 return expect(promiseThatWillBeFulfilledWithAValue, 'to be fulfilled with', /b/);
 ```
 
 You get a nice diff if the assertion fails:
 
-```javascript#async:true
+```javascript
 return expect(promiseThatWillBeFulfilledWithAValue, 'to be fulfilled with', 'def');
 ```
 
