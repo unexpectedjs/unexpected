@@ -6,7 +6,7 @@ CHEWBACCA_THRESHOLD ?= 25
 
 lint:
 	@./node_modules/.bin/jscs lib/*.js test/unexpected.spec.js
-	@./node_modules/.bin/jshint --exclude test/documentation.spec.js lib/*.js test/*.js
+	@./node_modules/.bin/jshint lib/*.js test/*.js
 
 .PHONY: lint
 
