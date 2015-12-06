@@ -6,28 +6,20 @@ var rejectedPromise = expect.promise(function (resolve, reject) {
         reject(new Error('argh'));
     }, 1);
 });
-```
 
-```javascript
 return expect(rejectedPromise, 'when rejected', 'to equal', new Error('argh'));
 ```
 
 It works with any assertion or `expect.it` construct:
 
 ```javascript
-return expect(rejectedPromise, 'when rejected', expect.it('to have message', 'argh'));
+return expect(expect.promise.reject('argh'), 'when rejected', expect.it('to have message', 'argh'));
 ```
 
 If the response is fulfilled, the assertion fails with the following output:
 
 ```javascript
-var fulfilledPromise = expect.promise(function (resolve, reject) {
-    setTimeout(function () {
-        resolve(123);
-    }, 1);
-});
-
-return expect(fulfilledPromise, 'when rejected', 'to have message', 'argh');
+return expect(expect.promise.resolve(123), 'when rejected', 'to have message', 'argh');
 ```
 
 ```output

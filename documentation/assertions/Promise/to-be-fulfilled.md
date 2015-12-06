@@ -34,9 +34,7 @@ var promiseThatWillBeFulfilledWithAValue = expect.promise(function (resolve, rej
         resolve('abc');
     }, 1);
 });
-```
 
-```javascript
 return expect(promiseThatWillBeFulfilledWithAValue, 'to be fulfilled with', 'abc');
 ```
 
@@ -46,13 +44,13 @@ a regular expression, a function, or an object:
 
 
 ```javascript
-return expect(promiseThatWillBeFulfilledWithAValue, 'to be fulfilled with', /b/);
+return expect(expect.promise.resolve('abc'), 'to be fulfilled with', /b/);
 ```
 
 You get a nice diff if the assertion fails:
 
 ```javascript
-return expect(promiseThatWillBeFulfilledWithAValue, 'to be fulfilled with', 'def');
+return expect(expect.promise.resolve('abc'), 'to be fulfilled with', 'def');
 ```
 
 ```output

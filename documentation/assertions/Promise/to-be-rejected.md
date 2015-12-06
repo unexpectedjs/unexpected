@@ -32,9 +32,7 @@ var promiseThatWillBeRejectedWithAReason = expect.promise(function (resolve, rej
         reject(new Error('Oh dear'));
     }, 10);
 });
-```
 
-```javascript
 return expect(promiseThatWillBeRejectedWithAReason, 'to be rejected with', new Error('Oh dear'));
 ```
 
@@ -44,12 +42,24 @@ a regular expression, a function, or an object:
 
 
 ```javascript
+var promiseThatWillBeRejectedWithAReason = expect.promise(function (resolve, reject) {
+    setTimeout(function () {
+        reject(new Error('Oh dear'));
+    }, 10);
+});
+
 return expect(promiseThatWillBeRejectedWithAReason, 'to be rejected with', /dear/);
 ```
 
 You get a nice diff if the assertion fails:
 
 ```javascript
+var promiseThatWillBeRejectedWithAReason = expect.promise(function (resolve, reject) {
+    setTimeout(function () {
+        reject(new Error('Oh dear'));
+    }, 10);
+});
+
 return expect(promiseThatWillBeRejectedWithAReason, 'to be rejected with', new Error('bugger'));
 ```
 
