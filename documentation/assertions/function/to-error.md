@@ -109,7 +109,7 @@ not to error
 You can pass in a function instead of the error message, and do more
 assertions on the error.
 
-```javascript
+```javascript#async:true
 function willBeRejectedAsync() {
     return expect.promise(function (resolve, reject) {
         setTimeout(function () {
@@ -125,7 +125,7 @@ return expect(willBeRejectedAsync, 'to error', function (e) {
 
 You can even do async assertions in the function that you pass in.
 
-```javascript
+```javascript#async:true
 var errorCount = 0;
 function willBeRejectedAsync() {
     return expect.promise(function (resolve, reject) {

@@ -68,7 +68,7 @@ expect(5, 'up to and including', 100, 'to be greater than', 4);
 Again, this has the nice property that the shifted values will be provided as
 the fulfillment value of the promise if invoked without an assertion:
 
-```js
+```js#async:true
 return expect(10, 'up to', 20).then(function (numbers) {
     expect(numbers, 'to have length', 10);
 });

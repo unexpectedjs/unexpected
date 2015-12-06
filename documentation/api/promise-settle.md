@@ -29,7 +29,7 @@ The following code snippet creates a promise that is rejected when any
 promise in the nested structure is rejected. When the returned promise
 is rejected it create an error report with the details.
 
-```js
+```js#async:true
 var promises = {
   foo: expect('42', 'to be a number after a short delay'),
   bar: expect([0, 1, 2], 'to have items satisfying',

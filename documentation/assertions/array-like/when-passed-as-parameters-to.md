@@ -24,7 +24,7 @@ To call an node-style async function, use the `async` flag to automatically
 add a callback to the parameter list and do further assertions on the value it
 passes to the callback.
 
-```javascript
+```javascript#async:true
 function delayedAdd(a, b, cb) {
     setTimeout(function () {
         cb(null, a + b);

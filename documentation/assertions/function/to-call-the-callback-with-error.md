@@ -1,35 +1,33 @@
 Asserts that a node.js-style asynchronous function taking a single callback
 will call it with a truthy value as the first parameter.
 
-```javascript
+```javascript#async:true
 function myFailingAsyncFunction(cb) {
     setTimeout(function () {
         cb(new Error('Oh dear'));
     }, 0);
 }
-```
 
-```javascript
 return expect(myFailingAsyncFunction, 'to call the callback with error');
 ```
 
 You can assert the error message is a given string if you provide a
 string as the second parameter.
 
-```javascript
+```javascript#async:true
 return expect(myFailingAsyncFunction, 'to call the callback with error', 'Oh dear');
 ```
 
 A regular expression, Error instance, or an object will also work, as the
 matching uses [to satisfy](/assertions/any/to-satisfy/) semantics:
 
-```javascript
+```javascript#async:true
 return expect(myFailingAsyncFunction, 'to call the callback with error', /dear/);
 ```
 
 In case of a failing expectation you get the following output:
 
-```javascript
+```javascript#async:true
 return expect(myFailingAsyncFunction, 'to call the callback with error', new Error('foo'));
 ```
 
@@ -53,13 +51,11 @@ to call the callback with error Error('foo')
 The error passed to the callback is also provided as the fulfillment value of
 the returned promise, so you can do further assertions like this:
 
-```javascript
+```javascript#async:true
 function asyncFn(cb) {
     cb(new Error('yikes'));
 }
-```
 
-```javascript
 return expect(asyncFn, 'to call the callback with error').then(function (err) {
     // err will be new Error('yikes')
 });

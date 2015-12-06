@@ -1,6 +1,6 @@
 Wait for a promise to be rejected, then delegate the reason to another assertion.
 
-```javascript
+```javascript#async:true
 var rejectedPromise = expect.promise(function (resolve, reject) {
     setTimeout(function () {
         reject(new Error('argh'));
@@ -12,13 +12,13 @@ return expect(rejectedPromise, 'when rejected', 'to equal', new Error('argh'));
 
 It works with any assertion or `expect.it` construct:
 
-```javascript
+```javascript#async:true
 return expect(expect.promise.reject('argh'), 'when rejected', expect.it('to have message', 'argh'));
 ```
 
 If the response is fulfilled, the assertion fails with the following output:
 
-```javascript
+```javascript#async:true
 return expect(expect.promise.resolve(123), 'when rejected', 'to have message', 'argh');
 ```
 
