@@ -25,9 +25,10 @@ test-jasmine: ${TARGETS}
 test-jasmine-browser: unexpected.js
 	@./node_modules/.bin/serve .
 
+TEST_SOURCES = test/*.spec.js $(shell find documentation -name '*.md')
 .PHONY: test
 test: lint
-	mocha test/*.spec.js `find documentation -name '*.md'`
+	mocha $(TEST_SOURCES)
 
 .PHONY: coverage
 coverage:
@@ -41,7 +42,7 @@ coverage:
 		-x bootstrap-unexpected-markdown.js \
 		--report text \
 		--report lcov \
-		--include-all-sources ./node_modules/mocha/bin/_mocha -- --reporter dot
+		--include-all-sources ./node_modules/mocha/bin/_mocha -- --reporter dot $(TEST_SOURCES)
 	@echo google-chrome coverage/lcov-report/index.html
 
 .PHONY: test-browser
