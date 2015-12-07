@@ -3023,7 +3023,7 @@ describe('unexpected', function () {
     });
 
     describe('to satisfy assertion', function () {
-        it('passes when an object is tested against itself, even in the presence of  circular references', function () {
+        it('passes when an object is tested against itself, even in the presence of circular references', function () {
             var circular = {};
             circular.loop = circular;
             expect(circular, 'to satisfy', circular);
@@ -3052,6 +3052,53 @@ describe('unexpected', function () {
                 }, 'to throw',
                     'expected { foo: 123 } not to satisfy { foo: 123 }'
                 );
+            });
+        });
+
+        describe('with a function in the RHS', function () {
+            it('binds the function to the containing object in the subject', function () {
+                var obj = { foo: 123 };
+                expect(obj, 'to satisfy', {
+                    foo: function () {
+                        expect(this, 'to be', obj);
+                    }
+                });
+            });
+
+            it('binds the function to the containing array in the subject', function () {
+                var obj = [ 123 ];
+                expect(obj, 'to satisfy', [
+                    function () {
+                        expect(this, 'to be', obj);
+                    }
+                ]);
+            });
+        });
+
+        describe('with an expect.it in the RHS', function () {
+            it('binds the function to the containing object in the subject', function () {
+                var obj = {
+                    foo: 123,
+                    bar: function () {
+                        return this.foo;
+                    }
+                };
+                return expect(obj, 'to satisfy', {
+                    bar: expect.it('when called with', [], 'to equal', 123)
+                });
+            });
+
+            it('binds the function to the containing array in the subject', function () {
+                var obj = [
+                    123,
+                    function () {
+                        return this[0];
+                    }
+                ];
+                return expect(obj, 'to satisfy', [
+                    123,
+                    expect.it('when called with', [], 'to equal', 123)
+                ]);
             });
         });
 
