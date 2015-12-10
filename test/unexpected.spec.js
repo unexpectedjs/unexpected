@@ -3100,6 +3100,16 @@ describe('unexpected', function () {
                     expect.it('when called with', [], 'to equal', 123)
                 ]);
             });
+
+            it('does not break "to be"', function () {
+                function getFoo() {
+                    return this.foo;
+                }
+                var obj = { foo: 123, getFoo: getFoo };
+                expect(obj, 'to satisfy', {
+                    getFoo: expect.it('to be', getFoo)
+                });
+            });
         });
 
         describe('with a buffer instance', function () {
