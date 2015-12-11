@@ -4242,7 +4242,7 @@ describe('unexpected', function () {
                 );
             });
 
-            it('@foo', function () {
+            it('should support satisfy agaist the unwrapped object with nested expect.it', function () {
                 clonedExpect(new MysteryBox({ baz: 123 }), 'to satisfy', { baz: expect.it('to be a number') });
             });
 
