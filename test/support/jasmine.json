@@ -1,10 +1,11 @@
 {
   "spec_dir": "test",
   "spec_files": [
-    "**/*[sS]pec.js"
+    "**/*.spec.js"
   ],
   "helpers": [
     "common.js",
+    "./support/jasmineSetup.js",
     "helpers/**/*.js"
   ]
 }
