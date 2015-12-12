@@ -28,11 +28,11 @@ test-jasmine-browser: unexpected.js
 TEST_SOURCES = test/*.spec.js $(shell find documentation -name '*.md')
 .PHONY: test
 test: lint
-	mocha $(TEST_SOURCES)
+	@mocha $(TEST_SOURCES)
 
 .PHONY: coverage
 coverage:
-	NODE_ENV=development ./node_modules/.bin/istanbul cover \
+	@NODE_ENV=development ./node_modules/.bin/istanbul cover \
 		-x unexpected.js \
 		-x **/vendor/** \
 		-x **/site/** \
