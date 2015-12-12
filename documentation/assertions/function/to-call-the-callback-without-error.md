@@ -36,13 +36,11 @@ The parameters passed to the callback (excluding the falsy error) are also
 provided as the value of the returned promise, so you can do further
 assertions like this:
 
-```javascript
+```javascript#async:true
 function asyncFn(cb) {
     cb(null, 123, 456);
 }
-```
 
-```javascript#async:true
 return expect(asyncFn, 'to call the callback without error').then(function (args) {
     // args will be [123, 456];
 });

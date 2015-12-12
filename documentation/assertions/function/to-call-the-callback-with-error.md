@@ -1,15 +1,13 @@
 Asserts that a node.js-style asynchronous function taking a single callback
 will call it with a truthy value as the first parameter.
 
-```javascript
+```javascript#async:true
 function myFailingAsyncFunction(cb) {
     setTimeout(function () {
         cb(new Error('Oh dear'));
     }, 0);
 }
-```
 
-```javascript#async:true
 return expect(myFailingAsyncFunction, 'to call the callback with error');
 ```
 
@@ -53,13 +51,11 @@ to call the callback with error Error('foo')
 The error passed to the callback is also provided as the fulfillment value of
 the returned promise, so you can do further assertions like this:
 
-```javascript
+```javascript#async:true
 function asyncFn(cb) {
     cb(new Error('yikes'));
 }
-```
 
-```javascript#async:true
 return expect(asyncFn, 'to call the callback with error').then(function (err) {
     // err will be new Error('yikes')
 });

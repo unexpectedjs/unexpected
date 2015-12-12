@@ -6,7 +6,7 @@ CHEWBACCA_THRESHOLD ?= 25
 
 lint:
 	@./node_modules/.bin/jscs lib/*.js test/unexpected.spec.js
-	@./node_modules/.bin/jshint --exclude test/documentation.spec.js lib/*.js test/*.js
+	@./node_modules/.bin/jshint lib/*.js test/*.js
 
 .PHONY: lint
 
@@ -25,13 +25,14 @@ test-jasmine: ${TARGETS}
 test-jasmine-browser: unexpected.js
 	@./node_modules/.bin/serve .
 
+TEST_SOURCES = test/*.spec.js $(shell find documentation -name '*.md')
 .PHONY: test
 test: lint
-	mocha
+	@mocha $(TEST_SOURCES)
 
 .PHONY: coverage
 coverage:
-	NODE_ENV=development ./node_modules/.bin/istanbul cover \
+	@NODE_ENV=development ./node_modules/.bin/istanbul cover \
 		-x unexpected.js \
 		-x **/vendor/** \
 		-x **/site/** \
@@ -41,7 +42,7 @@ coverage:
 		-x bootstrap-unexpected-markdown.js \
 		--report text \
 		--report lcov \
-		--include-all-sources ./node_modules/mocha/bin/_mocha -- --reporter dot
+		--include-all-sources ./node_modules/mocha/bin/_mocha -- --reporter dot $(TEST_SOURCES)
 	@echo google-chrome coverage/lcov-report/index.html
 
 .PHONY: test-browser

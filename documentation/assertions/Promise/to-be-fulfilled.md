@@ -28,15 +28,13 @@ expected Promise (rejected) => Error('argh') to be fulfilled
 You can assert the promise is fulfilled with a specific value by
 passing a second parameter:
 
-```javascript
+```javascript#async:true
 var promiseThatWillBeFulfilledWithAValue = expect.promise(function (resolve, reject) {
     setTimeout(function () {
         resolve('abc');
     }, 1);
 });
-```
 
-```javascript#async:true
 return expect(promiseThatWillBeFulfilledWithAValue, 'to be fulfilled with', 'abc');
 ```
 
@@ -46,13 +44,13 @@ a regular expression, a function, or an object:
 
 
 ```javascript#async:true
-return expect(promiseThatWillBeFulfilledWithAValue, 'to be fulfilled with', /b/);
+return expect(expect.promise.resolve('abc'), 'to be fulfilled with', /b/);
 ```
 
 You get a nice diff if the assertion fails:
 
 ```javascript#async:true
-return expect(promiseThatWillBeFulfilledWithAValue, 'to be fulfilled with', 'def');
+return expect(expect.promise.resolve('abc'), 'to be fulfilled with', 'def');
 ```
 
 ```output

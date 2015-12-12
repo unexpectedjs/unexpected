@@ -26,15 +26,13 @@ expected Promise (fulfilled) to be rejected
 You can assert the promise is rejected with a specific reason (error) by
 passing a second parameter:
 
-```javascript
+```javascript#async:true
 var promiseThatWillBeRejectedWithAReason = expect.promise(function (resolve, reject) {
     setTimeout(function () {
         reject(new Error('Oh dear'));
-    }, 1);
+    }, 10);
 });
-```
 
-```javascript#async:true
 return expect(promiseThatWillBeRejectedWithAReason, 'to be rejected with', new Error('Oh dear'));
 ```
 
@@ -44,12 +42,24 @@ a regular expression, a function, or an object:
 
 
 ```javascript#async:true
+var promiseThatWillBeRejectedWithAReason = expect.promise(function (resolve, reject) {
+    setTimeout(function () {
+        reject(new Error('Oh dear'));
+    }, 10);
+});
+
 return expect(promiseThatWillBeRejectedWithAReason, 'to be rejected with', /dear/);
 ```
 
 You get a nice diff if the assertion fails:
 
 ```javascript#async:true
+var promiseThatWillBeRejectedWithAReason = expect.promise(function (resolve, reject) {
+    setTimeout(function () {
+        reject(new Error('Oh dear'));
+    }, 10);
+});
+
 return expect(promiseThatWillBeRejectedWithAReason, 'to be rejected with', new Error('bugger'));
 ```
 
