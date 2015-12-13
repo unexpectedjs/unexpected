@@ -1,18 +1,4 @@
-/*global unexpected, xdescribe, xit, beforeAll, afterAll, before:true, after:true*/
-if (!it.skip && xit) {
-    it.skip = function () {
-        xit.apply(it, arguments);
-    };
-}
-
-if (!describe.skip && xdescribe) {
-    describe.skip = function () {
-        xdescribe.apply(describe, arguments, 1);
-    };
-}
-
-before = typeof before === 'function' ? before : beforeAll;
-after = typeof after === 'function' ? after : afterAll;
+/*global unexpected*/
 
 it.skipIf = function (condition) {
     (condition ? it.skip : it).apply(it, Array.prototype.slice.call(arguments, 1));
@@ -22,10 +8,11 @@ function toArguments() {
     return arguments;
 }
 
+var noBuffer = typeof Buffer === 'undefined';
+
 describe('unexpected', function () {
     var workQueue = typeof weknowhow === 'undefined' ? require('../lib/workQueue') : null;
     var expect = unexpected.clone();
-    expect.output.preferredWidth = 80;
 
     var circular = {};
     circular.self = circular;
@@ -275,7 +262,7 @@ describe('unexpected', function () {
             expect(0, 'to be', 0);
         });
 
-        it.skipIf(typeof Buffer === 'undefined', 'asserts === equality for Buffers', function () {
+        it.skipIf(noBuffer, 'asserts === equality for Buffers', function () {
             var buffer = new Buffer([0x45, 0x59]);
             expect(buffer, 'to be', buffer);
         });
@@ -554,7 +541,7 @@ describe('unexpected', function () {
             expect({bar: 1}, 'to equal', {foo: undefined, bar: 1});
         });
 
-        it.skipIf(typeof Buffer === 'undefined', 'asserts equality for Buffer instances', function () {
+        it.skipIf(noBuffer, 'asserts equality for Buffer instances', function () {
             expect(new Buffer([0x45, 0x59]), 'to equal', new Buffer([0x45, 0x59]));
         });
 
@@ -744,7 +731,7 @@ describe('unexpected', function () {
         });
 
 
-        it.skipIf(typeof Buffer === 'undefined', 'produces a hex-diff in JSON when Buffers differ', function () {
+        it.skipIf(noBuffer, 'produces a hex-diff in JSON when Buffers differ', function () {
             expect(function () {
                 expect(
                     new Buffer('\x00\x01\x02Here is the thing I was talking about', 'utf-8'),
@@ -762,7 +749,7 @@ describe('unexpected', function () {
         });
 
 
-        it.skipIf(typeof Buffer === 'undefined', 'regression test for infinite loop in buffer diff code', function () {
+        it.skipIf(noBuffer, 'regression test for infinite loop in buffer diff code', function () {
             expect(function () {
                 expect(
                     new Buffer([0x63, 0x74, 0x3D, 0x54, 0x3B, 0xD4, 0x8C, 0x3B, 0x66, 0x6F, 0x6F, 0x3D, 0x62, 0x61, 0x72, 0x3B]),
@@ -776,7 +763,7 @@ describe('unexpected', function () {
             }, 'to throw');
         });
 
-        it.skipIf(typeof Buffer === 'undefined', 'suppresses Buffer diff for large buffers', function () {
+        it.skipIf(noBuffer, 'suppresses Buffer diff for large buffers', function () {
             expect(function () {
                 var a = new Buffer(1024),
                     b = new Buffer(1024);
@@ -2451,7 +2438,7 @@ describe('unexpected', function () {
             }, 'not to throw');
         });
 
-        it.skipIf(typeof Buffer === 'undefined', 'asserts Buffer .length', function () {
+        it.skipIf(noBuffer, 'asserts Buffer .length', function () {
             expect(new Buffer('æ', 'utf-8'), 'to have length', 2);
             expect(new Buffer([]), 'to have length', 0);
         });
@@ -3079,14 +3066,12 @@ describe('unexpected', function () {
         });
 
         describe('with a buffer instance', function () {
-            this.pending = typeof Buffer === 'undefined';
-
             describe('in an async setting', function () {
-                it('should succeed', function () {
+                it.skipIf(noBuffer, 'should succeed', function () {
                     return expect(new Buffer([0, 1, 2]), 'to satisfy', expect.it('when delayed a little bit', 'to equal', new Buffer([0, 1, 2])));
                 });
 
-                it('should fail with a diff', function () {
+                it.skipIf(noBuffer, 'should fail with a diff', function () {
                     return expect(
                         expect(new Buffer([0, 1, 2]), 'to satisfy', expect.it('when delayed a little bit', 'to equal', new Buffer([2, 1, 0]))),
                         'to be rejected with',
@@ -3795,13 +3780,12 @@ describe('unexpected', function () {
         });
 
         describe('on Buffer instances', function () {
-            this.pending = typeof Buffer === 'undefined';
-
-            it('should assert equality', function () {
+            it.skipIf(noBuffer, 'should assert equality', function () {
                 expect(new Buffer([1, 2, 3]), 'to satisfy', new Buffer([1, 2, 3]));
             });
 
-            it('should fail with a binary diff when the assertion fails', function () {
+            it.skipIf(noBuffer,
+                      'should fail with a binary diff when the assertion fails', function () {
                 expect(function () {
                     expect(new Buffer([1, 2, 3]), 'to satisfy', new Buffer([1, 2, 4]));
                 }, 'to throw',
@@ -3812,11 +3796,11 @@ describe('unexpected', function () {
             });
 
             describe('with expect.it', function () {
-                it('should succeed', function () {
+                it.skipIf(noBuffer, 'should succeed', function () {
                     expect(new Buffer('bar'), 'to satisfy', expect.it('to equal', new Buffer('bar')));
                 });
 
-                it('should fail with a diff', function () {
+                it.skipIf(noBuffer, 'should fail with a diff', function () {
                     expect(function () {
                         expect(new Buffer('bar'), 'to satisfy', expect.it('to equal', new Buffer('foo')));
                     }, 'to throw',
@@ -3831,7 +3815,7 @@ describe('unexpected', function () {
                 });
             });
 
-            it('should satisfy a function', function () {
+            it.skipIf(noBuffer, 'should satisfy a function', function () {
                 expect(new Buffer('bar'), 'to satisfy', function (buffer) {
                     expect(buffer, 'to have length', 3);
                 });
@@ -7326,26 +7310,6 @@ describe('unexpected', function () {
         return a + b;
     }
 
-    describe('when called with assertion', function () {
-        it('should assert that the function invocation produces the correct output', function () {
-            expect(add, 'when called with', [3, 4], 'to equal', 7);
-        });
-
-        it('should combine with other assertions (showcase)', function () {
-            expect(function () {
-                expect(add, 'when called with', [3, 4], 'to equal', 9);
-            }, 'to throw',
-                   'expected function add(a, b) { return a + b; } when called with [ 3, 4 ] to equal 9\n' +
-                    '  expected 7 to equal 9');
-        });
-
-        it('should should provide the result as the fulfillment value if no assertion is provided', function () {
-            return expect(add, 'when called with', [3, 4]).then(function (sum) {
-                expect(sum, 'to equal', 7);
-            });
-        });
-    });
-
     describe('when passed as parameters to assertion', function () {
         it('should assert that the function invocation produces the correct output', function () {
             expect([3, 4], 'when passed as parameters to', add, 'to equal', 7);
@@ -8383,13 +8347,12 @@ describe('unexpected', function () {
     });
 
     describe('when decoded as assertion', function () {
-        this.pending = typeof Buffer === 'undefined';
-
-        it('should decode a Buffer instance to utf-8', function () {
+        it.skipIf(noBuffer, 'should decode a Buffer instance to utf-8', function () {
             expect(new Buffer('æøå', 'utf-8'), 'when decoded as', 'utf-8', 'to equal', 'æøå');
         });
 
-        it('should should provide the result as the fulfillment value if no assertion is provided', function () {
+        it.skipIf(noBuffer,
+                  'should should provide the result as the fulfillment value if no assertion is provided', function () {
             return expect(new Buffer('æøå', 'utf-8'), 'decoded as', 'utf-8').then(function (result) {
                 expect(result, 'to equal', 'æøå');
             });
