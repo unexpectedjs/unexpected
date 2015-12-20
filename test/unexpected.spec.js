@@ -8476,4 +8476,77 @@ describe('unexpected', function () {
             });
         });
     });
+
+    describe('with the next assertion as a continuation', function () {
+        describe('with "to have items satisfying" followed by another assertion', function () {
+            it('should succeed', function () {
+                return expect([ 123 ], 'to have items satisfying to be a number');
+            });
+
+            it('should fail', function () {
+                return expect(function () {
+                    return expect([ 123 ], 'to have items satisfying to be a boolean');
+                }, 'to error',
+                    "expected [ 123 ] to have items satisfying to be a boolean\n" +
+                    "\n" +
+                    "[\n" +
+                    "  123 // should be a boolean\n" +
+                    "]"
+                );
+            });
+        });
+
+        describe('with "to have items satisfying" twice followed by another assertion', function () {
+            it('should succeed', function () {
+                return expect([ [ 123 ] ], 'to have items satisfying to have items satisfying to be a number');
+            });
+
+            it('should fail', function () {
+                return expect(function () {
+                    return expect([ [ 123 ] ], 'to have items satisfying to have items satisfying to be a boolean');
+                }, 'to error',
+                    "expected [ [ 123 ] ]\n" +
+                    "to have items satisfying to have items satisfying to be a boolean\n" +
+                    "\n" +
+                    "[\n" +
+                    "  [\n" +
+                    "    123 // should be a boolean\n" +
+                    "  ]\n" +
+                    "]"
+                );
+            });
+        });
+
+        describe('with "when rejected" followed by another assertion', function () {
+            it('should succeed', function () {
+                return expect(expect.promise.reject(123), 'when rejected to satisfy', 123);
+            });
+
+            it('should fail', function () {
+                return expect(function () {
+                    return expect(expect.promise.reject(true), 'when rejected to be a number');
+                }, 'to error',
+                    "expected Promise (rejected) => true when rejected to be a number\n" +
+                    "  expected true to be a number"
+                );
+            });
+        });
+
+        describe('with "when rejected" twice followed by another assertion', function () {
+            it('should succeed', function () {
+                return expect(expect.promise.reject(expect.promise.reject(123)), 'when rejected when rejected to satisfy', 123);
+            });
+
+            it('should fail', function () {
+                return expect(function () {
+                    return expect(expect.promise.reject(expect.promise.reject(true)), 'when rejected when rejected to be a number');
+                }, 'to error',
+                    "expected Promise (rejected) => Promise (rejected) => true\n" +
+                    "when rejected when rejected to be a number\n" +
+                    "  expected Promise (rejected) => true when rejected to be a number\n" +
+                    "    expected true to be a number"
+                );
+            });
+        });
+    });
 });
