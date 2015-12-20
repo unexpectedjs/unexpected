@@ -120,39 +120,6 @@ describe('unexpected', function () {
         });
     });
 
-    describe('ok/truthy/falsy assertion', function () {
-        it('assert that the value is truthy or not', function () {
-            expect(1, 'to be ok');
-            expect(true, 'to be ok');
-            expect(true, 'not to be falsy');
-            expect({}, 'to be truthy');
-            expect(0, 'not to be ok');
-            expect(0, 'to be falsy');
-            expect(null, 'to be falsy');
-            expect(undefined, 'to be falsy');
-        });
-
-        it('throws when the assertion fails', function () {
-            expect(function () {
-                expect(0, 'to be ok');
-            }, 'to throw exception', 'expected 0 to be ok');
-        });
-
-        it('throws with message when the assertion fails', function () {
-            expect(function () {
-                expect(4 < 4, 'to be ok', '4 < 4');
-            }, "to throw exception", "expected false to be ok '4 < 4'");
-        });
-
-        it('formats Error instances correctly when an assertion fails', function () {
-            expect(function () {
-                var error = new Error('error message');
-                error.data = 'extra';
-                expect(error, 'to be a number');
-            }, 'to throw', "expected Error({ message: 'error message', data: 'extra' }) to be a number");
-        });
-    });
-
     describe('be assertion', function () {
         it('assert === equality', function () {
             var obj = {};
@@ -280,6 +247,14 @@ describe('unexpected', function () {
                     expect(123, 'to be a', 'FoopQuuxDoop');
                 }, 'to throw', 'expected 123 to be a FoopQuuxDoop');
             });
+        });
+
+        it('formats Error instances correctly when an assertion fails', function () {
+            expect(function () {
+                var error = new Error('error message');
+                error.data = 'extra';
+                expect(error, 'to be a number');
+            }, 'to throw', "expected Error({ message: 'error message', data: 'extra' }) to be a number");
         });
 
         it('should fail with the correct error message if the type is given as an anonymous function', function () {
