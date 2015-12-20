@@ -151,77 +151,6 @@ describe('unexpected', function () {
                 expect(error, 'to be a number');
             }, 'to throw', "expected Error({ message: 'error message', data: 'extra' }) to be a number");
         });
-
-        describe('with Error instances', function () {
-            it('considers Error instances with different messages to be different', function () {
-                expect(function () {
-                    expect(new Error('foo'), 'to equal', new Error('bar'));
-                }, 'to throw exception',
-                       "expected Error('foo') to equal Error('bar')\n" +
-                       "\n" +
-                       "Error({\n" +
-                       "  message: 'foo' // should equal 'bar'\n" +
-                       "                 // -foo\n" +
-                       "                 // +bar\n" +
-                       "})");
-            });
-
-            it('considers Error instances with the same message but different stacks to be equal', function () {
-                var err1 = new Error('foo'),
-                    err2 = new Error('foo');
-                expect(err1, 'to equal', err2);
-            });
-
-            it('considers Error instances with the same message and extra properties to be equal', function () {
-                var err1 = new Error('foo'),
-                    err2 = new Error('foo');
-                err1.extra = 'foo';
-                err2.extra = 'foo';
-                expect(err1, 'to equal', err2);
-            });
-
-            it('considers Error instances with the same message but different extra properties to be different', function () {
-                var err1 = new Error('foo'),
-                    err2 = new Error('foo');
-                err1.extra = 'foo';
-                err2.extra = 'bar';
-                expect(function () {
-                    expect(err1, 'to equal', err2);
-                }, 'to throw exception',
-                       "expected Error({ message: 'foo', extra: 'foo' })\n" +
-                       "to equal Error({ message: 'foo', extra: 'bar' })\n" +
-                       "\n" +
-                       "Error({\n" +
-                       "  message: 'foo',\n" +
-                       "  extra: 'foo' // should equal 'bar'\n" +
-                       "               // -foo\n" +
-                       "               // +bar\n" +
-                       "})");
-            });
-
-            it('considers Error instances with the same message and stack to be equal', function () {
-                var errors = [];
-                for (var i = 0 ; i < 2 ; i += 1) {
-                    errors.push(new Error('foo'));
-                }
-                expect(errors[0], 'to equal', errors[1]);
-            });
-
-            it('ignores blacklisted properties in the diff', function () {
-                var error = new Error('foo');
-                error.description = 'qux';
-                expect(function () {
-                    expect(error, 'to satisfy', new Error('bar'));
-                }, 'to throw',
-                       "expected Error('foo') to satisfy Error('bar')\n" +
-                       "\n" +
-                       "Error({\n" +
-                       "  message: 'foo' // should equal 'bar'\n" +
-                       "                 // -foo\n" +
-                       "                 // +bar\n" +
-                       "})");
-            });
-        });
     });
 
     describe('be assertion', function () {
@@ -877,6 +806,62 @@ describe('unexpected', function () {
                    '+68696E67 20492077 61732071 75757869\n' +
                    ' 6E672061 626F7574'
             );
+        });
+
+        describe('with Error instances', function () {
+            it('considers Error instances with different messages to be different', function () {
+                expect(function () {
+                    expect(new Error('foo'), 'to equal', new Error('bar'));
+                }, 'to throw exception',
+                       "expected Error('foo') to equal Error('bar')\n" +
+                       "\n" +
+                       "Error({\n" +
+                       "  message: 'foo' // should equal 'bar'\n" +
+                       "                 // -foo\n" +
+                       "                 // +bar\n" +
+                       "})");
+            });
+
+            it('considers Error instances with the same message but different stacks to be equal', function () {
+                var err1 = new Error('foo'),
+                    err2 = new Error('foo');
+                expect(err1, 'to equal', err2);
+            });
+
+            it('considers Error instances with the same message and extra properties to be equal', function () {
+                var err1 = new Error('foo'),
+                    err2 = new Error('foo');
+                err1.extra = 'foo';
+                err2.extra = 'foo';
+                expect(err1, 'to equal', err2);
+            });
+
+            it('considers Error instances with the same message but different extra properties to be different', function () {
+                var err1 = new Error('foo'),
+                    err2 = new Error('foo');
+                err1.extra = 'foo';
+                err2.extra = 'bar';
+                expect(function () {
+                    expect(err1, 'to equal', err2);
+                }, 'to throw exception',
+                       "expected Error({ message: 'foo', extra: 'foo' })\n" +
+                       "to equal Error({ message: 'foo', extra: 'bar' })\n" +
+                       "\n" +
+                       "Error({\n" +
+                       "  message: 'foo',\n" +
+                       "  extra: 'foo' // should equal 'bar'\n" +
+                       "               // -foo\n" +
+                       "               // +bar\n" +
+                       "})");
+            });
+
+            it('considers Error instances with the same message and stack to be equal', function () {
+                var errors = [];
+                for (var i = 0 ; i < 2 ; i += 1) {
+                    errors.push(new Error('foo'));
+                }
+                expect(errors[0], 'to equal', errors[1]);
+            });
         });
     });
 
@@ -3384,6 +3369,21 @@ describe('unexpected', function () {
                 "  // missing baz: 123\n" +
                 "}"
             );
+        });
+
+        it('ignores blacklisted properties in the diff', function () {
+            var error = new Error('foo');
+            error.description = 'qux';
+            expect(function () {
+                expect(error, 'to satisfy', new Error('bar'));
+            }, 'to throw',
+                   "expected Error('foo') to satisfy Error('bar')\n" +
+                   "\n" +
+                   "Error({\n" +
+                   "  message: 'foo' // should equal 'bar'\n" +
+                   "                 // -foo\n" +
+                   "                 // +bar\n" +
+                   "})");
         });
 
         it('renders missing properties correctly with expect.it', function () {
