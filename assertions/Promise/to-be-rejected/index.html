@@ -225,6 +225,10 @@
             </li>
             
             <li class="">
+                <a href="../../function/when-called">when called</a>
+            </li>
+            
+            <li class="">
                 <a href="../../function/when-called-with">when called with</a>
             </li>
             
@@ -381,17 +385,29 @@ passing a second parameter:</p>
   <div><span style="color: #a71d5d">var</span>&nbsp;promiseThatWillBeRejectedWithAReason&nbsp;<span style="color: #a71d5d">=</span>&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">promise</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>resolve<span style="color: #000000">,</span>&nbsp;reject<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">setTimeout</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">reject</span><span style="color: #000000">(</span><span style="color: #a71d5d">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'Oh&nbsp;dear'</span><span style="color: #000000">));</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">},</span>&nbsp;<span style="color: #0086b3">1</span><span style="color: #000000">);</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">},</span>&nbsp;<span style="color: #0086b3">10</span><span style="color: #000000">);</span></div>
   <div><span style="color: #000000">});</span></div>
-</div><div class="code lang-javascript">
+  <div>&nbsp;</div>
   <div><span style="color: #a71d5d">return</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>promiseThatWillBeRejectedWithAReason<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;rejected&nbsp;with'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'Oh&nbsp;dear'</span><span style="color: #000000">));</span></div>
 </div><p>The expected reason will be matched against the rejection reason with
 <a href="/assertions/any/to-satisfy/">to satisfy</a> semantics, so you can also pass a string,
 a regular expression, a function, or an object:</p>
 <div class="code lang-javascript">
+  <div><span style="color: #a71d5d">var</span>&nbsp;promiseThatWillBeRejectedWithAReason&nbsp;<span style="color: #a71d5d">=</span>&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">promise</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>resolve<span style="color: #000000">,</span>&nbsp;reject<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">setTimeout</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">reject</span><span style="color: #000000">(</span><span style="color: #a71d5d">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'Oh&nbsp;dear'</span><span style="color: #000000">));</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">},</span>&nbsp;<span style="color: #0086b3">10</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #000000">});</span></div>
+  <div>&nbsp;</div>
   <div><span style="color: #a71d5d">return</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>promiseThatWillBeRejectedWithAReason<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;rejected&nbsp;with'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #183691">/dear/</span><span style="color: #000000">);</span></div>
 </div><p>You get a nice diff if the assertion fails:</p>
 <div class="code lang-javascript">
+  <div><span style="color: #a71d5d">var</span>&nbsp;promiseThatWillBeRejectedWithAReason&nbsp;<span style="color: #a71d5d">=</span>&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">promise</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>resolve<span style="color: #000000">,</span>&nbsp;reject<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">setTimeout</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">reject</span><span style="color: #000000">(</span><span style="color: #a71d5d">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'Oh&nbsp;dear'</span><span style="color: #000000">));</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">},</span>&nbsp;<span style="color: #0086b3">10</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #000000">});</span></div>
+  <div>&nbsp;</div>
   <div><span style="color: #a71d5d">return</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>promiseThatWillBeRejectedWithAReason<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;rejected&nbsp;with'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'bugger'</span><span style="color: #000000">));</span></div>
 </div><div class="output">
   <div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #795da3">Promise</span>&nbsp;<span style="color: red">(rejected)</span>&nbsp;=&gt;&nbsp;Error(<span style="color: #df5000">'Oh&nbsp;dear'</span>)&nbsp;<span style="color: red; font-weight: bold">to&nbsp;be&nbsp;rejected&nbsp;with</span>&nbsp;Error(<span style="color: #df5000">'bugger'</span>)</div>

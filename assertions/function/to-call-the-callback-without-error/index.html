@@ -225,6 +225,10 @@
             </li>
             
             <li class="">
+                <a href="../when-called">when called</a>
+            </li>
+            
+            <li class="">
                 <a href="../when-called-with">when called with</a>
             </li>
             
@@ -391,7 +395,7 @@ assertions like this:</p>
   <div><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">asyncFn</span><span style="color: #000000">(</span>cb<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">cb</span><span style="color: #000000">(</span><span style="color: #a71d5d">null</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">123</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">456</span><span style="color: #000000">);</span></div>
   <div><span style="color: #000000">}</span></div>
-</div><div class="code lang-javascript">
+  <div>&nbsp;</div>
   <div><span style="color: #a71d5d">return</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>asyncFn<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;call&nbsp;the&nbsp;callback&nbsp;without&nbsp;error'</span><span style="color: #000000">).</span><span style="color: #000000">then</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>args<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
   <div>&nbsp;&nbsp;&nbsp;<span style="color: #969896">&nbsp;//&nbsp;args&nbsp;will&nbsp;be&nbsp;[123,&nbsp;456];</span></div>
   <div><span style="color: #000000">});</span></div>
