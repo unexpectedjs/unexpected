@@ -1,7 +1,5 @@
-/*global unexpected*/
+/*global expect*/
 describe('when called with assertion', function () {
-    var expect = unexpected.clone();
-
     function add(a, b) {
         return a + b;
     }

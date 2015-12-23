@@ -1,7 +1,5 @@
-/*global unexpected*/
+/*global expect*/
 describe('negative assertion', function () {
-    var expect = unexpected.clone();
-
     it('assert that a number is negative', function () {
         expect(-1, 'to be negative');
     });

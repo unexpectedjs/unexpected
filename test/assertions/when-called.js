@@ -1,7 +1,5 @@
-/*global unexpected*/
+/*global expect*/
 describe('when called assertion', function () {
-    var expect = unexpected.clone();
-
     it('should call the function without arguments and shift the result', function () {
         function hey() {
             return 123;
