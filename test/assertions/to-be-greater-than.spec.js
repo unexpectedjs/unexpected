@@ -3,6 +3,7 @@ describe('greater than assertion', function () {
     it('assert >', function () {
         expect(3, 'to be greater than', 2);
         expect(1, 'to be above', 0);
+        expect('b', 'to be greater than', 'a');
     });
 
     it('throws when the assertion fails', function () {
