@@ -1,4 +1,4 @@
-/*global unexpected:true, expect:true, weknowhow*/
+/*global unexpected:true, expect:true, setImmediate:true, weknowhow*/
 unexpected = typeof weknowhow === 'undefined' ?
     require('../lib/').clone() :
     weknowhow.expect.clone();
@@ -6,3 +6,9 @@ unexpected = typeof weknowhow === 'undefined' ?
 expect = unexpected.clone();
 
 unexpected.output.preferredWidth = 80;
+
+if (typeof setImmediate !== 'function') {
+    setImmediate = function (cb) {
+        setTimeout(cb, 0);
+    };
+}
