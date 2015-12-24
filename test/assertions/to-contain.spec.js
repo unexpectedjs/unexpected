@@ -1,5 +1,5 @@
 /*global expect*/
-describe('contain assertion', function () {
+describe('to contain assertion', function () {
     it('should throw an error when one of the arguments is the empty string', function () {
         expect(function () {
             expect('foo', 'to contain', 'bar', '');
