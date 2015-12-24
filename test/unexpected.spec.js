@@ -2173,63 +2173,6 @@ describe('unexpected', function () {
         });
     });
 
-    describe('length assertion', function () {
-        it('asserts array .length', function () {
-            expect([], 'to have length', 0);
-            expect([1, 2, 3], 'to have length', 3);
-            expect([1, 2, 3], 'not to have length', 4);
-            expect(toArguments(1, 2, 3, 4), 'to have length', 4);
-        });
-
-        it('asserts string .length', function () {
-            expect('abc', 'to have length', 3);
-            expect('', 'to have length', 0);
-        });
-
-        it('assert sparse array length', function () {
-            var sparse = [];
-            sparse[1] = 'foo';
-            expect(function () {
-                expect(sparse, 'to have length', 2);
-            }, 'not to throw');
-        });
-
-        it.skipIf(noBuffer, 'asserts Buffer .length', function () {
-            expect(new Buffer('æ', 'utf-8'), 'to have length', 2);
-            expect(new Buffer([]), 'to have length', 0);
-        });
-
-        it.skipIf(typeof Uint8Array === 'undefined', 'asserts length for Uint8Array', function () {
-            expect(new Uint8Array([0x45, 0x59]), 'to have length', 2);
-        });
-
-        it.skipIf(typeof Uint16Array === 'undefined', 'asserts length for Uint16Array', function () {
-            expect(new Uint16Array([0x4545, 0x5945]), 'to have length', 2);
-        });
-
-        it('throws when the assertion fails', function () {
-            expect(function () {
-                expect([1, 2], 'to have length', 3);
-            }, 'to throw exception',
-                   "expected [ 1, 2 ] to have length 3\n" +
-                   "  expected 2 to be 3");
-
-            expect(function () {
-                expect(null, 'to have length', 4);
-            }, 'to throw exception',
-                   "expected null to have length 4\n" +
-                   "  No matching assertion, did you mean:\n" +
-                   "  <string|array-like> [not] to have length <number>");
-
-            expect(function () {
-                expect({ length: 4 }, 'to have length', 4);
-            }, 'to throw exception',
-                   "expected { length: 4 } to have length 4\n" +
-                   "  No matching assertion, did you mean:\n" +
-                   "  <string|array-like> [not] to have length <number>");
-        });
-    });
-
     describe('property assertion', function () {
         it('asserts presence of an own property (and value optionally)', function () {
             expect([1, 2], 'to have property', 'length');
