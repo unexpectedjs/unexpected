@@ -1,9 +1,9 @@
 /*global expect*/
-function toArguments() {
-    return arguments;
-}
-
 describe('to have length assertion', function () {
+    function toArguments() {
+        return arguments;
+    }
+
     it('asserts array .length', function () {
         expect([], 'to have length', 0);
         expect([1, 2, 3], 'to have length', 3);
