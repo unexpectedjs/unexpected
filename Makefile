@@ -5,8 +5,8 @@ TARGETS ?= unexpected.js
 CHEWBACCA_THRESHOLD ?= 25
 
 lint:
-	@./node_modules/.bin/jscs lib/*.js test/unexpected.spec.js
-	@./node_modules/.bin/jshint lib/*.js test/*.js
+	@./node_modules/.bin/jscs lib/*.js test/*.js test/**/*.js
+	@./node_modules/.bin/jshint lib/*.js test/*.js test/**/*.js
 
 .PHONY: lint
 
@@ -15,14 +15,23 @@ unexpected.js: lib/*
 
 .PHONY: unexpected.js
 
-test-phantomjs: ${TARGETS}
+create-html-runners: test/tests.tpl.html test/JasmineRunner.tpl.html
+	@for file in tests JasmineRunner ; do \
+		(sed '/test files/q' ./test/$${file}.tpl.html | sed '$$d' && \
+		find test -name '*.spec.js' | sed 's/test/    <script src="./' | sed 's/$$/"><\/script>/' && \
+		sed -n '/test files/,$$p' ./test/$${file}.tpl.html | sed '1d') > ./test/$${file}.html;\
+	done
+
+.PHONY: create-html-runners
+
+test-phantomjs: create-html-runners ${TARGETS}
 	@$(eval QUERY=$(shell node -e "console.log(decodeURIComponent(process.argv.pop()).replace(/\s/g, '%20'))" "${grep}")) \
     ./node_modules/.bin/mocha-phantomjs test/tests.html?grep=${QUERY}
 
 test-jasmine: ${TARGETS}
 	./node_modules/.bin/jasmine JASMINE_CONFIG_PATH=test/support/jasmine.json
 
-test-jasmine-browser: unexpected.js
+test-jasmine-browser: create-html-runners unexpected.js
 	@./node_modules/.bin/serve .
 
 TEST_SOURCES = test/*.spec.js $(shell find documentation -name '*.md')
@@ -46,7 +55,7 @@ coverage:
 	@echo google-chrome coverage/lcov-report/index.html
 
 .PHONY: test-browser
-test-browser: unexpected.js
+test-browser: create-html-runners unexpected.js
 	@./node_modules/.bin/serve .
 
 .PHONY: travis-chewbacca
