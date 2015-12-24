@@ -2793,35 +2793,6 @@ describe('unexpected', function () {
         });
     });
 
-    describe('within assertion', function () {
-        it('asserts a number within a range', function () {
-            expect(0, 'to be within', 0, 4);
-            expect(1, 'to be within', 0, 4);
-            expect(4, 'to be within', 0, 4);
-            expect(-1, 'not to be within', 0, 4);
-            expect(5, 'not to be within', 0, 4);
-        });
-
-        it('throws when the assertion fails', function () {
-            expect(function () {
-                expect(4, 'not to be within', 0, 4);
-            }, 'to throw exception', 'expected 4 not to be within 0..4');
-            expect(function () {
-                expect(null, 'not to be within', 0, 4);
-            }, 'to throw exception',
-                   "expected null not to be within 0, 4\n" +
-                   "  No matching assertion, did you mean:\n" +
-                   "  <number> [not] to be within <number> <number>\n" +
-                   "  <string> [not] to be within <string> <string>");
-        });
-
-        it('throws with the correct error message when the end points are strings', function () {
-            expect(function () {
-                expect('a', 'to be within', 'c', 'd');
-            }, 'to throw exception', "expected 'a' to be within 'c'..'d'");
-        });
-    });
-
     describe('to be NaN assertion', function () {
         it('assert that the value is NaN or not', function () {
             expect(NaN, 'to be NaN');
