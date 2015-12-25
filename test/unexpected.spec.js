@@ -776,65 +776,6 @@ describe('unexpected', function () {
         });
     });
 
-    describe('key assertion', function () {
-        it('asserts the presence of a key', function () {
-            expect({ a: 'b' }, 'to have key', 'a');
-            expect({ a: 'b' }, 'not to have key', 'b');
-            expect({ a: 'b' }, 'not to have keys', []);
-            expect({ a: 'b', c: 'd' }, 'not to have key', 'b');
-            expect({ a: 'b', c: 'd' }, 'to not only have key', 'a');
-            expect({ a: 'b', c: 'd' }, 'to only have keys', 'a', 'c');
-            expect({ a: 'b', c: 'd' }, 'to only have keys', ['a', 'c']);
-            expect({ a: 'b', c: 'd', e: 'f' }, 'to not only have keys', ['a', 'c']);
-        });
-
-        it('throws when the assertion fails', function () {
-            expect(function () {
-                expect({ a: 'b', b: 'c' }, 'to have key', 'e');
-            }, 'to throw exception', "expected { a: 'b', b: 'c' } to have key 'e'");
-
-            expect(function () {
-                expect({ a: 'b', b: 'c' }, 'to only have key', 'b');
-            }, 'to throw exception',
-                "expected { a: 'b', b: 'c' } to only have key 'b'\n" +
-                "\n" +
-                "{\n" +
-                "  a: 'b', // should be removed\n" +
-                "  b: 'c'\n" +
-                "}"
-            );
-
-            expect(function () {
-                expect({ a: 'b', b: 'c' }, 'not to have key', 'b');
-            }, 'to throw exception', "expected { a: 'b', b: 'c' } not to have key 'b'");
-
-            expect(function () {
-                expect({ a: 'b', c: 'd' }, 'to not only have keys', ['a', 'c']);
-            }, 'to throw exception', "expected { a: 'b', c: 'd' } to not only have keys [ 'a', 'c' ]");
-
-            expect(function () {
-                expect({ a: 'b', c: 'd' }, 'to only have keys', 'a', 'd');
-            }, 'to throw exception', "expected { a: 'b', c: 'd' } to only have keys 'a', 'd'");
-
-            expect(function () {
-                expect({ a: 'b', c: 'd' }, 'to not only have keys', 'a', 'c');
-            }, 'to throw exception', "expected { a: 'b', c: 'd' } to not only have keys 'a', 'c'");
-        });
-
-        it('should fail with a diff when the only flag is used', function () {
-            expect(function () {
-                expect({foo: 123, bar: 'quux'}, 'to only have keys', [ 'foo' ]);
-            }, 'to throw',
-                "expected { foo: 123, bar: 'quux' } to only have keys [ 'foo' ]\n" +
-                "\n" +
-                "{\n" +
-                "  foo: 123,\n" +
-                "  bar: 'quux' // should be removed\n" +
-                "}"
-            );
-        });
-    });
-
     describe('finite assertion', function () {
         it('asserts a finite number', function () {
             expect(123, 'to be finite');
