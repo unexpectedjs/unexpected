@@ -1,0 +1,169 @@
+/*global expect*/
+describe('to have values satisfying assertion', function () {
+    it('requires a third argument', function () {
+        expect(function () {
+            expect([1, 2, 3], 'to have values satisfying');
+        }, 'to throw',
+               "expected [ 1, 2, 3 ] to have values satisfying\n" +
+               "  No matching assertion, did you mean:\n" +
+               "  <object> to have values satisfying <any+>\n" +
+               "  <object> to have values satisfying <assertion>");
+    });
+
+    it('only accepts objects and arrays as the target', function () {
+        expect(function () {
+            expect(42, 'to have values satisfying', function (value) {});
+        }, 'to throw',
+               "expected 42 to have values satisfying function (value) {}\n" +
+               "  No matching assertion, did you mean:\n" +
+               "  <object> to have values satisfying <any+>\n" +
+               "  <object> to have values satisfying <assertion>");
+    });
+
+    it('asserts that the given callback does not throw for any values in the map', function () {
+        expect({ foo: 0, bar: 1, baz: 2, qux: 3 }, 'to have values satisfying', function (value) {
+            expect(value, 'to be a number');
+        });
+
+        expect({ foo: '0', bar: '1', baz: '2', qux: '3' }, 'to have values satisfying', function (value) {
+            expect(value, 'not to be a number');
+        });
+
+        expect({ foo: 0, bar: 1, baz: 2, qux: 3 }, 'to have values satisfying', 'to be a number');
+
+        expect({ foo: '0', bar: '1', baz: '2', qux: '3' }, 'to have values satisfying', 'not to be a number');
+    });
+
+    it('fails if the given object is empty', function () {
+        expect(function () {
+            expect({}, 'to have values satisfying', function (value) {
+                expect(value, 'to equal', '0');
+            });
+        }, 'to throw',
+               "expected {} to have values satisfying\n" +
+               "function (value) {\n" +
+               "  expect(value, 'to equal', '0');\n" +
+               "}\n" +
+               "  expected {} not to equal {}");
+    });
+
+    it('fails if the given array is empty', function () {
+        expect(function () {
+            expect([], 'to have items satisfying', function (item) {
+                expect(item, 'to be a number');
+            });
+        }, 'to throw',
+               "expected [] to have items satisfying\n" +
+               "function (item) {\n" +
+               "  expect(item, 'to be a number');\n" +
+               "}\n" +
+               "  expected [] to be non-empty");
+    });
+
+    it('supports legacy aliases', function () {
+        expect({ foo: '0' }, 'to be a map whose values satisfy', function (value) {
+            expect(value, 'not to be a number');
+        });
+
+        expect({ foo: '0' }, 'to be an object whose values satisfy', function (value) {
+            expect(value, 'not to be a number');
+        });
+
+        expect({ foo: '0' }, 'to be a hash whose values satisfy', function (value) {
+            expect(value, 'not to be a number');
+        });
+    });
+
+    it('fails when the assertion fails', function () {
+        expect(function () {
+            expect({ foo: '0', bar: 1, baz: '2', qux: '3' }, 'to have values satisfying', function (value) {
+                expect(value, 'not to be a number');
+            });
+        }, 'to throw', /bar: 1, \/\/ should not be a number/);
+    });
+
+    it('provides a detailed report of where failures occur', function () {
+        expect(function () {
+            expect({ foo: 0, bar: 1, baz: '2', qux: 3, quux: 4 }, 'to have values satisfying', function (value) {
+                expect(value, 'to be a number');
+                expect(value, 'to be less than', 4);
+            });
+        }, 'to throw',
+               "expected object to have values satisfying\n" +
+               "function (value) {\n" +
+               "  expect(value, 'to be a number');\n" +
+               "  expect(value, 'to be less than', 4);\n" +
+               "}\n" +
+               "\n" +
+               "{\n" +
+               "  foo: 0,\n" +
+               "  bar: 1,\n" +
+               "  baz: '2', // should be a number\n" +
+               "  qux: 3,\n" +
+               "  quux: 4 // should be less than 4\n" +
+               "}");
+    });
+
+    it('indents failure reports of nested assertions correctly', function () {
+        expect(function () {
+            expect({ foo: [0, 1, 2], bar: [4, '5', 6], baz: [7, 8, '9'] }, 'to have values satisfying', function (arr) {
+                expect(arr, 'to have items satisfying', function (item) {
+                    expect(item, 'to be a number');
+                });
+            });
+        }, 'to throw',
+               "expected object to have values satisfying\n" +
+               "function (arr) {\n" +
+               "  expect(arr, 'to have items satisfying', function (item) {\n" +
+               "    expect(item, 'to be a number');\n" +
+               "  });\n" +
+               "}\n" +
+               "\n" +
+               "{\n" +
+               "  foo: [ 0, 1, 2 ],\n" +
+               "  bar: [\n" +
+               "    4,\n" +
+               "    '5', // should be a number\n" +
+               "    6\n" +
+               "  ],\n" +
+               "  baz: [\n" +
+               "    7,\n" +
+               "    8,\n" +
+               "    '9' // should be a number\n" +
+               "  ]\n" +
+               "}");
+    });
+
+    describe('delegating to an async assertion', function () {
+        var clonedExpect = expect.clone()
+            .addAssertion('to be a number after a short delay', function (expect, subject, delay) {
+                expect.errorMode = 'nested';
+
+                return expect.promise(function (run) {
+                    setTimeout(run(function () {
+                        expect(subject, 'to be a number');
+                    }), 1);
+                });
+            });
+
+        it('should succeed', function () {
+            return clonedExpect({0: 1, 1: 2, 2: 3}, 'to have values satisfying', 'to be a number after a short delay');
+        });
+
+        it('should fail with a diff', function () {
+            return expect(
+                clonedExpect({0: 0, 1: false, 2: 'abc'}, 'to have values satisfying', 'to be a number after a short delay'),
+                'to be rejected with',
+                "expected { 0: 0, 1: false, 2: 'abc' }\n" +
+                    "to have values satisfying to be a number after a short delay\n" +
+                    "\n" +
+                    "{\n" +
+                    "  0: 0,\n" +
+                    "  1: false, // should be a number after a short delay\n" +
+                    "            //   should be a number\n" +
+                    "  2: 'abc' // should be a number after a short delay\n" +
+                    "           //   should be a number\n" +
+                    "}");
+        });
+    });
+});
