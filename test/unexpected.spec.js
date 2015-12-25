@@ -776,54 +776,6 @@ describe('unexpected', function () {
         });
     });
 
-    describe('finite assertion', function () {
-        it('asserts a finite number', function () {
-            expect(123, 'to be finite');
-            expect(0, 'to be finite');
-            expect(Infinity, 'not to be finite');
-            expect(-Infinity, 'not to be finite');
-        });
-
-        it('refuses to work on NaN', function () {
-            expect(function () {
-                expect(NaN, 'not to be finite');
-            }, 'to throw',
-                   "expected NaN not to be finite\n" +
-                   "  No matching assertion, did you mean:\n" +
-                   "  <number> [not] to be finite");
-        });
-
-        it('throws when the assertion fails', function () {
-            expect(function () {
-                expect(Infinity, 'to be finite');
-            }, 'to throw exception', 'expected Infinity to be finite');
-        });
-    });
-
-    describe('infinite assertion', function () {
-        it('asserts a infinite number', function () {
-            expect(123, 'not to be infinite');
-            expect(0, 'not to be infinite');
-            expect(Infinity, 'to be infinite');
-            expect(-Infinity, 'to be infinite');
-        });
-
-        it('refuses to work on NaN', function () {
-            expect(function () {
-                expect(NaN, 'not to be infinite');
-            }, 'to throw',
-                   "expected NaN not to be infinite\n" +
-                   "  No matching assertion, did you mean:\n" +
-                   "  <number> [not] to be infinite");
-        });
-
-        it('throws when the assertion fails', function () {
-            expect(function () {
-                expect(123, 'to be infinite');
-            }, 'to throw exception', 'expected 123 to be infinite');
-        });
-    });
-
     describe('to be NaN assertion', function () {
         it('assert that the value is NaN or not', function () {
             expect(NaN, 'to be NaN');
