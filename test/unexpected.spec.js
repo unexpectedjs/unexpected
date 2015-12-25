@@ -4588,10 +4588,6 @@ describe('unexpected', function () {
                '+foo');
     });
 
-    function add(a, b) {
-        return a + b;
-    }
-
     describe('expect.shift', function () {
         describe('when preserving the subject by passing no arguments', function () {
             it('should succeed', function () {
