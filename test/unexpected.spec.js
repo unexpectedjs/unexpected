@@ -770,17 +770,6 @@ describe('unexpected', function () {
         });
     });
 
-    describe('arity assertion', function () {
-        it('tests that the subject function has the given arity', function () {
-            expect(function () {}, 'to have arity', 0);
-            expect(function (a) {}, 'to have arity', 1);
-            expect(function (a, b) {}, 'to have arity', 2);
-            /*jshint evil:true*/
-            expect(new Function('a', 'return 1'), 'to have arity', 1);
-            /*jshint evil:false*/
-        });
-    });
-
     describe('property assertion', function () {
         it('asserts presence of an own property (and value optionally)', function () {
             expect([1, 2], 'to have property', 'length');
