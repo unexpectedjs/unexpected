@@ -2740,8 +2740,9 @@ describe('unexpected', function () {
     });
 
     describe('async', function () {
+        var clonedExpect;
         before(function () {
-            expect = expect.clone()
+            clonedExpect = expect.clone()
                 .addAssertion('to be sorted after delay', function (expect, subject, delay) {
                     expect.errorMode = 'nested';
 
@@ -2813,7 +2814,7 @@ describe('unexpected', function () {
 
         it('supports composition', expect.async(function () {
             return expect(
-                expect([1, 3, 2], 'to be ordered after delay'),
+                clonedExpect([1, 3, 2], 'to be ordered after delay'),
                 'to be rejected with',
                     'expected [ 1, 3, 2 ] to be ordered after delay\n' +
                     '  expected [ 1, 3, 2 ] to be sorted after delay 20\n' +
@@ -2829,7 +2830,7 @@ describe('unexpected', function () {
 
         it('has a nice syntax', expect.async(function () {
             return expect(
-                expect([1, 3, 2], 'to be sorted after delay', 20),
+                clonedExpect([1, 3, 2], 'to be sorted after delay', 20),
                 'to be rejected with',
                     'expected [ 1, 3, 2 ] to be sorted after delay 20\n' +
                     '  expected [ 1, 3, 2 ] to equal [ 1, 2, 3 ]\n' +
@@ -2844,7 +2845,7 @@ describe('unexpected', function () {
 
         it('tests that assertions that returns promises are converted to exceptions if they are sync', function () {
             expect(function () {
-                expect(42, 'im sync');
+                clonedExpect(42, 'im sync');
             }, 'to throw', 'expected 42 im sync');
         });
 
@@ -2865,7 +2866,7 @@ describe('unexpected', function () {
                 done();
             };
 
-            expect([1, 3, 2], 'to be ordered after delay');
+            clonedExpect([1, 3, 2], 'to be ordered after delay');
         });
     });
 
