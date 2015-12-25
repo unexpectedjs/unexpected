@@ -34,7 +34,7 @@ test-jasmine: ${TARGETS}
 test-jasmine-browser: create-html-runners unexpected.js
 	@./node_modules/.bin/serve .
 
-TEST_SOURCES = test/*.spec.js $(shell find documentation -name '*.md')
+TEST_SOURCES = $(shell find test -name '*.spec.js') $(shell find documentation -name '*.md')
 .PHONY: test
 test: lint
 	@mocha $(TEST_SOURCES)
