@@ -134,14 +134,6 @@ describe('unexpected', function () {
         Object.defineProperty(this, 'value', propertyDescription);
     }
 
-    describe('equal', function () {
-        it.skipIf(!Object.defineProperty, 'handles getters and setters correctly', function () {
-            expect(new Field('VALUE', 'getter'), 'to equal', new Field('VALUE', 'getter'));
-            expect(new Field('VALUE', 'setter'), 'to equal', new Field('VALUE', 'setter'));
-            expect(new Field('VALUE', 'getter and setter'), 'to equal', new Field('VALUE', 'getter and setter'));
-        });
-    });
-
     describe('inspect', function () {
         it.skipIf(!Object.defineProperty, 'handles getters and setters correctly', function () {
             expect(new Field('VALUE', 'getter'), 'to inspect as', "Field({ value: 'VALUE' /* getter */ })");
