@@ -1,4 +1,4 @@
-/*global*/
+/*global expect*/
 describe('addAssertion', function () {
     it('is chainable', function () {
         expect.addAssertion('foo', function () {})
