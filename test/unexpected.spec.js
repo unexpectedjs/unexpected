@@ -685,21 +685,6 @@ describe('unexpected', function () {
         });
     });
 
-    it('makes expect.it available inside a custom assertion', function () {
-        var clonedExpect = expect.clone();
-        clonedExpect.addAssertion('to foo', function (expect, subject) {
-            expect.it('to equal', 'foo')(subject);
-        });
-        clonedExpect('foo', 'to foo');
-        expect(function () {
-            clonedExpect('bar', 'to foo');
-        }, 'to throw',
-               "expected 'bar' to equal 'foo'\n" +
-               '\n' +
-               '-bar\n' +
-               '+foo');
-    });
-
     describe('with an assertion that has a non-standard name', function () {
         it('should render the error message sanely in an annotation block inside a satisfy diff', function () {
             var clonedExpect = expect.clone().addAssertion('foobar', function (expect, subject) {
