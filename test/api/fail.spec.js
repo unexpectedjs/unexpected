@@ -38,4 +38,45 @@ describe('fail assertion', function () {
         }, 'to throw exception', "0 was expected to be {1}");
     });
 
+    describe('with an object', function () {
+        it('should support specifying a label', function () {
+            expect(function () {
+                expect.fail({
+                    label: 'to yadda'
+                });
+            }, 'to throw', {
+                label: 'to yadda'
+            });
+        });
+
+        it('should set additional properties on the thrown error', function () {
+            expect(function () {
+                expect.fail({
+                    foobarquux: 123
+                });
+            }, 'to throw', {
+                foobarquux: 123
+            });
+        });
+
+        it('should support message passed as a string', function () {
+            expect(function () {
+                expect.fail({
+                    message: 'hey'
+                });
+            }, 'to throw', {
+                message: '\nhey'
+            });
+        });
+
+        it('should support message passed as a MagicPen instance', function () {
+            expect(function () {
+                expect.fail({
+                    message: expect.output.clone().text('hey')
+                });
+            }, 'to throw', {
+                message: '\nhey'
+            });
+        });
+    });
 });
