@@ -1,14 +1,5 @@
-/*global unexpected*/
+/*global expect*/
 describe('to have message/diff assertion', function () {
-    var expect = unexpected.clone()
-        .addAssertion('<any> when delayed a little bit <assertion>', function (expect, subject) {
-            return expect.promise(function (run) {
-                setTimeout(run(function () {
-                    return expect.shift();
-                }), 1);
-            });
-        });
-
     describe('with an Unexpected error', function () {
         var err;
         beforeEach(function () {

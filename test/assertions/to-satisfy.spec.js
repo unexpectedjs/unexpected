@@ -1,16 +1,8 @@
-/*global unexpected*/
+/*global expect*/
 describe('to satisfy assertion', function () {
     function toArguments() {
         return arguments;
     }
-
-    var expect = unexpected.addAssertion('<any> when delayed a little bit <assertion>', function (expect, subject) {
-        return expect.promise(function (run) {
-            setTimeout(run(function () {
-                return expect.shift();
-            }), 1);
-        });
-    });
 
     it('passes when an object is tested against itself, even in the presence of  circular references', function () {
         var circular = {};
