@@ -48,6 +48,10 @@ vertical bars between them are treated as alternative texts that can
 be used. In this case you can write _ordered_ as an alternative to
 _sorted_.
 
+An assertion can only have a single assertion string, which must be
+provided after the subject type. This means that you cannot have
+more words, flags, and alternations after the first type.
+
 The second and last parameter to `addAssertion` is function that will
 be called when `expect` is invoked with an expectation matching the
 type and pattern of the assertion.
