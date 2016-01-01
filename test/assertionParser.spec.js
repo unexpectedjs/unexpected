@@ -83,31 +83,31 @@ describe('parseAssertion', function () {
         }]);
     });
 
-    it('throw a type cannot be detected', function () {
+    it('throws a type cannot be detected', function () {
         expect(function () {
             expect.parseAssertion('<string|function> [not] to be <string> <foo*|object>');
         }, 'to throw', 'Unknown type: foo in <string|function> [not] to be <string> <foo*|object>');
     });
 
-    it('throw if the subject type is not specified', function () {
+    it('throws if the subject type is not specified', function () {
         expect(function () {
             expect.parseAssertion('[not] to be <string> <string*|object>');
         }, 'to throw', 'Missing subject type in [not] to be <string> <string*|object>');
     });
 
-    it('throw if the assertion cannot be detected', function () {
+    it('throws if the assertion cannot be detected', function () {
         expect(function () {
             expect.parseAssertion('<string> <string*|object>');
         }, 'to throw', 'Missing assertion in <string> <string*|object>');
     });
 
-    it('throw if varargs is used for the subject', function () {
+    it('throws if varargs is used for the subject', function () {
         expect(function () {
             expect.parseAssertion('<any*> [not] to be <any*>');
         }, 'to throw', 'The subject type cannot have varargs: <any*> [not] to be <any*>');
     });
 
-    it('throw if varargs is used before the last argument', function () {
+    it('throws if varargs is used before the last argument', function () {
         expect(function () {
             expect.parseAssertion('<any> [not] to be <any*> <string>');
         }, 'to throw', 'Only the last argument type can have varargs: <any> [not] to be <any*> <string>');
