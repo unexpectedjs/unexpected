@@ -145,6 +145,9 @@ otherwise it will be removed. Text that is in parentheses with
 vertical bars between them are treated as alternative texts that can
 be used. In this case you can write <em>ordered</em> as an alternative to
 <em>sorted</em>.</p>
+<p>An assertion can only have a single assertion string, which must be
+provided after the subject type. This means that you cannot have
+more words, flags, and alternations after the first type.</p>
 <p>The second and last parameter to <code>addAssertion</code> is function that will
 be called when <code>expect</code> is invoked with an expectation matching the
 type and pattern of the assertion.</p>
