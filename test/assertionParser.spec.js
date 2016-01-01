@@ -113,6 +113,13 @@ describe('parseAssertion', function () {
         }, 'to throw', 'Only the last argument type can have varargs: <any> [not] to be <any*> <string>');
     });
 
+    // Under consideration here: https://github.com/unexpectedjs/unexpected/issues/225
+    it('throws if the argument list contains multiple assertion strings', function () {
+        expect(function () {
+            expect.parseAssertion('<number> to be in range from <number> up to [and including] <number> ');
+        }, 'to throw', 'Only one assertion string is supported (see #225)');
+    });
+
     it('handles types with upper case characters', function () {
         var assertion = expect.parseAssertion('<number|NaN> [not] to be NaN');
         expect(assertion, 'to satisfy', [
