@@ -46,6 +46,6 @@
     "rsvp": "3.0.18",
     "serve": "*",
     "unexpected-documentation-site-generator": "^4.0.0",
-    "unexpected-markdown": "unexpectedjs/unexpected-markdown#master"
+    "unexpected-markdown": "1.3.1"
   }
 }
