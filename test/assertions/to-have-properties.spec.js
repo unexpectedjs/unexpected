@@ -140,4 +140,17 @@ describe('to have properties assertion', function () {
                "  No matching assertion, did you mean:\n" +
                "  <object|function> [not] to have [own] properties <array>");
     });
+
+    it('works with function objects as well', function () {
+        var subject = function () {};
+        subject.foo = 'foo';
+        subject.bar = 'bar';
+        subject.baz = 'baz';
+
+        expect(subject, 'to have properties', {
+            foo: 'foo',
+            bar: 'bar',
+            baz: 'baz'
+        });
+    });
 });
