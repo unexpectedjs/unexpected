@@ -435,6 +435,10 @@ Unexpected.prototype.parseAssertion = function (assertionString) {
     if (hasVarargs(assertion.subject)) {
         throw new SyntaxError('The subject type cannot have varargs: ' + assertionString);
     }
+    if (assertion.args.some(function (arg) { return typeof arg === 'string'; })) {
+        throw new SyntaxError('Only one assertion string is supported (see #225)');
+    }
+
     if (assertion.args.slice(0, -1).some(hasVarargs)) {
         throw new SyntaxError('Only the last argument type can have varargs: ' + assertionString);
     }
@@ -4896,6 +4900,7 @@ module.exports = function (expect) {
         identify: function (f) {
             return typeof f === 'function';
         },
+        getKeys: Object.keys,
         equal: function (a, b) {
             return a === b || a.toString() === b.toString();
         },
