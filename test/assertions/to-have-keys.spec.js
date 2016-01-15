@@ -7,10 +7,6 @@ describe('to have keys assertion', function () {
         expect({ a: 'b', c: 'd', e: 'f' }, 'to not only have keys', ['a', 'c']);
     });
 
-    it('asserts the absence of any keys on an object', function () {
-        expect({}, 'not to have keys');
-    });
-
     it('throws when the assertion fails', function () {
         expect(function () {
             expect({ a: 'b', c: 'd' }, 'to not only have keys', ['a', 'c']);
@@ -23,17 +19,6 @@ describe('to have keys assertion', function () {
         expect(function () {
             expect({ a: 'b', c: 'd' }, 'to not only have keys', 'a', 'c');
         }, 'to throw exception', "expected { a: 'b', c: 'd' } to not only have keys 'a', 'c'");
-
-        expect(function () {
-            expect({ a: 'b' }, 'not to have keys');
-        }, 'to throw exception',
-                "expected { a: 'b' } not to have keys" +
-                "\n" +
-                "\n" +
-                "{\n" +
-                "  a: \'b\' // should be removed\n" +
-                "}"
-                );
     });
 
     it('should fail with a diff when the only flag is used', function () {
