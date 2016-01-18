@@ -1,13 +1,15 @@
 Asserts that a node.js-style asynchronous function taking a single callback
 will call it with a truthy value as the first parameter.
 
-```javascript#async:true
+```javascript
 function myFailingAsyncFunction(cb) {
     setTimeout(function () {
         cb(new Error('Oh dear'));
     }, 0);
 }
+```
 
+```javascript#async:true
 return expect(myFailingAsyncFunction, 'to call the callback with error');
 ```
 
