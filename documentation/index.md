@@ -48,7 +48,7 @@ expected { text: 'f00!' } to equal { text: 'foo!' }
 Install it with NPM or add it to your `package.json`:
 
 ```
-$ npm install unexpected
+$ npm install --save-dev unexpected
 ```
 
 Then:
