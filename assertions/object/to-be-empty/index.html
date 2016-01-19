@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../../../static/normalize.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="../../../static/main.css" type="text/css" media="screen" />
     <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="../../../static/bug-icon-black.ico">
-    <title>number - to be greater than or equal to</title>
+    <title>object - to be empty</title>
 </head>
 <body class="sidebar-hidden has-sidebar">
     <header>
@@ -148,51 +148,51 @@
             
         </ul>
     
-        <h3 class=""><a href="..">number</a></h3>
+        <h3 class=""><a href="../../number">number</a></h3>
         <ul>
             
             <li class="">
-                <a href="../to-be-close-to">to be close to</a>
+                <a href="../../number/to-be-close-to">to be close to</a>
             </li>
             
             <li class="">
-                <a href="../to-be-finite">to be finite</a>
+                <a href="../../number/to-be-finite">to be finite</a>
             </li>
             
             <li class="">
-                <a href="../to-be-greater-than">to be greater than</a>
-            </li>
-            
-            <li class="active">
-                <a href="">to be greater than or equal to</a>
+                <a href="../../number/to-be-greater-than">to be greater than</a>
             </li>
             
             <li class="">
-                <a href="../to-be-infinite">to be infinite</a>
+                <a href="../../number/to-be-greater-than-or-equal-to">to be greater than or equal to</a>
             </li>
             
             <li class="">
-                <a href="../to-be-less-than">to be less than</a>
+                <a href="../../number/to-be-infinite">to be infinite</a>
             </li>
             
             <li class="">
-                <a href="../to-be-less-than-or-equal-to">to be less than or equal to</a>
+                <a href="../../number/to-be-less-than">to be less than</a>
             </li>
             
             <li class="">
-                <a href="../to-be-NaN">to be NaN</a>
+                <a href="../../number/to-be-less-than-or-equal-to">to be less than or equal to</a>
             </li>
             
             <li class="">
-                <a href="../to-be-negative">to be negative</a>
+                <a href="../../number/to-be-NaN">to be NaN</a>
             </li>
             
             <li class="">
-                <a href="../to-be-positive">to be positive</a>
+                <a href="../../number/to-be-negative">to be negative</a>
             </li>
             
             <li class="">
-                <a href="../to-be-within">to be within</a>
+                <a href="../../number/to-be-positive">to be positive</a>
+            </li>
+            
+            <li class="">
+                <a href="../../number/to-be-within">to be within</a>
             </li>
             
         </ul>
@@ -247,39 +247,39 @@
             
         </ul>
     
-        <h3 class=""><a href="../../object">object</a></h3>
+        <h3 class=""><a href="..">object</a></h3>
         <ul>
             
             <li class="">
-                <a href="../../object/to-be-canonical">to be canonical</a>
+                <a href="../to-be-canonical">to be canonical</a>
+            </li>
+            
+            <li class="active">
+                <a href="">to be empty</a>
             </li>
             
             <li class="">
-                <a href="../../object/to-be-empty">to be empty</a>
+                <a href="../to-have-key">to have key</a>
             </li>
             
             <li class="">
-                <a href="../../object/to-have-key">to have key</a>
+                <a href="../to-have-keys">to have keys</a>
             </li>
             
             <li class="">
-                <a href="../../object/to-have-keys">to have keys</a>
+                <a href="../to-have-keys-satisfying">to have keys satisfying</a>
             </li>
             
             <li class="">
-                <a href="../../object/to-have-keys-satisfying">to have keys satisfying</a>
+                <a href="../to-have-properties">to have properties</a>
             </li>
             
             <li class="">
-                <a href="../../object/to-have-properties">to have properties</a>
+                <a href="../to-have-property">to have property</a>
             </li>
             
             <li class="">
-                <a href="../../object/to-have-property">to have property</a>
-            </li>
-            
-            <li class="">
-                <a href="../../object/to-have-values-satisfying">to have values satisfying</a>
+                <a href="../to-have-values-satisfying">to have values satisfying</a>
             </li>
             
         </ul>
@@ -356,31 +356,47 @@
 
     <div class="main" tabindex="-1">
         <div class="content">
-            <h1>to be greater than or equal to</h1>
+            <h1>to be empty</h1>
             
                 <ul class="declarations">
                 
-                    <li>&lt;number&gt; [not] to be greater than or equal to &lt;number&gt;</li>
+                    <li>&lt;object&gt; [not] to be empty</li>
                 
                 </ul>
             
-            <p>Asserts that a number is greater than or equal to another number using
-the <code>&gt;=</code> operator.</p>
+            <p>Asserts that an object is empty.</p>
 <div class="code lang-javascript">
-  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #0086b3">3</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;greater&nbsp;than&nbsp;or&nbsp;equal&nbsp;to'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">3</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #000000">expect</span><span style="color: #000000">({},</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;empty'</span><span style="color: #000000">);</span></div>
 </div><p>In case of a failing expectation you get the following output:</p>
 <div class="code lang-javascript">
-  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #0086b3">1</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;greater&nbsp;than&nbsp;or&nbsp;equal&nbsp;to'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">2</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #000000">expect</span><span style="color: #000000">({</span>&nbsp;a<span style="color: #000000">:</span>&nbsp;<span style="color: #df5000">'a'</span><span style="color: #000000">,</span>&nbsp;b<span style="color: #000000">:</span>&nbsp;<span style="color: #df5000">'b'</span>&nbsp;<span style="color: #000000">},</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;empty'</span><span style="color: #000000">);</span></div>
 </div><div class="output">
-  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #0086b3">1</span>&nbsp;<span style="color: red; font-weight: bold">to&nbsp;be&nbsp;greater&nbsp;than&nbsp;or&nbsp;equal&nbsp;to</span>&nbsp;<span style="color: #0086b3">2</span></div>
+  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;{&nbsp;<span style="color: #555">a</span>:&nbsp;<span style="color: #df5000">'a'</span>,&nbsp;<span style="color: #555">b</span>:&nbsp;<span style="color: #df5000">'b'</span>&nbsp;}&nbsp;<span style="color: red; font-weight: bold">to&nbsp;be&nbsp;empty</span></div>
+  <div>&nbsp;</div>
+  <div>{</div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #555">a</span>:&nbsp;<span style="color: #df5000">'a'</span>,&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">//</span></div>
+</div>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">should&nbsp;be&nbsp;removed</span></div>
+</div></div>
+</div></div>
+  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #555">b</span>:&nbsp;<span style="color: #df5000">'b'</span>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">//</span></div>
+</div>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: red; font-weight: bold">should&nbsp;be&nbsp;removed</span></div>
+</div></div>
+</div></div>
+  <div>}</div>
 </div><p>This assertion can be negated using the <code>not</code> flag:</p>
 <div class="code lang-javascript">
-  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #0086b3">1</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'not&nbsp;to&nbsp;be&nbsp;greater&nbsp;than&nbsp;or&nbsp;equal&nbsp;to'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">2</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #000000">expect</span><span style="color: #000000">({</span>&nbsp;a<span style="color: #000000">:</span>&nbsp;<span style="color: #df5000">'a'</span><span style="color: #000000">,</span>&nbsp;b<span style="color: #000000">:</span>&nbsp;<span style="color: #df5000">'b'</span>&nbsp;<span style="color: #000000">},</span>&nbsp;<span style="color: #df5000">'not&nbsp;to&nbsp;be&nbsp;empty'</span><span style="color: #000000">);</span></div>
 </div><p>In case of a failing expectation you get the following output:</p>
 <div class="code lang-javascript">
-  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #0086b3">2</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'not&nbsp;to&nbsp;be&nbsp;greater&nbsp;than&nbsp;or&nbsp;equal&nbsp;to'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">2</span><span style="color: #000000">);</span></div>
+  <div><span style="color: #000000">expect</span><span style="color: #000000">({},</span>&nbsp;<span style="color: #df5000">'not&nbsp;to&nbsp;be&nbsp;empty'</span><span style="color: #000000">);</span></div>
 </div><div class="output">
-  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #0086b3">2</span>&nbsp;<span style="color: red; font-weight: bold">not&nbsp;to&nbsp;be&nbsp;greater&nbsp;than&nbsp;or&nbsp;equal&nbsp;to</span>&nbsp;<span style="color: #0086b3">2</span></div>
+  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;{}&nbsp;<span style="color: red; font-weight: bold">not&nbsp;to&nbsp;be&nbsp;empty</span></div>
 </div>
         </div>
     </div>

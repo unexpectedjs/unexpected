@@ -76,12 +76,12 @@
     "url": "/assertions/Promise/to-be-rejected/"
   },
   {
-    "label": "when rejected (Promise)",
-    "url": "/assertions/Promise/when-rejected/"
-  },
-  {
     "label": "when fulfilled (Promise)",
     "url": "/assertions/Promise/when-fulfilled/"
+  },
+  {
+    "label": "when rejected (Promise)",
+    "url": "/assertions/Promise/when-rejected/"
   },
   {
     "label": "to be a (any)",
@@ -240,16 +240,20 @@
     "url": "/assertions/object/to-be-canonical/"
   },
   {
+    "label": "to be empty (object)",
+    "url": "/assertions/object/to-be-empty/"
+  },
+  {
     "label": "to have key (object)",
     "url": "/assertions/object/to-have-key/"
   },
   {
-    "label": "to have keys (object)",
-    "url": "/assertions/object/to-have-keys/"
-  },
-  {
     "label": "to have keys satisfying (object)",
     "url": "/assertions/object/to-have-keys-satisfying/"
+  },
+  {
+    "label": "to have keys (object)",
+    "url": "/assertions/object/to-have-keys/"
   },
   {
     "label": "to have properties (object)",
@@ -304,12 +308,12 @@
     "url": "/assertions/string/to-contain/"
   },
   {
-    "label": "to have length (string)",
-    "url": "/assertions/string/to-have-length/"
-  },
-  {
     "label": "to end with (string)",
     "url": "/assertions/string/to-end-with/"
+  },
+  {
+    "label": "to have length (string)",
+    "url": "/assertions/string/to-have-length/"
   },
   {
     "label": "to match (string)",
