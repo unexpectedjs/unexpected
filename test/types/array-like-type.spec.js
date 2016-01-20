@@ -41,7 +41,7 @@ describe('array-like type', function () {
 
         it('should not render the indentation when an instance participates in a "to satisfy" diff', function () {
             expect(function () {
-                clonedExpect(['aaa', 'bbb'], 'to satisfy', { 0: 'foo' });
+                clonedExpect(['aaa', 'bbb'], 'to satisfy', {0: 'foo'});
             }, 'to throw',
                 "expected [ 'aaa', 'bbb' ] to satisfy { 0: 'foo' }\n" +
                 "\n" +
@@ -72,7 +72,7 @@ describe('array-like type', function () {
             trailingNewline: false
         });
 
-        it('should not render the newlines when an instance is inspected in a multi-line context', function () {
+        it('should not render the prefix, suffix, and the newlines when an instance is inspected in a multi-line context', function () {
             expect(
                 clonedExpect.inspect([
                     'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
@@ -84,7 +84,7 @@ describe('array-like type', function () {
             );
         });
 
-        it('should not render the newlines when an instance is diffed', function () {
+        it('should not render the prefix, suffix, and the newlines when an instance is diffed', function () {
             expect(
                 clonedExpect.diff(['a', 'b'], ['aa', 'bb']).diff.toString(),
                 'to equal',
@@ -97,9 +97,9 @@ describe('array-like type', function () {
             );
         });
 
-        it('should not render the indentation when an instance participates in a "to satisfy" diff', function () {
+        it('should not render the prefix, suffix, and the newlines when an instance participates in a "to satisfy" diff', function () {
             expect(function () {
-                clonedExpect(['aaa', 'bbb'], 'to satisfy', { 0: 'foo' });
+                clonedExpect(['aaa', 'bbb'], 'to satisfy', {0: 'foo'});
             }, 'to throw',
                 "expected  'aaa', 'bbb'  to satisfy { 0: 'foo' }\n" +
                 "\n" +
@@ -107,6 +107,28 @@ describe('array-like type', function () {
                 "         // -aaa\n" +
                 "         // +foo\n" +
                 "  'bbb'"
+            );
+        });
+    });
+
+    describe('with a subtype that forces forceMultipleLines mode', function () {
+        var clonedExpect = expect.clone();
+
+        clonedExpect.addType({
+            base: 'array-like',
+            name: 'bogusarray',
+            identify: Array.isArray,
+            forceMultipleLines: true
+        });
+
+        it('should inspect in forceMultipleLines mode despite being able to render on one line', function () {
+            expect(
+                clonedExpect.inspect(['a', 'b']).toString(),
+                'to equal',
+                "[\n" +
+                "  'a',\n" +
+                "  'b'\n" +
+                "]"
             );
         });
     });
