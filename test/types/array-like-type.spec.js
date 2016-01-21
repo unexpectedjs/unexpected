@@ -179,12 +179,16 @@ describe('array-like type', function () {
 
         it('should render instances correctly in "to satisfy" diffs', function () {
             expect(function () {
-                expect(new MyWrappedArray(['a', 'b']), 'to satisfy', { 0: 'aa' });
+                clonedExpect(new MyWrappedArray(['a', 'b']), 'to satisfy', [ 'aa' ]);
             }, 'to throw',
+                "expected MyWrappedArray[ 'a', 'b' ] to satisfy [ 'aa' ]\n" +
+                "\n" +
                 "MyWrappedArray[\n" +
                 "  'a', // should equal 'aa'\n" +
+                "       //\n" +
                 "       // -a\n" +
                 "       // +aa\n" +
+                "  'b' // should be removed\n" +
                 "]"
             );
         });
