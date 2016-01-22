@@ -219,7 +219,12 @@ describe('expect.it', function () {
         expect(function () {
             expect('foo', 'to satisfy', expect.it('this is misspelled', 1).or('to be a string'));
         }, 'to throw',
-            "Unknown assertion 'this is misspelled', did you mean: 'to be fulfilled'"
+            "expected 'foo' to satisfy\n" +
+            "expect.it('this is misspelled', 1)\n" +
+            "      .or('to be a string')\n" +
+            "\n" +
+            "⨯ Unknown assertion 'this is misspelled', did you mean: 'to be fulfilled' or\n" +
+            "✓ expected 'foo' to be a string"
         );
     });
 });
