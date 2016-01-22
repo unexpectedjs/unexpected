@@ -920,6 +920,20 @@ describe('to satisfy assertion', function () {
         });
     });
 
+    it('should render a missing item expected to satisfy an expect.it', function () {
+        expect(function () {
+            expect([], 'to satisfy', [expect.it('to be falsy')]);
+        }, 'to throw',
+            // FIXME: Would be better if we could render // missing: should be falsy
+            // but in this case we do not have an UnexpectedError instance:
+            "expected [] to satisfy [ expect.it('to be falsy') ]\n" +
+            "\n" +
+            "[\n" +
+            "  // missing: expect.it('to be falsy')\n" +
+            "]"
+        );
+    });
+
     it('should support a chained expect.it', function () {
         expect({foo: 123}, 'to satisfy', {
             foo: expect.it('to be a number').and('to be greater than', 10)
