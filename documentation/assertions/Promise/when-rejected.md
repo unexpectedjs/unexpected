@@ -13,7 +13,7 @@ return expect(rejectedPromise, 'when rejected', 'to equal', new Error('argh'));
 It works with any assertion or `expect.it` construct:
 
 ```javascript#async:true
-return expect(expect.promise.reject('argh'), 'when rejected', expect.it('to have message', 'argh'));
+return expect(expect.promise.reject(new Error('argh')), 'when rejected', expect.it('to have message', 'argh'));
 ```
 
 If the response is fulfilled, the assertion fails with the following output:
