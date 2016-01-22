@@ -1710,7 +1710,7 @@ module.exports = UnexpectedError;
 (function (Buffer){
 /*global setTimeout*/
 var utils = require(16);
-var arrayChanges = require(21);
+var arrayChanges = require(20);
 var arrayChangesAsync = require(19);
 var throwIfNonUnexpectedError = require(14);
 var objectIs = utils.objectIs;
@@ -3211,16 +3211,7 @@ module.exports = function (expect) {
         return expect.promise(function () {
             return subject;
         }).then(function (fulfillmentValue) {
-            if (expect.findTypeOf(nextAssertion).is('expect.it')) {
-                // Force a failing expect.it error message to be properly nested instead of replacing the default error message:
-                return expect.promise(function () {
-                    return expect.shift(fulfillmentValue, 0);
-                }).caught(function (err) {
-                    expect.fail(err);
-                });
-            } else {
-                return expect.shift(fulfillmentValue);
-            }
+            return expect.shift(fulfillmentValue);
         }, function (err) {
             // typeof nextAssertion === 'string' because expect.it is handled by the above (and shift only supports those two):
             expect.argsOutput = function (output) {
@@ -3492,7 +3483,8 @@ module.exports = function createWrappedExpectProto(unexpected) {
                 }
                 assertionIndex = -1;
                 for (var i = 0 ; i < this.assertionRule.args.length ; i += 1) {
-                    if (this.assertionRule.args[i].type.is('assertion')) {
+                    var type = this.assertionRule.args[i].type;
+                    if (type.is('assertion') || type.is('expect.it')) {
                         assertionIndex = i;
                         break;
                     }
@@ -3537,7 +3529,12 @@ module.exports = function createWrappedExpectProto(unexpected) {
                     };
                 }
                 if (nextArgumentType.is('expect.it')) {
-                    return rest[0](subject);
+                    var that = this;
+                    return this.withError(function () {
+                        return rest[0](subject);
+                    }, function (err) {
+                        that.fail(err);
+                    });
                 } else if (nextArgumentType.is('string')) {
                     return this.execute.apply(this.execute, [subject].concat(rest));
                 } else {
@@ -3752,8 +3749,21 @@ function extractPromisesFromObject(obj) {
 }
 
 ['all', 'any', 'settle'].forEach(function (staticMethodName) {
+    var originalFn = Promise[staticMethodName];
+    if (!originalFn && staticMethodName === 'settle') {
+        originalFn = function (promises) {
+            return Promise.all(promises.map(function (promise) {
+                return new Promise(function (resolve, reject) {
+                    return promise.then(resolve, resolve);
+                });
+            })).then(function () {
+                return promises;
+            });
+        };
+    }
+
     makePromise[staticMethodName] = function (obj) {
-        var result = Promise[staticMethodName](extractPromisesFromObject(obj));
+        var result = originalFn(extractPromisesFromObject(obj));
         if (staticMethodName === 'settle') {
             return result.then(function (promises) {
                 promises.forEach(function (promise) {
@@ -4278,7 +4288,7 @@ module.exports = function throwIfNonUnexpectedError(err) {
 var utils = require(16);
 var isRegExp = utils.isRegExp;
 var leftPad = utils.leftPad;
-var arrayChanges = require(21);
+var arrayChanges = require(20);
 var leven = require(34);
 var detectIndent = require(29);
 var defaultDepth = require(7);
@@ -5627,7 +5637,7 @@ require(23).prototype.inspect = function () {
 
 },{}],19:[function(require,module,exports){
 /*global setTimeout */
-var arrayDiff = require(20);
+var arrayDiff = require(22);
 
 var MAX_STACK_DEPTH = 1000;
 
@@ -5857,248 +5867,7 @@ module.exports = function arrayChanges(actual, expected, equal, similar, arrayCh
 };
 
 },{}],20:[function(require,module,exports){
-
-module.exports = arrayDiff;
-
-var MAX_STACK_DEPTH = 1000;
-
-// Based on some rough benchmarking, this algorithm is about O(2n) worst case,
-// and it can compute diffs on random arrays of length 1024 in about 34ms,
-// though just a few changes on an array of length 1024 takes about 0.5ms
-
-arrayDiff.InsertDiff = InsertDiff;
-arrayDiff.RemoveDiff = RemoveDiff;
-arrayDiff.MoveDiff = MoveDiff;
-
-function InsertDiff(index, values) {
-    this.index = index;
-    this.values = values;
-}
-InsertDiff.prototype.type = 'insert';
-InsertDiff.prototype.toJSON = function() {
-    return {
-        type: this.type
-        , index: this.index
-        , values: this.values
-    };
-};
-
-function RemoveDiff(index, howMany) {
-    this.index = index;
-    this.howMany = howMany;
-}
-RemoveDiff.prototype.type = 'remove';
-RemoveDiff.prototype.toJSON = function() {
-    return {
-        type: this.type
-        , index: this.index
-        , howMany: this.howMany
-    };
-};
-
-function MoveDiff(from, to, howMany) {
-    this.from = from;
-    this.to = to;
-    this.howMany = howMany;
-}
-MoveDiff.prototype.type = 'move';
-MoveDiff.prototype.toJSON = function() {
-    return {
-        type: this.type
-        , from: this.from
-        , to: this.to
-        , howMany: this.howMany
-    };
-};
-
-function strictEqual(a, b, indexA, indexB, callback) {
-    return callback(a === b);
-}
-
-
-function arrayDiff(before, after, equalFn, callback) {
-    if (!equalFn) equalFn = strictEqual;
-
-    // Find all items in both the before and after array, and represent them
-    // as moves. Many of these "moves" may end up being discarded in the last
-    // pass if they are from an index to the same index, but we don't know this
-    // up front, since we haven't yet offset the indices.
-    //
-    // Also keep a map of all the indices accounted for in the before and after
-    // arrays. These maps are used next to create insert and remove diffs.
-    var beforeLength = before.length;
-    var afterLength = after.length;
-    var moves = [];
-    var beforeMarked = {};
-    var afterMarked = {};
-
-    function findMatching(beforeIndex, afterIndex, howMany, callback) {
-
-        beforeMarked[beforeIndex++] = afterMarked[afterIndex++] = true;
-        howMany++;
-
-        if (beforeIndex < beforeLength &&
-            afterIndex < afterLength &&
-            !afterMarked[afterIndex]) {
-
-            equalFn(before[beforeIndex], after[afterIndex], beforeIndex, afterIndex, function (areEqual) {
-                if (areEqual) {
-                    setTimeout(function () {
-                        findMatching(beforeIndex, afterIndex, howMany, callback);
-                    }, 0);
-                } else {
-                    callback(beforeIndex, afterIndex, howMany);
-                }
-            });
-        } else {
-            callback(beforeIndex, afterIndex, howMany);
-        }
-
-
-    }
-
-    function compare(beforeIndex, afterIndex, stackDepthRemaining, callback) {
-        if (afterIndex >= afterLength) {
-            beforeIndex++;
-            afterIndex = 0;
-        }
-        if (beforeIndex >= beforeLength) {
-            callback();
-            return;
-        }
-
-        if (!afterMarked[afterIndex]) {
-            equalFn(before[beforeIndex], after[afterIndex], beforeIndex, afterIndex, function (areEqual) {
-                if (areEqual) {
-
-                    var from = beforeIndex;
-                    var to = afterIndex;
-                    findMatching(beforeIndex, afterIndex, 0, function (newBeforeIndex, newAfterIndex, howMany) {
-
-                        moves.push(new MoveDiff(from, to, howMany));
-                        if (stackDepthRemaining) {
-                            compare(newBeforeIndex, 0, stackDepthRemaining - 1, callback);
-                        } else {
-                            setTimeout(function () {
-                                compare(newBeforeIndex, 0, MAX_STACK_DEPTH, callback);
-                            }, 0);
-                        }
-                    });
-                } else {
-                    if (stackDepthRemaining) {
-                        compare(beforeIndex, afterIndex + 1, stackDepthRemaining - 1, callback);
-                    } else {
-                        setTimeout(function () {
-                            compare(beforeIndex, afterIndex + 1, MAX_STACK_DEPTH, callback);
-                        }, 0);
-                    }
-                }
-            });
-        } else {
-            if (stackDepthRemaining) {
-                compare(beforeIndex, afterIndex + 1, stackDepthRemaining - 1, callback);
-            } else {
-                setTimeout(function () {
-                    compare(beforeIndex, afterIndex + 1, MAX_STACK_DEPTH, callback);
-                }, 0);
-            }
-        }
-    }
-
-    compare(0, 0, MAX_STACK_DEPTH, function () {
-
-        // Create a remove for all of the items in the before array that were
-        // not marked as being matched in the after array as well
-        var removes = [];
-        for (var beforeIndex = 0; beforeIndex < beforeLength;) {
-            if (beforeMarked[beforeIndex]) {
-                beforeIndex++;
-                continue;
-            }
-            var index = beforeIndex;
-            var howMany = 0;
-            while (beforeIndex < beforeLength && !beforeMarked[beforeIndex++]) {
-                howMany++;
-            }
-            removes.push(new RemoveDiff(index, howMany));
-        }
-
-        // Create an insert for all of the items in the after array that were
-        // not marked as being matched in the before array as well
-        var inserts = [];
-        for (var afterIndex = 0; afterIndex < afterLength;) {
-            if (afterMarked[afterIndex]) {
-                afterIndex++;
-                continue;
-            }
-            var index = afterIndex;
-            var howMany = 0;
-            while (afterIndex < afterLength && !afterMarked[afterIndex++]) {
-                howMany++;
-            }
-            var values = after.slice(index, index + howMany);
-            inserts.push(new InsertDiff(index, values));
-        }
-
-        var insertsLength = inserts.length;
-        var removesLength = removes.length;
-        var movesLength = moves.length;
-        var i, j;
-
-        // Offset subsequent removes and moves by removes
-        var count = 0;
-        for (i = 0; i < removesLength; i++) {
-            var remove = removes[i];
-            remove.index -= count;
-            count += remove.howMany;
-            for (j = 0; j < movesLength; j++) {
-                var move = moves[j];
-                if (move.from >= remove.index) move.from -= remove.howMany;
-            }
-        }
-
-        // Offset moves by inserts
-        for (i = insertsLength; i--;) {
-            var insert = inserts[i];
-            var howMany = insert.values.length;
-            for (j = movesLength; j--;) {
-                var move = moves[j];
-                if (move.to >= insert.index) move.to -= howMany;
-            }
-        }
-
-        // Offset the to of moves by later moves
-        for (i = movesLength; i-- > 1;) {
-            var move = moves[i];
-            if (move.to === move.from) continue;
-            for (j = i; j--;) {
-                var earlier = moves[j];
-                if (earlier.to >= move.to) earlier.to -= move.howMany;
-                if (earlier.to >= move.from) earlier.to += move.howMany;
-            }
-        }
-
-        // Only output moves that end up having an effect after offsetting
-        var outputMoves = [];
-
-        // Offset the from of moves by earlier moves
-        for (i = 0; i < movesLength; i++) {
-            var move = moves[i];
-            if (move.to === move.from) continue;
-            outputMoves.push(move);
-            for (j = i + 1; j < movesLength; j++) {
-                var later = moves[j];
-                if (later.from >= move.from) later.from -= move.howMany;
-                if (later.from >= move.to) later.from += move.howMany;
-            }
-        }
-
-        callback(removes.concat(outputMoves, inserts));
-    });
-}
-
-},{}],21:[function(require,module,exports){
-var arrayDiff = require(22);
+var arrayDiff = require(21);
 
 function extend(target) {
     for (var i = 1; i < arguments.length; i += 1) {
@@ -6266,7 +6035,7 @@ module.exports = function arrayChanges(actual, expected, equal, similar) {
     return mutatedArray;
 };
 
-},{}],22:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 module.exports = arrayDiff;
 
 // Based on some rough benchmarking, this algorithm is about O(2n) worst case,
@@ -6447,6 +6216,247 @@ function arrayDiff(before, after, equalFn) {
   }
 
   return removes.concat(outputMoves, inserts);
+}
+
+},{}],22:[function(require,module,exports){
+
+module.exports = arrayDiff;
+
+var MAX_STACK_DEPTH = 1000;
+
+// Based on some rough benchmarking, this algorithm is about O(2n) worst case,
+// and it can compute diffs on random arrays of length 1024 in about 34ms,
+// though just a few changes on an array of length 1024 takes about 0.5ms
+
+arrayDiff.InsertDiff = InsertDiff;
+arrayDiff.RemoveDiff = RemoveDiff;
+arrayDiff.MoveDiff = MoveDiff;
+
+function InsertDiff(index, values) {
+    this.index = index;
+    this.values = values;
+}
+InsertDiff.prototype.type = 'insert';
+InsertDiff.prototype.toJSON = function() {
+    return {
+        type: this.type
+        , index: this.index
+        , values: this.values
+    };
+};
+
+function RemoveDiff(index, howMany) {
+    this.index = index;
+    this.howMany = howMany;
+}
+RemoveDiff.prototype.type = 'remove';
+RemoveDiff.prototype.toJSON = function() {
+    return {
+        type: this.type
+        , index: this.index
+        , howMany: this.howMany
+    };
+};
+
+function MoveDiff(from, to, howMany) {
+    this.from = from;
+    this.to = to;
+    this.howMany = howMany;
+}
+MoveDiff.prototype.type = 'move';
+MoveDiff.prototype.toJSON = function() {
+    return {
+        type: this.type
+        , from: this.from
+        , to: this.to
+        , howMany: this.howMany
+    };
+};
+
+function strictEqual(a, b, indexA, indexB, callback) {
+    return callback(a === b);
+}
+
+
+function arrayDiff(before, after, equalFn, callback) {
+    if (!equalFn) equalFn = strictEqual;
+
+    // Find all items in both the before and after array, and represent them
+    // as moves. Many of these "moves" may end up being discarded in the last
+    // pass if they are from an index to the same index, but we don't know this
+    // up front, since we haven't yet offset the indices.
+    //
+    // Also keep a map of all the indices accounted for in the before and after
+    // arrays. These maps are used next to create insert and remove diffs.
+    var beforeLength = before.length;
+    var afterLength = after.length;
+    var moves = [];
+    var beforeMarked = {};
+    var afterMarked = {};
+
+    function findMatching(beforeIndex, afterIndex, howMany, callback) {
+
+        beforeMarked[beforeIndex++] = afterMarked[afterIndex++] = true;
+        howMany++;
+
+        if (beforeIndex < beforeLength &&
+            afterIndex < afterLength &&
+            !afterMarked[afterIndex]) {
+
+            equalFn(before[beforeIndex], after[afterIndex], beforeIndex, afterIndex, function (areEqual) {
+                if (areEqual) {
+//                    setTimeout(function () {
+                        findMatching(beforeIndex, afterIndex, howMany, callback);
+//                    }, 0);
+                } else {
+                    callback(beforeIndex, afterIndex, howMany);
+                }
+            });
+        } else {
+            callback(beforeIndex, afterIndex, howMany);
+        }
+
+
+    }
+
+    function compare(beforeIndex, afterIndex, stackDepthRemaining, callback) {
+        if (afterIndex >= afterLength) {
+            beforeIndex++;
+            afterIndex = 0;
+        }
+        if (beforeIndex >= beforeLength) {
+            callback();
+            return;
+        }
+
+        if (!afterMarked[afterIndex]) {
+            equalFn(before[beforeIndex], after[afterIndex], beforeIndex, afterIndex, function (areEqual) {
+                if (areEqual) {
+
+                    var from = beforeIndex;
+                    var to = afterIndex;
+                    findMatching(beforeIndex, afterIndex, 0, function (newBeforeIndex, newAfterIndex, howMany) {
+
+                        moves.push(new MoveDiff(from, to, howMany));
+                        if (stackDepthRemaining) {
+                            compare(newBeforeIndex, 0, stackDepthRemaining - 1, callback);
+                        } else {
+//                            setTimeout(function () {
+                                compare(newBeforeIndex, 0, MAX_STACK_DEPTH, callback);
+//                            }, 0);
+                        }
+                    });
+                } else {
+                    if (stackDepthRemaining) {
+                        compare(beforeIndex, afterIndex + 1, stackDepthRemaining - 1, callback);
+                    } else {
+//                        setTimeout(function () {
+                            compare(beforeIndex, afterIndex + 1, MAX_STACK_DEPTH, callback);
+//                        }, 0);
+                    }
+                }
+            });
+        } else {
+            if (stackDepthRemaining) {
+                compare(beforeIndex, afterIndex + 1, stackDepthRemaining - 1, callback);
+            } else {
+//                setTimeout(function () {
+                    compare(beforeIndex, afterIndex + 1, MAX_STACK_DEPTH, callback);
+//                }, 0);
+            }
+        }
+    }
+
+    compare(0, 0, MAX_STACK_DEPTH, function () {
+
+        // Create a remove for all of the items in the before array that were
+        // not marked as being matched in the after array as well
+        var removes = [];
+        for (var beforeIndex = 0; beforeIndex < beforeLength;) {
+            if (beforeMarked[beforeIndex]) {
+                beforeIndex++;
+                continue;
+            }
+            var index = beforeIndex;
+            var howMany = 0;
+            while (beforeIndex < beforeLength && !beforeMarked[beforeIndex++]) {
+                howMany++;
+            }
+            removes.push(new RemoveDiff(index, howMany));
+        }
+
+        // Create an insert for all of the items in the after array that were
+        // not marked as being matched in the before array as well
+        var inserts = [];
+        for (var afterIndex = 0; afterIndex < afterLength;) {
+            if (afterMarked[afterIndex]) {
+                afterIndex++;
+                continue;
+            }
+            var index = afterIndex;
+            var howMany = 0;
+            while (afterIndex < afterLength && !afterMarked[afterIndex++]) {
+                howMany++;
+            }
+            var values = after.slice(index, index + howMany);
+            inserts.push(new InsertDiff(index, values));
+        }
+
+        var insertsLength = inserts.length;
+        var removesLength = removes.length;
+        var movesLength = moves.length;
+        var i, j;
+
+        // Offset subsequent removes and moves by removes
+        var count = 0;
+        for (i = 0; i < removesLength; i++) {
+            var remove = removes[i];
+            remove.index -= count;
+            count += remove.howMany;
+            for (j = 0; j < movesLength; j++) {
+                var move = moves[j];
+                if (move.from >= remove.index) move.from -= remove.howMany;
+            }
+        }
+
+        // Offset moves by inserts
+        for (i = insertsLength; i--;) {
+            var insert = inserts[i];
+            var howMany = insert.values.length;
+            for (j = movesLength; j--;) {
+                var move = moves[j];
+                if (move.to >= insert.index) move.to -= howMany;
+            }
+        }
+
+        // Offset the to of moves by later moves
+        for (i = movesLength; i-- > 1;) {
+            var move = moves[i];
+            if (move.to === move.from) continue;
+            for (j = i; j--;) {
+                var earlier = moves[j];
+                if (earlier.to >= move.to) earlier.to -= move.howMany;
+                if (earlier.to >= move.from) earlier.to += move.howMany;
+            }
+        }
+
+        // Only output moves that end up having an effect after offsetting
+        var outputMoves = [];
+
+        // Offset the from of moves by earlier moves
+        for (i = 0; i < movesLength; i++) {
+            var move = moves[i];
+            if (move.to === move.from) continue;
+            outputMoves.push(move);
+            for (j = i + 1; j < movesLength; j++) {
+                var later = moves[j];
+                if (later.from >= move.from) later.from -= move.howMany;
+                if (later.from >= move.to) later.from += move.howMany;
+            }
+        }
+
+        callback(removes.concat(outputMoves, inserts));
+    });
 }
 
 },{}],23:[function(require,module,exports){
