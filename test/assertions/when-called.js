@@ -27,4 +27,23 @@ describe('when called assertion', function () {
             expect(value, 'to equal', 123);
         });
     });
+
+    describe('with the next assertion provided as an expect.it', function () {
+        function hey() {
+            return 123;
+        }
+
+        it('should succeed', function () {
+            expect(hey, 'when called', expect.it('to equal', 123));
+        });
+
+        it('should fail with a diff', function () {
+            expect(function () {
+                expect(hey, 'when called', expect.it('to equal', 456));
+            }, 'to throw',
+                "expected function hey() { return 123; } when called expect.it('to equal', 456)\n" +
+                "  expected 123 to equal 456"
+            );
+        });
+    });
 });
