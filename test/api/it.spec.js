@@ -227,4 +227,8 @@ describe('expect.it', function () {
             "✓ expected 'foo' to be a string"
         );
     });
+
+    it('should not fail with a "missing assertion" error when it is not the first failing one in an "and" group', function () {
+        expect('foo', 'to satisfy', expect.it('to begin with', 'bar').and('misspelled').or('to be a string'));
+    });
 });
