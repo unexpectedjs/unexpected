@@ -98,7 +98,7 @@ describe('object type', function () {
         });
     });
 
-    describe('with a subtype that disables prefix, suffix, leading and trailing newline', function () {
+    describe('with a subtype that renders an empty prefix and an empty suffix', function () {
         var clonedExpect = expect.clone();
 
         clonedExpect.addType({
