@@ -2031,6 +2031,13 @@ module.exports = function (expect) {
         }
     });
 
+    expect.addAssertion('<object> [not] to be empty', function (expect, subject) {
+        if (expect.flags.not && !expect.findTypeOf(subject).getKeys(subject).length) {
+            return expect.fail();
+        }
+        expect(subject, 'to [not] only have keys', []);
+    });
+
     expect.addAssertion('<object> not to have keys <array>', function (expect, subject, keys) {
         expect(subject, 'to not have keys', keys);
     });
@@ -2781,10 +2788,17 @@ module.exports = function (expect) {
                             var indexOfLastNonInsert = changes.reduce(function (previousValue, diffItem, index) {
                                 return (diffItem.type === 'insert') ? previousValue : index;
                             }, -1);
-                            output.append(subjectType.prefix(output.clone(), subject)).nl().indentLines();
+                            var prefixOutput = subjectType.prefix(output.clone(), subject);
+                            output
+                                .append(prefixOutput)
+                                .nl(prefixOutput.isEmpty() ? 0 : 1);
+
+                            if (subjectType.indent) {
+                                output.indentLines();
+                            }
                             changes.forEach(function (diffItem, index) {
                                 var delimiterOutput = subjectType.delimiter(output.clone(), index, indexOfLastNonInsert + 1);
-                                output.i().block(function () {
+                                output.nl(index > 0 ? 1 : 0).i().block(function () {
                                     var type = diffItem.type;
                                     if (type === 'insert') {
                                         this.annotationBlock(function () {
@@ -2822,9 +2836,16 @@ module.exports = function (expect) {
                                             });
                                         }
                                     }
-                                }).nl();
+                                });
                             });
-                            output.outdentLines().append(subjectType.suffix(output.clone(), subject));
+                            if (subjectType.indent) {
+                                output.outdentLines();
+                            }
+                            var suffixOutput = subjectType.suffix(output.clone(), subject);
+                            output
+                                .nl(suffixOutput.isEmpty() ? 0 : 1)
+                                .append(suffixOutput);
+
                             return result;
                         }
                     });
@@ -2880,11 +2901,16 @@ module.exports = function (expect) {
 
                         var keys = Object.keys(keyIndex);
 
-                        subjectType.prefix(output, subject);
-                        output.nl().indentLines();
+                        var prefixOutput = subjectType.prefix(output.clone(), subject);
+                        output
+                            .append(prefixOutput)
+                            .nl(prefixOutput.isEmpty() ? 0 : 1);
 
+                        if (subjectType.indent) {
+                            output.indentLines();
+                        }
                         keys.forEach(function (key, index) {
-                            output.i().block(function () {
+                            output.nl(index > 0 ? 1 : 0).i().block(function () {
                                 var valueOutput;
                                 var annotation = output.clone();
                                 var conflicting;
@@ -2986,11 +3012,16 @@ module.exports = function (expect) {
                                 } else {
                                     this.block(valueOutput);
                                 }
-                            }).nl();
+                            });
                         });
 
-                        output.outdentLines();
-                        subjectType.suffix(output, subject);
+                        if (subjectType.indent) {
+                            output.outdentLines();
+                        }
+                        var suffixOutput = subjectType.suffix(output.clone(), subject);
+                        output
+                            .nl(suffixOutput.isEmpty() ? 0 : 1)
+                            .append(suffixOutput);
 
                         return result;
                     }
@@ -4293,6 +4324,8 @@ module.exports = function (expect) {
 
     expect.addType({
         name: 'object',
+        indent: true,
+        forceMultipleLines: false,
         identify: function (obj) {
             return obj && typeof obj === 'object';
         },
@@ -4446,17 +4479,30 @@ module.exports = function (expect) {
                 });
             }
 
-            this.prefix(output, obj);
-            if (itemsOutput.isMultiline()) {
-                output.nl()
-                      .indentLines()
-                      .i().block(itemsOutput)
-                      .outdentLines()
-                      .nl();
+            var prefixOutput = this.prefix(output.clone(), obj);
+            var suffixOutput = this.suffix(output.clone(), obj);
+            output.append(prefixOutput);
+            if (this.forceMultipleLines || itemsOutput.isMultiline()) {
+                if (!prefixOutput.isEmpty()) {
+                    output.nl();
+                }
+                if (this.indent) {
+                    output.indentLines().i();
+                }
+                output.block(itemsOutput);
+                if (this.indent) {
+                    output.outdentLines();
+                }
+                if (!suffixOutput.isEmpty()) {
+                    output.nl();
+                }
             } else {
-                output.sp().append(itemsOutput).sp();
+                output
+                    .sp(prefixOutput.isEmpty() ? 0 : 1)
+                    .append(itemsOutput)
+                    .sp(suffixOutput.isEmpty() ? 0 : 1);
             }
-            this.suffix(output, obj);
+            output.append(suffixOutput);
         },
         diff: function (actual, expected, output, diff, inspect, equal) {
             if (actual.constructor !== expected.constructor) {
@@ -4483,12 +4529,17 @@ module.exports = function (expect) {
 
             var keys = Object.keys(keyIndex);
 
-            this.prefix(output, actual);
-            output.nl().indentLines();
+            var prefixOutput = this.prefix(output.clone(), actual);
+            output
+                .append(prefixOutput)
+                .nl(prefixOutput.isEmpty() ? 0 : 1);
 
+            if (this.indent) {
+                output.indentLines();
+            }
             var type = this;
             keys.forEach(function (key, index) {
-                output.i().block(function () {
+                output.nl(index > 0 ? 1 : 0).i().block(function () {
                     var valueOutput;
                     var annotation = output.clone();
                     var conflicting = !equal(actual[key], expected[key]);
@@ -4539,11 +4590,16 @@ module.exports = function (expect) {
                     if (!annotation.isEmpty()) {
                         this.sp().annotationBlock(annotation);
                     }
-                }).nl();
+                });
             });
 
-            output.outdentLines();
-            this.suffix(output, actual);
+            if (this.indent) {
+                output.outdentLines();
+            }
+            var suffixOutput = this.suffix(output.clone(), actual);
+            output
+                .nl(suffixOutput.isEmpty() ? 0 : 1)
+                .append(suffixOutput);
 
             return result;
         },
@@ -4666,7 +4722,7 @@ module.exports = function (expect) {
             var currentDepth = defaultDepth - Math.min(defaultDepth, depth);
             var maxLineLength = (output.preferredWidth - 20) - currentDepth * output.indentationWidth - 2;
             var width = 0;
-            var multipleLines = inspectedItems.some(function (o) {
+            var multipleLines = this.forceMultipleLines || inspectedItems.some(function (o) {
                 if (o.isMultiline()) {
                     return true;
                 }
@@ -4675,22 +4731,35 @@ module.exports = function (expect) {
                 width += size.width;
                 return width > maxLineLength;
             });
-
             var type = this;
             inspectedItems.forEach(function (inspectedItem, index) {
                 inspectedItem.amend(type.delimiter(output.clone(), index, keys.length));
             });
-
             if (multipleLines) {
-                output.append(prefixOutput).nl().indentLines();
-
+                output.append(prefixOutput);
+                if (!prefixOutput.isEmpty()) {
+                    output.nl();
+                }
+                if (this.indent) {
+                    output.indentLines();
+                }
                 inspectedItems.forEach(function (inspectedItem, index) {
-                    output.i().block(inspectedItem).nl();
+                    output.nl(index > 0 ? 1 : 0).i().block(inspectedItem);
                 });
 
-                output.outdentLines().append(suffixOutput);
+                if (this.indent) {
+                    output.outdentLines();
+                }
+
+                if (!suffixOutput.isEmpty()) {
+                    output.nl();
+                }
+
+                output.append(suffixOutput);
             } else {
-                output.append(prefixOutput).sp();
+                output
+                    .append(prefixOutput)
+                    .sp(prefixOutput.isEmpty() ? 0 : 1);
                 inspectedItems.forEach(function (inspectedItem, index) {
                     output.append(inspectedItem);
                     var lastIndex = index === inspectedItems.length - 1;
@@ -4698,7 +4767,9 @@ module.exports = function (expect) {
                         output.sp();
                     }
                 });
-                output.sp().append(suffixOutput);
+                output
+                    .sp(suffixOutput.isEmpty() ? 0 : 1)
+                    .append(suffixOutput);
             }
         },
         diffLimit: 512,
@@ -4717,7 +4788,15 @@ module.exports = function (expect) {
                 return this.baseType.diff(actual, expected, output);
             }
 
-            output.append(this.prefix(output.clone(), actual)).nl().indentLines();
+            var prefixOutput = this.prefix(output.clone(), actual);
+            output
+                .append(prefixOutput)
+                .nl(prefixOutput.isEmpty() ? 0 : 1);
+
+
+            if (this.indent) {
+                output.indentLines();
+            }
 
             var type = this;
             var changes = arrayChanges(actual, expected, equal, function (a, b) {
@@ -4728,7 +4807,7 @@ module.exports = function (expect) {
             }, -1);
             changes.forEach(function (diffItem, index) {
                 var delimiterOutput = type.delimiter(output.clone(), index, indexOfLastNonInsert + 1);
-                output.i().block(function () {
+                output.nl(index > 0 ? 1 : 0).i().block(function () {
                     var type = diffItem.type;
                     if (type === 'insert') {
                         this.annotationBlock(function () {
@@ -4752,10 +4831,17 @@ module.exports = function (expect) {
                             });
                         }
                     }
-                }).nl();
+                });
             });
 
-            output.outdentLines().append(this.suffix(output.clone(), actual));
+            if (this.indent) {
+                output.outdentLines();
+            }
+
+            var suffixOutput = this.suffix(output.clone(), actual);
+            output
+                .nl(suffixOutput.isEmpty() ? 0 : 1)
+                .append(suffixOutput);
 
             return result;
         }
