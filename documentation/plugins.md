@@ -12,6 +12,8 @@ output styles and themes.
 
 Here's a partial list of plugins for Unexpected:
 
+* [unexpected-check](http://unexpected.js.org/unexpected-check/): Property
+  based testing using unexpected.
 * [unexpected-color](http://unexpected.js.org/unexpected-color/): Assertions for
   strings representing colors.
 * [unexpected-couchdb](https://github.com/alexjeffburke/unexpected-couchdb/):
