@@ -214,4 +214,12 @@ describe('expect.it', function () {
             });
         });
     });
+
+    it('should not swallow a "missing assertion" error when using an expect.it(...).or(...) construct', function () {
+        expect(function () {
+            expect('foo', 'to satisfy', expect.it('this is misspelled', 1).or('to be a string'));
+        }, 'to throw',
+            "Unknown assertion 'this is misspelled', did you mean: 'to be fulfilled'"
+        );
+    });
 });
