@@ -2805,7 +2805,12 @@ module.exports = function (expect) {
                                             if (expect.findTypeOf(diffItem.value).is('function')) {
                                                 this.error('missing: ').block(function () {
                                                     this.omitSubject = undefined;
-                                                    this.appendErrorMessage(keyPromises[diffItem.expectedIndex].reason());
+                                                    var promise = keyPromises[diffItem.expectedIndex];
+                                                    if (promise.isRejected()) {
+                                                        this.appendErrorMessage(promise.reason());
+                                                    } else {
+                                                        this.appendInspected(diffItem.value);
+                                                    }
                                                 });
                                             } else {
                                                 this.error('missing ').block(inspect(diffItem.value));
