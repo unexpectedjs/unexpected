@@ -67,9 +67,7 @@ describe('array-like type', function () {
             },
             suffix: function (output) {
                 return output;
-            },
-            leadingNewline: false,
-            trailingNewline: false
+            }
         });
 
         it('should not render the prefix, suffix, and the newlines when an instance is inspected in a multi-line context', function () {
@@ -101,7 +99,7 @@ describe('array-like type', function () {
             expect(function () {
                 clonedExpect(['aaa', 'bbb'], 'to satisfy', {0: 'foo'});
             }, 'to throw',
-                "expected  'aaa', 'bbb'  to satisfy { 0: 'foo' }\n" +
+                "expected 'aaa', 'bbb' to satisfy { 0: 'foo' }\n" +
                 "\n" +
                 "  'aaa', // should equal 'foo'\n" +
                 "         // -aaa\n" +

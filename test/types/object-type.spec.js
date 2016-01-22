@@ -112,9 +112,7 @@ describe('object type', function () {
             },
             suffix: function (output) {
                 return output;
-            },
-            leadingNewline: false,
-            trailingNewline: false
+            }
         });
 
         it('should not render the prefix, suffix, and the newlines when an instance is inspected in a multi-line context', function () {
@@ -146,7 +144,7 @@ describe('object type', function () {
             expect(function () {
                 clonedExpect({a: 'aaa', b: 'bbb'}, 'to satisfy', {a: 'foo'});
             }, 'to throw',
-                "expected  a: 'aaa', b: 'bbb'  to satisfy  a: 'foo' \n" +
+                "expected a: 'aaa', b: 'bbb' to satisfy a: 'foo'\n" +
                 "\n" +
                 "  a: 'aaa', // should equal 'foo'\n" +
                 "            // -aaa\n" +
