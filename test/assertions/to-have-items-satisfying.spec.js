@@ -6,8 +6,8 @@ describe('to have items satisfying assertion', function () {
         }, 'to throw',
                "expected [ 1, 2, 3 ] to have items satisfying\n" +
                "  No matching assertion, did you mean:\n" +
-               "  <array-like> to have items satisfying <any+>\n" +
-               "  <array-like> to have items satisfying <assertion>");
+               "  <array-like> to have items [exhaustively] satisfying <any+>\n" +
+               "  <array-like> to have items [exhaustively] satisfying <assertion>");
     });
 
     it('only accepts arrays as the target object', function () {
@@ -16,8 +16,8 @@ describe('to have items satisfying assertion', function () {
         }, 'to throw',
                "expected 42 to have items satisfying function (item) {}\n" +
                "  No matching assertion, did you mean:\n" +
-               "  <array-like> to have items satisfying <any+>\n" +
-               "  <array-like> to have items satisfying <assertion>");
+               "  <array-like> to have items [exhaustively] satisfying <any+>\n" +
+               "  <array-like> to have items [exhaustively] satisfying <assertion>");
     });
 
     it('fails if the given array is empty', function () {
@@ -178,6 +178,28 @@ describe('to have items satisfying assertion', function () {
                     "  'abc' // should be a number after a short delay\n" +
                     "        //   should be a number\n" +
                     "]");
+        });
+    });
+
+    describe('with the exhaustively flag', function () {
+        it('should succeed', function () {
+            expect([{foo: 'bar', quux: 'baz'}], 'to have items exhaustively satisfying', {foo: 'bar', quux: 'baz'});
+        });
+
+        it('should fail when the spec is not met only because of the "exhaustively" semantics', function () {
+            expect(function () {
+                expect([{foo: 'bar', quux: 'baz'}], 'to have items exhaustively satisfying', {foo: 'bar'});
+            }, 'to throw',
+                "expected [ { foo: 'bar', quux: 'baz' } ]\n" +
+                "to have items exhaustively satisfying { foo: 'bar' }\n" +
+                "\n" +
+                "[\n" +
+                "  {\n" +
+                "    foo: 'bar',\n" +
+                "    quux: 'baz' // should be removed\n" +
+                "  }\n" +
+                "]"
+            );
         });
     });
 });

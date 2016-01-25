@@ -6,8 +6,8 @@ describe('to have values satisfying assertion', function () {
         }, 'to throw',
                "expected [ 1, 2, 3 ] to have values satisfying\n" +
                "  No matching assertion, did you mean:\n" +
-               "  <object> to have values satisfying <any+>\n" +
-               "  <object> to have values satisfying <assertion>");
+               "  <object> to have values [exhaustively] satisfying <any+>\n" +
+               "  <object> to have values [exhaustively] satisfying <assertion>");
     });
 
     it('only accepts objects and arrays as the target', function () {
@@ -16,8 +16,8 @@ describe('to have values satisfying assertion', function () {
         }, 'to throw',
                "expected 42 to have values satisfying function (value) {}\n" +
                "  No matching assertion, did you mean:\n" +
-               "  <object> to have values satisfying <any+>\n" +
-               "  <object> to have values satisfying <assertion>");
+               "  <object> to have values [exhaustively] satisfying <any+>\n" +
+               "  <object> to have values [exhaustively] satisfying <assertion>");
     });
 
     it('asserts that the given callback does not throw for any values in the map', function () {
@@ -164,6 +164,28 @@ describe('to have values satisfying assertion', function () {
                     "  2: 'abc' // should be a number after a short delay\n" +
                     "           //   should be a number\n" +
                     "}");
+        });
+    });
+
+    describe('with the exhaustively flag', function () {
+        it('should succeed', function () {
+            expect([{foo: 'bar', quux: 'baz'}], 'to have values exhaustively satisfying', {foo: 'bar', quux: 'baz'});
+        });
+
+        it('should fail when the spec is not met only because of the "exhaustively" semantics', function () {
+            expect(function () {
+                expect([{foo: 'bar', quux: 'baz'}], 'to have values exhaustively satisfying', {foo: 'bar'});
+            }, 'to throw',
+                "expected [ { foo: 'bar', quux: 'baz' } ]\n" +
+                "to have values exhaustively satisfying { foo: 'bar' }\n" +
+                "\n" +
+                "[\n" +
+                "  {\n" +
+                "    foo: 'bar',\n" +
+                "    quux: 'baz' // should be removed\n" +
+                "  }\n" +
+                "]"
+            );
         });
     });
 });
