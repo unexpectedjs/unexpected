@@ -45,7 +45,6 @@ Here's a partial list of plugins for Unexpected:
   both node.js and the browser.
 * [unexpected-sinon](http://unexpected.js.org/unexpected-sinon/): Add support for
   [sinon](http://sinonjs.org/) spies.
-  [jsdom](https://github.com/tmpvar/jsdom/).
 * [unexpected-stream](http://unexpected.js.org/unexpected-stream/): Assertions for
   node.js streams.
 
