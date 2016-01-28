@@ -26,7 +26,7 @@ create-html-runners: test/tests.tpl.html test/JasmineRunner.tpl.html
 
 test-phantomjs: create-html-runners ${TARGETS}
 	@$(eval QUERY=$(shell node -e "console.log(decodeURIComponent(process.argv.pop()).replace(/\s/g, '%20'))" "${grep}")) \
-    ./node_modules/.bin/mocha-phantomjs test/tests.html?grep=${QUERY}
+    ./node_modules/.bin/mocha-phantomjs $(shell [ "${QUERY}" != "" ] && echo --grep "${grep}") test/tests.html
 
 test-jasmine: ${TARGETS}
 	./node_modules/.bin/jasmine JASMINE_CONFIG_PATH=test/support/jasmine.json
