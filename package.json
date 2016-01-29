@@ -39,7 +39,7 @@
     "jscs": "2.1.1",
     "jshint": "2.5.6",
     "minimist": "1.1.1",
-    "mocha": "2.3.2",
+    "mocha": "2.4.5",
     "mocha-phantomjs-papandreou": "4.0.2-patch1",
     "mocha-slow-reporter": "*",
     "phantomjs-prebuilt": "2.1.3",
