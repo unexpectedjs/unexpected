@@ -1,6 +1,6 @@
 {
   "name": "unexpected",
-  "version": "10.8.0",
+  "version": "10.8.1",
   "author": "Sune Sloth Simonsen <sune@we-knowhow.dk>",
   "keywords": [
     "assertion",
@@ -22,7 +22,7 @@
   "dependencies": {
     "array-changes": "1.2.1",
     "array-changes-async": "2.0.2",
-    "bluebird": "3.1.1",
+    "bluebird": "2.9.34",
     "detect-indent": "3.0.1",
     "diff": "1.1.0",
     "leven": "1.0.0",
