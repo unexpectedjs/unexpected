@@ -20,6 +20,7 @@ Here's a partial list of plugins for Unexpected:
   Run your tests against a mock CouchDB server initialized to a given state.
 * [unexpected-dom](https://github.com/munter/unexpected-dom/): Assertions for
   XML/HTML DOM and HTML/XML strings. Works in the browser and in node.js via
+  [jsdom](https://github.com/tmpvar/jsdom).
 * [unexpected-exif](http://unexpected.js.org/unexpected-exif/): Assertions for
   EXIF data of images (node.js only).
 * [unexpected-express](https://github.com/unexpectedjs/unexpected-express/): Express
