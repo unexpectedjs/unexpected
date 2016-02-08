@@ -1027,9 +1027,10 @@ describe('to satisfy assertion', function () {
                "expected Error('foo') to satisfy { message: \'bar\' }\n" +
                "\n" +
                "{\n" +
-               "  message: 'foo' // should equal 'bar'\n" +
-               "                 // -foo\n" +
-               "                 // +bar\n" +
+               "  message:\n" +
+               "    'foo' // should equal 'bar'\n" +
+               "          // -foo\n" +
+               "          // +bar\n" +
                "}");
     });
 
@@ -1206,19 +1207,17 @@ describe('to satisfy assertion', function () {
             }, 'to throw',
                    "expected\n" +
                    "{\n" +
-                   "  foo:\n" +
-                   "    +-+\n" +
-                   "    |2|\n" +
-                   "    |_|,\n" +
+                   "  foo: +-+\n" +
+                   "       |2|\n" +
+                   "       |_|,\n" +
                    "  bar: 'baz'\n" +
                    "}\n" +
                    "to satisfy { bar: 'quux' }\n" +
                    "\n" +
                    "{\n" +
-                   "  foo:\n" +
-                   "    +-+\n" +
-                   "    |2|\n" +
-                   "    |_|,\n" +
+                   "  foo: +-+\n" +
+                   "       |2|\n" +
+                   "       |_|,\n" +
                    "  bar: 'baz' // should equal 'quux'\n" +
                    "             // -baz\n" +
                    "             // +quux\n" +
@@ -1473,6 +1472,78 @@ describe('to satisfy assertion', function () {
                     "✓ expected 123 when delayed a little bit 'to be a number' and\n" +
                     "⨯ expected 123 when delayed a little bit to be within 100, 110"
             );
+        });
+    });
+
+    describe('with an array with non-numerical properties', function () {
+        describe('satisfied exhaustively against an object', function () {
+            it('should succeed', function () {
+                var subject = [ 123 ];
+                subject.foobar = 456;
+                expect(subject, 'to exhaustively satisfy', {
+                    0: 123,
+                    foobar: 456
+                });
+            });
+
+            it('should fail with a diff', function () {
+                var subject = [ 123 ];
+                subject.foobar = 456;
+                expect(function () {
+                    expect(subject, 'to exhaustively satisfy', {
+                        0: 123,
+                        foobar: 987
+                    });
+                }, 'to throw',
+                    "expected [ 123, foobar: 456 ] to exhaustively satisfy { 0: 123, foobar: 987 }\n" +
+                    "\n" +
+                    "[\n" +
+                    "  123,\n" +
+                    "  foobar: 456 // should equal 987\n" +
+                    "]"
+                );
+            });
+        });
+
+        describe('satisfied exhaustively against another array', function () {
+            it('should succeed', function () {
+                var subject = [ 123 ];
+                subject.foobar = 456;
+
+                var expected = [ 123 ];
+                expected.foobar = 456;
+                expect(subject, 'to exhaustively satisfy', expected);
+            });
+
+            it('should fail with a diff', function () {
+                var subject = [2, 3, 1];
+                subject.foo = 123;
+                subject.bar = 456;
+                subject.quux = {};
+
+                var expected = [1, 2, 3];
+                expected.bar = 456;
+                expected.baz = 789;
+                expected.quux = false;
+
+                expect(function () {
+                    expect(subject, 'to satisfy', expected);
+                }, 'to throw',
+                    "expected [ 2, 3, 1, foo: 123, bar: 456, quux: {} ]\n" +
+                    "to satisfy [ 1, 2, 3, bar: 456, baz: 789, quux: false ]\n" +
+                    "\n" +
+                    "[\n" +
+                    "  // missing 1\n" +
+                    "  2,\n" +
+                    "  3,\n" +
+                    "  1, // should be removed\n" +
+                    "  foo: 123, // should be removed\n" +
+                    "  bar: 456,\n" +
+                    "  quux: {} // should equal false\n" +
+                    "  // missing baz: 789\n" +
+                    "]"
+                );
+            });
         });
     });
 });

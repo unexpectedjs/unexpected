@@ -104,9 +104,8 @@ describe('inspect', function () {
         it('objects', function () {
             clonedExpect({ foo: 'foo\nfoo', bar: 'bar' }, 'to inspect as',
                          "{\n" +
-                         "  foo:\n" +
-                         "    'foo\n" +
-                         "     foo',\n" +
+                         "  foo: 'foo\n" +
+                         "        foo',\n" +
                          "  bar: 'bar'\n" +
                          "}");
         });
