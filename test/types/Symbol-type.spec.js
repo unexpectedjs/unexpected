@@ -9,6 +9,12 @@ if (typeof Symbol === 'function') {
             expect(symbolA, 'to inspect as', "Symbol('a')");
         });
 
+        it('inspects correctly when used as a key in an object', function () {
+            var obj = {};
+            obj[symbolA] = 123;
+            expect(obj, 'to inspect as', "{ [ Symbol('a') ]: 123 }");
+        });
+
         describe('when compared for equality', function () {
             it('considers a symbol equal to itself', function () {
                 expect(symbolA, 'to equal', symbolA);
@@ -22,6 +28,29 @@ if (typeof Symbol === 'function') {
                 expect(function () {
                     expect(symbolA, 'to equal', symbolB);
                 }, 'to throw', "expected Symbol('a') to equal Symbol('b')");
+            });
+
+            it('should include Symbol properties in the "to equal" diff of objects', function () {
+                var a = { foo: 123 };
+                a[symbolA] = 'foo';
+                a[symbolB] = 123;
+                var b = { foo: 456 };
+                b[symbolA] = 'bar';
+                b[symbolB] = 123;
+                expect(function () {
+                    expect(a, 'to equal', b);
+                }, 'to throw',
+                    "expected { foo: 123, [ Symbol('a') ]: 'foo', [ Symbol('b') ]: 123 }\n" +
+                    "to equal { foo: 456, [ Symbol('a') ]: 'bar', [ Symbol('b') ]: 123 }\n" +
+                    "\n" +
+                    "{\n" +
+                    "  foo: 123, // should equal 456\n" +
+                    "  [ Symbol('a') ]: 'foo', // should equal 'bar'\n" +
+                    "                          // -foo\n" +
+                    "                          // +bar\n" +
+                    "  [ Symbol('b') ]: 123\n" +
+                    "}"
+                );
             });
         });
 
@@ -42,6 +71,29 @@ if (typeof Symbol === 'function') {
                     "\n" +
                     "{\n" +
                     "  foo: Symbol('a') // should equal Symbol('a')\n" +
+                    "}"
+                );
+            });
+
+            it('should include the Symbol properties in the diff', function () {
+                var a = { foo: 123 };
+                a[symbolA] = 'foo';
+                a[symbolB] = 123;
+                var b = { foo: 456 };
+                b[symbolA] = 'bar';
+                b[symbolB] = 123;
+                expect(function () {
+                    expect(a, 'to satisfy', b);
+                }, 'to throw',
+                    "expected { foo: 123, [ Symbol('a') ]: 'foo', [ Symbol('b') ]: 123 }\n" +
+                    "to satisfy { foo: 456, [ Symbol('a') ]: 'bar', [ Symbol('b') ]: 123 }\n" +
+                    "\n" +
+                    "{\n" +
+                    "  foo: 123, // should equal 456\n" +
+                    "  [ Symbol('a') ]: 'foo', // should equal 'bar'\n" +
+                    "                          // -foo\n" +
+                    "                          // +bar\n" +
+                    "  [ Symbol('b') ]: 123\n" +
                     "}"
                 );
             });
