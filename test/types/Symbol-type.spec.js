@@ -1,40 +1,42 @@
 /*global expect, Symbol*/
 if (typeof Symbol === 'function') {
     describe('Symbol type', function () {
+        var symbolA = Symbol('a');
+        var anotherSymbolA = Symbol('a');
+        var symbolB = Symbol('b');
+
         it('inspects correctly', function () {
-            expect(Symbol('foo'), 'to inspect as', "Symbol('foo')");
+            expect(symbolA, 'to inspect as', "Symbol('a')");
         });
 
         describe('when compared for equality', function () {
             it('considers a symbol equal to itself', function () {
-                var symbol = Symbol('a');
-                expect(symbol, 'to equal', symbol);
+                expect(symbolA, 'to equal', symbolA);
             });
 
             it('considers two symbols with the same name different', function () {
-                expect(Symbol('a'), 'not to equal', Symbol('a'));
+                expect(symbolA, 'not to equal', anotherSymbolA);
             });
 
             it('does not render a diff', function () {
                 expect(function () {
-                    expect(Symbol('a'), 'to equal', Symbol('b'));
+                    expect(symbolA, 'to equal', symbolB);
                 }, 'to throw', "expected Symbol('a') to equal Symbol('b')");
             });
         });
 
         describe('with to satisfy', function () {
             it('satisfies itself', function () {
-                var symbol = Symbol('a');
-                expect(symbol, 'to satisfy', symbol);
+                expect(symbolA, 'to satisfy', symbolA);
             });
 
             it('does not satisfy another symbol, even with the same name', function () {
-                expect(Symbol('a'), 'not to satisfy', Symbol('a'));
+                expect(symbolA, 'not to satisfy', anotherSymbolA);
             });
 
             it('does not render a diff', function () {
                 expect(function () {
-                    expect({ foo: Symbol('a') }, 'to satisfy', { foo: Symbol('a') });
+                    expect({ foo: symbolA }, 'to satisfy', { foo: anotherSymbolA });
                 }, 'to throw',
                     "expected { foo: Symbol('a') } to satisfy { foo: Symbol('a') }\n" +
                     "\n" +
