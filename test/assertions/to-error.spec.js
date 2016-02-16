@@ -41,4 +41,26 @@ describe('to error assertion', function () {
             });
         });
     });
+
+    it('should fail if the function returns a fulfilled promise', function () {
+        expect(function () {
+            expect(function () {
+                return expect.promise.resolve(123);
+            }, 'to error');
+        }, 'to throw',
+            "expected\n" +
+            "function () {\n" +
+            "  return expect.promise.resolve(123);\n" +
+            "}\n" +
+            "to error"
+        );
+    });
+
+    it('should fail if the function does not throw and does not return a promise', function () {
+        expect(function () {
+            expect(function () {}, 'to error');
+        }, 'to throw',
+            "expected function () {} to error"
+        );
+    });
 });
