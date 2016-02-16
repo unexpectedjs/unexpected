@@ -117,4 +117,26 @@ describe('to contain assertion', function () {
                    '^^^       ^^^');
         });
     });
+
+    it('should not highlight overlapping partial matches', function () {
+        expect(function () {
+            expect('foobarquux', 'not to contain', 'foob', 'barq');
+        }, 'to throw',
+            "expected 'foobarquux' not to contain 'foob', 'barq'\n" +
+            "\n" +
+            "foobarquux\n" +
+            "^^^^"
+        );
+    });
+
+    it('should highlight all occurrences of the longest partial match', function () {
+        expect(function () {
+            expect('foobarquuxfoob', 'to contain', 'ooaaq', 'foobr');
+        }, 'to throw',
+            "expected 'foobarquuxfoob' to contain 'ooaaq', 'foobr'\n" +
+            "\n" +
+            "foobarquuxfoob\n" +
+            "^^^^      ^^^^"
+        );
+    });
 });
