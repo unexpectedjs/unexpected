@@ -132,7 +132,7 @@ method is called with the value to be inspected, the depth this type
 should be inspected with, an output the inspected value should be
 written to, and an inspect function that can be used to recursively
 inspect members. The output is an instance of
-[magicpen](https://github.com/unexpectedjs/magicpen) extended with a
+[magicpen](https://github.com/sunesimonsen/magicpen) extended with a
 number of [styles](https://github.com/unexpectedjs/unexpected/blob/master/lib/styles.js).
 
 We write `new Person(` without styling, then we append the inspected
