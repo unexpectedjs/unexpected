@@ -50,6 +50,7 @@
   },
   "jspm": {
     "dependencies": {},
-    "main": "unexpected.js"
+    "main": "unexpected.js",
+    "jspmPackage": true
   }
 }
