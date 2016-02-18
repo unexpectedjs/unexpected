@@ -526,7 +526,7 @@ describe('unexpected', function () {
                        "]");
             });
 
-            it('does not considers object with a different structure candidates for diffing', function () {
+            it('does not consider object with a different structure candidates for diffing', function () {
                 expect(function () {
                     expect([0, 1, { name: 'John'}, 3, 2], 'to equal', [0, { firstName: 'John', lastName: 'Doe' }, 3, 2]);
                 }, 'to throw',
@@ -562,7 +562,7 @@ describe('unexpected', function () {
                        "]");
             });
 
-            it('does not considers different strings candidates for diffing', function () {
+            it('does not consider different strings candidates for diffing', function () {
                 expect(function () {
                     expect(['tw00', 1, 3, 4, 5], 'to equal', [0, 1, 'two', 3, 4, 5]);
                 }, 'to throw',

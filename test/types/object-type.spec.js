@@ -19,23 +19,20 @@ describe('object type', function () {
                    'expected\n' +
                    '{\n' +
                    '  a: 123,\n' +
-                   '  b:\n' +
-                   '    NUMBER\n' +
-                   '     NINE \n' +
+                   '  b: NUMBER\n' +
+                   '      NINE \n' +
                    '}\n' +
                    'to equal\n' +
                    '{\n' +
                    '  a: 456,\n' +
-                   '  b:\n' +
-                   '    NUMBER\n' +
-                   '     NINE \n' +
+                   '  b: NUMBER\n' +
+                   '      NINE \n' +
                    '}\n' +
                    '\n' +
                    '{\n' +
                    '  a: 123, // should equal 456\n' +
-                   '  b:\n' +
-                   '    NUMBER\n' +
-                   '     NINE \n' +
+                   '  b: NUMBER\n' +
+                   '      NINE \n' +
                    '}'
                   );
         });
