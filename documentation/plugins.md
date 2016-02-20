@@ -23,6 +23,8 @@ Here's a partial list of plugins for Unexpected:
   [jsdom](https://github.com/tmpvar/jsdom).
 * [unexpected-exif](http://unexpected.js.org/unexpected-exif/): Assertions for
   EXIF data of images (node.js only).
+* [unexpected-events](https://github.com/alexjeffburke/unexpected-events/):
+  Assertions for unit testing EventEmitters.
 * [unexpected-express](https://github.com/unexpectedjs/unexpected-express/): Express
   app/middleware assertions with a declarative syntax.
 * [unexpected-http](https://github.com/unexpectedjs/unexpected-http/): Assertions for
