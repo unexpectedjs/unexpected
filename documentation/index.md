@@ -226,6 +226,31 @@ The source for Unexpected can be found on
 * Changed style names and added theming support (mostly internal).
 * Removed grammatically incorrect assertions.
 
+## Configure the error output
+
+### Disable stack trace trimming
+
+You can disable stack trace trimming the following way:
+
+```
+UNEXPECTED_FULL_TRACE=true mocha
+```
+
+You can achieve the same in the browser by setting the query parameter
+`full-trace` to `true`.
+
+### Controlling the inspection depth
+
+To change the level subtrees gets dotted out, you can set the inspection depth
+the following way:
+
+```
+UNEXPECTED_DEPTH=9 mocha
+```
+
+You can achieve the same in the browser by setting the query parameter `depth`
+to the inspection depth you want.
+
 ## MIT License
 
 Copyright (c) 2013 Sune Simonsen <sune@we-knowhow.dk>
