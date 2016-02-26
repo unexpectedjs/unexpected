@@ -86,7 +86,7 @@ commit-unexpected: unexpected.js
 .PHONY: release-%
 release-%: git-dirty-check lint ${TARGETS} test-phantomjs commit-unexpected deploy-site
 	./node_modules/.bin/chewbacca --threshold ${CHEWBACCA_THRESHOLD} `git describe --abbrev=0 --tags --match 'v*'` -- test/benchmark.spec.js
-	npm version $*
+	IS_MAKE_RELEASE=yes npm version $*
 	@echo $* release ready to be publised to NPM
 	@echo Remember to push tags
 

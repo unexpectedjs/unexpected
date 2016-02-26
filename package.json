@@ -16,7 +16,8 @@
   "scripts": {
     "test": "make test && make test-phantomjs",
     "generate-site": "generate-site --require ./bootstrap-unexpected-markdown.js",
-    "update-examples": "generate-site --require ./bootstrap-unexpected-markdown.js --update-examples"
+    "update-examples": "generate-site --require ./bootstrap-unexpected-markdown.js --update-examples",
+    "preversion": "test -n \"${IS_MAKE_RELEASE}\" || (echo Please run make release instead && exit 1)"
   },
   "main": "./lib/index.js",
   "dependencies": {
