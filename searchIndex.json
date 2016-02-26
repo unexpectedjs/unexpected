@@ -64,8 +64,12 @@
     "url": "/assertions/function/when-called/"
   },
   {
-    "label": "when decoded as (Buffer)",
-    "url": "/assertions/Buffer/when-decoded-as/"
+    "label": "to have message (Error)",
+    "url": "/assertions/Error/to-have-message/"
+  },
+  {
+    "label": "to be fulfilled (Promise)",
+    "url": "/assertions/Promise/to-be-fulfilled/"
   },
   {
     "label": "to be rejected (Promise)",
@@ -78,14 +82,6 @@
   {
     "label": "when rejected (Promise)",
     "url": "/assertions/Promise/when-rejected/"
-  },
-  {
-    "label": "to be false (boolean)",
-    "url": "/assertions/boolean/to-be-false/"
-  },
-  {
-    "label": "to be true (boolean)",
-    "url": "/assertions/boolean/to-be-true/"
   },
   {
     "label": "to be a (any)",
@@ -132,10 +128,6 @@
     "url": "/assertions/any/when-passed-as-parameter-to/"
   },
   {
-    "label": "to have message (Error)",
-    "url": "/assertions/Error/to-have-message/"
-  },
-  {
     "label": "to be empty (array-like)",
     "url": "/assertions/array-like/to-be-empty/"
   },
@@ -158,6 +150,14 @@
   {
     "label": "when passed as parameters to (array-like)",
     "url": "/assertions/array-like/when-passed-as-parameters-to/"
+  },
+  {
+    "label": "to be false (boolean)",
+    "url": "/assertions/boolean/to-be-false/"
+  },
+  {
+    "label": "to be true (boolean)",
+    "url": "/assertions/boolean/to-be-true/"
   },
   {
     "label": "to call the callback with error (function)",
@@ -188,8 +188,8 @@
     "url": "/assertions/function/when-called-with/"
   },
   {
-    "label": "to be fulfilled (Promise)",
-    "url": "/assertions/Promise/to-be-fulfilled/"
+    "label": "when decoded as (Buffer)",
+    "url": "/assertions/Buffer/when-decoded-as/"
   },
   {
     "label": "to be NaN (number)",
@@ -236,6 +236,10 @@
     "url": "/assertions/number/to-be-within/"
   },
   {
+    "label": "to be canonical (object)",
+    "url": "/assertions/object/to-be-canonical/"
+  },
+  {
     "label": "to be empty (object)",
     "url": "/assertions/object/to-be-empty/"
   },
@@ -244,20 +248,16 @@
     "url": "/assertions/object/to-have-key/"
   },
   {
+    "label": "to have keys satisfying (object)",
+    "url": "/assertions/object/to-have-keys-satisfying/"
+  },
+  {
     "label": "to have keys (object)",
     "url": "/assertions/object/to-have-keys/"
   },
   {
     "label": "to have properties (object)",
     "url": "/assertions/object/to-have-properties/"
-  },
-  {
-    "label": "to be canonical (object)",
-    "url": "/assertions/object/to-be-canonical/"
-  },
-  {
-    "label": "to have keys satisfying (object)",
-    "url": "/assertions/object/to-have-keys-satisfying/"
   },
   {
     "label": "to have property (object)",
@@ -284,12 +284,12 @@
     "url": "/assertions/string/to-be-less-than-or-equal-to/"
   },
   {
-    "label": "to be non-empty (string)",
-    "url": "/assertions/string/to-be-non-empty/"
-  },
-  {
     "label": "to be less than (string)",
     "url": "/assertions/string/to-be-less-than/"
+  },
+  {
+    "label": "to be non-empty (string)",
+    "url": "/assertions/string/to-be-non-empty/"
   },
   {
     "label": "to be within (string)",
