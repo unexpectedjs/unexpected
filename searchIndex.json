@@ -172,12 +172,12 @@
     "url": "/assertions/function/to-call-the-callback/"
   },
   {
-    "label": "to error (function)",
-    "url": "/assertions/function/to-error/"
-  },
-  {
     "label": "to have arity (function)",
     "url": "/assertions/function/to-have-arity/"
+  },
+  {
+    "label": "to error (function)",
+    "url": "/assertions/function/to-error/"
   },
   {
     "label": "to throw (function)",
