@@ -28,16 +28,16 @@ module.exports = function AssertionString(text) {
 
 },{}],2:[function(require,module,exports){
 var createStandardErrorMessage = require(5);
-var utils = require(16);
-var magicpen = require(38);
+var utils = require(17);
+var magicpen = require(42);
 var extend = utils.extend;
-var leven = require(34);
+var leven = require(38);
 var makePromise = require(10);
 var makeAndMethod = require(9);
 var isPendingPromise = require(8);
-var oathbreaker = require(11);
+var oathbreaker = require(12);
 var UnexpectedError = require(3);
-var testFrameworkPatch = require(13);
+var notifyPendingPromise = require(11);
 var defaultDepth = require(7);
 var createWrappedExpectProto = require(6);
 var AssertionString = require(1);
@@ -1139,7 +1139,7 @@ Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
     try {
         var result = executeExpect(subject, testDescriptionString, args);
         if (isPendingPromise(result)) {
-            testFrameworkPatch.promiseCreated();
+            notifyPendingPromise(result);
             result = result.then(undefined, function (e) {
                 if (e && e._isUnexpected) {
                     that.setErrorMessage(e);
@@ -1451,8 +1451,9 @@ function ensureValidAssertionPattern(pattern) {
 module.exports = Unexpected;
 
 },{}],3:[function(require,module,exports){
-var utils = require(16);
+var utils = require(17);
 var defaultDepth = require(7);
+var useFullStackTrace = require(16);
 
 var errorMethodBlacklist = ['message', 'line', 'sourceId', 'sourceURL', 'stack', 'stackArray'].reduce(function (result, prop) {
     result[prop] = true;
@@ -1477,6 +1478,8 @@ function UnexpectedError(expect, parent) {
 }
 
 UnexpectedError.prototype = Object.create(Error.prototype);
+
+UnexpectedError.prototype.useFullStackTrace = useFullStackTrace;
 
 var missingOutputMessage = 'You must either provide a format or a magicpen instance';
 UnexpectedError.prototype.outputFromOptions = function (options) {
@@ -1660,13 +1663,42 @@ UnexpectedError.prototype.getErrorMessage = function (options) {
 
 UnexpectedError.prototype.serializeMessage = function (outputFormat) {
     if (!this._hasSerializedErrorMessage) {
-        if (outputFormat === 'html') {
-            outputFormat = 'text';
+        var htmlFormat = outputFormat === 'html';
+        if (htmlFormat) {
             if (!('htmlMessage' in this)) {
                 this.htmlMessage = this.getErrorMessage({format: 'html'}).toString();
             }
         }
-        this.message = '\n' + this.getErrorMessage({format: outputFormat}).toString();
+
+        this.message = '\n' + this.getErrorMessage({
+            format: htmlFormat ? 'text' : outputFormat
+        }).toString();
+
+        if (!this.useFullStackTrace) {
+            var newStack = [];
+            var removedFrames = false;
+            var lines = this.stack.split(/\n/);
+            lines.forEach(function (line, i) {
+                if (i !== 0 && (/node_modules\/unexpected(?:-[^\/]+)?\//).test(line)) {
+                    removedFrames = true;
+                } else {
+                    newStack.push(line);
+                }
+            });
+
+            if (removedFrames) {
+                var indentation = (/^(\s*)/).exec(lines[lines.length - 1])[1];
+
+                if (outputFormat === 'html') {
+                    newStack.push(indentation + 'set the query parameter full-trace=true to see the full stack trace');
+                } else {
+                    newStack.push(indentation + 'set UNEXPECTED_FULL_TRACE=true to see the full stack trace');
+                }
+
+            }
+
+            this.stack = newStack.join('\n');
+        }
 
         this._hasSerializedErrorMessage = true;
     }
@@ -1721,13 +1753,12 @@ module.exports = UnexpectedError;
 },{}],4:[function(require,module,exports){
 (function (Buffer){
 /*global setTimeout*/
-var utils = require(16);
-var arrayChanges = require(21);
-var arrayChangesAsync = require(19);
+var utils = require(17);
+var arrayChanges = require(22);
+var arrayChangesAsync = require(21);
 var throwIfNonUnexpectedError = require(14);
 var objectIs = utils.objectIs;
 var isRegExp = utils.isRegExp;
-var isArray = utils.isArray;
 var extend = utils.extend;
 
 module.exports = function (expect) {
@@ -1977,10 +2008,6 @@ module.exports = function (expect) {
     });
 
     expect.addAssertion('<object> to [not] [only] have keys <array>', function (expect, subject, keys) {
-        keys = isArray(keys) ?
-            keys :
-            Array.prototype.slice.call(arguments, 2);
-
         var keysInSubject = {};
         var subjectKeys = expect.findTypeOf(subject).getKeys(subject);
         subjectKeys.forEach(function (key) {
@@ -2018,10 +2045,7 @@ module.exports = function (expect) {
 
                         subjectKeys.forEach(function (key, index) {
                             output.i().block(function () {
-                                if (!subjectIsArrayLike) {
-                                    this.key(key).text(':');
-                                }
-                                this.sp().append(inspect(subject[key]));
+                                this.property(key, inspect(subject[key]), subjectIsArrayLike);
                                 subjectType.delimiter(this, index, subjectKeys.length);
                                 if (!keyInValue[key]) {
                                     this.sp().annotationBlock(function () {
@@ -2314,18 +2338,9 @@ module.exports = function (expect) {
 
     expect.addAssertion('<function> to error', function (expect, subject) {
         return expect.promise(function () {
-            try {
-                return subject();
-            } catch (e) {
-                throw e;
-            }
+            return subject();
         }).then(function () {
-            return expect.promise(function () {
-                expect.fail(function (output) {
-                    output.text('expected').sp();
-                    output.appendInspect(subject).sp().text('to error');
-                });
-            });
+            expect.fail();
         }, function (error) {
             return error;
         });
@@ -2681,20 +2696,20 @@ module.exports = function (expect) {
 
     expect.addAssertion('<array-like> to [exhaustively] satisfy <array-like>', function (expect, subject, value) {
         expect.errorMode = 'bubble';
-        var keyPromises = new Array(value.length);
         var i;
-        var valueKeys = new Array(value.length);
-        for (i = 0 ; i < value.length ; i += 1) {
-            valueKeys[i] = i;
-            keyPromises[i] = expect.promise(function () {
-                var valueKeyType = expect.findTypeOf(value[i]);
+        var valueType = expect.argTypes[0];
+        var valueKeys = valueType.getKeys(value);
+        var keyPromises = {};
+        valueKeys.forEach(function (valueKey) {
+            keyPromises[valueKey] = expect.promise(function () {
+                var valueKeyType = expect.findTypeOf(value[valueKey]);
                 if (valueKeyType.is('function')) {
-                    return value[i](subject[i]);
+                    return value[valueKey](subject[valueKey]);
                 } else {
-                    return expect(subject[i], 'to [exhaustively] satisfy', value[i]);
+                    return expect(subject[valueKey], 'to [exhaustively] satisfy', value[valueKey]);
                 }
             });
-        }
+        });
         return expect.promise.all([
             expect.promise(function () {
                 expect(subject, 'to only have keys', valueKeys);
@@ -2703,10 +2718,11 @@ module.exports = function (expect) {
         ]).caught(function () {
             var subjectType = expect.subjectType;
             return expect.promise.settle(keyPromises).then(function () {
-                var toSatisfyMatrix = new Array(subject.length * value.length);
+                var toSatisfyMatrix = new Array(subject.length);
                 for (i = 0 ; i < subject.length ; i += 1) {
+                    toSatisfyMatrix[i] = new Array(value.length);
                     if (i < value.length) {
-                        toSatisfyMatrix[i + i * subject.length] = keyPromises[i].isFulfilled() || keyPromises[i].reason();
+                        toSatisfyMatrix[i][i] = keyPromises[i].isFulfilled() || keyPromises[i].reason();
                     }
                 }
                 if (subject.length > 10 || value.length > 10) {
@@ -2742,8 +2758,12 @@ module.exports = function (expect) {
                 }
 
                 var isAsync = false;
+                var nonNumericalKeysAndSymbols = !subjectType.numericalPropertiesOnly &&
+                    utils.uniqueNonNumericalStringsAndSymbols(subjectType.getKeys(subject), valueType.getKeys(value));
+
                 var changes = arrayChanges(subject, value, function equal(a, b, aIndex, bIndex) {
-                    var existingResult = toSatisfyMatrix[aIndex + subject.length * bIndex];
+                    toSatisfyMatrix[aIndex] = toSatisfyMatrix[aIndex] || [];
+                    var existingResult = toSatisfyMatrix[aIndex][bIndex];
                     if (typeof existingResult !== 'undefined') {
                         return existingResult === true;
                     }
@@ -2752,7 +2772,7 @@ module.exports = function (expect) {
                         result = expect(a, 'to [exhaustively] satisfy', b);
                     } catch (err) {
                         throwIfNonUnexpectedError(err);
-                        toSatisfyMatrix[aIndex + subject.length * bIndex] = err;
+                        toSatisfyMatrix[aIndex][bIndex] = err;
                         return false;
                     }
                     result.then(function () {}, function () {});
@@ -2760,30 +2780,31 @@ module.exports = function (expect) {
                         isAsync = true;
                         return false;
                     }
-                    toSatisfyMatrix[aIndex + subject.length * bIndex] = true;
+                    toSatisfyMatrix[aIndex][bIndex] = true;
                     return true;
                 }, function (a, b) {
                     return subjectType.similar(a, b);
-                });
+                }, nonNumericalKeysAndSymbols);
                 if (isAsync) {
                     return expect.promise(function (resolve, reject) {
                         arrayChangesAsync(subject, value, function equal(a, b, aIndex, bIndex, cb) {
-                            var existingResult = toSatisfyMatrix[aIndex + subject.length * bIndex];
+                            toSatisfyMatrix[aIndex] = toSatisfyMatrix[aIndex] || [];
+                            var existingResult = toSatisfyMatrix[aIndex][bIndex];
                             if (typeof existingResult !== 'undefined') {
                                 return cb(existingResult === true);
                             }
                             expect.promise(function () {
                                 return expect(a, 'to [exhaustively] satisfy', b);
                             }).then(function () {
-                                toSatisfyMatrix[aIndex + subject.length * bIndex] = true;
+                                toSatisfyMatrix[aIndex][bIndex] = true;
                                 cb(true);
                             }, function (err) {
-                                toSatisfyMatrix[aIndex + subject.length * bIndex] = err;
+                                toSatisfyMatrix[aIndex][bIndex] = err;
                                 cb(false);
                             });
                         }, function (a, b, aIndex, bIndex, cb) {
                             cb(subjectType.similar(a, b));
-                        }, resolve);
+                        }, nonNumericalKeysAndSymbols, resolve);
                     }).then(failWithChanges);
                 } else {
                     return failWithChanges(changes);
@@ -2814,44 +2835,50 @@ module.exports = function (expect) {
                                     var type = diffItem.type;
                                     if (type === 'insert') {
                                         this.annotationBlock(function () {
+                                            var index = typeof diffItem.actualIndex !== 'undefined' ? diffItem.actualIndex : diffItem.expectedIndex;
                                             if (expect.findTypeOf(diffItem.value).is('function')) {
-                                                this.error('missing: ').block(function () {
-                                                    this.omitSubject = undefined;
-                                                    var promise = keyPromises[diffItem.expectedIndex];
-                                                    if (promise.isRejected()) {
-                                                        this.appendErrorMessage(promise.reason());
-                                                    } else {
-                                                        this.appendInspected(diffItem.value);
-                                                    }
-                                                });
+                                                this.error('missing: ')
+                                                    .property(index, output.clone().block(function () {
+                                                        this.omitSubject = undefined;
+                                                        var promise = keyPromises[diffItem.expectedIndex];
+                                                        if (promise.isRejected()) {
+                                                            this.appendErrorMessage(promise.reason());
+                                                        } else {
+                                                            this.appendInspected(diffItem.value);
+                                                        }
+                                                    }), true);
                                             } else {
-                                                this.error('missing ').block(inspect(diffItem.value));
+                                                this.error('missing ').property(index, inspect(diffItem.value), true);
                                             }
                                         });
-                                    } else if (type === 'remove') {
-                                        this.block(inspect(diffItem.value).amend(delimiterOutput.sp()).error('// should be removed'));
-                                    } else if (type === 'equal') {
-                                        this.block(inspect(diffItem.value).amend(delimiterOutput));
                                     } else {
-                                        var toSatisfyResult = toSatisfyMatrix[diffItem.actualIndex + subject.length * diffItem.expectedIndex];
-                                        var valueDiff = toSatisfyResult && toSatisfyResult !== true && toSatisfyResult.getDiff({ output: output.clone() });
-                                        if (valueDiff && valueDiff.inline) {
-                                            this.block(valueDiff.diff.amend(delimiterOutput));
-                                        } else {
-                                            this.block(inspect(diffItem.value).amend(delimiterOutput)).sp().annotationBlock(function () {
-                                                this.omitSubject = diffItem.value;
-                                                var label = toSatisfyResult.getLabel();
-                                                if (label) {
-                                                    this.error(label).sp()
-                                                        .block(inspect(diffItem.expected));
-                                                    if (valueDiff) {
-                                                        this.nl(2).append(valueDiff.diff);
-                                                    }
+                                        this.property(diffItem.actualIndex, output.clone().block(function () {
+                                            if (type === 'remove') {
+                                                this.append(inspect(diffItem.value).amend(delimiterOutput.sp()).error('// should be removed'));
+                                            } else if (type === 'equal') {
+                                                this.append(inspect(diffItem.value).amend(delimiterOutput));
+                                            } else {
+                                                var toSatisfyResult = toSatisfyMatrix[diffItem.actualIndex][diffItem.expectedIndex];
+                                                var valueDiff = toSatisfyResult && toSatisfyResult !== true && toSatisfyResult.getDiff({ output: output.clone() });
+                                                if (valueDiff && valueDiff.inline) {
+                                                    this.append(valueDiff.diff.amend(delimiterOutput));
                                                 } else {
-                                                    this.appendErrorMessage(toSatisfyResult);
+                                                    this.append(inspect(diffItem.value).amend(delimiterOutput)).sp().annotationBlock(function () {
+                                                        this.omitSubject = diffItem.value;
+                                                        var label = toSatisfyResult.getLabel();
+                                                        if (label) {
+                                                            this.error(label).sp()
+                                                                .block(inspect(diffItem.expected));
+                                                            if (valueDiff) {
+                                                                this.nl(2).append(valueDiff.diff);
+                                                            }
+                                                        } else {
+                                                            this.appendErrorMessage(toSatisfyResult);
+                                                        }
+                                                    });
                                                 }
-                                            });
-                                        }
+                                            }
+                                        }), true);
                                     }
                                 });
                             });
@@ -2907,17 +2934,9 @@ module.exports = function (expect) {
                             inline: true
                         };
 
-                        var keyIndex = {};
                         var subjectIsArrayLike = subjectType.is('array-like');
                         var subjectKeys = subjectType.getKeys(subject);
-                        subjectKeys.concat(valueType.getKeys(value)).forEach(function (key) {
-                            if (!(key in keyIndex)) {
-                                keyIndex[key] = key;
-                            }
-                        });
-
-                        var keys = Object.keys(keyIndex);
-
+                        var keys = utils.uniqueStringsAndSymbols(subjectKeys, valueType.getKeys(value));
                         var prefixOutput = subjectType.prefix(output.clone(), subject);
                         output
                             .append(prefixOutput)
@@ -2986,25 +3005,12 @@ module.exports = function (expect) {
                                     }
                                 }
 
-                                if (!subjectIsArrayLike) {
-                                    this.key(key).text(':');
-                                }
-
                                 var omitDelimiter =
                                     missingArrayIndex ||
                                     index >= subjectKeys.length - 1;
 
                                 if (!omitDelimiter) {
                                     valueOutput.amend(subjectType.delimiter(output.clone(), index, keys.length));
-                                }
-
-                                if (!subjectIsArrayLike) {
-                                    if (valueOutput.isBlock() && valueOutput.isMultiline()) {
-                                        this.indentLines();
-                                        this.nl().i();
-                                    } else {
-                                        this.sp();
-                                    }
                                 }
 
                                 var annotationOnNextLine = !isInlineDiff &&
@@ -3024,11 +3030,11 @@ module.exports = function (expect) {
                                     });
                                 }
 
-                                if (isInlineDiff) {
-                                    this.append(valueOutput);
-                                } else {
-                                    this.block(valueOutput);
+                                if (!isInlineDiff) {
+                                    valueOutput = output.clone().block(valueOutput);
                                 }
+
+                                this.property(key, valueOutput, subjectIsArrayLike);
                             });
                         });
 
@@ -3320,7 +3326,7 @@ module.exports = function (expect) {
     });
 };
 
-}).call(this,require(24).Buffer)
+}).call(this,require(26).Buffer)
 },{}],5:[function(require,module,exports){
 var AssertionString = require(1);
 
@@ -3409,11 +3415,11 @@ module.exports = function createStandardErrorMessage(output, subject, testDescri
 var createStandardErrorMessage = require(5);
 var makePromise = require(10);
 var isPendingPromise = require(8);
-var oathbreaker = require(11);
+var oathbreaker = require(12);
 var UnexpectedError = require(3);
-var testFrameworkPatch = require(13);
+var notifyPendingPromise = require(11);
 var makeAndMethod = require(9);
-var utils = require(16);
+var utils = require(17);
 
 function isAssertionArg(arg) {
     return arg.type.is('assertion');
@@ -3465,7 +3471,7 @@ module.exports = function createWrappedExpectProto(unexpected) {
             try {
                 var result = oathbreaker(callback());
                 if (isPendingPromise(result)) {
-                    testFrameworkPatch.promiseCreated();
+                    notifyPendingPromise(result);
                     result = result.then(undefined, function (e) {
                         if (e && e._isUnexpected) {
                             throw new UnexpectedError(that, e);
@@ -3637,7 +3643,7 @@ if (typeof window !== 'undefined' && typeof window.location !== 'undefined') {
 }
 module.exports = defaultDepth;
 
-}).call(this,require(28))
+}).call(this,require(30))
 },{}],8:[function(require,module,exports){
 module.exports = function isPendingPromise(obj) {
     return obj && typeof obj.then === 'function' && typeof obj.isPending === 'function' && obj.isPending();
@@ -3668,9 +3674,8 @@ module.exports = function makeAndMethod(expect, subject) {
 };
 
 },{}],10:[function(require,module,exports){
-/*global Promise:true*/
-var Promise = require(23);
-var oathbreaker = require(11);
+var Promise = require(25);
+var oathbreaker = require(12);
 var throwIfNonUnexpectedError = require(14);
 
 function makePromise(body) {
@@ -3784,9 +3789,64 @@ function extractPromisesFromObject(obj) {
 module.exports = makePromise;
 
 },{}],11:[function(require,module,exports){
-/*global Promise:true*/
-var workQueue = require(17);
-var Promise = require(23);
+/*global afterEach, jasmine*/
+var pendingPromisesForTheCurrentTest = [];
+var afterEachRegistered = false;
+
+var currentSpec = null;
+
+if (typeof jasmine === 'object') {
+    // Add a custom reporter that allows us to capture the name of the currently executing spec:
+    jasmine.getEnv().addReporter({
+        specStarted: function (spec) {
+            currentSpec = spec;
+        },
+        specDone: function (spec) {
+            currentSpec = null;
+        }
+    });
+}
+
+function registerAfterEachHook() {
+    if (typeof afterEach === 'function' && !afterEachRegistered) {
+        afterEachRegistered = true;
+        try {
+            afterEach(function () {
+                var error;
+                if (pendingPromisesForTheCurrentTest.some(function (promise) {return promise.isPending();})) {
+                    var displayName;
+                    if (this.currentTest) {
+                        // mocha
+                        displayName = this.currentTest.title;
+                    } else if (currentSpec) {
+                        displayName = currentSpec.fullName;
+                    }
+                    error = new Error(displayName + ': You have created a promise that was not returned from the it block');
+                }
+                pendingPromisesForTheCurrentTest = [];
+                if (error) {
+                    throw error;
+                }
+            });
+        } catch (e) {
+            // The benchmark suite fails when attempting to add an afterEach
+        }
+    }
+}
+
+// When running in jasmine/node.js, afterEach is available immediately,
+// but doesn't work within the it block. Register the hook immediately:
+registerAfterEachHook();
+
+module.exports = function notifyPendingPromise(promise) {
+    pendingPromisesForTheCurrentTest.push(promise);
+    // Register the afterEach hook lazily (mocha/node.js):
+    registerAfterEachHook();
+};
+
+},{}],12:[function(require,module,exports){
+var workQueue = require(18);
+var Promise = require(25);
 module.exports = function oathbreaker(value) {
     if (!value || typeof value.then !== 'function') {
         return value;
@@ -3843,8 +3903,8 @@ module.exports = function oathbreaker(value) {
     });
 };
 
-},{}],12:[function(require,module,exports){
-var utils = require(16);
+},{}],13:[function(require,module,exports){
+var utils = require(17);
 
 module.exports = function (expect) {
     expect.installTheme({ styles: {
@@ -3935,14 +3995,39 @@ module.exports = function (expect) {
             .jsString("'");
     });
 
-    expect.addStyle('key', function (content) {
-        content = String(content);
-        if (/^[a-z\$\_][a-z0-9\$\_]*$/i.test(content)) {
-            this.text(content, 'jsKey');
-        } else if (/^(?:0|[1-9][0-9]*)$/.test(content)) {
-            this.jsNumber(content);
+    expect.addStyle('property', function (key, inspectedValue, isArrayLike) {
+        var keyOmitted = false;
+        var isSymbol;
+        /*jshint ignore:start*/
+        isSymbol = typeof key === 'symbol';
+        /*jshint ignore:end*/
+        if (isSymbol) {
+            this.text('[').sp().appendInspected(key).sp().text(']').text(':');
         } else {
-            this.singleQuotedString(content);
+            key = String(key);
+            if (/^[a-z\$\_][a-z0-9\$\_]*$/i.test(key)) {
+                this.text(key, 'jsKey').text(':');
+            } else if (/^(?:0|[1-9][0-9]*)$/.test(key)) {
+                if (isArrayLike) {
+                    keyOmitted = true;
+                } else {
+                    this.jsNumber(key).text(':');
+                }
+            } else {
+                this.singleQuotedString(key).text(':');
+            }
+        }
+
+        if (!inspectedValue.isEmpty()) {
+            if (!keyOmitted) {
+                if (key.length > 5 && inspectedValue.isBlock() && inspectedValue.isMultiline()) {
+                    this.indentLines();
+                    this.nl().i();
+                } else {
+                    this.sp();
+                }
+            }
+            this.append(inspectedValue);
         }
     });
 
@@ -4163,114 +4248,6 @@ module.exports = function (expect) {
     });
 };
 
-},{}],13:[function(require,module,exports){
-/*global it:true, jasmine, mocha*/
-function isMochaModule(module) {
-    return module && (
-        (module.exports && module.exports.name === 'Mocha') ||
-            (/(\/mocha\.js|_mocha)$/).test(module.filename)
-    );
-}
-
-function isVanillaMocha() {
-    var currentModule = typeof module !== 'undefined' && module;
-    while (currentModule) {
-        if (isMochaModule(currentModule)) {
-            return true;
-        } else {
-            currentModule = currentModule.parent;
-        }
-    }
-    return false;
-}
-
-function jasmineFail(err) {
-    if (typeof jasmine === 'object') {
-        jasmine.getEnv().fail(err);
-    }
-}
-
-function jasmineSuccess(err) {
-    if (typeof jasmine === 'object') {
-        jasmine.getEnv().expect(true).toBe(true);
-    }
-}
-
-var promiseCreated = false;
-
-var shouldApplyPatch =
-    typeof mocha !== 'undefined' ||
-    (typeof jasmine !== 'undefined' && typeof jasmine.version === 'string' && jasmine.version.match(/^2\./)) ||
-    isVanillaMocha();
-
-module.exports = {
-    promiseCreated: function () {
-        promiseCreated = true;
-    },
-    applyPatch: function () {
-        if (typeof it === 'undefined' || it.patchApplied) {
-            return;
-        }
-
-        if (shouldApplyPatch) {
-            var originalIt = it;
-            it = function (title, fn) {
-                if (!fn) {
-                    return originalIt(title);
-                }
-                var async = fn.length > 0;
-                var wrapper = function (done) {
-                    promiseCreated = false;
-                    var result;
-                    try {
-                        if (async) {
-                            fn.call(this, function (err) {
-                                if (err) {
-                                    jasmineFail(err);
-                                    done(err);
-                                } else {
-                                    jasmineSuccess();
-                                    done();
-                                }
-                            });
-                            return;
-                        } else {
-                            result = fn.call(this);
-                        }
-                        var isPromise = result && typeof result === 'object' && typeof result.then === 'function';
-                        if (isPromise) {
-                            result.then(function () {
-                                jasmineSuccess();
-                                done();
-                            }, function (err) {
-                                jasmineFail(err);
-                                done(err);
-                            });
-                        } else if (promiseCreated) {
-                            throw new Error('When using asynchronous assertions you must return a promise from the it block');
-                        } else {
-                            jasmineSuccess();
-                            done();
-                        }
-                    } catch (err) {
-                        jasmineFail(err);
-                        return done(err);
-                    }
-                };
-                wrapper.toString = function () {
-                    return fn.toString();
-                };
-                return originalIt(title, wrapper);
-            };
-            Object.keys(originalIt).forEach(function (methodName) {
-                it[methodName] = originalIt[methodName];
-            });
-            it.patchApplied = true;
-            return true;
-        }
-    }
-};
-
 },{}],14:[function(require,module,exports){
 module.exports = function throwIfNonUnexpectedError(err) {
     if (err && err.message === 'aggregate error') {
@@ -4284,12 +4261,12 @@ module.exports = function throwIfNonUnexpectedError(err) {
 
 },{}],15:[function(require,module,exports){
 (function (Buffer){
-var utils = require(16);
+var utils = require(17);
 var isRegExp = utils.isRegExp;
 var leftPad = utils.leftPad;
-var arrayChanges = require(21);
-var leven = require(34);
-var detectIndent = require(29);
+var arrayChanges = require(22);
+var leven = require(38);
+var detectIndent = require(35);
 var defaultDepth = require(7);
 var AssertionString = require(1);
 
@@ -4336,6 +4313,59 @@ module.exports = function (expect) {
         }
     });
 
+    if (typeof Symbol === 'function') {
+        expect.addType({
+            name: 'Symbol',
+            identify: function (obj) {
+                // We're running jshint in es3 mode so it does not accept typeof x === 'symbol':
+                // jshint ignore:start
+                return typeof obj === 'symbol';
+                // jshint ignore:end
+            },
+            inspect: function (obj, depth, output, inspect) {
+                output
+                    .jsKeyword('Symbol')
+                    .text('(')
+                    .singleQuotedString(obj.toString().replace(/^Symbol\(|\)$/g, ''))
+                    .text(')');
+            }
+        });
+    }
+
+    // If Symbol support is not detected, default to passing undefined to
+    // Array.prototype.sort, which means "natural" (asciibetical) sort.
+    var keyComparator;
+    if (typeof Symbol === 'function') {
+        // Comparator that puts symbols last:
+        keyComparator = function (a, b) {
+            var aString,
+                bString,
+                aIsSymbol,
+                bIsSymbol;
+            // jshint ignore:start
+            aIsSymbol = typeof a === 'symbol';
+            bIsSymbol = typeof b === 'symbol';
+            // jshint ignore:end
+            if (aIsSymbol) {
+                if (bIsSymbol) {
+                    aString = a.toString();
+                    bString = b.toString();
+                } else {
+                    return 1;
+                }
+            } else if (bIsSymbol) {
+                return -1;
+            }
+            if (aString < bString) {
+                return -1;
+            } else if (bString > aString) {
+                return 1;
+            } else {
+                return 0;
+            }
+        };
+    }
+
     expect.addType({
         name: 'object',
         indent: true,
@@ -4366,7 +4396,15 @@ module.exports = function (expect) {
             }
             return output;
         },
-        getKeys: Object.keys,
+        getKeys: Object.getOwnPropertySymbols ? function (obj) {
+            var keys = Object.keys(obj);
+            var symbols = Object.getOwnPropertySymbols(obj);
+            if (symbols.length > 0) {
+                return keys.concat(symbols);
+            } else {
+                return keys;
+            }
+        } : Object.keys,
         equal: function (a, b, equal) {
             if (a === b) {
                 return true;
@@ -4376,10 +4414,10 @@ module.exports = function (expect) {
                 return false;
             }
 
-            var actualKeys = expect.findTypeOf(a).getKeys(a).filter(function (key) {
+            var actualKeys = this.getKeys(a).filter(function (key) {
                     return typeof a[key] !== 'undefined';
                 }),
-                expectedKeys = expect.findTypeOf(b).getKeys(b).filter(function (key) {
+                expectedKeys = this.getKeys(b).filter(function (key) {
                     return typeof b[key] !== 'undefined';
                 });
 
@@ -4388,8 +4426,8 @@ module.exports = function (expect) {
                 return false;
             }
             //the same set of keys (although not necessarily the same order),
-            actualKeys.sort();
-            expectedKeys.sort();
+            actualKeys.sort(keyComparator);
+            expectedKeys.sort(keyComparator);
             // cheap key test
             for (var i = 0; i < actualKeys.length; i += 1) {
                 if (actualKeys[i] !== expectedKeys[i]) {
@@ -4423,27 +4461,17 @@ module.exports = function (expect) {
                 if (hasSetter && !hasGetter) {
                     propertyOutput.text('set').sp();
                 }
-                propertyOutput.key(key);
-                propertyOutput.text(':');
-
                 // Inspect the setter function if there's no getter:
                 var value = (hasSetter && !hasGetter) ? hasSetter : obj[key];
+
                 var inspectedValue = inspect(value);
-
-                inspectedValue.amend(type.delimiter(output.clone(), index, keys.length));
-
-                if (inspectedValue.isBlock() && inspectedValue.isMultiline()) {
-                    propertyOutput.indentLines();
-                    propertyOutput.nl().i();
-                } else {
-                    propertyOutput.sp();
-                }
-
                 if (value && value._expectIt) {
-                    propertyOutput.block(inspectedValue);
-                } else {
-                    propertyOutput.append(inspectedValue);
+                    inspectedValue = output.clone().block(inspectedValue);
                 }
+                propertyOutput.property(key, inspectedValue);
+
+                propertyOutput.amend(type.delimiter(output.clone(), index, keys.length));
+
                 if (hasGetter && hasSetter) {
                     propertyOutput.sp().jsComment('/* getter/setter */');
                 } else if (hasGetter) {
@@ -4532,17 +4560,8 @@ module.exports = function (expect) {
                 diff: output,
                 inline: true
             };
-
-            var keyIndex = {};
-            var actualKeys = expect.findTypeOf(actual).getKeys(actual);
-            actualKeys.concat(expect.findTypeOf(expected).getKeys(expected)).forEach(function (key) {
-                if (!(key in keyIndex)) {
-                    keyIndex[key] = key;
-                }
-            });
-
-            var keys = Object.keys(keyIndex);
-
+            var actualKeys = this.getKeys(actual);
+            var keys = utils.uniqueStringsAndSymbols(actualKeys, this.getKeys(expected));
             var prefixOutput = this.prefix(output.clone(), actual);
             output
                 .append(prefixOutput)
@@ -4586,21 +4605,11 @@ module.exports = function (expect) {
                         valueOutput = inspect(actual[key], conflicting ? Infinity : null);
                     }
 
-                    this.key(key);
-                    this.text(':');
                     valueOutput.amend(type.delimiter(output.clone(), index, actualKeys.length));
-                    if (valueOutput.isBlock() && valueOutput.isMultiline()) {
-                        this.indentLines();
-                        this.nl().i();
-                    } else {
-                        this.sp();
+                    if (!isInlineDiff) {
+                        valueOutput = output.clone().block(valueOutput);
                     }
-
-                    if (isInlineDiff) {
-                        this.append(valueOutput);
-                    } else {
-                        this.block(valueOutput);
-                    }
+                    this.property(key, valueOutput);
                     if (!annotation.isEmpty()) {
                         this.sp().annotationBlock(annotation);
                     }
@@ -4638,8 +4647,8 @@ module.exports = function (expect) {
                 return true;
             }
 
-            var aKeys = expect.findTypeOf(a).getKeys(a);
-            var bKeys = expect.findTypeOf(b).getKeys(b);
+            var aKeys = this.getKeys(a);
+            var bKeys = this.getKeys(b);
             var numberOfSimilarKeys = 0;
             var requiredSimilarKeys = Math.round(Math.max(aKeys.length, bKeys.length) / 2);
             return aKeys.concat(bKeys).some(function (key) {
@@ -4690,10 +4699,18 @@ module.exports = function (expect) {
         name: 'array-like',
         base: 'object',
         identify: false,
+        numericalPropertiesOnly: true,
         getKeys: function (obj) {
             var keys = new Array(obj.length);
             for (var i = 0 ; i < obj.length ; i += 1) {
                 keys[i] = i;
+            }
+            if (!this.numericalPropertiesOnly) {
+                Object.keys(obj).forEach(function (key) {
+                    if (!utils.numericalRegExp.test(key)) {
+                        keys.push(key);
+                    }
+                });
             }
             return keys;
         },
@@ -4701,9 +4718,23 @@ module.exports = function (expect) {
             if (a === b) {
                 return true;
             } else if (a.constructor === b.constructor && a.length === b.length) {
-                for (var i = 0; i < a.length; i += 1) {
-                    if (!equal(a[i], b[i])) {
+                var i;
+                if (this.numericalPropertiesOnly) {
+                    for (i = 0; i < a.length; i += 1) {
+                        if (!equal(a[i], b[i])) {
+                            return false;
+                        }
+                    }
+                } else {
+                    var aKeys = this.getKeys(a);
+                    var bKeys = this.getKeys(b);
+                    if (aKeys.length !== bKeys.length) {
                         return false;
+                    }
+                    for (i = 0; i < aKeys.length; i += 1) {
+                        if (!equal(a[aKeys[i]], b[aKeys[i]])) {
+                            return false;
+                        }
                     }
                 }
                 return true;
@@ -4730,7 +4761,17 @@ module.exports = function (expect) {
             }
 
             var inspectedItems = keys.map(function (key) {
-                return key in arr ? inspect(arr[key]) : output.clone();
+                var inspectedValue;
+                if (key in arr) {
+                    inspectedValue = inspect(arr[key]);
+                } else if (utils.numericalRegExp.test(key)) {
+                    // Sparse array entry
+                    inspectedValue = output.clone();
+                } else {
+                    // Not present non-numerical property returned by getKeys
+                    inspectedValue = inspect(undefined);
+                }
+                return output.clone().property(key, inspectedValue, true);
             });
 
             var currentDepth = defaultDepth - Math.min(defaultDepth, depth);
@@ -4807,15 +4848,15 @@ module.exports = function (expect) {
                 .append(prefixOutput)
                 .nl(prefixOutput.isEmpty() ? 0 : 1);
 
-
             if (this.indent) {
                 output.indentLines();
             }
 
             var type = this;
+
             var changes = arrayChanges(actual, expected, equal, function (a, b) {
                 return type.similar(a, b);
-            });
+            }, !type.numericalPropertiesOnly && utils.uniqueNonNumericalStringsAndSymbols(this.getKeys(actual), this.getKeys(expected)));
             var indexOfLastNonInsert = changes.reduce(function (previousValue, diffItem, index) {
                 return (diffItem.type === 'insert') ? previousValue : index;
             }, -1);
@@ -4825,25 +4866,38 @@ module.exports = function (expect) {
                     var type = diffItem.type;
                     if (type === 'insert') {
                         this.annotationBlock(function () {
-                            this.error('missing ').block(inspect(diffItem.value));
+                            this.error('missing ').block(function () {
+                                var index = typeof diffItem.actualIndex !== 'undefined' ? diffItem.actualIndex : diffItem.expectedIndex;
+                                this.property(index, inspect(diffItem.value), true);
+                            });
                         });
                     } else if (type === 'remove') {
-                        this.block(inspect(diffItem.value).amend(delimiterOutput.sp()).error('// should be removed'));
+                        this.block(function () {
+                            this.property(diffItem.actualIndex, inspect(diffItem.value), true)
+                                .amend(delimiterOutput.sp()).error('// should be removed');
+                        });
                     } else if (type === 'equal') {
-                        this.block(inspect(diffItem.value).amend(delimiterOutput));
+                        this.block(function () {
+                            this.property(diffItem.actualIndex, inspect(diffItem.value), true)
+                                .amend(delimiterOutput);
+                        });
                     } else {
-                        var valueDiff = diff(diffItem.value, diffItem.expected);
-                        if (valueDiff && valueDiff.inline) {
-                            this.block(valueDiff.diff.amend(delimiterOutput));
-                        } else if (valueDiff) {
-                            this.block(inspect(diffItem.value).amend(delimiterOutput.sp())).annotationBlock(function () {
-                                this.shouldEqualError(diffItem.expected, inspect).nl().append(valueDiff.diff);
-                            });
-                        } else {
-                            this.block(inspect(diffItem.value).amend(delimiterOutput.sp())).annotationBlock(function () {
-                                this.shouldEqualError(diffItem.expected, inspect);
-                            });
-                        }
+                        this.block(function () {
+                            var valueDiff = diff(diffItem.value, diffItem.expected);
+                            this.property(diffItem.actualIndex, output.clone().block(function () {
+                                if (valueDiff && valueDiff.inline) {
+                                    this.append(valueDiff.diff.amend(delimiterOutput));
+                                } else if (valueDiff) {
+                                    this.append(inspect(diffItem.value).amend(delimiterOutput.sp())).annotationBlock(function () {
+                                        this.shouldEqualError(diffItem.expected, inspect).nl().append(valueDiff.diff);
+                                    });
+                                } else {
+                                    this.append(inspect(diffItem.value).amend(delimiterOutput.sp())).annotationBlock(function () {
+                                        this.shouldEqualError(diffItem.expected, inspect);
+                                    });
+                                }
+                            }), true);
+                        });
                     }
                 });
             });
@@ -4864,6 +4918,7 @@ module.exports = function (expect) {
     expect.addType({
         name: 'array',
         base: 'array-like',
+        numericalPropertiesOnly: false,
         identify: function (arr) {
             return utils.isArray(arr);
         }
@@ -5137,10 +5192,10 @@ module.exports = function (expect) {
         hexDumpWidth: 16,
         identify: false,
         prefix: function (output) {
-            output.code(this.name + '([', 'javascript');
+            return output.code(this.name + '([', 'javascript');
         },
         suffix: function (output) {
-            output.code('])', 'javascript');
+            return output.code('])', 'javascript');
         },
         equal: function (a, b) {
             if (a === b) {
@@ -5323,10 +5378,21 @@ module.exports = function (expect) {
     });
 };
 
-}).call(this,require(24).Buffer)
+}).call(this,require(26).Buffer)
 },{}],16:[function(require,module,exports){
-var stringDiff = require(33);
+(function (process){
+/*global window*/
+var useFullStackTrace = false;
+if (typeof window !== 'undefined' && typeof window.location !== 'undefined') {
+    useFullStackTrace = !!window.location.search.match(/[?&]full-trace=true(?:$|&)/);
+} else if (typeof process !== 'undefined' && process.env.UNEXPECTED_FULL_TRACE) {
+    useFullStackTrace = true;
+}
+module.exports = useFullStackTrace;
 
+}).call(this,require(30))
+},{}],17:[function(require,module,exports){
+var stringDiff = require(36);
 var specialCharRegexp = /([\x00-\x09\x0B-\x1F\x7F-\x9F\xAD\u0378\u0379\u037F-\u0383\u038B\u038D\u03A2\u0528-\u0530\u0557\u0558\u0560\u0588\u058B-\u058E\u0590\u05C8-\u05CF\u05EB-\u05EF\u05F5-\u0605\u061C\u061D\u06DD\u070E\u070F\u074B\u074C\u07B2-\u07BF\u07FB-\u07FF\u082E\u082F\u083F\u085C\u085D\u085F-\u089F\u08A1\u08AD-\u08E3\u08FF\u0978\u0980\u0984\u098D\u098E\u0991\u0992\u09A9\u09B1\u09B3-\u09B5\u09BA\u09BB\u09C5\u09C6\u09C9\u09CA\u09CF-\u09D6\u09D8-\u09DB\u09DE\u09E4\u09E5\u09FC-\u0A00\u0A04\u0A0B-\u0A0E\u0A11\u0A12\u0A29\u0A31\u0A34\u0A37\u0A3A\u0A3B\u0A3D\u0A43-\u0A46\u0A49\u0A4A\u0A4E-\u0A50\u0A52-\u0A58\u0A5D\u0A5F-\u0A65\u0A76-\u0A80\u0A84\u0A8E\u0A92\u0AA9\u0AB1\u0AB4\u0ABA\u0ABB\u0AC6\u0ACA\u0ACE\u0ACF\u0AD1-\u0ADF\u0AE4\u0AE5\u0AF2-\u0B00\u0B04\u0B0D\u0B0E\u0B11\u0B12\u0B29\u0B31\u0B34\u0B3A\u0B3B\u0B45\u0B46\u0B49\u0B4A\u0B4E-\u0B55\u0B58-\u0B5B\u0B5E\u0B64\u0B65\u0B78-\u0B81\u0B84\u0B8B-\u0B8D\u0B91\u0B96-\u0B98\u0B9B\u0B9D\u0BA0-\u0BA2\u0BA5-\u0BA7\u0BAB-\u0BAD\u0BBA-\u0BBD\u0BC3-\u0BC5\u0BC9\u0BCE\u0BCF\u0BD1-\u0BD6\u0BD8-\u0BE5\u0BFB-\u0C00\u0C04\u0C0D\u0C11\u0C29\u0C34\u0C3A-\u0C3C\u0C45\u0C49\u0C4E-\u0C54\u0C57\u0C5A-\u0C5F\u0C64\u0C65\u0C70-\u0C77\u0C80\u0C81\u0C84\u0C8D\u0C91\u0CA9\u0CB4\u0CBA\u0CBB\u0CC5\u0CC9\u0CCE-\u0CD4\u0CD7-\u0CDD\u0CDF\u0CE4\u0CE5\u0CF0\u0CF3-\u0D01\u0D04\u0D0D\u0D11\u0D3B\u0D3C\u0D45\u0D49\u0D4F-\u0D56\u0D58-\u0D5F\u0D64\u0D65\u0D76-\u0D78\u0D80\u0D81\u0D84\u0D97-\u0D99\u0DB2\u0DBC\u0DBE\u0DBF\u0DC7-\u0DC9\u0DCB-\u0DCE\u0DD5\u0DD7\u0DE0-\u0DF1\u0DF5-\u0E00\u0E3B-\u0E3E\u0E5C-\u0E80\u0E83\u0E85\u0E86\u0E89\u0E8B\u0E8C\u0E8E-\u0E93\u0E98\u0EA0\u0EA4\u0EA6\u0EA8\u0EA9\u0EAC\u0EBA\u0EBE\u0EBF\u0EC5\u0EC7\u0ECE\u0ECF\u0EDA\u0EDB\u0EE0-\u0EFF\u0F48\u0F6D-\u0F70\u0F98\u0FBD\u0FCD\u0FDB-\u0FFF\u10C6\u10C8-\u10CC\u10CE\u10CF\u1249\u124E\u124F\u1257\u1259\u125E\u125F\u1289\u128E\u128F\u12B1\u12B6\u12B7\u12BF\u12C1\u12C6\u12C7\u12D7\u1311\u1316\u1317\u135B\u135C\u137D-\u137F\u139A-\u139F\u13F5-\u13FF\u169D-\u169F\u16F1-\u16FF\u170D\u1715-\u171F\u1737-\u173F\u1754-\u175F\u176D\u1771\u1774-\u177F\u17DE\u17DF\u17EA-\u17EF\u17FA-\u17FF\u180F\u181A-\u181F\u1878-\u187F\u18AB-\u18AF\u18F6-\u18FF\u191D-\u191F\u192C-\u192F\u193C-\u193F\u1941-\u1943\u196E\u196F\u1975-\u197F\u19AC-\u19AF\u19CA-\u19CF\u19DB-\u19DD\u1A1C\u1A1D\u1A5F\u1A7D\u1A7E\u1A8A-\u1A8F\u1A9A-\u1A9F\u1AAE-\u1AFF\u1B4C-\u1B4F\u1B7D-\u1B7F\u1BF4-\u1BFB\u1C38-\u1C3A\u1C4A-\u1C4C\u1C80-\u1CBF\u1CC8-\u1CCF\u1CF7-\u1CFF\u1DE7-\u1DFB\u1F16\u1F17\u1F1E\u1F1F\u1F46\u1F47\u1F4E\u1F4F\u1F58\u1F5A\u1F5C\u1F5E\u1F7E\u1F7F\u1FB5\u1FC5\u1FD4\u1FD5\u1FDC\u1FF0\u1FF1\u1FF5\u1FFF\u200B-\u200F\u202A-\u202E\u2060-\u206F\u2072\u2073\u208F\u209D-\u209F\u20BA-\u20CF\u20F1-\u20FF\u218A-\u218F\u23F4-\u23FF\u2427-\u243F\u244B-\u245F\u2700\u2B4D-\u2B4F\u2B5A-\u2BFF\u2C2F\u2C5F\u2CF4-\u2CF8\u2D26\u2D28-\u2D2C\u2D2E\u2D2F\u2D68-\u2D6E\u2D71-\u2D7E\u2D97-\u2D9F\u2DA7\u2DAF\u2DB7\u2DBF\u2DC7\u2DCF\u2DD7\u2DDF\u2E3C-\u2E7F\u2E9A\u2EF4-\u2EFF\u2FD6-\u2FEF\u2FFC-\u2FFF\u3040\u3097\u3098\u3100-\u3104\u312E-\u3130\u318F\u31BB-\u31BF\u31E4-\u31EF\u321F\u32FF\u4DB6-\u4DBF\u9FCD-\u9FFF\uA48D-\uA48F\uA4C7-\uA4CF\uA62C-\uA63F\uA698-\uA69E\uA6F8-\uA6FF\uA78F\uA794-\uA79F\uA7AB-\uA7F7\uA82C-\uA82F\uA83A-\uA83F\uA878-\uA87F\uA8C5-\uA8CD\uA8DA-\uA8DF\uA8FC-\uA8FF\uA954-\uA95E\uA97D-\uA97F\uA9CE\uA9DA-\uA9DD\uA9E0-\uA9FF\uAA37-\uAA3F\uAA4E\uAA4F\uAA5A\uAA5B\uAA7C-\uAA7F\uAAC3-\uAADA\uAAF7-\uAB00\uAB07\uAB08\uAB0F\uAB10\uAB17-\uAB1F\uAB27\uAB2F-\uABBF\uABEE\uABEF\uABFA-\uABFF\uD7A4-\uD7AF\uD7C7-\uD7CA\uD7FC-\uF8FF\uFA6E\uFA6F\uFADA-\uFAFF\uFB07-\uFB12\uFB18-\uFB1C\uFB37\uFB3D\uFB3F\uFB42\uFB45\uFBC2-\uFBD2\uFD40-\uFD4F\uFD90\uFD91\uFDC8-\uFDEF\uFDFE\uFDFF\uFE1A-\uFE1F\uFE27-\uFE2F\uFE53\uFE67\uFE6C-\uFE6F\uFE75\uFEFD-\uFF00\uFFBF-\uFFC1\uFFC8\uFFC9\uFFD0\uFFD1\uFFD8\uFFD9\uFFDD-\uFFDF\uFFE7\uFFEF-\uFFFB\uFFFE\uFFFF])/g;
 
 /* jshint proto:true */
@@ -5563,12 +5629,46 @@ var utils = module.exports = {
             }
         }
         return target;
-    }
+    },
+
+    uniqueStringsAndSymbols: function () { // [filterFn], item1, item2...
+        var filterFn;
+        if (typeof arguments[0] === 'function') {
+            filterFn = arguments[0];
+        }
+        var index = {};
+        var uniqueStringsAndSymbols = [];
+
+        function visit(item) {
+            if (Array.isArray(item)) {
+                item.forEach(visit);
+            } else if (!index[item] && (!filterFn || filterFn(item))) {
+                index[item] = true;
+                uniqueStringsAndSymbols.push(item);
+            }
+        }
+
+        for (var i = filterFn ? 1 : 0 ; i < arguments.length ; i += 1) {
+            visit(arguments[i]);
+        }
+        return uniqueStringsAndSymbols;
+    },
+
+    uniqueNonNumericalStringsAndSymbols: function () { // ...
+        return utils.uniqueStringsAndSymbols(function (stringOrSymbol) {
+            var isSymbol;
+            /*jshint ignore:start*/
+            isSymbol = typeof stringOrSymbol === 'symbol';
+            /*jshint ignore:end*/
+            return isSymbol || !utils.numericalRegExp.test(stringOrSymbol);
+        }, Array.prototype.slice.call(arguments));
+    },
+
+    numericalRegExp: /^(?:0|[1-9][0-9]*)$/
 };
 
-},{}],17:[function(require,module,exports){
-/*global Promise:true*/
-var Promise = require(23);
+},{}],18:[function(require,module,exports){
+var Promise = require(25);
 
 var workQueue = {
     queue: [],
@@ -5603,41 +5703,78 @@ Promise.prototype._notifyUnhandledRejection = function () {
 
 module.exports = workQueue;
 
-},{}],18:[function(require,module,exports){
-var testFrameworkPatch = require(13);
-
-function applyTestFrameworkPatchWhenLoaded(mod) {
-    Object.defineProperty(require.cache, mod.id, {
-        get: function () {
-            testFrameworkPatch.applyPatch();
-            return mod;
-        }
-    });
-}
-
-if (testFrameworkPatch.applyPatch() && typeof require === 'function' && require.cache) {
-    // Make sure that the 'it' global gets patched in every context where Unexpected is required,
-    // but prevent rereading index.js and the chain of parent modules from disc each time:
-
-    for (var mod = module ; mod ; mod = mod.parent) {
-        applyTestFrameworkPatchWhenLoaded(mod);
-    }
-}
-
+},{}],19:[function(require,module,exports){
 module.exports = require(2).create()
-    .use(require(12))
+    .use(require(13))
     .use(require(15))
     .use(require(4));
 
 // Add an inspect method to all the promises we return that will make the REPL, console.log, and util.inspect render it nicely in node.js:
-require(23).prototype.inspect = function () {
-    return module.exports.createOutput(require(38).defaultFormat).appendInspected(this).toString();
+require(25).prototype.inspect = function () {
+    return module.exports.createOutput(require(42).defaultFormat).appendInspected(this).toString();
 };
 
-},{}],19:[function(require,module,exports){
-/*global setTimeout */
-var arrayDiff = require(20);
+},{}],20:[function(require,module,exports){
+'use strict';
 
+var styles = module.exports = {
+	modifiers: {
+		reset: [0, 0],
+		bold: [1, 22], // 21 isn't widely supported and 22 does the same thing
+		dim: [2, 22],
+		italic: [3, 23],
+		underline: [4, 24],
+		inverse: [7, 27],
+		hidden: [8, 28],
+		strikethrough: [9, 29]
+	},
+	colors: {
+		black: [30, 39],
+		red: [31, 39],
+		green: [32, 39],
+		yellow: [33, 39],
+		blue: [34, 39],
+		magenta: [35, 39],
+		cyan: [36, 39],
+		white: [37, 39],
+		gray: [90, 39]
+	},
+	bgColors: {
+		bgBlack: [40, 49],
+		bgRed: [41, 49],
+		bgGreen: [42, 49],
+		bgYellow: [43, 49],
+		bgBlue: [44, 49],
+		bgMagenta: [45, 49],
+		bgCyan: [46, 49],
+		bgWhite: [47, 49]
+	}
+};
+
+// fix humans
+styles.colors.grey = styles.colors.gray;
+
+Object.keys(styles).forEach(function (groupName) {
+	var group = styles[groupName];
+
+	Object.keys(group).forEach(function (styleName) {
+		var style = group[styleName];
+
+		styles[styleName] = group[styleName] = {
+			open: '\u001b[' + style[0] + 'm',
+			close: '\u001b[' + style[1] + 'm'
+		};
+	});
+
+	Object.defineProperty(styles, groupName, {
+		value: group,
+		enumerable: false
+	});
+});
+
+},{}],21:[function(require,module,exports){
+/*global setTimeout */
+var arrayDiff = require(23);
 var MAX_STACK_DEPTH = 1000;
 
 function extend(target) {
@@ -5650,7 +5787,11 @@ function extend(target) {
     return target;
 }
 
-module.exports = function arrayChanges(actual, expected, equal, similar, arrayChangesCallback) {
+module.exports = function arrayChanges(actual, expected, equal, similar, includeNonNumericalProperties, arrayChangesCallback) {
+    if (typeof includeNonNumericalProperties === 'function') {
+        arrayChangesCallback = includeNonNumericalProperties;
+        includeNonNumericalProperties = false;
+    }
     var mutatedArray = new Array(actual.length);
 
     for (var k = 0; k < actual.length; k += 1) {
@@ -5659,10 +5800,6 @@ module.exports = function arrayChanges(actual, expected, equal, similar, arrayCh
             actualIndex: k,
             value: actual[k]
         };
-    }
-
-    if (mutatedArray.length > 0) {
-        mutatedArray[mutatedArray.length - 1].last = true;
     }
 
     similar = similar || function (a, b, aIndex, bIndex, callback) {
@@ -5761,8 +5898,6 @@ module.exports = function arrayChanges(actual, expected, equal, similar, arrayCh
 
         var end = Math.max(actual.length, expected.length);
 
-        var stackCallsRemaining = MAX_STACK_DEPTH;
-
         var countConflicts = function (i, c, stackCallsRemaining, callback) {
 
             if (i >= end || c > conflicts) {
@@ -5825,26 +5960,22 @@ module.exports = function arrayChanges(actual, expected, equal, similar, arrayCh
                         });
                     }
                 }
-                if (mutatedArray.length > 0) {
-                    mutatedArray[mutatedArray.length - 1].last = true;
-                }
             }
 
-            var mutatedArrayLength = mutatedArray.length;
             var setEqual = function (i, stackCallsRemaining, callback) {
-                if (i >= mutatedArrayLength) {
+                if (i >= mutatedArray.length) {
                     return callback();
                 }
                 var diffItem = mutatedArray[i];
                 if (diffItem.type === 'similar') {
                     return equal(diffItem.value, diffItem.expected, diffItem.actualIndex, diffItem.expectedIndex, function (areEqual) {
-                       if (areEqual) {
-                           mutatedArray[i].type = 'equal';
-                       }
+                        if (areEqual) {
+                            mutatedArray[i].type = 'equal';
+                        }
                         if (stackCallsRemaining === 0) {
                             return setTimeout(function () {
                                 setEqual(i + 1, MAX_STACK_DEPTH, callback);
-                            })
+                            });
                         }
                         setEqual(i + 1, stackCallsRemaining - 1, callback);
                     });
@@ -5852,20 +5983,291 @@ module.exports = function arrayChanges(actual, expected, equal, similar, arrayCh
                 if (stackCallsRemaining === 0) {
                     return setTimeout(function () {
                         setEqual(i + 1, MAX_STACK_DEPTH, callback);
-                    })
+                    });
                 }
                 return setEqual(i + 1, stackCallsRemaining - 1, callback);
             };
 
+            if (includeNonNumericalProperties) {
+                var nonNumericalKeys;
+                if (Array.isArray(includeNonNumericalProperties)) {
+                    nonNumericalKeys = includeNonNumericalProperties;
+                } else {
+                    var isSeenByNonNumericalKey = {};
+                    nonNumericalKeys = [];
+                    [actual, expected].forEach(function (obj) {
+                        Object.keys(obj).forEach(function (key) {
+                            if (!/^(?:0|[1-9][0-9]*)$/.test(key) && !isSeenByNonNumericalKey[key]) {
+                                isSeenByNonNumericalKey[key] = true;
+                                nonNumericalKeys.push(key);
+                            }
+                        });
+                        if (Object.getOwnPropertySymbols) {
+                            Object.getOwnPropertySymbols(obj).forEach(function (symbol) {
+                                if (!isSeenByNonNumericalKey[symbol]) {
+                                    isSeenByNonNumericalKey[symbol] = true;
+                                    nonNumericalKeys.push(symbol);
+                                }
+                            });
+                        }
+                    });
+                }
+                nonNumericalKeys.forEach(function (key) {
+                    if (key in actual) {
+                        if (key in expected) {
+                            mutatedArray.push({
+                                type: 'similar',
+                                expectedIndex: key,
+                                actualIndex: key,
+                                value: actual[key],
+                                expected: expected[key]
+                            });
+                        } else {
+                            mutatedArray.push({
+                                type: 'remove',
+                                actualIndex: key,
+                                value: actual[key]
+                            });
+                        }
+                    } else {
+                        mutatedArray.push({
+                            type: 'insert',
+                            expectedIndex: key,
+                            value: expected[key]
+                        });
+                    }
+                });
+            }
+
             setEqual(0, MAX_STACK_DEPTH, function () {
+                if (mutatedArray.length > 0) {
+                    mutatedArray[mutatedArray.length - 1].last = true;
+                }
+
                 arrayChangesCallback(mutatedArray);
             });
-
         });
     });
 };
 
-},{}],20:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
+var arrayDiff = require(24);
+
+function extend(target) {
+    for (var i = 1; i < arguments.length; i += 1) {
+        var source = arguments[i];
+        Object.keys(source).forEach(function (key) {
+            target[key] = source[key];
+        });
+    }
+    return target;
+}
+
+module.exports = function arrayChanges(actual, expected, equal, similar, includeNonNumericalProperties) {
+    var mutatedArray = new Array(actual.length);
+
+    for (var k = 0; k < actual.length; k += 1) {
+        mutatedArray[k] = {
+            type: 'similar',
+            value: actual[k],
+            actualIndex: k
+        };
+    }
+
+    similar = similar || function (a, b) {
+        return false;
+    };
+
+    var itemsDiff = arrayDiff(Array.prototype.slice.call(actual), Array.prototype.slice.call(expected), function (a, b, aIndex, bIndex) {
+        return equal(a, b, aIndex, bIndex) || similar(a, b, aIndex, bIndex);
+    });
+
+    var removeTable = [];
+    function offsetIndex(index) {
+        return index + (removeTable[index - 1] || 0);
+    }
+
+    var removes = itemsDiff.filter(function (diffItem) {
+        return diffItem.type === 'remove';
+    });
+
+    var removesByIndex = {};
+    var removedItems = 0;
+    removes.forEach(function (diffItem) {
+        var removeIndex = removedItems + diffItem.index;
+        mutatedArray.slice(removeIndex, diffItem.howMany + removeIndex).forEach(function (v) {
+            v.type = 'remove';
+        });
+        removedItems += diffItem.howMany;
+        removesByIndex[diffItem.index] = removedItems;
+    });
+
+    function updateRemoveTable() {
+        removedItems = 0;
+        Array.prototype.forEach.call(actual, function (_, index) {
+            removedItems += removesByIndex[index] || 0;
+            removeTable[index] = removedItems;
+        });
+    }
+
+    updateRemoveTable();
+
+    var moves = itemsDiff.filter(function (diffItem) {
+        return diffItem.type === 'move';
+    });
+
+    var movedItems = 0;
+    moves.forEach(function (diffItem) {
+        var moveFromIndex = offsetIndex(diffItem.from);
+        var removed = mutatedArray.slice(moveFromIndex, diffItem.howMany + moveFromIndex);
+        var added = removed.map(function (v) {
+            return extend({}, v, { last: false, type: 'insert' });
+        });
+        removed.forEach(function (v) {
+            v.type = 'remove';
+        });
+        Array.prototype.splice.apply(mutatedArray, [offsetIndex(diffItem.to), 0].concat(added));
+        movedItems += diffItem.howMany;
+        removesByIndex[diffItem.from] = movedItems;
+        updateRemoveTable();
+    });
+
+    var inserts = itemsDiff.filter(function (diffItem) {
+        return diffItem.type === 'insert';
+    });
+
+    inserts.forEach(function (diffItem) {
+        var added = new Array(diffItem.values.length);
+        for (var i = 0 ; i < diffItem.values.length ; i += 1) {
+            added[i] = {
+                type: 'insert',
+                value: diffItem.values[i],
+                expectedIndex: diffItem.index
+            };
+        }
+        Array.prototype.splice.apply(mutatedArray, [offsetIndex(diffItem.index), 0].concat(added));
+    });
+
+    var offset = 0;
+    mutatedArray.forEach(function (diffItem, index) {
+        var type = diffItem.type;
+        if (type === 'remove') {
+            offset -= 1;
+        } else if (type === 'similar') {
+            diffItem.expected = expected[offset + index];
+            diffItem.expectedIndex = offset + index;
+        }
+    });
+
+    var conflicts = mutatedArray.reduce(function (conflicts, item) {
+        return item.type === 'similar' ? conflicts : conflicts + 1;
+    }, 0);
+
+    for (var i = 0, c = 0; i < Math.max(actual.length, expected.length) && c <= conflicts; i += 1) {
+        if (
+            i >= actual.length || i >= expected.length || (!equal(actual[i], expected[i], i, i) && !similar(actual[i], expected[i], i, i))
+        ) {
+            c += 1;
+        }
+    }
+
+    if (c <= conflicts) {
+        mutatedArray = [];
+        var j;
+        for (j = 0; j < Math.min(actual.length, expected.length); j += 1) {
+            mutatedArray.push({
+                type: 'similar',
+                value: actual[j],
+                expected: expected[j],
+                actualIndex: j,
+                expectedIndex: j
+            });
+        }
+
+        if (actual.length < expected.length) {
+            for (; j < Math.max(actual.length, expected.length); j += 1) {
+                mutatedArray.push({
+                    type: 'insert',
+                    value: expected[j],
+                    expectedIndex: j
+                });
+            }
+        } else {
+            for (; j < Math.max(actual.length, expected.length); j += 1) {
+                mutatedArray.push({
+                    type: 'remove',
+                    value: actual[j],
+                    actualIndex: j
+                });
+            }
+        }
+    }
+
+    mutatedArray.forEach(function (diffItem) {
+        if (diffItem.type === 'similar' && equal(diffItem.value, diffItem.expected, diffItem.actualIndex, diffItem.expectedIndex)) {
+            diffItem.type = 'equal';
+        }
+    });
+
+    if (includeNonNumericalProperties) {
+        var nonNumericalKeys;
+        if (Array.isArray(includeNonNumericalProperties)) {
+            nonNumericalKeys = includeNonNumericalProperties;
+        } else {
+            var isSeenByNonNumericalKey = {};
+            nonNumericalKeys = [];
+            [actual, expected].forEach(function (obj) {
+                Object.keys(obj).forEach(function (key) {
+                    if (!/^(?:0|[1-9][0-9]*)$/.test(key) && !isSeenByNonNumericalKey[key]) {
+                        isSeenByNonNumericalKey[key] = true;
+                        nonNumericalKeys.push(key);
+                    }
+                });
+                if (Object.getOwnPropertySymbols) {
+                    Object.getOwnPropertySymbols(obj).forEach(function (symbol) {
+                        if (!isSeenByNonNumericalKey[symbol]) {
+                            isSeenByNonNumericalKey[symbol] = true;
+                            nonNumericalKeys.push(symbol);
+                        }
+                    });
+                }
+            });
+        }
+        nonNumericalKeys.forEach(function (key) {
+            if (key in actual) {
+                if (key in expected) {
+                    mutatedArray.push({
+                        type: equal(actual[key], expected[key], key, key) ? 'equal' : 'similar',
+                        expectedIndex: key,
+                        actualIndex: key,
+                        value: actual[key],
+                        expected: expected[key]
+                    });
+                } else {
+                    mutatedArray.push({
+                        type: 'remove',
+                        actualIndex: key,
+                        value: actual[key]
+                    });
+                }
+            } else {
+                mutatedArray.push({
+                    type: 'insert',
+                    expectedIndex: key,
+                    value: expected[key]
+                });
+            }
+        });
+    }
+
+    if (mutatedArray.length > 0) {
+        mutatedArray[mutatedArray.length - 1].last = true;
+    }
+
+    return mutatedArray;
+};
+
+},{}],23:[function(require,module,exports){
 
 module.exports = arrayDiff;
 
@@ -6106,176 +6508,7 @@ function arrayDiff(before, after, equalFn, callback) {
     });
 }
 
-},{}],21:[function(require,module,exports){
-var arrayDiff = require(22);
-
-function extend(target) {
-    for (var i = 1; i < arguments.length; i += 1) {
-        var source = arguments[i];
-        Object.keys(source).forEach(function (key) {
-            target[key] = source[key];
-        });
-    }
-    return target;
-}
-
-module.exports = function arrayChanges(actual, expected, equal, similar) {
-    var mutatedArray = new Array(actual.length);
-
-    for (var k = 0; k < actual.length; k += 1) {
-        mutatedArray[k] = {
-            type: 'similar',
-            value: actual[k],
-            actualIndex: k
-        };
-    }
-
-    if (mutatedArray.length > 0) {
-        mutatedArray[mutatedArray.length - 1].last = true;
-    }
-
-    similar = similar || function (a, b) {
-        return false;
-    };
-
-    var itemsDiff = arrayDiff(Array.prototype.slice.call(actual), Array.prototype.slice.call(expected), function (a, b, aIndex, bIndex) {
-        return equal(a, b, aIndex, bIndex) || similar(a, b, aIndex, bIndex);
-    });
-
-    var removeTable = [];
-    function offsetIndex(index) {
-        return index + (removeTable[index - 1] || 0);
-    }
-
-    var removes = itemsDiff.filter(function (diffItem) {
-        return diffItem.type === 'remove';
-    });
-
-    var removesByIndex = {};
-    var removedItems = 0;
-    removes.forEach(function (diffItem) {
-        var removeIndex = removedItems + diffItem.index;
-        mutatedArray.slice(removeIndex, diffItem.howMany + removeIndex).forEach(function (v) {
-            v.type = 'remove';
-        });
-        removedItems += diffItem.howMany;
-        removesByIndex[diffItem.index] = removedItems;
-    });
-
-    function updateRemoveTable() {
-        removedItems = 0;
-        Array.prototype.forEach.call(actual, function (_, index) {
-            removedItems += removesByIndex[index] || 0;
-            removeTable[index] = removedItems;
-        });
-    }
-
-    updateRemoveTable();
-
-    var moves = itemsDiff.filter(function (diffItem) {
-        return diffItem.type === 'move';
-    });
-
-    var movedItems = 0;
-    moves.forEach(function (diffItem) {
-        var moveFromIndex = offsetIndex(diffItem.from);
-        var removed = mutatedArray.slice(moveFromIndex, diffItem.howMany + moveFromIndex);
-        var added = removed.map(function (v) {
-            return extend({}, v, { last: false, type: 'insert' });
-        });
-        removed.forEach(function (v) {
-            v.type = 'remove';
-        });
-        Array.prototype.splice.apply(mutatedArray, [offsetIndex(diffItem.to), 0].concat(added));
-        movedItems += diffItem.howMany;
-        removesByIndex[diffItem.from] = movedItems;
-        updateRemoveTable();
-    });
-
-    var inserts = itemsDiff.filter(function (diffItem) {
-        return diffItem.type === 'insert';
-    });
-
-    inserts.forEach(function (diffItem) {
-        var added = new Array(diffItem.values.length);
-        for (var i = 0 ; i < diffItem.values.length ; i += 1) {
-            added[i] = {
-                type: 'insert',
-                value: diffItem.values[i],
-                expectedIndex: diffItem.index
-            };
-        }
-        Array.prototype.splice.apply(mutatedArray, [offsetIndex(diffItem.index), 0].concat(added));
-    });
-
-    var offset = 0;
-    mutatedArray.forEach(function (diffItem, index) {
-        var type = diffItem.type;
-        if (type === 'remove') {
-            offset -= 1;
-        } else if (type === 'similar') {
-            diffItem.expected = expected[offset + index];
-            diffItem.expectedIndex = offset + index;
-        }
-    });
-
-    var conflicts = mutatedArray.reduce(function (conflicts, item) {
-        return item.type === 'similar' ? conflicts : conflicts + 1;
-    }, 0);
-
-    for (var i = 0, c = 0; i < Math.max(actual.length, expected.length) && c <= conflicts; i += 1) {
-        if (
-            i >= actual.length || i >= expected.length || (!equal(actual[i], expected[i], i, i) && !similar(actual[i], expected[i], i, i))
-        ) {
-            c += 1;
-        }
-    }
-
-    if (c <= conflicts) {
-        mutatedArray = [];
-        var j;
-        for (j = 0; j < Math.min(actual.length, expected.length); j += 1) {
-            mutatedArray.push({
-                type: 'similar',
-                value: actual[j],
-                expected: expected[j],
-                actualIndex: j,
-                expectedIndex: j
-            });
-        }
-
-        if (actual.length < expected.length) {
-            for (; j < Math.max(actual.length, expected.length); j += 1) {
-                mutatedArray.push({
-                    type: 'insert',
-                    value: expected[j],
-                    expectedIndex: j
-                });
-            }
-        } else {
-            for (; j < Math.max(actual.length, expected.length); j += 1) {
-                mutatedArray.push({
-                    type: 'remove',
-                    value: actual[j],
-                    actualIndex: j
-                });
-            }
-        }
-        if (mutatedArray.length > 0) {
-            mutatedArray[mutatedArray.length - 1].last = true;
-        }
-    }
-
-    mutatedArray.forEach(function (diffItem) {
-        if (diffItem.type === 'similar' && equal(diffItem.value, diffItem.expected, diffItem.actualIndex, diffItem.expectedIndex)) {
-            diffItem.type = 'equal';
-        }
-    });
-
-    return mutatedArray;
-};
-
-},{}],22:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 module.exports = arrayDiff;
 
 // Based on some rough benchmarking, this algorithm is about O(2n) worst case,
@@ -6458,7 +6691,7 @@ function arrayDiff(before, after, equalFn) {
   return removes.concat(outputMoves, inserts);
 }
 
-},{}],23:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 (function (process,global){
 /* @preserve
  * The MIT License (MIT)
@@ -11317,8 +11550,8 @@ module.exports = ret;
 
 },{"./es5.js":14}]},{},[4])(4)
 });                    ;if (typeof window !== 'undefined' && window !== null) {                               window.P = window.Promise;                                                     } else if (typeof self !== 'undefined' && self !== null) {                             self.P = self.Promise;                                                         }
-}).call(this,require(28),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],24:[function(require,module,exports){
+}).call(this,require(30),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],26:[function(require,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -11326,9 +11559,9 @@ module.exports = ret;
  * @license  MIT
  */
 
-var base64 = require(25)
-var ieee754 = require(26)
-var isArray = require(27)
+var base64 = require(27)
+var ieee754 = require(28)
+var isArray = require(29)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = Buffer
@@ -12372,7 +12605,7 @@ function decodeUtf8Char (str) {
   }
 }
 
-},{}],25:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 ;(function (exports) {
@@ -12494,7 +12727,7 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 	exports.fromByteArray = uint8ToBase64
 }(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
 
-},{}],26:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = nBytes * 8 - mLen - 1
@@ -12580,7 +12813,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],27:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 
 /**
  * isArray
@@ -12615,7 +12848,7 @@ module.exports = isArray || function (val) {
   return !! val && '[object Array]' == str.call(val);
 };
 
-},{}],28:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -12680,9 +12913,429 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],29:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
+/**
+ * @author Markus Ekholm
+ * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
+ * @license Copyright (c) 2012-2015, Markus Ekholm
+ * All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *    * Redistributions of source code must retain the above copyright
+ *      notice, this list of conditions and the following disclaimer.
+ *    * Redistributions in binary form must reproduce the above copyright
+ *      notice, this list of conditions and the following disclaimer in the
+ *      documentation and/or other materials provided with the distribution.
+ *    * Neither the name of the <organization> nor the
+ *      names of its contributors may be used to endorse or promote products
+ *      derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL MARKUS EKHOLM BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/**
+* EXPORTS
+*/
+exports.rgb_to_lab = rgb_to_lab;
+
+/**
+* IMPORTS
+*/
+var pow  = Math.pow;
+var sqrt = Math.sqrt;
+
+/**
+ * API FUNCTIONS
+ */
+
+/**
+* Returns c converted to labcolor.
+* @param {rgbcolor} c should have fields R,G,B
+* @return {labcolor} c converted to labcolor
+*/
+function rgb_to_lab(c)
+{
+  return xyz_to_lab(rgb_to_xyz(c))
+}
+
+/**
+* Returns c converted to xyzcolor.
+* @param {rgbcolor} c should have fields R,G,B
+* @return {xyzcolor} c converted to xyzcolor
+*/
+function rgb_to_xyz(c)
+{
+  // Based on http://www.easyrgb.com/index.php?X=MATH&H=02
+  var R = ( c.R / 255 );
+  var G = ( c.G / 255 );
+  var B = ( c.B / 255 );
+
+  if ( R > 0.04045 ) R = pow(( ( R + 0.055 ) / 1.055 ),2.4);
+  else               R = R / 12.92;
+  if ( G > 0.04045 ) G = pow(( ( G + 0.055 ) / 1.055 ),2.4);
+  else               G = G / 12.92;
+  if ( B > 0.04045 ) B = pow(( ( B + 0.055 ) / 1.055 ), 2.4);
+  else               B = B / 12.92;
+
+  R *= 100;
+  G *= 100;
+  B *= 100;
+
+  // Observer. = 2°, Illuminant = D65
+  var X = R * 0.4124 + G * 0.3576 + B * 0.1805;
+  var Y = R * 0.2126 + G * 0.7152 + B * 0.0722;
+  var Z = R * 0.0193 + G * 0.1192 + B * 0.9505;
+  return {'X' : X, 'Y' : Y, 'Z' : Z};
+}
+
+/**
+* Returns c converted to labcolor.
+* @param {xyzcolor} c should have fields X,Y,Z
+* @return {labcolor} c converted to labcolor
+*/
+function xyz_to_lab(c)
+{
+  // Based on http://www.easyrgb.com/index.php?X=MATH&H=07
+  var ref_Y = 100.000;
+  var ref_Z = 108.883;
+  var ref_X = 95.047; // Observer= 2°, Illuminant= D65
+  var Y = c.Y / ref_Y;
+  var Z = c.Z / ref_Z;
+  var X = c.X / ref_X;
+  if ( X > 0.008856 ) X = pow(X, 1/3);
+  else                X = ( 7.787 * X ) + ( 16 / 116 );
+  if ( Y > 0.008856 ) Y = pow(Y, 1/3);
+  else                Y = ( 7.787 * Y ) + ( 16 / 116 );
+  if ( Z > 0.008856 ) Z = pow(Z, 1/3);
+  else                Z = ( 7.787 * Z ) + ( 16 / 116 );
+  var L = ( 116 * Y ) - 16;
+  var a = 500 * ( X - Y );
+  var b = 200 * ( Y - Z );
+  return {'L' : L , 'a' : a, 'b' : b};
+}
+
+// Local Variables:
+// allout-layout: t
+// js-indent-level: 2
+// End:
+
+},{}],32:[function(require,module,exports){
+/**
+ * @author Markus Ekholm
+ * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
+ * @license Copyright (c) 2012-2015, Markus Ekholm
+ * All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *    * Redistributions of source code must retain the above copyright
+ *      notice, this list of conditions and the following disclaimer.
+ *    * Redistributions in binary form must reproduce the above copyright
+ *      notice, this list of conditions and the following disclaimer in the
+ *      documentation and/or other materials provided with the distribution.
+ *    * Neither the name of the <organization> nor the
+ *      names of its contributors may be used to endorse or promote products
+ *      derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL MARKUS EKHOLM BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/**
+* EXPORTS
+*/
+exports.ciede2000 = ciede2000;
+
+/**
+* IMPORTS
+*/
+var sqrt = Math.sqrt;
+var pow = Math.pow;
+var cos = Math.cos;
+var atan2 = Math.atan2;
+var sin = Math.sin;
+var abs = Math.abs;
+var exp = Math.exp;
+var PI = Math.PI;
+
+/**
+ * API FUNCTIONS
+ */
+
+/**
+* Returns diff between c1 and c2 using the CIEDE2000 algorithm
+* @param {labcolor} c1    Should have fields L,a,b
+* @param {labcolor} c2    Should have fields L,a,b
+* @return {float}   Difference between c1 and c2
+*/
+function ciede2000(c1,c2)
+{
+  /**
+   * Implemented as in "The CIEDE2000 Color-Difference Formula:
+   * Implementation Notes, Supplementary Test Data, and Mathematical Observations"
+   * by Gaurav Sharma, Wencheng Wu and Edul N. Dalal.
+   */
+
+  // Get L,a,b values for color 1
+  var L1 = c1.L;
+  var a1 = c1.a;
+  var b1 = c1.b;
+
+  // Get L,a,b values for color 2
+  var L2 = c2.L;
+  var a2 = c2.a;
+  var b2 = c2.b;
+
+  // Weight factors
+  var kL = 1;
+  var kC = 1;
+  var kH = 1;
+
+  /**
+   * Step 1: Calculate C1p, C2p, h1p, h2p
+   */
+  var C1 = sqrt(pow(a1, 2) + pow(b1, 2)) //(2)
+  var C2 = sqrt(pow(a2, 2) + pow(b2, 2)) //(2)
+
+  var a_C1_C2 = (C1+C2)/2.0;             //(3)
+
+  var G = 0.5 * (1 - sqrt(pow(a_C1_C2 , 7.0) /
+                          (pow(a_C1_C2, 7.0) + pow(25.0, 7.0)))); //(4)
+
+  var a1p = (1.0 + G) * a1; //(5)
+  var a2p = (1.0 + G) * a2; //(5)
+
+  var C1p = sqrt(pow(a1p, 2) + pow(b1, 2)); //(6)
+  var C2p = sqrt(pow(a2p, 2) + pow(b2, 2)); //(6)
+
+  var hp_f = function(x,y) //(7)
+  {
+    if(x== 0 && y == 0) return 0;
+    else{
+      var tmphp = degrees(atan2(x,y));
+      if(tmphp >= 0) return tmphp
+      else           return tmphp + 360;
+    }
+  }
+
+  var h1p = hp_f(b1, a1p); //(7)
+  var h2p = hp_f(b2, a2p); //(7)
+
+  /**
+   * Step 2: Calculate dLp, dCp, dHp
+   */
+  var dLp = L2 - L1; //(8)
+  var dCp = C2p - C1p; //(9)
+
+  var dhp_f = function(C1, C2, h1p, h2p) //(10)
+  {
+    if(C1*C2 == 0)               return 0;
+    else if(abs(h2p-h1p) <= 180) return h2p-h1p;
+    else if((h2p-h1p) > 180)     return (h2p-h1p)-360;
+    else if((h2p-h1p) < -180)    return (h2p-h1p)+360;
+    else                         throw(new Error());
+  }
+  var dhp = dhp_f(C1,C2, h1p, h2p); //(10)
+  var dHp = 2*sqrt(C1p*C2p)*sin(radians(dhp)/2.0); //(11)
+
+  /**
+   * Step 3: Calculate CIEDE2000 Color-Difference
+   */
+  var a_L = (L1 + L2) / 2.0; //(12)
+  var a_Cp = (C1p + C2p) / 2.0; //(13)
+
+  var a_hp_f = function(C1, C2, h1p, h2p) { //(14)
+    if(C1*C2 == 0)                                      return h1p+h2p
+    else if(abs(h1p-h2p)<= 180)                         return (h1p+h2p)/2.0;
+    else if((abs(h1p-h2p) > 180) && ((h1p+h2p) < 360))  return (h1p+h2p+360)/2.0;
+    else if((abs(h1p-h2p) > 180) && ((h1p+h2p) >= 360)) return (h1p+h2p-360)/2.0;
+    else                                                throw(new Error());
+  }
+  var a_hp = a_hp_f(C1,C2,h1p,h2p); //(14)
+  var T = 1-0.17*cos(radians(a_hp-30))+0.24*cos(radians(2*a_hp))+
+    0.32*cos(radians(3*a_hp+6))-0.20*cos(radians(4*a_hp-63)); //(15)
+  var d_ro = 30 * exp(-(pow((a_hp-275)/25,2))); //(16)
+  var RC = sqrt((pow(a_Cp, 7.0)) / (pow(a_Cp, 7.0) + pow(25.0, 7.0)));//(17)
+  var SL = 1 + ((0.015 * pow(a_L - 50, 2)) /
+                sqrt(20 + pow(a_L - 50, 2.0)));//(18)
+  var SC = 1 + 0.045 * a_Cp;//(19)
+  var SH = 1 + 0.015 * a_Cp * T;//(20)
+  var RT = -2 * RC * sin(radians(2 * d_ro));//(21)
+  var dE = sqrt(pow(dLp /(SL * kL), 2) + pow(dCp /(SC * kC), 2) +
+                pow(dHp /(SH * kH), 2) + RT * (dCp /(SC * kC)) *
+                (dHp / (SH * kH))); //(22)
+  return dE;
+}
+
+/**
+ * INTERNAL FUNCTIONS
+ */
+function degrees(n) { return n*(180/PI); }
+function radians(n) { return n*(PI/180); }
+
+// Local Variables:
+// allout-layout: t
+// js-indent-level: 2
+// End:
+
+},{}],33:[function(require,module,exports){
 'use strict';
-var repeating = require(30);
+
+var diff = require(32);
+var convert = require(31);
+var palette = require(34);
+
+var color = module.exports = {};
+
+color.diff             = diff.ciede2000;
+color.rgb_to_lab       = convert.rgb_to_lab;
+color.map_palette      = palette.map_palette;
+color.palette_map_key  = palette.palette_map_key;
+
+color.closest = function(target, relative) {
+    var key = color.palette_map_key(target);
+
+    var result = color.map_palette([target], relative, 'closest');
+
+    return result[key];
+};
+
+color.furthest = function(target, relative) {
+    var key = color.palette_map_key(target);
+
+    var result = color.map_palette([target], relative, 'furthest');
+
+    return result[key];
+};
+
+},{}],34:[function(require,module,exports){
+/**
+ * @author Markus Ekholm
+ * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
+ * @license Copyright (c) 2012-2015, Markus Ekholm
+ * All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *    * Redistributions of source code must retain the above copyright
+ *      notice, this list of conditions and the following disclaimer.
+ *    * Redistributions in binary form must reproduce the above copyright
+ *      notice, this list of conditions and the following disclaimer in the
+ *      documentation and/or other materials provided with the distribution.
+ *    * Neither the name of the <organization> nor the
+ *      names of its contributors may be used to endorse or promote products
+ *      derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL MARKUS EKHOLM BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/**
+* EXPORTS
+*/
+exports.map_palette     = map_palette;
+exports.palette_map_key = palette_map_key;
+
+/**
+* IMPORTS
+*/
+var color_diff    = require(32);
+var color_convert = require(31);
+
+/**
+ * API FUNCTIONS
+ */
+
+/**
+* Returns the hash key used for a {rgbcolor} in a {palettemap}
+* @param {rgbcolor} c should have fields R,G,B
+* @return {string}
+*/
+function palette_map_key(c)
+{
+  return "R" + c.R + "B" + c.B + "G" + c.G;
+}
+
+/**
+* Returns a mapping from each color in a to the closest color in b
+* @param [{rgbcolor}] a each element should have fields R,G,B
+* @param [{rgbcolor}] b each element should have fields R,G,B
+* @param 'type' should be the string 'closest' or 'furthest'
+* @return {palettemap}
+*/
+function map_palette(a, b, type)
+{
+  var c = {};
+  type = type || 'closest';
+  for (var idx1 = 0; idx1 < a.length; idx1 += 1){
+    var color1 = a[idx1];
+    var best_color      = undefined;
+    var best_color_diff = undefined;
+    for (var idx2 = 0; idx2 < b.length; idx2 += 1)
+    {
+      var color2 = b[idx2];
+      var current_color_diff = diff(color1,color2);
+
+      if((best_color == undefined) || ((type === 'closest') && (current_color_diff < best_color_diff)))
+      {
+        best_color      = color2;
+        best_color_diff = current_color_diff;
+        continue;
+      }
+      if((type === 'furthest') && (current_color_diff > best_color_diff))
+      {
+        best_color      = color2;
+        best_color_diff = current_color_diff;
+        continue;
+      }
+    }
+    c[palette_map_key(color1)] = best_color;
+  }
+  return c;
+}
+
+/**
+ * INTERNAL FUNCTIONS
+ */
+
+function diff(c1,c2)
+{
+  c1 = color_convert.rgb_to_lab(c1);
+  c2 = color_convert.rgb_to_lab(c2);
+  return color_diff.ciede2000(c1,c2);
+}
+
+// Local Variables:
+// allout-layout: t
+// js-indent-level: 2
+// End:
+
+},{}],35:[function(require,module,exports){
+'use strict';
+var repeating = require(51);
 
 // detect either spaces or tabs but not both to properly handle tabs
 // for indentation and spaces for alignment
@@ -12801,47 +13454,7 @@ module.exports = function (str) {
 	};
 };
 
-},{}],30:[function(require,module,exports){
-'use strict';
-var isFinite = require(31);
-
-module.exports = function (str, n) {
-	if (typeof str !== 'string') {
-		throw new TypeError('Expected a string as the first argument');
-	}
-
-	if (n < 0 || !isFinite(n)) {
-		throw new TypeError('Expected a finite positive number');
-	}
-
-	var ret = '';
-
-	do {
-		if (n & 1) {
-			ret += str;
-		}
-
-		str += str;
-	} while (n = n >> 1);
-
-	return ret;
-};
-
-},{}],31:[function(require,module,exports){
-'use strict';
-var numberIsNan = require(32);
-
-module.exports = Number.isFinite || function (val) {
-	return !(typeof val !== 'number' || numberIsNan(val) || val === Infinity || val === -Infinity);
-};
-
-},{}],32:[function(require,module,exports){
-'use strict';
-module.exports = Number.isNaN || function (x) {
-	return x !== x;
-};
-
-},{}],33:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 /* See LICENSE file for terms of use */
 
 /*
@@ -13232,7 +13845,15 @@ module.exports = Number.isNaN || function (x) {
   }
 })(this);
 
-},{}],34:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
+'use strict';
+var numberIsNan = require(50);
+
+module.exports = Number.isFinite || function (val) {
+	return !(typeof val !== 'number' || numberIsNan(val) || val === Infinity || val === -Infinity);
+};
+
+},{}],38:[function(require,module,exports){
 // intentionally commented out as it makes it slower...
 //'use strict';
 
@@ -13280,17 +13901,17 @@ module.exports = function (a, b) {
 	return ret;
 };
 
-},{}],35:[function(require,module,exports){
-var utils = require(45);
-var TextSerializer = require(39);
-var colorDiff = require(49);
-var rgbRegexp = require(43);
-var themeMapper = require(44);
+},{}],39:[function(require,module,exports){
+var utils = require(49);
+var TextSerializer = require(43);
+var colorDiff = require(33);
+var rgbRegexp = require(47);
+var themeMapper = require(48);
 
 var cacheSize = 0;
 var maxColorCacheSize = 1024;
 
-var ansiStyles = utils.extend({}, require(46));
+var ansiStyles = utils.extend({}, require(20));
 Object.keys(ansiStyles).forEach(function (styleName) {
     ansiStyles[styleName.toLowerCase()] = ansiStyles[styleName];
 });
@@ -13428,11 +14049,11 @@ AnsiSerializer.prototype.text = function (options) {
 
 module.exports = AnsiSerializer;
 
-},{}],36:[function(require,module,exports){
-var cssStyles = require(40);
-var flattenBlocksInLines = require(42);
-var rgbRegexp = require(43);
-var themeMapper = require(44);
+},{}],40:[function(require,module,exports){
+var cssStyles = require(44);
+var flattenBlocksInLines = require(46);
+var rgbRegexp = require(47);
+var themeMapper = require(48);
 
 function ColoredConsoleSerializer(theme) {
     this.theme = theme;
@@ -13514,10 +14135,10 @@ ColoredConsoleSerializer.prototype.raw = function (options) {
 
 module.exports = ColoredConsoleSerializer;
 
-},{}],37:[function(require,module,exports){
-var cssStyles = require(40);
-var rgbRegexp = require(43);
-var themeMapper = require(44);
+},{}],41:[function(require,module,exports){
+var cssStyles = require(44);
+var rgbRegexp = require(47);
+var themeMapper = require(48);
 
 function HtmlSerializer(theme) {
     this.theme = theme;
@@ -13595,14 +14216,14 @@ HtmlSerializer.prototype.raw = function (options) {
 
 module.exports = HtmlSerializer;
 
-},{}],38:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 (function (process){
 /*global window*/
-var utils = require(45);
+var utils = require(49);
 var extend = utils.extend;
-var duplicateText = require(41);
-var rgbRegexp = require(43);
-var cssStyles = require(40);
+var duplicateText = require(45);
+var rgbRegexp = require(47);
+var cssStyles = require(44);
 
 function MagicPen(options) {
     if (!(this instanceof MagicPen)) {
@@ -13630,7 +14251,7 @@ function MagicPen(options) {
     }
 }
 
-if (typeof exports === 'object' && typeof exports.nodeName !== 'string' && require(51)) {
+if (typeof exports === 'object' && typeof exports.nodeName !== 'string' && require(52)) {
     MagicPen.defaultFormat = 'ansi'; // colored console
 } else if (typeof window !== 'undefined' && typeof window.navigator !== 'undefined') {
     if (window.mochaPhantomJS || (window.__karma__ && window.__karma__.config.captureConsole)) {
@@ -13659,10 +14280,10 @@ MagicPen.prototype.newline = MagicPen.prototype.nl = function (count) {
 
 MagicPen.serializers = {};
 [
+    require(43),
+    require(41),
     require(39),
-    require(37),
-    require(35),
-    require(36)
+    require(40)
 ].forEach(function (serializer) {
     MagicPen.serializers[serializer.prototype.format] = serializer;
 });
@@ -14281,9 +14902,9 @@ MagicPen.prototype.installTheme = function (formats, theme) {
 
 module.exports = MagicPen;
 
-}).call(this,require(28))
-},{}],39:[function(require,module,exports){
-var flattenBlocksInLines = require(42);
+}).call(this,require(30))
+},{}],43:[function(require,module,exports){
+var flattenBlocksInLines = require(46);
 
 function TextSerializer() {}
 
@@ -14317,7 +14938,7 @@ TextSerializer.prototype.raw = function (options) {
 
 module.exports = TextSerializer;
 
-},{}],40:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 var cssStyles = {
     bold: 'font-weight: bold',
     dim: 'opacity: 0.7',
@@ -14353,7 +14974,7 @@ Object.keys(cssStyles).forEach(function (styleName) {
 
 module.exports = cssStyles;
 
-},{}],41:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 var whitespaceCacheLength = 256;
 var whitespaceCache = [''];
 for (var i = 1; i <= whitespaceCacheLength; i += 1) {
@@ -14389,9 +15010,9 @@ function duplicateText(content, times) {
 
 module.exports = duplicateText;
 
-},{}],42:[function(require,module,exports){
-var utils = require(45);
-var duplicateText = require(41);
+},{}],46:[function(require,module,exports){
+var utils = require(49);
+var duplicateText = require(45);
 
 function createPadding(length) {
     return { style: 'text', args: { content: duplicateText(' ', length), styles: [] } };
@@ -14474,10 +15095,10 @@ function flattenBlocksInLines(lines) {
 
 module.exports = flattenBlocksInLines;
 
-},{}],43:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 module.exports =  /^(?:bg)?#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i;
 
-},{}],44:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 module.exports = function (theme, styles) {
     if (styles.length === 1) {
         var count = 0;
@@ -14502,7 +15123,7 @@ module.exports = function (theme, styles) {
     return styles;
 };
 
-},{}],45:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 var utils = {
     extend: function (target) {
         for (var i = 1; i < arguments.length; i += 1) {
@@ -14611,485 +15232,39 @@ var utils = {
 
 module.exports = utils;
 
-},{}],46:[function(require,module,exports){
-'use strict';
-
-var styles = module.exports = {
-	modifiers: {
-		reset: [0, 0],
-		bold: [1, 22], // 21 isn't widely supported and 22 does the same thing
-		dim: [2, 22],
-		italic: [3, 23],
-		underline: [4, 24],
-		inverse: [7, 27],
-		hidden: [8, 28],
-		strikethrough: [9, 29]
-	},
-	colors: {
-		black: [30, 39],
-		red: [31, 39],
-		green: [32, 39],
-		yellow: [33, 39],
-		blue: [34, 39],
-		magenta: [35, 39],
-		cyan: [36, 39],
-		white: [37, 39],
-		gray: [90, 39]
-	},
-	bgColors: {
-		bgBlack: [40, 49],
-		bgRed: [41, 49],
-		bgGreen: [42, 49],
-		bgYellow: [43, 49],
-		bgBlue: [44, 49],
-		bgMagenta: [45, 49],
-		bgCyan: [46, 49],
-		bgWhite: [47, 49]
-	}
-};
-
-// fix humans
-styles.colors.grey = styles.colors.gray;
-
-Object.keys(styles).forEach(function (groupName) {
-	var group = styles[groupName];
-
-	Object.keys(group).forEach(function (styleName) {
-		var style = group[styleName];
-
-		styles[styleName] = group[styleName] = {
-			open: '\u001b[' + style[0] + 'm',
-			close: '\u001b[' + style[1] + 'm'
-		};
-	});
-
-	Object.defineProperty(styles, groupName, {
-		value: group,
-		enumerable: false
-	});
-});
-
-},{}],47:[function(require,module,exports){
-/**
- * @author Markus Ekholm
- * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
- * @license Copyright (c) 2012-2015, Markus Ekholm
- * All rights reserved.
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *    * Redistributions of source code must retain the above copyright
- *      notice, this list of conditions and the following disclaimer.
- *    * Redistributions in binary form must reproduce the above copyright
- *      notice, this list of conditions and the following disclaimer in the
- *      documentation and/or other materials provided with the distribution.
- *    * Neither the name of the <organization> nor the
- *      names of its contributors may be used to endorse or promote products
- *      derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL MARKUS EKHOLM BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/**
-* EXPORTS
-*/
-exports.rgb_to_lab = rgb_to_lab;
-
-/**
-* IMPORTS
-*/
-var pow  = Math.pow;
-var sqrt = Math.sqrt;
-
-/**
- * API FUNCTIONS
- */
-
-/**
-* Returns c converted to labcolor.
-* @param {rgbcolor} c should have fields R,G,B
-* @return {labcolor} c converted to labcolor
-*/
-function rgb_to_lab(c)
-{
-  return xyz_to_lab(rgb_to_xyz(c))
-}
-
-/**
-* Returns c converted to xyzcolor.
-* @param {rgbcolor} c should have fields R,G,B
-* @return {xyzcolor} c converted to xyzcolor
-*/
-function rgb_to_xyz(c)
-{
-  // Based on http://www.easyrgb.com/index.php?X=MATH&H=02
-  var R = ( c.R / 255 );
-  var G = ( c.G / 255 );
-  var B = ( c.B / 255 );
-
-  if ( R > 0.04045 ) R = pow(( ( R + 0.055 ) / 1.055 ),2.4);
-  else               R = R / 12.92;
-  if ( G > 0.04045 ) G = pow(( ( G + 0.055 ) / 1.055 ),2.4);
-  else               G = G / 12.92;
-  if ( B > 0.04045 ) B = pow(( ( B + 0.055 ) / 1.055 ), 2.4);
-  else               B = B / 12.92;
-
-  R *= 100;
-  G *= 100;
-  B *= 100;
-
-  // Observer. = 2°, Illuminant = D65
-  var X = R * 0.4124 + G * 0.3576 + B * 0.1805;
-  var Y = R * 0.2126 + G * 0.7152 + B * 0.0722;
-  var Z = R * 0.0193 + G * 0.1192 + B * 0.9505;
-  return {'X' : X, 'Y' : Y, 'Z' : Z};
-}
-
-/**
-* Returns c converted to labcolor.
-* @param {xyzcolor} c should have fields X,Y,Z
-* @return {labcolor} c converted to labcolor
-*/
-function xyz_to_lab(c)
-{
-  // Based on http://www.easyrgb.com/index.php?X=MATH&H=07
-  var ref_Y = 100.000;
-  var ref_Z = 108.883;
-  var ref_X = 95.047; // Observer= 2°, Illuminant= D65
-  var Y = c.Y / ref_Y;
-  var Z = c.Z / ref_Z;
-  var X = c.X / ref_X;
-  if ( X > 0.008856 ) X = pow(X, 1/3);
-  else                X = ( 7.787 * X ) + ( 16 / 116 );
-  if ( Y > 0.008856 ) Y = pow(Y, 1/3);
-  else                Y = ( 7.787 * Y ) + ( 16 / 116 );
-  if ( Z > 0.008856 ) Z = pow(Z, 1/3);
-  else                Z = ( 7.787 * Z ) + ( 16 / 116 );
-  var L = ( 116 * Y ) - 16;
-  var a = 500 * ( X - Y );
-  var b = 200 * ( Y - Z );
-  return {'L' : L , 'a' : a, 'b' : b};
-}
-
-// Local Variables:
-// allout-layout: t
-// js-indent-level: 2
-// End:
-
-},{}],48:[function(require,module,exports){
-/**
- * @author Markus Ekholm
- * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
- * @license Copyright (c) 2012-2015, Markus Ekholm
- * All rights reserved.
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *    * Redistributions of source code must retain the above copyright
- *      notice, this list of conditions and the following disclaimer.
- *    * Redistributions in binary form must reproduce the above copyright
- *      notice, this list of conditions and the following disclaimer in the
- *      documentation and/or other materials provided with the distribution.
- *    * Neither the name of the <organization> nor the
- *      names of its contributors may be used to endorse or promote products
- *      derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL MARKUS EKHOLM BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/**
-* EXPORTS
-*/
-exports.ciede2000 = ciede2000;
-
-/**
-* IMPORTS
-*/
-var sqrt = Math.sqrt;
-var pow = Math.pow;
-var cos = Math.cos;
-var atan2 = Math.atan2;
-var sin = Math.sin;
-var abs = Math.abs;
-var exp = Math.exp;
-var PI = Math.PI;
-
-/**
- * API FUNCTIONS
- */
-
-/**
-* Returns diff between c1 and c2 using the CIEDE2000 algorithm
-* @param {labcolor} c1    Should have fields L,a,b
-* @param {labcolor} c2    Should have fields L,a,b
-* @return {float}   Difference between c1 and c2
-*/
-function ciede2000(c1,c2)
-{
-  /**
-   * Implemented as in "The CIEDE2000 Color-Difference Formula:
-   * Implementation Notes, Supplementary Test Data, and Mathematical Observations"
-   * by Gaurav Sharma, Wencheng Wu and Edul N. Dalal.
-   */
-
-  // Get L,a,b values for color 1
-  var L1 = c1.L;
-  var a1 = c1.a;
-  var b1 = c1.b;
-
-  // Get L,a,b values for color 2
-  var L2 = c2.L;
-  var a2 = c2.a;
-  var b2 = c2.b;
-
-  // Weight factors
-  var kL = 1;
-  var kC = 1;
-  var kH = 1;
-
-  /**
-   * Step 1: Calculate C1p, C2p, h1p, h2p
-   */
-  var C1 = sqrt(pow(a1, 2) + pow(b1, 2)) //(2)
-  var C2 = sqrt(pow(a2, 2) + pow(b2, 2)) //(2)
-
-  var a_C1_C2 = (C1+C2)/2.0;             //(3)
-
-  var G = 0.5 * (1 - sqrt(pow(a_C1_C2 , 7.0) /
-                          (pow(a_C1_C2, 7.0) + pow(25.0, 7.0)))); //(4)
-
-  var a1p = (1.0 + G) * a1; //(5)
-  var a2p = (1.0 + G) * a2; //(5)
-
-  var C1p = sqrt(pow(a1p, 2) + pow(b1, 2)); //(6)
-  var C2p = sqrt(pow(a2p, 2) + pow(b2, 2)); //(6)
-
-  var hp_f = function(x,y) //(7)
-  {
-    if(x== 0 && y == 0) return 0;
-    else{
-      var tmphp = degrees(atan2(x,y));
-      if(tmphp >= 0) return tmphp
-      else           return tmphp + 360;
-    }
-  }
-
-  var h1p = hp_f(b1, a1p); //(7)
-  var h2p = hp_f(b2, a2p); //(7)
-
-  /**
-   * Step 2: Calculate dLp, dCp, dHp
-   */
-  var dLp = L2 - L1; //(8)
-  var dCp = C2p - C1p; //(9)
-
-  var dhp_f = function(C1, C2, h1p, h2p) //(10)
-  {
-    if(C1*C2 == 0)               return 0;
-    else if(abs(h2p-h1p) <= 180) return h2p-h1p;
-    else if((h2p-h1p) > 180)     return (h2p-h1p)-360;
-    else if((h2p-h1p) < -180)    return (h2p-h1p)+360;
-    else                         throw(new Error());
-  }
-  var dhp = dhp_f(C1,C2, h1p, h2p); //(10)
-  var dHp = 2*sqrt(C1p*C2p)*sin(radians(dhp)/2.0); //(11)
-
-  /**
-   * Step 3: Calculate CIEDE2000 Color-Difference
-   */
-  var a_L = (L1 + L2) / 2.0; //(12)
-  var a_Cp = (C1p + C2p) / 2.0; //(13)
-
-  var a_hp_f = function(C1, C2, h1p, h2p) { //(14)
-    if(C1*C2 == 0)                                      return h1p+h2p
-    else if(abs(h1p-h2p)<= 180)                         return (h1p+h2p)/2.0;
-    else if((abs(h1p-h2p) > 180) && ((h1p+h2p) < 360))  return (h1p+h2p+360)/2.0;
-    else if((abs(h1p-h2p) > 180) && ((h1p+h2p) >= 360)) return (h1p+h2p-360)/2.0;
-    else                                                throw(new Error());
-  }
-  var a_hp = a_hp_f(C1,C2,h1p,h2p); //(14)
-  var T = 1-0.17*cos(radians(a_hp-30))+0.24*cos(radians(2*a_hp))+
-    0.32*cos(radians(3*a_hp+6))-0.20*cos(radians(4*a_hp-63)); //(15)
-  var d_ro = 30 * exp(-(pow((a_hp-275)/25,2))); //(16)
-  var RC = sqrt((pow(a_Cp, 7.0)) / (pow(a_Cp, 7.0) + pow(25.0, 7.0)));//(17)
-  var SL = 1 + ((0.015 * pow(a_L - 50, 2)) /
-                sqrt(20 + pow(a_L - 50, 2.0)));//(18)
-  var SC = 1 + 0.045 * a_Cp;//(19)
-  var SH = 1 + 0.015 * a_Cp * T;//(20)
-  var RT = -2 * RC * sin(radians(2 * d_ro));//(21)
-  var dE = sqrt(pow(dLp /(SL * kL), 2) + pow(dCp /(SC * kC), 2) +
-                pow(dHp /(SH * kH), 2) + RT * (dCp /(SC * kC)) *
-                (dHp / (SH * kH))); //(22)
-  return dE;
-}
-
-/**
- * INTERNAL FUNCTIONS
- */
-function degrees(n) { return n*(180/PI); }
-function radians(n) { return n*(PI/180); }
-
-// Local Variables:
-// allout-layout: t
-// js-indent-level: 2
-// End:
-
-},{}],49:[function(require,module,exports){
-'use strict';
-
-var diff = require(48);
-var convert = require(47);
-var palette = require(50);
-
-var color = module.exports = {};
-
-color.diff             = diff.ciede2000;
-color.rgb_to_lab       = convert.rgb_to_lab;
-color.map_palette      = palette.map_palette;
-color.palette_map_key  = palette.palette_map_key;
-
-color.closest = function(target, relative) {
-    var key = color.palette_map_key(target);
-
-    var result = color.map_palette([target], relative, 'closest');
-
-    return result[key];
-};
-
-color.furthest = function(target, relative) {
-    var key = color.palette_map_key(target);
-
-    var result = color.map_palette([target], relative, 'furthest');
-
-    return result[key];
-};
-
 },{}],50:[function(require,module,exports){
-/**
- * @author Markus Ekholm
- * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
- * @license Copyright (c) 2012-2015, Markus Ekholm
- * All rights reserved.
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *    * Redistributions of source code must retain the above copyright
- *      notice, this list of conditions and the following disclaimer.
- *    * Redistributions in binary form must reproduce the above copyright
- *      notice, this list of conditions and the following disclaimer in the
- *      documentation and/or other materials provided with the distribution.
- *    * Neither the name of the <organization> nor the
- *      names of its contributors may be used to endorse or promote products
- *      derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL MARKUS EKHOLM BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/**
-* EXPORTS
-*/
-exports.map_palette     = map_palette;
-exports.palette_map_key = palette_map_key;
-
-/**
-* IMPORTS
-*/
-var color_diff    = require(48);
-var color_convert = require(47);
-
-/**
- * API FUNCTIONS
- */
-
-/**
-* Returns the hash key used for a {rgbcolor} in a {palettemap}
-* @param {rgbcolor} c should have fields R,G,B
-* @return {string}
-*/
-function palette_map_key(c)
-{
-  return "R" + c.R + "B" + c.B + "G" + c.G;
-}
-
-/**
-* Returns a mapping from each color in a to the closest color in b
-* @param [{rgbcolor}] a each element should have fields R,G,B
-* @param [{rgbcolor}] b each element should have fields R,G,B
-* @param 'type' should be the string 'closest' or 'furthest'
-* @return {palettemap}
-*/
-function map_palette(a, b, type)
-{
-  var c = {};
-  type = type || 'closest';
-  for (var idx1 = 0; idx1 < a.length; idx1 += 1){
-    var color1 = a[idx1];
-    var best_color      = undefined;
-    var best_color_diff = undefined;
-    for (var idx2 = 0; idx2 < b.length; idx2 += 1)
-    {
-      var color2 = b[idx2];
-      var current_color_diff = diff(color1,color2);
-
-      if((best_color == undefined) || ((type === 'closest') && (current_color_diff < best_color_diff)))
-      {
-        best_color      = color2;
-        best_color_diff = current_color_diff;
-        continue;
-      }
-      if((type === 'furthest') && (current_color_diff > best_color_diff))
-      {
-        best_color      = color2;
-        best_color_diff = current_color_diff;
-        continue;
-      }
-    }
-    c[palette_map_key(color1)] = best_color;
-  }
-  return c;
-}
-
-/**
- * INTERNAL FUNCTIONS
- */
-
-function diff(c1,c2)
-{
-  c1 = color_convert.rgb_to_lab(c1);
-  c2 = color_convert.rgb_to_lab(c2);
-  return color_diff.ciede2000(c1,c2);
-}
-
-// Local Variables:
-// allout-layout: t
-// js-indent-level: 2
-// End:
+'use strict';
+module.exports = Number.isNaN || function (x) {
+	return x !== x;
+};
 
 },{}],51:[function(require,module,exports){
+'use strict';
+var isFinite = require(37);
+
+module.exports = function (str, n) {
+	if (typeof str !== 'string') {
+		throw new TypeError('Expected a string as the first argument');
+	}
+
+	if (n < 0 || !isFinite(n)) {
+		throw new TypeError('Expected a finite positive number');
+	}
+
+	var ret = '';
+
+	do {
+		if (n & 1) {
+			ret += str;
+		}
+
+		str += str;
+	} while (n = n >> 1);
+
+	return ret;
+};
+
+},{}],52:[function(require,module,exports){
 (function (process){
 'use strict';
 var argv = process.argv;
@@ -15131,6 +15306,6 @@ module.exports = (function () {
 	return false;
 })();
 
-}).call(this,require(28))
-},{}]},{},[18])(18)
+}).call(this,require(30))
+},{}]},{},[19])(19)
 });
