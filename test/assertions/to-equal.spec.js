@@ -29,7 +29,7 @@ describe('to equal assertion', function () {
         expect(/foo/m, 'to equal', new RegExp('foo', 'm'));
         expect([], 'not to equal', 0);
         expect(new Error('foo'), 'to equal', new Error('foo'));
-        expect({ foo: 'foo', bar: 'bar' }, 'to equal', { bar: 'bar', foo: 'foo' })
+        expect({ foo: 'foo', bar: 'bar' }, 'to equal', { bar: 'bar', foo: 'foo' });
     });
 
     it('treats NaN as equal to NaN', function () {
