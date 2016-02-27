@@ -4338,10 +4338,9 @@ module.exports = function (expect) {
     if (typeof Symbol === 'function') {
         // Comparator that puts symbols last:
         keyComparator = function (a, b) {
-            var aString,
-                bString,
-                aIsSymbol,
-                bIsSymbol;
+            var aIsSymbol, bIsSymbol;
+            var aString = a;
+            var bString = b;
             // jshint ignore:start
             aIsSymbol = typeof a === 'symbol';
             bIsSymbol = typeof b === 'symbol';
@@ -4356,13 +4355,14 @@ module.exports = function (expect) {
             } else if (bIsSymbol) {
                 return -1;
             }
+
             if (aString < bString) {
                 return -1;
-            } else if (bString > aString) {
+            } else if (aString > bString) {
                 return 1;
-            } else {
-                return 0;
             }
+
+            return 0;
         };
     }
 
