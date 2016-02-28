@@ -346,6 +346,7 @@ describe('to satisfy assertion', function () {
                "\n" +
                "Error({\n" +
                "  message: 'foo' // should equal 'bar'\n" +
+               "                 //\n" +
                "                 // -foo\n" +
                "                 // +bar\n" +
                "})");
@@ -854,6 +855,7 @@ describe('to satisfy assertion', function () {
                    "arguments(\n" +
                    "  {\n" +
                    "    foo: 'foo' // should equal 'f00'\n" +
+                   "               //\n" +
                    "               // -foo\n" +
                    "               // +f00\n" +
                    "  },\n" +
@@ -996,6 +998,7 @@ describe('to satisfy assertion', function () {
                "\n" +
                "Error({\n" +
                "  message: 'foo' // should equal 'bar'\n" +
+               "                 //\n" +
                "                 // -foo\n" +
                "                 // +bar\n" +
                "})");
@@ -1029,6 +1032,7 @@ describe('to satisfy assertion', function () {
                "{\n" +
                "  message:\n" +
                "    'foo' // should equal 'bar'\n" +
+               "          //\n" +
                "          // -foo\n" +
                "          // +bar\n" +
                "}");
@@ -1045,6 +1049,7 @@ describe('to satisfy assertion', function () {
                "\n" +
                "Foo({\n" +
                "  value: 'bar' // should equal 'quux'\n" +
+               "               //\n" +
                '               // -bar\n' +
                '               // +quux\n' +
                '})');
@@ -1085,6 +1090,7 @@ describe('to satisfy assertion', function () {
                "  pill: {\n" +
                "    red: 'I\\'ll show you how deep the rabbit hole goes',\n" +
                "         // should equal 'I\\'ll show you how deep the rabbit hole goes.'\n" +
+               "         //\n" +
                "         // -I'll show you how deep the rabbit hole goes\n" +
                "         // +I'll show you how deep the rabbit hole goes.\n" +
                "    blue: { ignorance: { of: ... } },\n" +
@@ -1219,6 +1225,7 @@ describe('to satisfy assertion', function () {
                    "       |2|\n" +
                    "       |_|,\n" +
                    "  bar: 'baz' // should equal 'quux'\n" +
+                   "             //\n" +
                    "             // -baz\n" +
                    "             // +quux\n" +
                    "}"
@@ -1345,6 +1352,7 @@ describe('to satisfy assertion', function () {
                    "\n" +
                    "{\n" +
                    "  foo: MysteryBox('abc') // should equal 'def'\n" +
+                   "                         //\n" +
                    "                         // -abc\n" +
                    "                         // +def\n" +
                    "}");
@@ -1362,6 +1370,7 @@ describe('to satisfy assertion', function () {
                    "\n" +
                    "{\n" +
                    "  foo: MysteryBox('abc') // should equal MysteryBox('def')\n" +
+                   "                         //\n" +
                    "                         // -abc\n" +
                    "                         // +def\n" +
                    "}");

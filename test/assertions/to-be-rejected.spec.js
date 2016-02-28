@@ -93,6 +93,7 @@ describe('to be rejected assertion', function () {
                     "\n" +
                     "  Error({\n" +
                     "    message: 'OMG!' // should equal 'foobar'\n" +
+                    "                    //\n" +
                     "                    // -OMG!\n" +
                     "                    // +foobar\n" +
                     "  })"

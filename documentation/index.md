@@ -17,6 +17,7 @@ expected { text: 'f00!' } to equal { text: 'foo!' }
 
 {
   text: 'f00!' // should equal 'foo!'
+               //
                // -f00!
                // +foo!
 }

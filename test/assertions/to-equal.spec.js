@@ -116,6 +116,7 @@ describe('to equal assertion', function () {
                "{\n" +
                "  a: {\n" +
                "    b: 'c' // should equal 'd'\n" +
+               "           //\n" +
                "           // -c\n" +
                "           // +d\n" +
                "  }\n" +
@@ -131,6 +132,7 @@ describe('to equal assertion', function () {
                "\n" +
                "Error({\n" +
                "  message: 'foo' // should equal 'bar'\n" +
+               "                 //\n" +
                "                 // -foo\n" +
                "                 // +bar\n" +
                "})");
@@ -180,6 +182,7 @@ describe('to equal assertion', function () {
                "  // missing 1\n" +
                "  {\n" +
                "    foo: 'bar' // should equal 'baz'\n" +
+               "               //\n" +
                "               // -bar\n" +
                "               // +baz\n" +
                "  },\n" +
@@ -193,6 +196,7 @@ describe('to equal assertion', function () {
                "    2 // should equal 3\n" +
                "  ],\n" +
                "  'bar' // should equal 'baz'\n" +
+               "        //\n" +
                "        // -bar\n" +
                "        // +baz\n" +
                "]");
@@ -445,6 +449,7 @@ describe('to equal assertion', function () {
                    "\n" +
                    "Error({\n" +
                    "  message: 'foo' // should equal 'bar'\n" +
+                   "                 //\n" +
                    "                 // -foo\n" +
                    "                 // +bar\n" +
                    "})");
@@ -478,6 +483,7 @@ describe('to equal assertion', function () {
                    "Error({\n" +
                    "  message: 'foo',\n" +
                    "  extra: 'foo' // should equal 'bar'\n" +
+                   "               //\n" +
                    "               // -foo\n" +
                    "               // +bar\n" +
                    "})");

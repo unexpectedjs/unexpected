@@ -55,6 +55,7 @@ describe('to have properties assertion', function () {
                "{\n" +
                "  a: 'foo',\n" +
                "  b: 'bar' // should equal 'baz'\n" +
+               "           //\n" +
                "           // -bar\n" +
                "           // +baz\n" +
                "}");
@@ -79,6 +80,7 @@ describe('to have properties assertion', function () {
                "\n" +
                "{\n" +
                "  a: 'f00', // should equal 'foo'\n" +
+               "            //\n" +
                "            // -f00\n" +
                "            // +foo\n" +
                "  b: 'bar'\n" +

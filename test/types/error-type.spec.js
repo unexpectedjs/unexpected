@@ -40,9 +40,7 @@ describe('Error type', function () {
         });
         expect(function () {
             clonedExpect(new Error('1'), 'to equal', new Error('2'));
-        }, 'to throw',
-               'expected Error#1 to equal Error#2'
-              );
+        }, 'to throw', 'expected Error#1 to equal Error#2');
     });
 
     describe('with a custom Error class inheriting from Error', function () {
@@ -87,6 +85,7 @@ describe('Error type', function () {
                    "\n" +
                    "MyError({\n" +
                    "  message: 'foo' // should equal 'bar'\n" +
+                   "                 //\n" +
                    "                 // -foo\n" +
                    "                 // +bar\n" +
                    "})"
@@ -121,6 +120,7 @@ describe('Error type', function () {
                        "\n" +
                        "SomethingElse({\n" +
                        "  message: 'foo' // should equal 'bar'\n" +
+                       "                 //\n" +
                        "                 // -foo\n" +
                        "                 // +bar\n" +
                        "})"

@@ -124,6 +124,7 @@ describe('to throw assertion', function () {
                "\n" +
                "  Error({\n" +
                "    message: 'Custom error' // should equal 'My error'\n" +
+               "                            //\n" +
                "                            // -Custom error\n" +
                "                            // +My error\n" +
                "  })");

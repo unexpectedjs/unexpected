@@ -30,9 +30,11 @@ describe('array-like type', function () {
                 'to equal',
                 "[\n" +
                 "'a', // should equal 'aa'\n" +
+                "     //\n" +
                 "     // -a\n" +
                 "     // +aa\n" +
                 "'b' // should equal 'bb'\n" +
+                "    //\n" +
                 "    // -b\n" +
                 "    // +bb\n" +
                 "]"
@@ -47,6 +49,7 @@ describe('array-like type', function () {
                 "\n" +
                 "[\n" +
                 "'aaa', // should equal 'foo'\n" +
+                "       //\n" +
                 "       // -aaa\n" +
                 "       // +foo\n" +
                 "'bbb'\n" +
@@ -87,9 +90,11 @@ describe('array-like type', function () {
                 clonedExpect.diff(['a', 'b'], ['aa', 'bb']).diff.toString(),
                 'to equal',
                 "  'a', // should equal 'aa'\n" +
+                "       //\n" +
                 "       // -a\n" +
                 "       // +aa\n" +
                 "  'b' // should equal 'bb'\n" +
+                "      //\n" +
                 "      // -b\n" +
                 "      // +bb"
             );
@@ -102,6 +107,7 @@ describe('array-like type', function () {
                 "expected 'aaa', 'bbb' to satisfy { 0: 'foo' }\n" +
                 "\n" +
                 "  'aaa', // should equal 'foo'\n" +
+                "         //\n" +
                 "         // -aaa\n" +
                 "         // +foo\n" +
                 "  'bbb'"

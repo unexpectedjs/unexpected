@@ -45,6 +45,7 @@ to call the callback with error Error('foo')
 
   Error({
     message: 'Oh dear' // should equal 'foo'
+                       //
                        // -Oh dear
                        // +foo
   })

@@ -83,6 +83,7 @@ to equal Person({ name: 'Jane Doe', age: 24 })
 
 Person({
   name: 'John Doe', // should equal 'Jane Doe'
+                    //
                     // -John Doe
                     // +Jane Doe
   age: 42 // should equal 24
@@ -121,6 +122,7 @@ expected new Person('John Doe', 42) to equal new Person('Jane Doe', 24)
 
 Person({
   name: 'John Doe', // should equal 'Jane Doe'
+                    //
                     // -John Doe
                     // +Jane Doe
   age: 42 // should equal 24
@@ -201,6 +203,7 @@ expected new Person('John Doe', 42) to equal new Person('Jane Doe', 24)
 
 {
   name: 'John Doe' // should equal 'Jane Doe'
+                   //
                    // -John Doe
                    // +Jane Doe
 }
@@ -350,6 +353,7 @@ to equal
 {
   'John Doe': new Person('John Doe', 42),
   'Jane Doe': new Person('Janie Doe', 24) // should equal new Person('Jane Doe', 24)
+                                          //
                                           // new Person(
                                           //   'Janie Doe', // should be 'Jane Doe'
                                           //                // -Janie Doe
