@@ -52,8 +52,8 @@ describe('to have message/diff assertion', function () {
             expect(function () {
                 expect('abc', 'to equal', 'def');
             }, 'to throw', expect.it('to have ansi diff',
-                                     '\x1B[31m-\x1B[39m\x1B[41m\x1B[30mabc\x1B[39m\x1B[49m\n' +
-                                     '\x1B[32m+\x1B[39m\x1B[42m\x1B[30mdef\x1B[39m\x1B[49m'
+                                     '\x1B[41m\x1B[30mabc\x1B[39m\x1B[49m\n' +
+                                     '\x1B[42m\x1B[30mdef\x1B[39m\x1B[49m'
                                     ));
         });
 
@@ -87,8 +87,8 @@ describe('to have message/diff assertion', function () {
         describe('when comparing against a magicpen instance', function () {
             it('should succeed', function () {
                 var expectedDiff = expect.createOutput('ansi')
-                    .red('-').text('abc', ['bgRed', 'black']).nl()
-                    .green('+').text('def', ['bgGreen', 'black']);
+                    .text('abc', ['bgRed', 'black']).nl()
+                    .text('def', ['bgGreen', 'black']);
 
                 expect(function () {
                     expect('abc', 'to equal', 'def');
@@ -130,18 +130,8 @@ describe('to have message/diff assertion', function () {
                        "    .text('def', [ 'bgGreen', 'black' ])\n" +
                        "    expected\n" +
                        "    magicpen('ansi')\n" +
-                       "      .block(function () {\n" +
-                       "        this.diffRemovedLine('-');\n" +
-                       "      })\n" +
-                       "      .block(function () {\n" +
-                       "        this.diffRemovedHighlight('abc');\n" +
-                       "      }).nl()\n" +
-                       "      .block(function () {\n" +
-                       "        this.diffAddedLine('+');\n" +
-                       "      })\n" +
-                       "      .block(function () {\n" +
-                       "        this.diffAddedHighlight('def');\n" +
-                       "      })\n" +
+                       "      .diffRemovedHighlight('abc').nl()\n" +
+                       "      .diffAddedHighlight('def')\n" +
                        "    to equal\n" +
                        "    magicpen('ansi')\n" +
                        "      .red('-')\n" +
@@ -157,8 +147,8 @@ describe('to have message/diff assertion', function () {
                 expect(function () {
                     expect('abc', 'to equal', 'def');
                 }, 'to throw', expect.it('to have ansi diff', function () {
-                    this.red('-').text('abc', ['bgRed', 'black']).nl()
-                        .green('+').text('def', ['bgGreen', 'black']);
+                    this.text('abc', ['bgRed', 'black']).nl()
+                        .text('def', ['bgGreen', 'black']);
                 }));
             });
 
@@ -194,18 +184,8 @@ describe('to have message/diff assertion', function () {
                        "  }\n" +
                        "    expected\n" +
                        "    magicpen('ansi')\n" +
-                       "      .block(function () {\n" +
-                       "        this.diffRemovedLine('-');\n" +
-                       "      })\n" +
-                       "      .block(function () {\n" +
-                       "        this.diffRemovedHighlight('abc');\n" +
-                       "      }).nl()\n" +
-                       "      .block(function () {\n" +
-                       "        this.diffAddedLine('+');\n" +
-                       "      })\n" +
-                       "      .block(function () {\n" +
-                       "        this.diffAddedHighlight('def');\n" +
-                       "      })\n" +
+                       "      .diffRemovedHighlight('abc').nl()\n" +
+                       "      .diffAddedHighlight('def')\n" +
                        "    to equal\n" +
                        "    magicpen('ansi')\n" +
                        "      .red('-')\n" +

@@ -249,17 +249,11 @@ describe('to equal assertion', function () {
         }, 'to throw', expect.it('to have ansi diff', function () {
             this
                 .block(function () {
-                    this.diffRemovedLine('-');
-                })
-                .block(function () {
                     this
                         .diffRemovedLine('/fo')
                         .diffRemovedHighlight('q')
                         .diffRemovedLine('/i');
                 }).nl()
-                .block(function () {
-                    this.diffAddedLine('+');
-                })
                 .block(function () {
                     this
                         .diffAddedLine('/fo')
