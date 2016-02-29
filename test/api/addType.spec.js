@@ -25,9 +25,9 @@ describe('addType', function () {
                     .text(')');
             },
             diff: function (actual, expected, output, diff) {
-                var comparison = diff({ value: actual.value }, { value: expected.value });
-                comparison.diff = output.text('box(').append(comparison.diff).text(')');
-                return comparison;
+                output = output.text('box(').append(diff({ value: actual.value }, { value: expected.value })).text(')');
+                output.inline = true;
+                return output;
             }
         });
     });

@@ -66,7 +66,7 @@ describe('object type', function () {
 
         it('should not render the indentation when an instance is diffed', function () {
             expect(
-                clonedExpect.diff({a: 'a', b: 'b'}, {a: 'aa', b: 'bb'}).diff.toString(),
+                clonedExpect.diff({a: 'a', b: 'b'}, {a: 'aa', b: 'bb'}).toString(),
                 'to equal',
                 "{\n" +
                 "a: 'a', // should equal 'aa'\n" +
@@ -129,7 +129,7 @@ describe('object type', function () {
 
         it('should not render the prefix, suffix, and the newlines when an instance is diffed', function () {
             expect(
-                clonedExpect.diff({a: 'a', b: 'b'}, {a: 'aa', b: 'bb'}).diff.toString(),
+                clonedExpect.diff({a: 'a', b: 'b'}, {a: 'aa', b: 'bb'}).toString(),
                 'to equal',
                 "  a: 'a', // should equal 'aa'\n" +
                 "          //\n" +

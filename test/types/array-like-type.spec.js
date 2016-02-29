@@ -26,7 +26,7 @@ describe('array-like type', function () {
 
         it('should not render the indentation when an instance is diffed', function () {
             expect(
-                clonedExpect.diff(['a', 'b'], ['aa', 'bb']).diff.toString(),
+                clonedExpect.diff(['a', 'b'], ['aa', 'bb']).toString(),
                 'to equal',
                 "[\n" +
                 "'a', // should equal 'aa'\n" +
@@ -87,7 +87,7 @@ describe('array-like type', function () {
 
         it('should not render the prefix, suffix, and the newlines when an instance is diffed', function () {
             expect(
-                clonedExpect.diff(['a', 'b'], ['aa', 'bb']).diff.toString(),
+                clonedExpect.diff(['a', 'b'], ['aa', 'bb']).toString(),
                 'to equal',
                 "  'a', // should equal 'aa'\n" +
                 "       //\n" +
