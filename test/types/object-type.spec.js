@@ -70,9 +70,11 @@ describe('object type', function () {
                 'to equal',
                 "{\n" +
                 "a: 'a', // should equal 'aa'\n" +
+                "        //\n" +
                 "        // -a\n" +
                 "        // +aa\n" +
                 "b: 'b' // should equal 'bb'\n" +
+                "       //\n" +
                 "       // -b\n" +
                 "       // +bb\n" +
                 "}"
@@ -87,6 +89,7 @@ describe('object type', function () {
                 "\n" +
                 "{\n" +
                 "a: 'aaa', // should equal 'foo'\n" +
+                "          //\n" +
                 "          // -aaa\n" +
                 "          // +foo\n" +
                 "b: 'bbb'\n" +
@@ -129,9 +132,11 @@ describe('object type', function () {
                 clonedExpect.diff({a: 'a', b: 'b'}, {a: 'aa', b: 'bb'}).diff.toString(),
                 'to equal',
                 "  a: 'a', // should equal 'aa'\n" +
+                "          //\n" +
                 "          // -a\n" +
                 "          // +aa\n" +
                 "  b: 'b' // should equal 'bb'\n" +
+                "         //\n" +
                 "         // -b\n" +
                 "         // +bb"
             );
@@ -144,6 +149,7 @@ describe('object type', function () {
                 "expected a: 'aaa', b: 'bbb' to satisfy a: 'foo'\n" +
                 "\n" +
                 "  a: 'aaa', // should equal 'foo'\n" +
+                "            //\n" +
                 "            // -aaa\n" +
                 "            // +foo\n" +
                 "  b: 'bbb'"

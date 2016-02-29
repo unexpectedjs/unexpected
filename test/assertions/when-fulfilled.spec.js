@@ -68,6 +68,7 @@ describe('when fulfilled adverbial assertion', function () {
                 "\n" +
                 "  {\n" +
                 "    foo: 'bar' // should equal 'baz'\n" +
+                "               //\n" +
                 "               // -bar\n" +
                 "               // +baz\n" +
                 "  }"

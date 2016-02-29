@@ -69,6 +69,7 @@ expected Promise (rejected) => Error('Oh dear') to be rejected with Error('bugge
 
   Error({
     message: 'Oh dear' // should equal 'bugger'
+                       //
                        // -Oh dear
                        // +bugger
   })

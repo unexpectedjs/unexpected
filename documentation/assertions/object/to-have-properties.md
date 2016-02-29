@@ -36,6 +36,7 @@ expected { a: 'f00', b: 'bar' } to have own properties { a: 'foo', c: 'baz' }
 
 {
   a: 'f00', // should equal 'foo'
+            //
             // -f00
             // +foo
   b: 'bar'

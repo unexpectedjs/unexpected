@@ -247,6 +247,7 @@ describe('unexpected', function () {
                        "\n" +
                        "{\n" +
                        "  value: 'bar' // should equal 'baz'\n" +
+                       "               //\n" +
                        "               // -bar\n" +
                        "               // +baz\n" +
                        "}");
@@ -360,6 +361,7 @@ describe('unexpected', function () {
                        "{\n" +
                        "  pill: {\n" +
                        "    red: 'I\\'ll show you how deep the rabbit hole goes', // should equal 'I\\'ll show you how deep the rabbit hole goes.'\n" +
+                       "                                                         //\n" +
                        "                                                         // -I'll show you how deep the rabbit hole goes\n" +
                        "                                                         // +I'll show you how deep the rabbit hole goes.\n" +
                        "    blue: { ignorance: { of: 'illusion' } }\n" +
@@ -497,6 +499,7 @@ describe('unexpected', function () {
                        "[\n" +
                        "  0,\n" +
                        "  'once', // should equal 'one'\n" +
+                       "          //\n" +
                        "          // -once\n" +
                        "          // +one\n" +
                        "  2\n" +
@@ -516,6 +519,7 @@ describe('unexpected', function () {
                        "  1, // should be removed\n" +
                        "  {\n" +
                        "    name: 'John', // should equal 'Jane'\n" +
+                       "                  //\n" +
                        "                  // -John\n" +
                        "                  // +Jane\n" +
                        "    age: 34 // should equal 24\n" +
@@ -553,6 +557,7 @@ describe('unexpected', function () {
                        "  // missing 0\n" +
                        "  // missing 1\n" +
                        "  'twoo', // should equal 'two'\n" +
+                       "          //\n" +
                        "          // -twoo\n" +
                        "          // +two\n" +
                        "  1, // should be removed\n" +

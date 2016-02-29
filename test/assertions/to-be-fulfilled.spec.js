@@ -50,6 +50,7 @@ describe('to be fulfilled assertion', function () {
                     "  {\n" +
                     "    foo: 'bar',\n" +
                     "    baz: 'quux' // should equal 'qux'\n" +
+                    "                //\n" +
                     "                // -quux\n" +
                     "                // +qux\n" +
                     "  }"

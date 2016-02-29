@@ -46,6 +46,7 @@ if (typeof Symbol === 'function') {
                     "{\n" +
                     "  foo: 123, // should equal 456\n" +
                     "  [ Symbol('a') ]: 'foo', // should equal 'bar'\n" +
+                    "                          //\n" +
                     "                          // -foo\n" +
                     "                          // +bar\n" +
                     "  [ Symbol('b') ]: 123\n" +
@@ -91,6 +92,7 @@ if (typeof Symbol === 'function') {
                     "{\n" +
                     "  foo: 123, // should equal 456\n" +
                     "  [ Symbol('a') ]: 'foo', // should equal 'bar'\n" +
+                    "                          //\n" +
                     "                          // -foo\n" +
                     "                          // +bar\n" +
                     "  [ Symbol('b') ]: 123\n" +

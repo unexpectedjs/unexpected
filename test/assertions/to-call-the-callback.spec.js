@@ -218,21 +218,22 @@ describe('to call the callback assertion', function () {
                         }, 0);
                     }, 'to call the callback with error', new Error('bla'));
                 }, 'to error',
-                              "expected\n" +
-                              "function (cb) {\n" +
-                              "  setTimeout(function () {\n" +
-                              "    cb(new Error('foo'));\n" +
-                              "  }, 0);\n" +
-                              "}\n" +
-                              "to call the callback with error Error('bla')\n" +
-                              "  expected Error('foo') to satisfy Error('bla')\n" +
-                              "\n" +
-                              "  Error({\n" +
-                              "    message: 'foo' // should equal 'bla'\n" +
-                              "                   // -foo\n" +
-                              "                   // +bla\n" +
-                              "  })"
-                             );
+                      "expected\n" +
+                      "function (cb) {\n" +
+                      "  setTimeout(function () {\n" +
+                      "    cb(new Error('foo'));\n" +
+                      "  }, 0);\n" +
+                      "}\n" +
+                      "to call the callback with error Error('bla')\n" +
+                      "  expected Error('foo') to satisfy Error('bla')\n" +
+                      "\n" +
+                      "  Error({\n" +
+                      "    message: 'foo' // should equal 'bla'\n" +
+                      "                   //\n" +
+                      "                   // -foo\n" +
+                      "                   // +bla\n" +
+                      "  })"
+                 );
             });
 
             it('should fail with a diff when no error was passed to the callback', function () {

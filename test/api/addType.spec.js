@@ -143,6 +143,7 @@ describe('addType', function () {
                    "\n" +
                    "box(\n" +
                    "  'abc' // should equal 'abe'\n" +
+                   "        //\n" +
                    "        // -abc\n" +
                    "        // +abe\n" +
                    ")"
