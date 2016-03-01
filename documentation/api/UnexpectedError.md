@@ -41,19 +41,16 @@ expect.addAssertion("<array> to have item satisfying <any+>", function (expect, 
     if (failed) {
       expect.fail({
         diff: function (output, diff, inspect, equal) {
-          var result = {
-            inline: true,
-            diff: output
-          };
+          output.inline = true;
           promises.forEach(function (promise, index) {
-            if (index > 0) { result.diff.nl(2); }
+            if (index > 0) { output.nl(2); }
             var error = promise.reason();
             // the error is connected to the current scope
             // but we are just interested in the nested error
             error.errorMode = 'bubble';
-            result.diff.append(error.getErrorMessage(output));
+            output.append(error.getErrorMessage(output));
           });
-          return result;
+          return output;
         }
       });
     }
@@ -156,8 +153,7 @@ expect.addAssertion('<any> to be completely custom', function (expect, subject) 
     expect.fail({
       diff: function (output, diff, inspect, equal) {
         output.text('~~~~~~~~~~~~~~').sp().success('custom').sp().text('~~~~~~~~~~~~~~').nl();
-        var result = createDiff(output, diff, inspect, equal);
-        return result;
+        return createDiff(output, diff, inspect, equal);
       }
     });
   });

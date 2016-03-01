@@ -238,6 +238,7 @@ expect.addType({
         return a === b || equal(a.name, b.name);
     },
     diff: function (actual, expected, output, diff, inspect) {
+        output.inline = inlineDiff;
         var nameDiff = diff(actual.name, expected.name);
 
         output.text('new Person(')
@@ -245,13 +246,13 @@ expect.addType({
               .indentLines();
 
         if (nameDiff && nameDiff.inline) {
-            output.append(nameDiff.diff);
+            output.append(nameDiff);
         } else {
             output.i().append(inspect(actual.name)).text(',').sp()
                   .annotationBlock(function () {
                       this.error('should be ').append(inspect(expected.name));
                       if (nameDiff) {
-                          this.nl().append(nameDiff.diff);
+                          this.nl().append(nameDiff);
                       }
                   })
                   .nl();
@@ -262,10 +263,7 @@ expect.addType({
               .nl()
               .text(')');
 
-        return {
-            inline: inlineDiff,
-            diff: output
-        };
+        return output;
     }
 });
 ```
