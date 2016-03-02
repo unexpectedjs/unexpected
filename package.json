@@ -23,11 +23,11 @@
   "dependencies": {
     "array-changes": "1.3.0",
     "array-changes-async": "2.1.0",
-    "bluebird": "2.9.34",
     "detect-indent": "3.0.1",
     "diff": "1.1.0",
     "leven": "1.0.0",
-    "magicpen": "5.6.0"
+    "magicpen": "5.6.0",
+    "unexpected-bluebird": "2.9.34"
   },
   "devDependencies": {
     "browserify": "5.9.1",
