@@ -371,4 +371,10 @@ describe('inspect', function () {
     it('should not show the body of a function with native code', function () {
         expect(Array.prototype.slice, 'to inspect as', 'function slice() { /* native code */ }');
     });
+
+    it('should not inspect a recurring object as [Circular]', function () {
+        var a = { foo: 'bar' };
+        var b = { c: a, d: a };
+        expect(b, 'to inspect as', "{ c: { foo: 'bar' }, d: { foo: 'bar' } }");
+    });
 });
