@@ -6,7 +6,8 @@ describe('to have keys satisfying assertion', function () {
         }, 'to throw',
                "expected [ 1, 2, 3 ] to have keys satisfying\n" +
                "  No matching assertion, did you mean:\n" +
-               "  <object> to have keys satisfying <any+>");
+               "  <object> to have keys satisfying <any+>\n" +
+               "  <object> to have keys satisfying <assertion>");
     });
 
     it('only accepts objects as the target', function () {
@@ -15,7 +16,8 @@ describe('to have keys satisfying assertion', function () {
         }, 'to throw',
                "expected 42 to have keys satisfying function (key) {}\n" +
                "  No matching assertion, did you mean:\n" +
-               "  <object> to have keys satisfying <any+>");
+               "  <object> to have keys satisfying <any+>\n" +
+               "  <object> to have keys satisfying <assertion>");
     });
 
     it('asserts that the given callback does not throw for any keys in the map', function () {
@@ -126,7 +128,7 @@ describe('to have keys satisfying assertion', function () {
                 clonedExpect({a: 1, foo: 2, bar: 3}, 'to have keys satisfying', 'to be a sequence of as after a short delay'),
                 'to be rejected with',
                 "expected { a: 1, foo: 2, bar: 3 }\n" +
-                    "to have keys satisfying 'to be a sequence of as after a short delay'\n" +
+                    "to have keys satisfying to be a sequence of as after a short delay\n" +
                     "\n" +
                     "[\n" +
                     "  'a',\n" +
