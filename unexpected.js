@@ -28,20 +28,21 @@ module.exports = function AssertionString(text) {
 
 },{}],2:[function(require,module,exports){
 var createStandardErrorMessage = require(5);
-var utils = require(17);
-var magicpen = require(42);
+var utils = require(19);
+var magicpen = require(40);
 var extend = utils.extend;
-var leven = require(38);
-var makePromise = require(10);
+var leven = require(36);
+var makePromise = require(11);
 var makeAndMethod = require(9);
 var isPendingPromise = require(8);
-var oathbreaker = require(12);
+var oathbreaker = require(13);
 var UnexpectedError = require(3);
-var notifyPendingPromise = require(11);
+var notifyPendingPromise = require(12);
 var defaultDepth = require(7);
 var createWrappedExpectProto = require(6);
 var AssertionString = require(1);
-var throwIfNonUnexpectedError = require(14);
+var throwIfNonUnexpectedError = require(16);
+var makeDiffResultBackwardsCompatible = require(10);
 
 function isAssertionArg(arg) {
     return arg.type.is('assertion');
@@ -97,7 +98,13 @@ function Unexpected(options) {
     this.assertions = options.assertions || {};
     this.typeByName = options.typeByName || {any: anyType};
     this.types = options.types || [anyType];
-    this.output = options.output || magicpen();
+    if (options.output) {
+        this.output = options.output;
+    } else {
+        this.output = magicpen();
+        this.output.inline = false;
+        this.output.diff = false;
+    }
     this._outputFormat = options.format || magicpen.defaultFormat;
     this.installedPlugins = options.installedPlugins || [];
 
@@ -320,7 +327,9 @@ Unexpected.prototype.inspect = function (obj, depth, outputOrFormat) {
             if (typeof childDepth === 'undefined') {
                 childDepth = currentDepth - 1;
             }
-            return printOutput(v, childDepth, output) || output;
+            output = printOutput(v, childDepth, output) || output;
+            seen.pop();
+            return output;
         });
     };
 
@@ -700,7 +709,7 @@ Unexpected.prototype.addType = function (type) {
             throw new Error('You need to pass the output to baseType.diff() as the third parameter');
         }
 
-        return baseType.diff(actual, expected,
+        return makeDiffResultBackwardsCompatible(baseType.diff(actual, expected,
                       output.clone(),
                       function (actual, expected) {
                           return that.diff(actual, expected, output.clone());
@@ -708,7 +717,7 @@ Unexpected.prototype.addType = function (type) {
                       function (value, depth) {
                           return output.clone().appendInspected(value, depth);
                       },
-                      that.equal.bind(that));
+                      that.equal.bind(that)));
     };
 
     extendedBaseType.equal = function (actual, expected) {
@@ -1231,13 +1240,13 @@ Unexpected.prototype.diff = function (a, b, output, recursions, seen) {
         seen.push(a);
     }
 
-    return this.findCommonType(a, b).diff(a, b, output, function (actual, expected) {
+    return makeDiffResultBackwardsCompatible(this.findCommonType(a, b).diff(a, b, output, function (actual, expected) {
         return that.diff(actual, expected, output.clone(), recursions - 1, seen);
     }, function (v, depth) {
         return output.clone().appendInspected(v, depth);
     }, function (actual, expected) {
         return that.equal(actual, expected);
-    });
+    }));
 };
 
 Unexpected.prototype.toString = function () {
@@ -1451,9 +1460,10 @@ function ensureValidAssertionPattern(pattern) {
 module.exports = Unexpected;
 
 },{}],3:[function(require,module,exports){
-var utils = require(17);
+var utils = require(19);
 var defaultDepth = require(7);
-var useFullStackTrace = require(16);
+var useFullStackTrace = require(18);
+var makeDiffResultBackwardsCompatible = require(10);
 
 var errorMethodBlacklist = ['message', 'line', 'sourceId', 'sourceURL', 'stack', 'stackArray'].reduce(function (result, prop) {
     result[prop] = true;
@@ -1512,13 +1522,13 @@ UnexpectedError.prototype.isUnexpected = true;
 UnexpectedError.prototype.buildDiff = function (options) {
     var output = this.outputFromOptions(options);
     var expect = this.expect;
-    return this.createDiff && this.createDiff(output, function (actual, expected) {
+    return this.createDiff && makeDiffResultBackwardsCompatible(this.createDiff(output, function (actual, expected) {
         return expect.diff(actual, expected, output.clone());
     }, function (v, depth) {
         return output.clone().appendInspected(v, (depth || defaultDepth) - 1);
     }, function (actual, expected) {
         return expect.equal(actual, expected);
-    });
+    }));
 };
 
 UnexpectedError.prototype.getDefaultErrorMessage = function (options) {
@@ -1537,7 +1547,7 @@ UnexpectedError.prototype.getDefaultErrorMessage = function (options) {
     if (errorWithDiff && errorWithDiff.createDiff) {
         var comparison = errorWithDiff.buildDiff(options);
         if (comparison) {
-            output.nl(2).append(comparison.diff);
+            output.nl(2).append(comparison);
         }
     }
 
@@ -1598,23 +1608,14 @@ UnexpectedError.prototype.getDiff = function (options) {
         errorWithDiff = errorWithDiff.parent;
     }
 
-    if (errorWithDiff) {
-        var diffResult = errorWithDiff.buildDiff(options);
-        if (diffResult && diffResult.diff) {
-            return diffResult;
-        } else {
-            return null;
-        }
-    } else {
-        return null;
-    }
+    return errorWithDiff && errorWithDiff.buildDiff(options);
 };
 
 UnexpectedError.prototype.getDiffMessage = function (options) {
     var output = this.outputFromOptions(options);
     var comparison = this.getDiff(options);
     if (comparison) {
-        output.append(comparison.diff);
+        output.append(comparison);
     } else if (this.expect.testDescription) {
         output.append(this.expect.standardErrorMessage(output.clone(), options));
     } else if (typeof this.output === 'function') {
@@ -1753,10 +1754,10 @@ module.exports = UnexpectedError;
 },{}],4:[function(require,module,exports){
 (function (Buffer){
 /*global setTimeout*/
-var utils = require(17);
-var arrayChanges = require(22);
-var arrayChangesAsync = require(21);
-var throwIfNonUnexpectedError = require(14);
+var utils = require(19);
+var arrayChanges = require(24);
+var arrayChangesAsync = require(22);
+var throwIfNonUnexpectedError = require(16);
 var objectIs = utils.objectIs;
 var isRegExp = utils.isRegExp;
 var extend = utils.extend;
@@ -1922,7 +1923,7 @@ module.exports = function (expect) {
                         output.removedHighlight($0);
                     });
                     flushUntilIndex(subject.length);
-                    return {diff: output};
+                    return output;
                 }
             });
         });
@@ -1984,9 +1985,7 @@ module.exports = function (expect) {
                             actual[propertyName] = subject[propertyName];
                         }
                     });
-                    var result = diff(actual, expected);
-                    result.diff = utils.wrapConstructorNameAroundOutput(result.diff, subject);
-                    return result;
+                    return utils.wrapConstructorNameAroundOutput(diff(actual, expected), subject);
                 }
             });
         });
@@ -2029,14 +2028,11 @@ module.exports = function (expect) {
             }, function (err) {
                 expect.fail({
                     diff: !expect.flags.not && function (output, diff, inspect, equal) {
+                        output.inline = true;
                         var keyInValue = {};
                         keys.forEach(function (key) {
                             keyInValue[key] = true;
                         });
-                        var result = {
-                            diff: output,
-                            inline: true
-                        };
                         var subjectType = expect.findTypeOf(subject);
                         var subjectIsArrayLike = subjectType.is('array-like');
 
@@ -2058,7 +2054,7 @@ module.exports = function (expect) {
                         output.outdentLines();
                         subjectType.suffix(output, subject);
 
-                        return result;
+                        return output;
                     }
                 });
             });
@@ -2169,7 +2165,7 @@ module.exports = function (expect) {
                         });
                         flushUntilIndex(subject.length);
                     }
-                    return {diff: output};
+                    return output;
                 }
             });
         });
@@ -2221,7 +2217,7 @@ module.exports = function (expect) {
                                 .text(subject.substr(i));
                         }
                     }
-                    return {diff: output};
+                    return output;
                 }
             });
         });
@@ -2251,7 +2247,7 @@ module.exports = function (expect) {
                             .text(subject.substr(0, subject.length - i))
                             .partialMatch(subject.substr(subject.length - i, subject.length));
                     }
-                    return {diff: output};
+                    return output;
                 }
             });
         });
@@ -2534,9 +2530,9 @@ module.exports = function (expect) {
         if (subject.isUnexpected) {
             var subjectPen;
             if (useDiff) {
-                var diffResult = subject.getDiff({ format: format });
-                if (diffResult && diffResult.diff) {
-                    subjectPen = diffResult.diff;
+                var diff = subject.getDiff({ format: format });
+                if (diff) {
+                    subjectPen = diff;
                 } else {
                     expect.fail('The UnexpectedError instance does not have a diff');
                 }
@@ -2599,10 +2595,7 @@ module.exports = function (expect) {
         }, function (e) {
             expect.fail({
                 diff: function (output, diff, inspect, equal) {
-                    return {
-                        diff: output.appendErrorMessage(e),
-                        inline: false
-                    };
+                    return output.appendErrorMessage(e);
                 }
             });
         });
@@ -2661,10 +2654,7 @@ module.exports = function (expect) {
         }, function (e) {
             expect.fail({
                 diff: function (output) {
-                    return {
-                        diff: output.appendErrorMessage(e),
-                        inline: false
-                    };
+                    return output.appendErrorMessage(e);
                 }
             });
         });
@@ -2814,10 +2804,7 @@ module.exports = function (expect) {
                     expect.errorMode = 'default';
                     expect.fail({
                         diff: function (output, diff, inspect, equal) {
-                            var result = {
-                                diff: output,
-                                inline: true
-                            };
+                            output.inline = true;
                             var indexOfLastNonInsert = changes.reduce(function (previousValue, diffItem, index) {
                                 return (diffItem.type === 'insert') ? previousValue : index;
                             }, -1);
@@ -2861,7 +2848,7 @@ module.exports = function (expect) {
                                                 var toSatisfyResult = toSatisfyMatrix[diffItem.actualIndex][diffItem.expectedIndex];
                                                 var valueDiff = toSatisfyResult && toSatisfyResult !== true && toSatisfyResult.getDiff({ output: output.clone() });
                                                 if (valueDiff && valueDiff.inline) {
-                                                    this.append(valueDiff.diff.amend(delimiterOutput));
+                                                    this.append(valueDiff.amend(delimiterOutput));
                                                 } else {
                                                     this.append(inspect(diffItem.value).amend(delimiterOutput)).sp().annotationBlock(function () {
                                                         this.omitSubject = diffItem.value;
@@ -2870,7 +2857,7 @@ module.exports = function (expect) {
                                                             this.error(label).sp()
                                                                 .block(inspect(diffItem.expected));
                                                             if (valueDiff) {
-                                                                this.nl(2).append(valueDiff.diff);
+                                                                this.nl(2).append(valueDiff);
                                                             }
                                                         } else {
                                                             this.appendErrorMessage(toSatisfyResult);
@@ -2890,7 +2877,7 @@ module.exports = function (expect) {
                                 .nl(suffixOutput.isEmpty() ? 0 : 1)
                                 .append(suffixOutput);
 
-                            return result;
+                            return output;
                         }
                     });
                 }
@@ -2903,6 +2890,9 @@ module.exports = function (expect) {
         var subjectType = expect.subjectType;
         if (subject === value) {
             return;
+        }
+        if (valueType.is('array-like') && !subjectType.is('array-like')) {
+            expect.fail();
         }
         var promiseByKey = {};
         var keys = valueType.getKeys(value);
@@ -2929,11 +2919,7 @@ module.exports = function (expect) {
             return expect.promise.settle(promiseByKey).then(function () {
                 expect.fail({
                     diff: function (output, diff, inspect, equal) {
-                        var result = {
-                            diff: output,
-                            inline: true
-                        };
-
+                        output.inline = true;
                         var subjectIsArrayLike = subjectType.is('array-like');
                         var subjectKeys = subjectType.getKeys(subject);
                         var keys = utils.uniqueStringsAndSymbols(subjectKeys, valueType.getKeys(value));
@@ -2980,8 +2966,8 @@ module.exports = function (expect) {
                                     if (missingArrayIndex) {
                                         output.error('// missing').sp();
                                     }
-                                    if (keyDiff && keyDiff.diff && keyDiff.inline) {
-                                        valueOutput = keyDiff.diff;
+                                    if (keyDiff && keyDiff.inline) {
+                                        valueOutput = keyDiff;
                                     } else if (typeof value[key] === 'function') {
                                         isInlineDiff = false;
                                         annotation.appendErrorMessage(conflicting);
@@ -2990,10 +2976,10 @@ module.exports = function (expect) {
                                             .block(inspect(value[key]));
 
                                         if (keyDiff) {
-                                            annotation.nl().append(keyDiff.diff);
+                                            annotation.nl(2).append(keyDiff);
                                         }
                                     } else {
-                                        valueOutput = keyDiff.diff;
+                                        valueOutput = keyDiff;
                                     }
                                 }
 
@@ -3042,11 +3028,9 @@ module.exports = function (expect) {
                             output.outdentLines();
                         }
                         var suffixOutput = subjectType.suffix(output.clone(), subject);
-                        output
+                        return output
                             .nl(suffixOutput.isEmpty() ? 0 : 1)
                             .append(suffixOutput);
-
-                        return result;
                     }
                 });
             });
@@ -3413,13 +3397,13 @@ module.exports = function createStandardErrorMessage(output, subject, testDescri
 
 },{}],6:[function(require,module,exports){
 var createStandardErrorMessage = require(5);
-var makePromise = require(10);
+var makePromise = require(11);
 var isPendingPromise = require(8);
-var oathbreaker = require(12);
+var oathbreaker = require(13);
 var UnexpectedError = require(3);
-var notifyPendingPromise = require(11);
+var notifyPendingPromise = require(12);
 var makeAndMethod = require(9);
-var utils = require(17);
+var utils = require(19);
 
 function isAssertionArg(arg) {
     return arg.type.is('assertion');
@@ -3674,9 +3658,30 @@ module.exports = function makeAndMethod(expect, subject) {
 };
 
 },{}],10:[function(require,module,exports){
-var Promise = require(25);
-var oathbreaker = require(12);
-var throwIfNonUnexpectedError = require(14);
+module.exports = function makeDiffResultBackwardsCompatible(diff) {
+    if (diff) {
+        if (diff.isMagicPen) {
+            // New format: { [MagicPen], inline: <boolean> }
+            // Make backwards compatible by adding a 'diff' property that points
+            // to the instance itself.
+            diff.diff = diff;
+        } else {
+            // Old format: { inline: <boolean>, diff: <magicpen> }
+            // Upgrade to the new format by moving the inline property to
+            // the magicpen instance, and remain backwards compatibly by adding
+            // the diff property pointing to the instance itself.
+            diff.diff.inline = diff.inline;
+            diff = diff.diff;
+            diff.diff = diff;
+        }
+    }
+    return diff;
+};
+
+},{}],11:[function(require,module,exports){
+var Promise = require(54);
+var oathbreaker = require(13);
+var throwIfNonUnexpectedError = require(16);
 
 function makePromise(body) {
     if (typeof body !== 'function') {
@@ -3788,7 +3793,7 @@ function extractPromisesFromObject(obj) {
 
 module.exports = makePromise;
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 /*global afterEach, jasmine*/
 var pendingPromisesForTheCurrentTest = [];
 var afterEachRegistered = false;
@@ -3844,9 +3849,9 @@ module.exports = function notifyPendingPromise(promise) {
     registerAfterEachHook();
 };
 
-},{}],12:[function(require,module,exports){
-var workQueue = require(18);
-var Promise = require(25);
+},{}],13:[function(require,module,exports){
+var workQueue = require(20);
+var Promise = require(54);
 module.exports = function oathbreaker(value) {
     if (!value || typeof value.then !== 'function') {
         return value;
@@ -3903,8 +3908,13 @@ module.exports = function oathbreaker(value) {
     });
 };
 
-},{}],13:[function(require,module,exports){
-var utils = require(17);
+},{}],14:[function(require,module,exports){
+module.exports = /([\x00-\x09\x0B-\x1F\x7F-\x9F\xAD\u0378\u0379\u037F-\u0383\u038B\u038D\u03A2\u0528-\u0530\u0557\u0558\u0560\u0588\u058B-\u058E\u0590\u05C8-\u05CF\u05EB-\u05EF\u05F5-\u0605\u061C\u061D\u06DD\u070E\u070F\u074B\u074C\u07B2-\u07BF\u07FB-\u07FF\u082E\u082F\u083F\u085C\u085D\u085F-\u089F\u08A1\u08AD-\u08E3\u08FF\u0978\u0980\u0984\u098D\u098E\u0991\u0992\u09A9\u09B1\u09B3-\u09B5\u09BA\u09BB\u09C5\u09C6\u09C9\u09CA\u09CF-\u09D6\u09D8-\u09DB\u09DE\u09E4\u09E5\u09FC-\u0A00\u0A04\u0A0B-\u0A0E\u0A11\u0A12\u0A29\u0A31\u0A34\u0A37\u0A3A\u0A3B\u0A3D\u0A43-\u0A46\u0A49\u0A4A\u0A4E-\u0A50\u0A52-\u0A58\u0A5D\u0A5F-\u0A65\u0A76-\u0A80\u0A84\u0A8E\u0A92\u0AA9\u0AB1\u0AB4\u0ABA\u0ABB\u0AC6\u0ACA\u0ACE\u0ACF\u0AD1-\u0ADF\u0AE4\u0AE5\u0AF2-\u0B00\u0B04\u0B0D\u0B0E\u0B11\u0B12\u0B29\u0B31\u0B34\u0B3A\u0B3B\u0B45\u0B46\u0B49\u0B4A\u0B4E-\u0B55\u0B58-\u0B5B\u0B5E\u0B64\u0B65\u0B78-\u0B81\u0B84\u0B8B-\u0B8D\u0B91\u0B96-\u0B98\u0B9B\u0B9D\u0BA0-\u0BA2\u0BA5-\u0BA7\u0BAB-\u0BAD\u0BBA-\u0BBD\u0BC3-\u0BC5\u0BC9\u0BCE\u0BCF\u0BD1-\u0BD6\u0BD8-\u0BE5\u0BFB-\u0C00\u0C04\u0C0D\u0C11\u0C29\u0C34\u0C3A-\u0C3C\u0C45\u0C49\u0C4E-\u0C54\u0C57\u0C5A-\u0C5F\u0C64\u0C65\u0C70-\u0C77\u0C80\u0C81\u0C84\u0C8D\u0C91\u0CA9\u0CB4\u0CBA\u0CBB\u0CC5\u0CC9\u0CCE-\u0CD4\u0CD7-\u0CDD\u0CDF\u0CE4\u0CE5\u0CF0\u0CF3-\u0D01\u0D04\u0D0D\u0D11\u0D3B\u0D3C\u0D45\u0D49\u0D4F-\u0D56\u0D58-\u0D5F\u0D64\u0D65\u0D76-\u0D78\u0D80\u0D81\u0D84\u0D97-\u0D99\u0DB2\u0DBC\u0DBE\u0DBF\u0DC7-\u0DC9\u0DCB-\u0DCE\u0DD5\u0DD7\u0DE0-\u0DF1\u0DF5-\u0E00\u0E3B-\u0E3E\u0E5C-\u0E80\u0E83\u0E85\u0E86\u0E89\u0E8B\u0E8C\u0E8E-\u0E93\u0E98\u0EA0\u0EA4\u0EA6\u0EA8\u0EA9\u0EAC\u0EBA\u0EBE\u0EBF\u0EC5\u0EC7\u0ECE\u0ECF\u0EDA\u0EDB\u0EE0-\u0EFF\u0F48\u0F6D-\u0F70\u0F98\u0FBD\u0FCD\u0FDB-\u0FFF\u10C6\u10C8-\u10CC\u10CE\u10CF\u1249\u124E\u124F\u1257\u1259\u125E\u125F\u1289\u128E\u128F\u12B1\u12B6\u12B7\u12BF\u12C1\u12C6\u12C7\u12D7\u1311\u1316\u1317\u135B\u135C\u137D-\u137F\u139A-\u139F\u13F5-\u13FF\u169D-\u169F\u16F1-\u16FF\u170D\u1715-\u171F\u1737-\u173F\u1754-\u175F\u176D\u1771\u1774-\u177F\u17DE\u17DF\u17EA-\u17EF\u17FA-\u17FF\u180F\u181A-\u181F\u1878-\u187F\u18AB-\u18AF\u18F6-\u18FF\u191D-\u191F\u192C-\u192F\u193C-\u193F\u1941-\u1943\u196E\u196F\u1975-\u197F\u19AC-\u19AF\u19CA-\u19CF\u19DB-\u19DD\u1A1C\u1A1D\u1A5F\u1A7D\u1A7E\u1A8A-\u1A8F\u1A9A-\u1A9F\u1AAE-\u1AFF\u1B4C-\u1B4F\u1B7D-\u1B7F\u1BF4-\u1BFB\u1C38-\u1C3A\u1C4A-\u1C4C\u1C80-\u1CBF\u1CC8-\u1CCF\u1CF7-\u1CFF\u1DE7-\u1DFB\u1F16\u1F17\u1F1E\u1F1F\u1F46\u1F47\u1F4E\u1F4F\u1F58\u1F5A\u1F5C\u1F5E\u1F7E\u1F7F\u1FB5\u1FC5\u1FD4\u1FD5\u1FDC\u1FF0\u1FF1\u1FF5\u1FFF\u200B-\u200F\u202A-\u202E\u2060-\u206F\u2072\u2073\u208F\u209D-\u209F\u20BA-\u20CF\u20F1-\u20FF\u218A-\u218F\u23F4-\u23FF\u2427-\u243F\u244B-\u245F\u2700\u2B4D-\u2B4F\u2B5A-\u2BFF\u2C2F\u2C5F\u2CF4-\u2CF8\u2D26\u2D28-\u2D2C\u2D2E\u2D2F\u2D68-\u2D6E\u2D71-\u2D7E\u2D97-\u2D9F\u2DA7\u2DAF\u2DB7\u2DBF\u2DC7\u2DCF\u2DD7\u2DDF\u2E3C-\u2E7F\u2E9A\u2EF4-\u2EFF\u2FD6-\u2FEF\u2FFC-\u2FFF\u3040\u3097\u3098\u3100-\u3104\u312E-\u3130\u318F\u31BB-\u31BF\u31E4-\u31EF\u321F\u32FF\u4DB6-\u4DBF\u9FCD-\u9FFF\uA48D-\uA48F\uA4C7-\uA4CF\uA62C-\uA63F\uA698-\uA69E\uA6F8-\uA6FF\uA78F\uA794-\uA79F\uA7AB-\uA7F7\uA82C-\uA82F\uA83A-\uA83F\uA878-\uA87F\uA8C5-\uA8CD\uA8DA-\uA8DF\uA8FC-\uA8FF\uA954-\uA95E\uA97D-\uA97F\uA9CE\uA9DA-\uA9DD\uA9E0-\uA9FF\uAA37-\uAA3F\uAA4E\uAA4F\uAA5A\uAA5B\uAA7C-\uAA7F\uAAC3-\uAADA\uAAF7-\uAB00\uAB07\uAB08\uAB0F\uAB10\uAB17-\uAB1F\uAB27\uAB2F-\uABBF\uABEE\uABEF\uABFA-\uABFF\uD7A4-\uD7AF\uD7C7-\uD7CA\uD7FC-\uF8FF\uFA6E\uFA6F\uFADA-\uFAFF\uFB07-\uFB12\uFB18-\uFB1C\uFB37\uFB3D\uFB3F\uFB42\uFB45\uFBC2-\uFBD2\uFD40-\uFD4F\uFD90\uFD91\uFDC8-\uFDEF\uFDFE\uFDFF\uFE1A-\uFE1F\uFE27-\uFE2F\uFE53\uFE67\uFE6C-\uFE6F\uFE75\uFEFD-\uFF00\uFFBF-\uFFC1\uFFC8\uFFC9\uFFD0\uFFD1\uFFD8\uFFD9\uFFDD-\uFFDF\uFFE7\uFFEF-\uFFFB\uFFFE\uFFFF])/g;
+
+},{}],15:[function(require,module,exports){
+var utils = require(19);
+var stringDiff = require(35);
+var specialCharRegExp = require(14);
 
 module.exports = function (expect) {
     expect.installTheme({ styles: {
@@ -4246,9 +4256,138 @@ module.exports = function (expect) {
             this.sp().commentBlock(pen);
         }
     });
+
+    expect.addStyle('diffFragment', function (text, baseStyle, specialCharStyle, markUpSpecialCharacters) {
+        if (markUpSpecialCharacters) {
+            text.split(specialCharRegExp).forEach(function (part) {
+                if (specialCharRegExp.test(part)) {
+                    this[specialCharStyle || baseStyle](utils.escapeChar(part));
+                } else {
+                    this[baseStyle](part);
+                }
+            }, this);
+        } else {
+            this[baseStyle](text);
+        }
+    });
+
+    expect.addStyle('stringDiff', function (actual, expected, options) {
+        options = options || {};
+        var type = options.type || 'WordsWithSpace';
+        var diffLines = [];
+        var lastPart;
+        stringDiff.diffLines(actual, expected).forEach(function (part) {
+            if (lastPart && lastPart.added && part.removed) {
+                diffLines.push({
+                    oldValue: part.value,
+                    newValue: lastPart.value,
+                    replaced: true
+                });
+                lastPart = null;
+            } else if (lastPart) {
+                diffLines.push(lastPart);
+                lastPart = part;
+            } else {
+                lastPart = part;
+            }
+        });
+        if (lastPart) {
+            diffLines.push(lastPart);
+        }
+
+        diffLines.forEach(function (part, index) {
+            if (part.replaced) {
+                var oldValue = part.oldValue;
+                var newValue = part.newValue;
+                var oldLine = this.clone();
+                var newLine = this.clone();
+                var oldEndsWithNewline = oldValue.slice(-1) === '\n';
+                var newEndsWithNewline = newValue.slice(-1) === '\n';
+                if (oldEndsWithNewline) {
+                    oldValue = oldValue.slice(0, -1);
+                }
+                if (newEndsWithNewline) {
+                    newValue = newValue.slice(0, -1);
+                }
+
+                stringDiff['diff' + type](oldValue, newValue).forEach(function (part) {
+                    if (part.added) {
+                        newLine.diffFragment(part.value, 'diffAddedHighlight', 'diffAddedSpecialChar', options.markUpSpecialCharacters);
+                    } else if (part.removed) {
+                        oldLine.diffFragment(part.value, 'diffRemovedHighlight', 'diffRemovedSpecialChar', options.markUpSpecialCharacters);
+                    } else {
+                        newLine.diffAddedLine(part.value);
+                        oldLine.diffRemovedLine(part.value);
+                    }
+                });
+                this.alt({
+                    text: function () {
+                        oldLine.prependLinesWith(this.clone().diffRemovedLine('-'));
+                        newLine.prependLinesWith(this.clone().diffAddedLine('+'));
+                    }
+                });
+
+                if (oldEndsWithNewline && !newEndsWithNewline) {
+                    oldLine.diffRemovedSpecialChar('\\n');
+                }
+
+                if (newEndsWithNewline && !oldEndsWithNewline) {
+                    newLine.diffAddedSpecialChar('\\n');
+                }
+
+                this.append(oldLine).nl().append(newLine);
+                if (oldEndsWithNewline && index < diffLines.length - 1) {
+                    this.nl();
+                }
+            } else {
+                var endsWithNewline = /\n$/.test(part.value);
+                var value = endsWithNewline ?
+                    part.value.slice(0, -1) :
+                    part.value;
+                if (part.added) {
+                    this.append(function () {
+                        this.diffFragment(value, 'diffAddedLine', undefined, options.markUpSpecialCharacters);
+                        var outer = this;
+                        this.alt({
+                            text: function () {
+                                outer.prependLinesWith(function () {
+                                    this.diffAddedLine('+');
+                                });
+                            }
+                        });
+                    });
+                } else if (part.removed) {
+                    this.append(function () {
+                        this.diffFragment(value, 'diffRemovedLine', undefined, options.markUpSpecialCharacters);
+                        var outer = this;
+                        this.alt({
+                            text: function () {
+                                outer.prependLinesWith(function () {
+                                    this.diffRemovedLine('-');
+                                });
+                            }
+                        });
+                    });
+                } else {
+                    var outer = this;
+                    this.alt({
+                        text: function () {
+                            outer.text(value.replace(/^(.)/gm, ' $1'));
+                        },
+                        fallback: function () {
+                            this.text(value);
+                        }
+                    });
+                }
+                if (endsWithNewline) {
+                    this.nl();
+                }
+            }
+        }, this);
+    });
 };
 
-},{}],14:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 module.exports = function throwIfNonUnexpectedError(err) {
     if (err && err.message === 'aggregate error') {
         for (var i = 0 ; i < err.length ; i += 1) {
@@ -4259,14 +4398,14 @@ module.exports = function throwIfNonUnexpectedError(err) {
     }
 };
 
-},{}],15:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 (function (Buffer){
-var utils = require(17);
+var utils = require(19);
 var isRegExp = utils.isRegExp;
 var leftPad = utils.leftPad;
-var arrayChanges = require(22);
-var leven = require(38);
-var detectIndent = require(35);
+var arrayChanges = require(24);
+var leven = require(36);
+var detectIndent = require(31);
 var defaultDepth = require(7);
 var AssertionString = require(1);
 
@@ -4283,32 +4422,28 @@ module.exports = function (expect) {
             output.append(this.suffix(output.clone(), value));
         },
         diff: function (actual, expected, output, diff, inspect) {
+            output.inline = true;
             actual = this.unwrap(actual);
             expected = this.unwrap(expected);
             var comparison = diff(actual, expected);
             var prefixOutput = this.prefix(output.clone(), actual);
             var suffixOutput = this.suffix(output.clone(), actual);
             if (comparison && comparison.inline) {
-                return {
-                    inline: true,
-                    diff: output.append(prefixOutput).append(comparison.diff).append(suffixOutput)
-                };
+                return output.append(prefixOutput).append(comparison).append(suffixOutput);
             } else {
-                return {
-                    inline: true,
-                    diff: output.append(prefixOutput).nl()
-                        .indentLines()
-                        .i().block(function () {
-                            this.append(inspect(actual)).sp().annotationBlock(function () {
-                                this.shouldEqualError(expected, inspect);
-                                if (comparison) {
-                                    this.nl().append(comparison.diff);
-                                }
-                            });
-                        }).nl()
-                        .outdentLines()
-                        .append(suffixOutput)
-                };
+                return output.append(prefixOutput).nl()
+                    .indentLines()
+                    .i().block(function () {
+                        this.append(inspect(actual)).sp().annotationBlock(function () {
+                            this.shouldEqualError(expected, inspect);
+                            if (comparison) {
+                                this.nl(2).append(comparison);
+                            }
+                        });
+
+                    }).nl()
+                    .outdentLines()
+                    .append(suffixOutput);
             }
         }
     });
@@ -4548,18 +4683,12 @@ module.exports = function (expect) {
         },
         diff: function (actual, expected, output, diff, inspect, equal) {
             if (actual.constructor !== expected.constructor) {
-                return {
-                    diff: output.text('Mismatching constructors ')
-                        .text(actual.constructor && utils.getFunctionName(actual.constructor) || actual.constructor)
-                        .text(' should be ').text(expected.constructor && utils.getFunctionName(expected.constructor) || expected.constructor),
-                    inline: false
-                };
+                return output.text('Mismatching constructors ')
+                    .text(actual.constructor && utils.getFunctionName(actual.constructor) || actual.constructor)
+                    .text(' should be ').text(expected.constructor && utils.getFunctionName(expected.constructor) || expected.constructor);
             }
 
-            var result = {
-                diff: output,
-                inline: true
-            };
+            output.inline = true;
             var actualKeys = this.getKeys(actual);
             var keys = utils.uniqueStringsAndSymbols(actualKeys, this.getKeys(expected));
             var prefixOutput = this.prefix(output.clone(), actual);
@@ -4590,11 +4719,11 @@ module.exports = function (expect) {
                             if (!keyDiff || (keyDiff && !keyDiff.inline)) {
                                 annotation.shouldEqualError(expected[key]);
                                 if (keyDiff) {
-                                    annotation.nl().append(keyDiff.diff);
+                                    annotation.nl(2).append(keyDiff);
                                 }
                             } else {
                                 isInlineDiff = true;
-                                valueOutput = keyDiff.diff;
+                                valueOutput = keyDiff;
                             }
                         }
                     } else {
@@ -4620,11 +4749,9 @@ module.exports = function (expect) {
                 output.outdentLines();
             }
             var suffixOutput = this.suffix(output.clone(), actual);
-            output
+            return output
                 .nl(suffixOutput.isEmpty() ? 0 : 1)
                 .append(suffixOutput);
-
-            return result;
         },
 
         similar: function (a, b) {
@@ -4829,14 +4956,11 @@ module.exports = function (expect) {
         },
         diffLimit: 512,
         diff: function (actual, expected, output, diff, inspect, equal) {
-            var result = {
-                diff: output,
-                inline: true
-            };
+            output.inline = true;
 
             if (Math.max(actual.length, expected.length) > this.diffLimit) {
-                result.diff.jsComment('Diff suppressed due to size > ' + this.diffLimit);
-                return result;
+                output.jsComment('Diff suppressed due to size > ' + this.diffLimit);
+                return output;
             }
 
             if (actual.constructor !== expected.constructor) {
@@ -4886,10 +5010,10 @@ module.exports = function (expect) {
                             var valueDiff = diff(diffItem.value, diffItem.expected);
                             this.property(diffItem.actualIndex, output.clone().block(function () {
                                 if (valueDiff && valueDiff.inline) {
-                                    this.append(valueDiff.diff.amend(delimiterOutput));
+                                    this.append(valueDiff.amend(delimiterOutput));
                                 } else if (valueDiff) {
                                     this.append(inspect(diffItem.value).amend(delimiterOutput.sp())).annotationBlock(function () {
-                                        this.shouldEqualError(diffItem.expected, inspect).nl().append(valueDiff.diff);
+                                        this.shouldEqualError(diffItem.expected, inspect).nl(2).append(valueDiff);
                                     });
                                 } else {
                                     this.append(inspect(diffItem.value).amend(delimiterOutput.sp())).annotationBlock(function () {
@@ -4911,7 +5035,7 @@ module.exports = function (expect) {
                 .nl(suffixOutput.isEmpty() ? 0 : 1)
                 .append(suffixOutput);
 
-            return result;
+            return output;
         }
     });
 
@@ -4980,20 +5104,17 @@ module.exports = function (expect) {
         },
         diff: function (actual, expected, output, diff) {
             if (actual.constructor !== expected.constructor) {
-                return {
-                    diff: output.text('Mismatching constructors ')
-                        .errorName(actual)
-                        .text(' should be ').errorName(expected),
-                    inline: false
-                };
+                return output.text('Mismatching constructors ')
+                    .errorName(actual)
+                    .text(' should be ').errorName(expected);
             }
 
-            var result = diff(this.unwrap(actual), this.unwrap(expected));
-            if (result && result.diff) {
-                result.diff = output.clone().errorName(actual).text('(').append(result.diff).text(')');
+            output = diff(this.unwrap(actual), this.unwrap(expected));
+            if (output) {
+                output = output.clone().errorName(actual).text('(').append(output).text(')');
 
             }
-            return result;
+            return output;
         }
     });
 
@@ -5176,12 +5297,7 @@ module.exports = function (expect) {
             output.jsRegexp(regExp);
         },
         diff: function (actual, expected, output, diff, inspect) {
-            var result = {
-                diff: output,
-                inline: false
-            };
-            utils.diffStrings(String(actual), String(expected), output, {type: 'Chars', markUpSpecialCharacters: true});
-            return result;
+            return output.stringDiff(String(actual), String(expected), {type: 'Chars', markUpSpecialCharacters: true});
         }
     });
 
@@ -5258,16 +5374,15 @@ module.exports = function (expect) {
         },
         diffLimit: 512,
         diff: function (actual, expected, output, diff, inspect) {
-            var result = {diff: output};
             if (Math.max(actual.length, expected.length) > this.diffLimit) {
-                result.diff.jsComment('Diff suppressed due to size > ' + this.diffLimit);
+                output.jsComment('Diff suppressed due to size > ' + this.diffLimit);
             } else {
-                result.diff = utils.diffStrings(this.hexDump(actual), this.hexDump(expected), output, {type: 'Chars', markUpSpecialCharacters: false})
+                output.stringDiff(this.hexDump(actual), this.hexDump(expected), {type: 'Chars', markUpSpecialCharacters: false})
                     .replaceText(/[\x00-\x1f\x7f-\xff␊␍]/g, '.').replaceText(/[│ ]/g, function (styles, content) {
                         this.text(content);
                     });
             }
-            return result;
+            return output;
         }
     });
 
@@ -5306,12 +5421,9 @@ module.exports = function (expect) {
             output.singleQuotedString(value);
         },
         diff: function (actual, expected, output, diff, inspect) {
-            var result = {
-                diff: output,
-                inline: false
-            };
-            utils.diffStrings(actual, expected, output, {type: 'WordsWithSpace', markUpSpecialCharacters: true});
-            return result;
+            var d = output.stringDiff(actual, expected, {type: 'WordsWithSpace', markUpSpecialCharacters: true});
+            d.inline = false;
+            return d;
         }
     });
 
@@ -5379,7 +5491,7 @@ module.exports = function (expect) {
 };
 
 }).call(this,require(26).Buffer)
-},{}],16:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 (function (process){
 /*global window*/
 var useFullStackTrace = false;
@@ -5391,10 +5503,7 @@ if (typeof window !== 'undefined' && typeof window.location !== 'undefined') {
 module.exports = useFullStackTrace;
 
 }).call(this,require(30))
-},{}],17:[function(require,module,exports){
-var stringDiff = require(36);
-var specialCharRegexp = /([\x00-\x09\x0B-\x1F\x7F-\x9F\xAD\u0378\u0379\u037F-\u0383\u038B\u038D\u03A2\u0528-\u0530\u0557\u0558\u0560\u0588\u058B-\u058E\u0590\u05C8-\u05CF\u05EB-\u05EF\u05F5-\u0605\u061C\u061D\u06DD\u070E\u070F\u074B\u074C\u07B2-\u07BF\u07FB-\u07FF\u082E\u082F\u083F\u085C\u085D\u085F-\u089F\u08A1\u08AD-\u08E3\u08FF\u0978\u0980\u0984\u098D\u098E\u0991\u0992\u09A9\u09B1\u09B3-\u09B5\u09BA\u09BB\u09C5\u09C6\u09C9\u09CA\u09CF-\u09D6\u09D8-\u09DB\u09DE\u09E4\u09E5\u09FC-\u0A00\u0A04\u0A0B-\u0A0E\u0A11\u0A12\u0A29\u0A31\u0A34\u0A37\u0A3A\u0A3B\u0A3D\u0A43-\u0A46\u0A49\u0A4A\u0A4E-\u0A50\u0A52-\u0A58\u0A5D\u0A5F-\u0A65\u0A76-\u0A80\u0A84\u0A8E\u0A92\u0AA9\u0AB1\u0AB4\u0ABA\u0ABB\u0AC6\u0ACA\u0ACE\u0ACF\u0AD1-\u0ADF\u0AE4\u0AE5\u0AF2-\u0B00\u0B04\u0B0D\u0B0E\u0B11\u0B12\u0B29\u0B31\u0B34\u0B3A\u0B3B\u0B45\u0B46\u0B49\u0B4A\u0B4E-\u0B55\u0B58-\u0B5B\u0B5E\u0B64\u0B65\u0B78-\u0B81\u0B84\u0B8B-\u0B8D\u0B91\u0B96-\u0B98\u0B9B\u0B9D\u0BA0-\u0BA2\u0BA5-\u0BA7\u0BAB-\u0BAD\u0BBA-\u0BBD\u0BC3-\u0BC5\u0BC9\u0BCE\u0BCF\u0BD1-\u0BD6\u0BD8-\u0BE5\u0BFB-\u0C00\u0C04\u0C0D\u0C11\u0C29\u0C34\u0C3A-\u0C3C\u0C45\u0C49\u0C4E-\u0C54\u0C57\u0C5A-\u0C5F\u0C64\u0C65\u0C70-\u0C77\u0C80\u0C81\u0C84\u0C8D\u0C91\u0CA9\u0CB4\u0CBA\u0CBB\u0CC5\u0CC9\u0CCE-\u0CD4\u0CD7-\u0CDD\u0CDF\u0CE4\u0CE5\u0CF0\u0CF3-\u0D01\u0D04\u0D0D\u0D11\u0D3B\u0D3C\u0D45\u0D49\u0D4F-\u0D56\u0D58-\u0D5F\u0D64\u0D65\u0D76-\u0D78\u0D80\u0D81\u0D84\u0D97-\u0D99\u0DB2\u0DBC\u0DBE\u0DBF\u0DC7-\u0DC9\u0DCB-\u0DCE\u0DD5\u0DD7\u0DE0-\u0DF1\u0DF5-\u0E00\u0E3B-\u0E3E\u0E5C-\u0E80\u0E83\u0E85\u0E86\u0E89\u0E8B\u0E8C\u0E8E-\u0E93\u0E98\u0EA0\u0EA4\u0EA6\u0EA8\u0EA9\u0EAC\u0EBA\u0EBE\u0EBF\u0EC5\u0EC7\u0ECE\u0ECF\u0EDA\u0EDB\u0EE0-\u0EFF\u0F48\u0F6D-\u0F70\u0F98\u0FBD\u0FCD\u0FDB-\u0FFF\u10C6\u10C8-\u10CC\u10CE\u10CF\u1249\u124E\u124F\u1257\u1259\u125E\u125F\u1289\u128E\u128F\u12B1\u12B6\u12B7\u12BF\u12C1\u12C6\u12C7\u12D7\u1311\u1316\u1317\u135B\u135C\u137D-\u137F\u139A-\u139F\u13F5-\u13FF\u169D-\u169F\u16F1-\u16FF\u170D\u1715-\u171F\u1737-\u173F\u1754-\u175F\u176D\u1771\u1774-\u177F\u17DE\u17DF\u17EA-\u17EF\u17FA-\u17FF\u180F\u181A-\u181F\u1878-\u187F\u18AB-\u18AF\u18F6-\u18FF\u191D-\u191F\u192C-\u192F\u193C-\u193F\u1941-\u1943\u196E\u196F\u1975-\u197F\u19AC-\u19AF\u19CA-\u19CF\u19DB-\u19DD\u1A1C\u1A1D\u1A5F\u1A7D\u1A7E\u1A8A-\u1A8F\u1A9A-\u1A9F\u1AAE-\u1AFF\u1B4C-\u1B4F\u1B7D-\u1B7F\u1BF4-\u1BFB\u1C38-\u1C3A\u1C4A-\u1C4C\u1C80-\u1CBF\u1CC8-\u1CCF\u1CF7-\u1CFF\u1DE7-\u1DFB\u1F16\u1F17\u1F1E\u1F1F\u1F46\u1F47\u1F4E\u1F4F\u1F58\u1F5A\u1F5C\u1F5E\u1F7E\u1F7F\u1FB5\u1FC5\u1FD4\u1FD5\u1FDC\u1FF0\u1FF1\u1FF5\u1FFF\u200B-\u200F\u202A-\u202E\u2060-\u206F\u2072\u2073\u208F\u209D-\u209F\u20BA-\u20CF\u20F1-\u20FF\u218A-\u218F\u23F4-\u23FF\u2427-\u243F\u244B-\u245F\u2700\u2B4D-\u2B4F\u2B5A-\u2BFF\u2C2F\u2C5F\u2CF4-\u2CF8\u2D26\u2D28-\u2D2C\u2D2E\u2D2F\u2D68-\u2D6E\u2D71-\u2D7E\u2D97-\u2D9F\u2DA7\u2DAF\u2DB7\u2DBF\u2DC7\u2DCF\u2DD7\u2DDF\u2E3C-\u2E7F\u2E9A\u2EF4-\u2EFF\u2FD6-\u2FEF\u2FFC-\u2FFF\u3040\u3097\u3098\u3100-\u3104\u312E-\u3130\u318F\u31BB-\u31BF\u31E4-\u31EF\u321F\u32FF\u4DB6-\u4DBF\u9FCD-\u9FFF\uA48D-\uA48F\uA4C7-\uA4CF\uA62C-\uA63F\uA698-\uA69E\uA6F8-\uA6FF\uA78F\uA794-\uA79F\uA7AB-\uA7F7\uA82C-\uA82F\uA83A-\uA83F\uA878-\uA87F\uA8C5-\uA8CD\uA8DA-\uA8DF\uA8FC-\uA8FF\uA954-\uA95E\uA97D-\uA97F\uA9CE\uA9DA-\uA9DD\uA9E0-\uA9FF\uAA37-\uAA3F\uAA4E\uAA4F\uAA5A\uAA5B\uAA7C-\uAA7F\uAAC3-\uAADA\uAAF7-\uAB00\uAB07\uAB08\uAB0F\uAB10\uAB17-\uAB1F\uAB27\uAB2F-\uABBF\uABEE\uABEF\uABFA-\uABFF\uD7A4-\uD7AF\uD7C7-\uD7CA\uD7FC-\uF8FF\uFA6E\uFA6F\uFADA-\uFAFF\uFB07-\uFB12\uFB18-\uFB1C\uFB37\uFB3D\uFB3F\uFB42\uFB45\uFBC2-\uFBD2\uFD40-\uFD4F\uFD90\uFD91\uFDC8-\uFDEF\uFDFE\uFDFF\uFE1A-\uFE1F\uFE27-\uFE2F\uFE53\uFE67\uFE6C-\uFE6F\uFE75\uFEFD-\uFF00\uFFBF-\uFFC1\uFFC8\uFFC9\uFFD0\uFFD1\uFFD8\uFFD9\uFFDD-\uFFDF\uFFE7\uFFEF-\uFFFB\uFFFE\uFFFF])/g;
-
+},{}],19:[function(require,module,exports){
 /* jshint proto:true */
 var canSetPrototype = Object.setPrototypeOf || ({ __proto__: [] } instanceof Array);
 
@@ -5478,123 +5587,6 @@ var utils = module.exports = {
         }
     },
 
-    diffStrings: function (actual, expected, output, options) {
-        options = options || {};
-        var type = options.type || 'WordsWithSpace';
-
-        function addStringToOutput(output, text, baseStyle, specialCharStyle) {
-            if (options.markUpSpecialCharacters) {
-                text.split(specialCharRegexp).forEach(function (part) {
-                    if (specialCharRegexp.test(part)) {
-                        output[specialCharStyle || baseStyle](utils.escapeChar(part));
-                    } else {
-                        output[baseStyle](part);
-                    }
-                });
-            } else {
-                output[baseStyle](text);
-            }
-            return output;
-        }
-
-        var diffLines = [];
-        var lastPart;
-        stringDiff.diffLines(actual, expected).forEach(function (part) {
-            if (lastPart && lastPart.added && part.removed) {
-                diffLines.push({
-                    oldValue: part.value,
-                    newValue: lastPart.value,
-                    replaced: true
-                });
-                lastPart = null;
-            } else if (lastPart) {
-                diffLines.push(lastPart);
-                lastPart = part;
-            } else {
-                lastPart = part;
-            }
-        });
-        if (lastPart) {
-            diffLines.push(lastPart);
-        }
-
-        diffLines.forEach(function (part, index) {
-            var endsWithNewline = /\n$/.test(part.value);
-            var value;
-            if (part.replaced) {
-                var oldLine = output.clone();
-                var newLine = output.clone();
-                var oldValue = part.oldValue;
-                var newValue = part.newValue;
-                var oldEndsWithNewline = oldValue.slice(-1) === '\n';
-                var newEndsWithNewline = newValue.slice(-1) === '\n';
-                if (oldEndsWithNewline) {
-                    oldValue = oldValue.slice(0, -1);
-                }
-                if (newEndsWithNewline) {
-                    newValue = newValue.slice(0, -1);
-                }
-
-                stringDiff['diff' + type](oldValue, newValue).forEach(function (part) {
-                    if (part.added) {
-                        addStringToOutput(newLine, part.value, 'diffAddedHighlight', 'diffAddedSpecialChar');
-                    } else if (part.removed) {
-                        addStringToOutput(oldLine, part.value, 'diffRemovedHighlight', 'diffRemovedSpecialChar');
-                    } else {
-                        newLine.diffAddedLine(part.value);
-                        oldLine.diffRemovedLine(part.value);
-                    }
-                });
-                oldLine.prependLinesWith(output.clone().diffRemovedLine('-'));
-                newLine.prependLinesWith(output.clone().diffAddedLine('+'));
-
-                if (oldEndsWithNewline && !newEndsWithNewline) {
-                    oldLine.diffRemovedSpecialChar('\\n');
-                }
-
-                if (newEndsWithNewline && !oldEndsWithNewline) {
-                    newLine.diffAddedSpecialChar('\\n');
-                }
-
-                output.append(oldLine).nl().append(newLine);
-                if (oldEndsWithNewline && index < diffLines.length - 1) {
-                    output.nl();
-                }
-            } else if (part.added) {
-                value = endsWithNewline ?
-                    part.value.slice(0, -1) :
-                    part.value;
-
-                output.append(function () {
-                    addStringToOutput(this, value, 'diffAddedLine').prependLinesWith(function () {
-                        this.diffAddedLine('+');
-                    });
-                });
-
-                if (endsWithNewline) {
-                    output.nl();
-                }
-            } else if (part.removed) {
-                value = endsWithNewline ?
-                    part.value.slice(0, -1) :
-                    part.value;
-
-                output.append(function () {
-                    addStringToOutput(this, value, 'diffRemovedLine').prependLinesWith(function () {
-                        this.diffRemovedLine('-');
-                    });
-                });
-
-                if (endsWithNewline) {
-                    output.nl();
-                }
-            } else {
-                output.text(part.value.replace(/^(.)/gm, ' $1'));
-            }
-        });
-        return output;
-    },
-
     getFunctionName: function (f) {
         if (typeof f.name === 'string') {
             return f.name;
@@ -5667,8 +5659,8 @@ var utils = module.exports = {
     numericalRegExp: /^(?:0|[1-9][0-9]*)$/
 };
 
-},{}],18:[function(require,module,exports){
-var Promise = require(25);
+},{}],20:[function(require,module,exports){
+var Promise = require(54);
 
 var workQueue = {
     queue: [],
@@ -5703,76 +5695,18 @@ Promise.prototype._notifyUnhandledRejection = function () {
 
 module.exports = workQueue;
 
-},{}],19:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 module.exports = require(2).create()
-    .use(require(13))
     .use(require(15))
+    .use(require(17))
     .use(require(4));
 
 // Add an inspect method to all the promises we return that will make the REPL, console.log, and util.inspect render it nicely in node.js:
-require(25).prototype.inspect = function () {
-    return module.exports.createOutput(require(42).defaultFormat).appendInspected(this).toString();
+require(54).prototype.inspect = function () {
+    return module.exports.createOutput(require(40).defaultFormat).appendInspected(this).toString();
 };
 
-},{}],20:[function(require,module,exports){
-'use strict';
-
-var styles = module.exports = {
-	modifiers: {
-		reset: [0, 0],
-		bold: [1, 22], // 21 isn't widely supported and 22 does the same thing
-		dim: [2, 22],
-		italic: [3, 23],
-		underline: [4, 24],
-		inverse: [7, 27],
-		hidden: [8, 28],
-		strikethrough: [9, 29]
-	},
-	colors: {
-		black: [30, 39],
-		red: [31, 39],
-		green: [32, 39],
-		yellow: [33, 39],
-		blue: [34, 39],
-		magenta: [35, 39],
-		cyan: [36, 39],
-		white: [37, 39],
-		gray: [90, 39]
-	},
-	bgColors: {
-		bgBlack: [40, 49],
-		bgRed: [41, 49],
-		bgGreen: [42, 49],
-		bgYellow: [43, 49],
-		bgBlue: [44, 49],
-		bgMagenta: [45, 49],
-		bgCyan: [46, 49],
-		bgWhite: [47, 49]
-	}
-};
-
-// fix humans
-styles.colors.grey = styles.colors.gray;
-
-Object.keys(styles).forEach(function (groupName) {
-	var group = styles[groupName];
-
-	Object.keys(group).forEach(function (styleName) {
-		var style = group[styleName];
-
-		styles[styleName] = group[styleName] = {
-			open: '\u001b[' + style[0] + 'm',
-			close: '\u001b[' + style[1] + 'm'
-		};
-	});
-
-	Object.defineProperty(styles, groupName, {
-		value: group,
-		enumerable: false
-	});
-});
-
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 /*global setTimeout */
 var arrayDiff = require(23);
 var MAX_STACK_DEPTH = 1000;
@@ -6050,223 +5984,6 @@ module.exports = function arrayChanges(actual, expected, equal, similar, include
     });
 };
 
-},{}],22:[function(require,module,exports){
-var arrayDiff = require(24);
-
-function extend(target) {
-    for (var i = 1; i < arguments.length; i += 1) {
-        var source = arguments[i];
-        Object.keys(source).forEach(function (key) {
-            target[key] = source[key];
-        });
-    }
-    return target;
-}
-
-module.exports = function arrayChanges(actual, expected, equal, similar, includeNonNumericalProperties) {
-    var mutatedArray = new Array(actual.length);
-
-    for (var k = 0; k < actual.length; k += 1) {
-        mutatedArray[k] = {
-            type: 'similar',
-            value: actual[k],
-            actualIndex: k
-        };
-    }
-
-    similar = similar || function (a, b) {
-        return false;
-    };
-
-    var itemsDiff = arrayDiff(Array.prototype.slice.call(actual), Array.prototype.slice.call(expected), function (a, b, aIndex, bIndex) {
-        return equal(a, b, aIndex, bIndex) || similar(a, b, aIndex, bIndex);
-    });
-
-    var removeTable = [];
-    function offsetIndex(index) {
-        return index + (removeTable[index - 1] || 0);
-    }
-
-    var removes = itemsDiff.filter(function (diffItem) {
-        return diffItem.type === 'remove';
-    });
-
-    var removesByIndex = {};
-    var removedItems = 0;
-    removes.forEach(function (diffItem) {
-        var removeIndex = removedItems + diffItem.index;
-        mutatedArray.slice(removeIndex, diffItem.howMany + removeIndex).forEach(function (v) {
-            v.type = 'remove';
-        });
-        removedItems += diffItem.howMany;
-        removesByIndex[diffItem.index] = removedItems;
-    });
-
-    function updateRemoveTable() {
-        removedItems = 0;
-        Array.prototype.forEach.call(actual, function (_, index) {
-            removedItems += removesByIndex[index] || 0;
-            removeTable[index] = removedItems;
-        });
-    }
-
-    updateRemoveTable();
-
-    var moves = itemsDiff.filter(function (diffItem) {
-        return diffItem.type === 'move';
-    });
-
-    var movedItems = 0;
-    moves.forEach(function (diffItem) {
-        var moveFromIndex = offsetIndex(diffItem.from);
-        var removed = mutatedArray.slice(moveFromIndex, diffItem.howMany + moveFromIndex);
-        var added = removed.map(function (v) {
-            return extend({}, v, { last: false, type: 'insert' });
-        });
-        removed.forEach(function (v) {
-            v.type = 'remove';
-        });
-        Array.prototype.splice.apply(mutatedArray, [offsetIndex(diffItem.to), 0].concat(added));
-        movedItems += diffItem.howMany;
-        removesByIndex[diffItem.from] = movedItems;
-        updateRemoveTable();
-    });
-
-    var inserts = itemsDiff.filter(function (diffItem) {
-        return diffItem.type === 'insert';
-    });
-
-    inserts.forEach(function (diffItem) {
-        var added = new Array(diffItem.values.length);
-        for (var i = 0 ; i < diffItem.values.length ; i += 1) {
-            added[i] = {
-                type: 'insert',
-                value: diffItem.values[i],
-                expectedIndex: diffItem.index
-            };
-        }
-        Array.prototype.splice.apply(mutatedArray, [offsetIndex(diffItem.index), 0].concat(added));
-    });
-
-    var offset = 0;
-    mutatedArray.forEach(function (diffItem, index) {
-        var type = diffItem.type;
-        if (type === 'remove') {
-            offset -= 1;
-        } else if (type === 'similar') {
-            diffItem.expected = expected[offset + index];
-            diffItem.expectedIndex = offset + index;
-        }
-    });
-
-    var conflicts = mutatedArray.reduce(function (conflicts, item) {
-        return item.type === 'similar' ? conflicts : conflicts + 1;
-    }, 0);
-
-    for (var i = 0, c = 0; i < Math.max(actual.length, expected.length) && c <= conflicts; i += 1) {
-        if (
-            i >= actual.length || i >= expected.length || (!equal(actual[i], expected[i], i, i) && !similar(actual[i], expected[i], i, i))
-        ) {
-            c += 1;
-        }
-    }
-
-    if (c <= conflicts) {
-        mutatedArray = [];
-        var j;
-        for (j = 0; j < Math.min(actual.length, expected.length); j += 1) {
-            mutatedArray.push({
-                type: 'similar',
-                value: actual[j],
-                expected: expected[j],
-                actualIndex: j,
-                expectedIndex: j
-            });
-        }
-
-        if (actual.length < expected.length) {
-            for (; j < Math.max(actual.length, expected.length); j += 1) {
-                mutatedArray.push({
-                    type: 'insert',
-                    value: expected[j],
-                    expectedIndex: j
-                });
-            }
-        } else {
-            for (; j < Math.max(actual.length, expected.length); j += 1) {
-                mutatedArray.push({
-                    type: 'remove',
-                    value: actual[j],
-                    actualIndex: j
-                });
-            }
-        }
-    }
-
-    mutatedArray.forEach(function (diffItem) {
-        if (diffItem.type === 'similar' && equal(diffItem.value, diffItem.expected, diffItem.actualIndex, diffItem.expectedIndex)) {
-            diffItem.type = 'equal';
-        }
-    });
-
-    if (includeNonNumericalProperties) {
-        var nonNumericalKeys;
-        if (Array.isArray(includeNonNumericalProperties)) {
-            nonNumericalKeys = includeNonNumericalProperties;
-        } else {
-            var isSeenByNonNumericalKey = {};
-            nonNumericalKeys = [];
-            [actual, expected].forEach(function (obj) {
-                Object.keys(obj).forEach(function (key) {
-                    if (!/^(?:0|[1-9][0-9]*)$/.test(key) && !isSeenByNonNumericalKey[key]) {
-                        isSeenByNonNumericalKey[key] = true;
-                        nonNumericalKeys.push(key);
-                    }
-                });
-                if (Object.getOwnPropertySymbols) {
-                    Object.getOwnPropertySymbols(obj).forEach(function (symbol) {
-                        if (!isSeenByNonNumericalKey[symbol]) {
-                            isSeenByNonNumericalKey[symbol] = true;
-                            nonNumericalKeys.push(symbol);
-                        }
-                    });
-                }
-            });
-        }
-        nonNumericalKeys.forEach(function (key) {
-            if (key in actual) {
-                if (key in expected) {
-                    mutatedArray.push({
-                        type: equal(actual[key], expected[key], key, key) ? 'equal' : 'similar',
-                        expectedIndex: key,
-                        actualIndex: key,
-                        value: actual[key],
-                        expected: expected[key]
-                    });
-                } else {
-                    mutatedArray.push({
-                        type: 'remove',
-                        actualIndex: key,
-                        value: actual[key]
-                    });
-                }
-            } else {
-                mutatedArray.push({
-                    type: 'insert',
-                    expectedIndex: key,
-                    value: expected[key]
-                });
-            }
-        });
-    }
-
-    if (mutatedArray.length > 0) {
-        mutatedArray[mutatedArray.length - 1].last = true;
-    }
-
-    return mutatedArray;
-};
-
 },{}],23:[function(require,module,exports){
 
 module.exports = arrayDiff;
@@ -6509,6 +6226,223 @@ function arrayDiff(before, after, equalFn, callback) {
 }
 
 },{}],24:[function(require,module,exports){
+var arrayDiff = require(25);
+
+function extend(target) {
+    for (var i = 1; i < arguments.length; i += 1) {
+        var source = arguments[i];
+        Object.keys(source).forEach(function (key) {
+            target[key] = source[key];
+        });
+    }
+    return target;
+}
+
+module.exports = function arrayChanges(actual, expected, equal, similar, includeNonNumericalProperties) {
+    var mutatedArray = new Array(actual.length);
+
+    for (var k = 0; k < actual.length; k += 1) {
+        mutatedArray[k] = {
+            type: 'similar',
+            value: actual[k],
+            actualIndex: k
+        };
+    }
+
+    similar = similar || function (a, b) {
+        return false;
+    };
+
+    var itemsDiff = arrayDiff(Array.prototype.slice.call(actual), Array.prototype.slice.call(expected), function (a, b, aIndex, bIndex) {
+        return equal(a, b, aIndex, bIndex) || similar(a, b, aIndex, bIndex);
+    });
+
+    var removeTable = [];
+    function offsetIndex(index) {
+        return index + (removeTable[index - 1] || 0);
+    }
+
+    var removes = itemsDiff.filter(function (diffItem) {
+        return diffItem.type === 'remove';
+    });
+
+    var removesByIndex = {};
+    var removedItems = 0;
+    removes.forEach(function (diffItem) {
+        var removeIndex = removedItems + diffItem.index;
+        mutatedArray.slice(removeIndex, diffItem.howMany + removeIndex).forEach(function (v) {
+            v.type = 'remove';
+        });
+        removedItems += diffItem.howMany;
+        removesByIndex[diffItem.index] = removedItems;
+    });
+
+    function updateRemoveTable() {
+        removedItems = 0;
+        Array.prototype.forEach.call(actual, function (_, index) {
+            removedItems += removesByIndex[index] || 0;
+            removeTable[index] = removedItems;
+        });
+    }
+
+    updateRemoveTable();
+
+    var moves = itemsDiff.filter(function (diffItem) {
+        return diffItem.type === 'move';
+    });
+
+    var movedItems = 0;
+    moves.forEach(function (diffItem) {
+        var moveFromIndex = offsetIndex(diffItem.from);
+        var removed = mutatedArray.slice(moveFromIndex, diffItem.howMany + moveFromIndex);
+        var added = removed.map(function (v) {
+            return extend({}, v, { last: false, type: 'insert' });
+        });
+        removed.forEach(function (v) {
+            v.type = 'remove';
+        });
+        Array.prototype.splice.apply(mutatedArray, [offsetIndex(diffItem.to), 0].concat(added));
+        movedItems += diffItem.howMany;
+        removesByIndex[diffItem.from] = movedItems;
+        updateRemoveTable();
+    });
+
+    var inserts = itemsDiff.filter(function (diffItem) {
+        return diffItem.type === 'insert';
+    });
+
+    inserts.forEach(function (diffItem) {
+        var added = new Array(diffItem.values.length);
+        for (var i = 0 ; i < diffItem.values.length ; i += 1) {
+            added[i] = {
+                type: 'insert',
+                value: diffItem.values[i],
+                expectedIndex: diffItem.index
+            };
+        }
+        Array.prototype.splice.apply(mutatedArray, [offsetIndex(diffItem.index), 0].concat(added));
+    });
+
+    var offset = 0;
+    mutatedArray.forEach(function (diffItem, index) {
+        var type = diffItem.type;
+        if (type === 'remove') {
+            offset -= 1;
+        } else if (type === 'similar') {
+            diffItem.expected = expected[offset + index];
+            diffItem.expectedIndex = offset + index;
+        }
+    });
+
+    var conflicts = mutatedArray.reduce(function (conflicts, item) {
+        return item.type === 'similar' ? conflicts : conflicts + 1;
+    }, 0);
+
+    for (var i = 0, c = 0; i < Math.max(actual.length, expected.length) && c <= conflicts; i += 1) {
+        if (
+            i >= actual.length || i >= expected.length || (!equal(actual[i], expected[i], i, i) && !similar(actual[i], expected[i], i, i))
+        ) {
+            c += 1;
+        }
+    }
+
+    if (c <= conflicts) {
+        mutatedArray = [];
+        var j;
+        for (j = 0; j < Math.min(actual.length, expected.length); j += 1) {
+            mutatedArray.push({
+                type: 'similar',
+                value: actual[j],
+                expected: expected[j],
+                actualIndex: j,
+                expectedIndex: j
+            });
+        }
+
+        if (actual.length < expected.length) {
+            for (; j < Math.max(actual.length, expected.length); j += 1) {
+                mutatedArray.push({
+                    type: 'insert',
+                    value: expected[j],
+                    expectedIndex: j
+                });
+            }
+        } else {
+            for (; j < Math.max(actual.length, expected.length); j += 1) {
+                mutatedArray.push({
+                    type: 'remove',
+                    value: actual[j],
+                    actualIndex: j
+                });
+            }
+        }
+    }
+
+    mutatedArray.forEach(function (diffItem) {
+        if (diffItem.type === 'similar' && equal(diffItem.value, diffItem.expected, diffItem.actualIndex, diffItem.expectedIndex)) {
+            diffItem.type = 'equal';
+        }
+    });
+
+    if (includeNonNumericalProperties) {
+        var nonNumericalKeys;
+        if (Array.isArray(includeNonNumericalProperties)) {
+            nonNumericalKeys = includeNonNumericalProperties;
+        } else {
+            var isSeenByNonNumericalKey = {};
+            nonNumericalKeys = [];
+            [actual, expected].forEach(function (obj) {
+                Object.keys(obj).forEach(function (key) {
+                    if (!/^(?:0|[1-9][0-9]*)$/.test(key) && !isSeenByNonNumericalKey[key]) {
+                        isSeenByNonNumericalKey[key] = true;
+                        nonNumericalKeys.push(key);
+                    }
+                });
+                if (Object.getOwnPropertySymbols) {
+                    Object.getOwnPropertySymbols(obj).forEach(function (symbol) {
+                        if (!isSeenByNonNumericalKey[symbol]) {
+                            isSeenByNonNumericalKey[symbol] = true;
+                            nonNumericalKeys.push(symbol);
+                        }
+                    });
+                }
+            });
+        }
+        nonNumericalKeys.forEach(function (key) {
+            if (key in actual) {
+                if (key in expected) {
+                    mutatedArray.push({
+                        type: equal(actual[key], expected[key], key, key) ? 'equal' : 'similar',
+                        expectedIndex: key,
+                        actualIndex: key,
+                        value: actual[key],
+                        expected: expected[key]
+                    });
+                } else {
+                    mutatedArray.push({
+                        type: 'remove',
+                        actualIndex: key,
+                        value: actual[key]
+                    });
+                }
+            } else {
+                mutatedArray.push({
+                    type: 'insert',
+                    expectedIndex: key,
+                    value: expected[key]
+                });
+            }
+        });
+    }
+
+    if (mutatedArray.length > 0) {
+        mutatedArray[mutatedArray.length - 1].last = true;
+    }
+
+    return mutatedArray;
+};
+
+},{}],25:[function(require,module,exports){
 module.exports = arrayDiff;
 
 // Based on some rough benchmarking, this algorithm is about O(2n) worst case,
@@ -6691,7 +6625,3827 @@ function arrayDiff(before, after, equalFn) {
   return removes.concat(outputMoves, inserts);
 }
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
+/*!
+ * The buffer module from node.js, for the browser.
+ *
+ * @author   Feross Aboukhadijeh <feross@feross.org> <http://feross.org>
+ * @license  MIT
+ */
+
+var base64 = require(27)
+var ieee754 = require(28)
+var isArray = require(29)
+
+exports.Buffer = Buffer
+exports.SlowBuffer = Buffer
+exports.INSPECT_MAX_BYTES = 50
+Buffer.poolSize = 8192 // not used by this implementation
+
+var kMaxLength = 0x3fffffff
+
+/**
+ * If `Buffer.TYPED_ARRAY_SUPPORT`:
+ *   === true    Use Uint8Array implementation (fastest)
+ *   === false   Use Object implementation (most compatible, even IE6)
+ *
+ * Browsers that support typed arrays are IE 10+, Firefox 4+, Chrome 7+, Safari 5.1+,
+ * Opera 11.6+, iOS 4.2+.
+ *
+ * Note:
+ *
+ * - Implementation must support adding new properties to `Uint8Array` instances.
+ *   Firefox 4-29 lacked support, fixed in Firefox 30+.
+ *   See: https://bugzilla.mozilla.org/show_bug.cgi?id=695438.
+ *
+ *  - Chrome 9-10 is missing the `TypedArray.prototype.subarray` function.
+ *
+ *  - IE10 has a broken `TypedArray.prototype.subarray` function which returns arrays of
+ *    incorrect length in some situations.
+ *
+ * We detect these buggy browsers and set `Buffer.TYPED_ARRAY_SUPPORT` to `false` so they will
+ * get the Object implementation, which is slower but will work correctly.
+ */
+Buffer.TYPED_ARRAY_SUPPORT = (function () {
+  try {
+    var buf = new ArrayBuffer(0)
+    var arr = new Uint8Array(buf)
+    arr.foo = function () { return 42 }
+    return 42 === arr.foo() && // typed array instances can be augmented
+        typeof arr.subarray === 'function' && // chrome 9-10 lack `subarray`
+        new Uint8Array(1).subarray(1, 1).byteLength === 0 // ie10 has broken `subarray`
+  } catch (e) {
+    return false
+  }
+})()
+
+/**
+ * Class: Buffer
+ * =============
+ *
+ * The Buffer constructor returns instances of `Uint8Array` that are augmented
+ * with function properties for all the node `Buffer` API functions. We use
+ * `Uint8Array` so that square bracket notation works as expected -- it returns
+ * a single octet.
+ *
+ * By augmenting the instances, we can avoid modifying the `Uint8Array`
+ * prototype.
+ */
+function Buffer (subject, encoding, noZero) {
+  if (!(this instanceof Buffer))
+    return new Buffer(subject, encoding, noZero)
+
+  var type = typeof subject
+
+  // Find the length
+  var length
+  if (type === 'number')
+    length = subject > 0 ? subject >>> 0 : 0
+  else if (type === 'string') {
+    if (encoding === 'base64')
+      subject = base64clean(subject)
+    length = Buffer.byteLength(subject, encoding)
+  } else if (type === 'object' && subject !== null) { // assume object is array-like
+    if (subject.type === 'Buffer' && isArray(subject.data))
+      subject = subject.data
+    length = +subject.length > 0 ? Math.floor(+subject.length) : 0
+  } else
+    throw new TypeError('must start with number, buffer, array or string')
+
+  if (this.length > kMaxLength)
+    throw new RangeError('Attempt to allocate Buffer larger than maximum ' +
+      'size: 0x' + kMaxLength.toString(16) + ' bytes')
+
+  var buf
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    // Preferred: Return an augmented `Uint8Array` instance for best performance
+    buf = Buffer._augment(new Uint8Array(length))
+  } else {
+    // Fallback: Return THIS instance of Buffer (created by `new`)
+    buf = this
+    buf.length = length
+    buf._isBuffer = true
+  }
+
+  var i
+  if (Buffer.TYPED_ARRAY_SUPPORT && typeof subject.byteLength === 'number') {
+    // Speed optimization -- use set if we're copying from a typed array
+    buf._set(subject)
+  } else if (isArrayish(subject)) {
+    // Treat array-ish objects as a byte array
+    if (Buffer.isBuffer(subject)) {
+      for (i = 0; i < length; i++)
+        buf[i] = subject.readUInt8(i)
+    } else {
+      for (i = 0; i < length; i++)
+        buf[i] = ((subject[i] % 256) + 256) % 256
+    }
+  } else if (type === 'string') {
+    buf.write(subject, 0, encoding)
+  } else if (type === 'number' && !Buffer.TYPED_ARRAY_SUPPORT && !noZero) {
+    for (i = 0; i < length; i++) {
+      buf[i] = 0
+    }
+  }
+
+  return buf
+}
+
+Buffer.isBuffer = function (b) {
+  return !!(b != null && b._isBuffer)
+}
+
+Buffer.compare = function (a, b) {
+  if (!Buffer.isBuffer(a) || !Buffer.isBuffer(b))
+    throw new TypeError('Arguments must be Buffers')
+
+  var x = a.length
+  var y = b.length
+  for (var i = 0, len = Math.min(x, y); i < len && a[i] === b[i]; i++) {}
+  if (i !== len) {
+    x = a[i]
+    y = b[i]
+  }
+  if (x < y) return -1
+  if (y < x) return 1
+  return 0
+}
+
+Buffer.isEncoding = function (encoding) {
+  switch (String(encoding).toLowerCase()) {
+    case 'hex':
+    case 'utf8':
+    case 'utf-8':
+    case 'ascii':
+    case 'binary':
+    case 'base64':
+    case 'raw':
+    case 'ucs2':
+    case 'ucs-2':
+    case 'utf16le':
+    case 'utf-16le':
+      return true
+    default:
+      return false
+  }
+}
+
+Buffer.concat = function (list, totalLength) {
+  if (!isArray(list)) throw new TypeError('Usage: Buffer.concat(list[, length])')
+
+  if (list.length === 0) {
+    return new Buffer(0)
+  } else if (list.length === 1) {
+    return list[0]
+  }
+
+  var i
+  if (totalLength === undefined) {
+    totalLength = 0
+    for (i = 0; i < list.length; i++) {
+      totalLength += list[i].length
+    }
+  }
+
+  var buf = new Buffer(totalLength)
+  var pos = 0
+  for (i = 0; i < list.length; i++) {
+    var item = list[i]
+    item.copy(buf, pos)
+    pos += item.length
+  }
+  return buf
+}
+
+Buffer.byteLength = function (str, encoding) {
+  var ret
+  str = str + ''
+  switch (encoding || 'utf8') {
+    case 'ascii':
+    case 'binary':
+    case 'raw':
+      ret = str.length
+      break
+    case 'ucs2':
+    case 'ucs-2':
+    case 'utf16le':
+    case 'utf-16le':
+      ret = str.length * 2
+      break
+    case 'hex':
+      ret = str.length >>> 1
+      break
+    case 'utf8':
+    case 'utf-8':
+      ret = utf8ToBytes(str).length
+      break
+    case 'base64':
+      ret = base64ToBytes(str).length
+      break
+    default:
+      ret = str.length
+  }
+  return ret
+}
+
+// pre-set for values that may exist in the future
+Buffer.prototype.length = undefined
+Buffer.prototype.parent = undefined
+
+// toString(encoding, start=0, end=buffer.length)
+Buffer.prototype.toString = function (encoding, start, end) {
+  var loweredCase = false
+
+  start = start >>> 0
+  end = end === undefined || end === Infinity ? this.length : end >>> 0
+
+  if (!encoding) encoding = 'utf8'
+  if (start < 0) start = 0
+  if (end > this.length) end = this.length
+  if (end <= start) return ''
+
+  while (true) {
+    switch (encoding) {
+      case 'hex':
+        return hexSlice(this, start, end)
+
+      case 'utf8':
+      case 'utf-8':
+        return utf8Slice(this, start, end)
+
+      case 'ascii':
+        return asciiSlice(this, start, end)
+
+      case 'binary':
+        return binarySlice(this, start, end)
+
+      case 'base64':
+        return base64Slice(this, start, end)
+
+      case 'ucs2':
+      case 'ucs-2':
+      case 'utf16le':
+      case 'utf-16le':
+        return utf16leSlice(this, start, end)
+
+      default:
+        if (loweredCase)
+          throw new TypeError('Unknown encoding: ' + encoding)
+        encoding = (encoding + '').toLowerCase()
+        loweredCase = true
+    }
+  }
+}
+
+Buffer.prototype.equals = function (b) {
+  if(!Buffer.isBuffer(b)) throw new TypeError('Argument must be a Buffer')
+  return Buffer.compare(this, b) === 0
+}
+
+Buffer.prototype.inspect = function () {
+  var str = ''
+  var max = exports.INSPECT_MAX_BYTES
+  if (this.length > 0) {
+    str = this.toString('hex', 0, max).match(/.{2}/g).join(' ')
+    if (this.length > max)
+      str += ' ... '
+  }
+  return '<Buffer ' + str + '>'
+}
+
+Buffer.prototype.compare = function (b) {
+  if (!Buffer.isBuffer(b)) throw new TypeError('Argument must be a Buffer')
+  return Buffer.compare(this, b)
+}
+
+// `get` will be removed in Node 0.13+
+Buffer.prototype.get = function (offset) {
+  console.log('.get() is deprecated. Access using array indexes instead.')
+  return this.readUInt8(offset)
+}
+
+// `set` will be removed in Node 0.13+
+Buffer.prototype.set = function (v, offset) {
+  console.log('.set() is deprecated. Access using array indexes instead.')
+  return this.writeUInt8(v, offset)
+}
+
+function hexWrite (buf, string, offset, length) {
+  offset = Number(offset) || 0
+  var remaining = buf.length - offset
+  if (!length) {
+    length = remaining
+  } else {
+    length = Number(length)
+    if (length > remaining) {
+      length = remaining
+    }
+  }
+
+  // must be an even number of digits
+  var strLen = string.length
+  if (strLen % 2 !== 0) throw new Error('Invalid hex string')
+
+  if (length > strLen / 2) {
+    length = strLen / 2
+  }
+  for (var i = 0; i < length; i++) {
+    var byte = parseInt(string.substr(i * 2, 2), 16)
+    if (isNaN(byte)) throw new Error('Invalid hex string')
+    buf[offset + i] = byte
+  }
+  return i
+}
+
+function utf8Write (buf, string, offset, length) {
+  var charsWritten = blitBuffer(utf8ToBytes(string), buf, offset, length)
+  return charsWritten
+}
+
+function asciiWrite (buf, string, offset, length) {
+  var charsWritten = blitBuffer(asciiToBytes(string), buf, offset, length)
+  return charsWritten
+}
+
+function binaryWrite (buf, string, offset, length) {
+  return asciiWrite(buf, string, offset, length)
+}
+
+function base64Write (buf, string, offset, length) {
+  var charsWritten = blitBuffer(base64ToBytes(string), buf, offset, length)
+  return charsWritten
+}
+
+function utf16leWrite (buf, string, offset, length) {
+  var charsWritten = blitBuffer(utf16leToBytes(string), buf, offset, length, 2)
+  return charsWritten
+}
+
+Buffer.prototype.write = function (string, offset, length, encoding) {
+  // Support both (string, offset, length, encoding)
+  // and the legacy (string, encoding, offset, length)
+  if (isFinite(offset)) {
+    if (!isFinite(length)) {
+      encoding = length
+      length = undefined
+    }
+  } else {  // legacy
+    var swap = encoding
+    encoding = offset
+    offset = length
+    length = swap
+  }
+
+  offset = Number(offset) || 0
+  var remaining = this.length - offset
+  if (!length) {
+    length = remaining
+  } else {
+    length = Number(length)
+    if (length > remaining) {
+      length = remaining
+    }
+  }
+  encoding = String(encoding || 'utf8').toLowerCase()
+
+  var ret
+  switch (encoding) {
+    case 'hex':
+      ret = hexWrite(this, string, offset, length)
+      break
+    case 'utf8':
+    case 'utf-8':
+      ret = utf8Write(this, string, offset, length)
+      break
+    case 'ascii':
+      ret = asciiWrite(this, string, offset, length)
+      break
+    case 'binary':
+      ret = binaryWrite(this, string, offset, length)
+      break
+    case 'base64':
+      ret = base64Write(this, string, offset, length)
+      break
+    case 'ucs2':
+    case 'ucs-2':
+    case 'utf16le':
+    case 'utf-16le':
+      ret = utf16leWrite(this, string, offset, length)
+      break
+    default:
+      throw new TypeError('Unknown encoding: ' + encoding)
+  }
+  return ret
+}
+
+Buffer.prototype.toJSON = function () {
+  return {
+    type: 'Buffer',
+    data: Array.prototype.slice.call(this._arr || this, 0)
+  }
+}
+
+function base64Slice (buf, start, end) {
+  if (start === 0 && end === buf.length) {
+    return base64.fromByteArray(buf)
+  } else {
+    return base64.fromByteArray(buf.slice(start, end))
+  }
+}
+
+function utf8Slice (buf, start, end) {
+  var res = ''
+  var tmp = ''
+  end = Math.min(buf.length, end)
+
+  for (var i = start; i < end; i++) {
+    if (buf[i] <= 0x7F) {
+      res += decodeUtf8Char(tmp) + String.fromCharCode(buf[i])
+      tmp = ''
+    } else {
+      tmp += '%' + buf[i].toString(16)
+    }
+  }
+
+  return res + decodeUtf8Char(tmp)
+}
+
+function asciiSlice (buf, start, end) {
+  var ret = ''
+  end = Math.min(buf.length, end)
+
+  for (var i = start; i < end; i++) {
+    ret += String.fromCharCode(buf[i])
+  }
+  return ret
+}
+
+function binarySlice (buf, start, end) {
+  return asciiSlice(buf, start, end)
+}
+
+function hexSlice (buf, start, end) {
+  var len = buf.length
+
+  if (!start || start < 0) start = 0
+  if (!end || end < 0 || end > len) end = len
+
+  var out = ''
+  for (var i = start; i < end; i++) {
+    out += toHex(buf[i])
+  }
+  return out
+}
+
+function utf16leSlice (buf, start, end) {
+  var bytes = buf.slice(start, end)
+  var res = ''
+  for (var i = 0; i < bytes.length; i += 2) {
+    res += String.fromCharCode(bytes[i] + bytes[i + 1] * 256)
+  }
+  return res
+}
+
+Buffer.prototype.slice = function (start, end) {
+  var len = this.length
+  start = ~~start
+  end = end === undefined ? len : ~~end
+
+  if (start < 0) {
+    start += len;
+    if (start < 0)
+      start = 0
+  } else if (start > len) {
+    start = len
+  }
+
+  if (end < 0) {
+    end += len
+    if (end < 0)
+      end = 0
+  } else if (end > len) {
+    end = len
+  }
+
+  if (end < start)
+    end = start
+
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    return Buffer._augment(this.subarray(start, end))
+  } else {
+    var sliceLen = end - start
+    var newBuf = new Buffer(sliceLen, undefined, true)
+    for (var i = 0; i < sliceLen; i++) {
+      newBuf[i] = this[i + start]
+    }
+    return newBuf
+  }
+}
+
+/*
+ * Need to make sure that buffer isn't trying to write out of bounds.
+ */
+function checkOffset (offset, ext, length) {
+  if ((offset % 1) !== 0 || offset < 0)
+    throw new RangeError('offset is not uint')
+  if (offset + ext > length)
+    throw new RangeError('Trying to access beyond buffer length')
+}
+
+Buffer.prototype.readUInt8 = function (offset, noAssert) {
+  if (!noAssert)
+    checkOffset(offset, 1, this.length)
+  return this[offset]
+}
+
+Buffer.prototype.readUInt16LE = function (offset, noAssert) {
+  if (!noAssert)
+    checkOffset(offset, 2, this.length)
+  return this[offset] | (this[offset + 1] << 8)
+}
+
+Buffer.prototype.readUInt16BE = function (offset, noAssert) {
+  if (!noAssert)
+    checkOffset(offset, 2, this.length)
+  return (this[offset] << 8) | this[offset + 1]
+}
+
+Buffer.prototype.readUInt32LE = function (offset, noAssert) {
+  if (!noAssert)
+    checkOffset(offset, 4, this.length)
+
+  return ((this[offset]) |
+      (this[offset + 1] << 8) |
+      (this[offset + 2] << 16)) +
+      (this[offset + 3] * 0x1000000)
+}
+
+Buffer.prototype.readUInt32BE = function (offset, noAssert) {
+  if (!noAssert)
+    checkOffset(offset, 4, this.length)
+
+  return (this[offset] * 0x1000000) +
+      ((this[offset + 1] << 16) |
+      (this[offset + 2] << 8) |
+      this[offset + 3])
+}
+
+Buffer.prototype.readInt8 = function (offset, noAssert) {
+  if (!noAssert)
+    checkOffset(offset, 1, this.length)
+  if (!(this[offset] & 0x80))
+    return (this[offset])
+  return ((0xff - this[offset] + 1) * -1)
+}
+
+Buffer.prototype.readInt16LE = function (offset, noAssert) {
+  if (!noAssert)
+    checkOffset(offset, 2, this.length)
+  var val = this[offset] | (this[offset + 1] << 8)
+  return (val & 0x8000) ? val | 0xFFFF0000 : val
+}
+
+Buffer.prototype.readInt16BE = function (offset, noAssert) {
+  if (!noAssert)
+    checkOffset(offset, 2, this.length)
+  var val = this[offset + 1] | (this[offset] << 8)
+  return (val & 0x8000) ? val | 0xFFFF0000 : val
+}
+
+Buffer.prototype.readInt32LE = function (offset, noAssert) {
+  if (!noAssert)
+    checkOffset(offset, 4, this.length)
+
+  return (this[offset]) |
+      (this[offset + 1] << 8) |
+      (this[offset + 2] << 16) |
+      (this[offset + 3] << 24)
+}
+
+Buffer.prototype.readInt32BE = function (offset, noAssert) {
+  if (!noAssert)
+    checkOffset(offset, 4, this.length)
+
+  return (this[offset] << 24) |
+      (this[offset + 1] << 16) |
+      (this[offset + 2] << 8) |
+      (this[offset + 3])
+}
+
+Buffer.prototype.readFloatLE = function (offset, noAssert) {
+  if (!noAssert)
+    checkOffset(offset, 4, this.length)
+  return ieee754.read(this, offset, true, 23, 4)
+}
+
+Buffer.prototype.readFloatBE = function (offset, noAssert) {
+  if (!noAssert)
+    checkOffset(offset, 4, this.length)
+  return ieee754.read(this, offset, false, 23, 4)
+}
+
+Buffer.prototype.readDoubleLE = function (offset, noAssert) {
+  if (!noAssert)
+    checkOffset(offset, 8, this.length)
+  return ieee754.read(this, offset, true, 52, 8)
+}
+
+Buffer.prototype.readDoubleBE = function (offset, noAssert) {
+  if (!noAssert)
+    checkOffset(offset, 8, this.length)
+  return ieee754.read(this, offset, false, 52, 8)
+}
+
+function checkInt (buf, value, offset, ext, max, min) {
+  if (!Buffer.isBuffer(buf)) throw new TypeError('buffer must be a Buffer instance')
+  if (value > max || value < min) throw new TypeError('value is out of bounds')
+  if (offset + ext > buf.length) throw new TypeError('index out of range')
+}
+
+Buffer.prototype.writeUInt8 = function (value, offset, noAssert) {
+  value = +value
+  offset = offset >>> 0
+  if (!noAssert)
+    checkInt(this, value, offset, 1, 0xff, 0)
+  if (!Buffer.TYPED_ARRAY_SUPPORT) value = Math.floor(value)
+  this[offset] = value
+  return offset + 1
+}
+
+function objectWriteUInt16 (buf, value, offset, littleEndian) {
+  if (value < 0) value = 0xffff + value + 1
+  for (var i = 0, j = Math.min(buf.length - offset, 2); i < j; i++) {
+    buf[offset + i] = (value & (0xff << (8 * (littleEndian ? i : 1 - i)))) >>>
+      (littleEndian ? i : 1 - i) * 8
+  }
+}
+
+Buffer.prototype.writeUInt16LE = function (value, offset, noAssert) {
+  value = +value
+  offset = offset >>> 0
+  if (!noAssert)
+    checkInt(this, value, offset, 2, 0xffff, 0)
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = value
+    this[offset + 1] = (value >>> 8)
+  } else objectWriteUInt16(this, value, offset, true)
+  return offset + 2
+}
+
+Buffer.prototype.writeUInt16BE = function (value, offset, noAssert) {
+  value = +value
+  offset = offset >>> 0
+  if (!noAssert)
+    checkInt(this, value, offset, 2, 0xffff, 0)
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = (value >>> 8)
+    this[offset + 1] = value
+  } else objectWriteUInt16(this, value, offset, false)
+  return offset + 2
+}
+
+function objectWriteUInt32 (buf, value, offset, littleEndian) {
+  if (value < 0) value = 0xffffffff + value + 1
+  for (var i = 0, j = Math.min(buf.length - offset, 4); i < j; i++) {
+    buf[offset + i] = (value >>> (littleEndian ? i : 3 - i) * 8) & 0xff
+  }
+}
+
+Buffer.prototype.writeUInt32LE = function (value, offset, noAssert) {
+  value = +value
+  offset = offset >>> 0
+  if (!noAssert)
+    checkInt(this, value, offset, 4, 0xffffffff, 0)
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset + 3] = (value >>> 24)
+    this[offset + 2] = (value >>> 16)
+    this[offset + 1] = (value >>> 8)
+    this[offset] = value
+  } else objectWriteUInt32(this, value, offset, true)
+  return offset + 4
+}
+
+Buffer.prototype.writeUInt32BE = function (value, offset, noAssert) {
+  value = +value
+  offset = offset >>> 0
+  if (!noAssert)
+    checkInt(this, value, offset, 4, 0xffffffff, 0)
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = (value >>> 24)
+    this[offset + 1] = (value >>> 16)
+    this[offset + 2] = (value >>> 8)
+    this[offset + 3] = value
+  } else objectWriteUInt32(this, value, offset, false)
+  return offset + 4
+}
+
+Buffer.prototype.writeInt8 = function (value, offset, noAssert) {
+  value = +value
+  offset = offset >>> 0
+  if (!noAssert)
+    checkInt(this, value, offset, 1, 0x7f, -0x80)
+  if (!Buffer.TYPED_ARRAY_SUPPORT) value = Math.floor(value)
+  if (value < 0) value = 0xff + value + 1
+  this[offset] = value
+  return offset + 1
+}
+
+Buffer.prototype.writeInt16LE = function (value, offset, noAssert) {
+  value = +value
+  offset = offset >>> 0
+  if (!noAssert)
+    checkInt(this, value, offset, 2, 0x7fff, -0x8000)
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = value
+    this[offset + 1] = (value >>> 8)
+  } else objectWriteUInt16(this, value, offset, true)
+  return offset + 2
+}
+
+Buffer.prototype.writeInt16BE = function (value, offset, noAssert) {
+  value = +value
+  offset = offset >>> 0
+  if (!noAssert)
+    checkInt(this, value, offset, 2, 0x7fff, -0x8000)
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = (value >>> 8)
+    this[offset + 1] = value
+  } else objectWriteUInt16(this, value, offset, false)
+  return offset + 2
+}
+
+Buffer.prototype.writeInt32LE = function (value, offset, noAssert) {
+  value = +value
+  offset = offset >>> 0
+  if (!noAssert)
+    checkInt(this, value, offset, 4, 0x7fffffff, -0x80000000)
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = value
+    this[offset + 1] = (value >>> 8)
+    this[offset + 2] = (value >>> 16)
+    this[offset + 3] = (value >>> 24)
+  } else objectWriteUInt32(this, value, offset, true)
+  return offset + 4
+}
+
+Buffer.prototype.writeInt32BE = function (value, offset, noAssert) {
+  value = +value
+  offset = offset >>> 0
+  if (!noAssert)
+    checkInt(this, value, offset, 4, 0x7fffffff, -0x80000000)
+  if (value < 0) value = 0xffffffff + value + 1
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = (value >>> 24)
+    this[offset + 1] = (value >>> 16)
+    this[offset + 2] = (value >>> 8)
+    this[offset + 3] = value
+  } else objectWriteUInt32(this, value, offset, false)
+  return offset + 4
+}
+
+function checkIEEE754 (buf, value, offset, ext, max, min) {
+  if (value > max || value < min) throw new TypeError('value is out of bounds')
+  if (offset + ext > buf.length) throw new TypeError('index out of range')
+}
+
+function writeFloat (buf, value, offset, littleEndian, noAssert) {
+  if (!noAssert)
+    checkIEEE754(buf, value, offset, 4, 3.4028234663852886e+38, -3.4028234663852886e+38)
+  ieee754.write(buf, value, offset, littleEndian, 23, 4)
+  return offset + 4
+}
+
+Buffer.prototype.writeFloatLE = function (value, offset, noAssert) {
+  return writeFloat(this, value, offset, true, noAssert)
+}
+
+Buffer.prototype.writeFloatBE = function (value, offset, noAssert) {
+  return writeFloat(this, value, offset, false, noAssert)
+}
+
+function writeDouble (buf, value, offset, littleEndian, noAssert) {
+  if (!noAssert)
+    checkIEEE754(buf, value, offset, 8, 1.7976931348623157E+308, -1.7976931348623157E+308)
+  ieee754.write(buf, value, offset, littleEndian, 52, 8)
+  return offset + 8
+}
+
+Buffer.prototype.writeDoubleLE = function (value, offset, noAssert) {
+  return writeDouble(this, value, offset, true, noAssert)
+}
+
+Buffer.prototype.writeDoubleBE = function (value, offset, noAssert) {
+  return writeDouble(this, value, offset, false, noAssert)
+}
+
+// copy(targetBuffer, targetStart=0, sourceStart=0, sourceEnd=buffer.length)
+Buffer.prototype.copy = function (target, target_start, start, end) {
+  var source = this
+
+  if (!start) start = 0
+  if (!end && end !== 0) end = this.length
+  if (!target_start) target_start = 0
+
+  // Copy 0 bytes; we're done
+  if (end === start) return
+  if (target.length === 0 || source.length === 0) return
+
+  // Fatal error conditions
+  if (end < start) throw new TypeError('sourceEnd < sourceStart')
+  if (target_start < 0 || target_start >= target.length)
+    throw new TypeError('targetStart out of bounds')
+  if (start < 0 || start >= source.length) throw new TypeError('sourceStart out of bounds')
+  if (end < 0 || end > source.length) throw new TypeError('sourceEnd out of bounds')
+
+  // Are we oob?
+  if (end > this.length)
+    end = this.length
+  if (target.length - target_start < end - start)
+    end = target.length - target_start + start
+
+  var len = end - start
+
+  if (len < 1000 || !Buffer.TYPED_ARRAY_SUPPORT) {
+    for (var i = 0; i < len; i++) {
+      target[i + target_start] = this[i + start]
+    }
+  } else {
+    target._set(this.subarray(start, start + len), target_start)
+  }
+}
+
+// fill(value, start=0, end=buffer.length)
+Buffer.prototype.fill = function (value, start, end) {
+  if (!value) value = 0
+  if (!start) start = 0
+  if (!end) end = this.length
+
+  if (end < start) throw new TypeError('end < start')
+
+  // Fill 0 bytes; we're done
+  if (end === start) return
+  if (this.length === 0) return
+
+  if (start < 0 || start >= this.length) throw new TypeError('start out of bounds')
+  if (end < 0 || end > this.length) throw new TypeError('end out of bounds')
+
+  var i
+  if (typeof value === 'number') {
+    for (i = start; i < end; i++) {
+      this[i] = value
+    }
+  } else {
+    var bytes = utf8ToBytes(value.toString())
+    var len = bytes.length
+    for (i = start; i < end; i++) {
+      this[i] = bytes[i % len]
+    }
+  }
+
+  return this
+}
+
+/**
+ * Creates a new `ArrayBuffer` with the *copied* memory of the buffer instance.
+ * Added in Node 0.12. Only available in browsers that support ArrayBuffer.
+ */
+Buffer.prototype.toArrayBuffer = function () {
+  if (typeof Uint8Array !== 'undefined') {
+    if (Buffer.TYPED_ARRAY_SUPPORT) {
+      return (new Buffer(this)).buffer
+    } else {
+      var buf = new Uint8Array(this.length)
+      for (var i = 0, len = buf.length; i < len; i += 1) {
+        buf[i] = this[i]
+      }
+      return buf.buffer
+    }
+  } else {
+    throw new TypeError('Buffer.toArrayBuffer not supported in this browser')
+  }
+}
+
+// HELPER FUNCTIONS
+// ================
+
+var BP = Buffer.prototype
+
+/**
+ * Augment a Uint8Array *instance* (not the Uint8Array class!) with Buffer methods
+ */
+Buffer._augment = function (arr) {
+  arr.constructor = Buffer
+  arr._isBuffer = true
+
+  // save reference to original Uint8Array get/set methods before overwriting
+  arr._get = arr.get
+  arr._set = arr.set
+
+  // deprecated, will be removed in node 0.13+
+  arr.get = BP.get
+  arr.set = BP.set
+
+  arr.write = BP.write
+  arr.toString = BP.toString
+  arr.toLocaleString = BP.toString
+  arr.toJSON = BP.toJSON
+  arr.equals = BP.equals
+  arr.compare = BP.compare
+  arr.copy = BP.copy
+  arr.slice = BP.slice
+  arr.readUInt8 = BP.readUInt8
+  arr.readUInt16LE = BP.readUInt16LE
+  arr.readUInt16BE = BP.readUInt16BE
+  arr.readUInt32LE = BP.readUInt32LE
+  arr.readUInt32BE = BP.readUInt32BE
+  arr.readInt8 = BP.readInt8
+  arr.readInt16LE = BP.readInt16LE
+  arr.readInt16BE = BP.readInt16BE
+  arr.readInt32LE = BP.readInt32LE
+  arr.readInt32BE = BP.readInt32BE
+  arr.readFloatLE = BP.readFloatLE
+  arr.readFloatBE = BP.readFloatBE
+  arr.readDoubleLE = BP.readDoubleLE
+  arr.readDoubleBE = BP.readDoubleBE
+  arr.writeUInt8 = BP.writeUInt8
+  arr.writeUInt16LE = BP.writeUInt16LE
+  arr.writeUInt16BE = BP.writeUInt16BE
+  arr.writeUInt32LE = BP.writeUInt32LE
+  arr.writeUInt32BE = BP.writeUInt32BE
+  arr.writeInt8 = BP.writeInt8
+  arr.writeInt16LE = BP.writeInt16LE
+  arr.writeInt16BE = BP.writeInt16BE
+  arr.writeInt32LE = BP.writeInt32LE
+  arr.writeInt32BE = BP.writeInt32BE
+  arr.writeFloatLE = BP.writeFloatLE
+  arr.writeFloatBE = BP.writeFloatBE
+  arr.writeDoubleLE = BP.writeDoubleLE
+  arr.writeDoubleBE = BP.writeDoubleBE
+  arr.fill = BP.fill
+  arr.inspect = BP.inspect
+  arr.toArrayBuffer = BP.toArrayBuffer
+
+  return arr
+}
+
+var INVALID_BASE64_RE = /[^+\/0-9A-z]/g
+
+function base64clean (str) {
+  // Node strips out invalid characters like \n and \t from the string, base64-js does not
+  str = stringtrim(str).replace(INVALID_BASE64_RE, '')
+  // Node allows for non-padded base64 strings (missing trailing ===), base64-js does not
+  while (str.length % 4 !== 0) {
+    str = str + '='
+  }
+  return str
+}
+
+function stringtrim (str) {
+  if (str.trim) return str.trim()
+  return str.replace(/^\s+|\s+$/g, '')
+}
+
+function isArrayish (subject) {
+  return isArray(subject) || Buffer.isBuffer(subject) ||
+      subject && typeof subject === 'object' &&
+      typeof subject.length === 'number'
+}
+
+function toHex (n) {
+  if (n < 16) return '0' + n.toString(16)
+  return n.toString(16)
+}
+
+function utf8ToBytes (str) {
+  var byteArray = []
+  for (var i = 0; i < str.length; i++) {
+    var b = str.charCodeAt(i)
+    if (b <= 0x7F) {
+      byteArray.push(b)
+    } else {
+      var start = i
+      if (b >= 0xD800 && b <= 0xDFFF) i++
+      var h = encodeURIComponent(str.slice(start, i+1)).substr(1).split('%')
+      for (var j = 0; j < h.length; j++) {
+        byteArray.push(parseInt(h[j], 16))
+      }
+    }
+  }
+  return byteArray
+}
+
+function asciiToBytes (str) {
+  var byteArray = []
+  for (var i = 0; i < str.length; i++) {
+    // Node's code seems to be doing this and not & 0x7F..
+    byteArray.push(str.charCodeAt(i) & 0xFF)
+  }
+  return byteArray
+}
+
+function utf16leToBytes (str) {
+  var c, hi, lo
+  var byteArray = []
+  for (var i = 0; i < str.length; i++) {
+    c = str.charCodeAt(i)
+    hi = c >> 8
+    lo = c % 256
+    byteArray.push(lo)
+    byteArray.push(hi)
+  }
+
+  return byteArray
+}
+
+function base64ToBytes (str) {
+  return base64.toByteArray(str)
+}
+
+function blitBuffer (src, dst, offset, length, unitSize) {
+  if (unitSize) length -= length % unitSize;
+  for (var i = 0; i < length; i++) {
+    if ((i + offset >= dst.length) || (i >= src.length))
+      break
+    dst[i + offset] = src[i]
+  }
+  return i
+}
+
+function decodeUtf8Char (str) {
+  try {
+    return decodeURIComponent(str)
+  } catch (err) {
+    return String.fromCharCode(0xFFFD) // UTF 8 invalid char
+  }
+}
+
+},{}],27:[function(require,module,exports){
+var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+
+;(function (exports) {
+	'use strict';
+
+  var Arr = (typeof Uint8Array !== 'undefined')
+    ? Uint8Array
+    : Array
+
+	var PLUS   = '+'.charCodeAt(0)
+	var SLASH  = '/'.charCodeAt(0)
+	var NUMBER = '0'.charCodeAt(0)
+	var LOWER  = 'a'.charCodeAt(0)
+	var UPPER  = 'A'.charCodeAt(0)
+
+	function decode (elt) {
+		var code = elt.charCodeAt(0)
+		if (code === PLUS)
+			return 62 // '+'
+		if (code === SLASH)
+			return 63 // '/'
+		if (code < NUMBER)
+			return -1 //no match
+		if (code < NUMBER + 10)
+			return code - NUMBER + 26 + 26
+		if (code < UPPER + 26)
+			return code - UPPER
+		if (code < LOWER + 26)
+			return code - LOWER + 26
+	}
+
+	function b64ToByteArray (b64) {
+		var i, j, l, tmp, placeHolders, arr
+
+		if (b64.length % 4 > 0) {
+			throw new Error('Invalid string. Length must be a multiple of 4')
+		}
+
+		// the number of equal signs (place holders)
+		// if there are two placeholders, than the two characters before it
+		// represent one byte
+		// if there is only one, then the three characters before it represent 2 bytes
+		// this is just a cheap hack to not do indexOf twice
+		var len = b64.length
+		placeHolders = '=' === b64.charAt(len - 2) ? 2 : '=' === b64.charAt(len - 1) ? 1 : 0
+
+		// base64 is 4/3 + up to two characters of the original data
+		arr = new Arr(b64.length * 3 / 4 - placeHolders)
+
+		// if there are placeholders, only get up to the last complete 4 chars
+		l = placeHolders > 0 ? b64.length - 4 : b64.length
+
+		var L = 0
+
+		function push (v) {
+			arr[L++] = v
+		}
+
+		for (i = 0, j = 0; i < l; i += 4, j += 3) {
+			tmp = (decode(b64.charAt(i)) << 18) | (decode(b64.charAt(i + 1)) << 12) | (decode(b64.charAt(i + 2)) << 6) | decode(b64.charAt(i + 3))
+			push((tmp & 0xFF0000) >> 16)
+			push((tmp & 0xFF00) >> 8)
+			push(tmp & 0xFF)
+		}
+
+		if (placeHolders === 2) {
+			tmp = (decode(b64.charAt(i)) << 2) | (decode(b64.charAt(i + 1)) >> 4)
+			push(tmp & 0xFF)
+		} else if (placeHolders === 1) {
+			tmp = (decode(b64.charAt(i)) << 10) | (decode(b64.charAt(i + 1)) << 4) | (decode(b64.charAt(i + 2)) >> 2)
+			push((tmp >> 8) & 0xFF)
+			push(tmp & 0xFF)
+		}
+
+		return arr
+	}
+
+	function uint8ToBase64 (uint8) {
+		var i,
+			extraBytes = uint8.length % 3, // if we have 1 byte left, pad 2 bytes
+			output = "",
+			temp, length
+
+		function encode (num) {
+			return lookup.charAt(num)
+		}
+
+		function tripletToBase64 (num) {
+			return encode(num >> 18 & 0x3F) + encode(num >> 12 & 0x3F) + encode(num >> 6 & 0x3F) + encode(num & 0x3F)
+		}
+
+		// go through the array every three bytes, we'll deal with trailing stuff later
+		for (i = 0, length = uint8.length - extraBytes; i < length; i += 3) {
+			temp = (uint8[i] << 16) + (uint8[i + 1] << 8) + (uint8[i + 2])
+			output += tripletToBase64(temp)
+		}
+
+		// pad the end with zeros, but make sure to not forget the extra bytes
+		switch (extraBytes) {
+			case 1:
+				temp = uint8[uint8.length - 1]
+				output += encode(temp >> 2)
+				output += encode((temp << 4) & 0x3F)
+				output += '=='
+				break
+			case 2:
+				temp = (uint8[uint8.length - 2] << 8) + (uint8[uint8.length - 1])
+				output += encode(temp >> 10)
+				output += encode((temp >> 4) & 0x3F)
+				output += encode((temp << 2) & 0x3F)
+				output += '='
+				break
+		}
+
+		return output
+	}
+
+	exports.toByteArray = b64ToByteArray
+	exports.fromByteArray = uint8ToBase64
+}(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
+
+},{}],28:[function(require,module,exports){
+exports.read = function (buffer, offset, isLE, mLen, nBytes) {
+  var e, m
+  var eLen = nBytes * 8 - mLen - 1
+  var eMax = (1 << eLen) - 1
+  var eBias = eMax >> 1
+  var nBits = -7
+  var i = isLE ? (nBytes - 1) : 0
+  var d = isLE ? -1 : 1
+  var s = buffer[offset + i]
+
+  i += d
+
+  e = s & ((1 << (-nBits)) - 1)
+  s >>= (-nBits)
+  nBits += eLen
+  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+
+  m = e & ((1 << (-nBits)) - 1)
+  e >>= (-nBits)
+  nBits += mLen
+  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+
+  if (e === 0) {
+    e = 1 - eBias
+  } else if (e === eMax) {
+    return m ? NaN : ((s ? -1 : 1) * Infinity)
+  } else {
+    m = m + Math.pow(2, mLen)
+    e = e - eBias
+  }
+  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
+}
+
+exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
+  var e, m, c
+  var eLen = nBytes * 8 - mLen - 1
+  var eMax = (1 << eLen) - 1
+  var eBias = eMax >> 1
+  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
+  var i = isLE ? 0 : (nBytes - 1)
+  var d = isLE ? 1 : -1
+  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
+
+  value = Math.abs(value)
+
+  if (isNaN(value) || value === Infinity) {
+    m = isNaN(value) ? 1 : 0
+    e = eMax
+  } else {
+    e = Math.floor(Math.log(value) / Math.LN2)
+    if (value * (c = Math.pow(2, -e)) < 1) {
+      e--
+      c *= 2
+    }
+    if (e + eBias >= 1) {
+      value += rt / c
+    } else {
+      value += rt * Math.pow(2, 1 - eBias)
+    }
+    if (value * c >= 2) {
+      e++
+      c /= 2
+    }
+
+    if (e + eBias >= eMax) {
+      m = 0
+      e = eMax
+    } else if (e + eBias >= 1) {
+      m = (value * c - 1) * Math.pow(2, mLen)
+      e = e + eBias
+    } else {
+      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
+      e = 0
+    }
+  }
+
+  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
+
+  e = (e << mLen) | m
+  eLen += mLen
+  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
+
+  buffer[offset + i - d] |= s * 128
+}
+
+},{}],29:[function(require,module,exports){
+
+/**
+ * isArray
+ */
+
+var isArray = Array.isArray;
+
+/**
+ * toString
+ */
+
+var str = Object.prototype.toString;
+
+/**
+ * Whether or not the given `val`
+ * is an array.
+ *
+ * example:
+ *
+ *        isArray([]);
+ *        // > true
+ *        isArray(arguments);
+ *        // > false
+ *        isArray('');
+ *        // > false
+ *
+ * @param {mixed} val
+ * @return {bool}
+ */
+
+module.exports = isArray || function (val) {
+  return !! val && '[object Array]' == str.call(val);
+};
+
+},{}],30:[function(require,module,exports){
+// shim for using process in browser
+
+var process = module.exports = {};
+
+process.nextTick = (function () {
+    var canSetImmediate = typeof window !== 'undefined'
+    && window.setImmediate;
+    var canPost = typeof window !== 'undefined'
+    && window.postMessage && window.addEventListener
+    ;
+
+    if (canSetImmediate) {
+        return function (f) { return window.setImmediate(f) };
+    }
+
+    if (canPost) {
+        var queue = [];
+        window.addEventListener('message', function (ev) {
+            var source = ev.source;
+            if ((source === window || source === null) && ev.data === 'process-tick') {
+                ev.stopPropagation();
+                if (queue.length > 0) {
+                    var fn = queue.shift();
+                    fn();
+                }
+            }
+        }, true);
+
+        return function nextTick(fn) {
+            queue.push(fn);
+            window.postMessage('process-tick', '*');
+        };
+    }
+
+    return function nextTick(fn) {
+        setTimeout(fn, 0);
+    };
+})();
+
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+}
+
+// TODO(shtylman)
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+
+},{}],31:[function(require,module,exports){
+'use strict';
+var repeating = require(32);
+
+// detect either spaces or tabs but not both to properly handle tabs
+// for indentation and spaces for alignment
+var INDENT_RE = /^(?:( )+|\t+)/;
+
+function getMostUsed(indents) {
+	var result = 0;
+	var maxUsed = 0;
+	var maxWeight = 0;
+
+	for (var n in indents) {
+		var indent = indents[n];
+		var u = indent[0];
+		var w = indent[1];
+
+		if (u > maxUsed || u === maxUsed && w > maxWeight) {
+			maxUsed = u;
+			maxWeight = w;
+			result = +n;
+		}
+	}
+
+	return result;
+}
+
+module.exports = function (str) {
+	if (typeof str !== 'string') {
+		throw new TypeError('Expected a string');
+	}
+
+	// used to see if tabs or spaces are the most used
+	var tabs = 0;
+	var spaces = 0;
+
+	// remember the size of previous line's indentation
+	var prev = 0;
+
+	// remember how many indents/unindents as occurred for a given size
+	// and how much lines follow a given indentation
+	//
+	// indents = {
+	//    3: [1, 0],
+	//    4: [1, 5],
+	//    5: [1, 0],
+	//   12: [1, 0],
+	// }
+	var indents = {};
+
+	// pointer to the array of last used indent
+	var current;
+
+	// whether the last action was an indent (opposed to an unindent)
+	var isIndent;
+
+	str.split(/\n/g).forEach(function (line) {
+		if (!line) {
+			// ignore empty lines
+			return;
+		}
+
+		var indent;
+		var matches = line.match(INDENT_RE);
+
+		if (!matches) {
+			indent = 0;
+		} else {
+			indent = matches[0].length;
+
+			if (matches[1]) {
+				spaces++;
+			} else {
+				tabs++;
+			}
+		}
+
+		var diff = indent - prev;
+		prev = indent;
+
+		if (diff) {
+			// an indent or unindent has been detected
+
+			isIndent = diff > 0;
+
+			current = indents[isIndent ? diff : -diff];
+
+			if (current) {
+				current[0]++;
+			} else {
+				current = indents[diff] = [1, 0];
+			}
+		} else if (current) {
+			// if the last action was an indent, increment the weight
+			current[1] += +isIndent;
+		}
+	});
+
+	var amount = getMostUsed(indents);
+
+	var type;
+	var actual;
+	if (!amount) {
+		type = null;
+		actual = '';
+	} else if (spaces >= tabs) {
+		type = 'space';
+		actual = repeating(' ', amount);
+	} else {
+		type = 'tab';
+		actual = repeating('\t', amount);
+	}
+
+	return {
+		amount: amount,
+		type: type,
+		indent: actual
+	};
+};
+
+},{}],32:[function(require,module,exports){
+'use strict';
+var isFinite = require(33);
+
+module.exports = function (str, n) {
+	if (typeof str !== 'string') {
+		throw new TypeError('Expected a string as the first argument');
+	}
+
+	if (n < 0 || !isFinite(n)) {
+		throw new TypeError('Expected a finite positive number');
+	}
+
+	var ret = '';
+
+	do {
+		if (n & 1) {
+			ret += str;
+		}
+
+		str += str;
+	} while (n = n >> 1);
+
+	return ret;
+};
+
+},{}],33:[function(require,module,exports){
+'use strict';
+var numberIsNan = require(34);
+
+module.exports = Number.isFinite || function (val) {
+	return !(typeof val !== 'number' || numberIsNan(val) || val === Infinity || val === -Infinity);
+};
+
+},{}],34:[function(require,module,exports){
+'use strict';
+module.exports = Number.isNaN || function (x) {
+	return x !== x;
+};
+
+},{}],35:[function(require,module,exports){
+/* See LICENSE file for terms of use */
+
+/*
+ * Text diff implementation.
+ *
+ * This library supports the following APIS:
+ * JsDiff.diffChars: Character by character diff
+ * JsDiff.diffWords: Word (as defined by \b regex) diff which ignores whitespace
+ * JsDiff.diffLines: Line based diff
+ *
+ * JsDiff.diffCss: Diff targeted at CSS content
+ *
+ * These methods are based on the implementation proposed in
+ * "An O(ND) Difference Algorithm and its Variations" (Myers, 1986).
+ * http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.4.6927
+ */
+(function(global, undefined) {
+  var JsDiff = (function() {
+    /*jshint maxparams: 5*/
+    function map(arr, mapper, that) {
+      if (Array.prototype.map) {
+        return Array.prototype.map.call(arr, mapper, that);
+      }
+
+      var other = new Array(arr.length);
+
+      for (var i = 0, n = arr.length; i < n; i++) {
+        other[i] = mapper.call(that, arr[i], i, arr);
+      }
+      return other;
+    }
+    function clonePath(path) {
+      return { newPos: path.newPos, components: path.components.slice(0) };
+    }
+    function removeEmpty(array) {
+      var ret = [];
+      for (var i = 0; i < array.length; i++) {
+        if (array[i]) {
+          ret.push(array[i]);
+        }
+      }
+      return ret;
+    }
+    function escapeHTML(s) {
+      var n = s;
+      n = n.replace(/&/g, '&amp;');
+      n = n.replace(/</g, '&lt;');
+      n = n.replace(/>/g, '&gt;');
+      n = n.replace(/"/g, '&quot;');
+
+      return n;
+    }
+
+    var Diff = function(ignoreWhitespace) {
+      this.ignoreWhitespace = ignoreWhitespace;
+    };
+    Diff.prototype = {
+        diff: function(oldString, newString) {
+          // Handle the identity case (this is due to unrolling editLength == 0
+          if (newString === oldString) {
+            return [{ value: newString }];
+          }
+          if (!newString) {
+            return [{ value: oldString, removed: true }];
+          }
+          if (!oldString) {
+            return [{ value: newString, added: true }];
+          }
+
+          newString = this.tokenize(newString);
+          oldString = this.tokenize(oldString);
+
+          var newLen = newString.length, oldLen = oldString.length;
+          var maxEditLength = newLen + oldLen;
+          var bestPath = [{ newPos: -1, components: [] }];
+
+          // Seed editLength = 0
+          var oldPos = this.extractCommon(bestPath[0], newString, oldString, 0);
+          if (bestPath[0].newPos+1 >= newLen && oldPos+1 >= oldLen) {
+            return bestPath[0].components;
+          }
+
+          for (var editLength = 1; editLength <= maxEditLength; editLength++) {
+            for (var diagonalPath = -1*editLength; diagonalPath <= editLength; diagonalPath+=2) {
+              var basePath;
+              var addPath = bestPath[diagonalPath-1],
+                  removePath = bestPath[diagonalPath+1];
+              oldPos = (removePath ? removePath.newPos : 0) - diagonalPath;
+              if (addPath) {
+                // No one else is going to attempt to use this value, clear it
+                bestPath[diagonalPath-1] = undefined;
+              }
+
+              var canAdd = addPath && addPath.newPos+1 < newLen;
+              var canRemove = removePath && 0 <= oldPos && oldPos < oldLen;
+              if (!canAdd && !canRemove) {
+                bestPath[diagonalPath] = undefined;
+                continue;
+              }
+
+              // Select the diagonal that we want to branch from. We select the prior
+              // path whose position in the new string is the farthest from the origin
+              // and does not pass the bounds of the diff graph
+              if (!canAdd || (canRemove && addPath.newPos < removePath.newPos)) {
+                basePath = clonePath(removePath);
+                this.pushComponent(basePath.components, oldString[oldPos], undefined, true);
+              } else {
+                basePath = clonePath(addPath);
+                basePath.newPos++;
+                this.pushComponent(basePath.components, newString[basePath.newPos], true, undefined);
+              }
+
+              var oldPos = this.extractCommon(basePath, newString, oldString, diagonalPath);
+
+              if (basePath.newPos+1 >= newLen && oldPos+1 >= oldLen) {
+                return basePath.components;
+              } else {
+                bestPath[diagonalPath] = basePath;
+              }
+            }
+          }
+        },
+
+        pushComponent: function(components, value, added, removed) {
+          var last = components[components.length-1];
+          if (last && last.added === added && last.removed === removed) {
+            // We need to clone here as the component clone operation is just
+            // as shallow array clone
+            components[components.length-1] =
+              {value: this.join(last.value, value), added: added, removed: removed };
+          } else {
+            components.push({value: value, added: added, removed: removed });
+          }
+        },
+        extractCommon: function(basePath, newString, oldString, diagonalPath) {
+          var newLen = newString.length,
+              oldLen = oldString.length,
+              newPos = basePath.newPos,
+              oldPos = newPos - diagonalPath;
+          while (newPos+1 < newLen && oldPos+1 < oldLen && this.equals(newString[newPos+1], oldString[oldPos+1])) {
+            newPos++;
+            oldPos++;
+
+            this.pushComponent(basePath.components, newString[newPos], undefined, undefined);
+          }
+          basePath.newPos = newPos;
+          return oldPos;
+        },
+
+        equals: function(left, right) {
+          var reWhitespace = /\S/;
+          if (this.ignoreWhitespace && !reWhitespace.test(left) && !reWhitespace.test(right)) {
+            return true;
+          } else {
+            return left === right;
+          }
+        },
+        join: function(left, right) {
+          return left + right;
+        },
+        tokenize: function(value) {
+          return value;
+        }
+    };
+
+    var CharDiff = new Diff();
+
+    var WordDiff = new Diff(true);
+    var WordWithSpaceDiff = new Diff();
+    WordDiff.tokenize = WordWithSpaceDiff.tokenize = function(value) {
+      return removeEmpty(value.split(/(\s+|\b)/));
+    };
+
+    var CssDiff = new Diff(true);
+    CssDiff.tokenize = function(value) {
+      return removeEmpty(value.split(/([{}:;,]|\s+)/));
+    };
+
+    var LineDiff = new Diff();
+    LineDiff.tokenize = function(value) {
+      var retLines = [],
+          lines = value.split(/^/m);
+
+      for(var i = 0; i < lines.length; i++) {
+        var line = lines[i],
+            lastLine = lines[i - 1];
+
+        // Merge lines that may contain windows new lines
+        if (line == '\n' && lastLine && lastLine[lastLine.length - 1] === '\r') {
+          retLines[retLines.length - 1] += '\n';
+        } else if (line) {
+          retLines.push(line);
+        }
+      }
+
+      return retLines;
+    };
+
+    return {
+      Diff: Diff,
+
+      diffChars: function(oldStr, newStr) { return CharDiff.diff(oldStr, newStr); },
+      diffWords: function(oldStr, newStr) { return WordDiff.diff(oldStr, newStr); },
+      diffWordsWithSpace: function(oldStr, newStr) { return WordWithSpaceDiff.diff(oldStr, newStr); },
+      diffLines: function(oldStr, newStr) { return LineDiff.diff(oldStr, newStr); },
+
+      diffCss: function(oldStr, newStr) { return CssDiff.diff(oldStr, newStr); },
+
+      createPatch: function(fileName, oldStr, newStr, oldHeader, newHeader) {
+        var ret = [];
+
+        ret.push('Index: ' + fileName);
+        ret.push('===================================================================');
+        ret.push('--- ' + fileName + (typeof oldHeader === 'undefined' ? '' : '\t' + oldHeader));
+        ret.push('+++ ' + fileName + (typeof newHeader === 'undefined' ? '' : '\t' + newHeader));
+
+        var diff = LineDiff.diff(oldStr, newStr);
+        if (!diff[diff.length-1].value) {
+          diff.pop();   // Remove trailing newline add
+        }
+        diff.push({value: '', lines: []});   // Append an empty value to make cleanup easier
+
+        function contextLines(lines) {
+          return map(lines, function(entry) { return ' ' + entry; });
+        }
+        function eofNL(curRange, i, current) {
+          var last = diff[diff.length-2],
+              isLast = i === diff.length-2,
+              isLastOfType = i === diff.length-3 && (current.added !== last.added || current.removed !== last.removed);
+
+          // Figure out if this is the last line for the given file and missing NL
+          if (!/\n$/.test(current.value) && (isLast || isLastOfType)) {
+            curRange.push('\\ No newline at end of file');
+          }
+        }
+
+        var oldRangeStart = 0, newRangeStart = 0, curRange = [],
+            oldLine = 1, newLine = 1;
+        for (var i = 0; i < diff.length; i++) {
+          var current = diff[i],
+              lines = current.lines || current.value.replace(/\n$/, '').split('\n');
+          current.lines = lines;
+
+          if (current.added || current.removed) {
+            if (!oldRangeStart) {
+              var prev = diff[i-1];
+              oldRangeStart = oldLine;
+              newRangeStart = newLine;
+
+              if (prev) {
+                curRange = contextLines(prev.lines.slice(-4));
+                oldRangeStart -= curRange.length;
+                newRangeStart -= curRange.length;
+              }
+            }
+            curRange.push.apply(curRange, map(lines, function(entry) { return (current.added?'+':'-') + entry; }));
+            eofNL(curRange, i, current);
+
+            if (current.added) {
+              newLine += lines.length;
+            } else {
+              oldLine += lines.length;
+            }
+          } else {
+            if (oldRangeStart) {
+              // Close out any changes that have been output (or join overlapping)
+              if (lines.length <= 8 && i < diff.length-2) {
+                // Overlapping
+                curRange.push.apply(curRange, contextLines(lines));
+              } else {
+                // end the range and output
+                var contextSize = Math.min(lines.length, 4);
+                ret.push(
+                    '@@ -' + oldRangeStart + ',' + (oldLine-oldRangeStart+contextSize)
+                    + ' +' + newRangeStart + ',' + (newLine-newRangeStart+contextSize)
+                    + ' @@');
+                ret.push.apply(ret, curRange);
+                ret.push.apply(ret, contextLines(lines.slice(0, contextSize)));
+                if (lines.length <= 4) {
+                  eofNL(ret, i, current);
+                }
+
+                oldRangeStart = 0;  newRangeStart = 0; curRange = [];
+              }
+            }
+            oldLine += lines.length;
+            newLine += lines.length;
+          }
+        }
+
+        return ret.join('\n') + '\n';
+      },
+
+      applyPatch: function(oldStr, uniDiff) {
+        var diffstr = uniDiff.split('\n');
+        var diff = [];
+        var remEOFNL = false,
+            addEOFNL = false;
+
+        for (var i = (diffstr[0][0]==='I'?4:0); i < diffstr.length; i++) {
+          if(diffstr[i][0] === '@') {
+            var meh = diffstr[i].split(/@@ -(\d+),(\d+) \+(\d+),(\d+) @@/);
+            diff.unshift({
+              start:meh[3],
+              oldlength:meh[2],
+              oldlines:[],
+              newlength:meh[4],
+              newlines:[]
+            });
+          } else if(diffstr[i][0] === '+') {
+            diff[0].newlines.push(diffstr[i].substr(1));
+          } else if(diffstr[i][0] === '-') {
+            diff[0].oldlines.push(diffstr[i].substr(1));
+          } else if(diffstr[i][0] === ' ') {
+            diff[0].newlines.push(diffstr[i].substr(1));
+            diff[0].oldlines.push(diffstr[i].substr(1));
+          } else if(diffstr[i][0] === '\\') {
+            if (diffstr[i-1][0] === '+') {
+              remEOFNL = true;
+            } else if(diffstr[i-1][0] === '-') {
+              addEOFNL = true;
+            }
+          }
+        }
+
+        var str = oldStr.split('\n');
+        for (var i = diff.length - 1; i >= 0; i--) {
+          var d = diff[i];
+          for (var j = 0; j < d.oldlength; j++) {
+            if(str[d.start-1+j] !== d.oldlines[j]) {
+              return false;
+            }
+          }
+          Array.prototype.splice.apply(str,[d.start-1,+d.oldlength].concat(d.newlines));
+        }
+
+        if (remEOFNL) {
+          while (!str[str.length-1]) {
+            str.pop();
+          }
+        } else if (addEOFNL) {
+          str.push('');
+        }
+        return str.join('\n');
+      },
+
+      convertChangesToXML: function(changes){
+        var ret = [];
+        for ( var i = 0; i < changes.length; i++) {
+          var change = changes[i];
+          if (change.added) {
+            ret.push('<ins>');
+          } else if (change.removed) {
+            ret.push('<del>');
+          }
+
+          ret.push(escapeHTML(change.value));
+
+          if (change.added) {
+            ret.push('</ins>');
+          } else if (change.removed) {
+            ret.push('</del>');
+          }
+        }
+        return ret.join('');
+      },
+
+      // See: http://code.google.com/p/google-diff-match-patch/wiki/API
+      convertChangesToDMP: function(changes){
+        var ret = [], change;
+        for ( var i = 0; i < changes.length; i++) {
+          change = changes[i];
+          ret.push([(change.added ? 1 : change.removed ? -1 : 0), change.value]);
+        }
+        return ret;
+      }
+    };
+  })();
+
+  if (typeof module !== 'undefined') {
+      module.exports = JsDiff;
+  }
+  else if (typeof define === 'function') {
+    define([], function() { return JsDiff; });
+  }
+  else if (typeof global.JsDiff === 'undefined') {
+    global.JsDiff = JsDiff;
+  }
+})(this);
+
+},{}],36:[function(require,module,exports){
+// intentionally commented out as it makes it slower...
+//'use strict';
+
+var arr = [];
+
+module.exports = function (a, b) {
+	if (a === b) {
+		return 0;
+	}
+
+	var aLen = a.length;
+	var bLen = b.length;
+
+	if (aLen === 0) {
+		return b.length;
+	}
+
+	if (bLen === 0) {
+		return a.length;
+	}
+
+	var bCharCode;
+	var ret;
+	var tmp;
+	var tmp2;
+	var i = 0;
+	var j = 0;
+
+	while (i < aLen) {
+		arr[i] = ++i;
+	}
+
+	while (j < bLen) {
+		bCharCode = b.charCodeAt(j);
+		tmp = j++;
+		ret = j;
+
+		for (i = 0; i < aLen; i++) {
+			tmp2 = bCharCode === a.charCodeAt(i) ? tmp : tmp + 1;
+			tmp = arr[i];
+			ret = arr[i] = tmp > ret ? tmp2 > ret ? ret + 1 : tmp2 : tmp2 > tmp ? tmp + 1 : tmp2;
+		}
+	}
+
+	return ret;
+};
+
+},{}],37:[function(require,module,exports){
+var utils = require(47);
+var TextSerializer = require(41);
+var colorDiff = require(51);
+var rgbRegexp = require(45);
+var themeMapper = require(46);
+
+var cacheSize = 0;
+var maxColorCacheSize = 1024;
+
+var ansiStyles = utils.extend({}, require(48));
+Object.keys(ansiStyles).forEach(function (styleName) {
+    ansiStyles[styleName.toLowerCase()] = ansiStyles[styleName];
+});
+
+function AnsiSerializer(theme) {
+    this.theme = theme;
+}
+
+AnsiSerializer.prototype = new TextSerializer();
+
+AnsiSerializer.prototype.format = 'ansi';
+
+var colorPalettes = {
+    16: {
+        '#000000': 'black',
+        '#ff0000': 'red',
+        '#00ff00': 'green',
+        '#ffff00': 'yellow',
+        '#0000ff': 'blue',
+        '#ff00ff': 'magenta',
+        '#00ffff': 'cyan',
+        '#ffffff': 'white',
+        '#808080': 'gray'
+    },
+    256: {}
+};
+
+var diffPalettes = {};
+
+function convertColorToObject(color) {
+    if (color.length < 6) {
+        // Allow CSS shorthand
+        color = color.replace(/^#?([0-9a-f])([0-9a-f])([0-9a-f])$/i, '$1$1$2$2$3$3');
+    }
+    // Split color into red, green, and blue components
+    var hexMatch = color.match(/^#?([0-9a-f][0-9a-f])([0-9a-f][0-9a-f])([0-9a-f][0-9a-f])$/i);
+    if (hexMatch) {
+        return {
+            R: parseInt(hexMatch[1], 16),
+            G: parseInt(hexMatch[2], 16),
+            B: parseInt(hexMatch[3], 16)
+        };
+    }
+}
+
+function toHexColor(colorObject) {
+    var hexString = (Math.round(colorObject.R) * 0x10000 + Math.round(colorObject.G) * 0x100 + Math.round(colorObject.B)).toString(16);
+    return '#' + ('00000'.substr(0, 6 - hexString.length)) + hexString;
+}
+
+function firstUp(text) {
+    return text.substring(0, 1).toUpperCase() + text.substring(1);
+}
+
+diffPalettes[16] = Object.keys(colorPalettes[16]).map(convertColorToObject);
+diffPalettes['bg16'] = Object.keys(colorPalettes[16]).filter(function (color) {
+    return color !== "#808080";
+}).map(convertColorToObject);
+diffPalettes[256] = [].concat(diffPalettes[16]);
+var nextAnsiColorNumber = 16;
+function registerNext256PaletteEntry(obj) {
+    diffPalettes[256].push(obj);
+    colorPalettes[256][toHexColor(obj)] = nextAnsiColorNumber;
+    nextAnsiColorNumber += 1;
+}
+
+for (var r = 0 ; r < 6 ; r += 1) {
+    for (var g = 0 ; g < 6 ; g += 1) {
+        for (var b = 0 ; b < 6 ; b += 1) {
+            registerNext256PaletteEntry({
+                R: Math.round(r * 256 / 6),
+                G: Math.round(g * 256 / 6),
+                B: Math.round(b * 256 / 6)
+            });
+        }
+    }
+}
+
+[
+    0x08, 0x12, 0x1c, 0x26, 0x30, 0x3a, 0x44, 0x4e, 0x58, 0x60, 0x66, 0x76,
+    0x80, 0x8a, 0x94, 0x9e, 0xa8, 0xb2, 0xbc, 0xc6, 0xd0, 0xda, 0xe4, 0xee
+].forEach(function (value) {
+    registerNext256PaletteEntry({R: value, G: value, B: value});
+});
+
+AnsiSerializer.prototype.text = function (options) {
+    var content = String(options.content);
+    if (content === '') {
+        return '';
+    }
+
+    var styles = themeMapper(this.theme, options.styles);
+
+    if (styles.length > 0) {
+        for (var i = styles.length -1; i >= 0; i -= 1) {
+            var styleName = styles[i];
+
+            if (ansiStyles[styleName]) {
+                content = ansiStyles[styleName].open + content + ansiStyles[styleName].close;
+            } else if (rgbRegexp.test(styleName)) {
+                var originalStyleName = styleName;
+                var isBackgroundColor = styleName.substring(0, 2) === 'bg';
+                var colorName = isBackgroundColor ? styleName.substring(2) : styleName;
+
+                var color16Hex = toHexColor(colorDiff.closest(convertColorToObject(colorName),
+                                                              diffPalettes[isBackgroundColor ? 'bg16' : 16]));
+                var closestColor16 = colorPalettes[16][color16Hex];
+
+                var color256Hex = toHexColor(colorDiff.closest(convertColorToObject(colorName), diffPalettes[256]));
+                var closest256ColorIndex = colorPalettes[256][color256Hex];
+
+                if (isBackgroundColor) {
+                    styleName = 'bg' + firstUp(closestColor16);
+                } else {
+                    styleName = closestColor16;
+                }
+
+                var open = ansiStyles[styleName].open;
+                var close = ansiStyles[styleName].close;
+                if (color16Hex !== color256Hex) {
+                    open += '\x1b[' + (isBackgroundColor ? 48 : 38) + ';5;' + closest256ColorIndex + 'm';
+                }
+                if (cacheSize < maxColorCacheSize) {
+                    ansiStyles[originalStyleName] = {open: open, close: close};
+                    cacheSize += 1;
+                }
+
+                content = open + content + close;
+            }
+        }
+    }
+
+    return content;
+};
+
+module.exports = AnsiSerializer;
+
+},{}],38:[function(require,module,exports){
+var cssStyles = require(42);
+var flattenBlocksInLines = require(44);
+var rgbRegexp = require(45);
+var themeMapper = require(46);
+
+function ColoredConsoleSerializer(theme) {
+    this.theme = theme;
+}
+
+ColoredConsoleSerializer.prototype.format = 'coloredConsole';
+
+ColoredConsoleSerializer.prototype.serialize = function (lines) {
+    var formatString = '';
+    var styleStrings = [];
+    this.serializeLines(flattenBlocksInLines(lines)).forEach(function (entry) {
+        if (entry) {
+            formatString += entry[0];
+            if (entry.length > 1) {
+                styleStrings.push(entry[1]);
+            }
+        }
+    });
+    return [formatString].concat(styleStrings);
+};
+
+ColoredConsoleSerializer.prototype.serializeLines = function (lines) {
+    var result = [];
+    lines.forEach(function (line, i) {
+        if (i > 0) {
+            result.push(['%c\n ', '']);
+        }
+        Array.prototype.push.apply(result, this.serializeLine(line));
+    }, this);
+    return result;
+};
+
+ColoredConsoleSerializer.prototype.serializeLine = function (line) {
+    var result = [];
+    line.forEach(function (outputEntry) {
+        if (this[outputEntry.style]) {
+            result.push(this[outputEntry.style](outputEntry.args));
+        }
+    }, this);
+    return result;
+};
+
+ColoredConsoleSerializer.prototype.block = function (content) {
+    return this.serializeLines(content);
+};
+
+ColoredConsoleSerializer.prototype.text = function (options) {
+    var content = String(options.content);
+    if (content === '') {
+        return '';
+    }
+
+    var styles = themeMapper(this.theme, options.styles);
+
+    var result = ['%c' + content.replace(/%/g, '%%')];
+    var styleProperties = [];
+
+    if (styles.length > 0) {
+        for (var i = 0; i < styles.length; i += 1) {
+            var styleName = styles[i];
+            if (rgbRegexp.test(styleName)) {
+                if (styleName.substring(0, 2) === 'bg') {
+                    styleProperties.push('background-color: ' + styleName.substring(2));
+                } else {
+                    styleProperties.push('color: ' + styleName);
+                }
+            } else if (cssStyles[styleName]) {
+                styleProperties.push(cssStyles[styleName]);
+            }
+        }
+    }
+    result.push(styleProperties.join('; '));
+    return result;
+};
+
+ColoredConsoleSerializer.prototype.raw = function (options) {
+    return String(options.content(this));
+};
+
+module.exports = ColoredConsoleSerializer;
+
+},{}],39:[function(require,module,exports){
+var cssStyles = require(42);
+var rgbRegexp = require(45);
+var themeMapper = require(46);
+
+function HtmlSerializer(theme) {
+    this.theme = theme;
+}
+
+HtmlSerializer.prototype.format = 'html';
+
+HtmlSerializer.prototype.serialize = function (lines) {
+    return '<div style="font-family: monospace; white-space: nowrap">\n' + this.serializeLines(lines) + '\n</div>';
+};
+
+HtmlSerializer.prototype.serializeLines = function (lines) {
+    return lines.map(function (line) {
+        return '  <div>' + (this.serializeLine(line).join('') || '&nbsp;') + '</div>';
+    }, this).join('\n');
+};
+
+HtmlSerializer.prototype.serializeLine = function (line) {
+    return line.map(function (outputEntry) {
+        return this[outputEntry.style] ?
+            this[outputEntry.style](outputEntry.args) :
+            '';
+    }, this);
+};
+
+HtmlSerializer.prototype.block = function (content) {
+    return '<div style="display: inline-block; vertical-align: top">\n' +
+        this.serializeLines(content) +
+        '\n</div>';
+};
+
+HtmlSerializer.prototype.text = function (options) {
+    var content = String(options.content);
+
+    if (content === '') {
+        return '';
+    }
+
+    content = content
+        .replace(/&/g, '&amp;')
+        .replace(/ /g, '&nbsp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+
+
+    var styles = themeMapper(this.theme, options.styles);
+
+    if (styles.length > 0) {
+        var styleProperties = [];
+        for (var j = 0; j < styles.length; j += 1) {
+            var styleName = styles[j];
+            if (rgbRegexp.test(styleName)) {
+                if (styleName.substring(0, 2) === 'bg') {
+                    styleProperties.push('background-color: ' + styleName.substring(2));
+                } else {
+                    styleProperties.push('color: ' + styleName);
+                }
+            } else if (cssStyles[styleName]) {
+                styleProperties.push(cssStyles[styleName]);
+            }
+
+        }
+
+        if (styleProperties.length > 0) {
+            content = '<span style="' + styleProperties.join('; ') + '">' + content + '</span>';
+        }
+    }
+    return content;
+};
+
+HtmlSerializer.prototype.raw = function (options) {
+    return String(options.content(this));
+};
+
+module.exports = HtmlSerializer;
+
+},{}],40:[function(require,module,exports){
+(function (process){
+/*global window*/
+var utils = require(47);
+var extend = utils.extend;
+var duplicateText = require(43);
+var rgbRegexp = require(45);
+var cssStyles = require(42);
+
+function MagicPen(options) {
+    if (!(this instanceof MagicPen)) {
+        return new MagicPen(options);
+    }
+
+    options = options || {};
+
+    if (typeof options === "string") {
+        options = {format: options };
+    }
+
+    var indentationWidth = 'indentationWidth' in options ?
+        options.indentationWidth : 2;
+    this.indentationWidth = Math.max(indentationWidth, 0);
+
+    this.indentationLevel = 0;
+    this.output = [[]];
+    this.styles = Object.create(null);
+    this.installedPlugins = [];
+    this._themes = {};
+    this.preferredWidth = (!process.browser && process.stdout.columns) || 80;
+    if (options.format) {
+        this.format = options.format;
+    }
+}
+
+if (typeof exports === 'object' && typeof exports.nodeName !== 'string' && require(53)) {
+    MagicPen.defaultFormat = 'ansi'; // colored console
+} else if (typeof window !== 'undefined' && typeof window.navigator !== 'undefined') {
+    if (window.mochaPhantomJS || (window.__karma__ && window.__karma__.config.captureConsole)) {
+        MagicPen.defaultFormat = 'ansi'; // colored console
+    } else {
+        MagicPen.defaultFormat = 'html'; // Browser
+    }
+} else {
+    MagicPen.defaultFormat = 'text'; // Plain text
+}
+
+MagicPen.prototype.newline = MagicPen.prototype.nl = function (count) {
+    if (typeof count === 'undefined') {
+        count = 1;
+    }
+
+    if (count === 0) {
+        return this;
+    }
+
+    for (var i = 0; i < count; i += 1) {
+        this.output.push([]);
+    }
+    return this;
+};
+
+MagicPen.serializers = {};
+[
+    require(41),
+    require(39),
+    require(37),
+    require(38)
+].forEach(function (serializer) {
+    MagicPen.serializers[serializer.prototype.format] = serializer;
+});
+
+function hasSameTextStyling(a, b) {
+    if (!a || !b || a.style !== 'text' || b.style !== 'text') {
+        return false;
+    }
+
+    return utils.arrayEquals(a.args.styles, b.args.styles);
+}
+
+function normalizeLine(line) {
+    if (line.length === 0) {
+        return line;
+    }
+
+    var result = [line[0]];
+    for (var i = 1; i < line.length; i += 1) {
+        var lastEntry = result[result.length - 1];
+        var entry = line[i];
+        if (entry.style === 'text' && entry.args.content === '') {
+            continue;
+        }
+
+        if (hasSameTextStyling(lastEntry, entry)) {
+            result[result.length - 1] = {
+                style: lastEntry.style,
+                args: {
+                    content: lastEntry.args.content + entry.args.content,
+                    styles: lastEntry.args.styles
+                }
+            };
+        } else {
+            result.push(entry);
+        }
+    }
+
+    return result;
+}
+
+MagicPen.prototype.write = function (options) {
+    if (this.styles[options.style]) {
+        this.styles[options.style].apply(this, options.args);
+        return this;
+    }
+    var lastLine = this.output[this.output.length - 1];
+    var lastEntry = lastLine[lastLine.length - 1];
+    if (hasSameTextStyling(lastEntry, options)) {
+        lastLine[lastLine.length - 1] = {
+            style: lastEntry.style,
+            args: {
+                content: lastEntry.args.content + options.args.content,
+                styles: lastEntry.args.styles
+            }
+        };
+    } else {
+        lastLine.push(options);
+    }
+
+    return this;
+};
+
+MagicPen.prototype.indentLines = function () {
+    this.indentationLevel += 1;
+    return this;
+};
+
+MagicPen.prototype.indent = MagicPen.prototype.i = function () {
+    for (var i = 0; i < this.indentationLevel; i += 1) {
+        this.space(this.indentationWidth);
+    }
+    return this;
+};
+
+MagicPen.prototype.outdentLines = function () {
+    this.indentationLevel = Math.max(0, this.indentationLevel - 1);
+    return this;
+};
+
+MagicPen.prototype.addStyle = function (style, handler, allowRedefinition) {
+    var existingType = typeof this[style];
+    if (existingType === 'function') {
+        if (!allowRedefinition) {
+            throw new Error('"' + style + '" style is already defined, set 3rd arg (allowRedefinition) to true to define it anyway');
+        }
+    } else if (existingType !== 'undefined') {
+        throw new Error('"' + style + '" style cannot be defined, it clashes with a built-in attribute');
+    }
+
+    var styles = this.styles;
+    this.styles = Object.create(null);
+    for (var p in styles) {
+        this.styles[p] = styles[p];
+    }
+
+    this.styles[style] = handler;
+    this[style] = function () {
+        handler.apply(this, arguments);
+        return this;
+    };
+    return this;
+};
+
+MagicPen.prototype.toString = function (format) {
+    if (format && this.format && format !== this.format) {
+        throw new Error('A pen with format: ' + this.format + ' cannot be serialized to: ' + format);
+    }
+
+    format = this.format || format || 'text';
+    if (format === 'auto') {
+        format = MagicPen.defaultFormat;
+    }
+    var theme = this._themes[format] || {};
+    var serializer = new MagicPen.serializers[format](theme);
+    return serializer.serialize(this.output);
+};
+
+MagicPen.prototype.text = function () {
+    var content = arguments[0];
+    if (content === '') {
+        return this;
+    }
+
+    var styles = new Array(arguments.length - 1);
+    for (var i = 1; i < arguments.length; i += 1) {
+        styles[i - 1] = arguments[i];
+    }
+    content = String(content);
+    if (content.indexOf('\n') !== -1) {
+        var lines = content.split(/\n/);
+        lines.forEach(function (lineContent, index) {
+            if (lineContent.length) {
+                this.write({
+                    style: 'text',
+                    args: { content: lineContent, styles: styles }
+                });
+            }
+            if (index < lines.length - 1) {
+                this.nl();
+            }
+        }, this);
+        return this;
+    } else {
+        return this.write({
+            style: 'text',
+            args: { content: content, styles: styles }
+        });
+    }
+};
+
+MagicPen.prototype.removeFormatting = function () {
+    var result = this.clone();
+    this.output.forEach(function (line, index) {
+        result.output[index] = normalizeLine(line.map(function (outputEntry) {
+            return outputEntry.style === 'text' ?
+                { style: 'text', args: { content: outputEntry.args.content, styles: [] } } :
+                outputEntry;
+        }));
+    });
+    result.indentationLevel = this.indentationLevel;
+    return result;
+};
+
+MagicPen.prototype.getContentFromArguments = function (args) {
+    var clone;
+    if (args[0].isMagicPen) {
+        this.ensureCompatibleFormat(args[0].format);
+        return args[0];
+    } else if (typeof args[0] === 'function') {
+        clone = this.clone();
+        args[0].call(clone, clone);
+        return clone;
+    } else if (typeof args[0] === 'string' && args.length === 1) {
+        clone = this.clone();
+        clone.text(args[0]);
+        return clone;
+    } else if (typeof args[0] === 'string') {
+        clone = this.clone();
+        clone[args[0]].apply(clone, Array.prototype.slice.call(args, 1));
+        return clone;
+    } else {
+        throw new Error('Requires the arguments to be:\n' +
+                        'a pen or\n' +
+                        'a callback appending content to a pen or\n' +
+                        'a style and arguments for that style or\n' +
+                        'just a string.');
+    }
+};
+
+MagicPen.prototype.isMultiline = function () {
+    return this.output.length > 1 || this.size().height > 1;
+};
+
+MagicPen.prototype.isBlock = function () {
+    return this.output.length === 1 &&
+        this.output[0].length === 1 &&
+        this.output[0][0].style === 'block';
+};
+
+MagicPen.prototype.ensureCompatibleFormat = function (format) {
+    if (format && this.format && format !== this.format) {
+        throw new Error('This pen is only compatible with the format: ' + this.format);
+    }
+};
+
+MagicPen.prototype.block = function () {
+    var pen = this.getContentFromArguments(arguments);
+
+    var blockOutput = pen.output.map(function (line) {
+        return [].concat(line);
+    });
+    return this.write({ style: 'block', args: blockOutput });
+};
+function isRawOutput(options) {
+    return options &&
+        typeof options === 'object' &&
+        typeof options.width === 'number' &&
+        typeof options.height === 'number' && (
+            typeof options.content === 'function' ||
+                typeof options.content === 'string'
+        );
+}
+
+MagicPen.prototype.alt = function (options) {
+    var format = this.format;
+    if (!format) {
+        throw new Error('The alt method is only supported on pen where the format has already been set');
+    }
+
+    var outputProperty = options[format];
+
+    if (typeof outputProperty === 'undefined') {
+        if (options.fallback) {
+            return this.append(options.fallback);
+        } else {
+            // Nothing to do for this format, just NOOP:
+            return this;
+        }
+    }
+
+    if (typeof outputProperty === 'string' || isRawOutput(outputProperty)) {
+        return this.raw(outputProperty);
+    } else {
+        return this.append(outputProperty);
+    }
+};
+
+MagicPen.prototype.raw = function (options) {
+    var format = this.format;
+    if (!format) {
+        throw new Error('The alt method is only supported on pen where the format has already been set');
+    }
+
+    if (typeof options === 'string') {
+        return this.write({ style: 'raw', args: {
+            height: 0,
+            width: 0,
+            content: function () {
+                return options;
+            }
+        }});
+    }
+
+    if (isRawOutput(options)) {
+        if (typeof options.content === 'string') {
+            options = extend({}, options);
+            var content = options.content;
+            options.content = function () {
+                return content;
+            };
+        }
+
+        return this.write({ style: 'raw', args: options });
+    }
+
+    throw new Error('Raw ' + this.format + ' content needs to adhere to one of the following forms:\n' +
+                    'a string of raw content\n' +
+                    'a function returning a string of raw content or\n' +
+                    'an object with the following form { width: <number>, height: <number>, content: <string function() {}|string> }');
+};
+
+function amend(output, pen) {
+    var lastLine = output[output.length - 1].slice();
+    var newOutput = output.slice(0, -1);
+    var lastEntry = lastLine[lastLine.length - 1];
+    if (lastEntry && lastEntry.style === 'block') {
+        lastLine[lastLine.length - 1] = {
+            style: 'block',
+            args: amend(lastEntry.args, pen)
+        };
+        newOutput[output.length - 1] = lastLine;
+    } else {
+        Array.prototype.push.apply(lastLine, pen.output[0]);
+        newOutput[output.length - 1] = normalizeLine(lastLine);
+        newOutput.push.apply(newOutput, pen.output.slice(1));
+    }
+
+    return newOutput;
+}
+
+MagicPen.prototype.amend = function () {
+    var pen = this.getContentFromArguments(arguments);
+
+    if (pen.isEmpty()) {
+        return this;
+    }
+
+    this.output = amend(this.output, pen);
+
+    return this;
+};
+
+MagicPen.prototype.append = function () {
+    var pen = this.getContentFromArguments(arguments);
+
+    if (pen.isEmpty()) {
+        return this;
+    }
+
+    var lastLine = this.output[this.output.length - 1];
+    Array.prototype.push.apply(lastLine, pen.output[0]);
+    this.output[this.output.length - 1] = normalizeLine(lastLine);
+
+    this.output.push.apply(this.output, pen.output.slice(1));
+
+    return this;
+};
+
+MagicPen.prototype.prependLinesWith = function () {
+    var pen = this.getContentFromArguments(arguments);
+
+    if (pen.isEmpty()) {
+        return this;
+    }
+
+    if (pen.output.length > 1) {
+        throw new Error('PrependLinesWith only supports a pen with single line content');
+    }
+
+    var height = this.size().height;
+    var output = this.clone();
+    output.block(function () {
+        for (var i = 0; i < height; i += 1) {
+            if (0 < i) {
+                this.nl();
+            }
+            this.append(pen);
+        }
+    });
+    output.block(this);
+
+    this.output = output.output;
+    return this;
+};
+
+MagicPen.prototype.space = MagicPen.prototype.sp = function (count) {
+    if (count === 0) {
+        return this;
+    }
+
+    if (typeof count === 'undefined') {
+        count = 1;
+    }
+
+    return this.text(duplicateText(' ', count));
+};
+
+[
+    'bold', 'dim', 'italic', 'underline', 'inverse', 'hidden',
+    'strikeThrough', 'black', 'red', 'green', 'yellow', 'blue',
+    'magenta', 'cyan', 'white', 'gray', 'bgBlack', 'bgRed',
+    'bgGreen', 'bgYellow', 'bgBlue', 'bgMagenta', 'bgCyan',
+    'bgWhite'
+].forEach(function (textStyle) {
+    MagicPen.prototype[textStyle] = MagicPen.prototype[textStyle.toLowerCase()] = function (content) {
+        return this.text(content, textStyle);
+    };
+});
+
+MagicPen.prototype.clone = function (format) {
+    if (!this.isEmpty()) {
+        this.ensureCompatibleFormat(format);
+    }
+
+    function MagicPenClone() {}
+    MagicPenClone.prototype = this;
+    var clonedPen = new MagicPenClone();
+    clonedPen.styles = this.styles;
+    clonedPen.indentationLevel = 0;
+    clonedPen.output = [[]];
+    clonedPen.installedPlugins = this.installedPlugins;
+    clonedPen._themes = this._themes;
+    clonedPen.format = format || this.format;
+    return clonedPen;
+};
+
+MagicPen.prototype.isMagicPen = true;
+
+MagicPen.prototype.size = function () {
+    return utils.calculateSize(this.output);
+};
+
+MagicPen.prototype.use = function (plugin) {
+    var existingPlugin = utils.findFirst(this.installedPlugins, function (installedPlugin) {
+        if (installedPlugin === plugin) {
+            return true;
+        } else if (typeof plugin === 'function' && typeof installedPlugin === 'function') {
+            var pluginName = utils.getFunctionName(plugin);
+            return pluginName !== '' && pluginName === utils.getFunctionName(installedPlugin);
+        } else {
+            return installedPlugin.name === plugin.name;
+        }
+    });
+
+    if (existingPlugin) {
+        if (existingPlugin === plugin || (typeof plugin.version !== 'undefined' && plugin.version === existingPlugin.version)) {
+            // No-op
+            return this;
+        } else {
+            throw new Error("Another instance of the plugin '" + plugin.name + "' " +
+                            "is already installed" +
+                            (typeof existingPlugin.version !== 'undefined' ?
+                                ' (version ' + existingPlugin.version +
+                                (typeof plugin.version !== 'undefined' ?
+                                    ', trying to install ' + plugin.version : '') +
+                                ')' : '') +
+                            ". Please check your node_modules folder for unmet peerDependencies.");
+        }
+    }
+
+    if ((typeof plugin !== 'function' && (typeof plugin !== 'object' || typeof plugin.installInto !== 'function')) ||
+        (typeof plugin.name !== 'undefined' && typeof plugin.name !== 'string') ||
+        (typeof plugin.dependencies !== 'undefined' && !Array.isArray(plugin.dependencies))) {
+        throw new Error('Plugins must be functions or adhere to the following interface\n' +
+                        '{\n' +
+                        '  name: <an optional plugin name>,\n' +
+                        '  version: <an optional semver version string>,\n' +
+                        '  dependencies: <an optional list of dependencies>,\n' +
+                        '  installInto: <a function that will update the given magicpen instance>\n' +
+                        '}');
+    }
+
+    if (plugin.dependencies) {
+        var installedPlugins = this.installedPlugins;
+        var unfulfilledDependencies = plugin.dependencies.filter(function (dependency) {
+            return !installedPlugins.some(function (plugin) {
+                return plugin.name === dependency;
+            });
+        });
+
+        if (unfulfilledDependencies.length === 1) {
+            throw new Error(plugin.name + ' requires plugin ' + unfulfilledDependencies[0]);
+        } else if (unfulfilledDependencies.length > 1) {
+            throw new Error(plugin.name + ' requires plugins ' +
+                            unfulfilledDependencies.slice(0, -1).join(', ') +
+                            ' and ' + unfulfilledDependencies[unfulfilledDependencies.length - 1]);
+        }
+    }
+
+    this.installedPlugins.push(plugin);
+    if (typeof plugin === 'function') {
+        plugin(this);
+    } else {
+        plugin.installInto(this);
+    }
+
+    return this; // for chaining
+};
+
+MagicPen.prototype.installPlugin = MagicPen.prototype.use; // Legacy alias
+
+function replaceText(output, outputArray, regexp, cb) {
+    var replacedOutput = output;
+    outputArray.forEach(function (line, i) {
+        if (0 < i) {
+            replacedOutput.nl();
+        }
+
+        line.forEach(function (outputEntry, j) {
+            if (outputEntry.style === 'block') {
+                return replacedOutput.output[replacedOutput.output.length - 1].push({
+                    style: 'block',
+                    args: replaceText(output.clone(), outputEntry.args, regexp, cb)
+                });
+            } else if (outputEntry.style !== 'text') {
+                return replacedOutput.output[replacedOutput.output.length - 1].push(outputEntry);
+            }
+
+            if (regexp.global) {
+                regexp.lastIndex = 0;
+            }
+            var m;
+            var first = true;
+            var lastIndex = 0;
+            var text = outputEntry.args.content;
+            var styles = outputEntry.args.styles;
+            while ((m = regexp.exec(text)) !== null && (regexp.global || first)) {
+                if (lastIndex < m.index) {
+                    replacedOutput.text.apply(replacedOutput, [text.substring(lastIndex, m.index)].concat(styles));
+                }
+
+                cb.apply(replacedOutput, [styles].concat(m));
+                first = false;
+                lastIndex = m.index + m[0].length;
+            }
+
+            if (lastIndex === 0) {
+                var lastLine;
+                if (replacedOutput.output.length === 0) {
+                    lastLine = replacedOutput.output[0] = [];
+                } else {
+                    lastLine = replacedOutput.output[replacedOutput.output.length - 1];
+                }
+
+                lastLine.push(outputEntry);
+            } else if (lastIndex < text.length) {
+                replacedOutput.text.apply(replacedOutput, [text.substring(lastIndex, text.length)].concat(styles));
+            }
+        }, this);
+    }, this);
+
+    return replacedOutput.output.map(normalizeLine);
+}
+
+MagicPen.prototype.isEmpty = function () {
+    return this.output.length === 1 && this.output[0].length === 0;
+};
+
+MagicPen.prototype.replaceText = function (regexp, cb) {
+    if (this.isEmpty()) {
+        return this;
+    }
+
+    if (typeof regexp === 'string') {
+        regexp = new RegExp(utils.escapeRegExp(regexp), 'g');
+    }
+
+    if (typeof cb === 'string') {
+        var text = cb;
+        cb = function (styles, _) {
+            var args = [text].concat(styles);
+            this.text.apply(this, args);
+        };
+    }
+
+
+    if (arguments.length === 1) {
+        cb = regexp;
+        regexp = /.*/;
+    }
+
+    this.output = replaceText(this.clone(), this.output, regexp, cb);
+
+    return this;
+};
+
+MagicPen.prototype.theme = function (format) {
+    format = format || this.format;
+    if (!format) {
+        throw new Error("Could not detect which format you want to retrieve " +
+                        "theme information for. Set the format of the pen or " +
+                        "provide it as an argument to the theme method.");
+    }
+
+    return this._themes[format];
+};
+
+MagicPen.prototype.installTheme = function (formats, theme) {
+    var that = this;
+    if (arguments.length === 1) {
+        theme = formats;
+        formats = Object.keys(MagicPen.serializers);
+    }
+
+    if (typeof formats === 'string') {
+        formats = [formats];
+    }
+
+    if (
+        typeof theme !== 'object' ||
+        !Array.isArray(formats) ||
+        formats.some(function (format) {
+            return typeof format !== 'string';
+        })
+    ) {
+        throw new Error("Themes must be installed the following way:\n" +
+                        "Install theme for all formats: pen.installTheme({ comment: 'gray' })\n" +
+                        "Install theme for a specific format: pen.installTheme('ansi', { comment: 'gray' }) or\n" +
+                        "Install theme for a list of formats: pen.installTheme(['ansi', 'html'], { comment: 'gray' })");
+    }
+
+    if (!theme.styles || typeof theme.styles !== 'object') {
+        theme = {
+            styles: theme
+        };
+    }
+
+    Object.keys(theme.styles).forEach(function (themeKey) {
+        if (rgbRegexp.test(themeKey) || cssStyles[themeKey]) {
+            throw new Error("Invalid theme key: '" + themeKey + "' you can't map build styles.");
+        }
+
+        if (!that[themeKey]) {
+            that.addStyle(themeKey, function (content) {
+                this.text(content, themeKey);
+            });
+        }
+    });
+
+    that._themes = extend({}, that._themes);
+    formats.forEach(function (format) {
+        var baseTheme = that._themes[format] || { styles: {} };
+        var extendedTheme = extend({}, baseTheme, theme);
+        extendedTheme.styles = extend({}, baseTheme.styles, theme.styles);
+        that._themes[format] = extendedTheme;
+    });
+
+
+    return this;
+};
+
+module.exports = MagicPen;
+
+}).call(this,require(30))
+},{}],41:[function(require,module,exports){
+var flattenBlocksInLines = require(44);
+
+function TextSerializer() {}
+
+TextSerializer.prototype.format = 'text';
+
+TextSerializer.prototype.serialize = function (lines) {
+    lines = flattenBlocksInLines(lines);
+    return lines.map(this.serializeLine, this).join('\n');
+};
+
+TextSerializer.prototype.serializeLine = function (line) {
+    return line.map(function (outputEntry) {
+        return this[outputEntry.style] ?
+            String(this[outputEntry.style](outputEntry.args)) :
+            '';
+    }, this).join('');
+};
+
+TextSerializer.prototype.text = function (options) {
+    return String(options.content);
+};
+
+TextSerializer.prototype.block = function (content) {
+    return this.serialize(content);
+};
+
+TextSerializer.prototype.raw = function (options) {
+    return String(options.content(this));
+};
+
+
+module.exports = TextSerializer;
+
+},{}],42:[function(require,module,exports){
+var cssStyles = {
+    bold: 'font-weight: bold',
+    dim: 'opacity: 0.7',
+    italic: 'font-style: italic',
+    underline: 'text-decoration: underline',
+    inverse: '-webkit-filter: invert(%100); filter: invert(100%)',
+    hidden: 'visibility: hidden',
+    strikeThrough: 'text-decoration: line-through',
+
+    black: 'color: black',
+    red: 'color: red',
+    green: 'color: green',
+    yellow: 'color: yellow',
+    blue: 'color: blue',
+    magenta: 'color: magenta',
+    cyan: 'color: cyan',
+    white: 'color: white',
+    gray: 'color: gray',
+
+    bgBlack: 'background-color: black',
+    bgRed: 'background-color: red',
+    bgGreen: 'background-color: green',
+    bgYellow: 'background-color: yellow',
+    bgBlue: 'background-color: blue',
+    bgMagenta: 'background-color: magenta',
+    bgCyan: 'background-color: cyan',
+    bgWhite: 'background-color: white'
+};
+
+Object.keys(cssStyles).forEach(function (styleName) {
+    cssStyles[styleName.toLowerCase()] = cssStyles[styleName];
+});
+
+module.exports = cssStyles;
+
+},{}],43:[function(require,module,exports){
+var whitespaceCacheLength = 256;
+var whitespaceCache = [''];
+for (var i = 1; i <= whitespaceCacheLength; i += 1) {
+    whitespaceCache[i] = whitespaceCache[i - 1] + ' ';
+}
+
+function duplicateText(content, times) {
+    if (times < 0) {
+        return '';
+    }
+
+    var result = '';
+
+    if (content === ' ') {
+        if (times <= whitespaceCacheLength) {
+            return whitespaceCache[times];
+        }
+
+        var segment = whitespaceCache[whitespaceCacheLength];
+        var numberOfSegments = Math.floor(times / whitespaceCacheLength);
+        for (var i = 0; i < numberOfSegments; i += 1) {
+            result += segment;
+        }
+        result += whitespaceCache[times % whitespaceCacheLength];
+    } else {
+        for (var j = 0; j < times; j += 1) {
+            result += content;
+        }
+    }
+
+    return result;
+}
+
+module.exports = duplicateText;
+
+},{}],44:[function(require,module,exports){
+var utils = require(47);
+var duplicateText = require(43);
+
+function createPadding(length) {
+    return { style: 'text', args: { content: duplicateText(' ', length), styles: [] } };
+}
+
+function lineContainsBlocks(line) {
+    return line.some(function (outputEntry) {
+        return outputEntry.style === 'block' ||
+            (outputEntry.style === 'text' && String(outputEntry.args.content).indexOf('\n') !== -1);
+    });
+}
+
+function flattenBlocksInOutputEntry(outputEntry) {
+    switch (outputEntry.style) {
+    case 'text': return String(outputEntry.args.content).split('\n').map(function (line) {
+        if (line === '') {
+            return [];
+        }
+
+        var args = { content: line, styles: outputEntry.args.styles };
+        return [{ style: 'text', args: args }];
+    });
+    case 'block': return flattenBlocksInLines(outputEntry.args);
+    default: return [];
+    }
+}
+
+function flattenBlocksInLine(line) {
+    if (line.length === 0) {
+       return [[]];
+    }
+
+    if (!lineContainsBlocks(line)) {
+        return [line];
+    }
+
+    var result = [];
+    var linesLengths = [];
+
+    var startIndex = 0;
+    line.forEach(function (outputEntry, blockIndex) {
+        var blockLines = flattenBlocksInOutputEntry(outputEntry);
+
+        var blockLinesLengths = blockLines.map(function (line) {
+            return utils.calculateLineSize(line).width;
+        });
+
+        var longestLineLength = Math.max.apply(null, blockLinesLengths);
+
+        blockLines.forEach(function (blockLine, index) {
+            var resultLine = result[index];
+
+            if (!resultLine) {
+                result[index] = resultLine = [];
+                linesLengths[index] = 0;
+            }
+
+            if (blockLine.length) {
+                var paddingLength = startIndex - linesLengths[index];
+                resultLine.push(createPadding(paddingLength));
+                Array.prototype.push.apply(resultLine, blockLine);
+                linesLengths[index] = startIndex + blockLinesLengths[index];
+            }
+        });
+
+        startIndex += longestLineLength;
+    }, this);
+    return result;
+}
+
+function flattenBlocksInLines(lines) {
+    var result = [];
+    lines.forEach(function (line) {
+        flattenBlocksInLine(line).forEach(function (line) {
+            result.push(line);
+        });
+    });
+    return result;
+}
+
+module.exports = flattenBlocksInLines;
+
+},{}],45:[function(require,module,exports){
+module.exports =  /^(?:bg)?#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i;
+
+},{}],46:[function(require,module,exports){
+module.exports = function (theme, styles) {
+    if (styles.length === 1) {
+        var count = 0;
+        var stack = [];
+        var themeMapping = styles[0];
+        var themeStyles = theme.styles || {};
+        while(typeof themeMapping === 'string' && themeStyles[themeMapping]) {
+            themeMapping = themeStyles[themeMapping];
+            count += 1;
+            if (100 < count) {
+                var index = stack.indexOf(themeMapping);
+                stack.push(themeMapping);
+                if (index !== -1) {
+                    throw new Error('Your theme contains a loop: ' + stack.slice(index).join(' -> '));
+                }
+            }
+        }
+
+        return Array.isArray(themeMapping) ? themeMapping : [themeMapping];
+    }
+
+    return styles;
+};
+
+},{}],47:[function(require,module,exports){
+var utils = {
+    extend: function (target) {
+        for (var i = 1; i < arguments.length; i += 1) {
+            var source = arguments[i];
+            Object.keys(source).forEach(function (key) {
+                target[key] = source[key];
+            });
+        }
+        return target;
+    },
+
+    calculateOutputEntrySize: function (outputEntry) {
+        if (outputEntry.size) {
+            return outputEntry.size;
+        }
+
+        var size;
+        switch (outputEntry.style) {
+        case 'text':
+            size = { width: String(outputEntry.args.content).length, height: 1 };
+            break;
+        case 'block':
+            size = utils.calculateSize(outputEntry.args);
+            break;
+        case 'raw':
+            var arg = outputEntry.args;
+            size = { width: arg.width, height: arg.height };
+            break;
+        default: size = { width: 0, height: 0 };
+        }
+
+        outputEntry.size = size;
+        return size;
+    },
+
+    calculateLineSize: function (line) {
+        var size = { height: 1, width: 0 };
+        line.forEach(function (outputEntry) {
+            var outputEntrySize = utils.calculateOutputEntrySize(outputEntry);
+            size.width += outputEntrySize.width;
+            size.height = Math.max(outputEntrySize.height, size.height);
+        });
+        return size;
+    },
+
+    calculateSize: function (lines) {
+        var size = { height: 0, width: 0 };
+        lines.forEach(function (line) {
+            var lineSize = utils.calculateLineSize(line);
+            size.height += lineSize.height;
+            size.width = Math.max(size.width, lineSize.width);
+        });
+        return size;
+    },
+
+    arrayEquals: function (a, b) {
+        if (a === b) {
+            return true;
+        }
+
+        if (!a || a.length !== b.length) {
+            return false;
+        }
+
+        for (var i = 0; i < a.length; i += 1) {
+            if (a[i] !== b[i]) {
+                return false;
+            }
+        }
+
+        return true;
+
+    },
+
+    escapeRegExp: function (text){
+        return text.replace(/([.*+?^${}()|\[\]\/\\])/g, "\\$1");
+    },
+
+    findFirst: function (arr, predicate, thisObj) {
+        var scope = thisObj || null;
+        for (var i = 0 ; i < arr.length ; i += 1) {
+            if (predicate.call(scope, arr[i], i, arr)) {
+                return arr[i];
+            }
+        }
+        return null;
+    },
+
+    getFunctionName: function (f) {
+        if (typeof f.name === 'string') {
+            return f.name;
+        }
+        var matchFunctionName = Function.prototype.toString.call(f).match(/function ([^\(]+)/);
+        if (matchFunctionName) {
+            return matchFunctionName[1];
+        }
+
+        if (f === Object) {
+            return 'Object';
+        }
+        if (f === Function) {
+            return 'Function';
+        }
+    }
+};
+
+module.exports = utils;
+
+},{}],48:[function(require,module,exports){
+'use strict';
+
+var styles = module.exports = {
+	modifiers: {
+		reset: [0, 0],
+		bold: [1, 22], // 21 isn't widely supported and 22 does the same thing
+		dim: [2, 22],
+		italic: [3, 23],
+		underline: [4, 24],
+		inverse: [7, 27],
+		hidden: [8, 28],
+		strikethrough: [9, 29]
+	},
+	colors: {
+		black: [30, 39],
+		red: [31, 39],
+		green: [32, 39],
+		yellow: [33, 39],
+		blue: [34, 39],
+		magenta: [35, 39],
+		cyan: [36, 39],
+		white: [37, 39],
+		gray: [90, 39]
+	},
+	bgColors: {
+		bgBlack: [40, 49],
+		bgRed: [41, 49],
+		bgGreen: [42, 49],
+		bgYellow: [43, 49],
+		bgBlue: [44, 49],
+		bgMagenta: [45, 49],
+		bgCyan: [46, 49],
+		bgWhite: [47, 49]
+	}
+};
+
+// fix humans
+styles.colors.grey = styles.colors.gray;
+
+Object.keys(styles).forEach(function (groupName) {
+	var group = styles[groupName];
+
+	Object.keys(group).forEach(function (styleName) {
+		var style = group[styleName];
+
+		styles[styleName] = group[styleName] = {
+			open: '\u001b[' + style[0] + 'm',
+			close: '\u001b[' + style[1] + 'm'
+		};
+	});
+
+	Object.defineProperty(styles, groupName, {
+		value: group,
+		enumerable: false
+	});
+});
+
+},{}],49:[function(require,module,exports){
+/**
+ * @author Markus Ekholm
+ * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
+ * @license Copyright (c) 2012-2015, Markus Ekholm
+ * All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *    * Redistributions of source code must retain the above copyright
+ *      notice, this list of conditions and the following disclaimer.
+ *    * Redistributions in binary form must reproduce the above copyright
+ *      notice, this list of conditions and the following disclaimer in the
+ *      documentation and/or other materials provided with the distribution.
+ *    * Neither the name of the <organization> nor the
+ *      names of its contributors may be used to endorse or promote products
+ *      derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL MARKUS EKHOLM BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/**
+* EXPORTS
+*/
+exports.rgb_to_lab = rgb_to_lab;
+
+/**
+* IMPORTS
+*/
+var pow  = Math.pow;
+var sqrt = Math.sqrt;
+
+/**
+ * API FUNCTIONS
+ */
+
+/**
+* Returns c converted to labcolor.
+* @param {rgbcolor} c should have fields R,G,B
+* @return {labcolor} c converted to labcolor
+*/
+function rgb_to_lab(c)
+{
+  return xyz_to_lab(rgb_to_xyz(c))
+}
+
+/**
+* Returns c converted to xyzcolor.
+* @param {rgbcolor} c should have fields R,G,B
+* @return {xyzcolor} c converted to xyzcolor
+*/
+function rgb_to_xyz(c)
+{
+  // Based on http://www.easyrgb.com/index.php?X=MATH&H=02
+  var R = ( c.R / 255 );
+  var G = ( c.G / 255 );
+  var B = ( c.B / 255 );
+
+  if ( R > 0.04045 ) R = pow(( ( R + 0.055 ) / 1.055 ),2.4);
+  else               R = R / 12.92;
+  if ( G > 0.04045 ) G = pow(( ( G + 0.055 ) / 1.055 ),2.4);
+  else               G = G / 12.92;
+  if ( B > 0.04045 ) B = pow(( ( B + 0.055 ) / 1.055 ), 2.4);
+  else               B = B / 12.92;
+
+  R *= 100;
+  G *= 100;
+  B *= 100;
+
+  // Observer. = 2°, Illuminant = D65
+  var X = R * 0.4124 + G * 0.3576 + B * 0.1805;
+  var Y = R * 0.2126 + G * 0.7152 + B * 0.0722;
+  var Z = R * 0.0193 + G * 0.1192 + B * 0.9505;
+  return {'X' : X, 'Y' : Y, 'Z' : Z};
+}
+
+/**
+* Returns c converted to labcolor.
+* @param {xyzcolor} c should have fields X,Y,Z
+* @return {labcolor} c converted to labcolor
+*/
+function xyz_to_lab(c)
+{
+  // Based on http://www.easyrgb.com/index.php?X=MATH&H=07
+  var ref_Y = 100.000;
+  var ref_Z = 108.883;
+  var ref_X = 95.047; // Observer= 2°, Illuminant= D65
+  var Y = c.Y / ref_Y;
+  var Z = c.Z / ref_Z;
+  var X = c.X / ref_X;
+  if ( X > 0.008856 ) X = pow(X, 1/3);
+  else                X = ( 7.787 * X ) + ( 16 / 116 );
+  if ( Y > 0.008856 ) Y = pow(Y, 1/3);
+  else                Y = ( 7.787 * Y ) + ( 16 / 116 );
+  if ( Z > 0.008856 ) Z = pow(Z, 1/3);
+  else                Z = ( 7.787 * Z ) + ( 16 / 116 );
+  var L = ( 116 * Y ) - 16;
+  var a = 500 * ( X - Y );
+  var b = 200 * ( Y - Z );
+  return {'L' : L , 'a' : a, 'b' : b};
+}
+
+// Local Variables:
+// allout-layout: t
+// js-indent-level: 2
+// End:
+
+},{}],50:[function(require,module,exports){
+/**
+ * @author Markus Ekholm
+ * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
+ * @license Copyright (c) 2012-2015, Markus Ekholm
+ * All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *    * Redistributions of source code must retain the above copyright
+ *      notice, this list of conditions and the following disclaimer.
+ *    * Redistributions in binary form must reproduce the above copyright
+ *      notice, this list of conditions and the following disclaimer in the
+ *      documentation and/or other materials provided with the distribution.
+ *    * Neither the name of the <organization> nor the
+ *      names of its contributors may be used to endorse or promote products
+ *      derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL MARKUS EKHOLM BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/**
+* EXPORTS
+*/
+exports.ciede2000 = ciede2000;
+
+/**
+* IMPORTS
+*/
+var sqrt = Math.sqrt;
+var pow = Math.pow;
+var cos = Math.cos;
+var atan2 = Math.atan2;
+var sin = Math.sin;
+var abs = Math.abs;
+var exp = Math.exp;
+var PI = Math.PI;
+
+/**
+ * API FUNCTIONS
+ */
+
+/**
+* Returns diff between c1 and c2 using the CIEDE2000 algorithm
+* @param {labcolor} c1    Should have fields L,a,b
+* @param {labcolor} c2    Should have fields L,a,b
+* @return {float}   Difference between c1 and c2
+*/
+function ciede2000(c1,c2)
+{
+  /**
+   * Implemented as in "The CIEDE2000 Color-Difference Formula:
+   * Implementation Notes, Supplementary Test Data, and Mathematical Observations"
+   * by Gaurav Sharma, Wencheng Wu and Edul N. Dalal.
+   */
+
+  // Get L,a,b values for color 1
+  var L1 = c1.L;
+  var a1 = c1.a;
+  var b1 = c1.b;
+
+  // Get L,a,b values for color 2
+  var L2 = c2.L;
+  var a2 = c2.a;
+  var b2 = c2.b;
+
+  // Weight factors
+  var kL = 1;
+  var kC = 1;
+  var kH = 1;
+
+  /**
+   * Step 1: Calculate C1p, C2p, h1p, h2p
+   */
+  var C1 = sqrt(pow(a1, 2) + pow(b1, 2)) //(2)
+  var C2 = sqrt(pow(a2, 2) + pow(b2, 2)) //(2)
+
+  var a_C1_C2 = (C1+C2)/2.0;             //(3)
+
+  var G = 0.5 * (1 - sqrt(pow(a_C1_C2 , 7.0) /
+                          (pow(a_C1_C2, 7.0) + pow(25.0, 7.0)))); //(4)
+
+  var a1p = (1.0 + G) * a1; //(5)
+  var a2p = (1.0 + G) * a2; //(5)
+
+  var C1p = sqrt(pow(a1p, 2) + pow(b1, 2)); //(6)
+  var C2p = sqrt(pow(a2p, 2) + pow(b2, 2)); //(6)
+
+  var hp_f = function(x,y) //(7)
+  {
+    if(x== 0 && y == 0) return 0;
+    else{
+      var tmphp = degrees(atan2(x,y));
+      if(tmphp >= 0) return tmphp
+      else           return tmphp + 360;
+    }
+  }
+
+  var h1p = hp_f(b1, a1p); //(7)
+  var h2p = hp_f(b2, a2p); //(7)
+
+  /**
+   * Step 2: Calculate dLp, dCp, dHp
+   */
+  var dLp = L2 - L1; //(8)
+  var dCp = C2p - C1p; //(9)
+
+  var dhp_f = function(C1, C2, h1p, h2p) //(10)
+  {
+    if(C1*C2 == 0)               return 0;
+    else if(abs(h2p-h1p) <= 180) return h2p-h1p;
+    else if((h2p-h1p) > 180)     return (h2p-h1p)-360;
+    else if((h2p-h1p) < -180)    return (h2p-h1p)+360;
+    else                         throw(new Error());
+  }
+  var dhp = dhp_f(C1,C2, h1p, h2p); //(10)
+  var dHp = 2*sqrt(C1p*C2p)*sin(radians(dhp)/2.0); //(11)
+
+  /**
+   * Step 3: Calculate CIEDE2000 Color-Difference
+   */
+  var a_L = (L1 + L2) / 2.0; //(12)
+  var a_Cp = (C1p + C2p) / 2.0; //(13)
+
+  var a_hp_f = function(C1, C2, h1p, h2p) { //(14)
+    if(C1*C2 == 0)                                      return h1p+h2p
+    else if(abs(h1p-h2p)<= 180)                         return (h1p+h2p)/2.0;
+    else if((abs(h1p-h2p) > 180) && ((h1p+h2p) < 360))  return (h1p+h2p+360)/2.0;
+    else if((abs(h1p-h2p) > 180) && ((h1p+h2p) >= 360)) return (h1p+h2p-360)/2.0;
+    else                                                throw(new Error());
+  }
+  var a_hp = a_hp_f(C1,C2,h1p,h2p); //(14)
+  var T = 1-0.17*cos(radians(a_hp-30))+0.24*cos(radians(2*a_hp))+
+    0.32*cos(radians(3*a_hp+6))-0.20*cos(radians(4*a_hp-63)); //(15)
+  var d_ro = 30 * exp(-(pow((a_hp-275)/25,2))); //(16)
+  var RC = sqrt((pow(a_Cp, 7.0)) / (pow(a_Cp, 7.0) + pow(25.0, 7.0)));//(17)
+  var SL = 1 + ((0.015 * pow(a_L - 50, 2)) /
+                sqrt(20 + pow(a_L - 50, 2.0)));//(18)
+  var SC = 1 + 0.045 * a_Cp;//(19)
+  var SH = 1 + 0.015 * a_Cp * T;//(20)
+  var RT = -2 * RC * sin(radians(2 * d_ro));//(21)
+  var dE = sqrt(pow(dLp /(SL * kL), 2) + pow(dCp /(SC * kC), 2) +
+                pow(dHp /(SH * kH), 2) + RT * (dCp /(SC * kC)) *
+                (dHp / (SH * kH))); //(22)
+  return dE;
+}
+
+/**
+ * INTERNAL FUNCTIONS
+ */
+function degrees(n) { return n*(180/PI); }
+function radians(n) { return n*(PI/180); }
+
+// Local Variables:
+// allout-layout: t
+// js-indent-level: 2
+// End:
+
+},{}],51:[function(require,module,exports){
+'use strict';
+
+var diff = require(50);
+var convert = require(49);
+var palette = require(52);
+
+var color = module.exports = {};
+
+color.diff             = diff.ciede2000;
+color.rgb_to_lab       = convert.rgb_to_lab;
+color.map_palette      = palette.map_palette;
+color.palette_map_key  = palette.palette_map_key;
+
+color.closest = function(target, relative) {
+    var key = color.palette_map_key(target);
+
+    var result = color.map_palette([target], relative, 'closest');
+
+    return result[key];
+};
+
+color.furthest = function(target, relative) {
+    var key = color.palette_map_key(target);
+
+    var result = color.map_palette([target], relative, 'furthest');
+
+    return result[key];
+};
+
+},{}],52:[function(require,module,exports){
+/**
+ * @author Markus Ekholm
+ * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
+ * @license Copyright (c) 2012-2015, Markus Ekholm
+ * All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *    * Redistributions of source code must retain the above copyright
+ *      notice, this list of conditions and the following disclaimer.
+ *    * Redistributions in binary form must reproduce the above copyright
+ *      notice, this list of conditions and the following disclaimer in the
+ *      documentation and/or other materials provided with the distribution.
+ *    * Neither the name of the <organization> nor the
+ *      names of its contributors may be used to endorse or promote products
+ *      derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL MARKUS EKHOLM BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/**
+* EXPORTS
+*/
+exports.map_palette     = map_palette;
+exports.palette_map_key = palette_map_key;
+
+/**
+* IMPORTS
+*/
+var color_diff    = require(50);
+var color_convert = require(49);
+
+/**
+ * API FUNCTIONS
+ */
+
+/**
+* Returns the hash key used for a {rgbcolor} in a {palettemap}
+* @param {rgbcolor} c should have fields R,G,B
+* @return {string}
+*/
+function palette_map_key(c)
+{
+  return "R" + c.R + "B" + c.B + "G" + c.G;
+}
+
+/**
+* Returns a mapping from each color in a to the closest color in b
+* @param [{rgbcolor}] a each element should have fields R,G,B
+* @param [{rgbcolor}] b each element should have fields R,G,B
+* @param 'type' should be the string 'closest' or 'furthest'
+* @return {palettemap}
+*/
+function map_palette(a, b, type)
+{
+  var c = {};
+  type = type || 'closest';
+  for (var idx1 = 0; idx1 < a.length; idx1 += 1){
+    var color1 = a[idx1];
+    var best_color      = undefined;
+    var best_color_diff = undefined;
+    for (var idx2 = 0; idx2 < b.length; idx2 += 1)
+    {
+      var color2 = b[idx2];
+      var current_color_diff = diff(color1,color2);
+
+      if((best_color == undefined) || ((type === 'closest') && (current_color_diff < best_color_diff)))
+      {
+        best_color      = color2;
+        best_color_diff = current_color_diff;
+        continue;
+      }
+      if((type === 'furthest') && (current_color_diff > best_color_diff))
+      {
+        best_color      = color2;
+        best_color_diff = current_color_diff;
+        continue;
+      }
+    }
+    c[palette_map_key(color1)] = best_color;
+  }
+  return c;
+}
+
+/**
+ * INTERNAL FUNCTIONS
+ */
+
+function diff(c1,c2)
+{
+  c1 = color_convert.rgb_to_lab(c1);
+  c2 = color_convert.rgb_to_lab(c2);
+  return color_diff.ciede2000(c1,c2);
+}
+
+// Local Variables:
+// allout-layout: t
+// js-indent-level: 2
+// End:
+
+},{}],53:[function(require,module,exports){
+(function (process){
+'use strict';
+var argv = process.argv;
+
+module.exports = (function () {
+	if (argv.indexOf('--no-color') !== -1 ||
+		argv.indexOf('--no-colors') !== -1 ||
+		argv.indexOf('--color=false') !== -1) {
+		return false;
+	}
+
+	if (argv.indexOf('--color') !== -1 ||
+		argv.indexOf('--colors') !== -1 ||
+		argv.indexOf('--color=true') !== -1 ||
+		argv.indexOf('--color=always') !== -1) {
+		return true;
+	}
+
+	if (process.stdout && !process.stdout.isTTY) {
+		return false;
+	}
+
+	if (process.platform === 'win32') {
+		return true;
+	}
+
+	if ('COLORTERM' in process.env) {
+		return true;
+	}
+
+	if (process.env.TERM === 'dumb') {
+		return false;
+	}
+
+	if (/^screen|^xterm|^vt100|color|ansi|cygwin|linux/i.test(process.env.TERM)) {
+		return true;
+	}
+
+	return false;
+})();
+
+}).call(this,require(30))
+},{}],54:[function(require,module,exports){
 (function (process,global){
 /* @preserve
  * The MIT License (MIT)
@@ -11551,3761 +15305,5 @@ module.exports = ret;
 },{"./es5.js":14}]},{},[4])(4)
 });                    ;if (typeof window !== 'undefined' && window !== null) {                               window.P = window.Promise;                                                     } else if (typeof self !== 'undefined' && self !== null) {                             self.P = self.Promise;                                                         }
 }).call(this,require(30),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],26:[function(require,module,exports){
-/*!
- * The buffer module from node.js, for the browser.
- *
- * @author   Feross Aboukhadijeh <feross@feross.org> <http://feross.org>
- * @license  MIT
- */
-
-var base64 = require(27)
-var ieee754 = require(28)
-var isArray = require(29)
-
-exports.Buffer = Buffer
-exports.SlowBuffer = Buffer
-exports.INSPECT_MAX_BYTES = 50
-Buffer.poolSize = 8192 // not used by this implementation
-
-var kMaxLength = 0x3fffffff
-
-/**
- * If `Buffer.TYPED_ARRAY_SUPPORT`:
- *   === true    Use Uint8Array implementation (fastest)
- *   === false   Use Object implementation (most compatible, even IE6)
- *
- * Browsers that support typed arrays are IE 10+, Firefox 4+, Chrome 7+, Safari 5.1+,
- * Opera 11.6+, iOS 4.2+.
- *
- * Note:
- *
- * - Implementation must support adding new properties to `Uint8Array` instances.
- *   Firefox 4-29 lacked support, fixed in Firefox 30+.
- *   See: https://bugzilla.mozilla.org/show_bug.cgi?id=695438.
- *
- *  - Chrome 9-10 is missing the `TypedArray.prototype.subarray` function.
- *
- *  - IE10 has a broken `TypedArray.prototype.subarray` function which returns arrays of
- *    incorrect length in some situations.
- *
- * We detect these buggy browsers and set `Buffer.TYPED_ARRAY_SUPPORT` to `false` so they will
- * get the Object implementation, which is slower but will work correctly.
- */
-Buffer.TYPED_ARRAY_SUPPORT = (function () {
-  try {
-    var buf = new ArrayBuffer(0)
-    var arr = new Uint8Array(buf)
-    arr.foo = function () { return 42 }
-    return 42 === arr.foo() && // typed array instances can be augmented
-        typeof arr.subarray === 'function' && // chrome 9-10 lack `subarray`
-        new Uint8Array(1).subarray(1, 1).byteLength === 0 // ie10 has broken `subarray`
-  } catch (e) {
-    return false
-  }
-})()
-
-/**
- * Class: Buffer
- * =============
- *
- * The Buffer constructor returns instances of `Uint8Array` that are augmented
- * with function properties for all the node `Buffer` API functions. We use
- * `Uint8Array` so that square bracket notation works as expected -- it returns
- * a single octet.
- *
- * By augmenting the instances, we can avoid modifying the `Uint8Array`
- * prototype.
- */
-function Buffer (subject, encoding, noZero) {
-  if (!(this instanceof Buffer))
-    return new Buffer(subject, encoding, noZero)
-
-  var type = typeof subject
-
-  // Find the length
-  var length
-  if (type === 'number')
-    length = subject > 0 ? subject >>> 0 : 0
-  else if (type === 'string') {
-    if (encoding === 'base64')
-      subject = base64clean(subject)
-    length = Buffer.byteLength(subject, encoding)
-  } else if (type === 'object' && subject !== null) { // assume object is array-like
-    if (subject.type === 'Buffer' && isArray(subject.data))
-      subject = subject.data
-    length = +subject.length > 0 ? Math.floor(+subject.length) : 0
-  } else
-    throw new TypeError('must start with number, buffer, array or string')
-
-  if (this.length > kMaxLength)
-    throw new RangeError('Attempt to allocate Buffer larger than maximum ' +
-      'size: 0x' + kMaxLength.toString(16) + ' bytes')
-
-  var buf
-  if (Buffer.TYPED_ARRAY_SUPPORT) {
-    // Preferred: Return an augmented `Uint8Array` instance for best performance
-    buf = Buffer._augment(new Uint8Array(length))
-  } else {
-    // Fallback: Return THIS instance of Buffer (created by `new`)
-    buf = this
-    buf.length = length
-    buf._isBuffer = true
-  }
-
-  var i
-  if (Buffer.TYPED_ARRAY_SUPPORT && typeof subject.byteLength === 'number') {
-    // Speed optimization -- use set if we're copying from a typed array
-    buf._set(subject)
-  } else if (isArrayish(subject)) {
-    // Treat array-ish objects as a byte array
-    if (Buffer.isBuffer(subject)) {
-      for (i = 0; i < length; i++)
-        buf[i] = subject.readUInt8(i)
-    } else {
-      for (i = 0; i < length; i++)
-        buf[i] = ((subject[i] % 256) + 256) % 256
-    }
-  } else if (type === 'string') {
-    buf.write(subject, 0, encoding)
-  } else if (type === 'number' && !Buffer.TYPED_ARRAY_SUPPORT && !noZero) {
-    for (i = 0; i < length; i++) {
-      buf[i] = 0
-    }
-  }
-
-  return buf
-}
-
-Buffer.isBuffer = function (b) {
-  return !!(b != null && b._isBuffer)
-}
-
-Buffer.compare = function (a, b) {
-  if (!Buffer.isBuffer(a) || !Buffer.isBuffer(b))
-    throw new TypeError('Arguments must be Buffers')
-
-  var x = a.length
-  var y = b.length
-  for (var i = 0, len = Math.min(x, y); i < len && a[i] === b[i]; i++) {}
-  if (i !== len) {
-    x = a[i]
-    y = b[i]
-  }
-  if (x < y) return -1
-  if (y < x) return 1
-  return 0
-}
-
-Buffer.isEncoding = function (encoding) {
-  switch (String(encoding).toLowerCase()) {
-    case 'hex':
-    case 'utf8':
-    case 'utf-8':
-    case 'ascii':
-    case 'binary':
-    case 'base64':
-    case 'raw':
-    case 'ucs2':
-    case 'ucs-2':
-    case 'utf16le':
-    case 'utf-16le':
-      return true
-    default:
-      return false
-  }
-}
-
-Buffer.concat = function (list, totalLength) {
-  if (!isArray(list)) throw new TypeError('Usage: Buffer.concat(list[, length])')
-
-  if (list.length === 0) {
-    return new Buffer(0)
-  } else if (list.length === 1) {
-    return list[0]
-  }
-
-  var i
-  if (totalLength === undefined) {
-    totalLength = 0
-    for (i = 0; i < list.length; i++) {
-      totalLength += list[i].length
-    }
-  }
-
-  var buf = new Buffer(totalLength)
-  var pos = 0
-  for (i = 0; i < list.length; i++) {
-    var item = list[i]
-    item.copy(buf, pos)
-    pos += item.length
-  }
-  return buf
-}
-
-Buffer.byteLength = function (str, encoding) {
-  var ret
-  str = str + ''
-  switch (encoding || 'utf8') {
-    case 'ascii':
-    case 'binary':
-    case 'raw':
-      ret = str.length
-      break
-    case 'ucs2':
-    case 'ucs-2':
-    case 'utf16le':
-    case 'utf-16le':
-      ret = str.length * 2
-      break
-    case 'hex':
-      ret = str.length >>> 1
-      break
-    case 'utf8':
-    case 'utf-8':
-      ret = utf8ToBytes(str).length
-      break
-    case 'base64':
-      ret = base64ToBytes(str).length
-      break
-    default:
-      ret = str.length
-  }
-  return ret
-}
-
-// pre-set for values that may exist in the future
-Buffer.prototype.length = undefined
-Buffer.prototype.parent = undefined
-
-// toString(encoding, start=0, end=buffer.length)
-Buffer.prototype.toString = function (encoding, start, end) {
-  var loweredCase = false
-
-  start = start >>> 0
-  end = end === undefined || end === Infinity ? this.length : end >>> 0
-
-  if (!encoding) encoding = 'utf8'
-  if (start < 0) start = 0
-  if (end > this.length) end = this.length
-  if (end <= start) return ''
-
-  while (true) {
-    switch (encoding) {
-      case 'hex':
-        return hexSlice(this, start, end)
-
-      case 'utf8':
-      case 'utf-8':
-        return utf8Slice(this, start, end)
-
-      case 'ascii':
-        return asciiSlice(this, start, end)
-
-      case 'binary':
-        return binarySlice(this, start, end)
-
-      case 'base64':
-        return base64Slice(this, start, end)
-
-      case 'ucs2':
-      case 'ucs-2':
-      case 'utf16le':
-      case 'utf-16le':
-        return utf16leSlice(this, start, end)
-
-      default:
-        if (loweredCase)
-          throw new TypeError('Unknown encoding: ' + encoding)
-        encoding = (encoding + '').toLowerCase()
-        loweredCase = true
-    }
-  }
-}
-
-Buffer.prototype.equals = function (b) {
-  if(!Buffer.isBuffer(b)) throw new TypeError('Argument must be a Buffer')
-  return Buffer.compare(this, b) === 0
-}
-
-Buffer.prototype.inspect = function () {
-  var str = ''
-  var max = exports.INSPECT_MAX_BYTES
-  if (this.length > 0) {
-    str = this.toString('hex', 0, max).match(/.{2}/g).join(' ')
-    if (this.length > max)
-      str += ' ... '
-  }
-  return '<Buffer ' + str + '>'
-}
-
-Buffer.prototype.compare = function (b) {
-  if (!Buffer.isBuffer(b)) throw new TypeError('Argument must be a Buffer')
-  return Buffer.compare(this, b)
-}
-
-// `get` will be removed in Node 0.13+
-Buffer.prototype.get = function (offset) {
-  console.log('.get() is deprecated. Access using array indexes instead.')
-  return this.readUInt8(offset)
-}
-
-// `set` will be removed in Node 0.13+
-Buffer.prototype.set = function (v, offset) {
-  console.log('.set() is deprecated. Access using array indexes instead.')
-  return this.writeUInt8(v, offset)
-}
-
-function hexWrite (buf, string, offset, length) {
-  offset = Number(offset) || 0
-  var remaining = buf.length - offset
-  if (!length) {
-    length = remaining
-  } else {
-    length = Number(length)
-    if (length > remaining) {
-      length = remaining
-    }
-  }
-
-  // must be an even number of digits
-  var strLen = string.length
-  if (strLen % 2 !== 0) throw new Error('Invalid hex string')
-
-  if (length > strLen / 2) {
-    length = strLen / 2
-  }
-  for (var i = 0; i < length; i++) {
-    var byte = parseInt(string.substr(i * 2, 2), 16)
-    if (isNaN(byte)) throw new Error('Invalid hex string')
-    buf[offset + i] = byte
-  }
-  return i
-}
-
-function utf8Write (buf, string, offset, length) {
-  var charsWritten = blitBuffer(utf8ToBytes(string), buf, offset, length)
-  return charsWritten
-}
-
-function asciiWrite (buf, string, offset, length) {
-  var charsWritten = blitBuffer(asciiToBytes(string), buf, offset, length)
-  return charsWritten
-}
-
-function binaryWrite (buf, string, offset, length) {
-  return asciiWrite(buf, string, offset, length)
-}
-
-function base64Write (buf, string, offset, length) {
-  var charsWritten = blitBuffer(base64ToBytes(string), buf, offset, length)
-  return charsWritten
-}
-
-function utf16leWrite (buf, string, offset, length) {
-  var charsWritten = blitBuffer(utf16leToBytes(string), buf, offset, length, 2)
-  return charsWritten
-}
-
-Buffer.prototype.write = function (string, offset, length, encoding) {
-  // Support both (string, offset, length, encoding)
-  // and the legacy (string, encoding, offset, length)
-  if (isFinite(offset)) {
-    if (!isFinite(length)) {
-      encoding = length
-      length = undefined
-    }
-  } else {  // legacy
-    var swap = encoding
-    encoding = offset
-    offset = length
-    length = swap
-  }
-
-  offset = Number(offset) || 0
-  var remaining = this.length - offset
-  if (!length) {
-    length = remaining
-  } else {
-    length = Number(length)
-    if (length > remaining) {
-      length = remaining
-    }
-  }
-  encoding = String(encoding || 'utf8').toLowerCase()
-
-  var ret
-  switch (encoding) {
-    case 'hex':
-      ret = hexWrite(this, string, offset, length)
-      break
-    case 'utf8':
-    case 'utf-8':
-      ret = utf8Write(this, string, offset, length)
-      break
-    case 'ascii':
-      ret = asciiWrite(this, string, offset, length)
-      break
-    case 'binary':
-      ret = binaryWrite(this, string, offset, length)
-      break
-    case 'base64':
-      ret = base64Write(this, string, offset, length)
-      break
-    case 'ucs2':
-    case 'ucs-2':
-    case 'utf16le':
-    case 'utf-16le':
-      ret = utf16leWrite(this, string, offset, length)
-      break
-    default:
-      throw new TypeError('Unknown encoding: ' + encoding)
-  }
-  return ret
-}
-
-Buffer.prototype.toJSON = function () {
-  return {
-    type: 'Buffer',
-    data: Array.prototype.slice.call(this._arr || this, 0)
-  }
-}
-
-function base64Slice (buf, start, end) {
-  if (start === 0 && end === buf.length) {
-    return base64.fromByteArray(buf)
-  } else {
-    return base64.fromByteArray(buf.slice(start, end))
-  }
-}
-
-function utf8Slice (buf, start, end) {
-  var res = ''
-  var tmp = ''
-  end = Math.min(buf.length, end)
-
-  for (var i = start; i < end; i++) {
-    if (buf[i] <= 0x7F) {
-      res += decodeUtf8Char(tmp) + String.fromCharCode(buf[i])
-      tmp = ''
-    } else {
-      tmp += '%' + buf[i].toString(16)
-    }
-  }
-
-  return res + decodeUtf8Char(tmp)
-}
-
-function asciiSlice (buf, start, end) {
-  var ret = ''
-  end = Math.min(buf.length, end)
-
-  for (var i = start; i < end; i++) {
-    ret += String.fromCharCode(buf[i])
-  }
-  return ret
-}
-
-function binarySlice (buf, start, end) {
-  return asciiSlice(buf, start, end)
-}
-
-function hexSlice (buf, start, end) {
-  var len = buf.length
-
-  if (!start || start < 0) start = 0
-  if (!end || end < 0 || end > len) end = len
-
-  var out = ''
-  for (var i = start; i < end; i++) {
-    out += toHex(buf[i])
-  }
-  return out
-}
-
-function utf16leSlice (buf, start, end) {
-  var bytes = buf.slice(start, end)
-  var res = ''
-  for (var i = 0; i < bytes.length; i += 2) {
-    res += String.fromCharCode(bytes[i] + bytes[i + 1] * 256)
-  }
-  return res
-}
-
-Buffer.prototype.slice = function (start, end) {
-  var len = this.length
-  start = ~~start
-  end = end === undefined ? len : ~~end
-
-  if (start < 0) {
-    start += len;
-    if (start < 0)
-      start = 0
-  } else if (start > len) {
-    start = len
-  }
-
-  if (end < 0) {
-    end += len
-    if (end < 0)
-      end = 0
-  } else if (end > len) {
-    end = len
-  }
-
-  if (end < start)
-    end = start
-
-  if (Buffer.TYPED_ARRAY_SUPPORT) {
-    return Buffer._augment(this.subarray(start, end))
-  } else {
-    var sliceLen = end - start
-    var newBuf = new Buffer(sliceLen, undefined, true)
-    for (var i = 0; i < sliceLen; i++) {
-      newBuf[i] = this[i + start]
-    }
-    return newBuf
-  }
-}
-
-/*
- * Need to make sure that buffer isn't trying to write out of bounds.
- */
-function checkOffset (offset, ext, length) {
-  if ((offset % 1) !== 0 || offset < 0)
-    throw new RangeError('offset is not uint')
-  if (offset + ext > length)
-    throw new RangeError('Trying to access beyond buffer length')
-}
-
-Buffer.prototype.readUInt8 = function (offset, noAssert) {
-  if (!noAssert)
-    checkOffset(offset, 1, this.length)
-  return this[offset]
-}
-
-Buffer.prototype.readUInt16LE = function (offset, noAssert) {
-  if (!noAssert)
-    checkOffset(offset, 2, this.length)
-  return this[offset] | (this[offset + 1] << 8)
-}
-
-Buffer.prototype.readUInt16BE = function (offset, noAssert) {
-  if (!noAssert)
-    checkOffset(offset, 2, this.length)
-  return (this[offset] << 8) | this[offset + 1]
-}
-
-Buffer.prototype.readUInt32LE = function (offset, noAssert) {
-  if (!noAssert)
-    checkOffset(offset, 4, this.length)
-
-  return ((this[offset]) |
-      (this[offset + 1] << 8) |
-      (this[offset + 2] << 16)) +
-      (this[offset + 3] * 0x1000000)
-}
-
-Buffer.prototype.readUInt32BE = function (offset, noAssert) {
-  if (!noAssert)
-    checkOffset(offset, 4, this.length)
-
-  return (this[offset] * 0x1000000) +
-      ((this[offset + 1] << 16) |
-      (this[offset + 2] << 8) |
-      this[offset + 3])
-}
-
-Buffer.prototype.readInt8 = function (offset, noAssert) {
-  if (!noAssert)
-    checkOffset(offset, 1, this.length)
-  if (!(this[offset] & 0x80))
-    return (this[offset])
-  return ((0xff - this[offset] + 1) * -1)
-}
-
-Buffer.prototype.readInt16LE = function (offset, noAssert) {
-  if (!noAssert)
-    checkOffset(offset, 2, this.length)
-  var val = this[offset] | (this[offset + 1] << 8)
-  return (val & 0x8000) ? val | 0xFFFF0000 : val
-}
-
-Buffer.prototype.readInt16BE = function (offset, noAssert) {
-  if (!noAssert)
-    checkOffset(offset, 2, this.length)
-  var val = this[offset + 1] | (this[offset] << 8)
-  return (val & 0x8000) ? val | 0xFFFF0000 : val
-}
-
-Buffer.prototype.readInt32LE = function (offset, noAssert) {
-  if (!noAssert)
-    checkOffset(offset, 4, this.length)
-
-  return (this[offset]) |
-      (this[offset + 1] << 8) |
-      (this[offset + 2] << 16) |
-      (this[offset + 3] << 24)
-}
-
-Buffer.prototype.readInt32BE = function (offset, noAssert) {
-  if (!noAssert)
-    checkOffset(offset, 4, this.length)
-
-  return (this[offset] << 24) |
-      (this[offset + 1] << 16) |
-      (this[offset + 2] << 8) |
-      (this[offset + 3])
-}
-
-Buffer.prototype.readFloatLE = function (offset, noAssert) {
-  if (!noAssert)
-    checkOffset(offset, 4, this.length)
-  return ieee754.read(this, offset, true, 23, 4)
-}
-
-Buffer.prototype.readFloatBE = function (offset, noAssert) {
-  if (!noAssert)
-    checkOffset(offset, 4, this.length)
-  return ieee754.read(this, offset, false, 23, 4)
-}
-
-Buffer.prototype.readDoubleLE = function (offset, noAssert) {
-  if (!noAssert)
-    checkOffset(offset, 8, this.length)
-  return ieee754.read(this, offset, true, 52, 8)
-}
-
-Buffer.prototype.readDoubleBE = function (offset, noAssert) {
-  if (!noAssert)
-    checkOffset(offset, 8, this.length)
-  return ieee754.read(this, offset, false, 52, 8)
-}
-
-function checkInt (buf, value, offset, ext, max, min) {
-  if (!Buffer.isBuffer(buf)) throw new TypeError('buffer must be a Buffer instance')
-  if (value > max || value < min) throw new TypeError('value is out of bounds')
-  if (offset + ext > buf.length) throw new TypeError('index out of range')
-}
-
-Buffer.prototype.writeUInt8 = function (value, offset, noAssert) {
-  value = +value
-  offset = offset >>> 0
-  if (!noAssert)
-    checkInt(this, value, offset, 1, 0xff, 0)
-  if (!Buffer.TYPED_ARRAY_SUPPORT) value = Math.floor(value)
-  this[offset] = value
-  return offset + 1
-}
-
-function objectWriteUInt16 (buf, value, offset, littleEndian) {
-  if (value < 0) value = 0xffff + value + 1
-  for (var i = 0, j = Math.min(buf.length - offset, 2); i < j; i++) {
-    buf[offset + i] = (value & (0xff << (8 * (littleEndian ? i : 1 - i)))) >>>
-      (littleEndian ? i : 1 - i) * 8
-  }
-}
-
-Buffer.prototype.writeUInt16LE = function (value, offset, noAssert) {
-  value = +value
-  offset = offset >>> 0
-  if (!noAssert)
-    checkInt(this, value, offset, 2, 0xffff, 0)
-  if (Buffer.TYPED_ARRAY_SUPPORT) {
-    this[offset] = value
-    this[offset + 1] = (value >>> 8)
-  } else objectWriteUInt16(this, value, offset, true)
-  return offset + 2
-}
-
-Buffer.prototype.writeUInt16BE = function (value, offset, noAssert) {
-  value = +value
-  offset = offset >>> 0
-  if (!noAssert)
-    checkInt(this, value, offset, 2, 0xffff, 0)
-  if (Buffer.TYPED_ARRAY_SUPPORT) {
-    this[offset] = (value >>> 8)
-    this[offset + 1] = value
-  } else objectWriteUInt16(this, value, offset, false)
-  return offset + 2
-}
-
-function objectWriteUInt32 (buf, value, offset, littleEndian) {
-  if (value < 0) value = 0xffffffff + value + 1
-  for (var i = 0, j = Math.min(buf.length - offset, 4); i < j; i++) {
-    buf[offset + i] = (value >>> (littleEndian ? i : 3 - i) * 8) & 0xff
-  }
-}
-
-Buffer.prototype.writeUInt32LE = function (value, offset, noAssert) {
-  value = +value
-  offset = offset >>> 0
-  if (!noAssert)
-    checkInt(this, value, offset, 4, 0xffffffff, 0)
-  if (Buffer.TYPED_ARRAY_SUPPORT) {
-    this[offset + 3] = (value >>> 24)
-    this[offset + 2] = (value >>> 16)
-    this[offset + 1] = (value >>> 8)
-    this[offset] = value
-  } else objectWriteUInt32(this, value, offset, true)
-  return offset + 4
-}
-
-Buffer.prototype.writeUInt32BE = function (value, offset, noAssert) {
-  value = +value
-  offset = offset >>> 0
-  if (!noAssert)
-    checkInt(this, value, offset, 4, 0xffffffff, 0)
-  if (Buffer.TYPED_ARRAY_SUPPORT) {
-    this[offset] = (value >>> 24)
-    this[offset + 1] = (value >>> 16)
-    this[offset + 2] = (value >>> 8)
-    this[offset + 3] = value
-  } else objectWriteUInt32(this, value, offset, false)
-  return offset + 4
-}
-
-Buffer.prototype.writeInt8 = function (value, offset, noAssert) {
-  value = +value
-  offset = offset >>> 0
-  if (!noAssert)
-    checkInt(this, value, offset, 1, 0x7f, -0x80)
-  if (!Buffer.TYPED_ARRAY_SUPPORT) value = Math.floor(value)
-  if (value < 0) value = 0xff + value + 1
-  this[offset] = value
-  return offset + 1
-}
-
-Buffer.prototype.writeInt16LE = function (value, offset, noAssert) {
-  value = +value
-  offset = offset >>> 0
-  if (!noAssert)
-    checkInt(this, value, offset, 2, 0x7fff, -0x8000)
-  if (Buffer.TYPED_ARRAY_SUPPORT) {
-    this[offset] = value
-    this[offset + 1] = (value >>> 8)
-  } else objectWriteUInt16(this, value, offset, true)
-  return offset + 2
-}
-
-Buffer.prototype.writeInt16BE = function (value, offset, noAssert) {
-  value = +value
-  offset = offset >>> 0
-  if (!noAssert)
-    checkInt(this, value, offset, 2, 0x7fff, -0x8000)
-  if (Buffer.TYPED_ARRAY_SUPPORT) {
-    this[offset] = (value >>> 8)
-    this[offset + 1] = value
-  } else objectWriteUInt16(this, value, offset, false)
-  return offset + 2
-}
-
-Buffer.prototype.writeInt32LE = function (value, offset, noAssert) {
-  value = +value
-  offset = offset >>> 0
-  if (!noAssert)
-    checkInt(this, value, offset, 4, 0x7fffffff, -0x80000000)
-  if (Buffer.TYPED_ARRAY_SUPPORT) {
-    this[offset] = value
-    this[offset + 1] = (value >>> 8)
-    this[offset + 2] = (value >>> 16)
-    this[offset + 3] = (value >>> 24)
-  } else objectWriteUInt32(this, value, offset, true)
-  return offset + 4
-}
-
-Buffer.prototype.writeInt32BE = function (value, offset, noAssert) {
-  value = +value
-  offset = offset >>> 0
-  if (!noAssert)
-    checkInt(this, value, offset, 4, 0x7fffffff, -0x80000000)
-  if (value < 0) value = 0xffffffff + value + 1
-  if (Buffer.TYPED_ARRAY_SUPPORT) {
-    this[offset] = (value >>> 24)
-    this[offset + 1] = (value >>> 16)
-    this[offset + 2] = (value >>> 8)
-    this[offset + 3] = value
-  } else objectWriteUInt32(this, value, offset, false)
-  return offset + 4
-}
-
-function checkIEEE754 (buf, value, offset, ext, max, min) {
-  if (value > max || value < min) throw new TypeError('value is out of bounds')
-  if (offset + ext > buf.length) throw new TypeError('index out of range')
-}
-
-function writeFloat (buf, value, offset, littleEndian, noAssert) {
-  if (!noAssert)
-    checkIEEE754(buf, value, offset, 4, 3.4028234663852886e+38, -3.4028234663852886e+38)
-  ieee754.write(buf, value, offset, littleEndian, 23, 4)
-  return offset + 4
-}
-
-Buffer.prototype.writeFloatLE = function (value, offset, noAssert) {
-  return writeFloat(this, value, offset, true, noAssert)
-}
-
-Buffer.prototype.writeFloatBE = function (value, offset, noAssert) {
-  return writeFloat(this, value, offset, false, noAssert)
-}
-
-function writeDouble (buf, value, offset, littleEndian, noAssert) {
-  if (!noAssert)
-    checkIEEE754(buf, value, offset, 8, 1.7976931348623157E+308, -1.7976931348623157E+308)
-  ieee754.write(buf, value, offset, littleEndian, 52, 8)
-  return offset + 8
-}
-
-Buffer.prototype.writeDoubleLE = function (value, offset, noAssert) {
-  return writeDouble(this, value, offset, true, noAssert)
-}
-
-Buffer.prototype.writeDoubleBE = function (value, offset, noAssert) {
-  return writeDouble(this, value, offset, false, noAssert)
-}
-
-// copy(targetBuffer, targetStart=0, sourceStart=0, sourceEnd=buffer.length)
-Buffer.prototype.copy = function (target, target_start, start, end) {
-  var source = this
-
-  if (!start) start = 0
-  if (!end && end !== 0) end = this.length
-  if (!target_start) target_start = 0
-
-  // Copy 0 bytes; we're done
-  if (end === start) return
-  if (target.length === 0 || source.length === 0) return
-
-  // Fatal error conditions
-  if (end < start) throw new TypeError('sourceEnd < sourceStart')
-  if (target_start < 0 || target_start >= target.length)
-    throw new TypeError('targetStart out of bounds')
-  if (start < 0 || start >= source.length) throw new TypeError('sourceStart out of bounds')
-  if (end < 0 || end > source.length) throw new TypeError('sourceEnd out of bounds')
-
-  // Are we oob?
-  if (end > this.length)
-    end = this.length
-  if (target.length - target_start < end - start)
-    end = target.length - target_start + start
-
-  var len = end - start
-
-  if (len < 1000 || !Buffer.TYPED_ARRAY_SUPPORT) {
-    for (var i = 0; i < len; i++) {
-      target[i + target_start] = this[i + start]
-    }
-  } else {
-    target._set(this.subarray(start, start + len), target_start)
-  }
-}
-
-// fill(value, start=0, end=buffer.length)
-Buffer.prototype.fill = function (value, start, end) {
-  if (!value) value = 0
-  if (!start) start = 0
-  if (!end) end = this.length
-
-  if (end < start) throw new TypeError('end < start')
-
-  // Fill 0 bytes; we're done
-  if (end === start) return
-  if (this.length === 0) return
-
-  if (start < 0 || start >= this.length) throw new TypeError('start out of bounds')
-  if (end < 0 || end > this.length) throw new TypeError('end out of bounds')
-
-  var i
-  if (typeof value === 'number') {
-    for (i = start; i < end; i++) {
-      this[i] = value
-    }
-  } else {
-    var bytes = utf8ToBytes(value.toString())
-    var len = bytes.length
-    for (i = start; i < end; i++) {
-      this[i] = bytes[i % len]
-    }
-  }
-
-  return this
-}
-
-/**
- * Creates a new `ArrayBuffer` with the *copied* memory of the buffer instance.
- * Added in Node 0.12. Only available in browsers that support ArrayBuffer.
- */
-Buffer.prototype.toArrayBuffer = function () {
-  if (typeof Uint8Array !== 'undefined') {
-    if (Buffer.TYPED_ARRAY_SUPPORT) {
-      return (new Buffer(this)).buffer
-    } else {
-      var buf = new Uint8Array(this.length)
-      for (var i = 0, len = buf.length; i < len; i += 1) {
-        buf[i] = this[i]
-      }
-      return buf.buffer
-    }
-  } else {
-    throw new TypeError('Buffer.toArrayBuffer not supported in this browser')
-  }
-}
-
-// HELPER FUNCTIONS
-// ================
-
-var BP = Buffer.prototype
-
-/**
- * Augment a Uint8Array *instance* (not the Uint8Array class!) with Buffer methods
- */
-Buffer._augment = function (arr) {
-  arr.constructor = Buffer
-  arr._isBuffer = true
-
-  // save reference to original Uint8Array get/set methods before overwriting
-  arr._get = arr.get
-  arr._set = arr.set
-
-  // deprecated, will be removed in node 0.13+
-  arr.get = BP.get
-  arr.set = BP.set
-
-  arr.write = BP.write
-  arr.toString = BP.toString
-  arr.toLocaleString = BP.toString
-  arr.toJSON = BP.toJSON
-  arr.equals = BP.equals
-  arr.compare = BP.compare
-  arr.copy = BP.copy
-  arr.slice = BP.slice
-  arr.readUInt8 = BP.readUInt8
-  arr.readUInt16LE = BP.readUInt16LE
-  arr.readUInt16BE = BP.readUInt16BE
-  arr.readUInt32LE = BP.readUInt32LE
-  arr.readUInt32BE = BP.readUInt32BE
-  arr.readInt8 = BP.readInt8
-  arr.readInt16LE = BP.readInt16LE
-  arr.readInt16BE = BP.readInt16BE
-  arr.readInt32LE = BP.readInt32LE
-  arr.readInt32BE = BP.readInt32BE
-  arr.readFloatLE = BP.readFloatLE
-  arr.readFloatBE = BP.readFloatBE
-  arr.readDoubleLE = BP.readDoubleLE
-  arr.readDoubleBE = BP.readDoubleBE
-  arr.writeUInt8 = BP.writeUInt8
-  arr.writeUInt16LE = BP.writeUInt16LE
-  arr.writeUInt16BE = BP.writeUInt16BE
-  arr.writeUInt32LE = BP.writeUInt32LE
-  arr.writeUInt32BE = BP.writeUInt32BE
-  arr.writeInt8 = BP.writeInt8
-  arr.writeInt16LE = BP.writeInt16LE
-  arr.writeInt16BE = BP.writeInt16BE
-  arr.writeInt32LE = BP.writeInt32LE
-  arr.writeInt32BE = BP.writeInt32BE
-  arr.writeFloatLE = BP.writeFloatLE
-  arr.writeFloatBE = BP.writeFloatBE
-  arr.writeDoubleLE = BP.writeDoubleLE
-  arr.writeDoubleBE = BP.writeDoubleBE
-  arr.fill = BP.fill
-  arr.inspect = BP.inspect
-  arr.toArrayBuffer = BP.toArrayBuffer
-
-  return arr
-}
-
-var INVALID_BASE64_RE = /[^+\/0-9A-z]/g
-
-function base64clean (str) {
-  // Node strips out invalid characters like \n and \t from the string, base64-js does not
-  str = stringtrim(str).replace(INVALID_BASE64_RE, '')
-  // Node allows for non-padded base64 strings (missing trailing ===), base64-js does not
-  while (str.length % 4 !== 0) {
-    str = str + '='
-  }
-  return str
-}
-
-function stringtrim (str) {
-  if (str.trim) return str.trim()
-  return str.replace(/^\s+|\s+$/g, '')
-}
-
-function isArrayish (subject) {
-  return isArray(subject) || Buffer.isBuffer(subject) ||
-      subject && typeof subject === 'object' &&
-      typeof subject.length === 'number'
-}
-
-function toHex (n) {
-  if (n < 16) return '0' + n.toString(16)
-  return n.toString(16)
-}
-
-function utf8ToBytes (str) {
-  var byteArray = []
-  for (var i = 0; i < str.length; i++) {
-    var b = str.charCodeAt(i)
-    if (b <= 0x7F) {
-      byteArray.push(b)
-    } else {
-      var start = i
-      if (b >= 0xD800 && b <= 0xDFFF) i++
-      var h = encodeURIComponent(str.slice(start, i+1)).substr(1).split('%')
-      for (var j = 0; j < h.length; j++) {
-        byteArray.push(parseInt(h[j], 16))
-      }
-    }
-  }
-  return byteArray
-}
-
-function asciiToBytes (str) {
-  var byteArray = []
-  for (var i = 0; i < str.length; i++) {
-    // Node's code seems to be doing this and not & 0x7F..
-    byteArray.push(str.charCodeAt(i) & 0xFF)
-  }
-  return byteArray
-}
-
-function utf16leToBytes (str) {
-  var c, hi, lo
-  var byteArray = []
-  for (var i = 0; i < str.length; i++) {
-    c = str.charCodeAt(i)
-    hi = c >> 8
-    lo = c % 256
-    byteArray.push(lo)
-    byteArray.push(hi)
-  }
-
-  return byteArray
-}
-
-function base64ToBytes (str) {
-  return base64.toByteArray(str)
-}
-
-function blitBuffer (src, dst, offset, length, unitSize) {
-  if (unitSize) length -= length % unitSize;
-  for (var i = 0; i < length; i++) {
-    if ((i + offset >= dst.length) || (i >= src.length))
-      break
-    dst[i + offset] = src[i]
-  }
-  return i
-}
-
-function decodeUtf8Char (str) {
-  try {
-    return decodeURIComponent(str)
-  } catch (err) {
-    return String.fromCharCode(0xFFFD) // UTF 8 invalid char
-  }
-}
-
-},{}],27:[function(require,module,exports){
-var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-
-;(function (exports) {
-	'use strict';
-
-  var Arr = (typeof Uint8Array !== 'undefined')
-    ? Uint8Array
-    : Array
-
-	var PLUS   = '+'.charCodeAt(0)
-	var SLASH  = '/'.charCodeAt(0)
-	var NUMBER = '0'.charCodeAt(0)
-	var LOWER  = 'a'.charCodeAt(0)
-	var UPPER  = 'A'.charCodeAt(0)
-
-	function decode (elt) {
-		var code = elt.charCodeAt(0)
-		if (code === PLUS)
-			return 62 // '+'
-		if (code === SLASH)
-			return 63 // '/'
-		if (code < NUMBER)
-			return -1 //no match
-		if (code < NUMBER + 10)
-			return code - NUMBER + 26 + 26
-		if (code < UPPER + 26)
-			return code - UPPER
-		if (code < LOWER + 26)
-			return code - LOWER + 26
-	}
-
-	function b64ToByteArray (b64) {
-		var i, j, l, tmp, placeHolders, arr
-
-		if (b64.length % 4 > 0) {
-			throw new Error('Invalid string. Length must be a multiple of 4')
-		}
-
-		// the number of equal signs (place holders)
-		// if there are two placeholders, than the two characters before it
-		// represent one byte
-		// if there is only one, then the three characters before it represent 2 bytes
-		// this is just a cheap hack to not do indexOf twice
-		var len = b64.length
-		placeHolders = '=' === b64.charAt(len - 2) ? 2 : '=' === b64.charAt(len - 1) ? 1 : 0
-
-		// base64 is 4/3 + up to two characters of the original data
-		arr = new Arr(b64.length * 3 / 4 - placeHolders)
-
-		// if there are placeholders, only get up to the last complete 4 chars
-		l = placeHolders > 0 ? b64.length - 4 : b64.length
-
-		var L = 0
-
-		function push (v) {
-			arr[L++] = v
-		}
-
-		for (i = 0, j = 0; i < l; i += 4, j += 3) {
-			tmp = (decode(b64.charAt(i)) << 18) | (decode(b64.charAt(i + 1)) << 12) | (decode(b64.charAt(i + 2)) << 6) | decode(b64.charAt(i + 3))
-			push((tmp & 0xFF0000) >> 16)
-			push((tmp & 0xFF00) >> 8)
-			push(tmp & 0xFF)
-		}
-
-		if (placeHolders === 2) {
-			tmp = (decode(b64.charAt(i)) << 2) | (decode(b64.charAt(i + 1)) >> 4)
-			push(tmp & 0xFF)
-		} else if (placeHolders === 1) {
-			tmp = (decode(b64.charAt(i)) << 10) | (decode(b64.charAt(i + 1)) << 4) | (decode(b64.charAt(i + 2)) >> 2)
-			push((tmp >> 8) & 0xFF)
-			push(tmp & 0xFF)
-		}
-
-		return arr
-	}
-
-	function uint8ToBase64 (uint8) {
-		var i,
-			extraBytes = uint8.length % 3, // if we have 1 byte left, pad 2 bytes
-			output = "",
-			temp, length
-
-		function encode (num) {
-			return lookup.charAt(num)
-		}
-
-		function tripletToBase64 (num) {
-			return encode(num >> 18 & 0x3F) + encode(num >> 12 & 0x3F) + encode(num >> 6 & 0x3F) + encode(num & 0x3F)
-		}
-
-		// go through the array every three bytes, we'll deal with trailing stuff later
-		for (i = 0, length = uint8.length - extraBytes; i < length; i += 3) {
-			temp = (uint8[i] << 16) + (uint8[i + 1] << 8) + (uint8[i + 2])
-			output += tripletToBase64(temp)
-		}
-
-		// pad the end with zeros, but make sure to not forget the extra bytes
-		switch (extraBytes) {
-			case 1:
-				temp = uint8[uint8.length - 1]
-				output += encode(temp >> 2)
-				output += encode((temp << 4) & 0x3F)
-				output += '=='
-				break
-			case 2:
-				temp = (uint8[uint8.length - 2] << 8) + (uint8[uint8.length - 1])
-				output += encode(temp >> 10)
-				output += encode((temp >> 4) & 0x3F)
-				output += encode((temp << 2) & 0x3F)
-				output += '='
-				break
-		}
-
-		return output
-	}
-
-	exports.toByteArray = b64ToByteArray
-	exports.fromByteArray = uint8ToBase64
-}(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
-
-},{}],28:[function(require,module,exports){
-exports.read = function (buffer, offset, isLE, mLen, nBytes) {
-  var e, m
-  var eLen = nBytes * 8 - mLen - 1
-  var eMax = (1 << eLen) - 1
-  var eBias = eMax >> 1
-  var nBits = -7
-  var i = isLE ? (nBytes - 1) : 0
-  var d = isLE ? -1 : 1
-  var s = buffer[offset + i]
-
-  i += d
-
-  e = s & ((1 << (-nBits)) - 1)
-  s >>= (-nBits)
-  nBits += eLen
-  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}
-
-  m = e & ((1 << (-nBits)) - 1)
-  e >>= (-nBits)
-  nBits += mLen
-  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}
-
-  if (e === 0) {
-    e = 1 - eBias
-  } else if (e === eMax) {
-    return m ? NaN : ((s ? -1 : 1) * Infinity)
-  } else {
-    m = m + Math.pow(2, mLen)
-    e = e - eBias
-  }
-  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
-}
-
-exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
-  var e, m, c
-  var eLen = nBytes * 8 - mLen - 1
-  var eMax = (1 << eLen) - 1
-  var eBias = eMax >> 1
-  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
-  var i = isLE ? 0 : (nBytes - 1)
-  var d = isLE ? 1 : -1
-  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
-
-  value = Math.abs(value)
-
-  if (isNaN(value) || value === Infinity) {
-    m = isNaN(value) ? 1 : 0
-    e = eMax
-  } else {
-    e = Math.floor(Math.log(value) / Math.LN2)
-    if (value * (c = Math.pow(2, -e)) < 1) {
-      e--
-      c *= 2
-    }
-    if (e + eBias >= 1) {
-      value += rt / c
-    } else {
-      value += rt * Math.pow(2, 1 - eBias)
-    }
-    if (value * c >= 2) {
-      e++
-      c /= 2
-    }
-
-    if (e + eBias >= eMax) {
-      m = 0
-      e = eMax
-    } else if (e + eBias >= 1) {
-      m = (value * c - 1) * Math.pow(2, mLen)
-      e = e + eBias
-    } else {
-      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
-      e = 0
-    }
-  }
-
-  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
-
-  e = (e << mLen) | m
-  eLen += mLen
-  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
-
-  buffer[offset + i - d] |= s * 128
-}
-
-},{}],29:[function(require,module,exports){
-
-/**
- * isArray
- */
-
-var isArray = Array.isArray;
-
-/**
- * toString
- */
-
-var str = Object.prototype.toString;
-
-/**
- * Whether or not the given `val`
- * is an array.
- *
- * example:
- *
- *        isArray([]);
- *        // > true
- *        isArray(arguments);
- *        // > false
- *        isArray('');
- *        // > false
- *
- * @param {mixed} val
- * @return {bool}
- */
-
-module.exports = isArray || function (val) {
-  return !! val && '[object Array]' == str.call(val);
-};
-
-},{}],30:[function(require,module,exports){
-// shim for using process in browser
-
-var process = module.exports = {};
-
-process.nextTick = (function () {
-    var canSetImmediate = typeof window !== 'undefined'
-    && window.setImmediate;
-    var canPost = typeof window !== 'undefined'
-    && window.postMessage && window.addEventListener
-    ;
-
-    if (canSetImmediate) {
-        return function (f) { return window.setImmediate(f) };
-    }
-
-    if (canPost) {
-        var queue = [];
-        window.addEventListener('message', function (ev) {
-            var source = ev.source;
-            if ((source === window || source === null) && ev.data === 'process-tick') {
-                ev.stopPropagation();
-                if (queue.length > 0) {
-                    var fn = queue.shift();
-                    fn();
-                }
-            }
-        }, true);
-
-        return function nextTick(fn) {
-            queue.push(fn);
-            window.postMessage('process-tick', '*');
-        };
-    }
-
-    return function nextTick(fn) {
-        setTimeout(fn, 0);
-    };
-})();
-
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-}
-
-// TODO(shtylman)
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-
-},{}],31:[function(require,module,exports){
-/**
- * @author Markus Ekholm
- * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
- * @license Copyright (c) 2012-2015, Markus Ekholm
- * All rights reserved.
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *    * Redistributions of source code must retain the above copyright
- *      notice, this list of conditions and the following disclaimer.
- *    * Redistributions in binary form must reproduce the above copyright
- *      notice, this list of conditions and the following disclaimer in the
- *      documentation and/or other materials provided with the distribution.
- *    * Neither the name of the <organization> nor the
- *      names of its contributors may be used to endorse or promote products
- *      derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL MARKUS EKHOLM BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/**
-* EXPORTS
-*/
-exports.rgb_to_lab = rgb_to_lab;
-
-/**
-* IMPORTS
-*/
-var pow  = Math.pow;
-var sqrt = Math.sqrt;
-
-/**
- * API FUNCTIONS
- */
-
-/**
-* Returns c converted to labcolor.
-* @param {rgbcolor} c should have fields R,G,B
-* @return {labcolor} c converted to labcolor
-*/
-function rgb_to_lab(c)
-{
-  return xyz_to_lab(rgb_to_xyz(c))
-}
-
-/**
-* Returns c converted to xyzcolor.
-* @param {rgbcolor} c should have fields R,G,B
-* @return {xyzcolor} c converted to xyzcolor
-*/
-function rgb_to_xyz(c)
-{
-  // Based on http://www.easyrgb.com/index.php?X=MATH&H=02
-  var R = ( c.R / 255 );
-  var G = ( c.G / 255 );
-  var B = ( c.B / 255 );
-
-  if ( R > 0.04045 ) R = pow(( ( R + 0.055 ) / 1.055 ),2.4);
-  else               R = R / 12.92;
-  if ( G > 0.04045 ) G = pow(( ( G + 0.055 ) / 1.055 ),2.4);
-  else               G = G / 12.92;
-  if ( B > 0.04045 ) B = pow(( ( B + 0.055 ) / 1.055 ), 2.4);
-  else               B = B / 12.92;
-
-  R *= 100;
-  G *= 100;
-  B *= 100;
-
-  // Observer. = 2°, Illuminant = D65
-  var X = R * 0.4124 + G * 0.3576 + B * 0.1805;
-  var Y = R * 0.2126 + G * 0.7152 + B * 0.0722;
-  var Z = R * 0.0193 + G * 0.1192 + B * 0.9505;
-  return {'X' : X, 'Y' : Y, 'Z' : Z};
-}
-
-/**
-* Returns c converted to labcolor.
-* @param {xyzcolor} c should have fields X,Y,Z
-* @return {labcolor} c converted to labcolor
-*/
-function xyz_to_lab(c)
-{
-  // Based on http://www.easyrgb.com/index.php?X=MATH&H=07
-  var ref_Y = 100.000;
-  var ref_Z = 108.883;
-  var ref_X = 95.047; // Observer= 2°, Illuminant= D65
-  var Y = c.Y / ref_Y;
-  var Z = c.Z / ref_Z;
-  var X = c.X / ref_X;
-  if ( X > 0.008856 ) X = pow(X, 1/3);
-  else                X = ( 7.787 * X ) + ( 16 / 116 );
-  if ( Y > 0.008856 ) Y = pow(Y, 1/3);
-  else                Y = ( 7.787 * Y ) + ( 16 / 116 );
-  if ( Z > 0.008856 ) Z = pow(Z, 1/3);
-  else                Z = ( 7.787 * Z ) + ( 16 / 116 );
-  var L = ( 116 * Y ) - 16;
-  var a = 500 * ( X - Y );
-  var b = 200 * ( Y - Z );
-  return {'L' : L , 'a' : a, 'b' : b};
-}
-
-// Local Variables:
-// allout-layout: t
-// js-indent-level: 2
-// End:
-
-},{}],32:[function(require,module,exports){
-/**
- * @author Markus Ekholm
- * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
- * @license Copyright (c) 2012-2015, Markus Ekholm
- * All rights reserved.
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *    * Redistributions of source code must retain the above copyright
- *      notice, this list of conditions and the following disclaimer.
- *    * Redistributions in binary form must reproduce the above copyright
- *      notice, this list of conditions and the following disclaimer in the
- *      documentation and/or other materials provided with the distribution.
- *    * Neither the name of the <organization> nor the
- *      names of its contributors may be used to endorse or promote products
- *      derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL MARKUS EKHOLM BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/**
-* EXPORTS
-*/
-exports.ciede2000 = ciede2000;
-
-/**
-* IMPORTS
-*/
-var sqrt = Math.sqrt;
-var pow = Math.pow;
-var cos = Math.cos;
-var atan2 = Math.atan2;
-var sin = Math.sin;
-var abs = Math.abs;
-var exp = Math.exp;
-var PI = Math.PI;
-
-/**
- * API FUNCTIONS
- */
-
-/**
-* Returns diff between c1 and c2 using the CIEDE2000 algorithm
-* @param {labcolor} c1    Should have fields L,a,b
-* @param {labcolor} c2    Should have fields L,a,b
-* @return {float}   Difference between c1 and c2
-*/
-function ciede2000(c1,c2)
-{
-  /**
-   * Implemented as in "The CIEDE2000 Color-Difference Formula:
-   * Implementation Notes, Supplementary Test Data, and Mathematical Observations"
-   * by Gaurav Sharma, Wencheng Wu and Edul N. Dalal.
-   */
-
-  // Get L,a,b values for color 1
-  var L1 = c1.L;
-  var a1 = c1.a;
-  var b1 = c1.b;
-
-  // Get L,a,b values for color 2
-  var L2 = c2.L;
-  var a2 = c2.a;
-  var b2 = c2.b;
-
-  // Weight factors
-  var kL = 1;
-  var kC = 1;
-  var kH = 1;
-
-  /**
-   * Step 1: Calculate C1p, C2p, h1p, h2p
-   */
-  var C1 = sqrt(pow(a1, 2) + pow(b1, 2)) //(2)
-  var C2 = sqrt(pow(a2, 2) + pow(b2, 2)) //(2)
-
-  var a_C1_C2 = (C1+C2)/2.0;             //(3)
-
-  var G = 0.5 * (1 - sqrt(pow(a_C1_C2 , 7.0) /
-                          (pow(a_C1_C2, 7.0) + pow(25.0, 7.0)))); //(4)
-
-  var a1p = (1.0 + G) * a1; //(5)
-  var a2p = (1.0 + G) * a2; //(5)
-
-  var C1p = sqrt(pow(a1p, 2) + pow(b1, 2)); //(6)
-  var C2p = sqrt(pow(a2p, 2) + pow(b2, 2)); //(6)
-
-  var hp_f = function(x,y) //(7)
-  {
-    if(x== 0 && y == 0) return 0;
-    else{
-      var tmphp = degrees(atan2(x,y));
-      if(tmphp >= 0) return tmphp
-      else           return tmphp + 360;
-    }
-  }
-
-  var h1p = hp_f(b1, a1p); //(7)
-  var h2p = hp_f(b2, a2p); //(7)
-
-  /**
-   * Step 2: Calculate dLp, dCp, dHp
-   */
-  var dLp = L2 - L1; //(8)
-  var dCp = C2p - C1p; //(9)
-
-  var dhp_f = function(C1, C2, h1p, h2p) //(10)
-  {
-    if(C1*C2 == 0)               return 0;
-    else if(abs(h2p-h1p) <= 180) return h2p-h1p;
-    else if((h2p-h1p) > 180)     return (h2p-h1p)-360;
-    else if((h2p-h1p) < -180)    return (h2p-h1p)+360;
-    else                         throw(new Error());
-  }
-  var dhp = dhp_f(C1,C2, h1p, h2p); //(10)
-  var dHp = 2*sqrt(C1p*C2p)*sin(radians(dhp)/2.0); //(11)
-
-  /**
-   * Step 3: Calculate CIEDE2000 Color-Difference
-   */
-  var a_L = (L1 + L2) / 2.0; //(12)
-  var a_Cp = (C1p + C2p) / 2.0; //(13)
-
-  var a_hp_f = function(C1, C2, h1p, h2p) { //(14)
-    if(C1*C2 == 0)                                      return h1p+h2p
-    else if(abs(h1p-h2p)<= 180)                         return (h1p+h2p)/2.0;
-    else if((abs(h1p-h2p) > 180) && ((h1p+h2p) < 360))  return (h1p+h2p+360)/2.0;
-    else if((abs(h1p-h2p) > 180) && ((h1p+h2p) >= 360)) return (h1p+h2p-360)/2.0;
-    else                                                throw(new Error());
-  }
-  var a_hp = a_hp_f(C1,C2,h1p,h2p); //(14)
-  var T = 1-0.17*cos(radians(a_hp-30))+0.24*cos(radians(2*a_hp))+
-    0.32*cos(radians(3*a_hp+6))-0.20*cos(radians(4*a_hp-63)); //(15)
-  var d_ro = 30 * exp(-(pow((a_hp-275)/25,2))); //(16)
-  var RC = sqrt((pow(a_Cp, 7.0)) / (pow(a_Cp, 7.0) + pow(25.0, 7.0)));//(17)
-  var SL = 1 + ((0.015 * pow(a_L - 50, 2)) /
-                sqrt(20 + pow(a_L - 50, 2.0)));//(18)
-  var SC = 1 + 0.045 * a_Cp;//(19)
-  var SH = 1 + 0.015 * a_Cp * T;//(20)
-  var RT = -2 * RC * sin(radians(2 * d_ro));//(21)
-  var dE = sqrt(pow(dLp /(SL * kL), 2) + pow(dCp /(SC * kC), 2) +
-                pow(dHp /(SH * kH), 2) + RT * (dCp /(SC * kC)) *
-                (dHp / (SH * kH))); //(22)
-  return dE;
-}
-
-/**
- * INTERNAL FUNCTIONS
- */
-function degrees(n) { return n*(180/PI); }
-function radians(n) { return n*(PI/180); }
-
-// Local Variables:
-// allout-layout: t
-// js-indent-level: 2
-// End:
-
-},{}],33:[function(require,module,exports){
-'use strict';
-
-var diff = require(32);
-var convert = require(31);
-var palette = require(34);
-
-var color = module.exports = {};
-
-color.diff             = diff.ciede2000;
-color.rgb_to_lab       = convert.rgb_to_lab;
-color.map_palette      = palette.map_palette;
-color.palette_map_key  = palette.palette_map_key;
-
-color.closest = function(target, relative) {
-    var key = color.palette_map_key(target);
-
-    var result = color.map_palette([target], relative, 'closest');
-
-    return result[key];
-};
-
-color.furthest = function(target, relative) {
-    var key = color.palette_map_key(target);
-
-    var result = color.map_palette([target], relative, 'furthest');
-
-    return result[key];
-};
-
-},{}],34:[function(require,module,exports){
-/**
- * @author Markus Ekholm
- * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
- * @license Copyright (c) 2012-2015, Markus Ekholm
- * All rights reserved.
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *    * Redistributions of source code must retain the above copyright
- *      notice, this list of conditions and the following disclaimer.
- *    * Redistributions in binary form must reproduce the above copyright
- *      notice, this list of conditions and the following disclaimer in the
- *      documentation and/or other materials provided with the distribution.
- *    * Neither the name of the <organization> nor the
- *      names of its contributors may be used to endorse or promote products
- *      derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL MARKUS EKHOLM BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/**
-* EXPORTS
-*/
-exports.map_palette     = map_palette;
-exports.palette_map_key = palette_map_key;
-
-/**
-* IMPORTS
-*/
-var color_diff    = require(32);
-var color_convert = require(31);
-
-/**
- * API FUNCTIONS
- */
-
-/**
-* Returns the hash key used for a {rgbcolor} in a {palettemap}
-* @param {rgbcolor} c should have fields R,G,B
-* @return {string}
-*/
-function palette_map_key(c)
-{
-  return "R" + c.R + "B" + c.B + "G" + c.G;
-}
-
-/**
-* Returns a mapping from each color in a to the closest color in b
-* @param [{rgbcolor}] a each element should have fields R,G,B
-* @param [{rgbcolor}] b each element should have fields R,G,B
-* @param 'type' should be the string 'closest' or 'furthest'
-* @return {palettemap}
-*/
-function map_palette(a, b, type)
-{
-  var c = {};
-  type = type || 'closest';
-  for (var idx1 = 0; idx1 < a.length; idx1 += 1){
-    var color1 = a[idx1];
-    var best_color      = undefined;
-    var best_color_diff = undefined;
-    for (var idx2 = 0; idx2 < b.length; idx2 += 1)
-    {
-      var color2 = b[idx2];
-      var current_color_diff = diff(color1,color2);
-
-      if((best_color == undefined) || ((type === 'closest') && (current_color_diff < best_color_diff)))
-      {
-        best_color      = color2;
-        best_color_diff = current_color_diff;
-        continue;
-      }
-      if((type === 'furthest') && (current_color_diff > best_color_diff))
-      {
-        best_color      = color2;
-        best_color_diff = current_color_diff;
-        continue;
-      }
-    }
-    c[palette_map_key(color1)] = best_color;
-  }
-  return c;
-}
-
-/**
- * INTERNAL FUNCTIONS
- */
-
-function diff(c1,c2)
-{
-  c1 = color_convert.rgb_to_lab(c1);
-  c2 = color_convert.rgb_to_lab(c2);
-  return color_diff.ciede2000(c1,c2);
-}
-
-// Local Variables:
-// allout-layout: t
-// js-indent-level: 2
-// End:
-
-},{}],35:[function(require,module,exports){
-'use strict';
-var repeating = require(51);
-
-// detect either spaces or tabs but not both to properly handle tabs
-// for indentation and spaces for alignment
-var INDENT_RE = /^(?:( )+|\t+)/;
-
-function getMostUsed(indents) {
-	var result = 0;
-	var maxUsed = 0;
-	var maxWeight = 0;
-
-	for (var n in indents) {
-		var indent = indents[n];
-		var u = indent[0];
-		var w = indent[1];
-
-		if (u > maxUsed || u === maxUsed && w > maxWeight) {
-			maxUsed = u;
-			maxWeight = w;
-			result = +n;
-		}
-	}
-
-	return result;
-}
-
-module.exports = function (str) {
-	if (typeof str !== 'string') {
-		throw new TypeError('Expected a string');
-	}
-
-	// used to see if tabs or spaces are the most used
-	var tabs = 0;
-	var spaces = 0;
-
-	// remember the size of previous line's indentation
-	var prev = 0;
-
-	// remember how many indents/unindents as occurred for a given size
-	// and how much lines follow a given indentation
-	//
-	// indents = {
-	//    3: [1, 0],
-	//    4: [1, 5],
-	//    5: [1, 0],
-	//   12: [1, 0],
-	// }
-	var indents = {};
-
-	// pointer to the array of last used indent
-	var current;
-
-	// whether the last action was an indent (opposed to an unindent)
-	var isIndent;
-
-	str.split(/\n/g).forEach(function (line) {
-		if (!line) {
-			// ignore empty lines
-			return;
-		}
-
-		var indent;
-		var matches = line.match(INDENT_RE);
-
-		if (!matches) {
-			indent = 0;
-		} else {
-			indent = matches[0].length;
-
-			if (matches[1]) {
-				spaces++;
-			} else {
-				tabs++;
-			}
-		}
-
-		var diff = indent - prev;
-		prev = indent;
-
-		if (diff) {
-			// an indent or unindent has been detected
-
-			isIndent = diff > 0;
-
-			current = indents[isIndent ? diff : -diff];
-
-			if (current) {
-				current[0]++;
-			} else {
-				current = indents[diff] = [1, 0];
-			}
-		} else if (current) {
-			// if the last action was an indent, increment the weight
-			current[1] += +isIndent;
-		}
-	});
-
-	var amount = getMostUsed(indents);
-
-	var type;
-	var actual;
-	if (!amount) {
-		type = null;
-		actual = '';
-	} else if (spaces >= tabs) {
-		type = 'space';
-		actual = repeating(' ', amount);
-	} else {
-		type = 'tab';
-		actual = repeating('\t', amount);
-	}
-
-	return {
-		amount: amount,
-		type: type,
-		indent: actual
-	};
-};
-
-},{}],36:[function(require,module,exports){
-/* See LICENSE file for terms of use */
-
-/*
- * Text diff implementation.
- *
- * This library supports the following APIS:
- * JsDiff.diffChars: Character by character diff
- * JsDiff.diffWords: Word (as defined by \b regex) diff which ignores whitespace
- * JsDiff.diffLines: Line based diff
- *
- * JsDiff.diffCss: Diff targeted at CSS content
- *
- * These methods are based on the implementation proposed in
- * "An O(ND) Difference Algorithm and its Variations" (Myers, 1986).
- * http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.4.6927
- */
-(function(global, undefined) {
-  var JsDiff = (function() {
-    /*jshint maxparams: 5*/
-    function map(arr, mapper, that) {
-      if (Array.prototype.map) {
-        return Array.prototype.map.call(arr, mapper, that);
-      }
-
-      var other = new Array(arr.length);
-
-      for (var i = 0, n = arr.length; i < n; i++) {
-        other[i] = mapper.call(that, arr[i], i, arr);
-      }
-      return other;
-    }
-    function clonePath(path) {
-      return { newPos: path.newPos, components: path.components.slice(0) };
-    }
-    function removeEmpty(array) {
-      var ret = [];
-      for (var i = 0; i < array.length; i++) {
-        if (array[i]) {
-          ret.push(array[i]);
-        }
-      }
-      return ret;
-    }
-    function escapeHTML(s) {
-      var n = s;
-      n = n.replace(/&/g, '&amp;');
-      n = n.replace(/</g, '&lt;');
-      n = n.replace(/>/g, '&gt;');
-      n = n.replace(/"/g, '&quot;');
-
-      return n;
-    }
-
-    var Diff = function(ignoreWhitespace) {
-      this.ignoreWhitespace = ignoreWhitespace;
-    };
-    Diff.prototype = {
-        diff: function(oldString, newString) {
-          // Handle the identity case (this is due to unrolling editLength == 0
-          if (newString === oldString) {
-            return [{ value: newString }];
-          }
-          if (!newString) {
-            return [{ value: oldString, removed: true }];
-          }
-          if (!oldString) {
-            return [{ value: newString, added: true }];
-          }
-
-          newString = this.tokenize(newString);
-          oldString = this.tokenize(oldString);
-
-          var newLen = newString.length, oldLen = oldString.length;
-          var maxEditLength = newLen + oldLen;
-          var bestPath = [{ newPos: -1, components: [] }];
-
-          // Seed editLength = 0
-          var oldPos = this.extractCommon(bestPath[0], newString, oldString, 0);
-          if (bestPath[0].newPos+1 >= newLen && oldPos+1 >= oldLen) {
-            return bestPath[0].components;
-          }
-
-          for (var editLength = 1; editLength <= maxEditLength; editLength++) {
-            for (var diagonalPath = -1*editLength; diagonalPath <= editLength; diagonalPath+=2) {
-              var basePath;
-              var addPath = bestPath[diagonalPath-1],
-                  removePath = bestPath[diagonalPath+1];
-              oldPos = (removePath ? removePath.newPos : 0) - diagonalPath;
-              if (addPath) {
-                // No one else is going to attempt to use this value, clear it
-                bestPath[diagonalPath-1] = undefined;
-              }
-
-              var canAdd = addPath && addPath.newPos+1 < newLen;
-              var canRemove = removePath && 0 <= oldPos && oldPos < oldLen;
-              if (!canAdd && !canRemove) {
-                bestPath[diagonalPath] = undefined;
-                continue;
-              }
-
-              // Select the diagonal that we want to branch from. We select the prior
-              // path whose position in the new string is the farthest from the origin
-              // and does not pass the bounds of the diff graph
-              if (!canAdd || (canRemove && addPath.newPos < removePath.newPos)) {
-                basePath = clonePath(removePath);
-                this.pushComponent(basePath.components, oldString[oldPos], undefined, true);
-              } else {
-                basePath = clonePath(addPath);
-                basePath.newPos++;
-                this.pushComponent(basePath.components, newString[basePath.newPos], true, undefined);
-              }
-
-              var oldPos = this.extractCommon(basePath, newString, oldString, diagonalPath);
-
-              if (basePath.newPos+1 >= newLen && oldPos+1 >= oldLen) {
-                return basePath.components;
-              } else {
-                bestPath[diagonalPath] = basePath;
-              }
-            }
-          }
-        },
-
-        pushComponent: function(components, value, added, removed) {
-          var last = components[components.length-1];
-          if (last && last.added === added && last.removed === removed) {
-            // We need to clone here as the component clone operation is just
-            // as shallow array clone
-            components[components.length-1] =
-              {value: this.join(last.value, value), added: added, removed: removed };
-          } else {
-            components.push({value: value, added: added, removed: removed });
-          }
-        },
-        extractCommon: function(basePath, newString, oldString, diagonalPath) {
-          var newLen = newString.length,
-              oldLen = oldString.length,
-              newPos = basePath.newPos,
-              oldPos = newPos - diagonalPath;
-          while (newPos+1 < newLen && oldPos+1 < oldLen && this.equals(newString[newPos+1], oldString[oldPos+1])) {
-            newPos++;
-            oldPos++;
-
-            this.pushComponent(basePath.components, newString[newPos], undefined, undefined);
-          }
-          basePath.newPos = newPos;
-          return oldPos;
-        },
-
-        equals: function(left, right) {
-          var reWhitespace = /\S/;
-          if (this.ignoreWhitespace && !reWhitespace.test(left) && !reWhitespace.test(right)) {
-            return true;
-          } else {
-            return left === right;
-          }
-        },
-        join: function(left, right) {
-          return left + right;
-        },
-        tokenize: function(value) {
-          return value;
-        }
-    };
-
-    var CharDiff = new Diff();
-
-    var WordDiff = new Diff(true);
-    var WordWithSpaceDiff = new Diff();
-    WordDiff.tokenize = WordWithSpaceDiff.tokenize = function(value) {
-      return removeEmpty(value.split(/(\s+|\b)/));
-    };
-
-    var CssDiff = new Diff(true);
-    CssDiff.tokenize = function(value) {
-      return removeEmpty(value.split(/([{}:;,]|\s+)/));
-    };
-
-    var LineDiff = new Diff();
-    LineDiff.tokenize = function(value) {
-      var retLines = [],
-          lines = value.split(/^/m);
-
-      for(var i = 0; i < lines.length; i++) {
-        var line = lines[i],
-            lastLine = lines[i - 1];
-
-        // Merge lines that may contain windows new lines
-        if (line == '\n' && lastLine && lastLine[lastLine.length - 1] === '\r') {
-          retLines[retLines.length - 1] += '\n';
-        } else if (line) {
-          retLines.push(line);
-        }
-      }
-
-      return retLines;
-    };
-
-    return {
-      Diff: Diff,
-
-      diffChars: function(oldStr, newStr) { return CharDiff.diff(oldStr, newStr); },
-      diffWords: function(oldStr, newStr) { return WordDiff.diff(oldStr, newStr); },
-      diffWordsWithSpace: function(oldStr, newStr) { return WordWithSpaceDiff.diff(oldStr, newStr); },
-      diffLines: function(oldStr, newStr) { return LineDiff.diff(oldStr, newStr); },
-
-      diffCss: function(oldStr, newStr) { return CssDiff.diff(oldStr, newStr); },
-
-      createPatch: function(fileName, oldStr, newStr, oldHeader, newHeader) {
-        var ret = [];
-
-        ret.push('Index: ' + fileName);
-        ret.push('===================================================================');
-        ret.push('--- ' + fileName + (typeof oldHeader === 'undefined' ? '' : '\t' + oldHeader));
-        ret.push('+++ ' + fileName + (typeof newHeader === 'undefined' ? '' : '\t' + newHeader));
-
-        var diff = LineDiff.diff(oldStr, newStr);
-        if (!diff[diff.length-1].value) {
-          diff.pop();   // Remove trailing newline add
-        }
-        diff.push({value: '', lines: []});   // Append an empty value to make cleanup easier
-
-        function contextLines(lines) {
-          return map(lines, function(entry) { return ' ' + entry; });
-        }
-        function eofNL(curRange, i, current) {
-          var last = diff[diff.length-2],
-              isLast = i === diff.length-2,
-              isLastOfType = i === diff.length-3 && (current.added !== last.added || current.removed !== last.removed);
-
-          // Figure out if this is the last line for the given file and missing NL
-          if (!/\n$/.test(current.value) && (isLast || isLastOfType)) {
-            curRange.push('\\ No newline at end of file');
-          }
-        }
-
-        var oldRangeStart = 0, newRangeStart = 0, curRange = [],
-            oldLine = 1, newLine = 1;
-        for (var i = 0; i < diff.length; i++) {
-          var current = diff[i],
-              lines = current.lines || current.value.replace(/\n$/, '').split('\n');
-          current.lines = lines;
-
-          if (current.added || current.removed) {
-            if (!oldRangeStart) {
-              var prev = diff[i-1];
-              oldRangeStart = oldLine;
-              newRangeStart = newLine;
-
-              if (prev) {
-                curRange = contextLines(prev.lines.slice(-4));
-                oldRangeStart -= curRange.length;
-                newRangeStart -= curRange.length;
-              }
-            }
-            curRange.push.apply(curRange, map(lines, function(entry) { return (current.added?'+':'-') + entry; }));
-            eofNL(curRange, i, current);
-
-            if (current.added) {
-              newLine += lines.length;
-            } else {
-              oldLine += lines.length;
-            }
-          } else {
-            if (oldRangeStart) {
-              // Close out any changes that have been output (or join overlapping)
-              if (lines.length <= 8 && i < diff.length-2) {
-                // Overlapping
-                curRange.push.apply(curRange, contextLines(lines));
-              } else {
-                // end the range and output
-                var contextSize = Math.min(lines.length, 4);
-                ret.push(
-                    '@@ -' + oldRangeStart + ',' + (oldLine-oldRangeStart+contextSize)
-                    + ' +' + newRangeStart + ',' + (newLine-newRangeStart+contextSize)
-                    + ' @@');
-                ret.push.apply(ret, curRange);
-                ret.push.apply(ret, contextLines(lines.slice(0, contextSize)));
-                if (lines.length <= 4) {
-                  eofNL(ret, i, current);
-                }
-
-                oldRangeStart = 0;  newRangeStart = 0; curRange = [];
-              }
-            }
-            oldLine += lines.length;
-            newLine += lines.length;
-          }
-        }
-
-        return ret.join('\n') + '\n';
-      },
-
-      applyPatch: function(oldStr, uniDiff) {
-        var diffstr = uniDiff.split('\n');
-        var diff = [];
-        var remEOFNL = false,
-            addEOFNL = false;
-
-        for (var i = (diffstr[0][0]==='I'?4:0); i < diffstr.length; i++) {
-          if(diffstr[i][0] === '@') {
-            var meh = diffstr[i].split(/@@ -(\d+),(\d+) \+(\d+),(\d+) @@/);
-            diff.unshift({
-              start:meh[3],
-              oldlength:meh[2],
-              oldlines:[],
-              newlength:meh[4],
-              newlines:[]
-            });
-          } else if(diffstr[i][0] === '+') {
-            diff[0].newlines.push(diffstr[i].substr(1));
-          } else if(diffstr[i][0] === '-') {
-            diff[0].oldlines.push(diffstr[i].substr(1));
-          } else if(diffstr[i][0] === ' ') {
-            diff[0].newlines.push(diffstr[i].substr(1));
-            diff[0].oldlines.push(diffstr[i].substr(1));
-          } else if(diffstr[i][0] === '\\') {
-            if (diffstr[i-1][0] === '+') {
-              remEOFNL = true;
-            } else if(diffstr[i-1][0] === '-') {
-              addEOFNL = true;
-            }
-          }
-        }
-
-        var str = oldStr.split('\n');
-        for (var i = diff.length - 1; i >= 0; i--) {
-          var d = diff[i];
-          for (var j = 0; j < d.oldlength; j++) {
-            if(str[d.start-1+j] !== d.oldlines[j]) {
-              return false;
-            }
-          }
-          Array.prototype.splice.apply(str,[d.start-1,+d.oldlength].concat(d.newlines));
-        }
-
-        if (remEOFNL) {
-          while (!str[str.length-1]) {
-            str.pop();
-          }
-        } else if (addEOFNL) {
-          str.push('');
-        }
-        return str.join('\n');
-      },
-
-      convertChangesToXML: function(changes){
-        var ret = [];
-        for ( var i = 0; i < changes.length; i++) {
-          var change = changes[i];
-          if (change.added) {
-            ret.push('<ins>');
-          } else if (change.removed) {
-            ret.push('<del>');
-          }
-
-          ret.push(escapeHTML(change.value));
-
-          if (change.added) {
-            ret.push('</ins>');
-          } else if (change.removed) {
-            ret.push('</del>');
-          }
-        }
-        return ret.join('');
-      },
-
-      // See: http://code.google.com/p/google-diff-match-patch/wiki/API
-      convertChangesToDMP: function(changes){
-        var ret = [], change;
-        for ( var i = 0; i < changes.length; i++) {
-          change = changes[i];
-          ret.push([(change.added ? 1 : change.removed ? -1 : 0), change.value]);
-        }
-        return ret;
-      }
-    };
-  })();
-
-  if (typeof module !== 'undefined') {
-      module.exports = JsDiff;
-  }
-  else if (typeof define === 'function') {
-    define([], function() { return JsDiff; });
-  }
-  else if (typeof global.JsDiff === 'undefined') {
-    global.JsDiff = JsDiff;
-  }
-})(this);
-
-},{}],37:[function(require,module,exports){
-'use strict';
-var numberIsNan = require(50);
-
-module.exports = Number.isFinite || function (val) {
-	return !(typeof val !== 'number' || numberIsNan(val) || val === Infinity || val === -Infinity);
-};
-
-},{}],38:[function(require,module,exports){
-// intentionally commented out as it makes it slower...
-//'use strict';
-
-var arr = [];
-
-module.exports = function (a, b) {
-	if (a === b) {
-		return 0;
-	}
-
-	var aLen = a.length;
-	var bLen = b.length;
-
-	if (aLen === 0) {
-		return b.length;
-	}
-
-	if (bLen === 0) {
-		return a.length;
-	}
-
-	var bCharCode;
-	var ret;
-	var tmp;
-	var tmp2;
-	var i = 0;
-	var j = 0;
-
-	while (i < aLen) {
-		arr[i] = ++i;
-	}
-
-	while (j < bLen) {
-		bCharCode = b.charCodeAt(j);
-		tmp = j++;
-		ret = j;
-
-		for (i = 0; i < aLen; i++) {
-			tmp2 = bCharCode === a.charCodeAt(i) ? tmp : tmp + 1;
-			tmp = arr[i];
-			ret = arr[i] = tmp > ret ? tmp2 > ret ? ret + 1 : tmp2 : tmp2 > tmp ? tmp + 1 : tmp2;
-		}
-	}
-
-	return ret;
-};
-
-},{}],39:[function(require,module,exports){
-var utils = require(49);
-var TextSerializer = require(43);
-var colorDiff = require(33);
-var rgbRegexp = require(47);
-var themeMapper = require(48);
-
-var cacheSize = 0;
-var maxColorCacheSize = 1024;
-
-var ansiStyles = utils.extend({}, require(20));
-Object.keys(ansiStyles).forEach(function (styleName) {
-    ansiStyles[styleName.toLowerCase()] = ansiStyles[styleName];
-});
-
-function AnsiSerializer(theme) {
-    this.theme = theme;
-}
-
-AnsiSerializer.prototype = new TextSerializer();
-
-AnsiSerializer.prototype.format = 'ansi';
-
-var colorPalettes = {
-    16: {
-        '#000000': 'black',
-        '#ff0000': 'red',
-        '#00ff00': 'green',
-        '#ffff00': 'yellow',
-        '#0000ff': 'blue',
-        '#ff00ff': 'magenta',
-        '#00ffff': 'cyan',
-        '#ffffff': 'white',
-        '#808080': 'gray'
-    },
-    256: {}
-};
-
-var diffPalettes = {};
-
-function convertColorToObject(color) {
-    if (color.length < 6) {
-        // Allow CSS shorthand
-        color = color.replace(/^#?([0-9a-f])([0-9a-f])([0-9a-f])$/i, '$1$1$2$2$3$3');
-    }
-    // Split color into red, green, and blue components
-    var hexMatch = color.match(/^#?([0-9a-f][0-9a-f])([0-9a-f][0-9a-f])([0-9a-f][0-9a-f])$/i);
-    if (hexMatch) {
-        return {
-            R: parseInt(hexMatch[1], 16),
-            G: parseInt(hexMatch[2], 16),
-            B: parseInt(hexMatch[3], 16)
-        };
-    }
-}
-
-function toHexColor(colorObject) {
-    var hexString = (Math.round(colorObject.R) * 0x10000 + Math.round(colorObject.G) * 0x100 + Math.round(colorObject.B)).toString(16);
-    return '#' + ('00000'.substr(0, 6 - hexString.length)) + hexString;
-}
-
-function firstUp(text) {
-    return text.substring(0, 1).toUpperCase() + text.substring(1);
-}
-
-diffPalettes[16] = Object.keys(colorPalettes[16]).map(convertColorToObject);
-diffPalettes['bg16'] = Object.keys(colorPalettes[16]).filter(function (color) {
-    return color !== "#808080";
-}).map(convertColorToObject);
-diffPalettes[256] = [].concat(diffPalettes[16]);
-var nextAnsiColorNumber = 16;
-function registerNext256PaletteEntry(obj) {
-    diffPalettes[256].push(obj);
-    colorPalettes[256][toHexColor(obj)] = nextAnsiColorNumber;
-    nextAnsiColorNumber += 1;
-}
-
-for (var r = 0 ; r < 6 ; r += 1) {
-    for (var g = 0 ; g < 6 ; g += 1) {
-        for (var b = 0 ; b < 6 ; b += 1) {
-            registerNext256PaletteEntry({
-                R: Math.round(r * 256 / 6),
-                G: Math.round(g * 256 / 6),
-                B: Math.round(b * 256 / 6)
-            });
-        }
-    }
-}
-
-[
-    0x08, 0x12, 0x1c, 0x26, 0x30, 0x3a, 0x44, 0x4e, 0x58, 0x60, 0x66, 0x76,
-    0x80, 0x8a, 0x94, 0x9e, 0xa8, 0xb2, 0xbc, 0xc6, 0xd0, 0xda, 0xe4, 0xee
-].forEach(function (value) {
-    registerNext256PaletteEntry({R: value, G: value, B: value});
-});
-
-AnsiSerializer.prototype.text = function (options) {
-    var content = String(options.content);
-    if (content === '') {
-        return '';
-    }
-
-    var styles = themeMapper(this.theme, options.styles);
-
-    if (styles.length > 0) {
-        for (var i = styles.length -1; i >= 0; i -= 1) {
-            var styleName = styles[i];
-
-            if (ansiStyles[styleName]) {
-                content = ansiStyles[styleName].open + content + ansiStyles[styleName].close;
-            } else if (rgbRegexp.test(styleName)) {
-                var originalStyleName = styleName;
-                var isBackgroundColor = styleName.substring(0, 2) === 'bg';
-                var colorName = isBackgroundColor ? styleName.substring(2) : styleName;
-
-                var color16Hex = toHexColor(colorDiff.closest(convertColorToObject(colorName),
-                                                              diffPalettes[isBackgroundColor ? 'bg16' : 16]));
-                var closestColor16 = colorPalettes[16][color16Hex];
-
-                var color256Hex = toHexColor(colorDiff.closest(convertColorToObject(colorName), diffPalettes[256]));
-                var closest256ColorIndex = colorPalettes[256][color256Hex];
-
-                if (isBackgroundColor) {
-                    styleName = 'bg' + firstUp(closestColor16);
-                } else {
-                    styleName = closestColor16;
-                }
-
-                var open = ansiStyles[styleName].open;
-                var close = ansiStyles[styleName].close;
-                if (color16Hex !== color256Hex) {
-                    open += '\x1b[' + (isBackgroundColor ? 48 : 38) + ';5;' + closest256ColorIndex + 'm';
-                }
-                if (cacheSize < maxColorCacheSize) {
-                    ansiStyles[originalStyleName] = {open: open, close: close};
-                    cacheSize += 1;
-                }
-
-                content = open + content + close;
-            }
-        }
-    }
-
-    return content;
-};
-
-module.exports = AnsiSerializer;
-
-},{}],40:[function(require,module,exports){
-var cssStyles = require(44);
-var flattenBlocksInLines = require(46);
-var rgbRegexp = require(47);
-var themeMapper = require(48);
-
-function ColoredConsoleSerializer(theme) {
-    this.theme = theme;
-}
-
-ColoredConsoleSerializer.prototype.format = 'coloredConsole';
-
-ColoredConsoleSerializer.prototype.serialize = function (lines) {
-    var formatString = '';
-    var styleStrings = [];
-    this.serializeLines(flattenBlocksInLines(lines)).forEach(function (entry) {
-        if (entry) {
-            formatString += entry[0];
-            if (entry.length > 1) {
-                styleStrings.push(entry[1]);
-            }
-        }
-    });
-    return [formatString].concat(styleStrings);
-};
-
-ColoredConsoleSerializer.prototype.serializeLines = function (lines) {
-    var result = [];
-    lines.forEach(function (line, i) {
-        if (i > 0) {
-            result.push(['%c\n ', '']);
-        }
-        Array.prototype.push.apply(result, this.serializeLine(line));
-    }, this);
-    return result;
-};
-
-ColoredConsoleSerializer.prototype.serializeLine = function (line) {
-    var result = [];
-    line.forEach(function (outputEntry) {
-        if (this[outputEntry.style]) {
-            result.push(this[outputEntry.style](outputEntry.args));
-        }
-    }, this);
-    return result;
-};
-
-ColoredConsoleSerializer.prototype.block = function (content) {
-    return this.serializeLines(content);
-};
-
-ColoredConsoleSerializer.prototype.text = function (options) {
-    var content = String(options.content);
-    if (content === '') {
-        return '';
-    }
-
-    var styles = themeMapper(this.theme, options.styles);
-
-    var result = ['%c' + content.replace(/%/g, '%%')];
-    var styleProperties = [];
-
-    if (styles.length > 0) {
-        for (var i = 0; i < styles.length; i += 1) {
-            var styleName = styles[i];
-            if (rgbRegexp.test(styleName)) {
-                if (styleName.substring(0, 2) === 'bg') {
-                    styleProperties.push('background-color: ' + styleName.substring(2));
-                } else {
-                    styleProperties.push('color: ' + styleName);
-                }
-            } else if (cssStyles[styleName]) {
-                styleProperties.push(cssStyles[styleName]);
-            }
-        }
-    }
-    result.push(styleProperties.join('; '));
-    return result;
-};
-
-ColoredConsoleSerializer.prototype.raw = function (options) {
-    return String(options.content(this));
-};
-
-module.exports = ColoredConsoleSerializer;
-
-},{}],41:[function(require,module,exports){
-var cssStyles = require(44);
-var rgbRegexp = require(47);
-var themeMapper = require(48);
-
-function HtmlSerializer(theme) {
-    this.theme = theme;
-}
-
-HtmlSerializer.prototype.format = 'html';
-
-HtmlSerializer.prototype.serialize = function (lines) {
-    return '<div style="font-family: monospace; white-space: nowrap">\n' + this.serializeLines(lines) + '\n</div>';
-};
-
-HtmlSerializer.prototype.serializeLines = function (lines) {
-    return lines.map(function (line) {
-        return '  <div>' + (this.serializeLine(line).join('') || '&nbsp;') + '</div>';
-    }, this).join('\n');
-};
-
-HtmlSerializer.prototype.serializeLine = function (line) {
-    return line.map(function (outputEntry) {
-        return this[outputEntry.style] ?
-            this[outputEntry.style](outputEntry.args) :
-            '';
-    }, this);
-};
-
-HtmlSerializer.prototype.block = function (content) {
-    return '<div style="display: inline-block; vertical-align: top">\n' +
-        this.serializeLines(content) +
-        '\n</div>';
-};
-
-HtmlSerializer.prototype.text = function (options) {
-    var content = String(options.content);
-
-    if (content === '') {
-        return '';
-    }
-
-    content = content
-        .replace(/&/g, '&amp;')
-        .replace(/ /g, '&nbsp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
-
-
-    var styles = themeMapper(this.theme, options.styles);
-
-    if (styles.length > 0) {
-        var styleProperties = [];
-        for (var j = 0; j < styles.length; j += 1) {
-            var styleName = styles[j];
-            if (rgbRegexp.test(styleName)) {
-                if (styleName.substring(0, 2) === 'bg') {
-                    styleProperties.push('background-color: ' + styleName.substring(2));
-                } else {
-                    styleProperties.push('color: ' + styleName);
-                }
-            } else if (cssStyles[styleName]) {
-                styleProperties.push(cssStyles[styleName]);
-            }
-
-        }
-
-        if (styleProperties.length > 0) {
-            content = '<span style="' + styleProperties.join('; ') + '">' + content + '</span>';
-        }
-    }
-    return content;
-};
-
-HtmlSerializer.prototype.raw = function (options) {
-    return String(options.content(this));
-};
-
-module.exports = HtmlSerializer;
-
-},{}],42:[function(require,module,exports){
-(function (process){
-/*global window*/
-var utils = require(49);
-var extend = utils.extend;
-var duplicateText = require(45);
-var rgbRegexp = require(47);
-var cssStyles = require(44);
-
-function MagicPen(options) {
-    if (!(this instanceof MagicPen)) {
-        return new MagicPen(options);
-    }
-
-    options = options || {};
-
-    if (typeof options === "string") {
-        options = {format: options };
-    }
-
-    var indentationWidth = 'indentationWidth' in options ?
-        options.indentationWidth : 2;
-    this.indentationWidth = Math.max(indentationWidth, 0);
-
-    this.indentationLevel = 0;
-    this.output = [[]];
-    this.styles = Object.create(null);
-    this.installedPlugins = [];
-    this._themes = {};
-    this.preferredWidth = (!process.browser && process.stdout.columns) || 80;
-    if (options.format) {
-        this.format = options.format;
-    }
-}
-
-if (typeof exports === 'object' && typeof exports.nodeName !== 'string' && require(52)) {
-    MagicPen.defaultFormat = 'ansi'; // colored console
-} else if (typeof window !== 'undefined' && typeof window.navigator !== 'undefined') {
-    if (window.mochaPhantomJS || (window.__karma__ && window.__karma__.config.captureConsole)) {
-        MagicPen.defaultFormat = 'ansi'; // colored console
-    } else {
-        MagicPen.defaultFormat = 'html'; // Browser
-    }
-} else {
-    MagicPen.defaultFormat = 'text'; // Plain text
-}
-
-MagicPen.prototype.newline = MagicPen.prototype.nl = function (count) {
-    if (typeof count === 'undefined') {
-        count = 1;
-    }
-
-    if (count === 0) {
-        return this;
-    }
-
-    for (var i = 0; i < count; i += 1) {
-        this.output.push([]);
-    }
-    return this;
-};
-
-MagicPen.serializers = {};
-[
-    require(43),
-    require(41),
-    require(39),
-    require(40)
-].forEach(function (serializer) {
-    MagicPen.serializers[serializer.prototype.format] = serializer;
-});
-
-function hasSameTextStyling(a, b) {
-    if (!a || !b || a.style !== 'text' || b.style !== 'text') {
-        return false;
-    }
-
-    return utils.arrayEquals(a.args.styles, b.args.styles);
-}
-
-function normalizeLine(line) {
-    if (line.length === 0) {
-        return line;
-    }
-
-    var result = [line[0]];
-    for (var i = 1; i < line.length; i += 1) {
-        var lastEntry = result[result.length - 1];
-        var entry = line[i];
-        if (entry.style === 'text' && entry.args.content === '') {
-            continue;
-        }
-
-        if (hasSameTextStyling(lastEntry, entry)) {
-            result[result.length - 1] = {
-                style: lastEntry.style,
-                args: {
-                    content: lastEntry.args.content + entry.args.content,
-                    styles: lastEntry.args.styles
-                }
-            };
-        } else {
-            result.push(entry);
-        }
-    }
-
-    return result;
-}
-
-MagicPen.prototype.write = function (options) {
-    if (this.styles[options.style]) {
-        this.styles[options.style].apply(this, options.args);
-        return this;
-    }
-    var lastLine = this.output[this.output.length - 1];
-    var lastEntry = lastLine[lastLine.length - 1];
-    if (hasSameTextStyling(lastEntry, options)) {
-        lastLine[lastLine.length - 1] = {
-            style: lastEntry.style,
-            args: {
-                content: lastEntry.args.content + options.args.content,
-                styles: lastEntry.args.styles
-            }
-        };
-    } else {
-        lastLine.push(options);
-    }
-
-    return this;
-};
-
-MagicPen.prototype.indentLines = function () {
-    this.indentationLevel += 1;
-    return this;
-};
-
-MagicPen.prototype.indent = MagicPen.prototype.i = function () {
-    for (var i = 0; i < this.indentationLevel; i += 1) {
-        this.space(this.indentationWidth);
-    }
-    return this;
-};
-
-MagicPen.prototype.outdentLines = function () {
-    this.indentationLevel = Math.max(0, this.indentationLevel - 1);
-    return this;
-};
-
-MagicPen.prototype.addStyle = function (style, handler, allowRedefinition) {
-    if (this[style] && !allowRedefinition) {
-        throw new Error('"' + style + '" style is already defined, set 3rd arg (allowRedefinition) to true to define it anyway');
-    }
-
-    var styles = this.styles;
-    this.styles = Object.create(null);
-    for (var p in styles) {
-        this.styles[p] = styles[p];
-    }
-
-    this.styles[style] = handler;
-    this[style] = function () {
-        handler.apply(this, arguments);
-        return this;
-    };
-    return this;
-};
-
-MagicPen.prototype.toString = function (format) {
-    if (format && this.format && format !== this.format) {
-        throw new Error('A pen with format: ' + this.format + ' cannot be serialized to: ' + format);
-    }
-
-    format = this.format || format || 'text';
-    if (format === 'auto') {
-        format = MagicPen.defaultFormat;
-    }
-    var theme = this._themes[format] || {};
-    var serializer = new MagicPen.serializers[format](theme);
-    return serializer.serialize(this.output);
-};
-
-MagicPen.prototype.text = function () {
-    var content = arguments[0];
-    if (content === '') {
-        return this;
-    }
-
-    var styles = new Array(arguments.length - 1);
-    for (var i = 1; i < arguments.length; i += 1) {
-        styles[i - 1] = arguments[i];
-    }
-    content = String(content);
-    if (content.indexOf('\n') !== -1) {
-        var lines = content.split(/\n/);
-        lines.forEach(function (lineContent, index) {
-            if (lineContent.length) {
-                this.write({
-                    style: 'text',
-                    args: { content: lineContent, styles: styles }
-                });
-            }
-            if (index < lines.length - 1) {
-                this.nl();
-            }
-        }, this);
-        return this;
-    } else {
-        return this.write({
-            style: 'text',
-            args: { content: content, styles: styles }
-        });
-    }
-};
-
-MagicPen.prototype.removeFormatting = function () {
-    var result = this.clone();
-    this.output.forEach(function (line, index) {
-        result.output[index] = normalizeLine(line.map(function (outputEntry) {
-            return outputEntry.style === 'text' ?
-                { style: 'text', args: { content: outputEntry.args.content, styles: [] } } :
-                outputEntry;
-        }));
-    });
-    result.indentationLevel = this.indentationLevel;
-    return result;
-};
-
-MagicPen.prototype.getContentFromArguments = function (args) {
-    var clone;
-    if (args[0].isMagicPen) {
-        this.ensureCompatibleFormat(args[0].format);
-        return args[0];
-    } else if (typeof args[0] === 'function') {
-        clone = this.clone();
-        args[0].call(clone, clone);
-        return clone;
-    } else if (typeof args[0] === 'string' && args.length === 1) {
-        clone = this.clone();
-        clone.text(args[0]);
-        return clone;
-    } else if (typeof args[0] === 'string') {
-        clone = this.clone();
-        clone[args[0]].apply(clone, Array.prototype.slice.call(args, 1));
-        return clone;
-    } else {
-        throw new Error('Requires the arguments to be:\n' +
-                        'a pen or\n' +
-                        'a callback appending content to a pen or\n' +
-                        'a style and arguments for that style or\n' +
-                        'just a string.');
-    }
-};
-
-MagicPen.prototype.isMultiline = function () {
-    return this.output.length > 1 || this.size().height > 1;
-};
-
-MagicPen.prototype.isBlock = function () {
-    return this.output.length === 1 &&
-        this.output[0].length === 1 &&
-        this.output[0][0].style === 'block';
-};
-
-MagicPen.prototype.ensureCompatibleFormat = function (format) {
-    if (format && this.format && format !== this.format) {
-        throw new Error('This pen is only compatible with the format: ' + this.format);
-    }
-};
-
-MagicPen.prototype.block = function () {
-    var pen = this.getContentFromArguments(arguments);
-
-    var blockOutput = pen.output.map(function (line) {
-        return [].concat(line);
-    });
-    return this.write({ style: 'block', args: blockOutput });
-};
-function isRawOutput(options) {
-    return options &&
-        typeof options === 'object' &&
-        typeof options.width === 'number' &&
-        typeof options.height === 'number' && (
-            typeof options.content === 'function' ||
-                typeof options.content === 'string'
-        );
-}
-
-MagicPen.prototype.alt = function (options) {
-    var format = this.format;
-    if (!format) {
-        throw new Error('The alt method is only supported on pen where the format has already been set');
-    }
-
-    var outputProperty = options[format];
-
-    if (typeof outputProperty === 'undefined') {
-        if (options.fallback) {
-            return this.append(options.fallback);
-        } else {
-            throw new Error('Output is not specified for format: ' + format + ' and no fallback method is given');
-        }
-    }
-
-    if (typeof outputProperty === 'string' || isRawOutput(outputProperty)) {
-        return this.raw(outputProperty);
-    } else {
-        return this.append(outputProperty);
-    }
-};
-
-MagicPen.prototype.raw = function (options) {
-    var format = this.format;
-    if (!format) {
-        throw new Error('The alt method is only supported on pen where the format has already been set');
-    }
-
-    if (typeof options === 'string') {
-        return this.write({ style: 'raw', args: {
-            height: 0,
-            width: 0,
-            content: function () {
-                return options;
-            }
-        }});
-    }
-
-    if (isRawOutput(options)) {
-        if (typeof options.content === 'string') {
-            options = extend({}, options);
-            var content = options.content;
-            options.content = function () {
-                return content;
-            };
-        }
-
-        return this.write({ style: 'raw', args: options });
-    }
-
-    throw new Error('Raw ' + this.format + ' content needs to adhere to one of the following forms:\n' +
-                    'a string of raw content\n' +
-                    'a function returning a string of raw content or\n' +
-                    'an object with the following form { width: <number>, height: <number>, content: <string function() {}|string> }');
-};
-
-function amend(output, pen) {
-    var lastLine = output[output.length - 1].slice();
-    var newOutput = output.slice(0, -1);
-    var lastEntry = lastLine[lastLine.length - 1];
-    if (lastEntry && lastEntry.style === 'block') {
-        lastLine[lastLine.length - 1] = {
-            style: 'block',
-            args: amend(lastEntry.args, pen)
-        };
-        newOutput[output.length - 1] = lastLine;
-    } else {
-        Array.prototype.push.apply(lastLine, pen.output[0]);
-        newOutput[output.length - 1] = normalizeLine(lastLine);
-        newOutput.push.apply(newOutput, pen.output.slice(1));
-    }
-
-    return newOutput;
-}
-
-MagicPen.prototype.amend = function () {
-    var pen = this.getContentFromArguments(arguments);
-
-    if (pen.isEmpty()) {
-        return this;
-    }
-
-    this.output = amend(this.output, pen);
-
-    return this;
-};
-
-MagicPen.prototype.append = function () {
-    var pen = this.getContentFromArguments(arguments);
-
-    if (pen.isEmpty()) {
-        return this;
-    }
-
-    var lastLine = this.output[this.output.length - 1];
-    Array.prototype.push.apply(lastLine, pen.output[0]);
-    this.output[this.output.length - 1] = normalizeLine(lastLine);
-
-    this.output.push.apply(this.output, pen.output.slice(1));
-
-    return this;
-};
-
-MagicPen.prototype.prependLinesWith = function () {
-    var pen = this.getContentFromArguments(arguments);
-
-    if (pen.isEmpty()) {
-        return this;
-    }
-
-    if (pen.output.length > 1) {
-        throw new Error('PrependLinesWith only supports a pen with single line content');
-    }
-
-    var height = this.size().height;
-    var output = this.clone();
-    output.block(function () {
-        for (var i = 0; i < height; i += 1) {
-            if (0 < i) {
-                this.nl();
-            }
-            this.append(pen);
-        }
-    });
-    output.block(this);
-
-    this.output = output.output;
-    return this;
-};
-
-MagicPen.prototype.space = MagicPen.prototype.sp = function (count) {
-    if (count === 0) {
-        return this;
-    }
-
-    if (typeof count === 'undefined') {
-        count = 1;
-    }
-
-    return this.text(duplicateText(' ', count));
-};
-
-[
-    'bold', 'dim', 'italic', 'underline', 'inverse', 'hidden',
-    'strikeThrough', 'black', 'red', 'green', 'yellow', 'blue',
-    'magenta', 'cyan', 'white', 'gray', 'bgBlack', 'bgRed',
-    'bgGreen', 'bgYellow', 'bgBlue', 'bgMagenta', 'bgCyan',
-    'bgWhite'
-].forEach(function (textStyle) {
-    MagicPen.prototype[textStyle] = MagicPen.prototype[textStyle.toLowerCase()] = function (content) {
-        return this.text(content, textStyle);
-    };
-});
-
-MagicPen.prototype.clone = function (format) {
-    if (!this.isEmpty()) {
-        this.ensureCompatibleFormat(format);
-    }
-
-    function MagicPenClone() {}
-    MagicPenClone.prototype = this;
-    var clonedPen = new MagicPenClone();
-    clonedPen.styles = this.styles;
-    clonedPen.indentationLevel = 0;
-    clonedPen.output = [[]];
-    clonedPen.installedPlugins = this.installedPlugins;
-    clonedPen._themes = this._themes;
-    clonedPen.format = format || this.format;
-    return clonedPen;
-};
-
-MagicPen.prototype.isMagicPen = true;
-
-MagicPen.prototype.size = function () {
-    return utils.calculateSize(this.output);
-};
-
-MagicPen.prototype.use = function (plugin) {
-    var existingPlugin = utils.findFirst(this.installedPlugins, function (installedPlugin) {
-        if (installedPlugin === plugin) {
-            return true;
-        } else if (typeof plugin === 'function' && typeof installedPlugin === 'function') {
-            var pluginName = utils.getFunctionName(plugin);
-            return pluginName !== '' && pluginName === utils.getFunctionName(installedPlugin);
-        } else {
-            return installedPlugin.name === plugin.name;
-        }
-    });
-
-    if (existingPlugin) {
-        if (existingPlugin === plugin || (typeof plugin.version !== 'undefined' && plugin.version === existingPlugin.version)) {
-            // No-op
-            return this;
-        } else {
-            throw new Error("Another instance of the plugin '" + plugin.name + "' " +
-                            "is already installed" +
-                            (typeof existingPlugin.version !== 'undefined' ?
-                                ' (version ' + existingPlugin.version +
-                                (typeof plugin.version !== 'undefined' ?
-                                    ', trying to install ' + plugin.version : '') +
-                                ')' : '') +
-                            ". Please check your node_modules folder for unmet peerDependencies.");
-        }
-    }
-
-    if ((typeof plugin !== 'function' && (typeof plugin !== 'object' || typeof plugin.installInto !== 'function')) ||
-        (typeof plugin.name !== 'undefined' && typeof plugin.name !== 'string') ||
-        (typeof plugin.dependencies !== 'undefined' && !Array.isArray(plugin.dependencies))) {
-        throw new Error('Plugins must be functions or adhere to the following interface\n' +
-                        '{\n' +
-                        '  name: <an optional plugin name>,\n' +
-                        '  version: <an optional semver version string>,\n' +
-                        '  dependencies: <an optional list of dependencies>,\n' +
-                        '  installInto: <a function that will update the given magicpen instance>\n' +
-                        '}');
-    }
-
-    if (plugin.dependencies) {
-        var installedPlugins = this.installedPlugins;
-        var unfulfilledDependencies = plugin.dependencies.filter(function (dependency) {
-            return !installedPlugins.some(function (plugin) {
-                return plugin.name === dependency;
-            });
-        });
-
-        if (unfulfilledDependencies.length === 1) {
-            throw new Error(plugin.name + ' requires plugin ' + unfulfilledDependencies[0]);
-        } else if (unfulfilledDependencies.length > 1) {
-            throw new Error(plugin.name + ' requires plugins ' +
-                            unfulfilledDependencies.slice(0, -1).join(', ') +
-                            ' and ' + unfulfilledDependencies[unfulfilledDependencies.length - 1]);
-        }
-    }
-
-    this.installedPlugins.push(plugin);
-    if (typeof plugin === 'function') {
-        plugin(this);
-    } else {
-        plugin.installInto(this);
-    }
-
-    return this; // for chaining
-};
-
-MagicPen.prototype.installPlugin = MagicPen.prototype.use; // Legacy alias
-
-function replaceText(output, outputArray, regexp, cb) {
-    var replacedOutput = output;
-    outputArray.forEach(function (line, i) {
-        if (0 < i) {
-            replacedOutput.nl();
-        }
-
-        line.forEach(function (outputEntry, j) {
-            if (outputEntry.style === 'block') {
-                return replacedOutput.output[replacedOutput.output.length - 1].push({
-                    style: 'block',
-                    args: replaceText(output.clone(), outputEntry.args, regexp, cb)
-                });
-            } else if (outputEntry.style !== 'text') {
-                return replacedOutput.output[replacedOutput.output.length - 1].push(outputEntry);
-            }
-
-            if (regexp.global) {
-                regexp.lastIndex = 0;
-            }
-            var m;
-            var first = true;
-            var lastIndex = 0;
-            var text = outputEntry.args.content;
-            var styles = outputEntry.args.styles;
-            while ((m = regexp.exec(text)) !== null && (regexp.global || first)) {
-                if (lastIndex < m.index) {
-                    replacedOutput.text.apply(replacedOutput, [text.substring(lastIndex, m.index)].concat(styles));
-                }
-
-                cb.apply(replacedOutput, [styles].concat(m));
-                first = false;
-                lastIndex = m.index + m[0].length;
-            }
-
-            if (lastIndex === 0) {
-                var lastLine;
-                if (replacedOutput.output.length === 0) {
-                    lastLine = replacedOutput.output[0] = [];
-                } else {
-                    lastLine = replacedOutput.output[replacedOutput.output.length - 1];
-                }
-
-                lastLine.push(outputEntry);
-            } else if (lastIndex < text.length) {
-                replacedOutput.text.apply(replacedOutput, [text.substring(lastIndex, text.length)].concat(styles));
-            }
-        }, this);
-    }, this);
-
-    return replacedOutput.output.map(normalizeLine);
-}
-
-MagicPen.prototype.isEmpty = function () {
-    return this.output.length === 1 && this.output[0].length === 0;
-};
-
-MagicPen.prototype.replaceText = function (regexp, cb) {
-    if (this.isEmpty()) {
-        return this;
-    }
-
-    if (typeof regexp === 'string') {
-        regexp = new RegExp(utils.escapeRegExp(regexp), 'g');
-    }
-
-    if (typeof cb === 'string') {
-        var text = cb;
-        cb = function (styles, _) {
-            var args = [text].concat(styles);
-            this.text.apply(this, args);
-        };
-    }
-
-
-    if (arguments.length === 1) {
-        cb = regexp;
-        regexp = /.*/;
-    }
-
-    this.output = replaceText(this.clone(), this.output, regexp, cb);
-
-    return this;
-};
-
-MagicPen.prototype.theme = function (format) {
-    format = format || this.format;
-    if (!format) {
-        throw new Error("Could not detect which format you want to retrieve " +
-                        "theme information for. Set the format of the pen or " +
-                        "provide it as an argument to the theme method.");
-    }
-
-    return this._themes[format];
-};
-
-MagicPen.prototype.installTheme = function (formats, theme) {
-    var that = this;
-    if (arguments.length === 1) {
-        theme = formats;
-        formats = Object.keys(MagicPen.serializers);
-    }
-
-    if (typeof formats === 'string') {
-        formats = [formats];
-    }
-
-    if (
-        typeof theme !== 'object' ||
-        !Array.isArray(formats) ||
-        formats.some(function (format) {
-            return typeof format !== 'string';
-        })
-    ) {
-        throw new Error("Themes must be installed the following way:\n" +
-                        "Install theme for all formats: pen.installTheme({ comment: 'gray' })\n" +
-                        "Install theme for a specific format: pen.installTheme('ansi', { comment: 'gray' }) or\n" +
-                        "Install theme for a list of formats: pen.installTheme(['ansi', 'html'], { comment: 'gray' })");
-    }
-
-    if (!theme.styles || typeof theme.styles !== 'object') {
-        theme = {
-            styles: theme
-        };
-    }
-
-    Object.keys(theme.styles).forEach(function (themeKey) {
-        if (rgbRegexp.test(themeKey) || cssStyles[themeKey]) {
-            throw new Error("Invalid theme key: '" + themeKey + "' you can't map build styles.");
-        }
-
-        if (!that[themeKey]) {
-            that.addStyle(themeKey, function (content) {
-                this.text(content, themeKey);
-            });
-        }
-    });
-
-    that._themes = extend({}, that._themes);
-    formats.forEach(function (format) {
-        var baseTheme = that._themes[format] || { styles: {} };
-        var extendedTheme = extend({}, baseTheme, theme);
-        extendedTheme.styles = extend({}, baseTheme.styles, theme.styles);
-        that._themes[format] = extendedTheme;
-    });
-
-
-    return this;
-};
-
-module.exports = MagicPen;
-
-}).call(this,require(30))
-},{}],43:[function(require,module,exports){
-var flattenBlocksInLines = require(46);
-
-function TextSerializer() {}
-
-TextSerializer.prototype.format = 'text';
-
-TextSerializer.prototype.serialize = function (lines) {
-    lines = flattenBlocksInLines(lines);
-    return lines.map(this.serializeLine, this).join('\n');
-};
-
-TextSerializer.prototype.serializeLine = function (line) {
-    return line.map(function (outputEntry) {
-        return this[outputEntry.style] ?
-            String(this[outputEntry.style](outputEntry.args)) :
-            '';
-    }, this).join('');
-};
-
-TextSerializer.prototype.text = function (options) {
-    return String(options.content);
-};
-
-TextSerializer.prototype.block = function (content) {
-    return this.serialize(content);
-};
-
-TextSerializer.prototype.raw = function (options) {
-    return String(options.content(this));
-};
-
-
-module.exports = TextSerializer;
-
-},{}],44:[function(require,module,exports){
-var cssStyles = {
-    bold: 'font-weight: bold',
-    dim: 'opacity: 0.7',
-    italic: 'font-style: italic',
-    underline: 'text-decoration: underline',
-    inverse: '-webkit-filter: invert(%100); filter: invert(100%)',
-    hidden: 'visibility: hidden',
-    strikeThrough: 'text-decoration: line-through',
-
-    black: 'color: black',
-    red: 'color: red',
-    green: 'color: green',
-    yellow: 'color: yellow',
-    blue: 'color: blue',
-    magenta: 'color: magenta',
-    cyan: 'color: cyan',
-    white: 'color: white',
-    gray: 'color: gray',
-
-    bgBlack: 'background-color: black',
-    bgRed: 'background-color: red',
-    bgGreen: 'background-color: green',
-    bgYellow: 'background-color: yellow',
-    bgBlue: 'background-color: blue',
-    bgMagenta: 'background-color: magenta',
-    bgCyan: 'background-color: cyan',
-    bgWhite: 'background-color: white'
-};
-
-Object.keys(cssStyles).forEach(function (styleName) {
-    cssStyles[styleName.toLowerCase()] = cssStyles[styleName];
-});
-
-module.exports = cssStyles;
-
-},{}],45:[function(require,module,exports){
-var whitespaceCacheLength = 256;
-var whitespaceCache = [''];
-for (var i = 1; i <= whitespaceCacheLength; i += 1) {
-    whitespaceCache[i] = whitespaceCache[i - 1] + ' ';
-}
-
-function duplicateText(content, times) {
-    if (times < 0) {
-        return '';
-    }
-
-    var result = '';
-
-    if (content === ' ') {
-        if (times <= whitespaceCacheLength) {
-            return whitespaceCache[times];
-        }
-
-        var segment = whitespaceCache[whitespaceCacheLength];
-        var numberOfSegments = Math.floor(times / whitespaceCacheLength);
-        for (var i = 0; i < numberOfSegments; i += 1) {
-            result += segment;
-        }
-        result += whitespaceCache[times % whitespaceCacheLength];
-    } else {
-        for (var j = 0; j < times; j += 1) {
-            result += content;
-        }
-    }
-
-    return result;
-}
-
-module.exports = duplicateText;
-
-},{}],46:[function(require,module,exports){
-var utils = require(49);
-var duplicateText = require(45);
-
-function createPadding(length) {
-    return { style: 'text', args: { content: duplicateText(' ', length), styles: [] } };
-}
-
-function lineContainsBlocks(line) {
-    return line.some(function (outputEntry) {
-        return outputEntry.style === 'block' ||
-            (outputEntry.style === 'text' && String(outputEntry.args.content).indexOf('\n') !== -1);
-    });
-}
-
-function flattenBlocksInOutputEntry(outputEntry) {
-    switch (outputEntry.style) {
-    case 'text': return String(outputEntry.args.content).split('\n').map(function (line) {
-        if (line === '') {
-            return [];
-        }
-
-        var args = { content: line, styles: outputEntry.args.styles };
-        return [{ style: 'text', args: args }];
-    });
-    case 'block': return flattenBlocksInLines(outputEntry.args);
-    default: return [];
-    }
-}
-
-function flattenBlocksInLine(line) {
-    if (line.length === 0) {
-       return [[]];
-    }
-
-    if (!lineContainsBlocks(line)) {
-        return [line];
-    }
-
-    var result = [];
-    var linesLengths = [];
-
-    var startIndex = 0;
-    line.forEach(function (outputEntry, blockIndex) {
-        var blockLines = flattenBlocksInOutputEntry(outputEntry);
-
-        var blockLinesLengths = blockLines.map(function (line) {
-            return utils.calculateLineSize(line).width;
-        });
-
-        var longestLineLength = Math.max.apply(null, blockLinesLengths);
-
-        blockLines.forEach(function (blockLine, index) {
-            var resultLine = result[index];
-
-            if (!resultLine) {
-                result[index] = resultLine = [];
-                linesLengths[index] = 0;
-            }
-
-            if (blockLine.length) {
-                var paddingLength = startIndex - linesLengths[index];
-                resultLine.push(createPadding(paddingLength));
-                Array.prototype.push.apply(resultLine, blockLine);
-                linesLengths[index] = startIndex + blockLinesLengths[index];
-            }
-        });
-
-        startIndex += longestLineLength;
-    }, this);
-    return result;
-}
-
-function flattenBlocksInLines(lines) {
-    var result = [];
-    lines.forEach(function (line) {
-        flattenBlocksInLine(line).forEach(function (line) {
-            result.push(line);
-        });
-    });
-    return result;
-}
-
-module.exports = flattenBlocksInLines;
-
-},{}],47:[function(require,module,exports){
-module.exports =  /^(?:bg)?#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i;
-
-},{}],48:[function(require,module,exports){
-module.exports = function (theme, styles) {
-    if (styles.length === 1) {
-        var count = 0;
-        var stack = [];
-        var themeMapping = styles[0];
-        var themeStyles = theme.styles || {};
-        while(typeof themeMapping === 'string' && themeStyles[themeMapping]) {
-            themeMapping = themeStyles[themeMapping];
-            count += 1;
-            if (100 < count) {
-                var index = stack.indexOf(themeMapping);
-                stack.push(themeMapping);
-                if (index !== -1) {
-                    throw new Error('Your theme contains a loop: ' + stack.slice(index).join(' -> '));
-                }
-            }
-        }
-
-        return Array.isArray(themeMapping) ? themeMapping : [themeMapping];
-    }
-
-    return styles;
-};
-
-},{}],49:[function(require,module,exports){
-var utils = {
-    extend: function (target) {
-        for (var i = 1; i < arguments.length; i += 1) {
-            var source = arguments[i];
-            Object.keys(source).forEach(function (key) {
-                target[key] = source[key];
-            });
-        }
-        return target;
-    },
-
-    calculateOutputEntrySize: function (outputEntry) {
-        if (outputEntry.size) {
-            return outputEntry.size;
-        }
-
-        var size;
-        switch (outputEntry.style) {
-        case 'text':
-            size = { width: String(outputEntry.args.content).length, height: 1 };
-            break;
-        case 'block':
-            size = utils.calculateSize(outputEntry.args);
-            break;
-        case 'raw':
-            var arg = outputEntry.args;
-            size = { width: arg.width, height: arg.height };
-            break;
-        default: size = { width: 0, height: 0 };
-        }
-
-        outputEntry.size = size;
-        return size;
-    },
-
-    calculateLineSize: function (line) {
-        var size = { height: 1, width: 0 };
-        line.forEach(function (outputEntry) {
-            var outputEntrySize = utils.calculateOutputEntrySize(outputEntry);
-            size.width += outputEntrySize.width;
-            size.height = Math.max(outputEntrySize.height, size.height);
-        });
-        return size;
-    },
-
-    calculateSize: function (lines) {
-        var size = { height: 0, width: 0 };
-        lines.forEach(function (line) {
-            var lineSize = utils.calculateLineSize(line);
-            size.height += lineSize.height;
-            size.width = Math.max(size.width, lineSize.width);
-        });
-        return size;
-    },
-
-    arrayEquals: function (a, b) {
-        if (a === b) {
-            return true;
-        }
-
-        if (!a || a.length !== b.length) {
-            return false;
-        }
-
-        for (var i = 0; i < a.length; i += 1) {
-            if (a[i] !== b[i]) {
-                return false;
-            }
-        }
-
-        return true;
-
-    },
-
-    escapeRegExp: function (text){
-        return text.replace(/([.*+?^${}()|\[\]\/\\])/g, "\\$1");
-    },
-
-    findFirst: function (arr, predicate, thisObj) {
-        var scope = thisObj || null;
-        for (var i = 0 ; i < arr.length ; i += 1) {
-            if (predicate.call(scope, arr[i], i, arr)) {
-                return arr[i];
-            }
-        }
-        return null;
-    },
-
-    getFunctionName: function (f) {
-        if (typeof f.name === 'string') {
-            return f.name;
-        }
-        var matchFunctionName = Function.prototype.toString.call(f).match(/function ([^\(]+)/);
-        if (matchFunctionName) {
-            return matchFunctionName[1];
-        }
-
-        if (f === Object) {
-            return 'Object';
-        }
-        if (f === Function) {
-            return 'Function';
-        }
-    }
-};
-
-module.exports = utils;
-
-},{}],50:[function(require,module,exports){
-'use strict';
-module.exports = Number.isNaN || function (x) {
-	return x !== x;
-};
-
-},{}],51:[function(require,module,exports){
-'use strict';
-var isFinite = require(37);
-
-module.exports = function (str, n) {
-	if (typeof str !== 'string') {
-		throw new TypeError('Expected a string as the first argument');
-	}
-
-	if (n < 0 || !isFinite(n)) {
-		throw new TypeError('Expected a finite positive number');
-	}
-
-	var ret = '';
-
-	do {
-		if (n & 1) {
-			ret += str;
-		}
-
-		str += str;
-	} while (n = n >> 1);
-
-	return ret;
-};
-
-},{}],52:[function(require,module,exports){
-(function (process){
-'use strict';
-var argv = process.argv;
-
-module.exports = (function () {
-	if (argv.indexOf('--no-color') !== -1 ||
-		argv.indexOf('--no-colors') !== -1 ||
-		argv.indexOf('--color=false') !== -1) {
-		return false;
-	}
-
-	if (argv.indexOf('--color') !== -1 ||
-		argv.indexOf('--colors') !== -1 ||
-		argv.indexOf('--color=true') !== -1 ||
-		argv.indexOf('--color=always') !== -1) {
-		return true;
-	}
-
-	if (process.stdout && !process.stdout.isTTY) {
-		return false;
-	}
-
-	if (process.platform === 'win32') {
-		return true;
-	}
-
-	if ('COLORTERM' in process.env) {
-		return true;
-	}
-
-	if (process.env.TERM === 'dumb') {
-		return false;
-	}
-
-	if (/^screen|^xterm|^vt100|color|ansi|cygwin|linux/i.test(process.env.TERM)) {
-		return true;
-	}
-
-	return false;
-})();
-
-}).call(this,require(30))
-},{}]},{},[19])(19)
+},{}]},{},[21])(21)
 });
