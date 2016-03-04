@@ -142,19 +142,16 @@ you can append the error message to an output the following way:</p>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">if</span>&nbsp;<span style="color: #000000">(</span>failed<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">fail</span><span style="color: #000000">({</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;diff<span style="color: #000000">:</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>output<span style="color: #000000">,</span>&nbsp;diff<span style="color: #000000">,</span>&nbsp;inspect<span style="color: #000000">,</span>&nbsp;equal<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">var</span>&nbsp;result&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #000000">{</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inline<span style="color: #000000">:</span>&nbsp;<span style="color: #0086b3">true</span><span style="color: #000000">,</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;diff<span style="color: #000000">:</span>&nbsp;output</div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">};</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;output<span style="color: #000000">.</span>inline&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #0086b3">true</span><span style="color: #000000">;</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;promises<span style="color: #000000">.</span><span style="color: #000000">forEach</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>promise<span style="color: #000000">,</span>&nbsp;index<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">if</span>&nbsp;<span style="color: #000000">(</span>index&nbsp;<span style="color: #a71d5d">&gt;</span>&nbsp;<span style="color: #0086b3">0</span><span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span>&nbsp;result<span style="color: #000000">.</span>diff<span style="color: #000000">.</span><span style="color: #000000">nl</span><span style="color: #000000">(</span><span style="color: #0086b3">2</span><span style="color: #000000">);</span>&nbsp;<span style="color: #000000">}</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">if</span>&nbsp;<span style="color: #000000">(</span>index&nbsp;<span style="color: #a71d5d">&gt;</span>&nbsp;<span style="color: #0086b3">0</span><span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span>&nbsp;output<span style="color: #000000">.</span><span style="color: #000000">nl</span><span style="color: #000000">(</span><span style="color: #0086b3">2</span><span style="color: #000000">);</span>&nbsp;<span style="color: #000000">}</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">var</span>&nbsp;error&nbsp;<span style="color: #a71d5d">=</span>&nbsp;promise<span style="color: #000000">.</span><span style="color: #000000">reason</span><span style="color: #000000">();</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #969896">&nbsp;//&nbsp;the&nbsp;error&nbsp;is&nbsp;connected&nbsp;to&nbsp;the&nbsp;current&nbsp;scope</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #969896">&nbsp;//&nbsp;but&nbsp;we&nbsp;are&nbsp;just&nbsp;interested&nbsp;in&nbsp;the&nbsp;nested&nbsp;error</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;error<span style="color: #000000">.</span>errorMode&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #df5000">'bubble'</span><span style="color: #000000">;</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result<span style="color: #000000">.</span>diff<span style="color: #000000">.</span><span style="color: #000000">append</span><span style="color: #000000">(</span>error<span style="color: #000000">.</span><span style="color: #000000">getErrorMessage</span><span style="color: #000000">(</span>output<span style="color: #000000">));</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;output<span style="color: #000000">.</span><span style="color: #000000">append</span><span style="color: #000000">(</span>error<span style="color: #000000">.</span><span style="color: #000000">getErrorMessage</span><span style="color: #000000">(</span>output<span style="color: #000000">));</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">});</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;result<span style="color: #000000">;</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;output<span style="color: #000000">;</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">}</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">});</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">}</span></div>
@@ -169,29 +166,13 @@ you can append the error message to an output the following way:</p>
   <div>&nbsp;</div>
   <div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #df5000">'foo'</span>&nbsp;<span style="color: red; font-weight: bold">to&nbsp;equal</span>&nbsp;<span style="color: #df5000">'bAr'</span></div>
   <div>&nbsp;</div>
-  <div><div style="display: inline-block; vertical-align: top">
-  <div><span style="color: red">-</span></div>
-</div><div style="display: inline-block; vertical-align: top">
   <div><span style="background-color: red; color: white">foo</span></div>
-</div></div>
-  <div><div style="display: inline-block; vertical-align: top">
-  <div><span style="color: green">+</span></div>
-</div><div style="display: inline-block; vertical-align: top">
   <div><span style="background-color: green; color: white">bAr</span></div>
-</div></div>
   <div>&nbsp;</div>
   <div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #df5000">'bar'</span>&nbsp;<span style="color: red; font-weight: bold">to&nbsp;equal</span>&nbsp;<span style="color: #df5000">'bAr'</span></div>
   <div>&nbsp;</div>
-  <div><div style="display: inline-block; vertical-align: top">
-  <div><span style="color: red">-</span></div>
-</div><div style="display: inline-block; vertical-align: top">
   <div><span style="background-color: red; color: white">bar</span></div>
-</div></div>
-  <div><div style="display: inline-block; vertical-align: top">
-  <div><span style="color: green">+</span></div>
-</div><div style="display: inline-block; vertical-align: top">
   <div><span style="background-color: green; color: white">bAr</span></div>
-</div></div>
 </div><h2 id="unexpectederror-parent">UnexpectedError.parent</h2>
 <p>When assertions delegate to nested <code>expect</code> calls the errors that are
 thrown at each level are chained together through the <code>parent</code>
@@ -222,16 +203,8 @@ chain to <code>nested</code>:</p>
   <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
   <div><span style="color: red; font-weight: bold">Explicit&nbsp;failure</span></div>
   <div>&nbsp;</div>
-  <div><div style="display: inline-block; vertical-align: top">
-  <div><span style="color: red">-</span></div>
-</div><div style="display: inline-block; vertical-align: top">
   <div><span style="background-color: red; color: white">f00</span><span style="color: red">!</span></div>
-</div></div>
-  <div><div style="display: inline-block; vertical-align: top">
-  <div><span style="color: green">+</span></div>
-</div><div style="display: inline-block; vertical-align: top">
   <div><span style="background-color: green; color: white">foo</span><span style="color: green">!</span></div>
-</div></div>
 </div></div>
 </div></div>
 </div><h2 id="unexpectederror-getparents-">UnexpectedError.getParents()</h2>
@@ -262,8 +235,7 @@ create the diff. Now you can delegate to that method from
   <div>&nbsp;&nbsp;&nbsp;&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">fail</span><span style="color: #000000">({</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;diff<span style="color: #000000">:</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>output<span style="color: #000000">,</span>&nbsp;diff<span style="color: #000000">,</span>&nbsp;inspect<span style="color: #000000">,</span>&nbsp;equal<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;output<span style="color: #000000">.</span><span style="color: #000000">text</span><span style="color: #000000">(</span><span style="color: #df5000">'~~~~~~~~~~~~~~'</span><span style="color: #000000">).</span><span style="color: #000000">sp</span><span style="color: #000000">().</span><span style="color: #000000">success</span><span style="color: #000000">(</span><span style="color: #df5000">'custom'</span><span style="color: #000000">).</span><span style="color: #000000">sp</span><span style="color: #000000">().</span><span style="color: #000000">text</span><span style="color: #000000">(</span><span style="color: #df5000">'~~~~~~~~~~~~~~'</span><span style="color: #000000">).</span><span style="color: #000000">nl</span><span style="color: #000000">();</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">var</span>&nbsp;result&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #000000">createDiff</span><span style="color: #000000">(</span>output<span style="color: #000000">,</span>&nbsp;diff<span style="color: #000000">,</span>&nbsp;inspect<span style="color: #000000">,</span>&nbsp;equal<span style="color: #000000">);</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;result<span style="color: #000000">;</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;<span style="color: #000000">createDiff</span><span style="color: #000000">(</span>output<span style="color: #000000">,</span>&nbsp;diff<span style="color: #000000">,</span>&nbsp;inspect<span style="color: #000000">,</span>&nbsp;equal<span style="color: #000000">);</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">}</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">});</span></div>
   <div>&nbsp;&nbsp;<span style="color: #000000">});</span></div>
