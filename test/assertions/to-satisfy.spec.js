@@ -4,7 +4,7 @@ describe('to satisfy assertion', function () {
         return arguments;
     }
 
-    it('passes when an object is tested against itself, even in the presence of  circular references', function () {
+    it('passes when an object is tested against itself, even in the presence of circular references', function () {
         var circular = {};
         circular.loop = circular;
         expect(circular, 'to satisfy', circular);
@@ -53,6 +53,26 @@ describe('to satisfy assertion', function () {
                    "  'cc' // should match /quux/\n" +
                    "]"
                   );
+        });
+    });
+
+    describe('with an object satisfied against an array', function () {
+        it('should fail', function () {
+            expect(function () {
+                expect({}, 'to satisfy', []);
+            }, 'to throw', 'expected {} to satisfy []');
+        });
+
+        it('should fail', function () {
+            expect(function () {
+                expect({ foo: {} }, 'to satisfy', { foo: [] });
+            }, 'to throw',
+                "expected { foo: {} } to satisfy { foo: [] }\n" +
+                "\n" +
+                "{\n" +
+                "  foo: {} // should satisfy []\n" +
+                "}"
+            );
         });
     });
 
