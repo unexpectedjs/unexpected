@@ -29,10 +29,7 @@ expect.addAssertion('to have same gender as', function (expect, subject, value) 
   }, function (e) {
     expect.fail({
       diff: function (output) {
-        return {
-          inline: false,
-          diff: output.bold(subject.genderSign()).text(' ≠ ').bold(value.genderSign())
-        };
+        return output.bold(subject.genderSign()).text(' ≠ ').bold(value.genderSign());
       }
     });
   });
@@ -59,10 +56,8 @@ expect.addAssertion('delegating to an asynchronous assertion', function (expect,
   }, function (e) {
     expect.fail({
       diff: function (output) {
-        return {
-          inline: true,
-          diff: output.text('Cool a diff attached to an asynchronous failure!')
-        };
+        output.inline = true;
+        return output.text('Cool a diff attached to an asynchronous failure!');
       }
     });
   });

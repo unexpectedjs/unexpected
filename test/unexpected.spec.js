@@ -775,4 +775,24 @@ describe('unexpected', function () {
             });
         });
     });
+
+    describe('#output', function () {
+        it('does not allow the creation of a style named "inline"', function () {
+            expect(function () {
+                expect.output.addStyle('inline', function () {});
+            }, 'to throw', '"inline" style cannot be defined, it clashes with a built-in attribute');
+        });
+
+        it('does not allow the creation of a style named "inline" on a clone', function () {
+            expect(function () {
+                expect.output.clone().addStyle('inline', function () {});
+            }, 'to throw', '"inline" style cannot be defined, it clashes with a built-in attribute');
+        });
+
+        it('does not allow the creation of a style named "diff"', function () {
+            expect(function () {
+                expect.output.addStyle('diff', function () {});
+            }, 'to throw', '"diff" style cannot be defined, it clashes with a built-in attribute');
+        });
+    });
 });
