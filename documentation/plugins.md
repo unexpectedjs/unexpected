@@ -46,6 +46,7 @@ Here's a partial list of plugins for Unexpected:
 * [unexpected-resemble](http://unexpected.js.org/unexpected-resemble/): Image resemblance
   assertions based on [resemble.js](http://huddle.github.io/Resemble.js/). Works in
   both node.js and the browser.
+* [unexpected-set](http://unexpected.js.org/unexpected-set/): Add support for [Set](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Set) instances.
 * [unexpected-sinon](http://unexpected.js.org/unexpected-sinon/): Add support for
   [sinon](http://sinonjs.org/) spies.
 * [unexpected-stream](http://unexpected.js.org/unexpected-stream/): Assertions for
