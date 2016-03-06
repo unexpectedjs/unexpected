@@ -77,5 +77,23 @@ describe('stringDiff', function () {
                     .diffAddedHighlight('vwx')
             );
         });
+
+        it('renders escaped newlines when a line has been removed', function () {
+            expect(
+                expect.createOutput('ansi').stringDiff('\n', ''),
+                'to equal',
+                expect.createOutput('ansi')
+                    .diffRemovedSpecialChar('\\n').nl()
+            );
+        });
+
+        it('renders escaped newlines when a line has been added', function () {
+            expect(
+                expect.createOutput('ansi').stringDiff('', '\n'),
+                'to equal',
+                expect.createOutput('ansi')
+                    .diffAddedSpecialChar('\\n').nl()
+            );
+        });
     });
 });
