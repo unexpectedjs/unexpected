@@ -1575,4 +1575,16 @@ describe('to satisfy assertion', function () {
             });
         });
     });
+
+    it('should not break when trying to determine whether an object and null are structurally similar', function () {
+        expect(function () {
+            expect([ {} ], 'to satisfy', [ null ]);
+        }, 'to throw',
+            "expected [ {} ] to satisfy [ null ]\n" +
+            "\n" +
+            "[\n" +
+            "  {} // should equal null\n" +
+            "]"
+        );
+    });
 });
