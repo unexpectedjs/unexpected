@@ -1484,7 +1484,7 @@ function UnexpectedError(expect, parent) {
 
     this.expect = expect;
     this.parent = parent || null;
-    this.name = 'UnexpectedError';
+    this.name = 'Error';
 }
 
 UnexpectedError.prototype = Object.create(Error.prototype);
@@ -1662,6 +1662,16 @@ UnexpectedError.prototype.getErrorMessage = function (options) {
     }
 };
 
+function findStackStart(lines) {
+    for (var i = lines.length - 1; 0 <= i; i -= 1) {
+        if (lines[i] === '') {
+            return i + 1;
+        }
+    }
+
+    return -1;
+}
+
 UnexpectedError.prototype.serializeMessage = function (outputFormat) {
     if (!this._hasSerializedErrorMessage) {
         var htmlFormat = outputFormat === 'html';
@@ -1673,14 +1683,17 @@ UnexpectedError.prototype.serializeMessage = function (outputFormat) {
 
         this.message = '\n' + this.getErrorMessage({
             format: htmlFormat ? 'text' : outputFormat
-        }).toString();
+        }).toString() + '\n';
 
         if (!this.useFullStackTrace) {
             var newStack = [];
             var removedFrames = false;
             var lines = this.stack.split(/\n/);
+
+            var stackStart = findStackStart(lines);
+
             lines.forEach(function (line, i) {
-                if (i !== 0 && (/node_modules\/unexpected(?:-[^\/]+)?\//).test(line)) {
+                if (stackStart <= i && (/node_modules\/unexpected(?:-[^\/]+)?\//).test(line)) {
                     removedFrames = true;
                 } else {
                     newStack.push(line);
@@ -1695,7 +1708,6 @@ UnexpectedError.prototype.serializeMessage = function (outputFormat) {
                 } else {
                     newStack.push(indentation + 'set UNEXPECTED_FULL_TRACE=true to see the full stack trace');
                 }
-
             }
 
             this.stack = newStack.join('\n');
