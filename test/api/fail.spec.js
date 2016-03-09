@@ -65,7 +65,7 @@ describe('fail assertion', function () {
                     message: 'hey'
                 });
             }, 'to throw', {
-                message: '\nhey'
+                message: '\nhey\n'
             });
         });
 
@@ -75,7 +75,7 @@ describe('fail assertion', function () {
                     message: expect.output.clone().text('hey')
                 });
             }, 'to throw', {
-                message: '\nhey'
+                message: '\nhey\n'
             });
         });
     });
