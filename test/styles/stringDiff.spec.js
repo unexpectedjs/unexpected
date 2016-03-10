@@ -95,5 +95,16 @@ describe('stringDiff', function () {
                     .diffAddedSpecialChar('\\n').nl()
             );
         });
+
+        it('should escape an added newline immediately following a replaced chunk', function () {
+            expect(
+                expect.createOutput('ansi').stringDiff('aa );', '\n);'),
+                'to equal',
+                expect.createOutput('ansi')
+                    .diffRemovedHighlight('aa ').diffRemovedLine(');').nl()
+                    .diffAddedSpecialChar('\\n').nl()
+                    .diffAddedLine(');')
+            );
+        });
     });
 });
