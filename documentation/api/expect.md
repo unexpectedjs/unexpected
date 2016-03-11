@@ -58,3 +58,24 @@ it('should do the right thing', function () {
     return expect(setImmediate, 'to be a function').and('to call the callback');
 });
 ```
+
+## expect(...).thenExpect(...)
+
+The returned promise will be augmented with an `and` method that allows you to
+chain more assertions. This is especially useful when doing async assertions where
+you would otherwise have to use `then` and provide a function that returns
+the result of the next `expect`:
+
+```javascript
+return expect(setImmediate, 'to call the callback')
+    .then(function () {
+        return expect('foo', 'to equal', 'foo');
+    });
+```
+
+You can use `thenExpect` like this and save some keystrokes:
+
+```javascript
+return expect(setImmediate, 'to call the callback')
+    .thenExpect('foo', 'to equal', 'foo');
+```
