@@ -223,8 +223,7 @@ describe('expect.it', function () {
             "expect.it('this is misspelled', 1)\n" +
             "      .or('to be a string')\n" +
             "\n" +
-            "⨯ Unknown assertion 'this is misspelled', did you mean: 'to be fulfilled' or\n" +
-            "✓ expected 'foo' to be a string"
+            "Unknown assertion 'this is misspelled', did you mean: 'to be fulfilled'"
         );
     });
 
@@ -237,10 +236,7 @@ describe('expect.it', function () {
             "        .and('misspelled')\n" +
             "      .or('to be a string')\n" +
             "\n" +
-            "⨯ expected 'foo' to begin with 'bar' and\n" +
-            "⨯ expected 'foo' misspelled\n" +
-            "or\n" +
-            "✓ expected 'foo' to be a string"
+            "Unknown assertion 'misspelled', did you mean: 'called'"
         );
     });
 
