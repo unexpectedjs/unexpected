@@ -1484,7 +1484,7 @@ function UnexpectedError(expect, parent) {
 
     this.expect = expect;
     this.parent = parent || null;
-    this.name = 'Error';
+    this.name = 'UnexpectedError';
 }
 
 UnexpectedError.prototype = Object.create(Error.prototype);
@@ -4284,7 +4284,7 @@ module.exports = function (expect) {
                 this.alt({
                     text: ch,
                     fallback: function () {
-                        if (line === '' && ch !== ' ') {
+                        if (line === '' && ch !== ' ' && (i === 0 || i !== lines.length - 1)) {
                             this[ch === '+' ? 'diffAddedSpecialChar' : 'diffRemovedSpecialChar']('\\n');
                         }
                     }
