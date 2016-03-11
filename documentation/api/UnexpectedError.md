@@ -177,3 +177,7 @@ Get a shortened representation of the error message that doesn't
 repeat the subject, for example `should equal 'bar'` rather than
 `expected 'foo' to equal 'bar'`. This makes it suitable for display next
 to an existing rendering of the subject, such as inside a diff.
+
+## UnexpectedError.isUnexpected
+
+This property is true for all unexpected errors.
