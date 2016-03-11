@@ -166,6 +166,87 @@ describe('expect.promise', function () {
         });
     });
 
+    describe('#thenExpect', function () {
+        describe('with a synchronous assertion', function () {
+            it('should succeed', function () {
+                return expect('foo', 'to equal', 'foo').thenExpect('bar', 'to be a string');
+            });
+
+            it('should succeed when another clause is added', function () {
+                return expect('foo', 'to equal', 'foo').thenExpect('bar', 'to be a string').thenExpect('quux', 'to match', /^q/);
+            });
+
+            it('should work without returning the promise', function () {
+                expect('foo', 'to equal', 'foo').thenExpect('bar', 'to be a string');
+            });
+
+            it('should fail with a diff', function () {
+                return expect(function () {
+                    return expect('foo', 'to equal', 'foo').thenExpect('foo', 'to be a number');
+                }, 'to error', "expected 'foo' to be a number");
+            });
+
+            it('should fail with a diff even when the promise is not returned', function () {
+                return expect(function () {
+                    expect('foo', 'to equal', 'foo').thenExpect('foo', 'to be a number');
+                }, 'to error', "expected 'foo' to be a number");
+            });
+        });
+
+        describe('with an asynchronous assertion anded with a synchronous one', function () {
+            it('should succeed', function () {
+                return expect('foo', 'when delayed', 5, 'to equal', 'foo').thenExpect('abc', 'to be a string');
+            });
+
+            it('should succeed when another clause is added', function () {
+                return expect('foo', 'when delayed', 5, 'to equal', 'foo').thenExpect('bar', 'when delayed', 5, 'to be a string').thenExpect('quux', 'when delayed', 2, 'to be a string');
+            });
+
+            it('should fail with a diff when the asynchronous assertion fails', function () {
+                return expect(function () {
+                    return expect('foo', 'when delayed', 5, 'to equal', 'bar').thenExpect('foo', 'to be a string');
+                }, 'to error',
+                      "expected 'foo' when delayed 5 to equal 'bar'\n" +
+                      "\n" +
+                      "-foo\n" +
+                      "+bar"
+                 );
+            });
+
+            it('should fail with a diff when the synchronous assertion fails', function () {
+                return expect(function () {
+                    return expect('foo', 'when delayed', 5, 'to equal', 'foo').thenExpect('foo', 'to be a number');
+                }, 'to error', "expected 'foo' to be a number");
+            });
+
+            it('should fail with a diff when both assertions fail', function () {
+                return expect(function () {
+                    return expect('foo', 'when delayed', 5, 'to equal', 'bar').thenExpect('foo', 'to be a number');
+                }, 'to error',
+                      "expected 'foo' when delayed 5 to equal 'bar'\n" +
+                      "\n" +
+                      "-foo\n" +
+                      "+bar"
+                 );
+            });
+        });
+
+        describe('with a nested asynchronous assertion', function () {
+            it('should mount the thenExpect method on a promise returned from a nested assertion', function () {
+                var clonedExpect = expect.clone().addAssertion('to foo', function (expect, subject) {
+                    return expect(subject, 'to bar').thenExpect(subject, 'to equal', 'foo');
+                }).addAssertion('to bar', function (expect, subject) {
+                    return expect.promise(function (run) {
+                        setTimeout(run(function () {
+                            expect(subject, 'to be truthy');
+                        }), 1);
+                    });
+                });
+                return clonedExpect('foo', 'to foo');
+            });
+        });
+    });
+
     it('should throw an exception if the argument was not a function', function () {
         var expectedError = new TypeError('expect.promise(...) requires a function argument to be supplied.\n' +
                                           'See http://unexpectedjs.github.io/api/promise/ for more details.');
