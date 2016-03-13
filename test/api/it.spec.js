@@ -223,12 +223,24 @@ describe('expect.it', function () {
             "expect.it('this is misspelled', 1)\n" +
             "      .or('to be a string')\n" +
             "\n" +
-            "⨯ Unknown assertion 'this is misspelled', did you mean: 'to be fulfilled' or\n" +
-            "✓ expected 'foo' to be a string"
+            "Unknown assertion 'this is misspelled', did you mean: 'to be fulfilled'"
         );
     });
 
-    it('should not fail with a "missing assertion" error when it is not the first failing one in an "and" group', function () {
-        expect('foo', 'to satisfy', expect.it('to begin with', 'bar').and('misspelled').or('to be a string'));
+    it('should fail with a "missing assertion" error even when it is not the first failing one in an "and" group', function () {
+        expect(function () {
+            expect('foo', 'to satisfy', expect.it('to begin with', 'bar').and('misspelled').or('to be a string'));
+        }, 'to throw',
+            "expected 'foo' to satisfy\n" +
+            "expect.it('to begin with', 'bar')\n" +
+            "        .and('misspelled')\n" +
+            "      .or('to be a string')\n" +
+            "\n" +
+            "Unknown assertion 'misspelled', did you mean: 'called'"
+        );
+    });
+
+    it('should not fail when the first clause in an or group specifies an assertion that is not defined for the given arguments', function () {
+        expect([ false, 'foo', 'bar' ], 'to have items satisfying', expect.it('to be false').or('to be a string'));
     });
 });
