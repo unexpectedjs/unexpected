@@ -1587,4 +1587,78 @@ describe('to satisfy assertion', function () {
             "]"
         );
     });
+
+    describe('with the exhaustively flag', function () {
+        function Foo() {}
+        Foo.prototype.isFoo = true;
+        describe('matching on properties found in the prototype', function () {
+            it('should succeed', function () {
+                expect(new Foo(), 'to exhaustively satisfy', { isFoo: true });
+            });
+
+            it('should fail with a diff', function () {
+                expect(function () {
+                    expect(new Foo(), 'to exhaustively satisfy', { isFoo: false });
+                }, 'to throw',
+                    'expected Foo({}) to exhaustively satisfy { isFoo: false }\n' +
+                    '\n' +
+                    'Foo({\n' +
+                    '  isFoo: true // should equal false\n' +
+                    '})'
+                );
+            });
+        });
+
+        it('should consider a object with no own properties to be exhaustively satisfied by an empty object', function () {
+            expect(new Foo(), 'to exhaustively satisfy', {});
+        });
+
+        describe('with a non-enumerable property', function () {
+            var bar = {};
+            Object.defineProperty(bar, 'nonEnumerable', {
+                value: 'theValue',
+                enumerable: false
+            });
+
+            describe('when matching the non-enumerable property', function () {
+                it('should succeed', function () {
+                    expect(bar, 'to exhaustively satisfy', {nonEnumerable: 'theValue'});
+                });
+
+                it('should fail with a diff', function () {
+                    expect(function () {
+                        expect(bar, 'to exhaustively satisfy', {nonEnumerable: 'wrong'});
+                    }, 'to throw',
+                        "expected {} to exhaustively satisfy { nonEnumerable: 'wrong' }\n" +
+                        "\n" +
+                        "{\n" +
+                        "  nonEnumerable:\n" +
+                        "    'theValue' // should equal 'wrong'\n" +
+                        "               //\n" +
+                        "               // -theValue\n" +
+                        "               // +wrong\n" +
+                        "}"
+                    );
+                });
+            });
+
+            describe('when not matching the non-enumerable property', function () {
+                it('should succeed', function () {
+                    expect(bar, 'to exhaustively satisfy', {});
+                });
+
+                it('should fail with a diff', function () {
+                    expect(function () {
+                        expect(bar, 'to exhaustively satisfy', {somethingElse: 'wrong'});
+                    }, 'to throw',
+                        "expected {} to exhaustively satisfy { somethingElse: 'wrong' }\n" +
+                        "\n" +
+                        "{\n" +
+                        "  // missing somethingElse: 'wrong'\n" +
+                        "}"
+                    );
+                });
+            });
+        });
+    });
 });
