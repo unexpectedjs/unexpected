@@ -3,3 +3,4 @@
 /site-build/
 /test/tests.html
 /test/JasmineRunner.html
+/.nyc_output/
