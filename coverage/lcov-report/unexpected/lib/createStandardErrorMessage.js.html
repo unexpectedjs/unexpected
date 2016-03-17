@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for unexpected/lib/createStandardErrorMessage.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../index.html">all files</a> / <a href="index.html">unexpected/lib/</a> createStandardErrorMessage.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>53/53</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">97.78% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>44/45</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>2/2</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>53/53</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">818×</span>
+<span class="cline-any cline-yes">818×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">818×</span>
+<span class="cline-any cline-yes">818×</span>
+<span class="cline-any cline-yes">818×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">818×</span>
+<span class="cline-any cline-yes">818×</span>
+<span class="cline-any cline-yes">43×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">775×</span>
+<span class="cline-any cline-yes">548×</span>
+<span class="cline-any cline-yes">548×</span>
+<span class="cline-any cline-yes">610×</span>
+<span class="cline-any cline-yes">610×</span>
+<span class="cline-any cline-yes">62×</span>
+<span class="cline-any cline-yes">26×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">62×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">610×</span>
+<span class="cline-any cline-yes">37×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">573×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">610×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">818×</span>
+<span class="cline-any cline-yes">818×</span>
+<span class="cline-any cline-yes">818×</span>
+<span class="cline-any cline-yes">818×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">818×</span>
+<span class="cline-any cline-yes">50×</span>
+<span class="cline-any cline-yes">50×</span>
+<span class="cline-any cline-yes">48×</span>
+<span class="cline-any cline-yes">48×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">48×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">768×</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">763×</span>
+<span class="cline-any cline-yes">763×</span>
+<span class="cline-any cline-yes">76×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">687×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">763×</span>
+<span class="cline-any cline-yes">763×</span>
+<span class="cline-any cline-yes">144×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">619×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">818×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">818×</span>
+<span class="cline-any cline-yes">23×</span>
+<span class="cline-any cline-yes">795×</span>
+<span class="cline-any cline-yes">565×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">818×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">818×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">var AssertionString = require('./AssertionString');
+&nbsp;
+module.exports = function createStandardErrorMessage(output, subject, testDescription, args, options) {
+    options = options || {};
+    var preamble = 'expected';
+&nbsp;
+    var subjectOutput = output.clone();
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (subject) {
+        subject.call(subjectOutput, subjectOutput);
+    }
+&nbsp;
+    var argsOutput = output.clone();
+    if (typeof args === 'function') {
+        args.call(argsOutput, argsOutput);
+    } else {
+        if (args.length &gt; 0) {
+            var previousWasAssertion = false;
+            args.forEach(function (arg, index) {
+                var isAssertion = arg &amp;&amp; typeof arg === 'object' &amp;&amp; arg instanceof AssertionString;
+                if (0 &lt; index) {
+                    if (!isAssertion &amp;&amp; !previousWasAssertion) {
+                        argsOutput.text(',');
+                    }
+                    argsOutput.sp();
+                }
+                if (isAssertion) {
+                    argsOutput.error(arg.text);
+                } else {
+                    arg.call(argsOutput, argsOutput);
+                }
+                previousWasAssertion = isAssertion;
+            });
+        }
+    }
+&nbsp;
+    var subjectSize = subjectOutput.size();
+    var argsSize = argsOutput.size();
+    var width = preamble.length + subjectSize.width + argsSize.width + testDescription.length;
+    var height = Math.max(subjectSize.height, argsSize.height);
+&nbsp;
+    if ('omitSubject' in output &amp;&amp; output.omitSubject === options.subject) {
+        var matchTestDescription = /^(not )?to (.*)/.exec(testDescription);
+        if (matchTestDescription) {
+            output.error('should ');
+            if (matchTestDescription[1]) {
+                output.error('not ');
+            }
+            testDescription = matchTestDescription[2];
+        } else {
+            testDescription = 'expected: ' + testDescription;
+        }
+    } else if (options.compactSubject &amp;&amp; (subjectSize.height &gt; 1 || subjectSize.width &gt; (options.compactWidth || 35))) {
+        output.error('expected').sp();
+        options.compactSubject.call(output, output);
+        output.sp();
+    } else {
+        output.error(preamble);
+        if (subjectSize.height &gt; 1) {
+            output.nl();
+        } else {
+            output.sp();
+        }
+        output.append(subjectOutput);
+        if (subjectSize.height &gt; 1 || (height === 1 &amp;&amp; width &gt; output.preferredWidth)) {
+            output.nl();
+        } else {
+            output.sp();
+        }
+    }
+&nbsp;
+    output.error(testDescription);
+&nbsp;
+    if (argsSize.height &gt; 1) {
+        output.nl();
+    } else if (argsSize.width &gt; 0) {
+        output.sp();
+    }
+&nbsp;
+    output.append(argsOutput);
+&nbsp;
+    return output;
+};
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 16 2016 21:45:10 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>

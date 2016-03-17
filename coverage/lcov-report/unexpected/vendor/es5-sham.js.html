@@ -1,0 +1,1460 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for unexpected/vendor/es5-sham.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../index.html">all files</a> / <a href="index.html">unexpected/vendor/</a> es5-sham.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">2.14% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>4/187</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>0/132</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>0/24</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">2.14% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>4/187</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370
+371
+372
+373
+374
+375
+376
+377
+378
+379
+380
+381
+382
+383
+384
+385
+386
+387
+388
+389
+390
+391
+392
+393
+394
+395
+396
+397
+398
+399
+400
+401
+402
+403
+404
+405
+406
+407
+408
+409
+410
+411
+412
+413
+414
+415
+416
+417
+418
+419
+420
+421
+422
+423
+424
+425
+426
+427
+428
+429
+430
+431
+432
+433
+434
+435
+436
+437
+438
+439
+440
+441
+442
+443
+444
+445
+446
+447
+448
+449
+450
+451
+452
+453
+454
+455
+456
+457
+458
+459
+460
+461
+462
+463
+464
+465
+466</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/*!
+ * https://github.com/es-shims/es5-shim
+ * @license es5-shim Copyright 2009-2014 by contributors, MIT License
+ * see https://github.com/es-shims/es5-shim/blob/master/LICENSE
+ */
+&nbsp;
+// vim: ts=4 sts=4 sw=4 expandtab
+&nbsp;
+//Add semicolon to prevent IIFE from being passed as argument to concated code.
+;
+&nbsp;
+// UMD (Universal Module Definition)
+// see https://github.com/umdjs/umd/blob/master/returnExports.js
+<span class="cstat-no" title="statement not covered" >(<span class="fstat-no" title="function not covered" >function (root, factory) {</span></span>
+    'use strict';
+    /*global define, exports, module */
+<span class="cstat-no" title="statement not covered" >    if (typeof define === 'function' &amp;&amp; define.amd) {</span>
+        // AMD. Register as an anonymous module.
+<span class="cstat-no" title="statement not covered" >        define(factory);</span>
+    } else <span class="cstat-no" title="statement not covered" >if (typeof exports === 'object') {</span>
+        // Node. Does not work with strict CommonJS, but
+        // only CommonJS-like enviroments that support module.exports,
+        // like Node.
+<span class="cstat-no" title="statement not covered" >        module.exports = factory();</span>
+    } else {
+        // Browser globals (root is window)
+<span class="cstat-no" title="statement not covered" >        root.returnExports = factory();</span>
+  }
+}(this, <span class="fstat-no" title="function not covered" >function () {</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >var call = Function.prototype.call;</span>
+<span class="cstat-no" title="statement not covered" >var prototypeOfObject = Object.prototype;</span>
+<span class="cstat-no" title="statement not covered" >var owns = call.bind(prototypeOfObject.hasOwnProperty);</span>
+&nbsp;
+// If JS engine supports accessors creating shortcuts.
+<span class="cstat-no" title="statement not covered" >var defineGetter;</span>
+<span class="cstat-no" title="statement not covered" >var defineSetter;</span>
+<span class="cstat-no" title="statement not covered" >var lookupGetter;</span>
+<span class="cstat-no" title="statement not covered" >var lookupSetter;</span>
+<span class="cstat-no" title="statement not covered" >var supportsAccessors = owns(prototypeOfObject, '__defineGetter__');</span>
+<span class="cstat-no" title="statement not covered" >if (supportsAccessors) {</span>
+<span class="cstat-no" title="statement not covered" >    defineGetter = call.bind(prototypeOfObject.__defineGetter__);</span>
+<span class="cstat-no" title="statement not covered" >    defineSetter = call.bind(prototypeOfObject.__defineSetter__);</span>
+<span class="cstat-no" title="statement not covered" >    lookupGetter = call.bind(prototypeOfObject.__lookupGetter__);</span>
+<span class="cstat-no" title="statement not covered" >    lookupSetter = call.bind(prototypeOfObject.__lookupSetter__);</span>
+}
+&nbsp;
+// ES5 15.2.3.2
+// http://es5.github.com/#x15.2.3.2
+<span class="cstat-no" title="statement not covered" >if (!Object.getPrototypeOf) {</span>
+    // https://github.com/es-shims/es5-shim/issues#issue/2
+    // http://ejohn.org/blog/objectgetprototypeof/
+    // recommended by fschaefer on github
+    //
+    // sure, and webreflection says ^_^
+    // ... this will nerever possibly return null
+    // ... Opera Mini breaks here with infinite loops
+<span class="cstat-no" title="statement not covered" >    Object.getPrototypeOf = <span class="fstat-no" title="function not covered" >function getPrototypeOf(object) {</span></span>
+<span class="cstat-no" title="statement not covered" >        var proto = object.__proto__;</span>
+<span class="cstat-no" title="statement not covered" >        if (proto || proto === null) {</span>
+<span class="cstat-no" title="statement not covered" >            return proto;</span>
+        } else <span class="cstat-no" title="statement not covered" >if (object.constructor) {</span>
+<span class="cstat-no" title="statement not covered" >            return object.constructor.prototype;</span>
+        } else {
+<span class="cstat-no" title="statement not covered" >            return prototypeOfObject;</span>
+        }
+    };
+}
+&nbsp;
+//ES5 15.2.3.3
+//http://es5.github.com/#x15.2.3.3
+&nbsp;
+<span class="fstat-no" title="function not covered" >function doesGetOwnPropertyDescriptorWork(object) {</span>
+<span class="cstat-no" title="statement not covered" >    try {</span>
+<span class="cstat-no" title="statement not covered" >        object.sentinel = 0;</span>
+<span class="cstat-no" title="statement not covered" >        return Object.getOwnPropertyDescriptor(object, 'sentinel').value === 0;</span>
+    } catch (exception) {
+        // returns falsy
+    }
+}
+&nbsp;
+//check whether getOwnPropertyDescriptor works if it's given. Otherwise,
+//shim partially.
+<span class="cstat-no" title="statement not covered" >if (Object.defineProperty) {</span>
+<span class="cstat-no" title="statement not covered" >    var getOwnPropertyDescriptorWorksOnObject = doesGetOwnPropertyDescriptorWork({});</span>
+<span class="cstat-no" title="statement not covered" >    var getOwnPropertyDescriptorWorksOnDom = typeof document === 'undefined' ||</span>
+    doesGetOwnPropertyDescriptorWork(document.createElement('div'));
+<span class="cstat-no" title="statement not covered" >    if (!getOwnPropertyDescriptorWorksOnDom || !getOwnPropertyDescriptorWorksOnObject) {</span>
+<span class="cstat-no" title="statement not covered" >        var getOwnPropertyDescriptorFallback = Object.getOwnPropertyDescriptor;</span>
+    }
+}
+&nbsp;
+<span class="cstat-no" title="statement not covered" >if (!Object.getOwnPropertyDescriptor || getOwnPropertyDescriptorFallback) {</span>
+<span class="cstat-no" title="statement not covered" >    var ERR_NON_OBJECT = 'Object.getOwnPropertyDescriptor called on a non-object: ';</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    Object.getOwnPropertyDescriptor = <span class="fstat-no" title="function not covered" >function getOwnPropertyDescriptor(object, property) {</span></span>
+<span class="cstat-no" title="statement not covered" >        if ((typeof object !== 'object' &amp;&amp; typeof object !== 'function') || object === null) {</span>
+<span class="cstat-no" title="statement not covered" >            throw new TypeError(ERR_NON_OBJECT + object);</span>
+        }
+&nbsp;
+        // make a valiant attempt to use the real getOwnPropertyDescriptor
+        // for I8's DOM elements.
+<span class="cstat-no" title="statement not covered" >        if (getOwnPropertyDescriptorFallback) {</span>
+<span class="cstat-no" title="statement not covered" >            try {</span>
+<span class="cstat-no" title="statement not covered" >                return getOwnPropertyDescriptorFallback.call(Object, object, property);</span>
+            } catch (exception) {
+                // try the shim if the real one doesn't work
+            }
+        }
+&nbsp;
+        // If object does not owns property return undefined immediately.
+<span class="cstat-no" title="statement not covered" >        if (!owns(object, property)) {</span>
+<span class="cstat-no" title="statement not covered" >            return;</span>
+        }
+&nbsp;
+        // If object has a property then it's for sure both `enumerable` and
+        // `configurable`.
+<span class="cstat-no" title="statement not covered" >        var descriptor = { enumerable: true, configurable: true };</span>
+&nbsp;
+        // If JS engine supports accessor properties then property may be a
+        // getter or setter.
+<span class="cstat-no" title="statement not covered" >        if (supportsAccessors) {</span>
+            // Unfortunately `__lookupGetter__` will return a getter even
+            // if object has own non getter property along with a same named
+            // inherited getter. To avoid misbehavior we temporary remove
+            // `__proto__` so that `__lookupGetter__` will return getter only
+            // if it's owned by an object.
+<span class="cstat-no" title="statement not covered" >            var prototype = object.__proto__;</span>
+<span class="cstat-no" title="statement not covered" >            var notPrototypeOfObject = object !== prototypeOfObject;</span>
+            // avoid recursion problem, breaking in Opera Mini when
+            // Object.getOwnPropertyDescriptor(Object.prototype, 'toString')
+            // or any other Object.prototype accessor
+<span class="cstat-no" title="statement not covered" >            if (notPrototypeOfObject) {</span>
+<span class="cstat-no" title="statement not covered" >                object.__proto__ = prototypeOfObject;</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            var getter = lookupGetter(object, property);</span>
+<span class="cstat-no" title="statement not covered" >            var setter = lookupSetter(object, property);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (notPrototypeOfObject) {</span>
+                // Once we have getter and setter we can put values back.
+<span class="cstat-no" title="statement not covered" >                object.__proto__ = prototype;</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (getter || setter) {</span>
+<span class="cstat-no" title="statement not covered" >                if (getter) {</span>
+<span class="cstat-no" title="statement not covered" >                    descriptor.get = getter;</span>
+                }
+<span class="cstat-no" title="statement not covered" >                if (setter) {</span>
+<span class="cstat-no" title="statement not covered" >                    descriptor.set = setter;</span>
+                }
+                // If it was accessor property we're done and return here
+                // in order to avoid adding `value` to the descriptor.
+<span class="cstat-no" title="statement not covered" >                return descriptor;</span>
+            }
+        }
+&nbsp;
+        // If we got this far we know that object has an own property that is
+        // not an accessor so we set it as a value and return descriptor.
+<span class="cstat-no" title="statement not covered" >        descriptor.value = object[property];</span>
+<span class="cstat-no" title="statement not covered" >        descriptor.writable = true;</span>
+<span class="cstat-no" title="statement not covered" >        return descriptor;</span>
+    };
+}
+&nbsp;
+// ES5 15.2.3.4
+// http://es5.github.com/#x15.2.3.4
+<span class="cstat-no" title="statement not covered" >if (!Object.getOwnPropertyNames) {</span>
+<span class="cstat-no" title="statement not covered" >    Object.getOwnPropertyNames = <span class="fstat-no" title="function not covered" >function getOwnPropertyNames(object) {</span></span>
+<span class="cstat-no" title="statement not covered" >        return Object.keys(object);</span>
+    };
+}
+&nbsp;
+// ES5 15.2.3.5
+// http://es5.github.com/#x15.2.3.5
+<span class="cstat-no" title="statement not covered" >if (!Object.create) {</span>
+&nbsp;
+    // Contributed by Brandon Benvie, October, 2012
+<span class="cstat-no" title="statement not covered" >    var createEmpty;</span>
+<span class="cstat-no" title="statement not covered" >    var supportsProto = !({ __proto__: null } instanceof Object);</span>
+                        // the following produces false positives
+                        // in Opera Mini =&gt; not a reliable check
+                        // Object.prototype.__proto__ === null
+    /*global document */
+<span class="cstat-no" title="statement not covered" >    if (supportsProto || typeof document === 'undefined') {</span>
+<span class="cstat-no" title="statement not covered" >        createEmpty = <span class="fstat-no" title="function not covered" >function () {</span></span>
+<span class="cstat-no" title="statement not covered" >            return { __proto__: null };</span>
+        };
+    } else {
+        // In old IE __proto__ can't be used to manually set `null`, nor does
+        // any other method exist to make an object that inherits from nothing,
+        // aside from Object.prototype itself. Instead, create a new global
+        // object and *steal* its Object.prototype and strip it bare. This is
+        // used as the prototype to create nullary objects.
+<span class="cstat-no" title="statement not covered" >        createEmpty = <span class="fstat-no" title="function not covered" >function () {</span></span>
+<span class="cstat-no" title="statement not covered" >            var iframe = document.createElement('iframe');</span>
+<span class="cstat-no" title="statement not covered" >            var parent = document.body || document.documentElement;</span>
+<span class="cstat-no" title="statement not covered" >            iframe.style.display = 'none';</span>
+<span class="cstat-no" title="statement not covered" >            parent.appendChild(iframe);</span>
+<span class="cstat-no" title="statement not covered" >            iframe.src = 'javascript:';</span>
+<span class="cstat-no" title="statement not covered" >            var empty = iframe.contentWindow.Object.prototype;</span>
+<span class="cstat-no" title="statement not covered" >            parent.removeChild(iframe);</span>
+<span class="cstat-no" title="statement not covered" >            iframe = null;</span>
+<span class="cstat-no" title="statement not covered" >            delete empty.constructor;</span>
+<span class="cstat-no" title="statement not covered" >            delete empty.hasOwnProperty;</span>
+<span class="cstat-no" title="statement not covered" >            delete empty.propertyIsEnumerable;</span>
+<span class="cstat-no" title="statement not covered" >            delete empty.isPrototypeOf;</span>
+<span class="cstat-no" title="statement not covered" >            delete empty.toLocaleString;</span>
+<span class="cstat-no" title="statement not covered" >            delete empty.toString;</span>
+<span class="cstat-no" title="statement not covered" >            delete empty.valueOf;</span>
+<span class="cstat-no" title="statement not covered" >            empty.__proto__ = null;</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >            function Empty() {</span>}
+<span class="cstat-no" title="statement not covered" >            Empty.prototype = empty;</span>
+            // short-circuit future calls
+<span class="cstat-no" title="statement not covered" >            createEmpty = <span class="fstat-no" title="function not covered" >function () {</span></span>
+<span class="cstat-no" title="statement not covered" >                return new Empty();</span>
+            };
+<span class="cstat-no" title="statement not covered" >            return new Empty();</span>
+        };
+    }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    Object.create = <span class="fstat-no" title="function not covered" >function create(prototype, properties) {</span></span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        var object;</span>
+<span class="fstat-no" title="function not covered" >        function Type() {</span>}  // An empty constructor.
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        if (prototype === null) {</span>
+<span class="cstat-no" title="statement not covered" >            object = createEmpty();</span>
+        } else {
+<span class="cstat-no" title="statement not covered" >            if (typeof prototype !== 'object' &amp;&amp; typeof prototype !== 'function') {</span>
+                // In the native implementation `parent` can be `null`
+                // OR *any* `instanceof Object`  (Object|Function|Array|RegExp|etc)
+                // Use `typeof` tho, b/c in old IE, DOM elements are not `instanceof Object`
+                // like they are in modern browsers. Using `Object.create` on DOM elements
+                // is...err...probably inappropriate, but the native version allows for it.
+<span class="cstat-no" title="statement not covered" >                throw new TypeError('Object prototype may only be an Object or null'); </span>// same msg as Chrome
+            }
+<span class="cstat-no" title="statement not covered" >            Type.prototype = prototype;</span>
+<span class="cstat-no" title="statement not covered" >            object = new Type();</span>
+            // IE has no built-in implementation of `Object.getPrototypeOf`
+            // neither `__proto__`, but this manually setting `__proto__` will
+            // guarantee that `Object.getPrototypeOf` will work as expected with
+            // objects created using `Object.create`
+<span class="cstat-no" title="statement not covered" >            object.__proto__ = prototype;</span>
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        if (properties !== void 0) {</span>
+<span class="cstat-no" title="statement not covered" >            Object.defineProperties(object, properties);</span>
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        return object;</span>
+    };
+}
+&nbsp;
+// ES5 15.2.3.6
+// http://es5.github.com/#x15.2.3.6
+&nbsp;
+// Patch for WebKit and IE8 standard mode
+// Designed by hax &lt;hax.github.com&gt;
+// related issue: https://github.com/es-shims/es5-shim/issues#issue/5
+// IE8 Reference:
+//     http://msdn.microsoft.com/en-us/library/dd282900.aspx
+//     http://msdn.microsoft.com/en-us/library/dd229916.aspx
+// WebKit Bugs:
+//     https://bugs.webkit.org/show_bug.cgi?id=36423
+&nbsp;
+<span class="fstat-no" title="function not covered" >function doesDefinePropertyWork(object) {</span>
+<span class="cstat-no" title="statement not covered" >    try {</span>
+<span class="cstat-no" title="statement not covered" >        Object.defineProperty(object, 'sentinel', {});</span>
+<span class="cstat-no" title="statement not covered" >        return 'sentinel' in object;</span>
+    } catch (exception) {
+        // returns falsy
+    }
+}
+&nbsp;
+// check whether defineProperty works if it's given. Otherwise,
+// shim partially.
+<span class="cstat-no" title="statement not covered" >if (Object.defineProperty) {</span>
+<span class="cstat-no" title="statement not covered" >    var definePropertyWorksOnObject = doesDefinePropertyWork({});</span>
+<span class="cstat-no" title="statement not covered" >    var definePropertyWorksOnDom = typeof document === 'undefined' ||</span>
+        doesDefinePropertyWork(document.createElement('div'));
+<span class="cstat-no" title="statement not covered" >    if (!definePropertyWorksOnObject || !definePropertyWorksOnDom) {</span>
+<span class="cstat-no" title="statement not covered" >        var definePropertyFallback = Object.defineProperty,</span>
+            definePropertiesFallback = Object.defineProperties;
+    }
+}
+&nbsp;
+<span class="cstat-no" title="statement not covered" >if (!Object.defineProperty || definePropertyFallback) {</span>
+<span class="cstat-no" title="statement not covered" >    var ERR_NON_OBJECT_DESCRIPTOR = 'Property description must be an object: ';</span>
+<span class="cstat-no" title="statement not covered" >    var ERR_NON_OBJECT_TARGET = 'Object.defineProperty called on non-object: ';</span>
+<span class="cstat-no" title="statement not covered" >    var ERR_ACCESSORS_NOT_SUPPORTED = 'getters &amp; setters can not be defined on this javascript engine';</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    Object.defineProperty = <span class="fstat-no" title="function not covered" >function defineProperty(object, property, descriptor) {</span></span>
+<span class="cstat-no" title="statement not covered" >        if ((typeof object !== 'object' &amp;&amp; typeof object !== 'function') || object === null) {</span>
+<span class="cstat-no" title="statement not covered" >            throw new TypeError(ERR_NON_OBJECT_TARGET + object);</span>
+        }
+<span class="cstat-no" title="statement not covered" >        if ((typeof descriptor !== 'object' &amp;&amp; typeof descriptor !== 'function') || descriptor === null) {</span>
+<span class="cstat-no" title="statement not covered" >            throw new TypeError(ERR_NON_OBJECT_DESCRIPTOR + descriptor);</span>
+        }
+        // make a valiant attempt to use the real defineProperty
+        // for I8's DOM elements.
+<span class="cstat-no" title="statement not covered" >        if (definePropertyFallback) {</span>
+<span class="cstat-no" title="statement not covered" >            try {</span>
+<span class="cstat-no" title="statement not covered" >                return definePropertyFallback.call(Object, object, property, descriptor);</span>
+            } catch (exception) {
+                // try the shim if the real one doesn't work
+            }
+        }
+&nbsp;
+        // If it's a data property.
+<span class="cstat-no" title="statement not covered" >        if (owns(descriptor, 'value')) {</span>
+            // fail silently if 'writable', 'enumerable', or 'configurable'
+            // are requested but not supported
+            /*
+            // alternate approach:
+            if ( // can't implement these features; allow false but not true
+                !(owns(descriptor, 'writable') ? descriptor.writable : true) ||
+                !(owns(descriptor, 'enumerable') ? descriptor.enumerable : true) ||
+                !(owns(descriptor, 'configurable') ? descriptor.configurable : true)
+            )
+                throw new RangeError(
+                    'This implementation of Object.defineProperty does not support configurable, enumerable, or writable.'
+                );
+            */
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (supportsAccessors &amp;&amp; (lookupGetter(object, property) || lookupSetter(object, property))) {</span>
+                // As accessors are supported only on engines implementing
+                // `__proto__` we can safely override `__proto__` while defining
+                // a property to make sure that we don't hit an inherited
+                // accessor.
+<span class="cstat-no" title="statement not covered" >                var prototype = object.__proto__;</span>
+<span class="cstat-no" title="statement not covered" >                object.__proto__ = prototypeOfObject;</span>
+                // Deleting a property anyway since getter / setter may be
+                // defined on object itself.
+<span class="cstat-no" title="statement not covered" >                delete object[property];</span>
+<span class="cstat-no" title="statement not covered" >                object[property] = descriptor.value;</span>
+                // Setting original `__proto__` back now.
+<span class="cstat-no" title="statement not covered" >                object.__proto__ = prototype;</span>
+            } else {
+<span class="cstat-no" title="statement not covered" >                object[property] = descriptor.value;</span>
+            }
+        } else {
+<span class="cstat-no" title="statement not covered" >            if (!supportsAccessors) {</span>
+<span class="cstat-no" title="statement not covered" >                throw new TypeError(ERR_ACCESSORS_NOT_SUPPORTED);</span>
+            }
+            // If we got that far then getters and setters can be defined !!
+<span class="cstat-no" title="statement not covered" >            if (owns(descriptor, 'get')) {</span>
+<span class="cstat-no" title="statement not covered" >                defineGetter(object, property, descriptor.get);</span>
+            }
+<span class="cstat-no" title="statement not covered" >            if (owns(descriptor, 'set')) {</span>
+<span class="cstat-no" title="statement not covered" >                defineSetter(object, property, descriptor.set);</span>
+            }
+        }
+<span class="cstat-no" title="statement not covered" >        return object;</span>
+    };
+}
+&nbsp;
+// ES5 15.2.3.7
+// http://es5.github.com/#x15.2.3.7
+<span class="cstat-no" title="statement not covered" >if (!Object.defineProperties || definePropertiesFallback) {</span>
+<span class="cstat-no" title="statement not covered" >    Object.defineProperties = <span class="fstat-no" title="function not covered" >function defineProperties(object, properties) {</span></span>
+        // make a valiant attempt to use the real defineProperties
+<span class="cstat-no" title="statement not covered" >        if (definePropertiesFallback) {</span>
+<span class="cstat-no" title="statement not covered" >            try {</span>
+<span class="cstat-no" title="statement not covered" >                return definePropertiesFallback.call(Object, object, properties);</span>
+            } catch (exception) {
+                // try the shim if the real one doesn't work
+            }
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        for (var property in properties) {</span>
+<span class="cstat-no" title="statement not covered" >            if (owns(properties, property) &amp;&amp; property !== '__proto__') {</span>
+<span class="cstat-no" title="statement not covered" >                Object.defineProperty(object, property, properties[property]);</span>
+            }
+        }
+<span class="cstat-no" title="statement not covered" >        return object;</span>
+    };
+}
+&nbsp;
+// ES5 15.2.3.8
+// http://es5.github.com/#x15.2.3.8
+<span class="cstat-no" title="statement not covered" >if (!Object.seal) {</span>
+<span class="cstat-no" title="statement not covered" >    Object.seal = <span class="fstat-no" title="function not covered" >function seal(object) {</span></span>
+        // this is misleading and breaks feature-detection, but
+        // allows "securable" code to "gracefully" degrade to working
+        // but insecure code.
+<span class="cstat-no" title="statement not covered" >        return object;</span>
+    };
+}
+&nbsp;
+// ES5 15.2.3.9
+// http://es5.github.com/#x15.2.3.9
+<span class="cstat-no" title="statement not covered" >if (!Object.freeze) {</span>
+<span class="cstat-no" title="statement not covered" >    Object.freeze = <span class="fstat-no" title="function not covered" >function freeze(object) {</span></span>
+        // this is misleading and breaks feature-detection, but
+        // allows "securable" code to "gracefully" degrade to working
+        // but insecure code.
+<span class="cstat-no" title="statement not covered" >        return object;</span>
+    };
+}
+&nbsp;
+// detect a Rhino bug and patch it
+<span class="cstat-no" title="statement not covered" >try {</span>
+<span class="cstat-no" title="statement not covered" >    Object.freeze(<span class="fstat-no" title="function not covered" >function () {</span>});</span>
+} catch (exception) {
+<span class="cstat-no" title="statement not covered" >    Object.freeze = (<span class="fstat-no" title="function not covered" >function freeze(freezeObject) {</span></span>
+<span class="cstat-no" title="statement not covered" >        return <span class="fstat-no" title="function not covered" >function freeze(object) {</span></span>
+<span class="cstat-no" title="statement not covered" >            if (typeof object === 'function') {</span>
+<span class="cstat-no" title="statement not covered" >                return object;</span>
+            } else {
+<span class="cstat-no" title="statement not covered" >                return freezeObject(object);</span>
+            }
+        };
+    }(Object.freeze));
+}
+&nbsp;
+// ES5 15.2.3.10
+// http://es5.github.com/#x15.2.3.10
+<span class="cstat-no" title="statement not covered" >if (!Object.preventExtensions) {</span>
+<span class="cstat-no" title="statement not covered" >    Object.preventExtensions = <span class="fstat-no" title="function not covered" >function preventExtensions(object) {</span></span>
+        // this is misleading and breaks feature-detection, but
+        // allows "securable" code to "gracefully" degrade to working
+        // but insecure code.
+<span class="cstat-no" title="statement not covered" >        return object;</span>
+    };
+}
+&nbsp;
+// ES5 15.2.3.11
+// http://es5.github.com/#x15.2.3.11
+<span class="cstat-no" title="statement not covered" >if (!Object.isSealed) {</span>
+<span class="cstat-no" title="statement not covered" >    Object.isSealed = <span class="fstat-no" title="function not covered" >function isSealed(object) {</span></span>
+<span class="cstat-no" title="statement not covered" >        return false;</span>
+    };
+}
+&nbsp;
+// ES5 15.2.3.12
+// http://es5.github.com/#x15.2.3.12
+<span class="cstat-no" title="statement not covered" >if (!Object.isFrozen) {</span>
+<span class="cstat-no" title="statement not covered" >    Object.isFrozen = <span class="fstat-no" title="function not covered" >function isFrozen(object) {</span></span>
+<span class="cstat-no" title="statement not covered" >        return false;</span>
+    };
+}
+&nbsp;
+// ES5 15.2.3.13
+// http://es5.github.com/#x15.2.3.13
+<span class="cstat-no" title="statement not covered" >if (!Object.isExtensible) {</span>
+<span class="cstat-no" title="statement not covered" >    Object.isExtensible = <span class="fstat-no" title="function not covered" >function isExtensible(object) {</span></span>
+        // 1. If Type(O) is not Object throw a TypeError exception.
+<span class="cstat-no" title="statement not covered" >        if (Object(object) !== object) {</span>
+<span class="cstat-no" title="statement not covered" >            throw new TypeError(); </span>// TODO message
+        }
+        // 2. Return the Boolean value of the [[Extensible]] internal property of O.
+<span class="cstat-no" title="statement not covered" >        var name = '';</span>
+<span class="cstat-no" title="statement not covered" >        while (owns(object, name)) {</span>
+<span class="cstat-no" title="statement not covered" >            name += '?';</span>
+        }
+<span class="cstat-no" title="statement not covered" >        object[name] = true;</span>
+<span class="cstat-no" title="statement not covered" >        var returnValue = owns(object, name);</span>
+<span class="cstat-no" title="statement not covered" >        delete object[name];</span>
+<span class="cstat-no" title="statement not covered" >        return returnValue;</span>
+    };
+}
+&nbsp;
+}));
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 16 2016 21:45:10 GMT+0100 (CET)
+</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>
