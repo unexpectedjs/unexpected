@@ -9,12 +9,13 @@ if (typeof process === 'object') {
         var basePath = pathModule.resolve(__dirname, '..');
         var extend = require('../lib/utils').extend;
         describe('executed through mocha', function () {
-            expect.addAssertion('<string> executed through mocha', function (expect, subject, value) {
+            expect.addAssertion('<string> executed through mocha <object?>', function (expect, subject, env) {
                 return expect.promise(function (run) {
                     childProcess.execFile(pathModule.resolve(basePath, 'node_modules', '.bin', 'mocha'), [
                         pathModule.resolve(__dirname, 'external', subject + '.externaljs')
                     ], {
-                        cwd: basePath
+                        cwd: basePath,
+                        env: extend({}, process.env, env || {})
                     }, run(function (err, stdout, stderr) {
                         return [err, stdout, stderr];
                     }));
@@ -25,6 +26,12 @@ if (typeof process === 'object') {
                 return expect('forgotToReturnPendingPromiseFromItBlock', 'executed through mocha').spread(function (err, stdout, stderr) {
                     expect(stdout, 'to contain', 'Error: should call the callback: You have created a promise that was not returned from the it block');
                     expect(err.code, 'to equal', 1);
+                });
+            });
+
+            it('should accept an UNEXPECTED_DEPTH environment variable', function () {
+                return expect('deepObject', 'executed through mocha', { UNEXPECTED_DEPTH: 6 }).spread(function (err, stdout, stderr) {
+                    expect(err, 'to be falsy');
                 });
             });
         });
