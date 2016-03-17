@@ -25,7 +25,21 @@ if (typeof process === 'object') {
             it('should report that a promise was created, but not returned by the it block', function () {
                 return expect('forgotToReturnPendingPromiseFromItBlock', 'executed through mocha').spread(function (err, stdout, stderr) {
                     expect(stdout, 'to contain', 'Error: should call the callback: You have created a promise that was not returned from the it block');
-                    expect(err.code, 'to equal', 1);
+                    expect(err, 'to satisfy', { code: 1 });
+                });
+            });
+
+            it('should trim unexpected plugins from the stack trace when the UNEXPECTED_FULL_TRACE environment variable is not set', function () {
+                return expect('fullTrace', 'executed through mocha', { UNEXPECTED_FULL_TRACE: '' }).spread(function (err, stdout, stderr) {
+                    expect(stdout, 'not to contain', 'node_modules/unexpected-bogus/');
+                    expect(err, 'to satisfy', { code: 1 });
+                });
+            });
+
+            it('should not trim unexpected plugins from the stack trace when the UNEXPECTED_FULL_TRACE environment variable is set', function () {
+                return expect('fullTrace', 'executed through mocha', { UNEXPECTED_FULL_TRACE: 'yes' }).spread(function (err, stdout, stderr) {
+                    expect(stdout, 'to contain', 'node_modules/unexpected-bogus/');
+                    expect(err, 'to satisfy', { code: 1 });
                 });
             });
 
@@ -52,7 +66,7 @@ if (typeof process === 'object') {
 
             it('should report that a promise was created, but not returned by the it block', function () {
                 return expect('forgotToReturnPendingPromiseFromItBlock', 'executed through jasmine').spread(function (err, stdout, stderr) {
-                    expect(err.code, 'to equal', 1);
+                    expect(err, 'to satisfy', { code: 1 });
                     expect(stdout, 'to contain', 'should call the callback: You have created a promise that was not returned from the it block');
                 });
             });
