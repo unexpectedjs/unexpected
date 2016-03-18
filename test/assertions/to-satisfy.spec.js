@@ -1661,4 +1661,55 @@ describe('to satisfy assertion', function () {
             });
         });
     });
+
+    // Debatable:
+    describe('when an unpresent value to is satisfied against a function', function () {
+        it('should allow an unpresent value to be satisfied against a non-expect.it function', function () {
+            expect({}, 'to satisfy', { foo: function () {}});
+        });
+
+        it('should fail when the function throws', function () {
+            expect(function () {
+                expect({}, 'to satisfy', { foo: function (value) { expect(value, 'to be a string'); }});
+            }, 'to throw',
+                "expected {}\n" +
+                "to satisfy { foo: function (value) { expect(value, 'to be a string'); } }\n" +
+                "\n" +
+                "{\n" +
+                "  // missing: foo: should be a string\n" +
+                "}"
+            );
+        });
+    });
+
+    describe('when an unpresent value to is satisfied against an expect.it', function () {
+        it('should succeed', function () {
+            expect({}, 'to satisfy', { foo: expect.it('to be undefined') });
+        });
+
+        it('should fail with a diff', function () {
+            expect(function () {
+                expect({}, 'to satisfy', { foo: expect.it('to be a string') });
+            }, 'to throw',
+                "expected {} to satisfy { foo: expect.it('to be a string') }\n" +
+                "\n" +
+                "{\n" +
+                "  // missing: foo: should be a string\n" +
+                "}"
+            );
+        });
+    });
+
+    it('should not break when the assertion fails and there is a fulfilled function in the RHS', function () {
+        expect(function () {
+            expect({}, 'to satisfy', { bar: 123, foo: function () {}});
+        }, 'to throw',
+            "expected {} to satisfy { bar: 123, foo: function () {} }\n" +
+            "\n" +
+            "{\n" +
+            "  // missing bar: 123\n" +
+            "  foo:\n" + // FIXME: Come up with something better
+            "}"
+        );
+    });
 });
