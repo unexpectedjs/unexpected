@@ -43,26 +43,26 @@
         <h1 id="welcome-to-unexpected">Welcome to Unexpected</h1>
 <h1 id="the-extensible-bdd-assertion-toolkit">The extensible BDD assertion toolkit</h1>
 <div class="code lang-javascript">
-  <div>expect<span style="color: #999">({</span>&nbsp;text<span style="color: #999">:</span>&nbsp;<span style="color: #E6DB74">'f00!'</span>&nbsp;<span style="color: #999">},</span>&nbsp;<span style="color: #E6DB74">'to&nbsp;equal'</span><span style="color: #999">,</span>&nbsp;<span style="color: #999">{</span>&nbsp;text<span style="color: #999">:</span>&nbsp;<span style="color: #E6DB74">'foo!'</span>&nbsp;<span style="color: #999">});</span></div>
+  <div>expect<span style="color: #999">({</span>&nbsp;text<span style="color: #999">:</span>&nbsp;<span style="color: #3CDAFF">'f00!'</span>&nbsp;<span style="color: #999">},</span>&nbsp;<span style="color: #3CDAFF">'to&nbsp;equal'</span><span style="color: #999">,</span>&nbsp;<span style="color: #999">{</span>&nbsp;text<span style="color: #999">:</span>&nbsp;<span style="color: #3CDAFF">'foo!'</span>&nbsp;<span style="color: #999">});</span></div>
 </div><div class="output">
-  <div><span style="color: #F92672; font-weight: bold">expected</span>&nbsp;{&nbsp;<span style="color: #CCC">text</span>:&nbsp;<span style="color: #E6DB74">'f00!'</span>&nbsp;}&nbsp;<span style="color: #F92672; font-weight: bold">to&nbsp;equal</span>&nbsp;{&nbsp;<span style="color: #CCC">text</span>:&nbsp;<span style="color: #E6DB74">'foo!'</span>&nbsp;}</div>
+  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;{&nbsp;<span style="color: #939393">text</span>:&nbsp;<span style="color: #3CDAFF">'f00!'</span>&nbsp;}&nbsp;<span style="color: red; font-weight: bold">to&nbsp;equal</span>&nbsp;{&nbsp;<span style="color: #939393">text</span>:&nbsp;<span style="color: #3CDAFF">'foo!'</span>&nbsp;}</div>
   <div>&nbsp;</div>
   <div>{</div>
   <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
-  <div><span style="color: #CCC">text</span>:&nbsp;<div style="display: inline-block; vertical-align: top">
-  <div><span style="color: #E6DB74">'f00!'</span></div>
+  <div><span style="color: #939393">text</span>:&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #3CDAFF">'f00!'</span></div>
 </div>&nbsp;<div style="display: inline-block; vertical-align: top">
-  <div><span style="color: #F92672; font-weight: bold">//</span></div>
-  <div><span style="color: #F92672; font-weight: bold">//</span></div>
-  <div><span style="color: #F92672; font-weight: bold">//</span></div>
-  <div><span style="color: #F92672; font-weight: bold">//</span></div>
+  <div><span style="color: red; font-weight: bold">//</span></div>
+  <div><span style="color: red; font-weight: bold">//</span></div>
+  <div><span style="color: red; font-weight: bold">//</span></div>
+  <div><span style="color: red; font-weight: bold">//</span></div>
 </div>&nbsp;<div style="display: inline-block; vertical-align: top">
-  <div><span style="color: #F92672; font-weight: bold">should&nbsp;equal</span>&nbsp;<div style="display: inline-block; vertical-align: top">
-  <div><span style="color: #E6DB74">'foo!'</span></div>
+  <div><span style="color: red; font-weight: bold">should&nbsp;equal</span>&nbsp;<div style="display: inline-block; vertical-align: top">
+  <div><span style="color: #3CDAFF">'foo!'</span></div>
 </div></div>
   <div>&nbsp;</div>
-  <div><span style="background-color: #F92672; color: black">f00</span><span style="color: #F92672">!</span></div>
-  <div><span style="background-color: #A6E22E; color: black">foo</span><span style="color: #A6E22E">!</span></div>
+  <div><span style="background-color: red; color: black">f00</span><span style="color: red">!</span></div>
+  <div><span style="background-color: green; color: black">foo</span><span style="color: green">!</span></div>
 </div></div>
 </div></div>
   <div>}</div>
@@ -91,25 +91,25 @@
   <div>$&nbsp;npm&nbsp;install&nbsp;--save-dev&nbsp;unexpected</div>
 </div><p>Then:</p>
 <div class="code lang-javascript">
-  <div><span style="color: #F92672">var</span>&nbsp;expect&nbsp;<span style="color: #F92672">=</span>&nbsp;require<span style="color: #999">(</span><span style="color: #E6DB74">'unexpected'</span><span style="color: #999">);</span></div>
+  <div><span style="color: #FFAA27">var</span>&nbsp;expect&nbsp;<span style="color: #3CDAFF">=</span>&nbsp;require<span style="color: #999">(</span><span style="color: #3CDAFF">'unexpected'</span><span style="color: #999">);</span></div>
 </div><h3 id="browser">Browser</h3>
 <p>Include <code>unexpected.js</code>.</p>
 <div class="code lang-html">
-  <div><span style="color: #999">&lt;</span><span style="color: #66D9EF; font-weight: bold">script&nbsp;</span><span style="color: #E6DB74">src</span><span style="color: #999">=&quot;</span><span style="color: #F92672">unexpected.js</span><span style="color: #999">&quot;&gt;&lt;/</span><span style="color: #66D9EF; font-weight: bold">script</span><span style="color: #999">&gt;</span></div>
+  <div><span style="color: #999">&lt;</span><span style="color: white">script&nbsp;</span><span style="color: #3CDAFF">src</span><span style="color: #999">=&quot;</span><span style="color: #FFAA27">unexpected.js</span><span style="color: #999">&quot;&gt;&lt;/</span><span style="color: white">script</span><span style="color: #999">&gt;</span></div>
 </div><p>This will expose the <code>expect</code> function under the following namespace:</p>
 <div class="code lang-javascript">
-  <div><span style="color: #F92672">var</span>&nbsp;expect&nbsp;<span style="color: #F92672">=</span>&nbsp;weknowhow<span style="color: #999">.</span>expect<span style="color: #999">;</span></div>
+  <div><span style="color: #FFAA27">var</span>&nbsp;expect&nbsp;<span style="color: #3CDAFF">=</span>&nbsp;weknowhow<span style="color: #999">.</span>expect<span style="color: #999">;</span></div>
 </div><h3 id="requirejs">RequireJS</h3>
 <p>Include the library with RequireJS the following way:</p>
 <div class="code lang-javascript">
   <div>require<span style="color: #999">.</span>config<span style="color: #999">({</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;paths<span style="color: #999">:</span>&nbsp;<span style="color: #999">{</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unexpected<span style="color: #999">:</span>&nbsp;<span style="color: #E6DB74">'path/to/unexpected'</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unexpected<span style="color: #999">:</span>&nbsp;<span style="color: #3CDAFF">'path/to/unexpected'</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #999">}</span></div>
   <div><span style="color: #999">});</span></div>
   <div>&nbsp;</div>
-  <div>define<span style="color: #999">([</span><span style="color: #E6DB74">'unexpected'</span><span style="color: #999">],</span>&nbsp;<span style="color: #F92672">function</span>&nbsp;<span style="color: #999">(</span>expect<span style="color: #999">)</span>&nbsp;<span style="color: #999">{</span></div>
-  <div>&nbsp;&nbsp;<span style="color: #888">&nbsp;//&nbsp;Your&nbsp;code</span></div>
+  <div>define<span style="color: #999">([</span><span style="color: #3CDAFF">'unexpected'</span><span style="color: #999">],</span>&nbsp;<span style="color: #FFAA27">function</span>&nbsp;<span style="color: #999">(</span>expect<span style="color: #999">)</span>&nbsp;<span style="color: #999">{</span></div>
+  <div>&nbsp;&nbsp;<span style="color: gray">&nbsp;//&nbsp;Your&nbsp;code</span></div>
   <div><span style="color: #999">});</span></div>
 </div><h2 id="using-unexpected-with-a-test-framework">Using Unexpected with a test framework</h2>
 <p>For example, if you create a test suite with
@@ -117,17 +117,17 @@
 <p>Let&#39;s say we wanted to test the following program:</p>
 <p><strong>math.js</strong></p>
 <div class="code lang-javascript">
-  <div><span style="color: #F92672">function</span>&nbsp;add&nbsp;<span style="color: #999">(</span>a<span style="color: #999">,</span>&nbsp;b<span style="color: #999">)</span>&nbsp;<span style="color: #999">{</span>&nbsp;<span style="color: #F92672">return</span>&nbsp;a&nbsp;<span style="color: #F92672">+</span>&nbsp;b<span style="color: #999">;</span>&nbsp;<span style="color: #999">};</span></div>
+  <div><span style="color: #FFAA27">function</span>&nbsp;add&nbsp;<span style="color: #999">(</span>a<span style="color: #999">,</span>&nbsp;b<span style="color: #999">)</span>&nbsp;<span style="color: #999">{</span>&nbsp;<span style="color: #FFAA27">return</span>&nbsp;a&nbsp;<span style="color: #3CDAFF">+</span>&nbsp;b<span style="color: #999">;</span>&nbsp;<span style="color: #999">};</span></div>
 </div><p>Our test file would look like this:</p>
 <div class="code lang-javascript">
-  <div>describe<span style="color: #999">(</span><span style="color: #E6DB74">'math.js'</span><span style="color: #999">,</span>&nbsp;<span style="color: #F92672">function</span>&nbsp;<span style="color: #999">()</span>&nbsp;<span style="color: #999">{</span></div>
-  <div>&nbsp;&nbsp;describe<span style="color: #999">(</span><span style="color: #E6DB74">'add'</span><span style="color: #999">,</span>&nbsp;<span style="color: #F92672">function</span>&nbsp;<span style="color: #999">()</span>&nbsp;<span style="color: #999">{</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;it<span style="color: #999">(</span><span style="color: #E6DB74">'is&nbsp;a&nbsp;function'</span><span style="color: #999">,</span>&nbsp;<span style="color: #F92672">function</span>&nbsp;<span style="color: #999">()</span>&nbsp;<span style="color: #999">{</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect<span style="color: #999">(</span>add<span style="color: #999">,</span>&nbsp;<span style="color: #E6DB74">'to&nbsp;be&nbsp;a'</span><span style="color: #999">,</span>&nbsp;<span style="color: #E6DB74">'function'</span><span style="color: #999">);</span></div>
+  <div>describe<span style="color: #999">(</span><span style="color: #3CDAFF">'math.js'</span><span style="color: #999">,</span>&nbsp;<span style="color: #FFAA27">function</span>&nbsp;<span style="color: #999">()</span>&nbsp;<span style="color: #999">{</span></div>
+  <div>&nbsp;&nbsp;describe<span style="color: #999">(</span><span style="color: #3CDAFF">'add'</span><span style="color: #999">,</span>&nbsp;<span style="color: #FFAA27">function</span>&nbsp;<span style="color: #999">()</span>&nbsp;<span style="color: #999">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;it<span style="color: #999">(</span><span style="color: #3CDAFF">'is&nbsp;a&nbsp;function'</span><span style="color: #999">,</span>&nbsp;<span style="color: #FFAA27">function</span>&nbsp;<span style="color: #999">()</span>&nbsp;<span style="color: #999">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect<span style="color: #999">(</span>add<span style="color: #999">,</span>&nbsp;<span style="color: #3CDAFF">'to&nbsp;be&nbsp;a'</span><span style="color: #999">,</span>&nbsp;<span style="color: #3CDAFF">'function'</span><span style="color: #999">);</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #999">});</span></div>
   <div>&nbsp;</div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;it<span style="color: #999">(</span><span style="color: #E6DB74">'adds&nbsp;numbers'</span><span style="color: #999">,</span>&nbsp;<span style="color: #F92672">function</span>&nbsp;<span style="color: #999">()</span>&nbsp;<span style="color: #999">{</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect<span style="color: #999">(</span>add<span style="color: #999">(</span><span style="color: #66D9EF; font-weight: bold">1</span><span style="color: #999">,</span>&nbsp;<span style="color: #66D9EF; font-weight: bold">3</span><span style="color: #999">),</span>&nbsp;<span style="color: #E6DB74">'to&nbsp;be'</span><span style="color: #999">,</span>&nbsp;<span style="color: #66D9EF; font-weight: bold">4</span><span style="color: #999">);</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;it<span style="color: #999">(</span><span style="color: #3CDAFF">'adds&nbsp;numbers'</span><span style="color: #999">,</span>&nbsp;<span style="color: #FFAA27">function</span>&nbsp;<span style="color: #999">()</span>&nbsp;<span style="color: #999">{</span></div>
+  <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect<span style="color: #999">(</span>add<span style="color: #999">(</span><span style="color: white">1</span><span style="color: #999">,</span>&nbsp;<span style="color: white">3</span><span style="color: #999">),</span>&nbsp;<span style="color: #3CDAFF">'to&nbsp;be'</span><span style="color: #999">,</span>&nbsp;<span style="color: white">4</span><span style="color: #999">);</span></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #999">});</span></div>
   <div>&nbsp;&nbsp;<span style="color: #999">});</span></div>
   <div><span style="color: #999">});</span></div>
@@ -254,7 +254,7 @@ the following way:</p>
 </div><p>You can achieve the same in the browser by setting the query parameter <code>depth</code>
 to the inspection depth you want.</p>
 <h2 id="mit-license">MIT License</h2>
-<p>Copyright (c) 2013 Sune Simonsen <a href="&#x6d;&#x61;&#105;&#x6c;&#x74;&#x6f;&#58;&#115;&#x75;&#110;&#101;&#x40;&#119;&#x65;&#x2d;&#x6b;&#x6e;&#111;&#x77;&#104;&#111;&#119;&#46;&#x64;&#107;">&#115;&#x75;&#110;&#101;&#x40;&#119;&#x65;&#x2d;&#x6b;&#x6e;&#111;&#x77;&#104;&#111;&#119;&#46;&#x64;&#107;</a></p>
+<p>Copyright (c) 2013 Sune Simonsen <a href="&#x6d;&#x61;&#105;&#108;&#116;&#111;&#x3a;&#x73;&#117;&#110;&#x65;&#x40;&#x77;&#101;&#x2d;&#107;&#x6e;&#x6f;&#x77;&#104;&#111;&#x77;&#46;&#x64;&#107;">&#x73;&#117;&#110;&#x65;&#x40;&#x77;&#101;&#x2d;&#107;&#x6e;&#x6f;&#x77;&#104;&#111;&#x77;&#46;&#x64;&#107;</a></p>
 <p>Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
 &#39;Software&#39;), to deal in the Software without restriction, including
