@@ -202,4 +202,25 @@ describe('to have items satisfying assertion', function () {
             );
         });
     });
+
+    // Regression test for #285
+    it('should not render a "not to match" diff inline', function () {
+        expect(function () {
+            expect([ ']1V3ZRFOmgiE*' ], 'to have items satisfying', function (item) {
+                expect(item, 'not to match', /[!@#$%^&*()_+]/);
+            });
+        }, 'to throw',
+            "expected [ ']1V3ZRFOmgiE*' ] to have items satisfying\n" +
+            "function (item) {\n" +
+            "  expect(item, 'not to match', /[!@#$%^&*()_+]/);\n" +
+            "}\n" +
+            "\n" +
+            "[\n" +
+            "  ']1V3ZRFOmgiE*' // should not match /[!@#$%^&*()_+]/\n" +
+            "                  //\n" +
+            "                  // ]1V3ZRFOmgiE*\n" +
+            "                  //             ^\n" +
+            "]"
+        );
+    });
 });
