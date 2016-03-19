@@ -183,5 +183,11 @@ describe('parseAssertion', function () {
                 expect.parseAssertion('<Buffer> when decoded as <string> <assertion|any+>');
             }, 'to throw', '<assertion> cannot be alternated with other types: <Buffer> when decoded as <string> <assertion|any+>');
         });
+
+        it('should not parse an assertion with invalid chars', function () {
+            expect(function () {
+                expect.parseAssertion('<Buffer> wh!!en foo<>');
+            }, 'to throw', 'Cannot parse token at index 19 in <Buffer> wh!!en foo<>');
+        });
     });
 });
