@@ -11,6 +11,12 @@ describe('addType', function () {
         }, 'to throw', 'A type must be given a non-empty name and must match ^[a-z_](?:|[a-z0-9_.-]*[_a-z0-9])$');
     });
 
+    it('throws an expection if the base type does not exist', function () {
+        expect(function () {
+            clonedExpect.addType({name: 'foo', base: 'barquux', identify: function () { return false; }});
+        }, 'to throw', 'Unknown base type: barquux');
+    });
+
     it('throws an expection if the type has a name of "assertion"', function () {
         expect(function () {
             clonedExpect.addType({ name: 'assertion', identify: false });
