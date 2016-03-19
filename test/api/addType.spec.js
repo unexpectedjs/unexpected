@@ -199,4 +199,66 @@ describe('addType', function () {
             );
         });
     });
+
+    describe('#inspect', function () {
+        it('renders the name of the type if passed too few parameters, for compatibility with util.inspect', function () {
+            expect(clonedExpect.getType('number').inspect(), 'to equal', 'type: number');
+        });
+    });
+
+    describe('base type', function () {
+        describe('#inspect', function () {
+            it('bails out if passed the wrong parameters', function () {
+                expect(function () {
+                    clonedExpect.getType('number').baseType.inspect();
+                }, 'to throw', 'You need to pass the output to baseType.inspect() as the third parameter');
+            });
+
+            it('inspects a value', function () {
+                expect(
+                    clonedExpect.getType('number').baseType.inspect(null, 3, clonedExpect.createOutput()).toString(),
+                    'to equal',
+                    'null'
+                );
+            });
+
+            it('provides an inspect function as the 4th parameter', function () {
+                clonedExpect.addType({
+                    name: 'foo',
+                    identify: function () {
+                        return false;
+                    },
+                    inspect: function (value, depth, output, inspect) {
+                        return output.append(inspect('foo'));
+                    }
+                });
+
+                clonedExpect.addType({
+                    name: 'bar',
+                    base: 'foo',
+                    identify: function () {
+                        return false;
+                    },
+                    inspect: function (value, depth, output, inspect) {
+                        return inspect(value);
+                    }
+                });
+                expect(
+                    clonedExpect.getType('bar').baseType.inspect(null, 3, clonedExpect.createOutput(), function (value) {
+                        return expect.createOutput().appendInspected(value);
+                    }).toString('text'),
+                    'to equal',
+                    "'foo'"
+                );
+            });
+        });
+
+        describe('#diff', function () {
+            it('bails out if passed the wrong parameters', function () {
+                expect(function () {
+                    clonedExpect.getType('number').baseType.diff();
+                }, 'to throw', 'You need to pass the output to baseType.diff() as the third parameter');
+            });
+        });
+    });
 });
