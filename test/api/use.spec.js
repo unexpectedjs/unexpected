@@ -208,4 +208,14 @@ describe('use', function () {
             });
         }, 'to throw', "Another instance of the plugin 'test' is already installed. Please check your node_modules folder for unmet peerDependencies.");
     });
+
+    it('should refuse to install a plugin named unexpected-promise', function () {
+        expect(function () {
+            expect.use({
+                name: 'unexpected-promise',
+                installInto: function () {} }
+
+            );
+        }, 'to throw', 'The unexpected-promise plugin was pulled into Unexpected as of 8.5.0. This means that the plugin is no longer supported.');
+    });
 });
