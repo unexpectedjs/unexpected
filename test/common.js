@@ -1,4 +1,5 @@
 /*global unexpected:true, expect:true, setImmediate:true, weknowhow*/
+/* eslint no-unused-vars: "off" */
 unexpected = typeof weknowhow === 'undefined' ?
     require('../lib/').clone() :
     weknowhow.expect.clone();
