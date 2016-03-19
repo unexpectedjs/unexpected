@@ -5,8 +5,7 @@ TARGETS ?= unexpected.js
 CHEWBACCA_THRESHOLD ?= 25
 
 lint:
-	@./node_modules/.bin/jscs lib/*.js test/*.js test/**/*.js
-	@./node_modules/.bin/jshint lib/*.js test/*.js test/**/*.js
+	npm run lint
 
 .PHONY: lint
 
