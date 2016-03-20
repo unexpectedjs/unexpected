@@ -112,4 +112,44 @@ describe('to be rejected assertion', function () {
             );
         });
     });
+
+    describe('when passed a function', function () {
+        it('should succeed if the function returns a promise that is rejected', function () {
+            return expect(function () {
+                return expect.promise.reject(new Error('foo'));
+            }, 'to be rejected');
+        });
+
+        it('should forward the rejection reason', function () {
+            return expect(function () {
+                return expect.promise(function () {
+                    return expect.promise.reject(new Error('foo'));
+                });
+            }, 'to be rejected').then(function (err) {
+                expect(err, 'to have message', 'foo');
+            });
+        });
+
+        it('should fail if the function returns a promise that is fulfilled', function () {
+            expect(function () {
+                return expect(function () {
+                    return expect.promise.resolve(123);
+                }, 'to be rejected');
+            }, 'to throw',
+                "expected\n" +
+                "function () {\n" +
+                "  return expect.promise.resolve(123);\n" +
+                "}\n" +
+                "to be rejected\n" +
+                "  expected Promise (fulfilled) => 123 to be rejected\n" +
+                "    Promise (fulfilled) => 123 unexpectedly fulfilled with 123"
+            );
+        });
+
+        it('should succeed if the function throws synchronously', function () {
+            return expect(function () {
+                throw new Error('foo');
+            }, 'to be rejected');
+        });
+    });
 });
