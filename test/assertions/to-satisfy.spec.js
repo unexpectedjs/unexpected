@@ -707,6 +707,12 @@ describe('to satisfy assertion', function () {
             expect(new Error('foo'), 'to satisfy', new Error('foo'));
         });
 
+        it('should support satisfying against a primitive', function () {
+            expect(function () {
+                expect(new Error('foo'), 'to satisfy', 123);
+            }, 'to throw', "expected Error('foo') to satisfy 123");
+        });
+
         it('should support satisfying against an Error instance when the subject has additional properties', function () {
             var err = new Error('foo');
             err.bar = 123;
