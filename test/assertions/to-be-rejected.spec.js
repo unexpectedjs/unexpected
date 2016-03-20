@@ -15,7 +15,7 @@ describe('to be rejected assertion', function () {
 
         it('should provide the rejection reason as the fulfillment value', function () {
             return expect(expect.promise.reject(new Error('foo')), 'to be rejected').then(function (reason) {
-                expect(reason, 'to equal', new Error('foo'));
+                expect(reason, 'to have message', 'foo');
             });
         });
 
@@ -67,8 +67,8 @@ describe('to be rejected assertion', function () {
         });
 
         it('should provide the rejection reason as the fulfillment value', function () {
-            return expect(expect.promise.reject(new Error('foo')), 'to be rejected with', new Error('foo')).then(function (reason) {
-                expect(reason, 'to equal', new Error('foo'));
+            return expect(expect.promise.reject(new Error('foo')), 'to be rejected with', 'foo').then(function (reason) {
+                expect(reason, 'to have message', 'foo');
             });
         });
 
