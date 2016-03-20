@@ -63,4 +63,10 @@ describe('to error assertion', function () {
             "expected function () {} to error"
         );
     });
+
+    it('should allow matching the message of an UnexpectedError against a regexp', function () {
+        expect(function () {
+            expect(123, 'to equal', 456);
+        }, 'to error', /expected 123 to equal 456/);
+    });
 });
