@@ -39,7 +39,7 @@ describe('when rejected adverbial assertion', function () {
             }), 'when rejected', 'to equal', new Error('unhappy times')),
             'to be rejected with',
             "expected Promise when rejected to equal Error('unhappy times')\n" +
-                "  Promise unexpectedly fulfilled"
+            "  Promise unexpectedly fulfilled"
         );
     });
 

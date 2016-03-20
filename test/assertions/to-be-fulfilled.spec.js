@@ -111,6 +111,22 @@ describe('to be fulfilled assertion', function () {
             );
         });
 
+        it('should fail if the function returns a promise that is fulfilled with the wrong value', function () {
+            expect(function () {
+                return expect(function () {
+                    return expect.promise.resolve(123);
+                }, 'to be fulfilled with', 456);
+            }, 'to throw',
+                "expected\n" +
+                "function () {\n" +
+                "  return expect.promise.resolve(123);\n" +
+                "}\n" +
+                "to be fulfilled with 456\n" +
+                "  expected Promise (fulfilled) => 123 to be fulfilled with 456\n" +
+                "    expected 123 to equal 456"
+            );
+        });
+
         it('should fail if the function throws synchronously', function () {
             expect(function () {
                 return expect(function () {
