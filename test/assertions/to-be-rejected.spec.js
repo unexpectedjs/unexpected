@@ -13,6 +13,12 @@ describe('to be rejected assertion', function () {
             }), 'to be rejected');
         });
 
+        it('should provide the rejection reason as the fulfillment value', function () {
+            return expect(expect.promise.reject(new Error('foo')), 'to be rejected').then(function (reason) {
+                expect(reason, 'to equal', new Error('foo'));
+            });
+        });
+
         it('should succeed if the promise is rejected without a reason', function () {
             return expect(
                 expect(new Promise(function (resolve, reject) {
@@ -58,6 +64,12 @@ describe('to be rejected assertion', function () {
                     reject(new Error('OMG!'));
                 }, 0);
             }), 'to be rejected with', new Error('OMG!'));
+        });
+
+        it('should provide the rejection reason as the fulfillment value', function () {
+            return expect(expect.promise.reject(new Error('foo')), 'to be rejected with', new Error('foo')).then(function (reason) {
+                expect(reason, 'to equal', new Error('foo'));
+            });
         });
 
         it('should support matching the error message against a regular expression', function () {

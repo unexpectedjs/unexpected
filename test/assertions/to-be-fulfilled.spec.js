@@ -25,6 +25,17 @@ describe('to be fulfilled assertion', function () {
                     "  Promise unexpectedly rejected with 'unhappy times'"
             );
         });
+
+        it('should fail with the correct message if the promise is rejected without a reason', function () {
+            return expect(
+                expect(new Promise(function (resolve, reject) {
+                    setTimeout(reject, 0);
+                }), 'to be fulfilled'),
+                'to be rejected with',
+                "expected Promise to be fulfilled\n" +
+                    "  Promise unexpectedly rejected"
+            );
+        });
     });
 
     describe('with an additional argument', function () {
