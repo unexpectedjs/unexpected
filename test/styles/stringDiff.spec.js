@@ -107,4 +107,16 @@ describe('stringDiff', function () {
             );
         });
     });
+
+    describe('stringDiffFragment', function () {
+        // This case is not directly exercised by the stringDiff style as special chars
+        // are not marked up in unchanged chunks:
+        it('should render a special char in an unchanged string', function () {
+            expect(
+                expect.createOutput('text').stringDiffFragment(' ', '\ufffd', 'text', true),
+                'to equal',
+                expect.createOutput('text').raw(' ').text('\ufffd')
+            );
+        });
+    });
 });

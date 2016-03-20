@@ -39,12 +39,24 @@ describe('fail assertion', function () {
     });
 
     describe('with an object', function () {
+        it('should support specifying a message', function () {
+            expect(function () {
+                expect.fail({
+                    message: 'yadda'
+                });
+            }, 'to throw', {
+                message: '\nyadda\n',
+                errorMode: 'bubble'
+            });
+        });
+
         it('should support specifying a label', function () {
             expect(function () {
                 expect.fail({
                     label: 'to yadda'
                 });
             }, 'to throw', {
+                errorMode: 'default',
                 label: 'to yadda'
             });
         });

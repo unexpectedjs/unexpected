@@ -795,4 +795,15 @@ describe('unexpected', function () {
             }, 'to throw', '"diff" style cannot be defined, it clashes with a built-in attribute');
         });
     });
+
+    it('should render the error message correctly when an non-existent assertion is used later in the argument list', function () {
+        var clonedExpect = expect.clone().addAssertion('<any> to foo <assertion>', function (expect, subject) {
+            expect(subject, 'to equal', 'foo');
+        }).addAssertion('<any> to bar <assertion>', function (expect, subject) {
+            expect(subject, 'to equal', 'bar');
+        });
+        expect(function () {
+            clonedExpect(123, 'to foo', 'to bar', 'bogus');
+        }, 'to throw', 'expected 123 to foo to bar bogus');
+    });
 });

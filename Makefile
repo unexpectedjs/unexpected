@@ -40,17 +40,7 @@ test: lint
 
 .PHONY: coverage
 coverage:
-	@NODE_ENV=development ./node_modules/.bin/istanbul cover \
-		-x unexpected.js \
-		-x **/vendor/** \
-		-x **/site/** \
-		-x **/site-build/** \
-		-x **/documentation/** \
-		-x lib/testFrameworkPatch.js \
-		-x bootstrap-unexpected-markdown.js \
-		--report text \
-		--report lcov \
-		--include-all-sources ./node_modules/mocha/bin/_mocha -- --reporter dot $(TEST_SOURCES)
+	@./node_modules/.bin/nyc --reporter=lcov --reporter=text --all -- mocha --compilers md:unexpected-markdown test/*.js $(TEST_SOURCES)
 	@echo google-chrome coverage/lcov-report/index.html
 
 .PHONY: test-browser
