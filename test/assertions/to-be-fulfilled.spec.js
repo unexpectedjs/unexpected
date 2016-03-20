@@ -75,4 +75,68 @@ describe('to be fulfilled assertion', function () {
             );
         });
     });
+
+    describe('when passed a function', function () {
+        it('should succeed if the function returns a promise that succeeds', function () {
+            return expect(function () {
+                return expect.promise(function () {
+                    return 123;
+                });
+            }, 'to be fulfilled');
+        });
+
+        it('should forward the fulfillment value', function () {
+            return expect(function () {
+                return expect.promise(function () {
+                    return 123;
+                });
+            }, 'to be fulfilled').then(function (value) {
+                expect(value, 'to equal', 123);
+            });
+        });
+
+        it('should fail if the function returns a promise that fails', function () {
+            expect(function () {
+                return expect(function () {
+                    return expect.promise.reject(new Error('foo'));
+                }, 'to be fulfilled');
+            }, 'to throw',
+                "expected\n" +
+                "function () {\n" +
+                "  return expect.promise.reject(new Error('foo'));\n" +
+                "}\n" +
+                "to be fulfilled\n" +
+                "  expected Promise (rejected) => Error('foo') to be fulfilled\n" +
+                "    Promise (rejected) => Error('foo') unexpectedly rejected with Error('foo')"
+            );
+        });
+
+        it('should fail if the function returns a promise that is fulfilled with the wrong value', function () {
+            expect(function () {
+                return expect(function () {
+                    return expect.promise.resolve(123);
+                }, 'to be fulfilled with', 456);
+            }, 'to throw',
+                "expected\n" +
+                "function () {\n" +
+                "  return expect.promise.resolve(123);\n" +
+                "}\n" +
+                "to be fulfilled with 456\n" +
+                "  expected Promise (fulfilled) => 123 to be fulfilled with 456\n" +
+                "    expected 123 to equal 456"
+            );
+        });
+
+        it('should fail if the function throws synchronously', function () {
+            expect(function () {
+                return expect(function () {
+                    throw new Error('foo');
+                }, 'to be fulfilled');
+            }, 'to throw',
+                "expected function () { throw new Error('foo'); } to be fulfilled\n" +
+                "  expected Promise (rejected) => Error('foo') to be fulfilled\n" +
+                "    Promise (rejected) => Error('foo') unexpectedly rejected with Error('foo')"
+            );
+        });
+    });
 });
