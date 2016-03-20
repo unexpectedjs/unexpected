@@ -55,4 +55,36 @@ describe('when rejected adverbial assertion', function () {
                 "  Promise unexpectedly fulfilled with 'happy times'"
         );
     });
+
+    describe('when passed a function', function () {
+        it('should succeed if the function returns a promise that is rejected', function () {
+            return expect(function () {
+                return expect.promise(function () {
+                    throw new Error('foo');
+                });
+            }, 'when rejected to be an object');
+        });
+
+        it('should fail if the function returns a promise that is fulfilled', function () {
+            expect(function () {
+                return expect(function () {
+                    return expect.promise.resolve(123);
+                }, 'when rejected to be an object');
+            }, 'to throw',
+                "expected\n" +
+                "function () {\n" +
+                "  return expect.promise.resolve(123);\n" +
+                "}\n" +
+                "when rejected to be an object\n" +
+                "  expected Promise (fulfilled) => 123 when rejected to be an object\n" +
+                "    Promise (fulfilled) => 123 unexpectedly fulfilled with 123"
+            );
+        });
+
+        it('should succeed if the function throws synchronously', function () {
+            return expect(function () {
+                throw new Error('foo');
+            }, 'when rejected to be an', Error);
+        });
+    });
 });

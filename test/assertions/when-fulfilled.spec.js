@@ -90,4 +90,42 @@ describe('when fulfilled adverbial assertion', function () {
                 "  +quux"
         );
     });
+
+    describe('when passed a function', function () {
+        it('should succeed if the function returns a promise that succeeds', function () {
+            return expect(function () {
+                return expect.promise(function () {
+                    return 123;
+                });
+            }, 'when fulfilled to be a number');
+        });
+
+        it('should fail if the function returns a promise that fails', function () {
+            expect(function () {
+                return expect(function () {
+                    return expect.promise.reject(new Error('foo'));
+                }, 'when fulfilled to be a number');
+            }, 'to throw',
+                "expected\n" +
+                "function () {\n" +
+                "  return expect.promise.reject(new Error('foo'));\n" +
+                "}\n" +
+                "when fulfilled to be a number\n" +
+                "  expected Promise (rejected) => Error('foo') when fulfilled to be a number\n" +
+                "    Promise (rejected) => Error('foo') unexpectedly rejected with Error('foo')"
+            );
+        });
+
+        it('should fail if the function throws synchronously', function () {
+            expect(function () {
+                return expect(function () {
+                    throw new Error('foo');
+                }, 'when fulfilled to be a number');
+            }, 'to throw',
+                "expected function () { throw new Error('foo'); } when fulfilled to be a number\n" +
+                "  expected Promise (rejected) => Error('foo') when fulfilled to be a number\n" +
+                "    Promise (rejected) => Error('foo') unexpectedly rejected with Error('foo')"
+            );
+        });
+    });
 });
