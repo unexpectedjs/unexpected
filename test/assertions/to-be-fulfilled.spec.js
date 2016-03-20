@@ -36,6 +36,12 @@ describe('to be fulfilled assertion', function () {
             }), 'to be fulfilled with', 123);
         });
 
+        it('should forward the fulfillment value', function () {
+            return expect(expect.promise.resolve(123), 'to be fulfilled with', 123).then(function (value) {
+                expect(value, 'to equal', 123);
+            });
+        });
+
         it('should fail if the promise is resolved with a value that does not satisfy the argument', function () {
             return expect(
                 expect(new Promise(function (resolve, reject) {
