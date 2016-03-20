@@ -41,7 +41,7 @@ describe('empty assertion', function () {
                 "}");
 
         expect(function () {
-             expect({}, 'not to be empty');
-         }, 'to throw exception', "expected {} not to be empty");
+            expect({}, 'not to be empty');
+        }, 'to throw exception', "expected {} not to be empty");
     });
 });

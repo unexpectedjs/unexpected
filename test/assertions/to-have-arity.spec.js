@@ -4,8 +4,6 @@ describe('to have arity assertion', function () {
         expect(function () {}, 'to have arity', 0);
         expect(function (a) {}, 'to have arity', 1);
         expect(function (a, b) {}, 'to have arity', 2);
-        /*jshint evil:true*/
         expect(new Function('a', 'return 1'), 'to have arity', 1);
-        /*jshint evil:false*/
     });
 });

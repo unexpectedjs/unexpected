@@ -346,7 +346,7 @@ describe('inspect', function () {
     });
 
     it('should bail out of removing the indentation of functions that use multiline string literals', function () {
-        /*jshint multistr:true*/
+        /*eslint-disable no-multi-str*/
         expect(function () {
             var foo = 'bar';
             var quux = 'baz\
@@ -359,7 +359,7 @@ describe('inspect', function () {
                '            blah\';\n' +
                '            foo = foo + quux;\n' +
                '        }');
-        /*jshint multistr:false*/
+        /*eslint-enable no-multi-str*/
     });
 
     it('should bail out of removing the indentation of one-liner functions', function () {

@@ -15,6 +15,7 @@
   },
   "scripts": {
     "test": "make test && make test-phantomjs",
+    "lint": "eslint .",
     "generate-site": "generate-site --require ./bootstrap-unexpected-markdown.js",
     "update-examples": "generate-site --require ./bootstrap-unexpected-markdown.js --update-examples",
     "preversion": "test -n \"${IS_MAKE_RELEASE}\" || (echo Please run make release instead && exit 1)"
@@ -35,10 +36,10 @@
     "chewbacca": "1.8.1",
     "coveralls": "2.11.1",
     "es5-shim": "4.0.5",
+    "eslint": "2.4.0",
+    "eslint-config-onelint": "1.0.2",
     "istanbul": "0.3.16",
     "jasmine": "2.2.1",
-    "jscs": "2.1.1",
-    "jshint": "2.9.1",
     "minimist": "1.1.1",
     "mocha": "2.4.5",
     "mocha-phantomjs-papandreou": "4.0.2-patch1",
