@@ -51,7 +51,7 @@ Here's a partial list of plugins for Unexpected:
   [sinon](http://sinonjs.org/) spies.
 * [unexpected-stream](http://unexpected.js.org/unexpected-stream/): Assertions for
   node.js streams.
-
+* [unexpected-webdriver](https://github.com/LiquidLabsGmbH/unexpected-webdriver): Assertions for Selenium WebDriver.
 
 ## Installation
 
