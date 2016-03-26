@@ -1718,4 +1718,25 @@ describe('to satisfy assertion', function () {
             "}"
         );
     });
+
+    describe('when matching the constructor property of an object', function () {
+        function Foo() {}
+
+        // Fails because functions aren't modelled as objects:
+        it.skip('should succeed', function () {
+            expect(new Foo(), 'to satisfy', { constructor: { name: 'Foo' } });
+        });
+
+        it('fail with a diff', function () {
+            expect(function () {
+                expect(new Foo(), 'to satisfy', { constructor: 123 });
+            }, 'to throw',
+                "expected Foo({}) to satisfy { constructor: 123 }\n" +
+                "\n" +
+                "Foo({\n" +
+                "  constructor: function Foo() {} // should equal 123\n" +
+                "})"
+            );
+        });
+    });
 });
