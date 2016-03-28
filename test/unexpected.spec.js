@@ -704,7 +704,7 @@ describe('unexpected', function () {
     });
 
     describe('with the next assertion as a continuation', function () {
-        it.skip('should render the entire string as an assertion when it fails', function () {
+        describe('with multiple compound assertions', function () {
             var clonedExpect = expect.clone()
                 .addAssertion('<number> [when] incremented <assertion?>', function (expect, subject) {
                     return expect.shift(subject + 1);
@@ -713,17 +713,33 @@ describe('unexpected', function () {
                     return expect.shift(subject + value);
                 });
 
-            expect(function () {
-                return clonedExpect(
-                    2,
-                    'when incremented when added to', 1,
-                    'when incremented when added to', 1,
-                    'to satisfy', 10
+            it('should several compound assertions separated by an assertion argument', function () {
+                expect(function () {
+                    return clonedExpect(
+                        2,
+                        'when incremented when added to', 1,
+                        'when incremented when added to', 1,
+                        'to satisfy', 10
+                    );
+                }, 'to error',
+                    "expected 2\n" +
+                    "when incremented when added to 1 when incremented when added to 1 to satisfy 10"
                 );
-            }, 'to error',
-                "expected 2\n" +
-                "when incremented when added to 1 when incremented when added to 1 to satisfy 10"
-            );
+            });
+
+            it('should several long compound assertions separated by an assertion argument', function () {
+                expect(function () {
+                    return clonedExpect(
+                        2,
+                        'when incremented when incremented when incremented when added to', 1,
+                        'when incremented when incremented when incremented when added to', 1,
+                        'to satisfy', 5
+                    );
+                }, 'to error',
+                    "expected 2\n" +
+                    "when incremented when incremented when incremented when added to 1 when incremented when incremented when incremented when added to 1 to satisfy 5"
+                );
+            });
         });
 
         describe('with "to have items satisfying" followed by another assertion', function () {
