@@ -704,6 +704,28 @@ describe('unexpected', function () {
     });
 
     describe('with the next assertion as a continuation', function () {
+        it.skip('should render the entire string as an assertion when it fails', function () {
+            var clonedExpect = expect.clone()
+                .addAssertion('<number> [when] incremented <assertion?>', function (expect, subject) {
+                    return expect.shift(subject + 1);
+                })
+                .addAssertion('<number> [when] added to <number> <assertion?>', function (expect, subject, value) {
+                    return expect.shift(subject + value);
+                });
+
+            expect(function () {
+                return clonedExpect(
+                    2,
+                    'when incremented when added to', 1,
+                    'when incremented when added to', 1,
+                    'to satisfy', 10
+                );
+            }, 'to error',
+                "expected 2\n" +
+                "when incremented when added to 1 when incremented when added to 1 to satisfy 10"
+            );
+        });
+
         describe('with "to have items satisfying" followed by another assertion', function () {
             it('should succeed', function () {
                 return expect([ 123 ], 'to have items satisfying to be a number');
