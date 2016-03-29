@@ -23,8 +23,15 @@ if (typeof process === 'object') {
             });
 
             it('should report that a promise was created, but not returned by the it block', function () {
-                return expect('forgotToReturnPendingPromiseFromItBlock', 'executed through mocha').spread(function (err, stdout, stderr) {
+                return expect('forgotToReturnPendingPromiseFromSuccessfulItBlock', 'executed through mocha').spread(function (err, stdout, stderr) {
                     expect(stdout, 'to contain', 'Error: should call the callback: You have created a promise that was not returned from the it block');
+                    expect(err, 'to satisfy', { code: 1 });
+                });
+            });
+
+            it('should not report that a promise was created if the test already failed synchronously', function () {
+                return expect('forgotToReturnPendingPromiseFromFailingItBlock', 'executed through mocha').spread(function (err, stdout, stderr) {
+                    expect(stdout, 'not to contain', 'should call the callback: You have created a promise that was not returned from the it block');
                     expect(err, 'to satisfy', { code: 1 });
                 });
             });
@@ -64,10 +71,17 @@ if (typeof process === 'object') {
                 });
             });
 
-            it('should report that a promise was created, but not returned by the it block', function () {
-                return expect('forgotToReturnPendingPromiseFromItBlock', 'executed through jasmine').spread(function (err, stdout, stderr) {
-                    expect(err, 'to satisfy', { code: 1 });
+            it('should report that a promise was created, but not returned by the it block when the test ', function () {
+                return expect('forgotToReturnPendingPromiseFromSuccessfulItBlock', 'executed through jasmine').spread(function (err, stdout, stderr) {
                     expect(stdout, 'to contain', 'should call the callback: You have created a promise that was not returned from the it block');
+                    expect(err, 'to satisfy', { code: 1 });
+                });
+            });
+
+            it('should not report that a promise was created if the test already failed synchronously', function () {
+                return expect('forgotToReturnPendingPromiseFromFailingItBlock', 'executed through jasmine').spread(function (err, stdout, stderr) {
+                    expect(stdout, 'not to contain', 'should call the callback: You have created a promise that was not returned from the it block');
+                    expect(err, 'to satisfy', { code: 1 });
                 });
             });
         });
