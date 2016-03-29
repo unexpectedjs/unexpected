@@ -26,7 +26,7 @@
     "array-changes-async": "2.1.0",
     "detect-indent": "3.0.1",
     "diff": "1.1.0",
-    "leven": "1.0.0",
+    "leven": "2.0.0",
     "magicpen": "5.9.0",
     "proxyquire": "1.7.4",
     "unexpected-bluebird": "2.9.34"
