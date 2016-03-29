@@ -35,7 +35,7 @@
     "browserify": "5.9.1",
     "bundle-collapser": "1.1.0",
     "chewbacca": "1.8.1",
-    "coveralls": "2.11.1",
+    "coveralls": "^2.11.9",
     "es5-shim": "4.0.5",
     "eslint": "2.4.0",
     "eslint-config-onelint": "1.0.2",
