@@ -246,5 +246,15 @@ describe('expect.promise', function () {
                 setImmediate(run());
             });
         });
+
+        it('should not fulfill the promise until the outer function has returned', function () {
+            return expect(
+                expect.promise(function (run) {
+                    run()();
+                    throw new Error('foo');
+                }),
+                'to be rejected with', 'foo'
+            );
+        });
     });
 });
