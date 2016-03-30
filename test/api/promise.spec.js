@@ -256,5 +256,14 @@ describe('expect.promise', function () {
                 'to be rejected with', 'foo'
             );
         });
+
+        it('should provide a run function that preserves the return value of the supplied function', function () {
+            return expect.promise(function (run) {
+                var runner = run(function () {
+                    return 123;
+                });
+                expect(runner(), 'to equal', 123);
+            });
+        });
     });
 });
