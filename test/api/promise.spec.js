@@ -239,4 +239,12 @@ describe('expect.promise', function () {
             });
         });
     });
+
+    describe('called with a function that takes a single ("run") parameter', function () {
+        it('should allow providing an empty function', function () {
+            return expect.promise(function (run) {
+                setImmediate(run());
+            });
+        });
+    });
 });
