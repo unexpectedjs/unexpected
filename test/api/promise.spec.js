@@ -239,4 +239,31 @@ describe('expect.promise', function () {
             });
         });
     });
+
+    describe('called with a function that takes a single ("run") parameter', function () {
+        it('should allow providing an empty function', function () {
+            return expect.promise(function (run) {
+                setImmediate(run());
+            });
+        });
+
+        it('should not fulfill the promise until the outer function has returned', function () {
+            return expect(
+                expect.promise(function (run) {
+                    run()();
+                    throw new Error('foo');
+                }),
+                'to be rejected with', 'foo'
+            );
+        });
+
+        it('should provide a run function that preserves the return value of the supplied function', function () {
+            return expect.promise(function (run) {
+                var runner = run(function () {
+                    return 123;
+                });
+                expect(runner(), 'to equal', 123);
+            });
+        });
+    });
 });
