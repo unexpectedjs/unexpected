@@ -3454,6 +3454,9 @@ function isAssertionArg(arg) {
 }
 
 function findSuffixAssertions(assertionString, assertions) {
+    if (typeof assertionString !== 'string') {
+        return null;
+    }
     if (assertions[assertionString]) {
         return assertions[assertionString];
     }
