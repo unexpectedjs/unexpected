@@ -204,12 +204,12 @@
     "url": "/assertions/number/to-be-finite/"
   },
   {
-    "label": "to be greater than (number)",
-    "url": "/assertions/number/to-be-greater-than/"
-  },
-  {
     "label": "to be greater than or equal to (number)",
     "url": "/assertions/number/to-be-greater-than-or-equal-to/"
+  },
+  {
+    "label": "to be greater than (number)",
+    "url": "/assertions/number/to-be-greater-than/"
   },
   {
     "label": "to be infinite (number)",
@@ -240,12 +240,12 @@
     "url": "/assertions/object/to-be-canonical/"
   },
   {
-    "label": "to have key (object)",
-    "url": "/assertions/object/to-have-key/"
-  },
-  {
     "label": "to be empty (object)",
     "url": "/assertions/object/to-be-empty/"
+  },
+  {
+    "label": "to have key (object)",
+    "url": "/assertions/object/to-have-key/"
   },
   {
     "label": "to have keys satisfying (object)",
