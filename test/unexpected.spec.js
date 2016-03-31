@@ -844,4 +844,15 @@ describe('unexpected', function () {
             clonedExpect(123, 'to foo', 'to bar', 'bogus');
         }, 'to throw', 'expected 123 to foo to bar bogus');
     });
+
+    it('should render the error message correctly when a failing assertion is followed by an assertion where a non-string is where an assertion should have been', function () {
+        expect(function () {
+            expect(function () { return 123; }, 'when called when called with', 'abc', /123/);
+        }, 'to throw',
+            "expected function () { return 123; } when called when called with 'abc', /123/\n" +
+            "  expected 123 when called with 'abc', /123/\n" +
+            "    No matching assertion, did you mean:\n" +
+            "    <function> [when] called with <array-like> <assertion?>"
+        );
+    });
 });
