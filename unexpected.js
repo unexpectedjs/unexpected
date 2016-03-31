@@ -29,9 +29,9 @@ module.exports = function AssertionString(text) {
 },{}],2:[function(require,module,exports){
 var createStandardErrorMessage = require(5);
 var utils = require(19);
-var magicpen = require(45);
+var magicpen = require(40);
 var extend = utils.extend;
-var leven = require(41);
+var leven = require(36);
 var makePromise = require(11);
 var makeAndMethod = require(9);
 var isPendingPromise = require(8);
@@ -197,12 +197,9 @@ function writeGroupEvaluationsToOutput(expect, output, groupEvaluations) {
                     output.append(err.getErrorMessage(output));
                 });
             } else {
-                var style;
                 if (isRejected) {
-                    style = 'error';
                     output.error('⨯ ');
                 } else {
-                    style = 'success';
                     output.success('✓ ');
                 }
 
@@ -348,7 +345,7 @@ Unexpected.prototype.expandTypeAlternations = function (assertion) {
             } else if (arg.type.is('assertion')) {
                 result.push([
                     { type: arg.type, minimum: 1, maximum: 1 },
-                    { type: that.typeByName['any'], minimum: 0, maximum: Infinity }
+                    { type: that.typeByName.any, minimum: 0, maximum: Infinity }
                 ]);
                 result.push([
                     { type: that.typeByName['expect.it'], minimum: 1, maximum: 1 }
@@ -496,15 +493,13 @@ Unexpected.prototype.fail = function (arg) {
     }
 
     var error = new UnexpectedError(this.expect);
-
     if (typeof arg === 'function') {
         error.errorMode = 'bubble';
         error.output = arg;
     } else if (arg && typeof arg === 'object') {
-        if (arg.message !== 'undefined') {
+        if (typeof arg.message !== 'undefined') {
             error.errorMode = 'bubble';
         }
-
         error.output = function (output) {
             if (typeof arg.message !== 'undefined') {
                 if (arg.message.isMagicPen) {
@@ -518,20 +513,13 @@ Unexpected.prototype.fail = function (arg) {
                 output.error('Explicit failure');
             }
         };
-        var additionalProperties = {};
-        if (arg && typeof arg === 'object') {
-            Object.keys(arg).forEach(function (key) {
-                var value = arg[key];
-                if (key === 'diff') {
-                    additionalProperties.createDiff = value;
-                } else if (key !== 'message') {
-                    additionalProperties[key] = value;
-                }
-            });
-        }
-
-        Object.keys(additionalProperties).forEach(function (key) {
-            error[key] = additionalProperties[key];
+        Object.keys(arg).forEach(function (key) {
+            var value = arg[key];
+            if (key === 'diff') {
+                error.createDiff = value;
+            } else if (key !== 'message') {
+                error[key] = value;
+            }
         });
     } else {
         var placeholderArgs;
@@ -619,7 +607,7 @@ Unexpected.prototype.addAssertion = function (patternOrPatterns, handler) {
     patterns.forEach(function (pattern) {
         var assertionDeclarations = that.parseAssertion(pattern);
         assertionDeclarations.forEach(function (assertionDeclaration) {
-            ensureValidAssertionPattern(assertionDeclaration.assertion);
+            ensureValidUseOfParenthesesOrBrackets(assertionDeclaration.assertion);
             var expandedAssertions = expandAssertion(assertionDeclaration.assertion);
             expandedAssertions.forEach(function (expandedAssertion) {
                 Object.keys(expandedAssertion.flags).forEach(function (flag) {
@@ -1434,21 +1422,6 @@ function ensureValidUseOfParenthesesOrBrackets(pattern) {
     }
 }
 
-function ensureValidAssertionPattern(pattern) {
-    if (typeof pattern !== 'string' || pattern === '') {
-        throw new Error("Assertion patterns must be a non-empty string");
-    }
-    if (/^\(?<[a-z.-]+>/.test(pattern)) {
-        throw new Error("Assertion patterns cannot use type signature syntax (reserved for future expansion), ^\\(?<[a-z.-]+>");
-    }
-
-    if (pattern.match(/^\s|\s$/)) {
-        throw new Error("Assertion patterns can't start or end with whitespace");
-    }
-
-    ensureValidUseOfParenthesesOrBrackets(pattern);
-}
-
 module.exports = Unexpected;
 
 },{}],3:[function(require,module,exports){
@@ -1760,7 +1733,7 @@ module.exports = UnexpectedError;
 /*global setTimeout*/
 var utils = require(19);
 var arrayChanges = require(24);
-var arrayChangesAsync = require(23);
+var arrayChangesAsync = require(22);
 var throwIfNonUnexpectedError = require(16);
 var objectIs = utils.objectIs;
 var isRegExp = utils.isRegExp;
@@ -2619,11 +2592,6 @@ module.exports = function (expect) {
         });
     });
 
-    expect.addAssertion('<binaryArray> to [exhaustively] satisfy <binaryArray>', function (expect, subject, value) {
-        expect(subject, 'to equal', value);
-    });
-
-
     if (typeof Buffer !== 'undefined') {
         expect.addAssertion('<Buffer> [when] decoded as <string> <assertion?>', function (expect, subject, value) {
             return expect.shift(subject.toString(value));
@@ -3177,15 +3145,33 @@ module.exports = function (expect) {
         });
     });
 
+    expect.addAssertion('<function> to be rejected', function (expect, subject) {
+        expect.errorMode = 'nested';
+        return expect(expect.promise(function () {
+            return subject();
+        }), 'to be rejected');
+    });
+
     expect.addAssertion('<Promise> to be rejected with <any>', function (expect, subject, value) {
         expect.errorMode = 'nested';
         return expect(subject, 'to be rejected').then(function (err) {
             if (err && err._isUnexpected && (typeof value === 'string' || isRegExp(value))) {
-                return expect(err, 'to have text message', value);
+                return expect(err, 'to have text message', value).then(function () {
+                    return err;
+                });
             } else {
-                return expect(err, 'to satisfy', value);
+                return expect(err, 'to satisfy', value).then(function () {
+                    return err;
+                });
             }
         });
+    });
+
+    expect.addAssertion('<function> to be rejected with <any>', function (expect, subject, value) {
+        expect.errorMode = 'nested';
+        return expect(expect.promise(function () {
+            return subject();
+        }), 'to be rejected with', value);
     });
 
     expect.addAssertion('<Promise> to be fulfilled', function (expect, subject) {
@@ -3204,11 +3190,27 @@ module.exports = function (expect) {
         });
     });
 
+    expect.addAssertion('<function> to be fulfilled', function (expect, subject) {
+        expect.errorMode = 'nested';
+        return expect(expect.promise(function () {
+            return subject();
+        }), 'to be fulfilled');
+    });
+
     expect.addAssertion('<Promise> to be fulfilled with <any>', function (expect, subject, value) {
         expect.errorMode = 'nested';
         return expect(subject, 'to be fulfilled').then(function (fulfillmentValue) {
-            return expect(fulfillmentValue, 'to satisfy', value);
+            return expect(fulfillmentValue, 'to satisfy', value).then(function () {
+                return fulfillmentValue;
+            });
         });
+    });
+
+    expect.addAssertion('<function> to be fulfilled with <any>', function (expect, subject, value) {
+        expect.errorMode = 'nested';
+        return expect(expect.promise(function () {
+            return subject();
+        }), 'to be fulfilled with', value);
     });
 
     expect.addAssertion('<Promise> when rejected <assertion>', function (expect, subject, nextAssertion) {
@@ -3236,6 +3238,13 @@ module.exports = function (expect) {
         });
     });
 
+    expect.addAssertion('<function> when rejected <assertion>', function (expect, subject) {
+        expect.errorMode = 'nested';
+        return expect.apply(expect, [expect.promise(function () {
+            return subject();
+        }), 'when rejected'].concat(Array.prototype.slice.call(arguments, 2)));
+    });
+
     expect.addAssertion('<Promise> when fulfilled <assertion>', function (expect, subject, nextAssertion) {
         expect.errorMode = 'nested';
         return expect.promise(function () {
@@ -3258,6 +3267,13 @@ module.exports = function (expect) {
                 }
             });
         });
+    });
+
+    expect.addAssertion('<function> when fulfilled <assertion>', function (expect, subject) {
+        expect.errorMode = 'nested';
+        return expect.apply(expect, [expect.promise(function () {
+            return subject();
+        }), 'when fulfilled'].concat(Array.prototype.slice.call(arguments, 2)));
     });
 
     expect.addAssertion('<function> to call the callback', function (expect, subject) {
@@ -3338,7 +3354,7 @@ module.exports = function (expect) {
     });
 };
 
-}).call(this,require(27).Buffer)
+}).call(this,require(26).Buffer)
 },{}],5:[function(require,module,exports){
 var AssertionString = require(1);
 
@@ -3435,6 +3451,20 @@ var utils = require(19);
 
 function isAssertionArg(arg) {
     return arg.type.is('assertion');
+}
+
+function findSuffixAssertions(assertionString, assertions) {
+    if (assertions[assertionString]) {
+        return assertions[assertionString];
+    }
+    var tokens = assertionString.split(' ');
+    for (var n = tokens.length - 1 ; n > 0 ; n -= 1) {
+        var suffixAssertions = assertions[tokens.slice(n).join(' ')];
+        if (findSuffixAssertions(tokens.slice(0, n).join(' '), assertions) && suffixAssertions) {
+            return suffixAssertions;
+        }
+    }
+    return null;
 }
 
 module.exports = function createWrappedExpectProto(unexpected) {
@@ -3600,12 +3630,12 @@ module.exports = function createWrappedExpectProto(unexpected) {
                 OUTER: while (true) {
                     if (currentAssertionRule.args.length > 1 && isAssertionArg(currentAssertionRule.args[currentAssertionRule.args.length - 2])) {
                         assertionIndices.push(offset + currentAssertionRule.args.length - 2);
-                        var assertions = unexpected.assertions[args[offset + currentAssertionRule.args.length - 2]];
-                        if (assertions) {
-                            for (var i = 0 ; i < assertions.length ; i += 1) {
-                                if (assertions[i].args.some(isAssertionArg)) {
+                        var suffixAssertions = findSuffixAssertions(args[offset + currentAssertionRule.args.length - 2], unexpected.assertions);
+                        if (suffixAssertions) {
+                            for (var i = 0 ; i < suffixAssertions.length ; i += 1) {
+                                if (suffixAssertions[i].args.some(isAssertionArg)) {
                                     offset += currentAssertionRule.args.length - 1;
-                                    currentAssertionRule = assertions[i];
+                                    currentAssertionRule = suffixAssertions[i];
                                     continue OUTER;
                                 }
                             }
@@ -3655,7 +3685,7 @@ if (typeof window !== 'undefined' && typeof window.location !== 'undefined') {
 }
 module.exports = defaultDepth;
 
-}).call(this,require(31))
+}).call(this,require(30))
 },{}],8:[function(require,module,exports){
 module.exports = function isPendingPromise(obj) {
     return obj && typeof obj.then === 'function' && typeof obj.isPending === 'function' && obj.isPending();
@@ -3724,9 +3754,10 @@ function makePromise(body) {
     return new Promise(function (resolve, reject) {
         var runningTasks = 0;
         var resolvedValue;
+        var outerFunctionHasReturned = false;
 
         function fulfillIfDone() {
-            if (runningTasks === 0) {
+            if (outerFunctionHasReturned && runningTasks === 0) {
                 resolve(resolvedValue);
             }
         }
@@ -3741,23 +3772,26 @@ function makePromise(body) {
             runningTasks += 1;
             return function () {
                 runningTasks -= 1;
+                var result;
                 try {
-                    var result = cb.apply(null, arguments);
-                    result = oathbreaker(result);
-                    if (isPromise(result)) {
-                        runningTasks += 1;
-                        result.then(function (value) {
-                            noteResolvedValue(value);
-                            runningTasks -= 1;
-                            fulfillIfDone();
-                        }, reject);
-                    } else {
-                        noteResolvedValue(result);
+                    if (typeof cb === 'function') {
+                        result = oathbreaker(cb.apply(null, arguments));
+                        if (isPromise(result)) {
+                            runningTasks += 1;
+                            result.then(function (value) {
+                                noteResolvedValue(value);
+                                runningTasks -= 1;
+                                fulfillIfDone();
+                            }, reject);
+                        } else {
+                            noteResolvedValue(result);
+                        }
                     }
                 } catch (e) {
                     return reject(e);
                 }
                 fulfillIfDone();
+                return result;
             };
         };
 
@@ -3776,6 +3810,7 @@ function makePromise(body) {
         } catch (e) {
             return reject(e);
         }
+        outerFunctionHasReturned = true;
         fulfillIfDone();
     });
 }
@@ -3846,18 +3881,21 @@ function registerAfterEachHook() {
         try {
             afterEach(function () {
                 var error;
+                var testPassed = true;
                 if (pendingPromisesForTheCurrentTest.some(function (promise) {return promise.isPending();})) {
                     var displayName;
                     if (this.currentTest) {
                         // mocha
+                        testPassed = this.currentTest.state === 'passed';
                         displayName = this.currentTest.title;
-                    } else if (currentSpec) {
+                    } else if (typeof currentSpec === 'object') {
+                        testPassed = currentSpec.failedExpectations.length === 0;
                         displayName = currentSpec.fullName;
                     }
                     error = new Error(displayName + ': You have created a promise that was not returned from the it block');
                 }
                 pendingPromisesForTheCurrentTest = [];
-                if (error) {
+                if (error && testPassed) {
                     throw error;
                 }
             });
@@ -3908,10 +3946,8 @@ module.exports = function oathbreaker(value) {
 
     var evaluated = false;
     var error;
-    var resolvedValue;
     value.then(function (obj) {
         evaluated = true;
-        resolvedValue = obj;
         onResolve(value);
     }, function (err) {
         evaluated = true;
@@ -3941,7 +3977,7 @@ module.exports = /([\x00-\x09\x0B-\x1F\x7F-\x9F\xAD\u0378\u0379\u037F-\u0383\u03
 
 },{}],15:[function(require,module,exports){
 var utils = require(19);
-var stringDiff = require(40);
+var stringDiff = require(35);
 var specialCharRegExp = require(14);
 
 module.exports = function (expect) {
@@ -4036,9 +4072,7 @@ module.exports = function (expect) {
     expect.addStyle('property', function (key, inspectedValue, isArrayLike) {
         var keyOmitted = false;
         var isSymbol;
-        /*jshint ignore:start*/
         isSymbol = typeof key === 'symbol';
-        /*jshint ignore:end*/
         if (isSymbol) {
             this.text('[').sp().appendInspected(key).sp().text(']').text(':');
         } else {
@@ -4078,34 +4112,30 @@ module.exports = function (expect) {
         var pen = this.getContentFromArguments(arguments);
         var height = pen.size().height;
 
-        if (height > 0) {
-            this.block(function () {
-                for (var i = 0; i < height; i += 1) {
-                    if (0 < i) {
-                        this.nl();
-                    }
-                    this.error('//');
+        this.block(function () {
+            for (var i = 0; i < height; i += 1) {
+                if (0 < i) {
+                    this.nl();
                 }
-            });
-            this.sp().block(pen);
-        }
+                this.error('//');
+            }
+        });
+        this.sp().block(pen);
     });
 
     expect.addStyle('commentBlock', function () {
         var pen = this.getContentFromArguments(arguments);
         var height = pen.size().height;
 
-        if (height > 0) {
-            this.block(function () {
-                for (var i = 0; i < height; i += 1) {
-                    if (0 < i) {
-                        this.nl();
-                    }
-                    this.jsComment('//');
+        this.block(function () {
+            for (var i = 0; i < height; i += 1) {
+                if (0 < i) {
+                    this.nl();
                 }
-            });
-            this.sp().block(pen);
-        }
+                this.jsComment('//');
+            }
+        });
+        this.sp().block(pen);
     });
 
     expect.addStyle('removedHighlight', function (content) {
@@ -4233,7 +4263,7 @@ module.exports = function (expect) {
                 this
                     .text('.')
                     .jsFunctionName('block').text('(').jsKeyword('function').text(' () {');
-                if (lineEntry.args) {
+                if (lineEntry.args && lineEntry.args.length > 0 && lineEntry.args[0] && lineEntry.args[0].length > 0) {
                     this
                         .nl()
                         .indentLines()
@@ -4413,8 +4443,8 @@ var utils = require(19);
 var isRegExp = utils.isRegExp;
 var leftPad = utils.leftPad;
 var arrayChanges = require(24);
-var leven = require(41);
-var detectIndent = require(36);
+var leven = require(36);
+var detectIndent = require(31);
 var defaultDepth = require(7);
 var AssertionString = require(1);
 
@@ -4461,10 +4491,7 @@ module.exports = function (expect) {
         expect.addType({
             name: 'Symbol',
             identify: function (obj) {
-                // We're running jshint in es3 mode so it does not accept typeof x === 'symbol':
-                // jshint ignore:start
                 return typeof obj === 'symbol';
-                // jshint ignore:end
             },
             inspect: function (obj, depth, output, inspect) {
                 output
@@ -4485,10 +4512,8 @@ module.exports = function (expect) {
             var aIsSymbol, bIsSymbol;
             var aString = a;
             var bString = b;
-            // jshint ignore:start
             aIsSymbol = typeof a === 'symbol';
             bIsSymbol = typeof b === 'symbol';
-            // jshint ignore:end
             if (aIsSymbol) {
                 if (bIsSymbol) {
                     aString = a.toString();
@@ -4519,7 +4544,7 @@ module.exports = function (expect) {
         },
         prefix: function (output, obj) {
             var constructor = obj.constructor;
-            var constructorName = constructor && constructor !== Object && utils.getFunctionName(constructor);
+            var constructorName = constructor && typeof constructor === 'function' && constructor !== Object && utils.getFunctionName(constructor);
             if (constructorName && constructorName !== 'Object') {
                 output.text(constructorName + '(');
             }
@@ -4528,7 +4553,7 @@ module.exports = function (expect) {
         suffix: function (output, obj) {
             output.text('}');
             var constructor = obj.constructor;
-            var constructorName = constructor && constructor !== Object && utils.getFunctionName(constructor);
+            var constructorName = constructor && typeof constructor === 'function' && constructor !== Object && utils.getFunctionName(constructor);
             if (constructorName && constructorName !== 'Object') {
                 output.text(')');
             }
@@ -5510,7 +5535,7 @@ module.exports = function (expect) {
     });
 };
 
-}).call(this,require(27).Buffer)
+}).call(this,require(26).Buffer)
 },{}],18:[function(require,module,exports){
 (function (process){
 /*global window*/
@@ -5524,16 +5549,16 @@ if (typeof process !== 'undefined' && process.env && process.env.UNEXPECTED_FULL
 }
 module.exports = useFullStackTrace;
 
-}).call(this,require(31))
+}).call(this,require(30))
 },{}],19:[function(require,module,exports){
-/* jshint proto:true */
+/* eslint-disable no-proto */
 var canSetPrototype = Object.setPrototypeOf || ({ __proto__: [] } instanceof Array);
 
 var setPrototypeOf = Object.setPrototypeOf || function setPrototypeOf(obj, proto) {
     obj.__proto__ = proto;
     return obj;
 };
-/* jshint proto:false */
+/* eslint-enable no-proto */
 
 var utils = module.exports = {
     objectIs: Object.is || function (a, b) {
@@ -5656,7 +5681,7 @@ var utils = module.exports = {
         function visit(item) {
             if (Array.isArray(item)) {
                 item.forEach(visit);
-            } else if (!index[item] && (!filterFn || filterFn(item))) {
+            } else if (!Object.prototype.hasOwnProperty.call(index, item) && (!filterFn || filterFn(item))) {
                 index[item] = true;
                 uniqueStringsAndSymbols.push(item);
             }
@@ -5670,11 +5695,7 @@ var utils = module.exports = {
 
     uniqueNonNumericalStringsAndSymbols: function () { // ...
         return utils.uniqueStringsAndSymbols(function (stringOrSymbol) {
-            var isSymbol;
-            /*jshint ignore:start*/
-            isSymbol = typeof stringOrSymbol === 'symbol';
-            /*jshint ignore:end*/
-            return isSymbol || !utils.numericalRegExp.test(stringOrSymbol);
+            return typeof stringOrSymbol === 'symbol' || !utils.numericalRegExp.test(stringOrSymbol);
         }, Array.prototype.slice.call(arguments));
     },
 
@@ -5725,70 +5746,12 @@ module.exports = require(2).create()
 
 // Add an inspect method to all the promises we return that will make the REPL, console.log, and util.inspect render it nicely in node.js:
 require(54).prototype.inspect = function () {
-    return module.exports.createOutput(require(45).defaultFormat).appendInspected(this).toString();
+    return module.exports.createOutput(require(40).defaultFormat).appendInspected(this).toString();
 };
 
 },{}],22:[function(require,module,exports){
-'use strict';
-
-var styles = module.exports = {
-	modifiers: {
-		reset: [0, 0],
-		bold: [1, 22], // 21 isn't widely supported and 22 does the same thing
-		dim: [2, 22],
-		italic: [3, 23],
-		underline: [4, 24],
-		inverse: [7, 27],
-		hidden: [8, 28],
-		strikethrough: [9, 29]
-	},
-	colors: {
-		black: [30, 39],
-		red: [31, 39],
-		green: [32, 39],
-		yellow: [33, 39],
-		blue: [34, 39],
-		magenta: [35, 39],
-		cyan: [36, 39],
-		white: [37, 39],
-		gray: [90, 39]
-	},
-	bgColors: {
-		bgBlack: [40, 49],
-		bgRed: [41, 49],
-		bgGreen: [42, 49],
-		bgYellow: [43, 49],
-		bgBlue: [44, 49],
-		bgMagenta: [45, 49],
-		bgCyan: [46, 49],
-		bgWhite: [47, 49]
-	}
-};
-
-// fix humans
-styles.colors.grey = styles.colors.gray;
-
-Object.keys(styles).forEach(function (groupName) {
-	var group = styles[groupName];
-
-	Object.keys(group).forEach(function (styleName) {
-		var style = group[styleName];
-
-		styles[styleName] = group[styleName] = {
-			open: '\u001b[' + style[0] + 'm',
-			close: '\u001b[' + style[1] + 'm'
-		};
-	});
-
-	Object.defineProperty(styles, groupName, {
-		value: group,
-		enumerable: false
-	});
-});
-
-},{}],23:[function(require,module,exports){
 /*global setTimeout */
-var arrayDiff = require(25);
+var arrayDiff = require(23);
 var MAX_STACK_DEPTH = 1000;
 
 function extend(target) {
@@ -6064,8 +6027,249 @@ module.exports = function arrayChanges(actual, expected, equal, similar, include
     });
 };
 
+},{}],23:[function(require,module,exports){
+
+module.exports = arrayDiff;
+
+var MAX_STACK_DEPTH = 1000;
+
+// Based on some rough benchmarking, this algorithm is about O(2n) worst case,
+// and it can compute diffs on random arrays of length 1024 in about 34ms,
+// though just a few changes on an array of length 1024 takes about 0.5ms
+
+arrayDiff.InsertDiff = InsertDiff;
+arrayDiff.RemoveDiff = RemoveDiff;
+arrayDiff.MoveDiff = MoveDiff;
+
+function InsertDiff(index, values) {
+    this.index = index;
+    this.values = values;
+}
+InsertDiff.prototype.type = 'insert';
+InsertDiff.prototype.toJSON = function() {
+    return {
+        type: this.type
+        , index: this.index
+        , values: this.values
+    };
+};
+
+function RemoveDiff(index, howMany) {
+    this.index = index;
+    this.howMany = howMany;
+}
+RemoveDiff.prototype.type = 'remove';
+RemoveDiff.prototype.toJSON = function() {
+    return {
+        type: this.type
+        , index: this.index
+        , howMany: this.howMany
+    };
+};
+
+function MoveDiff(from, to, howMany) {
+    this.from = from;
+    this.to = to;
+    this.howMany = howMany;
+}
+MoveDiff.prototype.type = 'move';
+MoveDiff.prototype.toJSON = function() {
+    return {
+        type: this.type
+        , from: this.from
+        , to: this.to
+        , howMany: this.howMany
+    };
+};
+
+function strictEqual(a, b, indexA, indexB, callback) {
+    return callback(a === b);
+}
+
+
+function arrayDiff(before, after, equalFn, callback) {
+    if (!equalFn) equalFn = strictEqual;
+
+    // Find all items in both the before and after array, and represent them
+    // as moves. Many of these "moves" may end up being discarded in the last
+    // pass if they are from an index to the same index, but we don't know this
+    // up front, since we haven't yet offset the indices.
+    //
+    // Also keep a map of all the indices accounted for in the before and after
+    // arrays. These maps are used next to create insert and remove diffs.
+    var beforeLength = before.length;
+    var afterLength = after.length;
+    var moves = [];
+    var beforeMarked = {};
+    var afterMarked = {};
+
+    function findMatching(beforeIndex, afterIndex, howMany, callback) {
+
+        beforeMarked[beforeIndex++] = afterMarked[afterIndex++] = true;
+        howMany++;
+
+        if (beforeIndex < beforeLength &&
+            afterIndex < afterLength &&
+            !afterMarked[afterIndex]) {
+
+            equalFn(before[beforeIndex], after[afterIndex], beforeIndex, afterIndex, function (areEqual) {
+                if (areEqual) {
+                    setTimeout(function () {
+                        findMatching(beforeIndex, afterIndex, howMany, callback);
+                    }, 0);
+                } else {
+                    callback(beforeIndex, afterIndex, howMany);
+                }
+            });
+        } else {
+            callback(beforeIndex, afterIndex, howMany);
+        }
+
+
+    }
+
+    function compare(beforeIndex, afterIndex, stackDepthRemaining, callback) {
+        if (afterIndex >= afterLength) {
+            beforeIndex++;
+            afterIndex = 0;
+        }
+        if (beforeIndex >= beforeLength) {
+            callback();
+            return;
+        }
+
+        if (!afterMarked[afterIndex]) {
+            equalFn(before[beforeIndex], after[afterIndex], beforeIndex, afterIndex, function (areEqual) {
+                if (areEqual) {
+
+                    var from = beforeIndex;
+                    var to = afterIndex;
+                    findMatching(beforeIndex, afterIndex, 0, function (newBeforeIndex, newAfterIndex, howMany) {
+
+                        moves.push(new MoveDiff(from, to, howMany));
+                        if (stackDepthRemaining) {
+                            compare(newBeforeIndex, 0, stackDepthRemaining - 1, callback);
+                        } else {
+                            setTimeout(function () {
+                                compare(newBeforeIndex, 0, MAX_STACK_DEPTH, callback);
+                            }, 0);
+                        }
+                    });
+                } else {
+                    if (stackDepthRemaining) {
+                        compare(beforeIndex, afterIndex + 1, stackDepthRemaining - 1, callback);
+                    } else {
+                        setTimeout(function () {
+                            compare(beforeIndex, afterIndex + 1, MAX_STACK_DEPTH, callback);
+                        }, 0);
+                    }
+                }
+            });
+        } else {
+            if (stackDepthRemaining) {
+                compare(beforeIndex, afterIndex + 1, stackDepthRemaining - 1, callback);
+            } else {
+                setTimeout(function () {
+                    compare(beforeIndex, afterIndex + 1, MAX_STACK_DEPTH, callback);
+                }, 0);
+            }
+        }
+    }
+
+    compare(0, 0, MAX_STACK_DEPTH, function () {
+
+        // Create a remove for all of the items in the before array that were
+        // not marked as being matched in the after array as well
+        var removes = [];
+        for (var beforeIndex = 0; beforeIndex < beforeLength;) {
+            if (beforeMarked[beforeIndex]) {
+                beforeIndex++;
+                continue;
+            }
+            var index = beforeIndex;
+            var howMany = 0;
+            while (beforeIndex < beforeLength && !beforeMarked[beforeIndex++]) {
+                howMany++;
+            }
+            removes.push(new RemoveDiff(index, howMany));
+        }
+
+        // Create an insert for all of the items in the after array that were
+        // not marked as being matched in the before array as well
+        var inserts = [];
+        for (var afterIndex = 0; afterIndex < afterLength;) {
+            if (afterMarked[afterIndex]) {
+                afterIndex++;
+                continue;
+            }
+            var index = afterIndex;
+            var howMany = 0;
+            while (afterIndex < afterLength && !afterMarked[afterIndex++]) {
+                howMany++;
+            }
+            var values = after.slice(index, index + howMany);
+            inserts.push(new InsertDiff(index, values));
+        }
+
+        var insertsLength = inserts.length;
+        var removesLength = removes.length;
+        var movesLength = moves.length;
+        var i, j;
+
+        // Offset subsequent removes and moves by removes
+        var count = 0;
+        for (i = 0; i < removesLength; i++) {
+            var remove = removes[i];
+            remove.index -= count;
+            count += remove.howMany;
+            for (j = 0; j < movesLength; j++) {
+                var move = moves[j];
+                if (move.from >= remove.index) move.from -= remove.howMany;
+            }
+        }
+
+        // Offset moves by inserts
+        for (i = insertsLength; i--;) {
+            var insert = inserts[i];
+            var howMany = insert.values.length;
+            for (j = movesLength; j--;) {
+                var move = moves[j];
+                if (move.to >= insert.index) move.to -= howMany;
+            }
+        }
+
+        // Offset the to of moves by later moves
+        for (i = movesLength; i-- > 1;) {
+            var move = moves[i];
+            if (move.to === move.from) continue;
+            for (j = i; j--;) {
+                var earlier = moves[j];
+                if (earlier.to >= move.to) earlier.to -= move.howMany;
+                if (earlier.to >= move.from) earlier.to += move.howMany;
+            }
+        }
+
+        // Only output moves that end up having an effect after offsetting
+        var outputMoves = [];
+
+        // Offset the from of moves by earlier moves
+        for (i = 0; i < movesLength; i++) {
+            var move = moves[i];
+            if (move.to === move.from) continue;
+            outputMoves.push(move);
+            for (j = i + 1; j < movesLength; j++) {
+                var later = moves[j];
+                if (later.from >= move.from) later.from -= move.howMany;
+                if (later.from >= move.to) later.from += move.howMany;
+            }
+        }
+
+        callback(removes.concat(outputMoves, inserts));
+    });
+}
+
 },{}],24:[function(require,module,exports){
-var arrayDiff = require(26);
+var arrayDiff = require(25);
 
 function extend(target) {
     for (var i = 1; i < arguments.length; i += 1) {
@@ -6282,247 +6486,6 @@ module.exports = function arrayChanges(actual, expected, equal, similar, include
 };
 
 },{}],25:[function(require,module,exports){
-
-module.exports = arrayDiff;
-
-var MAX_STACK_DEPTH = 1000;
-
-// Based on some rough benchmarking, this algorithm is about O(2n) worst case,
-// and it can compute diffs on random arrays of length 1024 in about 34ms,
-// though just a few changes on an array of length 1024 takes about 0.5ms
-
-arrayDiff.InsertDiff = InsertDiff;
-arrayDiff.RemoveDiff = RemoveDiff;
-arrayDiff.MoveDiff = MoveDiff;
-
-function InsertDiff(index, values) {
-    this.index = index;
-    this.values = values;
-}
-InsertDiff.prototype.type = 'insert';
-InsertDiff.prototype.toJSON = function() {
-    return {
-        type: this.type
-        , index: this.index
-        , values: this.values
-    };
-};
-
-function RemoveDiff(index, howMany) {
-    this.index = index;
-    this.howMany = howMany;
-}
-RemoveDiff.prototype.type = 'remove';
-RemoveDiff.prototype.toJSON = function() {
-    return {
-        type: this.type
-        , index: this.index
-        , howMany: this.howMany
-    };
-};
-
-function MoveDiff(from, to, howMany) {
-    this.from = from;
-    this.to = to;
-    this.howMany = howMany;
-}
-MoveDiff.prototype.type = 'move';
-MoveDiff.prototype.toJSON = function() {
-    return {
-        type: this.type
-        , from: this.from
-        , to: this.to
-        , howMany: this.howMany
-    };
-};
-
-function strictEqual(a, b, indexA, indexB, callback) {
-    return callback(a === b);
-}
-
-
-function arrayDiff(before, after, equalFn, callback) {
-    if (!equalFn) equalFn = strictEqual;
-
-    // Find all items in both the before and after array, and represent them
-    // as moves. Many of these "moves" may end up being discarded in the last
-    // pass if they are from an index to the same index, but we don't know this
-    // up front, since we haven't yet offset the indices.
-    //
-    // Also keep a map of all the indices accounted for in the before and after
-    // arrays. These maps are used next to create insert and remove diffs.
-    var beforeLength = before.length;
-    var afterLength = after.length;
-    var moves = [];
-    var beforeMarked = {};
-    var afterMarked = {};
-
-    function findMatching(beforeIndex, afterIndex, howMany, callback) {
-
-        beforeMarked[beforeIndex++] = afterMarked[afterIndex++] = true;
-        howMany++;
-
-        if (beforeIndex < beforeLength &&
-            afterIndex < afterLength &&
-            !afterMarked[afterIndex]) {
-
-            equalFn(before[beforeIndex], after[afterIndex], beforeIndex, afterIndex, function (areEqual) {
-                if (areEqual) {
-//                    setTimeout(function () {
-                        findMatching(beforeIndex, afterIndex, howMany, callback);
-//                    }, 0);
-                } else {
-                    callback(beforeIndex, afterIndex, howMany);
-                }
-            });
-        } else {
-            callback(beforeIndex, afterIndex, howMany);
-        }
-
-
-    }
-
-    function compare(beforeIndex, afterIndex, stackDepthRemaining, callback) {
-        if (afterIndex >= afterLength) {
-            beforeIndex++;
-            afterIndex = 0;
-        }
-        if (beforeIndex >= beforeLength) {
-            callback();
-            return;
-        }
-
-        if (!afterMarked[afterIndex]) {
-            equalFn(before[beforeIndex], after[afterIndex], beforeIndex, afterIndex, function (areEqual) {
-                if (areEqual) {
-
-                    var from = beforeIndex;
-                    var to = afterIndex;
-                    findMatching(beforeIndex, afterIndex, 0, function (newBeforeIndex, newAfterIndex, howMany) {
-
-                        moves.push(new MoveDiff(from, to, howMany));
-                        if (stackDepthRemaining) {
-                            compare(newBeforeIndex, 0, stackDepthRemaining - 1, callback);
-                        } else {
-//                            setTimeout(function () {
-                                compare(newBeforeIndex, 0, MAX_STACK_DEPTH, callback);
-//                            }, 0);
-                        }
-                    });
-                } else {
-                    if (stackDepthRemaining) {
-                        compare(beforeIndex, afterIndex + 1, stackDepthRemaining - 1, callback);
-                    } else {
-//                        setTimeout(function () {
-                            compare(beforeIndex, afterIndex + 1, MAX_STACK_DEPTH, callback);
-//                        }, 0);
-                    }
-                }
-            });
-        } else {
-            if (stackDepthRemaining) {
-                compare(beforeIndex, afterIndex + 1, stackDepthRemaining - 1, callback);
-            } else {
-//                setTimeout(function () {
-                    compare(beforeIndex, afterIndex + 1, MAX_STACK_DEPTH, callback);
-//                }, 0);
-            }
-        }
-    }
-
-    compare(0, 0, MAX_STACK_DEPTH, function () {
-
-        // Create a remove for all of the items in the before array that were
-        // not marked as being matched in the after array as well
-        var removes = [];
-        for (var beforeIndex = 0; beforeIndex < beforeLength;) {
-            if (beforeMarked[beforeIndex]) {
-                beforeIndex++;
-                continue;
-            }
-            var index = beforeIndex;
-            var howMany = 0;
-            while (beforeIndex < beforeLength && !beforeMarked[beforeIndex++]) {
-                howMany++;
-            }
-            removes.push(new RemoveDiff(index, howMany));
-        }
-
-        // Create an insert for all of the items in the after array that were
-        // not marked as being matched in the before array as well
-        var inserts = [];
-        for (var afterIndex = 0; afterIndex < afterLength;) {
-            if (afterMarked[afterIndex]) {
-                afterIndex++;
-                continue;
-            }
-            var index = afterIndex;
-            var howMany = 0;
-            while (afterIndex < afterLength && !afterMarked[afterIndex++]) {
-                howMany++;
-            }
-            var values = after.slice(index, index + howMany);
-            inserts.push(new InsertDiff(index, values));
-        }
-
-        var insertsLength = inserts.length;
-        var removesLength = removes.length;
-        var movesLength = moves.length;
-        var i, j;
-
-        // Offset subsequent removes and moves by removes
-        var count = 0;
-        for (i = 0; i < removesLength; i++) {
-            var remove = removes[i];
-            remove.index -= count;
-            count += remove.howMany;
-            for (j = 0; j < movesLength; j++) {
-                var move = moves[j];
-                if (move.from >= remove.index) move.from -= remove.howMany;
-            }
-        }
-
-        // Offset moves by inserts
-        for (i = insertsLength; i--;) {
-            var insert = inserts[i];
-            var howMany = insert.values.length;
-            for (j = movesLength; j--;) {
-                var move = moves[j];
-                if (move.to >= insert.index) move.to -= howMany;
-            }
-        }
-
-        // Offset the to of moves by later moves
-        for (i = movesLength; i-- > 1;) {
-            var move = moves[i];
-            if (move.to === move.from) continue;
-            for (j = i; j--;) {
-                var earlier = moves[j];
-                if (earlier.to >= move.to) earlier.to -= move.howMany;
-                if (earlier.to >= move.from) earlier.to += move.howMany;
-            }
-        }
-
-        // Only output moves that end up having an effect after offsetting
-        var outputMoves = [];
-
-        // Offset the from of moves by earlier moves
-        for (i = 0; i < movesLength; i++) {
-            var move = moves[i];
-            if (move.to === move.from) continue;
-            outputMoves.push(move);
-            for (j = i + 1; j < movesLength; j++) {
-                var later = moves[j];
-                if (later.from >= move.from) later.from -= move.howMany;
-                if (later.from >= move.to) later.from += move.howMany;
-            }
-        }
-
-        callback(removes.concat(outputMoves, inserts));
-    });
-}
-
-},{}],26:[function(require,module,exports){
 module.exports = arrayDiff;
 
 // Based on some rough benchmarking, this algorithm is about O(2n) worst case,
@@ -6705,7 +6668,7 @@ function arrayDiff(before, after, equalFn) {
   return removes.concat(outputMoves, inserts);
 }
 
-},{}],27:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -6713,9 +6676,9 @@ function arrayDiff(before, after, equalFn) {
  * @license  MIT
  */
 
-var base64 = require(28)
-var ieee754 = require(29)
-var isArray = require(30)
+var base64 = require(27)
+var ieee754 = require(28)
+var isArray = require(29)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = Buffer
@@ -7759,7 +7722,7 @@ function decodeUtf8Char (str) {
   }
 }
 
-},{}],28:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 ;(function (exports) {
@@ -7881,7 +7844,7 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 	exports.fromByteArray = uint8ToBase64
 }(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
 
-},{}],29:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = nBytes * 8 - mLen - 1
@@ -7967,7 +7930,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],30:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 
 /**
  * isArray
@@ -8002,7 +7965,7 @@ module.exports = isArray || function (val) {
   return !! val && '[object Array]' == str.call(val);
 };
 
-},{}],31:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -8067,429 +8030,9 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],32:[function(require,module,exports){
-/**
- * @author Markus Ekholm
- * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
- * @license Copyright (c) 2012-2015, Markus Ekholm
- * All rights reserved.
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *    * Redistributions of source code must retain the above copyright
- *      notice, this list of conditions and the following disclaimer.
- *    * Redistributions in binary form must reproduce the above copyright
- *      notice, this list of conditions and the following disclaimer in the
- *      documentation and/or other materials provided with the distribution.
- *    * Neither the name of the <organization> nor the
- *      names of its contributors may be used to endorse or promote products
- *      derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL MARKUS EKHOLM BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/**
-* EXPORTS
-*/
-exports.rgb_to_lab = rgb_to_lab;
-
-/**
-* IMPORTS
-*/
-var pow  = Math.pow;
-var sqrt = Math.sqrt;
-
-/**
- * API FUNCTIONS
- */
-
-/**
-* Returns c converted to labcolor.
-* @param {rgbcolor} c should have fields R,G,B
-* @return {labcolor} c converted to labcolor
-*/
-function rgb_to_lab(c)
-{
-  return xyz_to_lab(rgb_to_xyz(c))
-}
-
-/**
-* Returns c converted to xyzcolor.
-* @param {rgbcolor} c should have fields R,G,B
-* @return {xyzcolor} c converted to xyzcolor
-*/
-function rgb_to_xyz(c)
-{
-  // Based on http://www.easyrgb.com/index.php?X=MATH&H=02
-  var R = ( c.R / 255 );
-  var G = ( c.G / 255 );
-  var B = ( c.B / 255 );
-
-  if ( R > 0.04045 ) R = pow(( ( R + 0.055 ) / 1.055 ),2.4);
-  else               R = R / 12.92;
-  if ( G > 0.04045 ) G = pow(( ( G + 0.055 ) / 1.055 ),2.4);
-  else               G = G / 12.92;
-  if ( B > 0.04045 ) B = pow(( ( B + 0.055 ) / 1.055 ), 2.4);
-  else               B = B / 12.92;
-
-  R *= 100;
-  G *= 100;
-  B *= 100;
-
-  // Observer. = 2°, Illuminant = D65
-  var X = R * 0.4124 + G * 0.3576 + B * 0.1805;
-  var Y = R * 0.2126 + G * 0.7152 + B * 0.0722;
-  var Z = R * 0.0193 + G * 0.1192 + B * 0.9505;
-  return {'X' : X, 'Y' : Y, 'Z' : Z};
-}
-
-/**
-* Returns c converted to labcolor.
-* @param {xyzcolor} c should have fields X,Y,Z
-* @return {labcolor} c converted to labcolor
-*/
-function xyz_to_lab(c)
-{
-  // Based on http://www.easyrgb.com/index.php?X=MATH&H=07
-  var ref_Y = 100.000;
-  var ref_Z = 108.883;
-  var ref_X = 95.047; // Observer= 2°, Illuminant= D65
-  var Y = c.Y / ref_Y;
-  var Z = c.Z / ref_Z;
-  var X = c.X / ref_X;
-  if ( X > 0.008856 ) X = pow(X, 1/3);
-  else                X = ( 7.787 * X ) + ( 16 / 116 );
-  if ( Y > 0.008856 ) Y = pow(Y, 1/3);
-  else                Y = ( 7.787 * Y ) + ( 16 / 116 );
-  if ( Z > 0.008856 ) Z = pow(Z, 1/3);
-  else                Z = ( 7.787 * Z ) + ( 16 / 116 );
-  var L = ( 116 * Y ) - 16;
-  var a = 500 * ( X - Y );
-  var b = 200 * ( Y - Z );
-  return {'L' : L , 'a' : a, 'b' : b};
-}
-
-// Local Variables:
-// allout-layout: t
-// js-indent-level: 2
-// End:
-
-},{}],33:[function(require,module,exports){
-/**
- * @author Markus Ekholm
- * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
- * @license Copyright (c) 2012-2015, Markus Ekholm
- * All rights reserved.
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *    * Redistributions of source code must retain the above copyright
- *      notice, this list of conditions and the following disclaimer.
- *    * Redistributions in binary form must reproduce the above copyright
- *      notice, this list of conditions and the following disclaimer in the
- *      documentation and/or other materials provided with the distribution.
- *    * Neither the name of the <organization> nor the
- *      names of its contributors may be used to endorse or promote products
- *      derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL MARKUS EKHOLM BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/**
-* EXPORTS
-*/
-exports.ciede2000 = ciede2000;
-
-/**
-* IMPORTS
-*/
-var sqrt = Math.sqrt;
-var pow = Math.pow;
-var cos = Math.cos;
-var atan2 = Math.atan2;
-var sin = Math.sin;
-var abs = Math.abs;
-var exp = Math.exp;
-var PI = Math.PI;
-
-/**
- * API FUNCTIONS
- */
-
-/**
-* Returns diff between c1 and c2 using the CIEDE2000 algorithm
-* @param {labcolor} c1    Should have fields L,a,b
-* @param {labcolor} c2    Should have fields L,a,b
-* @return {float}   Difference between c1 and c2
-*/
-function ciede2000(c1,c2)
-{
-  /**
-   * Implemented as in "The CIEDE2000 Color-Difference Formula:
-   * Implementation Notes, Supplementary Test Data, and Mathematical Observations"
-   * by Gaurav Sharma, Wencheng Wu and Edul N. Dalal.
-   */
-
-  // Get L,a,b values for color 1
-  var L1 = c1.L;
-  var a1 = c1.a;
-  var b1 = c1.b;
-
-  // Get L,a,b values for color 2
-  var L2 = c2.L;
-  var a2 = c2.a;
-  var b2 = c2.b;
-
-  // Weight factors
-  var kL = 1;
-  var kC = 1;
-  var kH = 1;
-
-  /**
-   * Step 1: Calculate C1p, C2p, h1p, h2p
-   */
-  var C1 = sqrt(pow(a1, 2) + pow(b1, 2)) //(2)
-  var C2 = sqrt(pow(a2, 2) + pow(b2, 2)) //(2)
-
-  var a_C1_C2 = (C1+C2)/2.0;             //(3)
-
-  var G = 0.5 * (1 - sqrt(pow(a_C1_C2 , 7.0) /
-                          (pow(a_C1_C2, 7.0) + pow(25.0, 7.0)))); //(4)
-
-  var a1p = (1.0 + G) * a1; //(5)
-  var a2p = (1.0 + G) * a2; //(5)
-
-  var C1p = sqrt(pow(a1p, 2) + pow(b1, 2)); //(6)
-  var C2p = sqrt(pow(a2p, 2) + pow(b2, 2)); //(6)
-
-  var hp_f = function(x,y) //(7)
-  {
-    if(x== 0 && y == 0) return 0;
-    else{
-      var tmphp = degrees(atan2(x,y));
-      if(tmphp >= 0) return tmphp
-      else           return tmphp + 360;
-    }
-  }
-
-  var h1p = hp_f(b1, a1p); //(7)
-  var h2p = hp_f(b2, a2p); //(7)
-
-  /**
-   * Step 2: Calculate dLp, dCp, dHp
-   */
-  var dLp = L2 - L1; //(8)
-  var dCp = C2p - C1p; //(9)
-
-  var dhp_f = function(C1, C2, h1p, h2p) //(10)
-  {
-    if(C1*C2 == 0)               return 0;
-    else if(abs(h2p-h1p) <= 180) return h2p-h1p;
-    else if((h2p-h1p) > 180)     return (h2p-h1p)-360;
-    else if((h2p-h1p) < -180)    return (h2p-h1p)+360;
-    else                         throw(new Error());
-  }
-  var dhp = dhp_f(C1,C2, h1p, h2p); //(10)
-  var dHp = 2*sqrt(C1p*C2p)*sin(radians(dhp)/2.0); //(11)
-
-  /**
-   * Step 3: Calculate CIEDE2000 Color-Difference
-   */
-  var a_L = (L1 + L2) / 2.0; //(12)
-  var a_Cp = (C1p + C2p) / 2.0; //(13)
-
-  var a_hp_f = function(C1, C2, h1p, h2p) { //(14)
-    if(C1*C2 == 0)                                      return h1p+h2p
-    else if(abs(h1p-h2p)<= 180)                         return (h1p+h2p)/2.0;
-    else if((abs(h1p-h2p) > 180) && ((h1p+h2p) < 360))  return (h1p+h2p+360)/2.0;
-    else if((abs(h1p-h2p) > 180) && ((h1p+h2p) >= 360)) return (h1p+h2p-360)/2.0;
-    else                                                throw(new Error());
-  }
-  var a_hp = a_hp_f(C1,C2,h1p,h2p); //(14)
-  var T = 1-0.17*cos(radians(a_hp-30))+0.24*cos(radians(2*a_hp))+
-    0.32*cos(radians(3*a_hp+6))-0.20*cos(radians(4*a_hp-63)); //(15)
-  var d_ro = 30 * exp(-(pow((a_hp-275)/25,2))); //(16)
-  var RC = sqrt((pow(a_Cp, 7.0)) / (pow(a_Cp, 7.0) + pow(25.0, 7.0)));//(17)
-  var SL = 1 + ((0.015 * pow(a_L - 50, 2)) /
-                sqrt(20 + pow(a_L - 50, 2.0)));//(18)
-  var SC = 1 + 0.045 * a_Cp;//(19)
-  var SH = 1 + 0.015 * a_Cp * T;//(20)
-  var RT = -2 * RC * sin(radians(2 * d_ro));//(21)
-  var dE = sqrt(pow(dLp /(SL * kL), 2) + pow(dCp /(SC * kC), 2) +
-                pow(dHp /(SH * kH), 2) + RT * (dCp /(SC * kC)) *
-                (dHp / (SH * kH))); //(22)
-  return dE;
-}
-
-/**
- * INTERNAL FUNCTIONS
- */
-function degrees(n) { return n*(180/PI); }
-function radians(n) { return n*(PI/180); }
-
-// Local Variables:
-// allout-layout: t
-// js-indent-level: 2
-// End:
-
-},{}],34:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 'use strict';
-
-var diff = require(33);
-var convert = require(32);
-var palette = require(35);
-
-var color = module.exports = {};
-
-color.diff             = diff.ciede2000;
-color.rgb_to_lab       = convert.rgb_to_lab;
-color.map_palette      = palette.map_palette;
-color.palette_map_key  = palette.palette_map_key;
-
-color.closest = function(target, relative) {
-    var key = color.palette_map_key(target);
-
-    var result = color.map_palette([target], relative, 'closest');
-
-    return result[key];
-};
-
-color.furthest = function(target, relative) {
-    var key = color.palette_map_key(target);
-
-    var result = color.map_palette([target], relative, 'furthest');
-
-    return result[key];
-};
-
-},{}],35:[function(require,module,exports){
-/**
- * @author Markus Ekholm
- * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
- * @license Copyright (c) 2012-2015, Markus Ekholm
- * All rights reserved.
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *    * Redistributions of source code must retain the above copyright
- *      notice, this list of conditions and the following disclaimer.
- *    * Redistributions in binary form must reproduce the above copyright
- *      notice, this list of conditions and the following disclaimer in the
- *      documentation and/or other materials provided with the distribution.
- *    * Neither the name of the <organization> nor the
- *      names of its contributors may be used to endorse or promote products
- *      derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL MARKUS EKHOLM BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/**
-* EXPORTS
-*/
-exports.map_palette     = map_palette;
-exports.palette_map_key = palette_map_key;
-
-/**
-* IMPORTS
-*/
-var color_diff    = require(33);
-var color_convert = require(32);
-
-/**
- * API FUNCTIONS
- */
-
-/**
-* Returns the hash key used for a {rgbcolor} in a {palettemap}
-* @param {rgbcolor} c should have fields R,G,B
-* @return {string}
-*/
-function palette_map_key(c)
-{
-  return "R" + c.R + "B" + c.B + "G" + c.G;
-}
-
-/**
-* Returns a mapping from each color in a to the closest color in b
-* @param [{rgbcolor}] a each element should have fields R,G,B
-* @param [{rgbcolor}] b each element should have fields R,G,B
-* @param 'type' should be the string 'closest' or 'furthest'
-* @return {palettemap}
-*/
-function map_palette(a, b, type)
-{
-  var c = {};
-  type = type || 'closest';
-  for (var idx1 = 0; idx1 < a.length; idx1 += 1){
-    var color1 = a[idx1];
-    var best_color      = undefined;
-    var best_color_diff = undefined;
-    for (var idx2 = 0; idx2 < b.length; idx2 += 1)
-    {
-      var color2 = b[idx2];
-      var current_color_diff = diff(color1,color2);
-
-      if((best_color == undefined) || ((type === 'closest') && (current_color_diff < best_color_diff)))
-      {
-        best_color      = color2;
-        best_color_diff = current_color_diff;
-        continue;
-      }
-      if((type === 'furthest') && (current_color_diff > best_color_diff))
-      {
-        best_color      = color2;
-        best_color_diff = current_color_diff;
-        continue;
-      }
-    }
-    c[palette_map_key(color1)] = best_color;
-  }
-  return c;
-}
-
-/**
- * INTERNAL FUNCTIONS
- */
-
-function diff(c1,c2)
-{
-  c1 = color_convert.rgb_to_lab(c1);
-  c2 = color_convert.rgb_to_lab(c2);
-  return color_diff.ciede2000(c1,c2);
-}
-
-// Local Variables:
-// allout-layout: t
-// js-indent-level: 2
-// End:
-
-},{}],36:[function(require,module,exports){
-'use strict';
-var repeating = require(37);
+var repeating = require(32);
 
 // detect either spaces or tabs but not both to properly handle tabs
 // for indentation and spaces for alignment
@@ -8608,9 +8151,9 @@ module.exports = function (str) {
 	};
 };
 
-},{}],37:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 'use strict';
-var isFinite = require(38);
+var isFinite = require(33);
 
 module.exports = function (str, n) {
 	if (typeof str !== 'string') {
@@ -8634,21 +8177,21 @@ module.exports = function (str, n) {
 	return ret;
 };
 
-},{}],38:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 'use strict';
-var numberIsNan = require(39);
+var numberIsNan = require(34);
 
 module.exports = Number.isFinite || function (val) {
 	return !(typeof val !== 'number' || numberIsNan(val) || val === Infinity || val === -Infinity);
 };
 
-},{}],39:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 'use strict';
 module.exports = Number.isNaN || function (x) {
 	return x !== x;
 };
 
-},{}],40:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 /* See LICENSE file for terms of use */
 
 /*
@@ -9039,11 +8582,11 @@ module.exports = Number.isNaN || function (x) {
   }
 })(this);
 
-},{}],41:[function(require,module,exports){
-// intentionally commented out as it makes it slower...
-//'use strict';
-
+},{}],36:[function(require,module,exports){
+/* eslint-disable no-nested-ternary */
+'use strict';
 var arr = [];
+var charCodeCache = [];
 
 module.exports = function (a, b) {
 	if (a === b) {
@@ -9054,11 +8597,11 @@ module.exports = function (a, b) {
 	var bLen = b.length;
 
 	if (aLen === 0) {
-		return b.length;
+		return bLen;
 	}
 
 	if (bLen === 0) {
-		return a.length;
+		return aLen;
 	}
 
 	var bCharCode;
@@ -9069,6 +8612,7 @@ module.exports = function (a, b) {
 	var j = 0;
 
 	while (i < aLen) {
+		charCodeCache[i] = a.charCodeAt(i);
 		arr[i] = ++i;
 	}
 
@@ -9078,7 +8622,7 @@ module.exports = function (a, b) {
 		ret = j;
 
 		for (i = 0; i < aLen; i++) {
-			tmp2 = bCharCode === a.charCodeAt(i) ? tmp : tmp + 1;
+			tmp2 = bCharCode === charCodeCache[i] ? tmp : tmp + 1;
 			tmp = arr[i];
 			ret = arr[i] = tmp > ret ? tmp2 > ret ? ret + 1 : tmp2 : tmp2 > tmp ? tmp + 1 : tmp2;
 		}
@@ -9087,17 +8631,17 @@ module.exports = function (a, b) {
 	return ret;
 };
 
-},{}],42:[function(require,module,exports){
-var utils = require(52);
-var TextSerializer = require(46);
-var colorDiff = require(34);
-var rgbRegexp = require(50);
-var themeMapper = require(51);
+},{}],37:[function(require,module,exports){
+var utils = require(47);
+var TextSerializer = require(41);
+var colorDiff = require(51);
+var rgbRegexp = require(45);
+var themeMapper = require(46);
 
 var cacheSize = 0;
 var maxColorCacheSize = 1024;
 
-var ansiStyles = utils.extend({}, require(22));
+var ansiStyles = utils.extend({}, require(48));
 Object.keys(ansiStyles).forEach(function (styleName) {
     ansiStyles[styleName.toLowerCase()] = ansiStyles[styleName];
 });
@@ -9235,11 +8779,11 @@ AnsiSerializer.prototype.text = function (options) {
 
 module.exports = AnsiSerializer;
 
-},{}],43:[function(require,module,exports){
-var cssStyles = require(47);
-var flattenBlocksInLines = require(49);
-var rgbRegexp = require(50);
-var themeMapper = require(51);
+},{}],38:[function(require,module,exports){
+var cssStyles = require(42);
+var flattenBlocksInLines = require(44);
+var rgbRegexp = require(45);
+var themeMapper = require(46);
 
 function ColoredConsoleSerializer(theme) {
     this.theme = theme;
@@ -9321,10 +8865,10 @@ ColoredConsoleSerializer.prototype.raw = function (options) {
 
 module.exports = ColoredConsoleSerializer;
 
-},{}],44:[function(require,module,exports){
-var cssStyles = require(47);
-var rgbRegexp = require(50);
-var themeMapper = require(51);
+},{}],39:[function(require,module,exports){
+var cssStyles = require(42);
+var rgbRegexp = require(45);
+var themeMapper = require(46);
 
 function HtmlSerializer(theme) {
     this.theme = theme;
@@ -9402,14 +8946,14 @@ HtmlSerializer.prototype.raw = function (options) {
 
 module.exports = HtmlSerializer;
 
-},{}],45:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 (function (process){
 /*global window*/
-var utils = require(52);
+var utils = require(47);
 var extend = utils.extend;
-var duplicateText = require(48);
-var rgbRegexp = require(50);
-var cssStyles = require(47);
+var duplicateText = require(43);
+var rgbRegexp = require(45);
+var cssStyles = require(42);
 
 function MagicPen(options) {
     if (!(this instanceof MagicPen)) {
@@ -9466,10 +9010,10 @@ MagicPen.prototype.newline = MagicPen.prototype.nl = function (count) {
 
 MagicPen.serializers = {};
 [
-    require(46),
-    require(44),
-    require(42),
-    require(43)
+    require(41),
+    require(39),
+    require(37),
+    require(38)
 ].forEach(function (serializer) {
     MagicPen.serializers[serializer.prototype.format] = serializer;
 });
@@ -10098,9 +9642,9 @@ MagicPen.prototype.installTheme = function (formats, theme) {
 
 module.exports = MagicPen;
 
-}).call(this,require(31))
-},{}],46:[function(require,module,exports){
-var flattenBlocksInLines = require(49);
+}).call(this,require(30))
+},{}],41:[function(require,module,exports){
+var flattenBlocksInLines = require(44);
 
 function TextSerializer() {}
 
@@ -10134,7 +9678,7 @@ TextSerializer.prototype.raw = function (options) {
 
 module.exports = TextSerializer;
 
-},{}],47:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 var cssStyles = {
     bold: 'font-weight: bold',
     dim: 'opacity: 0.7',
@@ -10170,7 +9714,7 @@ Object.keys(cssStyles).forEach(function (styleName) {
 
 module.exports = cssStyles;
 
-},{}],48:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 var whitespaceCacheLength = 256;
 var whitespaceCache = [''];
 for (var i = 1; i <= whitespaceCacheLength; i += 1) {
@@ -10206,9 +9750,9 @@ function duplicateText(content, times) {
 
 module.exports = duplicateText;
 
-},{}],49:[function(require,module,exports){
-var utils = require(52);
-var duplicateText = require(48);
+},{}],44:[function(require,module,exports){
+var utils = require(47);
+var duplicateText = require(43);
 
 function createPadding(length) {
     return { style: 'text', args: { content: duplicateText(' ', length), styles: [] } };
@@ -10291,10 +9835,10 @@ function flattenBlocksInLines(lines) {
 
 module.exports = flattenBlocksInLines;
 
-},{}],50:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 module.exports =  /^(?:bg)?#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i;
 
-},{}],51:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 module.exports = function (theme, styles) {
     if (styles.length === 1) {
         var count = 0;
@@ -10319,7 +9863,7 @@ module.exports = function (theme, styles) {
     return styles;
 };
 
-},{}],52:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 var utils = {
     extend: function (target) {
         for (var i = 1; i < arguments.length; i += 1) {
@@ -10428,6 +9972,484 @@ var utils = {
 
 module.exports = utils;
 
+},{}],48:[function(require,module,exports){
+'use strict';
+
+var styles = module.exports = {
+	modifiers: {
+		reset: [0, 0],
+		bold: [1, 22], // 21 isn't widely supported and 22 does the same thing
+		dim: [2, 22],
+		italic: [3, 23],
+		underline: [4, 24],
+		inverse: [7, 27],
+		hidden: [8, 28],
+		strikethrough: [9, 29]
+	},
+	colors: {
+		black: [30, 39],
+		red: [31, 39],
+		green: [32, 39],
+		yellow: [33, 39],
+		blue: [34, 39],
+		magenta: [35, 39],
+		cyan: [36, 39],
+		white: [37, 39],
+		gray: [90, 39]
+	},
+	bgColors: {
+		bgBlack: [40, 49],
+		bgRed: [41, 49],
+		bgGreen: [42, 49],
+		bgYellow: [43, 49],
+		bgBlue: [44, 49],
+		bgMagenta: [45, 49],
+		bgCyan: [46, 49],
+		bgWhite: [47, 49]
+	}
+};
+
+// fix humans
+styles.colors.grey = styles.colors.gray;
+
+Object.keys(styles).forEach(function (groupName) {
+	var group = styles[groupName];
+
+	Object.keys(group).forEach(function (styleName) {
+		var style = group[styleName];
+
+		styles[styleName] = group[styleName] = {
+			open: '\u001b[' + style[0] + 'm',
+			close: '\u001b[' + style[1] + 'm'
+		};
+	});
+
+	Object.defineProperty(styles, groupName, {
+		value: group,
+		enumerable: false
+	});
+});
+
+},{}],49:[function(require,module,exports){
+/**
+ * @author Markus Ekholm
+ * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
+ * @license Copyright (c) 2012-2015, Markus Ekholm
+ * All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *    * Redistributions of source code must retain the above copyright
+ *      notice, this list of conditions and the following disclaimer.
+ *    * Redistributions in binary form must reproduce the above copyright
+ *      notice, this list of conditions and the following disclaimer in the
+ *      documentation and/or other materials provided with the distribution.
+ *    * Neither the name of the <organization> nor the
+ *      names of its contributors may be used to endorse or promote products
+ *      derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL MARKUS EKHOLM BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/**
+* EXPORTS
+*/
+exports.rgb_to_lab = rgb_to_lab;
+
+/**
+* IMPORTS
+*/
+var pow  = Math.pow;
+var sqrt = Math.sqrt;
+
+/**
+ * API FUNCTIONS
+ */
+
+/**
+* Returns c converted to labcolor.
+* @param {rgbcolor} c should have fields R,G,B
+* @return {labcolor} c converted to labcolor
+*/
+function rgb_to_lab(c)
+{
+  return xyz_to_lab(rgb_to_xyz(c))
+}
+
+/**
+* Returns c converted to xyzcolor.
+* @param {rgbcolor} c should have fields R,G,B
+* @return {xyzcolor} c converted to xyzcolor
+*/
+function rgb_to_xyz(c)
+{
+  // Based on http://www.easyrgb.com/index.php?X=MATH&H=02
+  var R = ( c.R / 255 );
+  var G = ( c.G / 255 );
+  var B = ( c.B / 255 );
+
+  if ( R > 0.04045 ) R = pow(( ( R + 0.055 ) / 1.055 ),2.4);
+  else               R = R / 12.92;
+  if ( G > 0.04045 ) G = pow(( ( G + 0.055 ) / 1.055 ),2.4);
+  else               G = G / 12.92;
+  if ( B > 0.04045 ) B = pow(( ( B + 0.055 ) / 1.055 ), 2.4);
+  else               B = B / 12.92;
+
+  R *= 100;
+  G *= 100;
+  B *= 100;
+
+  // Observer. = 2°, Illuminant = D65
+  var X = R * 0.4124 + G * 0.3576 + B * 0.1805;
+  var Y = R * 0.2126 + G * 0.7152 + B * 0.0722;
+  var Z = R * 0.0193 + G * 0.1192 + B * 0.9505;
+  return {'X' : X, 'Y' : Y, 'Z' : Z};
+}
+
+/**
+* Returns c converted to labcolor.
+* @param {xyzcolor} c should have fields X,Y,Z
+* @return {labcolor} c converted to labcolor
+*/
+function xyz_to_lab(c)
+{
+  // Based on http://www.easyrgb.com/index.php?X=MATH&H=07
+  var ref_Y = 100.000;
+  var ref_Z = 108.883;
+  var ref_X = 95.047; // Observer= 2°, Illuminant= D65
+  var Y = c.Y / ref_Y;
+  var Z = c.Z / ref_Z;
+  var X = c.X / ref_X;
+  if ( X > 0.008856 ) X = pow(X, 1/3);
+  else                X = ( 7.787 * X ) + ( 16 / 116 );
+  if ( Y > 0.008856 ) Y = pow(Y, 1/3);
+  else                Y = ( 7.787 * Y ) + ( 16 / 116 );
+  if ( Z > 0.008856 ) Z = pow(Z, 1/3);
+  else                Z = ( 7.787 * Z ) + ( 16 / 116 );
+  var L = ( 116 * Y ) - 16;
+  var a = 500 * ( X - Y );
+  var b = 200 * ( Y - Z );
+  return {'L' : L , 'a' : a, 'b' : b};
+}
+
+// Local Variables:
+// allout-layout: t
+// js-indent-level: 2
+// End:
+
+},{}],50:[function(require,module,exports){
+/**
+ * @author Markus Ekholm
+ * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
+ * @license Copyright (c) 2012-2015, Markus Ekholm
+ * All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *    * Redistributions of source code must retain the above copyright
+ *      notice, this list of conditions and the following disclaimer.
+ *    * Redistributions in binary form must reproduce the above copyright
+ *      notice, this list of conditions and the following disclaimer in the
+ *      documentation and/or other materials provided with the distribution.
+ *    * Neither the name of the <organization> nor the
+ *      names of its contributors may be used to endorse or promote products
+ *      derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL MARKUS EKHOLM BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/**
+* EXPORTS
+*/
+exports.ciede2000 = ciede2000;
+
+/**
+* IMPORTS
+*/
+var sqrt = Math.sqrt;
+var pow = Math.pow;
+var cos = Math.cos;
+var atan2 = Math.atan2;
+var sin = Math.sin;
+var abs = Math.abs;
+var exp = Math.exp;
+var PI = Math.PI;
+
+/**
+ * API FUNCTIONS
+ */
+
+/**
+* Returns diff between c1 and c2 using the CIEDE2000 algorithm
+* @param {labcolor} c1    Should have fields L,a,b
+* @param {labcolor} c2    Should have fields L,a,b
+* @return {float}   Difference between c1 and c2
+*/
+function ciede2000(c1,c2)
+{
+  /**
+   * Implemented as in "The CIEDE2000 Color-Difference Formula:
+   * Implementation Notes, Supplementary Test Data, and Mathematical Observations"
+   * by Gaurav Sharma, Wencheng Wu and Edul N. Dalal.
+   */
+
+  // Get L,a,b values for color 1
+  var L1 = c1.L;
+  var a1 = c1.a;
+  var b1 = c1.b;
+
+  // Get L,a,b values for color 2
+  var L2 = c2.L;
+  var a2 = c2.a;
+  var b2 = c2.b;
+
+  // Weight factors
+  var kL = 1;
+  var kC = 1;
+  var kH = 1;
+
+  /**
+   * Step 1: Calculate C1p, C2p, h1p, h2p
+   */
+  var C1 = sqrt(pow(a1, 2) + pow(b1, 2)) //(2)
+  var C2 = sqrt(pow(a2, 2) + pow(b2, 2)) //(2)
+
+  var a_C1_C2 = (C1+C2)/2.0;             //(3)
+
+  var G = 0.5 * (1 - sqrt(pow(a_C1_C2 , 7.0) /
+                          (pow(a_C1_C2, 7.0) + pow(25.0, 7.0)))); //(4)
+
+  var a1p = (1.0 + G) * a1; //(5)
+  var a2p = (1.0 + G) * a2; //(5)
+
+  var C1p = sqrt(pow(a1p, 2) + pow(b1, 2)); //(6)
+  var C2p = sqrt(pow(a2p, 2) + pow(b2, 2)); //(6)
+
+  var hp_f = function(x,y) //(7)
+  {
+    if(x== 0 && y == 0) return 0;
+    else{
+      var tmphp = degrees(atan2(x,y));
+      if(tmphp >= 0) return tmphp
+      else           return tmphp + 360;
+    }
+  }
+
+  var h1p = hp_f(b1, a1p); //(7)
+  var h2p = hp_f(b2, a2p); //(7)
+
+  /**
+   * Step 2: Calculate dLp, dCp, dHp
+   */
+  var dLp = L2 - L1; //(8)
+  var dCp = C2p - C1p; //(9)
+
+  var dhp_f = function(C1, C2, h1p, h2p) //(10)
+  {
+    if(C1*C2 == 0)               return 0;
+    else if(abs(h2p-h1p) <= 180) return h2p-h1p;
+    else if((h2p-h1p) > 180)     return (h2p-h1p)-360;
+    else if((h2p-h1p) < -180)    return (h2p-h1p)+360;
+    else                         throw(new Error());
+  }
+  var dhp = dhp_f(C1,C2, h1p, h2p); //(10)
+  var dHp = 2*sqrt(C1p*C2p)*sin(radians(dhp)/2.0); //(11)
+
+  /**
+   * Step 3: Calculate CIEDE2000 Color-Difference
+   */
+  var a_L = (L1 + L2) / 2.0; //(12)
+  var a_Cp = (C1p + C2p) / 2.0; //(13)
+
+  var a_hp_f = function(C1, C2, h1p, h2p) { //(14)
+    if(C1*C2 == 0)                                      return h1p+h2p
+    else if(abs(h1p-h2p)<= 180)                         return (h1p+h2p)/2.0;
+    else if((abs(h1p-h2p) > 180) && ((h1p+h2p) < 360))  return (h1p+h2p+360)/2.0;
+    else if((abs(h1p-h2p) > 180) && ((h1p+h2p) >= 360)) return (h1p+h2p-360)/2.0;
+    else                                                throw(new Error());
+  }
+  var a_hp = a_hp_f(C1,C2,h1p,h2p); //(14)
+  var T = 1-0.17*cos(radians(a_hp-30))+0.24*cos(radians(2*a_hp))+
+    0.32*cos(radians(3*a_hp+6))-0.20*cos(radians(4*a_hp-63)); //(15)
+  var d_ro = 30 * exp(-(pow((a_hp-275)/25,2))); //(16)
+  var RC = sqrt((pow(a_Cp, 7.0)) / (pow(a_Cp, 7.0) + pow(25.0, 7.0)));//(17)
+  var SL = 1 + ((0.015 * pow(a_L - 50, 2)) /
+                sqrt(20 + pow(a_L - 50, 2.0)));//(18)
+  var SC = 1 + 0.045 * a_Cp;//(19)
+  var SH = 1 + 0.015 * a_Cp * T;//(20)
+  var RT = -2 * RC * sin(radians(2 * d_ro));//(21)
+  var dE = sqrt(pow(dLp /(SL * kL), 2) + pow(dCp /(SC * kC), 2) +
+                pow(dHp /(SH * kH), 2) + RT * (dCp /(SC * kC)) *
+                (dHp / (SH * kH))); //(22)
+  return dE;
+}
+
+/**
+ * INTERNAL FUNCTIONS
+ */
+function degrees(n) { return n*(180/PI); }
+function radians(n) { return n*(PI/180); }
+
+// Local Variables:
+// allout-layout: t
+// js-indent-level: 2
+// End:
+
+},{}],51:[function(require,module,exports){
+'use strict';
+
+var diff = require(50);
+var convert = require(49);
+var palette = require(52);
+
+var color = module.exports = {};
+
+color.diff             = diff.ciede2000;
+color.rgb_to_lab       = convert.rgb_to_lab;
+color.map_palette      = palette.map_palette;
+color.palette_map_key  = palette.palette_map_key;
+
+color.closest = function(target, relative) {
+    var key = color.palette_map_key(target);
+
+    var result = color.map_palette([target], relative, 'closest');
+
+    return result[key];
+};
+
+color.furthest = function(target, relative) {
+    var key = color.palette_map_key(target);
+
+    var result = color.map_palette([target], relative, 'furthest');
+
+    return result[key];
+};
+
+},{}],52:[function(require,module,exports){
+/**
+ * @author Markus Ekholm
+ * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
+ * @license Copyright (c) 2012-2015, Markus Ekholm
+ * All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *    * Redistributions of source code must retain the above copyright
+ *      notice, this list of conditions and the following disclaimer.
+ *    * Redistributions in binary form must reproduce the above copyright
+ *      notice, this list of conditions and the following disclaimer in the
+ *      documentation and/or other materials provided with the distribution.
+ *    * Neither the name of the <organization> nor the
+ *      names of its contributors may be used to endorse or promote products
+ *      derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL MARKUS EKHOLM BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/**
+* EXPORTS
+*/
+exports.map_palette     = map_palette;
+exports.palette_map_key = palette_map_key;
+
+/**
+* IMPORTS
+*/
+var color_diff    = require(50);
+var color_convert = require(49);
+
+/**
+ * API FUNCTIONS
+ */
+
+/**
+* Returns the hash key used for a {rgbcolor} in a {palettemap}
+* @param {rgbcolor} c should have fields R,G,B
+* @return {string}
+*/
+function palette_map_key(c)
+{
+  return "R" + c.R + "B" + c.B + "G" + c.G;
+}
+
+/**
+* Returns a mapping from each color in a to the closest color in b
+* @param [{rgbcolor}] a each element should have fields R,G,B
+* @param [{rgbcolor}] b each element should have fields R,G,B
+* @param 'type' should be the string 'closest' or 'furthest'
+* @return {palettemap}
+*/
+function map_palette(a, b, type)
+{
+  var c = {};
+  type = type || 'closest';
+  for (var idx1 = 0; idx1 < a.length; idx1 += 1){
+    var color1 = a[idx1];
+    var best_color      = undefined;
+    var best_color_diff = undefined;
+    for (var idx2 = 0; idx2 < b.length; idx2 += 1)
+    {
+      var color2 = b[idx2];
+      var current_color_diff = diff(color1,color2);
+
+      if((best_color == undefined) || ((type === 'closest') && (current_color_diff < best_color_diff)))
+      {
+        best_color      = color2;
+        best_color_diff = current_color_diff;
+        continue;
+      }
+      if((type === 'furthest') && (current_color_diff > best_color_diff))
+      {
+        best_color      = color2;
+        best_color_diff = current_color_diff;
+        continue;
+      }
+    }
+    c[palette_map_key(color1)] = best_color;
+  }
+  return c;
+}
+
+/**
+ * INTERNAL FUNCTIONS
+ */
+
+function diff(c1,c2)
+{
+  c1 = color_convert.rgb_to_lab(c1);
+  c2 = color_convert.rgb_to_lab(c2);
+  return color_diff.ciede2000(c1,c2);
+}
+
+// Local Variables:
+// allout-layout: t
+// js-indent-level: 2
+// End:
+
 },{}],53:[function(require,module,exports){
 (function (process){
 'use strict';
@@ -10470,7 +10492,7 @@ module.exports = (function () {
 	return false;
 })();
 
-}).call(this,require(31))
+}).call(this,require(30))
 },{}],54:[function(require,module,exports){
 (function (process,global){
 /* @preserve
@@ -15330,6 +15352,6 @@ module.exports = ret;
 
 },{"./es5.js":14}]},{},[4])(4)
 });                    ;if (typeof window !== 'undefined' && window !== null) {                               window.P = window.Promise;                                                     } else if (typeof self !== 'undefined' && self !== null) {                             self.P = self.Promise;                                                         }
-}).call(this,require(31),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+}).call(this,require(30),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}]},{},[21])(21)
 });
