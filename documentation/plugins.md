@@ -36,7 +36,7 @@ Here's a partial list of plugins for Unexpected:
   for [Knockout.js](http://knockoutjs.com/) observables.
 * [unexpected-messy](http://unexpected.js.org/unexpected-messy/): Assertions for
   HTTP messages (requests and responses) and mails (rfc2822). Browser-compatible.
-* [unexpected-mitm](https://github.com/unexpectedjs/unexpected-mitm/): Mock out HTTP
+* [unexpected-mitm](http://unexpected.js.org/unexpected-mitm/): Mock out HTTP
   and make assertions about the HTTP traffic that goes on while executing other
   assertions. Based on the [mitm](https://github.com/moll/node-mitm/) module.
   Only works with node.js and io.js.
