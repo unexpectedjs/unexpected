@@ -9,6 +9,25 @@ repository: https://github.com/unexpectedjs/unexpected
 # The extensible BDD assertion toolkit
 
 ```javascript
+Math.max();
+
+function foo(...rest) {
+    return Math.max(123, ...rest);
+}
+
+[123].forEach(a => {
+    Math.max(123);
+    Math.max(123);
+    Math.max(123);
+    foobarquux()
+    Math.max(123);
+    Math.max(123);
+    Math.max(123);
+    Math.max(123);
+});
+```
+
+```javascript
 expect({ text: 'f00!' }, 'to equal', { text: 'foo!' });
 ```
 
