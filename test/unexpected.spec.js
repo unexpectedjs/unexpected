@@ -901,6 +901,24 @@ describe('unexpected', function () {
                 });
             });
 
+            describe('when followed by an expect.it', function () {
+                it('should succeed', function () {
+                    clonedExpect('bar', 'when suffixed with foo', expect.it('to equal', 'barfoo'));
+                });
+
+                it('should fail with a diff', function () {
+                    expect(function () {
+                        clonedExpect('bar', 'when suffixed with foo', expect.it('to equal', 'foobar'));
+                    }, 'to throw',
+                        "expected 'bar' when suffixed with foo expect.it('to equal', 'foobar')\n" +
+                        "  expected 'barfoo' to equal 'foobar'\n" +
+                        "\n" +
+                        "  -barfoo\n" +
+                        "  +foobar"
+                    );
+                });
+            });
+
             it('should return a promise that has an "and" method', function () {
                 clonedExpect.addAssertion('<string> to equal foo and when suffixed with bar <assertion?>', function (expect, subject) {
                     var _len = arguments.length;
