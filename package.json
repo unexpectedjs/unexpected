@@ -28,7 +28,7 @@
     "diff": "1.1.0",
     "leven": "2.0.0",
     "magicpen": "5.9.0",
-    "unexpected-bluebird": "2.9.34"
+    "unexpected-bluebird": "2.9.34-longstack"
   },
   "devDependencies": {
     "browserify": "5.9.1",
