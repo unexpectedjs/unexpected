@@ -24,8 +24,7 @@ create-html-runners: test/tests.tpl.html test/JasmineRunner.tpl.html
 .PHONY: create-html-runners
 
 test-phantomjs: create-html-runners ${TARGETS}
-	@$(eval QUERY=$(shell node -e "console.log(decodeURIComponent(process.argv.pop()).replace(/\s/g, '%20'))" "${grep}")) \
-    ./node_modules/.bin/mocha-phantomjs $(shell [ "${QUERY}" != "" ] && echo --grep "${grep}") test/tests.html
+	phantomjs ./node_modules/mocha-phantomjs-core/mocha-phantomjs-core.js test/tests.html spec $(shell node -pe '"\x27"+JSON.stringify({useColors:true,grep:process.env.grep})+"\x27"')
 
 test-jasmine: ${TARGETS}
 	./node_modules/.bin/jasmine JASMINE_CONFIG_PATH=test/support/jasmine.json
