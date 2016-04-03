@@ -55,6 +55,13 @@ if (typeof process === 'object') {
                     expect(err, 'to be falsy');
                 });
             });
+
+            it('should render a long stack trace for an async test', function () {
+                return expect('failingAsync', 'executed through mocha').spread(function (err, stdout, stderr) {
+                    expect(err, 'to be an', Error);
+                    expect(stdout, 'to contain', 'From previous event:');
+                });
+            });
         });
 
         describe('executed through jasmine', function () {
