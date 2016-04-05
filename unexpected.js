@@ -2414,7 +2414,7 @@ module.exports = function (expect) {
         keys.forEach(function (key, index) {
             if (typeof nextArg === 'string') {
                 expected[key] = function (s) {
-                    return expect.shift(s, 0);
+                    return expect.shift(s);
                 };
             } else if (typeof nextArg === 'function') {
                 expected[key] = function (s) {
@@ -3921,6 +3921,8 @@ module.exports = function notifyPendingPromise(promise) {
 },{}],13:[function(require,module,exports){
 var workQueue = require(20);
 var Promise = require(54);
+var useFullStackTrace = require(18);
+
 module.exports = function oathbreaker(value) {
     if (!value || typeof value.then !== 'function') {
         return value;
@@ -3967,6 +3969,8 @@ module.exports = function oathbreaker(value) {
         throw error;
     } else if (evaluated) {
         return value;
+    } else if (value._captureStackTrace && !useFullStackTrace) {
+        value._captureStackTrace(true);
     }
 
     return new Promise(function (resolve, reject) {
@@ -5542,12 +5546,14 @@ module.exports = function (expect) {
 },{}],18:[function(require,module,exports){
 (function (process){
 /*global window*/
+var Promise = require(54);
 var useFullStackTrace = false;
 if (typeof window !== 'undefined' && typeof window.location !== 'undefined') {
     useFullStackTrace = !!window.location.search.match(/[?&]full-trace=true(?:$|&)/);
 }
 
 if (typeof process !== 'undefined' && process.env && process.env.UNEXPECTED_FULL_TRACE) {
+    Promise.longStackTraces();
     useFullStackTrace = true;
 }
 module.exports = useFullStackTrace;
@@ -10523,7 +10529,7 @@ module.exports = (function () {
  * 
  */
 /**
- * bluebird build version 2.9.34
+ * bluebird build version 2.9.34-longstack2
  * Features enabled: core, race, call_get, generators, map, nodeify, promisify, props, reduce, settle, some, cancel, using, filter, any, each, timers
 */
 !function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.Promise=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof _dereq_=="function"&&_dereq_;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof _dereq_=="function"&&_dereq_;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
@@ -11652,15 +11658,16 @@ Promise.prototype._getCarriedStackTrace = function () {
         : undefined;
 };
 
-Promise.prototype._captureStackTrace = function () {
-    if (debugging) {
+Promise.prototype._captureStackTrace = function (force) {
+    if (debugging || (force && CapturedTrace.isSupported())) {
+        this._traceForced = force;
         this._trace = new CapturedTrace(this._peekContext());
     }
     return this;
 };
 
 Promise.prototype._attachExtraTrace = function (error, ignoreSelf) {
-    if (debugging && canAttachTrace(error)) {
+    if ((debugging || this._traceForced) && canAttachTrace(error)) {
         var trace = this._trace;
         if (trace !== undefined) {
             if (ignoreSelf) trace = trace._parent;
