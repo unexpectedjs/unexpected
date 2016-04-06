@@ -12,7 +12,7 @@ describe('when called with assertion', function () {
         expect(function () {
             expect(add, 'when called with', [3, 4], 'to equal', 9);
         }, 'to throw',
-               'expected function add(a, b) { return a + b; } when called with [ 3, 4 ] to equal 9\n' +
+               'expected function add(a, b) { return a + b; } when called with 3, 4 to equal 9\n' +
                '  expected 7 to equal 9');
     });
 
