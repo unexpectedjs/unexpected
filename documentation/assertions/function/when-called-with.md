@@ -15,7 +15,7 @@ expect(add, 'when called with', [1, 2], 'to equal', 9);
 ```
 
 ```output
-expected function add(a, b) { return a + b; } when called with [ 1, 2 ] to equal 9
+expected function add(a, b) { return a + b; } when called with 1, 2 to equal 9
   expected 3 to equal 9
 ```
 
