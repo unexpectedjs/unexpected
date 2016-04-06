@@ -64,8 +64,24 @@
     "url": "/assertions/function/when-called/"
   },
   {
-    "label": "to have message (Error)",
-    "url": "/assertions/Error/to-have-message/"
+    "label": "when decoded as (Buffer)",
+    "url": "/assertions/Buffer/when-decoded-as/"
+  },
+  {
+    "label": "to be fulfilled (Promise)",
+    "url": "/assertions/Promise/to-be-fulfilled/"
+  },
+  {
+    "label": "to be rejected (Promise)",
+    "url": "/assertions/Promise/to-be-rejected/"
+  },
+  {
+    "label": "when fulfilled (Promise)",
+    "url": "/assertions/Promise/when-fulfilled/"
+  },
+  {
+    "label": "when rejected (Promise)",
+    "url": "/assertions/Promise/when-rejected/"
   },
   {
     "label": "to be a (any)",
@@ -110,22 +126,6 @@
   {
     "label": "when passed as parameter to (any)",
     "url": "/assertions/any/when-passed-as-parameter-to/"
-  },
-  {
-    "label": "to be fulfilled (Promise)",
-    "url": "/assertions/Promise/to-be-fulfilled/"
-  },
-  {
-    "label": "to be rejected (Promise)",
-    "url": "/assertions/Promise/to-be-rejected/"
-  },
-  {
-    "label": "when fulfilled (Promise)",
-    "url": "/assertions/Promise/when-fulfilled/"
-  },
-  {
-    "label": "when rejected (Promise)",
-    "url": "/assertions/Promise/when-rejected/"
   },
   {
     "label": "to be empty (array-like)",
@@ -188,20 +188,20 @@
     "url": "/assertions/function/when-called-with/"
   },
   {
-    "label": "when decoded as (Buffer)",
-    "url": "/assertions/Buffer/when-decoded-as/"
+    "label": "to have message (Error)",
+    "url": "/assertions/Error/to-have-message/"
   },
   {
     "label": "to be NaN (number)",
     "url": "/assertions/number/to-be-NaN/"
   },
   {
-    "label": "to be close to (number)",
-    "url": "/assertions/number/to-be-close-to/"
-  },
-  {
     "label": "to be finite (number)",
     "url": "/assertions/number/to-be-finite/"
+  },
+  {
+    "label": "to be close to (number)",
+    "url": "/assertions/number/to-be-close-to/"
   },
   {
     "label": "to be greater than or equal to (number)",
@@ -272,12 +272,12 @@
     "url": "/assertions/string/to-be-empty/"
   },
   {
-    "label": "to be greater than or equal to (string)",
-    "url": "/assertions/string/to-be-greater-than-or-equal-to/"
-  },
-  {
     "label": "to be greater than (string)",
     "url": "/assertions/string/to-be-greater-than/"
+  },
+  {
+    "label": "to be greater than or equal to (string)",
+    "url": "/assertions/string/to-be-greater-than-or-equal-to/"
   },
   {
     "label": "to be less than or equal to (string)",
