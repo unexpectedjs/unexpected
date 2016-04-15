@@ -9,11 +9,14 @@ if (typeof process === 'object') {
         var basePath = pathModule.resolve(__dirname, '..');
         var extend = require('../lib/utils').extend;
         describe('executed through mocha', function () {
-            expect.addAssertion('<string> executed through mocha <object?>', function (expect, subject, env) {
+            expect.addAssertion('<array|string> executed through mocha <object?>', function (expect, subject, env) {
+                if (!Array.isArray(subject)) {
+                    subject = [subject];
+                }
                 return expect.promise(function (run) {
-                    childProcess.execFile(pathModule.resolve(basePath, 'node_modules', '.bin', 'mocha'), [
-                        pathModule.resolve(__dirname, 'external', subject + '.externaljs')
-                    ], {
+                    childProcess.execFile(pathModule.resolve(basePath, 'node_modules', '.bin', 'mocha'), subject.map(function (fileName) {
+                        return pathModule.resolve(__dirname, 'external', fileName + '.externaljs');
+                    }), {
                         cwd: basePath,
                         env: extend({}, process.env, env || {})
                     }, run(function (err, stdout, stderr) {
@@ -60,6 +63,24 @@ if (typeof process === 'object') {
                 return expect('failingAsync', 'executed through mocha').spread(function (err, stdout, stderr) {
                     expect(err, 'to be an', Error);
                     expect(stdout, 'to contain', 'From previous event:');
+                });
+            });
+
+            describe('with a test suite spanning multiple files', function () {
+                it('should report that a promise was created, but not returned by the it block in the first test', function () {
+                    return expect(['forgotToReturnPendingPromiseFromSuccessfulItBlock', 'successful'], 'executed through mocha').spread(function (err, stdout, stderr) {
+                        expect(stdout, 'to contain', 'Error: should call the callback: You have created a promise that was not returned from the it block');
+                        expect(err, 'to satisfy', { code: 1 });
+                    });
+                });
+            });
+
+            describe('with a test suite spanning multiple files', function () {
+                it('should report that a promise was created, but not returned by the it block in the second test', function () {
+                    return expect(['successful', 'forgotToReturnPendingPromiseFromSuccessfulItBlock'], 'executed through mocha').spread(function (err, stdout, stderr) {
+                        expect(stdout, 'to contain', 'Error: should call the callback: You have created a promise that was not returned from the it block');
+                        expect(err, 'to satisfy', { code: 1 });
+                    });
                 });
             });
         });
