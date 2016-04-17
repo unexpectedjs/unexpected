@@ -29,9 +29,9 @@ module.exports = function AssertionString(text) {
 },{}],2:[function(require,module,exports){
 var createStandardErrorMessage = require(5);
 var utils = require(19);
-var magicpen = require(43);
+var magicpen = require(37);
 var extend = utils.extend;
-var leven = require(39);
+var leven = require(33);
 var makePromise = require(11);
 var makeAndMethod = require(9);
 var isPendingPromise = require(8);
@@ -1732,8 +1732,8 @@ module.exports = UnexpectedError;
 (function (Buffer){
 /*global setTimeout*/
 var utils = require(19);
-var arrayChanges = require(24);
-var arrayChangesAsync = require(23);
+var arrayChanges = require(23);
+var arrayChangesAsync = require(22);
 var throwIfNonUnexpectedError = require(16);
 var objectIs = utils.objectIs;
 var isRegExp = utils.isRegExp;
@@ -3691,7 +3691,7 @@ if (typeof window !== 'undefined' && typeof window.location !== 'undefined') {
 }
 module.exports = defaultDepth;
 
-}).call(this,require(31))
+}).call(this,require(52))
 },{}],8:[function(require,module,exports){
 module.exports = function isPendingPromise(obj) {
     return obj && typeof obj.then === 'function' && typeof obj.isPending === 'function' && obj.isPending();
@@ -3987,7 +3987,7 @@ module.exports = /([\x00-\x09\x0B-\x1F\x7F-\x9F\xAD\u0378\u0379\u037F-\u0383\u03
 
 },{}],15:[function(require,module,exports){
 var utils = require(19);
-var stringDiff = require(37);
+var stringDiff = require(29);
 var specialCharRegExp = require(14);
 
 module.exports = function (expect) {
@@ -4452,9 +4452,9 @@ module.exports = function throwIfNonUnexpectedError(err) {
 var utils = require(19);
 var isRegExp = utils.isRegExp;
 var leftPad = utils.leftPad;
-var arrayChanges = require(24);
-var leven = require(39);
-var detectIndent = require(36);
+var arrayChanges = require(23);
+var leven = require(33);
+var detectIndent = require(28);
 var defaultDepth = require(7);
 var AssertionString = require(1);
 
@@ -5561,7 +5561,7 @@ if (typeof process !== 'undefined' && process.env && process.env.UNEXPECTED_FULL
 }
 module.exports = useFullStackTrace;
 
-}).call(this,require(31))
+}).call(this,require(52))
 },{}],19:[function(require,module,exports){
 /* eslint-disable no-proto */
 var canSetPrototype = Object.setPrototypeOf || ({ __proto__: [] } instanceof Array);
@@ -5758,70 +5758,12 @@ module.exports = require(2).create()
 
 // Add an inspect method to all the promises we return that will make the REPL, console.log, and util.inspect render it nicely in node.js:
 require(54).prototype.inspect = function () {
-    return module.exports.createOutput(require(43).defaultFormat).appendInspected(this).toString();
+    return module.exports.createOutput(require(37).defaultFormat).appendInspected(this).toString();
 };
 
 },{}],22:[function(require,module,exports){
-'use strict';
-
-var styles = module.exports = {
-	modifiers: {
-		reset: [0, 0],
-		bold: [1, 22], // 21 isn't widely supported and 22 does the same thing
-		dim: [2, 22],
-		italic: [3, 23],
-		underline: [4, 24],
-		inverse: [7, 27],
-		hidden: [8, 28],
-		strikethrough: [9, 29]
-	},
-	colors: {
-		black: [30, 39],
-		red: [31, 39],
-		green: [32, 39],
-		yellow: [33, 39],
-		blue: [34, 39],
-		magenta: [35, 39],
-		cyan: [36, 39],
-		white: [37, 39],
-		gray: [90, 39]
-	},
-	bgColors: {
-		bgBlack: [40, 49],
-		bgRed: [41, 49],
-		bgGreen: [42, 49],
-		bgYellow: [43, 49],
-		bgBlue: [44, 49],
-		bgMagenta: [45, 49],
-		bgCyan: [46, 49],
-		bgWhite: [47, 49]
-	}
-};
-
-// fix humans
-styles.colors.grey = styles.colors.gray;
-
-Object.keys(styles).forEach(function (groupName) {
-	var group = styles[groupName];
-
-	Object.keys(group).forEach(function (styleName) {
-		var style = group[styleName];
-
-		styles[styleName] = group[styleName] = {
-			open: '\u001b[' + style[0] + 'm',
-			close: '\u001b[' + style[1] + 'm'
-		};
-	});
-
-	Object.defineProperty(styles, groupName, {
-		value: group,
-		enumerable: false
-	});
-});
-
-},{}],23:[function(require,module,exports){
 /*global setTimeout */
-var arrayDiff = require(25);
+var arrayDiff = require(24);
 var MAX_STACK_DEPTH = 1000;
 
 function extend(target) {
@@ -6097,8 +6039,8 @@ module.exports = function arrayChanges(actual, expected, equal, similar, include
     });
 };
 
-},{}],24:[function(require,module,exports){
-var arrayDiff = require(26);
+},{}],23:[function(require,module,exports){
+var arrayDiff = require(25);
 
 function extend(target) {
     for (var i = 1; i < arguments.length; i += 1) {
@@ -6314,7 +6256,7 @@ module.exports = function arrayChanges(actual, expected, equal, similar, include
     return mutatedArray;
 };
 
-},{}],25:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 
 module.exports = arrayDiff;
 
@@ -6555,7 +6497,7 @@ function arrayDiff(before, after, equalFn, callback) {
     });
 }
 
-},{}],26:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 module.exports = arrayDiff;
 
 // Based on some rough benchmarking, this algorithm is about O(2n) worst case,
@@ -6738,6 +6680,128 @@ function arrayDiff(before, after, equalFn) {
   return removes.concat(outputMoves, inserts);
 }
 
+},{}],26:[function(require,module,exports){
+var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+
+;(function (exports) {
+	'use strict';
+
+  var Arr = (typeof Uint8Array !== 'undefined')
+    ? Uint8Array
+    : Array
+
+	var PLUS   = '+'.charCodeAt(0)
+	var SLASH  = '/'.charCodeAt(0)
+	var NUMBER = '0'.charCodeAt(0)
+	var LOWER  = 'a'.charCodeAt(0)
+	var UPPER  = 'A'.charCodeAt(0)
+
+	function decode (elt) {
+		var code = elt.charCodeAt(0)
+		if (code === PLUS)
+			return 62 // '+'
+		if (code === SLASH)
+			return 63 // '/'
+		if (code < NUMBER)
+			return -1 //no match
+		if (code < NUMBER + 10)
+			return code - NUMBER + 26 + 26
+		if (code < UPPER + 26)
+			return code - UPPER
+		if (code < LOWER + 26)
+			return code - LOWER + 26
+	}
+
+	function b64ToByteArray (b64) {
+		var i, j, l, tmp, placeHolders, arr
+
+		if (b64.length % 4 > 0) {
+			throw new Error('Invalid string. Length must be a multiple of 4')
+		}
+
+		// the number of equal signs (place holders)
+		// if there are two placeholders, than the two characters before it
+		// represent one byte
+		// if there is only one, then the three characters before it represent 2 bytes
+		// this is just a cheap hack to not do indexOf twice
+		var len = b64.length
+		placeHolders = '=' === b64.charAt(len - 2) ? 2 : '=' === b64.charAt(len - 1) ? 1 : 0
+
+		// base64 is 4/3 + up to two characters of the original data
+		arr = new Arr(b64.length * 3 / 4 - placeHolders)
+
+		// if there are placeholders, only get up to the last complete 4 chars
+		l = placeHolders > 0 ? b64.length - 4 : b64.length
+
+		var L = 0
+
+		function push (v) {
+			arr[L++] = v
+		}
+
+		for (i = 0, j = 0; i < l; i += 4, j += 3) {
+			tmp = (decode(b64.charAt(i)) << 18) | (decode(b64.charAt(i + 1)) << 12) | (decode(b64.charAt(i + 2)) << 6) | decode(b64.charAt(i + 3))
+			push((tmp & 0xFF0000) >> 16)
+			push((tmp & 0xFF00) >> 8)
+			push(tmp & 0xFF)
+		}
+
+		if (placeHolders === 2) {
+			tmp = (decode(b64.charAt(i)) << 2) | (decode(b64.charAt(i + 1)) >> 4)
+			push(tmp & 0xFF)
+		} else if (placeHolders === 1) {
+			tmp = (decode(b64.charAt(i)) << 10) | (decode(b64.charAt(i + 1)) << 4) | (decode(b64.charAt(i + 2)) >> 2)
+			push((tmp >> 8) & 0xFF)
+			push(tmp & 0xFF)
+		}
+
+		return arr
+	}
+
+	function uint8ToBase64 (uint8) {
+		var i,
+			extraBytes = uint8.length % 3, // if we have 1 byte left, pad 2 bytes
+			output = "",
+			temp, length
+
+		function encode (num) {
+			return lookup.charAt(num)
+		}
+
+		function tripletToBase64 (num) {
+			return encode(num >> 18 & 0x3F) + encode(num >> 12 & 0x3F) + encode(num >> 6 & 0x3F) + encode(num & 0x3F)
+		}
+
+		// go through the array every three bytes, we'll deal with trailing stuff later
+		for (i = 0, length = uint8.length - extraBytes; i < length; i += 3) {
+			temp = (uint8[i] << 16) + (uint8[i + 1] << 8) + (uint8[i + 2])
+			output += tripletToBase64(temp)
+		}
+
+		// pad the end with zeros, but make sure to not forget the extra bytes
+		switch (extraBytes) {
+			case 1:
+				temp = uint8[uint8.length - 1]
+				output += encode(temp >> 2)
+				output += encode((temp << 4) & 0x3F)
+				output += '=='
+				break
+			case 2:
+				temp = (uint8[uint8.length - 2] << 8) + (uint8[uint8.length - 1])
+				output += encode(temp >> 10)
+				output += encode((temp >> 4) & 0x3F)
+				output += encode((temp << 2) & 0x3F)
+				output += '='
+				break
+		}
+
+		return output
+	}
+
+	exports.toByteArray = b64ToByteArray
+	exports.fromByteArray = uint8ToBase64
+}(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
+
 },{}],27:[function(require,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
@@ -6746,9 +6810,9 @@ function arrayDiff(before, after, equalFn) {
  * @license  MIT
  */
 
-var base64 = require(28)
-var ieee754 = require(29)
-var isArray = require(30)
+var base64 = require(26)
+var ieee754 = require(30)
+var isArray = require(31)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = Buffer
@@ -7793,736 +7857,8 @@ function decodeUtf8Char (str) {
 }
 
 },{}],28:[function(require,module,exports){
-var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-
-;(function (exports) {
-	'use strict';
-
-  var Arr = (typeof Uint8Array !== 'undefined')
-    ? Uint8Array
-    : Array
-
-	var PLUS   = '+'.charCodeAt(0)
-	var SLASH  = '/'.charCodeAt(0)
-	var NUMBER = '0'.charCodeAt(0)
-	var LOWER  = 'a'.charCodeAt(0)
-	var UPPER  = 'A'.charCodeAt(0)
-
-	function decode (elt) {
-		var code = elt.charCodeAt(0)
-		if (code === PLUS)
-			return 62 // '+'
-		if (code === SLASH)
-			return 63 // '/'
-		if (code < NUMBER)
-			return -1 //no match
-		if (code < NUMBER + 10)
-			return code - NUMBER + 26 + 26
-		if (code < UPPER + 26)
-			return code - UPPER
-		if (code < LOWER + 26)
-			return code - LOWER + 26
-	}
-
-	function b64ToByteArray (b64) {
-		var i, j, l, tmp, placeHolders, arr
-
-		if (b64.length % 4 > 0) {
-			throw new Error('Invalid string. Length must be a multiple of 4')
-		}
-
-		// the number of equal signs (place holders)
-		// if there are two placeholders, than the two characters before it
-		// represent one byte
-		// if there is only one, then the three characters before it represent 2 bytes
-		// this is just a cheap hack to not do indexOf twice
-		var len = b64.length
-		placeHolders = '=' === b64.charAt(len - 2) ? 2 : '=' === b64.charAt(len - 1) ? 1 : 0
-
-		// base64 is 4/3 + up to two characters of the original data
-		arr = new Arr(b64.length * 3 / 4 - placeHolders)
-
-		// if there are placeholders, only get up to the last complete 4 chars
-		l = placeHolders > 0 ? b64.length - 4 : b64.length
-
-		var L = 0
-
-		function push (v) {
-			arr[L++] = v
-		}
-
-		for (i = 0, j = 0; i < l; i += 4, j += 3) {
-			tmp = (decode(b64.charAt(i)) << 18) | (decode(b64.charAt(i + 1)) << 12) | (decode(b64.charAt(i + 2)) << 6) | decode(b64.charAt(i + 3))
-			push((tmp & 0xFF0000) >> 16)
-			push((tmp & 0xFF00) >> 8)
-			push(tmp & 0xFF)
-		}
-
-		if (placeHolders === 2) {
-			tmp = (decode(b64.charAt(i)) << 2) | (decode(b64.charAt(i + 1)) >> 4)
-			push(tmp & 0xFF)
-		} else if (placeHolders === 1) {
-			tmp = (decode(b64.charAt(i)) << 10) | (decode(b64.charAt(i + 1)) << 4) | (decode(b64.charAt(i + 2)) >> 2)
-			push((tmp >> 8) & 0xFF)
-			push(tmp & 0xFF)
-		}
-
-		return arr
-	}
-
-	function uint8ToBase64 (uint8) {
-		var i,
-			extraBytes = uint8.length % 3, // if we have 1 byte left, pad 2 bytes
-			output = "",
-			temp, length
-
-		function encode (num) {
-			return lookup.charAt(num)
-		}
-
-		function tripletToBase64 (num) {
-			return encode(num >> 18 & 0x3F) + encode(num >> 12 & 0x3F) + encode(num >> 6 & 0x3F) + encode(num & 0x3F)
-		}
-
-		// go through the array every three bytes, we'll deal with trailing stuff later
-		for (i = 0, length = uint8.length - extraBytes; i < length; i += 3) {
-			temp = (uint8[i] << 16) + (uint8[i + 1] << 8) + (uint8[i + 2])
-			output += tripletToBase64(temp)
-		}
-
-		// pad the end with zeros, but make sure to not forget the extra bytes
-		switch (extraBytes) {
-			case 1:
-				temp = uint8[uint8.length - 1]
-				output += encode(temp >> 2)
-				output += encode((temp << 4) & 0x3F)
-				output += '=='
-				break
-			case 2:
-				temp = (uint8[uint8.length - 2] << 8) + (uint8[uint8.length - 1])
-				output += encode(temp >> 10)
-				output += encode((temp >> 4) & 0x3F)
-				output += encode((temp << 2) & 0x3F)
-				output += '='
-				break
-		}
-
-		return output
-	}
-
-	exports.toByteArray = b64ToByteArray
-	exports.fromByteArray = uint8ToBase64
-}(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
-
-},{}],29:[function(require,module,exports){
-exports.read = function (buffer, offset, isLE, mLen, nBytes) {
-  var e, m
-  var eLen = nBytes * 8 - mLen - 1
-  var eMax = (1 << eLen) - 1
-  var eBias = eMax >> 1
-  var nBits = -7
-  var i = isLE ? (nBytes - 1) : 0
-  var d = isLE ? -1 : 1
-  var s = buffer[offset + i]
-
-  i += d
-
-  e = s & ((1 << (-nBits)) - 1)
-  s >>= (-nBits)
-  nBits += eLen
-  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}
-
-  m = e & ((1 << (-nBits)) - 1)
-  e >>= (-nBits)
-  nBits += mLen
-  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}
-
-  if (e === 0) {
-    e = 1 - eBias
-  } else if (e === eMax) {
-    return m ? NaN : ((s ? -1 : 1) * Infinity)
-  } else {
-    m = m + Math.pow(2, mLen)
-    e = e - eBias
-  }
-  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
-}
-
-exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
-  var e, m, c
-  var eLen = nBytes * 8 - mLen - 1
-  var eMax = (1 << eLen) - 1
-  var eBias = eMax >> 1
-  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
-  var i = isLE ? 0 : (nBytes - 1)
-  var d = isLE ? 1 : -1
-  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
-
-  value = Math.abs(value)
-
-  if (isNaN(value) || value === Infinity) {
-    m = isNaN(value) ? 1 : 0
-    e = eMax
-  } else {
-    e = Math.floor(Math.log(value) / Math.LN2)
-    if (value * (c = Math.pow(2, -e)) < 1) {
-      e--
-      c *= 2
-    }
-    if (e + eBias >= 1) {
-      value += rt / c
-    } else {
-      value += rt * Math.pow(2, 1 - eBias)
-    }
-    if (value * c >= 2) {
-      e++
-      c /= 2
-    }
-
-    if (e + eBias >= eMax) {
-      m = 0
-      e = eMax
-    } else if (e + eBias >= 1) {
-      m = (value * c - 1) * Math.pow(2, mLen)
-      e = e + eBias
-    } else {
-      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
-      e = 0
-    }
-  }
-
-  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
-
-  e = (e << mLen) | m
-  eLen += mLen
-  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
-
-  buffer[offset + i - d] |= s * 128
-}
-
-},{}],30:[function(require,module,exports){
-
-/**
- * isArray
- */
-
-var isArray = Array.isArray;
-
-/**
- * toString
- */
-
-var str = Object.prototype.toString;
-
-/**
- * Whether or not the given `val`
- * is an array.
- *
- * example:
- *
- *        isArray([]);
- *        // > true
- *        isArray(arguments);
- *        // > false
- *        isArray('');
- *        // > false
- *
- * @param {mixed} val
- * @return {bool}
- */
-
-module.exports = isArray || function (val) {
-  return !! val && '[object Array]' == str.call(val);
-};
-
-},{}],31:[function(require,module,exports){
-// shim for using process in browser
-
-var process = module.exports = {};
-
-process.nextTick = (function () {
-    var canSetImmediate = typeof window !== 'undefined'
-    && window.setImmediate;
-    var canPost = typeof window !== 'undefined'
-    && window.postMessage && window.addEventListener
-    ;
-
-    if (canSetImmediate) {
-        return function (f) { return window.setImmediate(f) };
-    }
-
-    if (canPost) {
-        var queue = [];
-        window.addEventListener('message', function (ev) {
-            var source = ev.source;
-            if ((source === window || source === null) && ev.data === 'process-tick') {
-                ev.stopPropagation();
-                if (queue.length > 0) {
-                    var fn = queue.shift();
-                    fn();
-                }
-            }
-        }, true);
-
-        return function nextTick(fn) {
-            queue.push(fn);
-            window.postMessage('process-tick', '*');
-        };
-    }
-
-    return function nextTick(fn) {
-        setTimeout(fn, 0);
-    };
-})();
-
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-}
-
-// TODO(shtylman)
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-
-},{}],32:[function(require,module,exports){
-/**
- * @author Markus Ekholm
- * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
- * @license Copyright (c) 2012-2015, Markus Ekholm
- * All rights reserved.
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *    * Redistributions of source code must retain the above copyright
- *      notice, this list of conditions and the following disclaimer.
- *    * Redistributions in binary form must reproduce the above copyright
- *      notice, this list of conditions and the following disclaimer in the
- *      documentation and/or other materials provided with the distribution.
- *    * Neither the name of the <organization> nor the
- *      names of its contributors may be used to endorse or promote products
- *      derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL MARKUS EKHOLM BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/**
-* EXPORTS
-*/
-exports.rgb_to_lab = rgb_to_lab;
-
-/**
-* IMPORTS
-*/
-var pow  = Math.pow;
-var sqrt = Math.sqrt;
-
-/**
- * API FUNCTIONS
- */
-
-/**
-* Returns c converted to labcolor.
-* @param {rgbcolor} c should have fields R,G,B
-* @return {labcolor} c converted to labcolor
-*/
-function rgb_to_lab(c)
-{
-  return xyz_to_lab(rgb_to_xyz(c))
-}
-
-/**
-* Returns c converted to xyzcolor.
-* @param {rgbcolor} c should have fields R,G,B
-* @return {xyzcolor} c converted to xyzcolor
-*/
-function rgb_to_xyz(c)
-{
-  // Based on http://www.easyrgb.com/index.php?X=MATH&H=02
-  var R = ( c.R / 255 );
-  var G = ( c.G / 255 );
-  var B = ( c.B / 255 );
-
-  if ( R > 0.04045 ) R = pow(( ( R + 0.055 ) / 1.055 ),2.4);
-  else               R = R / 12.92;
-  if ( G > 0.04045 ) G = pow(( ( G + 0.055 ) / 1.055 ),2.4);
-  else               G = G / 12.92;
-  if ( B > 0.04045 ) B = pow(( ( B + 0.055 ) / 1.055 ), 2.4);
-  else               B = B / 12.92;
-
-  R *= 100;
-  G *= 100;
-  B *= 100;
-
-  // Observer. = 2°, Illuminant = D65
-  var X = R * 0.4124 + G * 0.3576 + B * 0.1805;
-  var Y = R * 0.2126 + G * 0.7152 + B * 0.0722;
-  var Z = R * 0.0193 + G * 0.1192 + B * 0.9505;
-  return {'X' : X, 'Y' : Y, 'Z' : Z};
-}
-
-/**
-* Returns c converted to labcolor.
-* @param {xyzcolor} c should have fields X,Y,Z
-* @return {labcolor} c converted to labcolor
-*/
-function xyz_to_lab(c)
-{
-  // Based on http://www.easyrgb.com/index.php?X=MATH&H=07
-  var ref_Y = 100.000;
-  var ref_Z = 108.883;
-  var ref_X = 95.047; // Observer= 2°, Illuminant= D65
-  var Y = c.Y / ref_Y;
-  var Z = c.Z / ref_Z;
-  var X = c.X / ref_X;
-  if ( X > 0.008856 ) X = pow(X, 1/3);
-  else                X = ( 7.787 * X ) + ( 16 / 116 );
-  if ( Y > 0.008856 ) Y = pow(Y, 1/3);
-  else                Y = ( 7.787 * Y ) + ( 16 / 116 );
-  if ( Z > 0.008856 ) Z = pow(Z, 1/3);
-  else                Z = ( 7.787 * Z ) + ( 16 / 116 );
-  var L = ( 116 * Y ) - 16;
-  var a = 500 * ( X - Y );
-  var b = 200 * ( Y - Z );
-  return {'L' : L , 'a' : a, 'b' : b};
-}
-
-// Local Variables:
-// allout-layout: t
-// js-indent-level: 2
-// End:
-
-},{}],33:[function(require,module,exports){
-/**
- * @author Markus Ekholm
- * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
- * @license Copyright (c) 2012-2015, Markus Ekholm
- * All rights reserved.
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *    * Redistributions of source code must retain the above copyright
- *      notice, this list of conditions and the following disclaimer.
- *    * Redistributions in binary form must reproduce the above copyright
- *      notice, this list of conditions and the following disclaimer in the
- *      documentation and/or other materials provided with the distribution.
- *    * Neither the name of the <organization> nor the
- *      names of its contributors may be used to endorse or promote products
- *      derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL MARKUS EKHOLM BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/**
-* EXPORTS
-*/
-exports.ciede2000 = ciede2000;
-
-/**
-* IMPORTS
-*/
-var sqrt = Math.sqrt;
-var pow = Math.pow;
-var cos = Math.cos;
-var atan2 = Math.atan2;
-var sin = Math.sin;
-var abs = Math.abs;
-var exp = Math.exp;
-var PI = Math.PI;
-
-/**
- * API FUNCTIONS
- */
-
-/**
-* Returns diff between c1 and c2 using the CIEDE2000 algorithm
-* @param {labcolor} c1    Should have fields L,a,b
-* @param {labcolor} c2    Should have fields L,a,b
-* @return {float}   Difference between c1 and c2
-*/
-function ciede2000(c1,c2)
-{
-  /**
-   * Implemented as in "The CIEDE2000 Color-Difference Formula:
-   * Implementation Notes, Supplementary Test Data, and Mathematical Observations"
-   * by Gaurav Sharma, Wencheng Wu and Edul N. Dalal.
-   */
-
-  // Get L,a,b values for color 1
-  var L1 = c1.L;
-  var a1 = c1.a;
-  var b1 = c1.b;
-
-  // Get L,a,b values for color 2
-  var L2 = c2.L;
-  var a2 = c2.a;
-  var b2 = c2.b;
-
-  // Weight factors
-  var kL = 1;
-  var kC = 1;
-  var kH = 1;
-
-  /**
-   * Step 1: Calculate C1p, C2p, h1p, h2p
-   */
-  var C1 = sqrt(pow(a1, 2) + pow(b1, 2)) //(2)
-  var C2 = sqrt(pow(a2, 2) + pow(b2, 2)) //(2)
-
-  var a_C1_C2 = (C1+C2)/2.0;             //(3)
-
-  var G = 0.5 * (1 - sqrt(pow(a_C1_C2 , 7.0) /
-                          (pow(a_C1_C2, 7.0) + pow(25.0, 7.0)))); //(4)
-
-  var a1p = (1.0 + G) * a1; //(5)
-  var a2p = (1.0 + G) * a2; //(5)
-
-  var C1p = sqrt(pow(a1p, 2) + pow(b1, 2)); //(6)
-  var C2p = sqrt(pow(a2p, 2) + pow(b2, 2)); //(6)
-
-  var hp_f = function(x,y) //(7)
-  {
-    if(x== 0 && y == 0) return 0;
-    else{
-      var tmphp = degrees(atan2(x,y));
-      if(tmphp >= 0) return tmphp
-      else           return tmphp + 360;
-    }
-  }
-
-  var h1p = hp_f(b1, a1p); //(7)
-  var h2p = hp_f(b2, a2p); //(7)
-
-  /**
-   * Step 2: Calculate dLp, dCp, dHp
-   */
-  var dLp = L2 - L1; //(8)
-  var dCp = C2p - C1p; //(9)
-
-  var dhp_f = function(C1, C2, h1p, h2p) //(10)
-  {
-    if(C1*C2 == 0)               return 0;
-    else if(abs(h2p-h1p) <= 180) return h2p-h1p;
-    else if((h2p-h1p) > 180)     return (h2p-h1p)-360;
-    else if((h2p-h1p) < -180)    return (h2p-h1p)+360;
-    else                         throw(new Error());
-  }
-  var dhp = dhp_f(C1,C2, h1p, h2p); //(10)
-  var dHp = 2*sqrt(C1p*C2p)*sin(radians(dhp)/2.0); //(11)
-
-  /**
-   * Step 3: Calculate CIEDE2000 Color-Difference
-   */
-  var a_L = (L1 + L2) / 2.0; //(12)
-  var a_Cp = (C1p + C2p) / 2.0; //(13)
-
-  var a_hp_f = function(C1, C2, h1p, h2p) { //(14)
-    if(C1*C2 == 0)                                      return h1p+h2p
-    else if(abs(h1p-h2p)<= 180)                         return (h1p+h2p)/2.0;
-    else if((abs(h1p-h2p) > 180) && ((h1p+h2p) < 360))  return (h1p+h2p+360)/2.0;
-    else if((abs(h1p-h2p) > 180) && ((h1p+h2p) >= 360)) return (h1p+h2p-360)/2.0;
-    else                                                throw(new Error());
-  }
-  var a_hp = a_hp_f(C1,C2,h1p,h2p); //(14)
-  var T = 1-0.17*cos(radians(a_hp-30))+0.24*cos(radians(2*a_hp))+
-    0.32*cos(radians(3*a_hp+6))-0.20*cos(radians(4*a_hp-63)); //(15)
-  var d_ro = 30 * exp(-(pow((a_hp-275)/25,2))); //(16)
-  var RC = sqrt((pow(a_Cp, 7.0)) / (pow(a_Cp, 7.0) + pow(25.0, 7.0)));//(17)
-  var SL = 1 + ((0.015 * pow(a_L - 50, 2)) /
-                sqrt(20 + pow(a_L - 50, 2.0)));//(18)
-  var SC = 1 + 0.045 * a_Cp;//(19)
-  var SH = 1 + 0.015 * a_Cp * T;//(20)
-  var RT = -2 * RC * sin(radians(2 * d_ro));//(21)
-  var dE = sqrt(pow(dLp /(SL * kL), 2) + pow(dCp /(SC * kC), 2) +
-                pow(dHp /(SH * kH), 2) + RT * (dCp /(SC * kC)) *
-                (dHp / (SH * kH))); //(22)
-  return dE;
-}
-
-/**
- * INTERNAL FUNCTIONS
- */
-function degrees(n) { return n*(180/PI); }
-function radians(n) { return n*(PI/180); }
-
-// Local Variables:
-// allout-layout: t
-// js-indent-level: 2
-// End:
-
-},{}],34:[function(require,module,exports){
 'use strict';
-
-var diff = require(33);
-var convert = require(32);
-var palette = require(35);
-
-var color = module.exports = {};
-
-color.diff             = diff.ciede2000;
-color.rgb_to_lab       = convert.rgb_to_lab;
-color.map_palette      = palette.map_palette;
-color.palette_map_key  = palette.palette_map_key;
-
-color.closest = function(target, relative) {
-    var key = color.palette_map_key(target);
-
-    var result = color.map_palette([target], relative, 'closest');
-
-    return result[key];
-};
-
-color.furthest = function(target, relative) {
-    var key = color.palette_map_key(target);
-
-    var result = color.map_palette([target], relative, 'furthest');
-
-    return result[key];
-};
-
-},{}],35:[function(require,module,exports){
-/**
- * @author Markus Ekholm
- * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
- * @license Copyright (c) 2012-2015, Markus Ekholm
- * All rights reserved.
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *    * Redistributions of source code must retain the above copyright
- *      notice, this list of conditions and the following disclaimer.
- *    * Redistributions in binary form must reproduce the above copyright
- *      notice, this list of conditions and the following disclaimer in the
- *      documentation and/or other materials provided with the distribution.
- *    * Neither the name of the <organization> nor the
- *      names of its contributors may be used to endorse or promote products
- *      derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL MARKUS EKHOLM BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/**
-* EXPORTS
-*/
-exports.map_palette     = map_palette;
-exports.palette_map_key = palette_map_key;
-
-/**
-* IMPORTS
-*/
-var color_diff    = require(33);
-var color_convert = require(32);
-
-/**
- * API FUNCTIONS
- */
-
-/**
-* Returns the hash key used for a {rgbcolor} in a {palettemap}
-* @param {rgbcolor} c should have fields R,G,B
-* @return {string}
-*/
-function palette_map_key(c)
-{
-  return "R" + c.R + "B" + c.B + "G" + c.G;
-}
-
-/**
-* Returns a mapping from each color in a to the closest color in b
-* @param [{rgbcolor}] a each element should have fields R,G,B
-* @param [{rgbcolor}] b each element should have fields R,G,B
-* @param 'type' should be the string 'closest' or 'furthest'
-* @return {palettemap}
-*/
-function map_palette(a, b, type)
-{
-  var c = {};
-  type = type || 'closest';
-  for (var idx1 = 0; idx1 < a.length; idx1 += 1){
-    var color1 = a[idx1];
-    var best_color      = undefined;
-    var best_color_diff = undefined;
-    for (var idx2 = 0; idx2 < b.length; idx2 += 1)
-    {
-      var color2 = b[idx2];
-      var current_color_diff = diff(color1,color2);
-
-      if((best_color == undefined) || ((type === 'closest') && (current_color_diff < best_color_diff)))
-      {
-        best_color      = color2;
-        best_color_diff = current_color_diff;
-        continue;
-      }
-      if((type === 'furthest') && (current_color_diff > best_color_diff))
-      {
-        best_color      = color2;
-        best_color_diff = current_color_diff;
-        continue;
-      }
-    }
-    c[palette_map_key(color1)] = best_color;
-  }
-  return c;
-}
-
-/**
- * INTERNAL FUNCTIONS
- */
-
-function diff(c1,c2)
-{
-  c1 = color_convert.rgb_to_lab(c1);
-  c2 = color_convert.rgb_to_lab(c2);
-  return color_diff.ciede2000(c1,c2);
-}
-
-// Local Variables:
-// allout-layout: t
-// js-indent-level: 2
-// End:
-
-},{}],36:[function(require,module,exports){
-'use strict';
-var repeating = require(52);
+var repeating = require(53);
 
 // detect either spaces or tabs but not both to properly handle tabs
 // for indentation and spaces for alignment
@@ -8641,7 +7977,7 @@ module.exports = function (str) {
 	};
 };
 
-},{}],37:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 /* See LICENSE file for terms of use */
 
 /*
@@ -9032,7 +8368,128 @@ module.exports = function (str) {
   }
 })(this);
 
-},{}],38:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
+exports.read = function (buffer, offset, isLE, mLen, nBytes) {
+  var e, m
+  var eLen = nBytes * 8 - mLen - 1
+  var eMax = (1 << eLen) - 1
+  var eBias = eMax >> 1
+  var nBits = -7
+  var i = isLE ? (nBytes - 1) : 0
+  var d = isLE ? -1 : 1
+  var s = buffer[offset + i]
+
+  i += d
+
+  e = s & ((1 << (-nBits)) - 1)
+  s >>= (-nBits)
+  nBits += eLen
+  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+
+  m = e & ((1 << (-nBits)) - 1)
+  e >>= (-nBits)
+  nBits += mLen
+  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+
+  if (e === 0) {
+    e = 1 - eBias
+  } else if (e === eMax) {
+    return m ? NaN : ((s ? -1 : 1) * Infinity)
+  } else {
+    m = m + Math.pow(2, mLen)
+    e = e - eBias
+  }
+  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
+}
+
+exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
+  var e, m, c
+  var eLen = nBytes * 8 - mLen - 1
+  var eMax = (1 << eLen) - 1
+  var eBias = eMax >> 1
+  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
+  var i = isLE ? 0 : (nBytes - 1)
+  var d = isLE ? 1 : -1
+  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
+
+  value = Math.abs(value)
+
+  if (isNaN(value) || value === Infinity) {
+    m = isNaN(value) ? 1 : 0
+    e = eMax
+  } else {
+    e = Math.floor(Math.log(value) / Math.LN2)
+    if (value * (c = Math.pow(2, -e)) < 1) {
+      e--
+      c *= 2
+    }
+    if (e + eBias >= 1) {
+      value += rt / c
+    } else {
+      value += rt * Math.pow(2, 1 - eBias)
+    }
+    if (value * c >= 2) {
+      e++
+      c /= 2
+    }
+
+    if (e + eBias >= eMax) {
+      m = 0
+      e = eMax
+    } else if (e + eBias >= 1) {
+      m = (value * c - 1) * Math.pow(2, mLen)
+      e = e + eBias
+    } else {
+      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
+      e = 0
+    }
+  }
+
+  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
+
+  e = (e << mLen) | m
+  eLen += mLen
+  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
+
+  buffer[offset + i - d] |= s * 128
+}
+
+},{}],31:[function(require,module,exports){
+
+/**
+ * isArray
+ */
+
+var isArray = Array.isArray;
+
+/**
+ * toString
+ */
+
+var str = Object.prototype.toString;
+
+/**
+ * Whether or not the given `val`
+ * is an array.
+ *
+ * example:
+ *
+ *        isArray([]);
+ *        // > true
+ *        isArray(arguments);
+ *        // > false
+ *        isArray('');
+ *        // > false
+ *
+ * @param {mixed} val
+ * @return {bool}
+ */
+
+module.exports = isArray || function (val) {
+  return !! val && '[object Array]' == str.call(val);
+};
+
+},{}],32:[function(require,module,exports){
 'use strict';
 var numberIsNan = require(51);
 
@@ -9040,7 +8497,7 @@ module.exports = Number.isFinite || function (val) {
 	return !(typeof val !== 'number' || numberIsNan(val) || val === Infinity || val === -Infinity);
 };
 
-},{}],39:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 /* eslint-disable no-nested-ternary */
 'use strict';
 var arr = [];
@@ -9089,17 +8546,17 @@ module.exports = function (a, b) {
 	return ret;
 };
 
-},{}],40:[function(require,module,exports){
-var utils = require(50);
-var TextSerializer = require(44);
-var colorDiff = require(34);
-var rgbRegexp = require(48);
-var themeMapper = require(49);
+},{}],34:[function(require,module,exports){
+var utils = require(44);
+var TextSerializer = require(38);
+var colorDiff = require(48);
+var rgbRegexp = require(42);
+var themeMapper = require(43);
 
 var cacheSize = 0;
 var maxColorCacheSize = 1024;
 
-var ansiStyles = utils.extend({}, require(22));
+var ansiStyles = utils.extend({}, require(45));
 Object.keys(ansiStyles).forEach(function (styleName) {
     ansiStyles[styleName.toLowerCase()] = ansiStyles[styleName];
 });
@@ -9237,11 +8694,11 @@ AnsiSerializer.prototype.text = function (options) {
 
 module.exports = AnsiSerializer;
 
-},{}],41:[function(require,module,exports){
-var cssStyles = require(45);
-var flattenBlocksInLines = require(47);
-var rgbRegexp = require(48);
-var themeMapper = require(49);
+},{}],35:[function(require,module,exports){
+var cssStyles = require(39);
+var flattenBlocksInLines = require(41);
+var rgbRegexp = require(42);
+var themeMapper = require(43);
 
 function ColoredConsoleSerializer(theme) {
     this.theme = theme;
@@ -9323,10 +8780,10 @@ ColoredConsoleSerializer.prototype.raw = function (options) {
 
 module.exports = ColoredConsoleSerializer;
 
-},{}],42:[function(require,module,exports){
-var cssStyles = require(45);
-var rgbRegexp = require(48);
-var themeMapper = require(49);
+},{}],36:[function(require,module,exports){
+var cssStyles = require(39);
+var rgbRegexp = require(42);
+var themeMapper = require(43);
 
 function HtmlSerializer(theme) {
     this.theme = theme;
@@ -9404,14 +8861,14 @@ HtmlSerializer.prototype.raw = function (options) {
 
 module.exports = HtmlSerializer;
 
-},{}],43:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 (function (process){
 /*global window*/
-var utils = require(50);
+var utils = require(44);
 var extend = utils.extend;
-var duplicateText = require(46);
-var rgbRegexp = require(48);
-var cssStyles = require(45);
+var duplicateText = require(40);
+var rgbRegexp = require(42);
+var cssStyles = require(39);
 
 function MagicPen(options) {
     if (!(this instanceof MagicPen)) {
@@ -9439,7 +8896,7 @@ function MagicPen(options) {
     }
 }
 
-if (typeof exports === 'object' && typeof exports.nodeName !== 'string' && require(53)) {
+if (typeof exports === 'object' && typeof exports.nodeName !== 'string' && require(50)) {
     MagicPen.defaultFormat = 'ansi'; // colored console
 } else if (typeof window !== 'undefined' && typeof window.navigator !== 'undefined') {
     if (window._phantom || window.mochaPhantomJS || (window.__karma__ && window.__karma__.config.captureConsole)) {
@@ -9468,10 +8925,10 @@ MagicPen.prototype.newline = MagicPen.prototype.nl = function (count) {
 
 MagicPen.serializers = {};
 [
-    require(44),
-    require(42),
-    require(40),
-    require(41)
+    require(38),
+    require(36),
+    require(34),
+    require(35)
 ].forEach(function (serializer) {
     MagicPen.serializers[serializer.prototype.format] = serializer;
 });
@@ -9600,6 +9057,11 @@ MagicPen.prototype.text = function () {
     for (var i = 1; i < arguments.length; i += 1) {
         styles[i - 1] = arguments[i];
     }
+
+    if (content && content.isMagicPen) {
+        throw new Error("You can't print a magicpen instance with a text style")
+    }
+
     content = String(content);
     if (content.indexOf('\n') !== -1) {
         var lines = content.split(/\n/);
@@ -10100,9 +9562,9 @@ MagicPen.prototype.installTheme = function (formats, theme) {
 
 module.exports = MagicPen;
 
-}).call(this,require(31))
-},{}],44:[function(require,module,exports){
-var flattenBlocksInLines = require(47);
+}).call(this,require(52))
+},{}],38:[function(require,module,exports){
+var flattenBlocksInLines = require(41);
 
 function TextSerializer() {}
 
@@ -10136,7 +9598,7 @@ TextSerializer.prototype.raw = function (options) {
 
 module.exports = TextSerializer;
 
-},{}],45:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 var cssStyles = {
     bold: 'font-weight: bold',
     dim: 'opacity: 0.7',
@@ -10172,7 +9634,7 @@ Object.keys(cssStyles).forEach(function (styleName) {
 
 module.exports = cssStyles;
 
-},{}],46:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 var whitespaceCacheLength = 256;
 var whitespaceCache = [''];
 for (var i = 1; i <= whitespaceCacheLength; i += 1) {
@@ -10208,9 +9670,9 @@ function duplicateText(content, times) {
 
 module.exports = duplicateText;
 
-},{}],47:[function(require,module,exports){
-var utils = require(50);
-var duplicateText = require(46);
+},{}],41:[function(require,module,exports){
+var utils = require(44);
+var duplicateText = require(40);
 
 function createPadding(length) {
     return { style: 'text', args: { content: duplicateText(' ', length), styles: [] } };
@@ -10293,10 +9755,10 @@ function flattenBlocksInLines(lines) {
 
 module.exports = flattenBlocksInLines;
 
-},{}],48:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 module.exports =  /^(?:bg)?#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i;
 
-},{}],49:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 module.exports = function (theme, styles) {
     if (styles.length === 1) {
         var count = 0;
@@ -10321,7 +9783,7 @@ module.exports = function (theme, styles) {
     return styles;
 };
 
-},{}],50:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 var utils = {
     extend: function (target) {
         for (var i = 1; i < arguments.length; i += 1) {
@@ -10430,39 +9892,485 @@ var utils = {
 
 module.exports = utils;
 
-},{}],51:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 'use strict';
-module.exports = Number.isNaN || function (x) {
-	return x !== x;
+
+var styles = module.exports = {
+	modifiers: {
+		reset: [0, 0],
+		bold: [1, 22], // 21 isn't widely supported and 22 does the same thing
+		dim: [2, 22],
+		italic: [3, 23],
+		underline: [4, 24],
+		inverse: [7, 27],
+		hidden: [8, 28],
+		strikethrough: [9, 29]
+	},
+	colors: {
+		black: [30, 39],
+		red: [31, 39],
+		green: [32, 39],
+		yellow: [33, 39],
+		blue: [34, 39],
+		magenta: [35, 39],
+		cyan: [36, 39],
+		white: [37, 39],
+		gray: [90, 39]
+	},
+	bgColors: {
+		bgBlack: [40, 49],
+		bgRed: [41, 49],
+		bgGreen: [42, 49],
+		bgYellow: [43, 49],
+		bgBlue: [44, 49],
+		bgMagenta: [45, 49],
+		bgCyan: [46, 49],
+		bgWhite: [47, 49]
+	}
 };
 
-},{}],52:[function(require,module,exports){
+// fix humans
+styles.colors.grey = styles.colors.gray;
+
+Object.keys(styles).forEach(function (groupName) {
+	var group = styles[groupName];
+
+	Object.keys(group).forEach(function (styleName) {
+		var style = group[styleName];
+
+		styles[styleName] = group[styleName] = {
+			open: '\u001b[' + style[0] + 'm',
+			close: '\u001b[' + style[1] + 'm'
+		};
+	});
+
+	Object.defineProperty(styles, groupName, {
+		value: group,
+		enumerable: false
+	});
+});
+
+},{}],46:[function(require,module,exports){
+/**
+ * @author Markus Ekholm
+ * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
+ * @license Copyright (c) 2012-2015, Markus Ekholm
+ * All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *    * Redistributions of source code must retain the above copyright
+ *      notice, this list of conditions and the following disclaimer.
+ *    * Redistributions in binary form must reproduce the above copyright
+ *      notice, this list of conditions and the following disclaimer in the
+ *      documentation and/or other materials provided with the distribution.
+ *    * Neither the name of the <organization> nor the
+ *      names of its contributors may be used to endorse or promote products
+ *      derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL MARKUS EKHOLM BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/**
+* EXPORTS
+*/
+exports.rgb_to_lab = rgb_to_lab;
+
+/**
+* IMPORTS
+*/
+var pow  = Math.pow;
+var sqrt = Math.sqrt;
+
+/**
+ * API FUNCTIONS
+ */
+
+/**
+* Returns c converted to labcolor.
+* @param {rgbcolor} c should have fields R,G,B
+* @return {labcolor} c converted to labcolor
+*/
+function rgb_to_lab(c)
+{
+  return xyz_to_lab(rgb_to_xyz(c))
+}
+
+/**
+* Returns c converted to xyzcolor.
+* @param {rgbcolor} c should have fields R,G,B
+* @return {xyzcolor} c converted to xyzcolor
+*/
+function rgb_to_xyz(c)
+{
+  // Based on http://www.easyrgb.com/index.php?X=MATH&H=02
+  var R = ( c.R / 255 );
+  var G = ( c.G / 255 );
+  var B = ( c.B / 255 );
+
+  if ( R > 0.04045 ) R = pow(( ( R + 0.055 ) / 1.055 ),2.4);
+  else               R = R / 12.92;
+  if ( G > 0.04045 ) G = pow(( ( G + 0.055 ) / 1.055 ),2.4);
+  else               G = G / 12.92;
+  if ( B > 0.04045 ) B = pow(( ( B + 0.055 ) / 1.055 ), 2.4);
+  else               B = B / 12.92;
+
+  R *= 100;
+  G *= 100;
+  B *= 100;
+
+  // Observer. = 2°, Illuminant = D65
+  var X = R * 0.4124 + G * 0.3576 + B * 0.1805;
+  var Y = R * 0.2126 + G * 0.7152 + B * 0.0722;
+  var Z = R * 0.0193 + G * 0.1192 + B * 0.9505;
+  return {'X' : X, 'Y' : Y, 'Z' : Z};
+}
+
+/**
+* Returns c converted to labcolor.
+* @param {xyzcolor} c should have fields X,Y,Z
+* @return {labcolor} c converted to labcolor
+*/
+function xyz_to_lab(c)
+{
+  // Based on http://www.easyrgb.com/index.php?X=MATH&H=07
+  var ref_Y = 100.000;
+  var ref_Z = 108.883;
+  var ref_X = 95.047; // Observer= 2°, Illuminant= D65
+  var Y = c.Y / ref_Y;
+  var Z = c.Z / ref_Z;
+  var X = c.X / ref_X;
+  if ( X > 0.008856 ) X = pow(X, 1/3);
+  else                X = ( 7.787 * X ) + ( 16 / 116 );
+  if ( Y > 0.008856 ) Y = pow(Y, 1/3);
+  else                Y = ( 7.787 * Y ) + ( 16 / 116 );
+  if ( Z > 0.008856 ) Z = pow(Z, 1/3);
+  else                Z = ( 7.787 * Z ) + ( 16 / 116 );
+  var L = ( 116 * Y ) - 16;
+  var a = 500 * ( X - Y );
+  var b = 200 * ( Y - Z );
+  return {'L' : L , 'a' : a, 'b' : b};
+}
+
+// Local Variables:
+// allout-layout: t
+// js-indent-level: 2
+// End:
+
+},{}],47:[function(require,module,exports){
+/**
+ * @author Markus Ekholm
+ * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
+ * @license Copyright (c) 2012-2015, Markus Ekholm
+ * All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *    * Redistributions of source code must retain the above copyright
+ *      notice, this list of conditions and the following disclaimer.
+ *    * Redistributions in binary form must reproduce the above copyright
+ *      notice, this list of conditions and the following disclaimer in the
+ *      documentation and/or other materials provided with the distribution.
+ *    * Neither the name of the <organization> nor the
+ *      names of its contributors may be used to endorse or promote products
+ *      derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL MARKUS EKHOLM BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/**
+* EXPORTS
+*/
+exports.ciede2000 = ciede2000;
+
+/**
+* IMPORTS
+*/
+var sqrt = Math.sqrt;
+var pow = Math.pow;
+var cos = Math.cos;
+var atan2 = Math.atan2;
+var sin = Math.sin;
+var abs = Math.abs;
+var exp = Math.exp;
+var PI = Math.PI;
+
+/**
+ * API FUNCTIONS
+ */
+
+/**
+* Returns diff between c1 and c2 using the CIEDE2000 algorithm
+* @param {labcolor} c1    Should have fields L,a,b
+* @param {labcolor} c2    Should have fields L,a,b
+* @return {float}   Difference between c1 and c2
+*/
+function ciede2000(c1,c2)
+{
+  /**
+   * Implemented as in "The CIEDE2000 Color-Difference Formula:
+   * Implementation Notes, Supplementary Test Data, and Mathematical Observations"
+   * by Gaurav Sharma, Wencheng Wu and Edul N. Dalal.
+   */
+
+  // Get L,a,b values for color 1
+  var L1 = c1.L;
+  var a1 = c1.a;
+  var b1 = c1.b;
+
+  // Get L,a,b values for color 2
+  var L2 = c2.L;
+  var a2 = c2.a;
+  var b2 = c2.b;
+
+  // Weight factors
+  var kL = 1;
+  var kC = 1;
+  var kH = 1;
+
+  /**
+   * Step 1: Calculate C1p, C2p, h1p, h2p
+   */
+  var C1 = sqrt(pow(a1, 2) + pow(b1, 2)) //(2)
+  var C2 = sqrt(pow(a2, 2) + pow(b2, 2)) //(2)
+
+  var a_C1_C2 = (C1+C2)/2.0;             //(3)
+
+  var G = 0.5 * (1 - sqrt(pow(a_C1_C2 , 7.0) /
+                          (pow(a_C1_C2, 7.0) + pow(25.0, 7.0)))); //(4)
+
+  var a1p = (1.0 + G) * a1; //(5)
+  var a2p = (1.0 + G) * a2; //(5)
+
+  var C1p = sqrt(pow(a1p, 2) + pow(b1, 2)); //(6)
+  var C2p = sqrt(pow(a2p, 2) + pow(b2, 2)); //(6)
+
+  var hp_f = function(x,y) //(7)
+  {
+    if(x== 0 && y == 0) return 0;
+    else{
+      var tmphp = degrees(atan2(x,y));
+      if(tmphp >= 0) return tmphp
+      else           return tmphp + 360;
+    }
+  }
+
+  var h1p = hp_f(b1, a1p); //(7)
+  var h2p = hp_f(b2, a2p); //(7)
+
+  /**
+   * Step 2: Calculate dLp, dCp, dHp
+   */
+  var dLp = L2 - L1; //(8)
+  var dCp = C2p - C1p; //(9)
+
+  var dhp_f = function(C1, C2, h1p, h2p) //(10)
+  {
+    if(C1*C2 == 0)               return 0;
+    else if(abs(h2p-h1p) <= 180) return h2p-h1p;
+    else if((h2p-h1p) > 180)     return (h2p-h1p)-360;
+    else if((h2p-h1p) < -180)    return (h2p-h1p)+360;
+    else                         throw(new Error());
+  }
+  var dhp = dhp_f(C1,C2, h1p, h2p); //(10)
+  var dHp = 2*sqrt(C1p*C2p)*sin(radians(dhp)/2.0); //(11)
+
+  /**
+   * Step 3: Calculate CIEDE2000 Color-Difference
+   */
+  var a_L = (L1 + L2) / 2.0; //(12)
+  var a_Cp = (C1p + C2p) / 2.0; //(13)
+
+  var a_hp_f = function(C1, C2, h1p, h2p) { //(14)
+    if(C1*C2 == 0)                                      return h1p+h2p
+    else if(abs(h1p-h2p)<= 180)                         return (h1p+h2p)/2.0;
+    else if((abs(h1p-h2p) > 180) && ((h1p+h2p) < 360))  return (h1p+h2p+360)/2.0;
+    else if((abs(h1p-h2p) > 180) && ((h1p+h2p) >= 360)) return (h1p+h2p-360)/2.0;
+    else                                                throw(new Error());
+  }
+  var a_hp = a_hp_f(C1,C2,h1p,h2p); //(14)
+  var T = 1-0.17*cos(radians(a_hp-30))+0.24*cos(radians(2*a_hp))+
+    0.32*cos(radians(3*a_hp+6))-0.20*cos(radians(4*a_hp-63)); //(15)
+  var d_ro = 30 * exp(-(pow((a_hp-275)/25,2))); //(16)
+  var RC = sqrt((pow(a_Cp, 7.0)) / (pow(a_Cp, 7.0) + pow(25.0, 7.0)));//(17)
+  var SL = 1 + ((0.015 * pow(a_L - 50, 2)) /
+                sqrt(20 + pow(a_L - 50, 2.0)));//(18)
+  var SC = 1 + 0.045 * a_Cp;//(19)
+  var SH = 1 + 0.015 * a_Cp * T;//(20)
+  var RT = -2 * RC * sin(radians(2 * d_ro));//(21)
+  var dE = sqrt(pow(dLp /(SL * kL), 2) + pow(dCp /(SC * kC), 2) +
+                pow(dHp /(SH * kH), 2) + RT * (dCp /(SC * kC)) *
+                (dHp / (SH * kH))); //(22)
+  return dE;
+}
+
+/**
+ * INTERNAL FUNCTIONS
+ */
+function degrees(n) { return n*(180/PI); }
+function radians(n) { return n*(PI/180); }
+
+// Local Variables:
+// allout-layout: t
+// js-indent-level: 2
+// End:
+
+},{}],48:[function(require,module,exports){
 'use strict';
-var isFinite = require(38);
 
-module.exports = function (str, n) {
-	if (typeof str !== 'string') {
-		throw new TypeError('Expected a string as the first argument');
-	}
+var diff = require(47);
+var convert = require(46);
+var palette = require(49);
 
-	if (n < 0 || !isFinite(n)) {
-		throw new TypeError('Expected a finite positive number');
-	}
+var color = module.exports = {};
 
-	var ret = '';
+color.diff             = diff.ciede2000;
+color.rgb_to_lab       = convert.rgb_to_lab;
+color.map_palette      = palette.map_palette;
+color.palette_map_key  = palette.palette_map_key;
 
-	do {
-		if (n & 1) {
-			ret += str;
-		}
+color.closest = function(target, relative) {
+    var key = color.palette_map_key(target);
 
-		str += str;
-	} while (n = n >> 1);
+    var result = color.map_palette([target], relative, 'closest');
 
-	return ret;
+    return result[key];
 };
 
-},{}],53:[function(require,module,exports){
+color.furthest = function(target, relative) {
+    var key = color.palette_map_key(target);
+
+    var result = color.map_palette([target], relative, 'furthest');
+
+    return result[key];
+};
+
+},{}],49:[function(require,module,exports){
+/**
+ * @author Markus Ekholm
+ * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
+ * @license Copyright (c) 2012-2015, Markus Ekholm
+ * All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *    * Redistributions of source code must retain the above copyright
+ *      notice, this list of conditions and the following disclaimer.
+ *    * Redistributions in binary form must reproduce the above copyright
+ *      notice, this list of conditions and the following disclaimer in the
+ *      documentation and/or other materials provided with the distribution.
+ *    * Neither the name of the <organization> nor the
+ *      names of its contributors may be used to endorse or promote products
+ *      derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL MARKUS EKHOLM BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/**
+* EXPORTS
+*/
+exports.map_palette     = map_palette;
+exports.palette_map_key = palette_map_key;
+
+/**
+* IMPORTS
+*/
+var color_diff    = require(47);
+var color_convert = require(46);
+
+/**
+ * API FUNCTIONS
+ */
+
+/**
+* Returns the hash key used for a {rgbcolor} in a {palettemap}
+* @param {rgbcolor} c should have fields R,G,B
+* @return {string}
+*/
+function palette_map_key(c)
+{
+  return "R" + c.R + "B" + c.B + "G" + c.G;
+}
+
+/**
+* Returns a mapping from each color in a to the closest color in b
+* @param [{rgbcolor}] a each element should have fields R,G,B
+* @param [{rgbcolor}] b each element should have fields R,G,B
+* @param 'type' should be the string 'closest' or 'furthest'
+* @return {palettemap}
+*/
+function map_palette(a, b, type)
+{
+  var c = {};
+  type = type || 'closest';
+  for (var idx1 = 0; idx1 < a.length; idx1 += 1){
+    var color1 = a[idx1];
+    var best_color      = undefined;
+    var best_color_diff = undefined;
+    for (var idx2 = 0; idx2 < b.length; idx2 += 1)
+    {
+      var color2 = b[idx2];
+      var current_color_diff = diff(color1,color2);
+
+      if((best_color == undefined) || ((type === 'closest') && (current_color_diff < best_color_diff)))
+      {
+        best_color      = color2;
+        best_color_diff = current_color_diff;
+        continue;
+      }
+      if((type === 'furthest') && (current_color_diff > best_color_diff))
+      {
+        best_color      = color2;
+        best_color_diff = current_color_diff;
+        continue;
+      }
+    }
+    c[palette_map_key(color1)] = best_color;
+  }
+  return c;
+}
+
+/**
+ * INTERNAL FUNCTIONS
+ */
+
+function diff(c1,c2)
+{
+  c1 = color_convert.rgb_to_lab(c1);
+  c2 = color_convert.rgb_to_lab(c2);
+  return color_diff.ciede2000(c1,c2);
+}
+
+// Local Variables:
+// allout-layout: t
+// js-indent-level: 2
+// End:
+
+},{}],50:[function(require,module,exports){
 (function (process){
 'use strict';
 var argv = process.argv;
@@ -10504,7 +10412,104 @@ module.exports = (function () {
 	return false;
 })();
 
-}).call(this,require(31))
+}).call(this,require(52))
+},{}],51:[function(require,module,exports){
+'use strict';
+module.exports = Number.isNaN || function (x) {
+	return x !== x;
+};
+
+},{}],52:[function(require,module,exports){
+// shim for using process in browser
+
+var process = module.exports = {};
+
+process.nextTick = (function () {
+    var canSetImmediate = typeof window !== 'undefined'
+    && window.setImmediate;
+    var canPost = typeof window !== 'undefined'
+    && window.postMessage && window.addEventListener
+    ;
+
+    if (canSetImmediate) {
+        return function (f) { return window.setImmediate(f) };
+    }
+
+    if (canPost) {
+        var queue = [];
+        window.addEventListener('message', function (ev) {
+            var source = ev.source;
+            if ((source === window || source === null) && ev.data === 'process-tick') {
+                ev.stopPropagation();
+                if (queue.length > 0) {
+                    var fn = queue.shift();
+                    fn();
+                }
+            }
+        }, true);
+
+        return function nextTick(fn) {
+            queue.push(fn);
+            window.postMessage('process-tick', '*');
+        };
+    }
+
+    return function nextTick(fn) {
+        setTimeout(fn, 0);
+    };
+})();
+
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+}
+
+// TODO(shtylman)
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+
+},{}],53:[function(require,module,exports){
+'use strict';
+var isFinite = require(32);
+
+module.exports = function (str, n) {
+	if (typeof str !== 'string') {
+		throw new TypeError('Expected a string as the first argument');
+	}
+
+	if (n < 0 || !isFinite(n)) {
+		throw new TypeError('Expected a finite positive number');
+	}
+
+	var ret = '';
+
+	do {
+		if (n & 1) {
+			ret += str;
+		}
+
+		str += str;
+	} while (n = n >> 1);
+
+	return ret;
+};
+
 },{}],54:[function(require,module,exports){
 (function (process,global){
 /* @preserve
@@ -15365,6 +15370,6 @@ module.exports = ret;
 
 },{"./es5.js":14}]},{},[4])(4)
 });                    ;if (typeof window !== 'undefined' && window !== null) {                               window.P = window.Promise;                                                     } else if (typeof self !== 'undefined' && self !== null) {                             self.P = self.Promise;                                                         }
-}).call(this,require(31),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+}).call(this,require(52),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}]},{},[21])(21)
 });
