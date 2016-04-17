@@ -27,7 +27,7 @@
     "detect-indent": "3.0.1",
     "diff": "1.1.0",
     "leven": "2.0.0",
-    "magicpen": "5.9.0",
+    "magicpen": "5.9.1",
     "unexpected-bluebird": "2.9.34-longstack2"
   },
   "devDependencies": {
