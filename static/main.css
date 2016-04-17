@@ -147,6 +147,9 @@ header nav li.active a {
   padding: 0;
   color: #646464;
 }
+.content img {
+  max-width: 100%;
+}
 .has-sidebar .main {
   left: 330px;
 }

@@ -96,12 +96,12 @@
     "url": "/assertions/any/to-be-falsy/"
   },
   {
-    "label": "to be null (any)",
-    "url": "/assertions/any/to-be-null/"
-  },
-  {
     "label": "to be ok (any)",
     "url": "/assertions/any/to-be-ok/"
+  },
+  {
+    "label": "to be null (any)",
+    "url": "/assertions/any/to-be-null/"
   },
   {
     "label": "to be truthy (any)",
@@ -128,6 +128,14 @@
     "url": "/assertions/any/when-passed-as-parameter-to/"
   },
   {
+    "label": "to be false (boolean)",
+    "url": "/assertions/boolean/to-be-false/"
+  },
+  {
+    "label": "to be true (boolean)",
+    "url": "/assertions/boolean/to-be-true/"
+  },
+  {
     "label": "to be empty (array-like)",
     "url": "/assertions/array-like/to-be-empty/"
   },
@@ -150,14 +158,6 @@
   {
     "label": "when passed as parameters to (array-like)",
     "url": "/assertions/array-like/when-passed-as-parameters-to/"
-  },
-  {
-    "label": "to be false (boolean)",
-    "url": "/assertions/boolean/to-be-false/"
-  },
-  {
-    "label": "to be true (boolean)",
-    "url": "/assertions/boolean/to-be-true/"
   },
   {
     "label": "to call the callback with error (function)",
@@ -196,12 +196,12 @@
     "url": "/assertions/number/to-be-NaN/"
   },
   {
-    "label": "to be finite (number)",
-    "url": "/assertions/number/to-be-finite/"
-  },
-  {
     "label": "to be close to (number)",
     "url": "/assertions/number/to-be-close-to/"
+  },
+  {
+    "label": "to be finite (number)",
+    "url": "/assertions/number/to-be-finite/"
   },
   {
     "label": "to be greater than or equal to (number)",
@@ -272,12 +272,12 @@
     "url": "/assertions/string/to-be-empty/"
   },
   {
-    "label": "to be greater than (string)",
-    "url": "/assertions/string/to-be-greater-than/"
-  },
-  {
     "label": "to be greater than or equal to (string)",
     "url": "/assertions/string/to-be-greater-than-or-equal-to/"
+  },
+  {
+    "label": "to be greater than (string)",
+    "url": "/assertions/string/to-be-greater-than/"
   },
   {
     "label": "to be less than or equal to (string)",
@@ -304,16 +304,16 @@
     "url": "/assertions/string/to-begin-with/"
   },
   {
-    "label": "to contain (string)",
-    "url": "/assertions/string/to-contain/"
-  },
-  {
     "label": "to end with (string)",
     "url": "/assertions/string/to-end-with/"
   },
   {
     "label": "to have length (string)",
     "url": "/assertions/string/to-have-length/"
+  },
+  {
+    "label": "to contain (string)",
+    "url": "/assertions/string/to-contain/"
   },
   {
     "label": "to match (string)",
