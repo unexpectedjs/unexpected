@@ -68,22 +68,6 @@
     "url": "/assertions/Buffer/when-decoded-as/"
   },
   {
-    "label": "to be fulfilled (Promise)",
-    "url": "/assertions/Promise/to-be-fulfilled/"
-  },
-  {
-    "label": "to be rejected (Promise)",
-    "url": "/assertions/Promise/to-be-rejected/"
-  },
-  {
-    "label": "when fulfilled (Promise)",
-    "url": "/assertions/Promise/when-fulfilled/"
-  },
-  {
-    "label": "when rejected (Promise)",
-    "url": "/assertions/Promise/when-rejected/"
-  },
-  {
     "label": "to be a (any)",
     "url": "/assertions/any/to-be-a/"
   },
@@ -92,16 +76,16 @@
     "url": "/assertions/any/to-be-defined/"
   },
   {
+    "label": "to be null (any)",
+    "url": "/assertions/any/to-be-null/"
+  },
+  {
     "label": "to be falsy (any)",
     "url": "/assertions/any/to-be-falsy/"
   },
   {
     "label": "to be ok (any)",
     "url": "/assertions/any/to-be-ok/"
-  },
-  {
-    "label": "to be null (any)",
-    "url": "/assertions/any/to-be-null/"
   },
   {
     "label": "to be truthy (any)",
@@ -126,6 +110,22 @@
   {
     "label": "when passed as parameter to (any)",
     "url": "/assertions/any/when-passed-as-parameter-to/"
+  },
+  {
+    "label": "to be fulfilled (Promise)",
+    "url": "/assertions/Promise/to-be-fulfilled/"
+  },
+  {
+    "label": "to be rejected (Promise)",
+    "url": "/assertions/Promise/to-be-rejected/"
+  },
+  {
+    "label": "when fulfilled (Promise)",
+    "url": "/assertions/Promise/when-fulfilled/"
+  },
+  {
+    "label": "when rejected (Promise)",
+    "url": "/assertions/Promise/when-rejected/"
   },
   {
     "label": "to be false (boolean)",
@@ -304,16 +304,16 @@
     "url": "/assertions/string/to-begin-with/"
   },
   {
+    "label": "to contain (string)",
+    "url": "/assertions/string/to-contain/"
+  },
+  {
     "label": "to end with (string)",
     "url": "/assertions/string/to-end-with/"
   },
   {
     "label": "to have length (string)",
     "url": "/assertions/string/to-have-length/"
-  },
-  {
-    "label": "to contain (string)",
-    "url": "/assertions/string/to-contain/"
   },
   {
     "label": "to match (string)",
