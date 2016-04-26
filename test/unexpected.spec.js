@@ -17,7 +17,27 @@ describe('unexpected', function () {
         it('fails when the second parameter is not a string', function () {
             expect(function () {
                 expect({}, {});
-            }, 'to throw', 'The expect function requires the second parameter to be a string.');
+            }, 'to throw', 'The expect function requires the second parameter to be a string or an expect.it.');
+        });
+
+        describe('in a nested expect', function () {
+            it('fails when given no parameters', function () {
+                var clonedExpect = expect.clone().addAssertion('to foo', function (expect) {
+                    expect();
+                });
+                expect(function () {
+                    clonedExpect('foo', 'to foo');
+                }, 'to throw', 'The expect function requires at least one parameter.');
+            });
+
+            it('fails when the second parameter is not a string', function () {
+                var clonedExpect = expect.clone().addAssertion('to foo', function (expect) {
+                    expect({}, {});
+                });
+                expect(function () {
+                    clonedExpect({}, {});
+                }, 'to throw', 'The expect function requires the second parameter to be a string or an expect.it.');
+            });
         });
     });
 
