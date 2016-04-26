@@ -76,6 +76,18 @@ describe('unexpected', function () {
         });
     });
 
+    describe('when given an expect.it as the 2nd argument', function () {
+        it('should succeed', function () {
+            expect('foo', expect.it('to be a string'));
+        });
+
+        it('should fail with a diff', function () {
+            expect(function () {
+                expect(123, expect.it('to be a string'));
+            }, 'to throw', 'expected 123 to be a string');
+        });
+    });
+
     describe('diffs', function () {
         describe('on strings', function () {
             it('highlights unexpected extra newlines after the input', function () {
