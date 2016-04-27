@@ -1,5 +1,6 @@
 --reporter spec
 --recursive
 --check-leaks
+--timeout 10000
 --require ./test/common
 --compilers md:unexpected-markdown

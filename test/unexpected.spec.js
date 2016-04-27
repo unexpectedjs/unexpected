@@ -16,14 +16,34 @@ describe('unexpected', function () {
 
         it('fails when given only one parameter', function () {
             expect(function () {
-                expect({});
+                expect('foo');
             }, 'to throw', 'The expect function requires at least two parameters.');
         });
 
         it('fails when the second parameter is not a string', function () {
             expect(function () {
                 expect({}, {});
-            }, 'to throw', 'The expect function requires the second parameter to be a string.');
+            }, 'to throw', 'The expect function requires the second parameter to be a string or an expect.it.');
+        });
+
+        describe('in a nested expect', function () {
+            it('fails when given no parameters', function () {
+                var clonedExpect = expect.clone().addAssertion('to foo', function (expect) {
+                    expect();
+                });
+                expect(function () {
+                    clonedExpect('foo', 'to foo');
+                }, 'to throw', 'The expect function requires at least one parameter.');
+            });
+
+            it('fails when the second parameter is not a string', function () {
+                var clonedExpect = expect.clone().addAssertion('to foo', function (expect) {
+                    expect({}, {});
+                });
+                expect(function () {
+                    clonedExpect({}, {});
+                }, 'to throw', 'The expect function requires the second parameter to be a string or an expect.it.');
+            });
         });
     });
 
@@ -59,6 +79,18 @@ describe('unexpected', function () {
             return expect(function () {
                 return clonedExpect(undefined, 'to foo');
             }, 'not to error');
+        });
+    });
+
+    describe('when given an expect.it as the 2nd argument', function () {
+        it('should succeed', function () {
+            expect('foo', expect.it('to be a string'));
+        });
+
+        it('should fail with a diff', function () {
+            expect(function () {
+                expect(123, expect.it('to be a string'));
+            }, 'to throw', 'expected 123 to be a string');
         });
     });
 
@@ -854,5 +886,82 @@ describe('unexpected', function () {
             "    No matching assertion, did you mean:\n" +
             "    <function> [when] called with <array-like> <assertion?>"
         );
+    });
+
+    describe('wrappedExpect via an assertion', function () {
+        var clonedExpect = expect.clone();
+
+        // This is roughly babel's transpilation of
+        // expect.addAssertion('<string> when suffixed with foo <assertion?>', function (expect, subject, ...rest) {
+        //     return expect(subject + 'foo', ...rest);
+        // });
+
+        clonedExpect.addAssertion('<string> when suffixed with foo <assertion?>', function (expect, subject) {
+            var _len = arguments.length;
+            var rest = Array(_len > 2 ? _len - 2 : 0);
+            for (var _key = 2; _key < _len; _key++) {
+                rest[_key - 2] = arguments[_key];
+            }
+            return expect.apply(undefined, [subject + 'foo'].concat(rest));
+        });
+
+        it('should return a promise that resolves to that value', function () {
+            clonedExpect('bar', 'when suffixed with foo').then(function (value) {
+                expect(value, 'to equal', 'barfoo');
+            });
+        });
+
+        describe('when followed by another assertion', function () {
+            it('should succeed', function () {
+                clonedExpect('bar', 'when suffixed with foo', 'to equal', 'barfoo');
+            });
+
+            it('should fail with a diff', function () {
+                expect(function () {
+                    clonedExpect('bar', 'when suffixed with foo', 'to equal', 'foobar');
+                }, 'to throw',
+                    "expected 'bar' when suffixed with foo to equal 'foobar'\n" +
+                    "\n" +
+                    "-barfoo\n" +
+                    "+foobar"
+                );
+            });
+        });
+
+        describe('when followed by an expect.it', function () {
+            it('should succeed', function () {
+                clonedExpect('bar', 'when suffixed with foo', expect.it('to equal', 'barfoo'));
+            });
+
+            it('should fail with a diff', function () {
+                expect(function () {
+                    clonedExpect('bar', 'when suffixed with foo', expect.it('to equal', 'foobar'));
+                }, 'to throw',
+                    "expected 'bar' when suffixed with foo expect.it('to equal', 'foobar')\n" +
+                    "  expected 'barfoo' to equal 'foobar'\n" +
+                    "\n" +
+                    "  -barfoo\n" +
+                    "  +foobar"
+                );
+            });
+        });
+
+        it('should return a promise that has an "and" method', function () {
+            clonedExpect.addAssertion('<string> to equal foo and when suffixed with bar <assertion?>', function (expect, subject) {
+                var _len = arguments.length;
+                var rest = Array(_len > 2 ? _len - 2 : 0);
+                for (var _key = 2; _key < _len; _key++) {
+                    rest[_key - 2] = arguments[_key];
+                }
+                var result = subject + 'bar';
+                return expect.apply(undefined, [result].concat(rest)).and('to equal', 'foobar').then(function () {
+                    return result;
+                });
+            });
+
+            clonedExpect('foo', 'to equal foo and when suffixed with bar').then(function (value) {
+                expect(value, 'to equal', 'foobar');
+            });
+        });
     });
 });
