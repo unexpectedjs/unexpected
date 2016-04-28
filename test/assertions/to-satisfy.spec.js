@@ -356,6 +356,19 @@ describe('to satisfy assertion', function () {
               );
     });
 
+    it('should render a diff where missing properties expected to be missing are not rendered', function () {
+        // Regression test, used to be shown as:  shown as // missing: <property name>: undefined
+        expect(function () {
+            expect({bar: 123}, 'to satisfy', {foo: undefined, bar: 456});
+        }, 'to throw',
+            "expected { bar: 123 } to satisfy { foo: undefined, bar: 456 }\n" +
+            "\n" +
+            "{\n" +
+            "  bar: 123 // should equal 456\n" +
+            "}"
+        );
+    });
+
     it('ignores blacklisted properties in the diff', function () {
         var error = new Error('foo');
         error.description = 'qux';
