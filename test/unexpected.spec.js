@@ -964,4 +964,39 @@ describe('unexpected', function () {
             });
         });
     });
+
+    describe('with a low preferredWidth setting', function () {
+        var originalPreferredWidth = expect.output.preferredWidth;
+        beforeEach(function () {
+            expect.output.preferredWidth = 50;
+        });
+
+        beforeEach(function () {
+            expect.output.preferredWidth = originalPreferredWidth;
+        });
+
+        it('should wrap the error message', function () {
+            expect(function () {
+                expect(
+                    [[1, 2], [3, 4]],
+                    'to have items satisfying',
+                    'to have items satisfying',
+                    'to be greater than or equal to', 2
+                );
+            }, 'to throw',
+                'expected [ [ 1, 2 ], [ 3, 4 ] ]\n' +
+                'to have items satisfying\n' +
+                'to have items satisfying\n' +
+                'to be greater than or equal to 2\n' +
+                '\n' +
+                '[\n' +
+                '  [\n' +
+                '    1, // should be greater than or equal to 2\n' +
+                '    2\n' +
+                '  ],\n' +
+                '  [ 3, 4 ]\n' +
+                ']'
+            );
+        });
+    });
 });
