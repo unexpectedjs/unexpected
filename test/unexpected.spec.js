@@ -971,7 +971,7 @@ describe('unexpected', function () {
             expect.output.preferredWidth = 50;
         });
 
-        beforeEach(function () {
+        afterEach(function () {
             expect.output.preferredWidth = originalPreferredWidth;
         });
 
