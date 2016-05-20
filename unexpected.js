@@ -27,19 +27,19 @@ module.exports = function AssertionString(text) {
 };
 
 },{}],2:[function(require,module,exports){
-var createStandardErrorMessage = require(5);
+var createStandardErrorMessage = require(6);
 var utils = require(19);
 var magicpen = require(42);
 var extend = utils.extend;
 var leven = require(38);
 var makePromise = require(11);
-var makeAndMethod = require(9);
-var isPendingPromise = require(8);
+var addAdditionalPromiseMethods = require(4);
+var isPendingPromise = require(9);
 var oathbreaker = require(13);
 var UnexpectedError = require(3);
 var notifyPendingPromise = require(12);
-var defaultDepth = require(7);
-var createWrappedExpectProto = require(6);
+var defaultDepth = require(8);
+var createWrappedExpectProto = require(7);
 var AssertionString = require(1);
 var throwIfNonUnexpectedError = require(16);
 var makeDiffResultBackwardsCompatible = require(10);
@@ -736,15 +736,37 @@ Unexpected.prototype.installTheme = function () { // ...
     return this.output.installTheme.apply(this.output, arguments);
 };
 
+function getPluginName(plugin) {
+    if (typeof plugin === 'function') {
+        return utils.getFunctionName(plugin);
+    } else {
+        return plugin.name;
+    }
+}
+
 Unexpected.prototype.use = function (plugin) {
+    if ((typeof plugin !== 'function' && (typeof plugin !== 'object' || typeof plugin.installInto !== 'function')) ||
+        (typeof plugin.name !== 'undefined' && typeof plugin.name !== 'string') ||
+        (typeof plugin.dependencies !== 'undefined' && !Array.isArray(plugin.dependencies))) {
+        throw new Error(
+            'Plugins must be functions or adhere to the following interface\n' +
+            '{\n' +
+            '  name: <an optional plugin name>,\n' +
+            '  version: <an optional semver version string>,\n' +
+            '  dependencies: <an optional list of dependencies>,\n' +
+            '  installInto: <a function that will update the given expect instance>\n' +
+            '}'
+        );
+    }
+
+
+    var pluginName = getPluginName(plugin);
+
     var existingPlugin = utils.findFirst(this.installedPlugins, function (installedPlugin) {
         if (installedPlugin === plugin) {
             return true;
-        } else if (typeof plugin === 'function' && typeof installedPlugin === 'function') {
-            var pluginName = utils.getFunctionName(plugin);
-            return pluginName !== '' && pluginName === utils.getFunctionName(installedPlugin);
         } else {
-            return installedPlugin.name === plugin.name;
+            return pluginName && pluginName === getPluginName(installedPlugin);
         }
     });
 
@@ -753,7 +775,7 @@ Unexpected.prototype.use = function (plugin) {
             // No-op
             return this.expect;
         } else {
-            throw new Error("Another instance of the plugin '" + plugin.name + "' " +
+            throw new Error("Another instance of the plugin '" + pluginName + "' " +
                             "is already installed" +
                             (typeof existingPlugin.version !== 'undefined' ?
                                 ' (version ' + existingPlugin.version +
@@ -764,19 +786,7 @@ Unexpected.prototype.use = function (plugin) {
         }
     }
 
-    if ((typeof plugin !== 'function' && (typeof plugin !== 'object' || typeof plugin.installInto !== 'function')) ||
-        (typeof plugin.name !== 'undefined' && typeof plugin.name !== 'string') ||
-        (typeof plugin.dependencies !== 'undefined' && !Array.isArray(plugin.dependencies))) {
-        throw new Error('Plugins must be functions or adhere to the following interface\n' +
-                        '{\n' +
-                        '  name: <an optional plugin name>,\n' +
-                        '  version: <an optional semver version string>,\n' +
-                        '  dependencies: <an optional list of dependencies>,\n' +
-                        '  installInto: <a function that will update the given expect instance>\n' +
-                        '}');
-    }
-
-    if (plugin.name === 'unexpected-promise') {
+    if (pluginName === 'unexpected-promise') {
         throw new Error('The unexpected-promise plugin was pulled into Unexpected as of 8.5.0. This means that the plugin is no longer supported.');
     }
 
@@ -784,14 +794,14 @@ Unexpected.prototype.use = function (plugin) {
         var installedPlugins = this.installedPlugins;
         var unfulfilledDependencies = plugin.dependencies.filter(function (dependency) {
             return !installedPlugins.some(function (plugin) {
-                return plugin.name === dependency;
+                return getPluginName(plugin) === dependency;
             });
         });
 
         if (unfulfilledDependencies.length === 1) {
-            throw new Error(plugin.name + ' requires plugin ' + unfulfilledDependencies[0]);
+            throw new Error(pluginName + ' requires plugin ' + unfulfilledDependencies[0]);
         } else if (unfulfilledDependencies.length > 1) {
-            throw new Error(plugin.name + ' requires plugins ' +
+            throw new Error(pluginName + ' requires plugins ' +
                             unfulfilledDependencies.slice(0, -1).join(', ') +
                             ' and ' + unfulfilledDependencies[unfulfilledDependencies.length - 1]);
         }
@@ -951,7 +961,7 @@ Unexpected.prototype.throwAssertionNotFoundError = function (subject, testDescri
 Unexpected.prototype.lookupAssertionRule = function (subject, testDescriptionString, args, requireAssertionSuffix) {
     var that = this;
     if (typeof testDescriptionString !== 'string') {
-        throw new Error('The expect function requires the second parameter to be a string.');
+        throw new Error('The expect function requires the second parameter to be a string or an expect.it.');
     }
     var handlers = this.assertions[testDescriptionString];
     if (!handlers) {
@@ -1042,6 +1052,12 @@ Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
     var that = this;
     if (arguments.length < 2) {
         throw new Error('The expect function requires at least two parameters.');
+    } else if (testDescriptionString && testDescriptionString._expectIt) {
+        return that.expect.withError(function () {
+            return testDescriptionString(subject);
+        }, function (err) {
+            that.fail(err);
+        });
     }
 
     var executionContext = {
@@ -1071,9 +1087,20 @@ Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
         }
 
         var flags = extend({}, assertionRule.flags);
-        var wrappedExpect = function () {
-            var subject = arguments[0];
-            var testDescriptionString = arguments[1].replace(/\[(!?)([^\]]+)\] ?/g, function (match, negate, flag) {
+        var wrappedExpect = function (subject, testDescriptionString) {
+            if (arguments.length === 0) {
+                throw new Error('The expect function requires at least one parameter.');
+            } else if (arguments.length === 1) {
+                return addAdditionalPromiseMethods(makePromise.resolve(subject), wrappedExpect, subject);
+            } else if (testDescriptionString && testDescriptionString._expectIt) {
+                wrappedExpect.errorMode = 'nested';
+                return wrappedExpect.withError(function () {
+                    return testDescriptionString(subject);
+                }, function (err) {
+                    wrappedExpect.fail(err);
+                });
+            }
+            testDescriptionString = testDescriptionString.replace(/\[(!?)([^\]]+)\] ?/g, function (match, negate, flag) {
                 return Boolean(flags[flag]) !== Boolean(negate) ? flag + ' ' : '';
             }).trim();
 
@@ -1141,8 +1168,7 @@ Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
                 result = makePromise.resolve(result);
             }
         }
-        result.and = makeAndMethod(that.expect, subject);
-        return result;
+        return addAdditionalPromiseMethods(result, that.expect, subject);
     } catch (e) {
         if (e && e._isUnexpected) {
             var newError = e;
@@ -1426,7 +1452,7 @@ module.exports = Unexpected;
 
 },{}],3:[function(require,module,exports){
 var utils = require(19);
-var defaultDepth = require(7);
+var defaultDepth = require(8);
 var useFullStackTrace = require(18);
 var makeDiffResultBackwardsCompatible = require(10);
 
@@ -1650,7 +1676,7 @@ UnexpectedError.prototype.serializeMessage = function (outputFormat) {
             format: htmlFormat ? 'text' : outputFormat
         }).toString() + '\n';
 
-        if (!this.useFullStackTrace) {
+        if (this.stack && !this.useFullStackTrace) {
             var newStack = [];
             var removedFrames = false;
             var lines = this.stack.split(/\n/);
@@ -1729,6 +1755,28 @@ if (Object.__defineGetter__) {
 module.exports = UnexpectedError;
 
 },{}],4:[function(require,module,exports){
+module.exports = function addAdditionalPromiseMethods(promise, expect, subject) {
+    promise.and = function () { // ...
+        var args = Array.prototype.slice.call(arguments);
+        function executeAnd() {
+            if (expect.findTypeOf(args[0]).is('expect.it')) {
+                return addAdditionalPromiseMethods(args[0](subject), expect, subject);
+            } else {
+                return expect.apply(expect, [subject].concat(args));
+            }
+        }
+
+        if (this.isFulfilled()) {
+            return executeAnd();
+        } else {
+            return addAdditionalPromiseMethods(this.then(executeAnd), expect, subject);
+        }
+    };
+
+    return promise;
+};
+
+},{}],5:[function(require,module,exports){
 (function (Buffer){
 /*global setTimeout*/
 var utils = require(19);
@@ -2916,7 +2964,10 @@ module.exports = function (expect) {
                     diff: function (output, diff, inspect, equal) {
                         output.inline = true;
                         var subjectIsArrayLike = subjectType.is('array-like');
-                        var keys = utils.uniqueStringsAndSymbols(subjectKeys, valueType.getKeys(value));
+                        var keys = utils.uniqueStringsAndSymbols(subjectKeys, valueType.getKeys(value)).filter(function (key) {
+                            // Skip missing keys expected to be missing so they don't get rendered in the diff
+                            return key in subject || typeof value[key] !== 'undefined';
+                        });
                         var prefixOutput = subjectType.prefix(output.clone(), subject);
                         output
                             .append(prefixOutput)
@@ -3358,7 +3409,7 @@ module.exports = function (expect) {
 };
 
 }).call(this,require(28).Buffer)
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 var AssertionString = require(1);
 
 module.exports = function createStandardErrorMessage(output, subject, testDescription, args, options) {
@@ -3442,14 +3493,14 @@ module.exports = function createStandardErrorMessage(output, subject, testDescri
     return output;
 };
 
-},{}],6:[function(require,module,exports){
-var createStandardErrorMessage = require(5);
+},{}],7:[function(require,module,exports){
+var createStandardErrorMessage = require(6);
 var makePromise = require(11);
-var isPendingPromise = require(8);
+var isPendingPromise = require(9);
 var oathbreaker = require(13);
 var UnexpectedError = require(3);
 var notifyPendingPromise = require(12);
-var makeAndMethod = require(9);
+var addAdditionalPromiseMethods = require(4);
 var utils = require(19);
 
 function isAssertionArg(arg) {
@@ -3529,8 +3580,7 @@ module.exports = function createWrappedExpectProto(unexpected) {
                 } else if (!result || typeof result.then !== 'function') {
                     result = makePromise.resolve(result);
                 }
-                result.and = makeAndMethod(that.execute, that.subject);
-                return result;
+                return addAdditionalPromiseMethods(result, that.execute, that.subject);
             } catch (e) {
                 if (e && e._isUnexpected) {
                     var wrappedError = new UnexpectedError(that, e);
@@ -3677,7 +3727,7 @@ module.exports = function createWrappedExpectProto(unexpected) {
     return wrappedExpectProto;
 };
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 (function (process){
 /*global window*/
 var defaultDepth = 3;
@@ -3692,33 +3742,9 @@ if (typeof window !== 'undefined' && typeof window.location !== 'undefined') {
 module.exports = defaultDepth;
 
 }).call(this,require(51))
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 module.exports = function isPendingPromise(obj) {
     return obj && typeof obj.then === 'function' && typeof obj.isPending === 'function' && obj.isPending();
-};
-
-},{}],9:[function(require,module,exports){
-module.exports = function makeAndMethod(expect, subject) {
-    return function () { // ...
-        var args = Array.prototype.slice.call(arguments);
-        function executeAnd() {
-            if (expect.findTypeOf(args[0]).is('expect.it')) {
-                var result = args[0](subject);
-                result.and = makeAndMethod(expect, subject);
-                return result;
-            } else {
-                return expect.apply(expect, [subject].concat(args));
-            }
-        }
-
-        if (this.isFulfilled()) {
-            return executeAnd();
-        } else {
-            var result = this.then(executeAnd);
-            result.and = makeAndMethod(expect, subject);
-            return result;
-        }
-    };
 };
 
 },{}],10:[function(require,module,exports){
@@ -3856,8 +3882,12 @@ function extractPromisesFromObject(obj) {
     };
 });
 
-['resolve', 'reject'].forEach(function (staticMethodName) {
-    makePromise[staticMethodName] = Promise[staticMethodName];
+// Expose all of Bluebird's static methods, except the ones related to long stack traces,
+// unhandled rejections and the scheduler, which we need to manage ourselves:
+Object.keys(Promise).forEach(function (staticMethodName) {
+    if (!/^_|^on|^setScheduler|ongStackTraces/.test(staticMethodName) && typeof Promise[staticMethodName] === 'function' && typeof makePromise[staticMethodName] === 'undefined') {
+        makePromise[staticMethodName] = Promise[staticMethodName];
+    }
 });
 
 module.exports = makePromise;
@@ -4455,7 +4485,7 @@ var leftPad = utils.leftPad;
 var arrayChanges = require(24);
 var leven = require(38);
 var detectIndent = require(33);
-var defaultDepth = require(7);
+var defaultDepth = require(8);
 var AssertionString = require(1);
 
 module.exports = function (expect) {
@@ -5754,7 +5784,7 @@ module.exports = workQueue;
 module.exports = require(2).create()
     .use(require(15))
     .use(require(17))
-    .use(require(4));
+    .use(require(5));
 
 // Add an inspect method to all the promises we return that will make the REPL, console.log, and util.inspect render it nicely in node.js:
 require(54).prototype.inspect = function () {
