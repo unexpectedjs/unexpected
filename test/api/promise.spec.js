@@ -168,7 +168,7 @@ describe('expect.promise', function () {
 
     it('should throw an exception if the argument was not a function', function () {
         var expectedError = new TypeError('expect.promise(...) requires a function argument to be supplied.\n' +
-                                          'See http://unexpectedjs.github.io/api/promise/ for more details.');
+                                          'See http://unexpected.js.org/api/promise/ for more details.');
         expect(function () {
             expect.promise();
         }, 'to throw', expectedError);
