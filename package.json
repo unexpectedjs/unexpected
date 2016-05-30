@@ -49,6 +49,7 @@
     "rsvp": "3.0.18",
     "serve": "*",
     "unexpected-documentation-site-generator": "^4.0.0",
+    "unexpected-magicpen": "0.2.1",
     "unexpected-markdown": "^1.4.0"
   },
   "jspm": {
