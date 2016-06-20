@@ -66,6 +66,13 @@ if (typeof process === 'object') {
                 });
             });
 
+            it.skip('should fail when a promise failing in the next tick is created but not returned', function () {
+                return expect('forgotToReturnPromiseRejectedInTheNextTick', 'executed through mocha').spread(function (err, stdout, stderr) {
+                    expect(stdout, 'to contain', 'Error: should fail: You have created a promise that was not returned from the it block');
+                    expect(err, 'to satisfy', { code: 1 });
+                });
+            });
+
             describe('with a test suite spanning multiple files', function () {
                 it('should report that a promise was created, but not returned by the it block in the first test', function () {
                     return expect(['forgotToReturnPendingPromiseFromSuccessfulItBlock', 'successful'], 'executed through mocha').spread(function (err, stdout, stderr) {
