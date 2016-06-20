@@ -12,7 +12,7 @@ expect(['c', 'a', 'b'], 'when sorted', 'to equal', ['c', 'b', 'a']);
 ```
 
 ```output
-expected [ 'a', 'b', 'c' ] when sorted to equal [ 'c', 'b', 'a' ]
+expected [ 'c', 'a', 'b' ] when sorted to equal [ 'c', 'b', 'a' ]
 
 [
   'a', // should equal 'c'
