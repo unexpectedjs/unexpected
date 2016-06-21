@@ -66,7 +66,7 @@ if (typeof process === 'object') {
                 });
             });
 
-            it.skip('should fail when a promise failing in the next tick is created but not returned', function () {
+            it('should fail when a promise failing in the next tick is created but not returned', function () {
                 return expect('forgotToReturnPromiseRejectedInTheNextTick', 'executed through mocha').spread(function (err, stdout, stderr) {
                     expect(stdout, 'to contain', 'Error: should fail: You have created a promise that was not returned from the it block');
                     expect(err, 'to satisfy', { code: 1 });
