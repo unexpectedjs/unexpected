@@ -112,12 +112,12 @@
     "url": "/assertions/any/to-be-undefined/"
   },
   {
-    "label": "to equal (any)",
-    "url": "/assertions/any/to-equal/"
-  },
-  {
     "label": "to be (any)",
     "url": "/assertions/any/to-be/"
+  },
+  {
+    "label": "to equal (any)",
+    "url": "/assertions/any/to-equal/"
   },
   {
     "label": "to satisfy (any)",
@@ -192,12 +192,12 @@
     "url": "/assertions/Error/to-have-message/"
   },
   {
-    "label": "to be close to (number)",
-    "url": "/assertions/number/to-be-close-to/"
-  },
-  {
     "label": "to be NaN (number)",
     "url": "/assertions/number/to-be-NaN/"
+  },
+  {
+    "label": "to be close to (number)",
+    "url": "/assertions/number/to-be-close-to/"
   },
   {
     "label": "to be finite (number)",
