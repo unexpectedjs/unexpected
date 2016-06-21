@@ -4,6 +4,11 @@ unexpected = typeof weknowhow === 'undefined' ?
     require('../lib/').clone() :
     weknowhow.expect.clone();
 
+unexpected.use(typeof weknowhow === 'undefined' ?
+    require('unexpected-magicpen') :
+    weknowhow.unexpectedMagicPen
+);
+
 unexpected.output.preferredWidth = 80;
 
 unexpected.addAssertion('<any> to inspect as <string>', function (expect, subject, value) {
