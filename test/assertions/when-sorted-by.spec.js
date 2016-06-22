@@ -1,6 +1,6 @@
 /*global expect*/
 describe('when sorted by assertion', function () {
-    it('should should sort an array (in place) using the provided compare function', function () {
+    it('should sort an array using the provided compare function', function () {
         expect(['c', 'b', 'a'], 'when sorted by', function (a, b) {
             if (a < b) {
                 return 1;
@@ -12,7 +12,7 @@ describe('when sorted by assertion', function () {
         }, 'to equal', ['c', 'b', 'a']);
     });
 
-    it('should should provide the result as the fulfillment value if no assertion is provided', function () {
+    it('should provide the result as the fulfillment value if no assertion is provided', function () {
         return expect([3, 1, 2], 'when sorted by', function (a, b) {
             return a - b;
         }).then(function (sortedArray) {

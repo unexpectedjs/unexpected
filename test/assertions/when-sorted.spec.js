@@ -1,10 +1,10 @@
 /*global expect*/
 describe('when sorted assertion', function () {
-    it('should should sort an array (in place) using the default compare function', function () {
+    it('should sort an array using the default compare function', function () {
         expect(['c', 'a', 'b'], 'when sorted', 'to equal', ['a', 'b', 'c']);
     });
 
-    it('should should provide the result as the fulfillment value if no assertion is provided', function () {
+    it('should provide the result as the fulfillment value if no assertion is provided', function () {
         return expect(['c', 'b', 'a'], 'when sorted').then(function (sortedArray) {
             expect(sortedArray, 'to equal', ['a', 'b', 'c']);
         });
