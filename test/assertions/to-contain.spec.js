@@ -59,7 +59,7 @@ describe('to contain assertion', function () {
         expect(function () {
             expect('foo\nbarquux', 'to contain', 'foo\nb', 'quuux');
         }, 'to throw',
-               expect.it('to have text message',
+               expect.it('to have message',
                          "expected 'foo\\nbarquux' to contain 'foo\\nb', 'quuux'\n" +
                          "\n" +
                          "foo\n" +
@@ -81,7 +81,7 @@ describe('to contain assertion', function () {
             expect(function () {
                 expect('blahfoo\nbar\nquux', 'not to contain', 'foo\nbar\nq');
             }, 'to throw', function (err) {
-                expect(err, 'to have text message',
+                expect(err, 'to have message',
                        "expected 'blahfoo\\nbar\\nquux' not to contain 'foo\\nbar\\nq'\n" +
                        "\n" +
                        "blahfoo\n" +

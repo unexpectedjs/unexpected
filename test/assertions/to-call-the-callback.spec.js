@@ -115,7 +115,7 @@ describe('to call the callback assertion', function () {
                             cb(err);
                         }, 0);
                     }, 'to call the callback with error', 'expected true to be falsy').then(function (err) {
-                        expect(err, 'to have text message', 'expected true to be falsy');
+                        expect(err, 'to have message', 'expected true to be falsy');
                     });
                 }
             });
@@ -203,8 +203,7 @@ describe('to call the callback assertion', function () {
                                   "  }, 0);\n" +
                                   "}\n" +
                                   "to call the callback with error /qqxqwxeqw/\n" +
-                                  "  expected UnexpectedError(expected false to be truthy)\n" +
-                                  "  to have text message /qqxqwxeqw/\n" +
+                                  "  expected UnexpectedError(expected false to be truthy) to have message /qqxqwxeqw/\n" +
                                   "    expected 'expected false to be truthy' to match /qqxqwxeqw/"
                                  );
                 });
