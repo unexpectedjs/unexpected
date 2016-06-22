@@ -2376,7 +2376,7 @@ module.exports = function (expect) {
         return expect(subject, 'to error').then(function (error) {
             expect.errorMode = 'nested';
             if (error.isUnexpected && (typeof arg === 'string' || isRegExp(arg))) {
-                return expect(error, 'to have text message', arg);
+                return expect(error, 'to have message', arg);
             } else {
                 return expect(error, 'to satisfy', arg);
             }
@@ -3173,7 +3173,7 @@ module.exports = function (expect) {
         expect.errorMode = 'nested';
         return expect(subject, 'to be rejected').then(function (err) {
             if (err && err._isUnexpected && (typeof value === 'string' || isRegExp(value))) {
-                return expect(err, 'to have text message', value).then(function () {
+                return expect(err, 'to have message', value).then(function () {
                     return err;
                 });
             } else {
@@ -3359,7 +3359,7 @@ module.exports = function (expect) {
         return expect(subject, 'to call the callback with error').then(function (err) {
             expect.errorMode = 'nested';
             if (err && err._isUnexpected && (typeof value === 'string' || isRegExp(value))) {
-                return expect(err, 'to have text message', value).then(function () {
+                return expect(err, 'to have message', value).then(function () {
                     return err;
                 });
             } else {
