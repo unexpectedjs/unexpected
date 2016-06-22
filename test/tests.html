@@ -1,0 +1,107 @@
+<html>
+  <head>
+    <title>Mocha</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="../vendor/mocha.css" />
+  </head>
+  <body>
+    <div id="mocha"></div>
+    <script src="../vendor/es5-shim.js"></script>
+    <script src="../vendor/es5-sham.js"></script>
+    <script src="../vendor/rsvp.js"></script>
+    <script src="../vendor/mocha.js"></script>
+    <script>mocha.setup('bdd')</script>
+
+    <script src="../unexpected.js"></script>
+    <script src="../vendor/unexpected-magicpen.min.js"></script>
+    <script src="common.js"></script>
+
+    <script src="./benchmark.spec.js"></script>
+    <script src="./styles/magicPen.spec.js"></script>
+    <script src="./styles/stringDiff.spec.js"></script>
+    <script src="./styles/colorByIndex.spec.js"></script>
+    <script src="./styles/annotationBlock.spec.js"></script>
+    <script src="./assertionParser.spec.js"></script>
+    <script src="./api/use.spec.js"></script>
+    <script src="./api/async.spec.js"></script>
+    <script src="./api/equal.spec.js"></script>
+    <script src="./api/toString.spec.js"></script>
+    <script src="./api/UnexpectedError.spec.js"></script>
+    <script src="./api/addType.spec.js"></script>
+    <script src="./api/clone.spec.js"></script>
+    <script src="./api/outputFormat.spec.js"></script>
+    <script src="./api/shift.spec.js"></script>
+    <script src="./api/inspect.spec.js"></script>
+    <script src="./api/it.spec.js"></script>
+    <script src="./api/addAssertion.spec.js"></script>
+    <script src="./api/fail.spec.js"></script>
+    <script src="./api/promise.spec.js"></script>
+    <script src="./types/Symbol-type.spec.js"></script>
+    <script src="./types/type-type.spec.js"></script>
+    <script src="./types/array-type.spec.js"></script>
+    <script src="./types/Buffer-type.spec.js"></script>
+    <script src="./types/object-type.spec.js"></script>
+    <script src="./types/Promise-type.spec.js"></script>
+    <script src="./types/function-type.spec.js"></script>
+    <script src="./types/string-type.spec.js"></script>
+    <script src="./types/any.spec.js"></script>
+    <script src="./types/Date-type.spec.js"></script>
+    <script src="./types/error-type.spec.js"></script>
+    <script src="./types/array-like-type.spec.js"></script>
+    <script src="./utils.spec.js"></script>
+    <script src="./unexpected.spec.js"></script>
+    <script src="./external.spec.js"></script>
+    <script src="./assertions/to-have-properties.spec.js"></script>
+    <script src="./assertions/to-match.spec.js"></script>
+    <script src="./assertions/when-called-with.spec.js"></script>
+    <script src="./assertions/to-be-canonical.spec.js"></script>
+    <script src="./assertions/to-be-NaN.spec.js"></script>
+    <script src="./assertions/to-be-falsy.spec.js"></script>
+    <script src="./assertions/to-be-less-than-or-equal.spec.js"></script>
+    <script src="./assertions/when-fulfilled.spec.js"></script>
+    <script src="./assertions/to-begin-with.spec.js"></script>
+    <script src="./assertions/to-have-keys.spec.js"></script>
+    <script src="./assertions/to-be-within.spec.js"></script>
+    <script src="./assertions/to-be-negative.spec.js"></script>
+    <script src="./assertions/to-be-positive.spec.js"></script>
+    <script src="./assertions/to-be-finite.spec.js"></script>
+    <script src="./assertions/to-have-length.spec.js"></script>
+    <script src="./assertions/to-have-arity.spec.js"></script>
+    <script src="./assertions/to-end-with.spec.js"></script>
+    <script src="./assertions/to-be-a.spec.js"></script>
+    <script src="./assertions/to-be-close-to.spec.js"></script>
+    <script src="./assertions/to-be-fulfilled.spec.js"></script>
+    <script src="./assertions/to-be-empty.spec.js"></script>
+    <script src="./assertions/to-error.spec.js"></script>
+    <script src="./assertions/to-satisfy.spec.js"></script>
+    <script src="./assertions/when-passed-as-parameter-to.spec.js"></script>
+    <script src="./assertions/to-be-infinite.spec.js"></script>
+    <script src="./assertions/when-called.spec.js"></script>
+    <script src="./assertions/to-contain.spec.js"></script>
+    <script src="./assertions/to-have-property.spec.js"></script>
+    <script src="./assertions/to-equal.spec.js"></script>
+    <script src="./assertions/to-be-greater-than-or-equal.spec.js"></script>
+    <script src="./assertions/when-decoded-as.spec.js"></script>
+    <script src="./assertions/to-call-the-callback.spec.js"></script>
+    <script src="./assertions/to-have-values-satisfying.spec.js"></script>
+    <script src="./assertions/to-be-truthy.spec.js"></script>
+    <script src="./assertions/to-be-less-then.spec.js"></script>
+    <script src="./assertions/to-have-key.spec.js"></script>
+    <script src="./assertions/to-throw.spec.js"></script>
+    <script src="./assertions/to-be.spec.js"></script>
+    <script src="./assertions/to-be-greater-than.spec.js"></script>
+    <script src="./assertions/to-have-message.spec.js"></script>
+    <script src="./assertions/to-have-keys-satisfying.spec.js"></script>
+    <script src="./assertions/when-rejected.spec.js"></script>
+    <script src="./assertions/to-have-items-satisfying.spec.js"></script>
+    <script src="./assertions/to-be-rejected.spec.js"></script>
+
+    <script>
+      if (window.mochaPhantomJS) {
+          mochaPhantomJS.run();
+      } else {
+          mocha.run();
+      }
+    </script>
+  </body>
+</html>

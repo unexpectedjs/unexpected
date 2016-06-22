@@ -60,28 +60,12 @@
     "url": "/api/withError/"
   },
   {
-    "label": "when called (function)",
-    "url": "/assertions/function/when-called/"
+    "label": "to be greater than or equal to (number)",
+    "url": "/assertions/number/to-be-greater-than-or-equal-to/"
   },
   {
     "label": "when decoded as (Buffer)",
     "url": "/assertions/Buffer/when-decoded-as/"
-  },
-  {
-    "label": "to be fulfilled (Promise)",
-    "url": "/assertions/Promise/to-be-fulfilled/"
-  },
-  {
-    "label": "to be rejected (Promise)",
-    "url": "/assertions/Promise/to-be-rejected/"
-  },
-  {
-    "label": "when fulfilled (Promise)",
-    "url": "/assertions/Promise/when-fulfilled/"
-  },
-  {
-    "label": "when rejected (Promise)",
-    "url": "/assertions/Promise/when-rejected/"
   },
   {
     "label": "to be a (any)",
@@ -188,8 +172,8 @@
     "url": "/assertions/function/when-called-with/"
   },
   {
-    "label": "to have message (Error)",
-    "url": "/assertions/Error/to-have-message/"
+    "label": "when called (function)",
+    "url": "/assertions/function/when-called/"
   },
   {
     "label": "to be NaN (number)",
@@ -204,8 +188,8 @@
     "url": "/assertions/number/to-be-finite/"
   },
   {
-    "label": "to be greater than or equal to (number)",
-    "url": "/assertions/number/to-be-greater-than-or-equal-to/"
+    "label": "to have message (Error)",
+    "url": "/assertions/Error/to-have-message/"
   },
   {
     "label": "to be greater than (number)",
@@ -288,10 +272,6 @@
     "url": "/assertions/string/to-be-less-than/"
   },
   {
-    "label": "to be non-empty (string)",
-    "url": "/assertions/string/to-be-non-empty/"
-  },
-  {
     "label": "to be within (string)",
     "url": "/assertions/string/to-be-within/"
   },
@@ -318,5 +298,25 @@
   {
     "label": "to match (string)",
     "url": "/assertions/string/to-match/"
+  },
+  {
+    "label": "to be non-empty (string)",
+    "url": "/assertions/string/to-be-non-empty/"
+  },
+  {
+    "label": "to be fulfilled (Promise)",
+    "url": "/assertions/Promise/to-be-fulfilled/"
+  },
+  {
+    "label": "to be rejected (Promise)",
+    "url": "/assertions/Promise/to-be-rejected/"
+  },
+  {
+    "label": "when fulfilled (Promise)",
+    "url": "/assertions/Promise/when-fulfilled/"
+  },
+  {
+    "label": "when rejected (Promise)",
+    "url": "/assertions/Promise/when-rejected/"
   }
 ]
