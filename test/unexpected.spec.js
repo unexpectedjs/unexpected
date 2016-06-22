@@ -704,12 +704,6 @@ describe('unexpected', function () {
     });
 
     describe('styles', function () {
-        describe('#magicPen', function () {
-            it('should inspect an empty MagicPen instance', function () {
-                expect(expect.output.clone().magicPen(expect.output.clone()).toString(), 'to equal', 'magicpen()');
-            });
-        });
-
         describe('#errorName', function () {
             it('should inspect an object with an anoymous constructor', function () {
                 expect(expect.output.clone().errorName(Object.create(null)).toString(), 'to equal', 'Error');
