@@ -1,8 +1,4 @@
-Asserts that an Error instance has a given message:
-
-By default the assertion tests on the text representation of the
-error, but you can change that behaviour by providing the `ansi` or
-`html` flag.
+Asserts that an Error instance the given message.
 
 ```javascript
 expect(new Error('foobar'), 'to have message', 'foobar');
@@ -22,9 +18,8 @@ expected Error('foobar') to have message 'barfoo'
   +barfoo
 ```
 
-You can use the `ansi` and `html` the following way:
+The assertion uses `to satisfy` semantics, so you can also provide a regexp:
 
-```js#evaluate:false
-expect(err, 'to have ansi message', 'foobar');
-expect(err, 'to have html message', 'foobar');
+```javascript
+expect(new Error('foobar'), 'to have message', /bar$/);
 ```

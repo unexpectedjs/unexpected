@@ -1,5 +1,7 @@
-/*global expect*/
+/*global expectWithUnexpectedMagicPen*/
 describe('colorByIndex', function () {
+    var expect = expectWithUnexpectedMagicPen;
+
     describe('in a mode that has a palette', function () {
         it('should output colored text', function () {
             expect(

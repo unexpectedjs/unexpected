@@ -1,5 +1,7 @@
-/*global expect*/
+/*global expectWithUnexpectedMagicPen*/
 describe('to have message/diff assertion', function () {
+    var expect = expectWithUnexpectedMagicPen;
+
     describe('with an Unexpected error', function () {
         var err;
         beforeEach(function () {

@@ -1,5 +1,7 @@
-/*global expect*/
+/*global expectWithUnexpectedMagicPen*/
 describe('to begin with assertion', function () {
+    var expect = expectWithUnexpectedMagicPen;
+
     it('should throw an error when the expected prefix is the empty string', function () {
         expect(function () {
             expect('foo', 'to begin with', '');

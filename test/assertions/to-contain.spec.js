@@ -1,5 +1,7 @@
-/*global expect*/
+/*global expectWithUnexpectedMagicPen*/
 describe('to contain assertion', function () {
+    var expect = expectWithUnexpectedMagicPen;
+
     it('should throw an error when one of the arguments is the empty string', function () {
         expect(function () {
             expect('foo', 'to contain', 'bar', '');

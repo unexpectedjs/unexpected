@@ -1,5 +1,7 @@
-/*global expect*/
+/*global expectWithUnexpectedMagicPen*/
 describe('stringDiff', function () {
+    var expect = expectWithUnexpectedMagicPen;
+
     var actual = 'abc\ndef\nghi\njkl\nmno';
     var expected = 'ghi\njkl\nmno\npqr\nstu\nvwx';
 

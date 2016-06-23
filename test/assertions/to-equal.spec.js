@@ -1,5 +1,7 @@
-/*global expect*/
+/*global expectWithUnexpectedMagicPen*/
 describe('to equal assertion', function () {
+    var expect = expectWithUnexpectedMagicPen;
+
     function toArguments() {
         return arguments;
     }
