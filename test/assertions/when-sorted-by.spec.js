@@ -25,4 +25,10 @@ describe('when sorted by assertion', function () {
             return a - b;
         }, 'to equal', [4, 5, 10]);
     });
+
+    it('should work with an array-like that is not a proper array', function () {
+        expect(function () {
+            return arguments;
+        }(3, 2, 1), 'when sorted numerically to equal', [1, 2, 3]);
+    });
 });
