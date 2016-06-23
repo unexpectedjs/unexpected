@@ -1,9 +1,6 @@
-/*global expect*/
+/*global expectWithUnexpectedMagicPen*/
 describe('to contain assertion', function () {
-    var expect = unexpected.clone().use(typeof weknowhow === 'undefined' ?
-        require('unexpected-magicpen') :
-        weknowhow.unexpectedMagicPen
-    );
+    var expect = expectWithUnexpectedMagicPen;
 
     it('should throw an error when one of the arguments is the empty string', function () {
         expect(function () {

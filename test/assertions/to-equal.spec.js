@@ -1,9 +1,6 @@
-/*global expect*/
+/*global expectWithUnexpectedMagicPen*/
 describe('to equal assertion', function () {
-    var expect = unexpected.clone().use(typeof weknowhow === 'undefined' ?
-        require('unexpected-magicpen') :
-        weknowhow.unexpectedMagicPen
-    );
+    var expect = expectWithUnexpectedMagicPen;
 
     function toArguments() {
         return arguments;

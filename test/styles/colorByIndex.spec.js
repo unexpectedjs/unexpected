@@ -1,9 +1,6 @@
-/*global expect*/
+/*global expectWithUnexpectedMagicPen*/
 describe('colorByIndex', function () {
-    var expect = unexpected.clone().use(typeof weknowhow === 'undefined' ?
-        require('unexpected-magicpen') :
-        weknowhow.unexpectedMagicPen
-    );
+    var expect = expectWithUnexpectedMagicPen;
 
     describe('in a mode that has a palette', function () {
         it('should output colored text', function () {

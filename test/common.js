@@ -1,4 +1,4 @@
-/*global unexpected:true, expect:true, setImmediate:true, weknowhow*/
+/*global unexpected:true, expect:true, expectWithUnexpectedMagicPen:true, setImmediate:true, weknowhow*/
 /* eslint no-unused-vars: "off" */
 unexpected = typeof weknowhow === 'undefined' ?
     require('../lib/').clone() :
@@ -23,6 +23,11 @@ unexpected.addAssertion('<any> to inspect as <string>', function (expect, subjec
 });
 
 expect = unexpected.clone();
+
+expectWithUnexpectedMagicPen = unexpected.clone().use(typeof weknowhow === 'undefined' ?
+    require('unexpected-magicpen') :
+    weknowhow.unexpectedMagicPen
+);
 
 if (typeof setImmediate !== 'function') {
     setImmediate = function (cb) {
