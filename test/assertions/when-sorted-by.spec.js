@@ -27,8 +27,10 @@ describe('when sorted by assertion', function () {
     });
 
     it('should work with an array-like that is not a proper array', function () {
-        expect(function () {
+        function toArguments() {
             return arguments;
-        }(3, 2, 1), 'when sorted numerically to equal', [1, 2, 3]);
+        }
+
+        expect(toArguments(3, 2, 1), 'when sorted numerically to equal', [1, 2, 3]);
     });
 });
