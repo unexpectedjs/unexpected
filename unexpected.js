@@ -2555,7 +2555,7 @@ module.exports = function (expect) {
         }(subject));
     });
 
-    expect.addAssertion('<Error> to have message <string>', function (expect, subject, value) {
+    expect.addAssertion('<Error> to have message <any>', function (expect, subject, value) {
         expect.errorMode = 'nested';
         return expect(subject.isUnexpected ? subject.getErrorMessage('text').toString() : subject.message, 'to satisfy', value);
     });
@@ -3144,6 +3144,18 @@ module.exports = function (expect) {
         } else {
             return expect.shift(expect.flags.constructor ? instantiate(fn, args) : fn.apply(fn, args));
         }
+    });
+
+    expect.addAssertion([
+        '<array-like> [when] sorted [numerically] <assertion?>',
+        '<array-like> [when] sorted by <function> <assertion?>'
+    ], function (expect, subject, compareFunction) {
+        if (expect.flags.numerically) {
+            compareFunction = function (a, b) {
+                return a - b;
+            };
+        }
+        return expect.shift([].concat(subject).sort(compareFunction));
     });
 
     expect.addAssertion('<Promise> to be rejected', function (expect, subject) {
