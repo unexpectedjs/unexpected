@@ -1,5 +1,10 @@
 /*global expect*/
 describe('to have message/diff assertion', function () {
+    var expect = unexpected.clone().use(typeof weknowhow === 'undefined' ?
+        require('unexpected-magicpen') :
+        weknowhow.unexpectedMagicPen
+    );
+
     describe('with an Unexpected error', function () {
         var err;
         beforeEach(function () {

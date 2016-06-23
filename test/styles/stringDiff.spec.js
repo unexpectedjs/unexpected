@@ -1,5 +1,10 @@
 /*global expect*/
 describe('stringDiff', function () {
+    var expect = unexpected.clone().use(typeof weknowhow === 'undefined' ?
+        require('unexpected-magicpen') :
+        weknowhow.unexpectedMagicPen
+    );
+
     var actual = 'abc\ndef\nghi\njkl\nmno';
     var expected = 'ghi\njkl\nmno\npqr\nstu\nvwx';
 

@@ -1,5 +1,10 @@
 /*global expect*/
 describe('to begin with assertion', function () {
+    var expect = unexpected.clone().use(typeof weknowhow === 'undefined' ?
+        require('unexpected-magicpen') :
+        weknowhow.unexpectedMagicPen
+    );
+
     it('should throw an error when the expected prefix is the empty string', function () {
         expect(function () {
             expect('foo', 'to begin with', '');
