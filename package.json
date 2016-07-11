@@ -41,7 +41,7 @@
     "istanbul": "0.3.16",
     "jasmine": "2.2.1",
     "minimist": "1.1.1",
-    "mocha": "2.4.5",
+    "mocha": "mochajs/mocha#v3.0.0",
     "mocha-phantomjs-core": "2.0.1",
     "mocha-slow-reporter": "*",
     "nyc": "6.1.1",
