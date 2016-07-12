@@ -70,7 +70,7 @@ describe('to begin with assertion', function () {
                         'barbazquux'
                     );
                 }, 'to throw exception',
-                       "expected 'foobarbaz-AtSomePointThisStringWill...' to begin with 'barbazquux'"
+                       "expected 'foobarbaz-AtSomePointThisStringWill'... to begin with 'barbazquux'"
                       );
             });
 
@@ -82,7 +82,7 @@ describe('to begin with assertion', function () {
                         'barbazquux'
                     );
                 }, 'to throw exception',
-                       "expected 'foobarbaz-StringTruncates...' to begin with 'barbazquux'"
+                       "expected 'foobarbaz-StringTruncates'... to begin with 'barbazquux'"
                       );
             });
 
@@ -94,7 +94,7 @@ describe('to begin with assertion', function () {
                         'foobarquux'
                     );
                 }, 'to throw exception',
-                       "expected 'foobarbaz-ButAtSomePointThisStringW...' to begin with 'foobarquux'\n" +
+                       "expected 'foobarbaz-ButAtSomePointThisStringW'... to begin with 'foobarquux'\n" +
                        "\n" +
                        "foobarbaz-ButAtSomePointThisStringW...\n" +
                        "^^^^^^"
