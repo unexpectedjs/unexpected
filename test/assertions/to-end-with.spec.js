@@ -70,7 +70,7 @@ describe('to end with assertion', function () {
                         'barbazquux'
                     );
                 }, 'to throw exception',
-                       "expected '...ThisStringWillBeTruncated-foobarbaz' to end with 'barbazquux'"
+                       "expected ...'ThisStringWillBeTruncated-foobarbaz' to end with 'barbazquux'"
                       );
             });
 
@@ -82,7 +82,7 @@ describe('to end with assertion', function () {
                         'barbazquux'
                     );
                 }, 'to throw exception',
-                       "expected '...ThenPleaseTruncateString-foobarbaz' to end with 'barbazquux'"
+                       "expected ...'ThenPleaseTruncateString-foobarbaz' to end with 'barbazquux'"
                       );
             });
 
@@ -94,7 +94,7 @@ describe('to end with assertion', function () {
                         'quuxbarfoo'
                     );
                 }, 'to throw exception',
-                       "expected '...ThisStringWillBeTruncated-bazbarfoo' to end with 'quuxbarfoo'\n" +
+                       "expected ...'ThisStringWillBeTruncated-bazbarfoo' to end with 'quuxbarfoo'\n" +
                        "\n" +
                        "...ThisStringWillBeTruncated-bazbarfoo\n" +
                        "                                ^^^^^^"
