@@ -3155,7 +3155,7 @@ module.exports = function (expect) {
                 return a - b;
             };
         }
-        return expect.shift([].concat(subject).sort(compareFunction));
+        return expect.shift(Array.prototype.slice.call(subject).sort(compareFunction));
     });
 
     expect.addAssertion('<Promise> to be rejected', function (expect, subject) {
@@ -3474,7 +3474,6 @@ var makePromise = require(11);
 var isPendingPromise = require(9);
 var oathbreaker = require(13);
 var UnexpectedError = require(3);
-var notifyPendingPromise = require(12);
 var addAdditionalPromiseMethods = require(4);
 var utils = require(19);
 
@@ -3545,7 +3544,6 @@ module.exports = function createWrappedExpectProto(unexpected) {
             try {
                 var result = oathbreaker(callback());
                 if (isPendingPromise(result)) {
-                    notifyPendingPromise(result);
                     result = result.then(undefined, function (e) {
                         if (e && e._isUnexpected) {
                             throw new UnexpectedError(that, e);
