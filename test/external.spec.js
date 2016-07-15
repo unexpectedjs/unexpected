@@ -90,6 +90,16 @@ if (typeof process === 'object') {
                     });
                 });
             });
+
+            describe('with an assertion that succeeds, but creates a promise that remains pending', function () {
+                it('should pass', function () {
+                    return expect('assertionSucceedsWhilePromiseIsPending', 'executed through mocha').spread(function (err, stdout, stderr) {
+                        expect(stdout, 'not to contain', 'Error: should call the callback: You have created a promise that was not returned from the it block');
+                        expect(err, 'to be falsy');
+                    });
+                });
+            });
+
         });
 
         describe('executed through jasmine', function () {
