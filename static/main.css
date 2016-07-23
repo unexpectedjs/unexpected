@@ -147,6 +147,9 @@ header nav li.active a {
   padding: 0;
   color: #646464;
 }
+.content img {
+  max-width: 100%;
+}
 .has-sidebar .main {
   left: 330px;
 }
@@ -306,28 +309,23 @@ code {
   }
   .has-sidebar.sidebar-hidden .sidebar {
     transition: all 200ms;
-    -webkit-transform: translateX(-100%);
     transform: translateX(-100%);
   }
   .has-sidebar.sidebar-hidden .main {
     transition: all 200ms;
-    -webkit-transform: translateX(0);
     transform: translateX(0);
   }
   .has-sidebar.sidebar-visible .menu-toggle {
     transition: all 200ms;
-    -webkit-transform: rotate(360deg);
     transform: rotate(360deg);
     background-image: url('hide-menu-icon.svg');
   }
   .has-sidebar.sidebar-visible .sidebar {
     transition: all 200ms;
-    -webkit-transform: translateX(0%);
     transform: translateX(0%);
   }
   .has-sidebar.sidebar-visible .main {
     transition: all 200ms;
-    -webkit-transform: translateX(330px);
     transform: translateX(330px);
   }
   .github-ribbon {

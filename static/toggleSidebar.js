@@ -1,4 +1,4 @@
-function toggleSidebar() {
+function toggleSidebar() { // eslint-disable-line no-unused-vars
     var body = document.body;
     body.className = body.className.replace(/\bsidebar-(visible|hidden)\b/, function ($0, $1) {
         return 'sidebar-' + ($1 === 'visible' ? 'hidden' : 'visible');
@@ -32,7 +32,7 @@ function showSidebar() {
 
 document.querySelector('.main').onclick = function () {
     hideSidebar();
-}
+};
 
 try {
     if (localStorage.getItem('sidebar-state') === 'visible') {

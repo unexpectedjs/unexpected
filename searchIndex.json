@@ -152,12 +152,12 @@
     "url": "/assertions/array-like/when-passed-as-parameters-to/"
   },
   {
-    "label": "when sorted by (array-like)",
-    "url": "/assertions/array-like/when-sorted-by/"
-  },
-  {
     "label": "when sorted (array-like)",
     "url": "/assertions/array-like/when-sorted/"
+  },
+  {
+    "label": "when sorted by (array-like)",
+    "url": "/assertions/array-like/when-sorted-by/"
   },
   {
     "label": "to be false (boolean)",
