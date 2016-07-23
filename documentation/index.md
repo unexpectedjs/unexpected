@@ -30,6 +30,7 @@ expected { text: 'f00!' } to equal { text: 'foo!' }
 [![Coverage Status](https://coveralls.io/repos/unexpectedjs/unexpected/badge.svg)](https://coveralls.io/r/unexpectedjs/unexpected)
 [![Dependency Status](https://david-dm.org/unexpectedjs/unexpected.svg)](https://david-dm.org/unexpectedjs/unexpected)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/unexpectedjs/unexpected?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Github](https://img.shields.io/github/stars/unexpectedjs/unexpected.svg?label=Star&maxAge=2592000&style=flat)](https://github.com/unexpectedjs/unexpected)
 
 ## Features
 
