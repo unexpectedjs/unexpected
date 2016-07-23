@@ -175,4 +175,38 @@ describe('to be rejected assertion', function () {
             }, 'to be rejected');
         });
     });
+
+    it('should use the stack of the rejection reason when failing', function () {
+        return expect(function () {
+            return expect(function () {
+                return expect.promise(function () {
+                    (function thisIsImportant() {
+                        throw new Error('argh');
+                    }());
+                });
+            }, 'to be rejected with', 'foobar');
+        }, 'to error', function (err) {
+            expect(err.stack, 'to match', /at thisIsImportant/);
+        });
+    });
+
+    describe('with another promise library', function () {
+        var Promise = typeof weknowhow === 'undefined' ?
+            require('rsvp').Promise :
+            window.RSVP.Promise;
+
+        it('should use the stack of the rejection reason when failing', function () {
+            return expect(function () {
+                return expect(function () {
+                    return new Promise(function (resolve, reject) {
+                        (function thisIsImportant() {
+                            throw new Error('argh');
+                        }());
+                    });
+                }, 'to be rejected with', 'foobar');
+            }, 'to error', function (err) {
+                expect(err.stack, 'to match', /at thisIsImportant/);
+            });
+        });
+    });
 });

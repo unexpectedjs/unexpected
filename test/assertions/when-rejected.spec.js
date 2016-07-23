@@ -87,4 +87,18 @@ describe('when rejected adverbial assertion', function () {
             }, 'when rejected to be an', Error);
         });
     });
+
+    it('should use the stack of the thrown error when failing', function () {
+        return expect(function () {
+            return expect(function () {
+                return expect.promise(function () {
+                    (function thisIsImportant() {
+                        throw new Error('argh');
+                    }());
+                });
+            }, 'when rejected to have message', 'yay');
+        }, 'to error', function (err) {
+            expect(err.stack, 'to match', /at thisIsImportant/);
+        });
+    });
 });

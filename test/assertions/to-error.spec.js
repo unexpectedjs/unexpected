@@ -69,4 +69,76 @@ describe('to error assertion', function () {
             expect(123, 'to equal', 456);
         }, 'to error', /expected 123 to equal 456/);
     });
+
+    describe('without the not flag', function () {
+        it('should use the stack of the rejection reason when failing', function () {
+            return expect(function () {
+                return expect(function () {
+                    return expect.promise(function () {
+                        (function thisIsImportant() {
+                            throw new Error('argh');
+                        }());
+                    });
+                }, 'to error with', 'foobar');
+            }, 'to error', function (err) {
+                expect(err.stack, 'to match', /at thisIsImportant/);
+            });
+        });
+
+        describe('with another promise library', function () {
+            var Promise = typeof weknowhow === 'undefined' ?
+                require('rsvp').Promise :
+                window.RSVP.Promise;
+
+            it('should use the stack of the rejection reason when failing', function () {
+                return expect(function () {
+                    return expect(function () {
+                        return new Promise(function (resolve, reject) {
+                            (function thisIsImportant() {
+                                throw new Error('argh');
+                            }());
+                        });
+                    }, 'to error with', 'foobar');
+                }, 'to error', function (err) {
+                    expect(err.stack, 'to match', /at thisIsImportant/);
+                });
+            });
+        });
+    });
+
+    describe('with the not flag', function () {
+        it('should use the stack of the rejection reason when failing', function () {
+            return expect(function () {
+                return expect(function () {
+                    return expect.promise(function () {
+                        (function thisIsImportant() {
+                            throw new Error('argh');
+                        }());
+                    });
+                }, 'not to error');
+            }, 'to error', function (err) {
+                expect(err.stack, 'to match', /at thisIsImportant/);
+            });
+        });
+
+        describe('with another promise library', function () {
+            var Promise = typeof weknowhow === 'undefined' ?
+                require('rsvp').Promise :
+                window.RSVP.Promise;
+
+            it('should use the stack of the rejection reason when failing', function () {
+                return expect(function () {
+                    return expect(function () {
+                        return new Promise(function (resolve, reject) {
+                            (function thisIsImportant() {
+                                throw new Error('argh');
+                            }());
+                        });
+                    }, 'not to error');
+                }, 'to error', function (err) {
+                    expect(err.stack, 'to match', /at thisIsImportant/);
+                });
+            });
+        });
+    });
 });

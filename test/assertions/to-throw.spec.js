@@ -145,4 +145,32 @@ describe('to throw assertion', function () {
                'expected function () { throw null; } not to throw\n' +
                '  threw: null');
     });
+
+    describe('with the not flag', function () {
+        it('should use the stack of the thrown error when failing', function () {
+            expect(function () {
+                expect(function () {
+                    (function thisIsImportant() {
+                        throw new Error('argh');
+                    }());
+                }, 'not to throw');
+            }, 'to throw', function (err) {
+                expect(err.stack, 'to match', /at thisIsImportant/);
+            });
+        });
+    });
+
+    describe('without the not flag', function () {
+        it('should use the stack of the thrown (but wrong) error when failing', function () {
+            expect(function () {
+                expect(function () {
+                    (function thisIsImportant() {
+                        throw new Error('argh');
+                    }());
+                }, 'to throw', 'foo');
+            }, 'to throw', function (err) {
+                expect(err.stack, 'to match', /at thisIsImportant/);
+            });
+        });
+    });
 });

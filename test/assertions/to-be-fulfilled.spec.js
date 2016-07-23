@@ -139,4 +139,38 @@ describe('to be fulfilled assertion', function () {
             );
         });
     });
+
+    it('should use the stack of the thrown error when failing', function () {
+        return expect(function () {
+            return expect(function () {
+                return expect.promise(function () {
+                    (function thisIsImportant() {
+                        throw new Error('argh');
+                    }());
+                });
+            }, 'to be fulfilled');
+        }, 'to error', function (err) {
+            expect(err.stack, 'to match', /at thisIsImportant/);
+        });
+    });
+
+    describe('with another promise library', function () {
+        var Promise = typeof weknowhow === 'undefined' ?
+            require('rsvp').Promise :
+            window.RSVP.Promise;
+
+        it('should use the stack of the thrown error when failing', function () {
+            return expect(function () {
+                return expect(function () {
+                    return new Promise(function (resolve, reject) {
+                        (function thisIsImportant() {
+                            throw new Error('argh');
+                        }());
+                    });
+                }, 'to be fulfilled');
+            }, 'to error', function (err) {
+                expect(err.stack, 'to match', /at thisIsImportant/);
+            });
+        });
+    });
 });

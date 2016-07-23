@@ -128,4 +128,18 @@ describe('when fulfilled adverbial assertion', function () {
             );
         });
     });
+
+    it('should use the stack of the thrown error when failing', function () {
+        return expect(function () {
+            return expect(function () {
+                return expect.promise(function () {
+                    (function thisIsImportant() {
+                        throw new Error('argh');
+                    }());
+                });
+            }, 'when fulfilled to equal', 'yay');
+        }, 'to error', function (err) {
+            expect(err.stack, 'to match', /at thisIsImportant/);
+        });
+    });
 });
