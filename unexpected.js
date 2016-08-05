@@ -9249,14 +9249,13 @@ function MagicPen(options) {
     }
 }
 
-if (typeof exports === 'object' && typeof exports.nodeName !== 'string' && require(53)) {
+if ((typeof process === 'object' && process.env && process.env.TERM === 'cygwin') || (typeof exports === 'object' && typeof exports.nodeName !== 'string' && require(53))) {
     MagicPen.defaultFormat = 'ansi'; // colored console
 } else if (typeof window !== 'undefined' && typeof window.navigator !== 'undefined') {
     if (
         window._phantom ||
         window.mochaPhantomJS ||
-        (window.__karma__ && window.__karma__.config.captureConsole) ||
-        (typeof process === 'object' && process.env && process.env.TERM === 'cygwin')
+        (window.__karma__ && window.__karma__.config.captureConsole)
     ) {
         MagicPen.defaultFormat = 'ansi'; // colored console
     } else {
