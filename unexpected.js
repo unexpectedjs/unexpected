@@ -8907,8 +8907,6 @@ var themeMapper = require(48);
 var cacheSize = 0;
 var maxColorCacheSize = 1024;
 
-var force16ColorMode = typeof process === 'object' && process.env && process.env.TERM === 'cygwin';
-
 var ansiStyles = utils.extend({}, require(22));
 Object.keys(ansiStyles).forEach(function (styleName) {
     ansiStyles[styleName.toLowerCase()] = ansiStyles[styleName];
@@ -8916,6 +8914,7 @@ Object.keys(ansiStyles).forEach(function (styleName) {
 
 function AnsiSerializer(theme) {
     this.theme = theme;
+    this.force16ColorMode = typeof process === 'object' && process.env && process.env.TERM === 'cygwin';
 }
 
 AnsiSerializer.prototype = new TextSerializer();
@@ -9007,7 +9006,7 @@ AnsiSerializer.prototype.text = function (options) {
         for (var i = styles.length -1; i >= 0; i -= 1) {
             var styleName = styles[i];
 
-            if (ansiStyles[styleName]) {
+            if (ansiStyles[styleName] && !this.force16ColorMode) {
                 content = ansiStyles[styleName].open + content + ansiStyles[styleName].close;
             } else if (rgbRegexp.test(styleName)) {
                 var originalStyleName = styleName;
@@ -9029,7 +9028,7 @@ AnsiSerializer.prototype.text = function (options) {
 
                 var open = ansiStyles[styleName].open;
                 var close = ansiStyles[styleName].close;
-                if (color16Hex !== color256Hex && !force16ColorMode) {
+                if (color16Hex !== color256Hex && !this.force16ColorMode) {
                     open += '\x1b[' + (isBackgroundColor ? 48 : 38) + ';5;' + closest256ColorIndex + 'm';
                 }
                 if (cacheSize < maxColorCacheSize) {
