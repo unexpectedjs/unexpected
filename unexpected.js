@@ -29,9 +29,9 @@ module.exports = function AssertionString(text) {
 },{}],2:[function(require,module,exports){
 var createStandardErrorMessage = require(6);
 var utils = require(19);
-var magicpen = require(43);
+var magicpen = require(42);
 var extend = utils.extend;
-var leven = require(39);
+var leven = require(38);
 var makePromise = require(11);
 var addAdditionalPromiseMethods = require(4);
 var isPendingPromise = require(9);
@@ -3371,7 +3371,7 @@ module.exports = function (expect) {
     });
 };
 
-}).call(this,require(27).Buffer)
+}).call(this,require(28).Buffer)
 },{}],6:[function(require,module,exports){
 var AssertionString = require(1);
 
@@ -3702,7 +3702,7 @@ if (typeof window !== 'undefined' && typeof window.location !== 'undefined') {
 }
 module.exports = defaultDepth;
 
-}).call(this,require(31))
+}).call(this,require(51))
 },{}],9:[function(require,module,exports){
 module.exports = function isPendingPromise(obj) {
     return obj && typeof obj.then === 'function' && typeof obj.isPending === 'function' && obj.isPending();
@@ -3982,7 +3982,7 @@ module.exports = /([\x00-\x09\x0B-\x1F\x7F-\x9F\xAD\u0378\u0379\u037F-\u0383\u03
 
 },{}],15:[function(require,module,exports){
 var utils = require(19);
-var stringDiff = require(37);
+var stringDiff = require(34);
 var specialCharRegExp = require(14);
 
 module.exports = function (expect) {
@@ -4349,8 +4349,8 @@ var utils = require(19);
 var isRegExp = utils.isRegExp;
 var leftPad = utils.leftPad;
 var arrayChanges = require(24);
-var leven = require(39);
-var detectIndent = require(36);
+var leven = require(38);
+var detectIndent = require(33);
 var defaultDepth = require(8);
 var AssertionString = require(1);
 
@@ -5417,7 +5417,7 @@ module.exports = function (expect) {
     });
 };
 
-}).call(this,require(27).Buffer)
+}).call(this,require(28).Buffer)
 },{}],18:[function(require,module,exports){
 (function (process){
 /*global window*/
@@ -5433,7 +5433,7 @@ if (typeof process !== 'undefined' && process.env && process.env.UNEXPECTED_FULL
 }
 module.exports = useFullStackTrace;
 
-}).call(this,require(31))
+}).call(this,require(51))
 },{}],19:[function(require,module,exports){
 /* eslint-disable no-proto */
 var canSetPrototype = Object.setPrototypeOf || ({ __proto__: [] } instanceof Array);
@@ -5630,7 +5630,7 @@ module.exports = require(2).create()
 
 // Add an inspect method to all the promises we return that will make the REPL, console.log, and util.inspect render it nicely in node.js:
 require(54).prototype.inspect = function () {
-    return module.exports.createOutput(require(43).defaultFormat).appendInspected(this).toString();
+    return module.exports.createOutput(require(42).defaultFormat).appendInspected(this).toString();
 };
 
 },{}],22:[function(require,module,exports){
@@ -6611,6 +6611,128 @@ function arrayDiff(before, after, equalFn) {
 }
 
 },{}],27:[function(require,module,exports){
+var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+
+;(function (exports) {
+	'use strict';
+
+  var Arr = (typeof Uint8Array !== 'undefined')
+    ? Uint8Array
+    : Array
+
+	var PLUS   = '+'.charCodeAt(0)
+	var SLASH  = '/'.charCodeAt(0)
+	var NUMBER = '0'.charCodeAt(0)
+	var LOWER  = 'a'.charCodeAt(0)
+	var UPPER  = 'A'.charCodeAt(0)
+
+	function decode (elt) {
+		var code = elt.charCodeAt(0)
+		if (code === PLUS)
+			return 62 // '+'
+		if (code === SLASH)
+			return 63 // '/'
+		if (code < NUMBER)
+			return -1 //no match
+		if (code < NUMBER + 10)
+			return code - NUMBER + 26 + 26
+		if (code < UPPER + 26)
+			return code - UPPER
+		if (code < LOWER + 26)
+			return code - LOWER + 26
+	}
+
+	function b64ToByteArray (b64) {
+		var i, j, l, tmp, placeHolders, arr
+
+		if (b64.length % 4 > 0) {
+			throw new Error('Invalid string. Length must be a multiple of 4')
+		}
+
+		// the number of equal signs (place holders)
+		// if there are two placeholders, than the two characters before it
+		// represent one byte
+		// if there is only one, then the three characters before it represent 2 bytes
+		// this is just a cheap hack to not do indexOf twice
+		var len = b64.length
+		placeHolders = '=' === b64.charAt(len - 2) ? 2 : '=' === b64.charAt(len - 1) ? 1 : 0
+
+		// base64 is 4/3 + up to two characters of the original data
+		arr = new Arr(b64.length * 3 / 4 - placeHolders)
+
+		// if there are placeholders, only get up to the last complete 4 chars
+		l = placeHolders > 0 ? b64.length - 4 : b64.length
+
+		var L = 0
+
+		function push (v) {
+			arr[L++] = v
+		}
+
+		for (i = 0, j = 0; i < l; i += 4, j += 3) {
+			tmp = (decode(b64.charAt(i)) << 18) | (decode(b64.charAt(i + 1)) << 12) | (decode(b64.charAt(i + 2)) << 6) | decode(b64.charAt(i + 3))
+			push((tmp & 0xFF0000) >> 16)
+			push((tmp & 0xFF00) >> 8)
+			push(tmp & 0xFF)
+		}
+
+		if (placeHolders === 2) {
+			tmp = (decode(b64.charAt(i)) << 2) | (decode(b64.charAt(i + 1)) >> 4)
+			push(tmp & 0xFF)
+		} else if (placeHolders === 1) {
+			tmp = (decode(b64.charAt(i)) << 10) | (decode(b64.charAt(i + 1)) << 4) | (decode(b64.charAt(i + 2)) >> 2)
+			push((tmp >> 8) & 0xFF)
+			push(tmp & 0xFF)
+		}
+
+		return arr
+	}
+
+	function uint8ToBase64 (uint8) {
+		var i,
+			extraBytes = uint8.length % 3, // if we have 1 byte left, pad 2 bytes
+			output = "",
+			temp, length
+
+		function encode (num) {
+			return lookup.charAt(num)
+		}
+
+		function tripletToBase64 (num) {
+			return encode(num >> 18 & 0x3F) + encode(num >> 12 & 0x3F) + encode(num >> 6 & 0x3F) + encode(num & 0x3F)
+		}
+
+		// go through the array every three bytes, we'll deal with trailing stuff later
+		for (i = 0, length = uint8.length - extraBytes; i < length; i += 3) {
+			temp = (uint8[i] << 16) + (uint8[i + 1] << 8) + (uint8[i + 2])
+			output += tripletToBase64(temp)
+		}
+
+		// pad the end with zeros, but make sure to not forget the extra bytes
+		switch (extraBytes) {
+			case 1:
+				temp = uint8[uint8.length - 1]
+				output += encode(temp >> 2)
+				output += encode((temp << 4) & 0x3F)
+				output += '=='
+				break
+			case 2:
+				temp = (uint8[uint8.length - 2] << 8) + (uint8[uint8.length - 1])
+				output += encode(temp >> 10)
+				output += encode((temp >> 4) & 0x3F)
+				output += encode((temp << 2) & 0x3F)
+				output += '='
+				break
+		}
+
+		return output
+	}
+
+	exports.toByteArray = b64ToByteArray
+	exports.fromByteArray = uint8ToBase64
+}(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
+
+},{}],28:[function(require,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -6618,9 +6740,9 @@ function arrayDiff(before, after, equalFn) {
  * @license  MIT
  */
 
-var base64 = require(28)
-var ieee754 = require(29)
-var isArray = require(30)
+var base64 = require(27)
+var ieee754 = require(35)
+var isArray = require(36)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = Buffer
@@ -7664,315 +7786,7 @@ function decodeUtf8Char (str) {
   }
 }
 
-},{}],28:[function(require,module,exports){
-var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-
-;(function (exports) {
-	'use strict';
-
-  var Arr = (typeof Uint8Array !== 'undefined')
-    ? Uint8Array
-    : Array
-
-	var PLUS   = '+'.charCodeAt(0)
-	var SLASH  = '/'.charCodeAt(0)
-	var NUMBER = '0'.charCodeAt(0)
-	var LOWER  = 'a'.charCodeAt(0)
-	var UPPER  = 'A'.charCodeAt(0)
-
-	function decode (elt) {
-		var code = elt.charCodeAt(0)
-		if (code === PLUS)
-			return 62 // '+'
-		if (code === SLASH)
-			return 63 // '/'
-		if (code < NUMBER)
-			return -1 //no match
-		if (code < NUMBER + 10)
-			return code - NUMBER + 26 + 26
-		if (code < UPPER + 26)
-			return code - UPPER
-		if (code < LOWER + 26)
-			return code - LOWER + 26
-	}
-
-	function b64ToByteArray (b64) {
-		var i, j, l, tmp, placeHolders, arr
-
-		if (b64.length % 4 > 0) {
-			throw new Error('Invalid string. Length must be a multiple of 4')
-		}
-
-		// the number of equal signs (place holders)
-		// if there are two placeholders, than the two characters before it
-		// represent one byte
-		// if there is only one, then the three characters before it represent 2 bytes
-		// this is just a cheap hack to not do indexOf twice
-		var len = b64.length
-		placeHolders = '=' === b64.charAt(len - 2) ? 2 : '=' === b64.charAt(len - 1) ? 1 : 0
-
-		// base64 is 4/3 + up to two characters of the original data
-		arr = new Arr(b64.length * 3 / 4 - placeHolders)
-
-		// if there are placeholders, only get up to the last complete 4 chars
-		l = placeHolders > 0 ? b64.length - 4 : b64.length
-
-		var L = 0
-
-		function push (v) {
-			arr[L++] = v
-		}
-
-		for (i = 0, j = 0; i < l; i += 4, j += 3) {
-			tmp = (decode(b64.charAt(i)) << 18) | (decode(b64.charAt(i + 1)) << 12) | (decode(b64.charAt(i + 2)) << 6) | decode(b64.charAt(i + 3))
-			push((tmp & 0xFF0000) >> 16)
-			push((tmp & 0xFF00) >> 8)
-			push(tmp & 0xFF)
-		}
-
-		if (placeHolders === 2) {
-			tmp = (decode(b64.charAt(i)) << 2) | (decode(b64.charAt(i + 1)) >> 4)
-			push(tmp & 0xFF)
-		} else if (placeHolders === 1) {
-			tmp = (decode(b64.charAt(i)) << 10) | (decode(b64.charAt(i + 1)) << 4) | (decode(b64.charAt(i + 2)) >> 2)
-			push((tmp >> 8) & 0xFF)
-			push(tmp & 0xFF)
-		}
-
-		return arr
-	}
-
-	function uint8ToBase64 (uint8) {
-		var i,
-			extraBytes = uint8.length % 3, // if we have 1 byte left, pad 2 bytes
-			output = "",
-			temp, length
-
-		function encode (num) {
-			return lookup.charAt(num)
-		}
-
-		function tripletToBase64 (num) {
-			return encode(num >> 18 & 0x3F) + encode(num >> 12 & 0x3F) + encode(num >> 6 & 0x3F) + encode(num & 0x3F)
-		}
-
-		// go through the array every three bytes, we'll deal with trailing stuff later
-		for (i = 0, length = uint8.length - extraBytes; i < length; i += 3) {
-			temp = (uint8[i] << 16) + (uint8[i + 1] << 8) + (uint8[i + 2])
-			output += tripletToBase64(temp)
-		}
-
-		// pad the end with zeros, but make sure to not forget the extra bytes
-		switch (extraBytes) {
-			case 1:
-				temp = uint8[uint8.length - 1]
-				output += encode(temp >> 2)
-				output += encode((temp << 4) & 0x3F)
-				output += '=='
-				break
-			case 2:
-				temp = (uint8[uint8.length - 2] << 8) + (uint8[uint8.length - 1])
-				output += encode(temp >> 10)
-				output += encode((temp >> 4) & 0x3F)
-				output += encode((temp << 2) & 0x3F)
-				output += '='
-				break
-		}
-
-		return output
-	}
-
-	exports.toByteArray = b64ToByteArray
-	exports.fromByteArray = uint8ToBase64
-}(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
-
 },{}],29:[function(require,module,exports){
-exports.read = function (buffer, offset, isLE, mLen, nBytes) {
-  var e, m
-  var eLen = nBytes * 8 - mLen - 1
-  var eMax = (1 << eLen) - 1
-  var eBias = eMax >> 1
-  var nBits = -7
-  var i = isLE ? (nBytes - 1) : 0
-  var d = isLE ? -1 : 1
-  var s = buffer[offset + i]
-
-  i += d
-
-  e = s & ((1 << (-nBits)) - 1)
-  s >>= (-nBits)
-  nBits += eLen
-  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}
-
-  m = e & ((1 << (-nBits)) - 1)
-  e >>= (-nBits)
-  nBits += mLen
-  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}
-
-  if (e === 0) {
-    e = 1 - eBias
-  } else if (e === eMax) {
-    return m ? NaN : ((s ? -1 : 1) * Infinity)
-  } else {
-    m = m + Math.pow(2, mLen)
-    e = e - eBias
-  }
-  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
-}
-
-exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
-  var e, m, c
-  var eLen = nBytes * 8 - mLen - 1
-  var eMax = (1 << eLen) - 1
-  var eBias = eMax >> 1
-  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
-  var i = isLE ? 0 : (nBytes - 1)
-  var d = isLE ? 1 : -1
-  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
-
-  value = Math.abs(value)
-
-  if (isNaN(value) || value === Infinity) {
-    m = isNaN(value) ? 1 : 0
-    e = eMax
-  } else {
-    e = Math.floor(Math.log(value) / Math.LN2)
-    if (value * (c = Math.pow(2, -e)) < 1) {
-      e--
-      c *= 2
-    }
-    if (e + eBias >= 1) {
-      value += rt / c
-    } else {
-      value += rt * Math.pow(2, 1 - eBias)
-    }
-    if (value * c >= 2) {
-      e++
-      c /= 2
-    }
-
-    if (e + eBias >= eMax) {
-      m = 0
-      e = eMax
-    } else if (e + eBias >= 1) {
-      m = (value * c - 1) * Math.pow(2, mLen)
-      e = e + eBias
-    } else {
-      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
-      e = 0
-    }
-  }
-
-  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
-
-  e = (e << mLen) | m
-  eLen += mLen
-  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
-
-  buffer[offset + i - d] |= s * 128
-}
-
-},{}],30:[function(require,module,exports){
-
-/**
- * isArray
- */
-
-var isArray = Array.isArray;
-
-/**
- * toString
- */
-
-var str = Object.prototype.toString;
-
-/**
- * Whether or not the given `val`
- * is an array.
- *
- * example:
- *
- *        isArray([]);
- *        // > true
- *        isArray(arguments);
- *        // > false
- *        isArray('');
- *        // > false
- *
- * @param {mixed} val
- * @return {bool}
- */
-
-module.exports = isArray || function (val) {
-  return !! val && '[object Array]' == str.call(val);
-};
-
-},{}],31:[function(require,module,exports){
-// shim for using process in browser
-
-var process = module.exports = {};
-
-process.nextTick = (function () {
-    var canSetImmediate = typeof window !== 'undefined'
-    && window.setImmediate;
-    var canPost = typeof window !== 'undefined'
-    && window.postMessage && window.addEventListener
-    ;
-
-    if (canSetImmediate) {
-        return function (f) { return window.setImmediate(f) };
-    }
-
-    if (canPost) {
-        var queue = [];
-        window.addEventListener('message', function (ev) {
-            var source = ev.source;
-            if ((source === window || source === null) && ev.data === 'process-tick') {
-                ev.stopPropagation();
-                if (queue.length > 0) {
-                    var fn = queue.shift();
-                    fn();
-                }
-            }
-        }, true);
-
-        return function nextTick(fn) {
-            queue.push(fn);
-            window.postMessage('process-tick', '*');
-        };
-    }
-
-    return function nextTick(fn) {
-        setTimeout(fn, 0);
-    };
-})();
-
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-}
-
-// TODO(shtylman)
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-
-},{}],32:[function(require,module,exports){
 /**
  * @author Markus Ekholm
  * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
@@ -8087,7 +7901,7 @@ function xyz_to_lab(c)
 // js-indent-level: 2
 // End:
 
-},{}],33:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 /**
  * @author Markus Ekholm
  * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
@@ -8253,12 +8067,12 @@ function radians(n) { return n*(PI/180); }
 // js-indent-level: 2
 // End:
 
-},{}],34:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 'use strict';
 
-var diff = require(33);
-var convert = require(32);
-var palette = require(35);
+var diff = require(30);
+var convert = require(29);
+var palette = require(32);
 
 var color = module.exports = {};
 
@@ -8283,7 +8097,7 @@ color.furthest = function(target, relative) {
     return result[key];
 };
 
-},{}],35:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 /**
  * @author Markus Ekholm
  * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
@@ -8321,8 +8135,8 @@ exports.palette_map_key = palette_map_key;
 /**
 * IMPORTS
 */
-var color_diff    = require(33);
-var color_convert = require(32);
+var color_diff    = require(30);
+var color_convert = require(29);
 
 /**
  * API FUNCTIONS
@@ -8392,7 +8206,7 @@ function diff(c1,c2)
 // js-indent-level: 2
 // End:
 
-},{}],36:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 'use strict';
 var repeating = require(52);
 
@@ -8513,7 +8327,7 @@ module.exports = function (str) {
 	};
 };
 
-},{}],37:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 /* See LICENSE file for terms of use */
 
 /*
@@ -8904,15 +8718,136 @@ module.exports = function (str) {
   }
 })(this);
 
-},{}],38:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
+exports.read = function (buffer, offset, isLE, mLen, nBytes) {
+  var e, m
+  var eLen = nBytes * 8 - mLen - 1
+  var eMax = (1 << eLen) - 1
+  var eBias = eMax >> 1
+  var nBits = -7
+  var i = isLE ? (nBytes - 1) : 0
+  var d = isLE ? -1 : 1
+  var s = buffer[offset + i]
+
+  i += d
+
+  e = s & ((1 << (-nBits)) - 1)
+  s >>= (-nBits)
+  nBits += eLen
+  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+
+  m = e & ((1 << (-nBits)) - 1)
+  e >>= (-nBits)
+  nBits += mLen
+  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+
+  if (e === 0) {
+    e = 1 - eBias
+  } else if (e === eMax) {
+    return m ? NaN : ((s ? -1 : 1) * Infinity)
+  } else {
+    m = m + Math.pow(2, mLen)
+    e = e - eBias
+  }
+  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
+}
+
+exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
+  var e, m, c
+  var eLen = nBytes * 8 - mLen - 1
+  var eMax = (1 << eLen) - 1
+  var eBias = eMax >> 1
+  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
+  var i = isLE ? 0 : (nBytes - 1)
+  var d = isLE ? 1 : -1
+  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
+
+  value = Math.abs(value)
+
+  if (isNaN(value) || value === Infinity) {
+    m = isNaN(value) ? 1 : 0
+    e = eMax
+  } else {
+    e = Math.floor(Math.log(value) / Math.LN2)
+    if (value * (c = Math.pow(2, -e)) < 1) {
+      e--
+      c *= 2
+    }
+    if (e + eBias >= 1) {
+      value += rt / c
+    } else {
+      value += rt * Math.pow(2, 1 - eBias)
+    }
+    if (value * c >= 2) {
+      e++
+      c /= 2
+    }
+
+    if (e + eBias >= eMax) {
+      m = 0
+      e = eMax
+    } else if (e + eBias >= 1) {
+      m = (value * c - 1) * Math.pow(2, mLen)
+      e = e + eBias
+    } else {
+      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
+      e = 0
+    }
+  }
+
+  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
+
+  e = (e << mLen) | m
+  eLen += mLen
+  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
+
+  buffer[offset + i - d] |= s * 128
+}
+
+},{}],36:[function(require,module,exports){
+
+/**
+ * isArray
+ */
+
+var isArray = Array.isArray;
+
+/**
+ * toString
+ */
+
+var str = Object.prototype.toString;
+
+/**
+ * Whether or not the given `val`
+ * is an array.
+ *
+ * example:
+ *
+ *        isArray([]);
+ *        // > true
+ *        isArray(arguments);
+ *        // > false
+ *        isArray('');
+ *        // > false
+ *
+ * @param {mixed} val
+ * @return {bool}
+ */
+
+module.exports = isArray || function (val) {
+  return !! val && '[object Array]' == str.call(val);
+};
+
+},{}],37:[function(require,module,exports){
 'use strict';
-var numberIsNan = require(51);
+var numberIsNan = require(50);
 
 module.exports = Number.isFinite || function (val) {
 	return !(typeof val !== 'number' || numberIsNan(val) || val === Infinity || val === -Infinity);
 };
 
-},{}],39:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 /* eslint-disable no-nested-ternary */
 'use strict';
 var arr = [];
@@ -8961,15 +8896,18 @@ module.exports = function (a, b) {
 	return ret;
 };
 
-},{}],40:[function(require,module,exports){
-var utils = require(50);
-var TextSerializer = require(44);
-var colorDiff = require(34);
-var rgbRegexp = require(48);
-var themeMapper = require(49);
+},{}],39:[function(require,module,exports){
+(function (process){
+var utils = require(49);
+var TextSerializer = require(43);
+var colorDiff = require(31);
+var rgbRegexp = require(47);
+var themeMapper = require(48);
 
 var cacheSize = 0;
 var maxColorCacheSize = 1024;
+
+var force16ColorMode = typeof process === 'object' && process.env && process.env.TERM === 'cygwin';
 
 var ansiStyles = utils.extend({}, require(22));
 Object.keys(ansiStyles).forEach(function (styleName) {
@@ -9091,7 +9029,7 @@ AnsiSerializer.prototype.text = function (options) {
 
                 var open = ansiStyles[styleName].open;
                 var close = ansiStyles[styleName].close;
-                if (color16Hex !== color256Hex) {
+                if (color16Hex !== color256Hex && !force16ColorMode) {
                     open += '\x1b[' + (isBackgroundColor ? 48 : 38) + ';5;' + closest256ColorIndex + 'm';
                 }
                 if (cacheSize < maxColorCacheSize) {
@@ -9109,11 +9047,12 @@ AnsiSerializer.prototype.text = function (options) {
 
 module.exports = AnsiSerializer;
 
-},{}],41:[function(require,module,exports){
-var cssStyles = require(45);
-var flattenBlocksInLines = require(47);
-var rgbRegexp = require(48);
-var themeMapper = require(49);
+}).call(this,require(51))
+},{}],40:[function(require,module,exports){
+var cssStyles = require(44);
+var flattenBlocksInLines = require(46);
+var rgbRegexp = require(47);
+var themeMapper = require(48);
 
 function ColoredConsoleSerializer(theme) {
     this.theme = theme;
@@ -9195,10 +9134,10 @@ ColoredConsoleSerializer.prototype.raw = function (options) {
 
 module.exports = ColoredConsoleSerializer;
 
-},{}],42:[function(require,module,exports){
-var cssStyles = require(45);
-var rgbRegexp = require(48);
-var themeMapper = require(49);
+},{}],41:[function(require,module,exports){
+var cssStyles = require(44);
+var rgbRegexp = require(47);
+var themeMapper = require(48);
 
 function HtmlSerializer(theme) {
     this.theme = theme;
@@ -9276,14 +9215,14 @@ HtmlSerializer.prototype.raw = function (options) {
 
 module.exports = HtmlSerializer;
 
-},{}],43:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 (function (process){
 /*global window*/
-var utils = require(50);
+var utils = require(49);
 var extend = utils.extend;
-var duplicateText = require(46);
-var rgbRegexp = require(48);
-var cssStyles = require(45);
+var duplicateText = require(45);
+var rgbRegexp = require(47);
+var cssStyles = require(44);
 
 function MagicPen(options) {
     if (!(this instanceof MagicPen)) {
@@ -9314,7 +9253,12 @@ function MagicPen(options) {
 if (typeof exports === 'object' && typeof exports.nodeName !== 'string' && require(53)) {
     MagicPen.defaultFormat = 'ansi'; // colored console
 } else if (typeof window !== 'undefined' && typeof window.navigator !== 'undefined') {
-    if (window._phantom || window.mochaPhantomJS || (window.__karma__ && window.__karma__.config.captureConsole)) {
+    if (
+        window._phantom ||
+        window.mochaPhantomJS ||
+        (window.__karma__ && window.__karma__.config.captureConsole) ||
+        (typeof process === 'object' && process.env && process.env.TERM === 'cygwin')
+    ) {
         MagicPen.defaultFormat = 'ansi'; // colored console
     } else {
         MagicPen.defaultFormat = 'html'; // Browser
@@ -9340,10 +9284,10 @@ MagicPen.prototype.newline = MagicPen.prototype.nl = function (count) {
 
 MagicPen.serializers = {};
 [
-    require(44),
-    require(42),
-    require(40),
-    require(41)
+    require(43),
+    require(41),
+    require(39),
+    require(40)
 ].forEach(function (serializer) {
     MagicPen.serializers[serializer.prototype.format] = serializer;
 });
@@ -9973,9 +9917,9 @@ MagicPen.prototype.installTheme = function (formats, theme) {
 
 module.exports = MagicPen;
 
-}).call(this,require(31))
-},{}],44:[function(require,module,exports){
-var flattenBlocksInLines = require(47);
+}).call(this,require(51))
+},{}],43:[function(require,module,exports){
+var flattenBlocksInLines = require(46);
 
 function TextSerializer() {}
 
@@ -10009,7 +9953,7 @@ TextSerializer.prototype.raw = function (options) {
 
 module.exports = TextSerializer;
 
-},{}],45:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 var cssStyles = {
     bold: 'font-weight: bold',
     dim: 'opacity: 0.7',
@@ -10045,7 +9989,7 @@ Object.keys(cssStyles).forEach(function (styleName) {
 
 module.exports = cssStyles;
 
-},{}],46:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 var whitespaceCacheLength = 256;
 var whitespaceCache = [''];
 for (var i = 1; i <= whitespaceCacheLength; i += 1) {
@@ -10081,9 +10025,9 @@ function duplicateText(content, times) {
 
 module.exports = duplicateText;
 
-},{}],47:[function(require,module,exports){
-var utils = require(50);
-var duplicateText = require(46);
+},{}],46:[function(require,module,exports){
+var utils = require(49);
+var duplicateText = require(45);
 
 function createPadding(length) {
     return { style: 'text', args: { content: duplicateText(' ', length), styles: [] } };
@@ -10166,10 +10110,10 @@ function flattenBlocksInLines(lines) {
 
 module.exports = flattenBlocksInLines;
 
-},{}],48:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 module.exports =  /^(?:bg)?#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i;
 
-},{}],49:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 module.exports = function (theme, styles) {
     if (styles.length === 1) {
         var count = 0;
@@ -10194,7 +10138,7 @@ module.exports = function (theme, styles) {
     return styles;
 };
 
-},{}],50:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 var utils = {
     extend: function (target) {
         for (var i = 1; i < arguments.length; i += 1) {
@@ -10303,15 +10247,80 @@ var utils = {
 
 module.exports = utils;
 
-},{}],51:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 'use strict';
 module.exports = Number.isNaN || function (x) {
 	return x !== x;
 };
 
+},{}],51:[function(require,module,exports){
+// shim for using process in browser
+
+var process = module.exports = {};
+
+process.nextTick = (function () {
+    var canSetImmediate = typeof window !== 'undefined'
+    && window.setImmediate;
+    var canPost = typeof window !== 'undefined'
+    && window.postMessage && window.addEventListener
+    ;
+
+    if (canSetImmediate) {
+        return function (f) { return window.setImmediate(f) };
+    }
+
+    if (canPost) {
+        var queue = [];
+        window.addEventListener('message', function (ev) {
+            var source = ev.source;
+            if ((source === window || source === null) && ev.data === 'process-tick') {
+                ev.stopPropagation();
+                if (queue.length > 0) {
+                    var fn = queue.shift();
+                    fn();
+                }
+            }
+        }, true);
+
+        return function nextTick(fn) {
+            queue.push(fn);
+            window.postMessage('process-tick', '*');
+        };
+    }
+
+    return function nextTick(fn) {
+        setTimeout(fn, 0);
+    };
+})();
+
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+}
+
+// TODO(shtylman)
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+
 },{}],52:[function(require,module,exports){
 'use strict';
-var isFinite = require(38);
+var isFinite = require(37);
 
 module.exports = function (str, n) {
 	if (typeof str !== 'string') {
@@ -10377,7 +10386,7 @@ module.exports = (function () {
 	return false;
 })();
 
-}).call(this,require(31))
+}).call(this,require(51))
 },{}],54:[function(require,module,exports){
 (function (process,global){
 /* @preserve
@@ -15238,6 +15247,6 @@ module.exports = ret;
 
 },{"./es5.js":14}]},{},[4])(4)
 });                    ;if (typeof window !== 'undefined' && window !== null) {                               window.P = window.Promise;                                                     } else if (typeof self !== 'undefined' && self !== null) {                             self.P = self.Promise;                                                         }
-}).call(this,require(31),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+}).call(this,require(51),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}]},{},[21])(21)
 });
