@@ -186,7 +186,7 @@ describe('to be rejected assertion', function () {
                 });
             }, 'to be rejected with', 'foobar');
         }, 'to error', function (err) {
-            expect(err.stack, 'to match', /at thisIsImportant/);
+            expect(err.stack, 'to match', /thisIsImportant/);
         });
     });
 
@@ -205,7 +205,7 @@ describe('to be rejected assertion', function () {
                     });
                 }, 'to be rejected with', 'foobar');
             }, 'to error', function (err) {
-                expect(err.stack, 'to match', /at thisIsImportant/);
+                expect(err.stack, 'to match', /thisIsImportant/);
             });
         });
     });

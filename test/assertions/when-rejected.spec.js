@@ -98,7 +98,7 @@ describe('when rejected adverbial assertion', function () {
                 });
             }, 'when rejected to have message', 'yay');
         }, 'to error', function (err) {
-            expect(err.stack, 'to match', /at thisIsImportant/);
+            expect(err.stack, 'to match', /thisIsImportant/);
         });
     });
 });

@@ -139,7 +139,7 @@ describe('when fulfilled adverbial assertion', function () {
                 });
             }, 'when fulfilled to equal', 'yay');
         }, 'to error', function (err) {
-            expect(err.stack, 'to match', /at thisIsImportant/);
+            expect(err.stack, 'to match', /thisIsImportant/);
         });
     });
 });

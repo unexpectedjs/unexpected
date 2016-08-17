@@ -155,7 +155,7 @@ describe('to throw assertion', function () {
                     }());
                 }, 'not to throw');
             }, 'to throw', function (err) {
-                expect(err.stack, 'to match', /at thisIsImportant/);
+                expect(err.stack, 'to match', /thisIsImportant/);
             });
         });
     });
@@ -169,7 +169,7 @@ describe('to throw assertion', function () {
                     }());
                 }, 'to throw', 'foo');
             }, 'to throw', function (err) {
-                expect(err.stack, 'to match', /at thisIsImportant/);
+                expect(err.stack, 'to match', /thisIsImportant/);
             });
         });
     });

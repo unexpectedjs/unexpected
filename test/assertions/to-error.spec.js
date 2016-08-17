@@ -81,7 +81,7 @@ describe('to error assertion', function () {
                     });
                 }, 'to error with', 'foobar');
             }, 'to error', function (err) {
-                expect(err.stack, 'to match', /at thisIsImportant/);
+                expect(err.stack, 'to match', /thisIsImportant/);
             });
         });
 
@@ -100,7 +100,7 @@ describe('to error assertion', function () {
                         });
                     }, 'to error with', 'foobar');
                 }, 'to error', function (err) {
-                    expect(err.stack, 'to match', /at thisIsImportant/);
+                    expect(err.stack, 'to match', /thisIsImportant/);
                 });
             });
         });
@@ -117,7 +117,7 @@ describe('to error assertion', function () {
                     });
                 }, 'not to error');
             }, 'to error', function (err) {
-                expect(err.stack, 'to match', /at thisIsImportant/);
+                expect(err.stack, 'to match', /thisIsImportant/);
             });
         });
 
@@ -136,7 +136,7 @@ describe('to error assertion', function () {
                         });
                     }, 'not to error');
                 }, 'to error', function (err) {
-                    expect(err.stack, 'to match', /at thisIsImportant/);
+                    expect(err.stack, 'to match', /thisIsImportant/);
                 });
             });
         });

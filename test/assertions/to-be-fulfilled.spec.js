@@ -150,7 +150,7 @@ describe('to be fulfilled assertion', function () {
                 });
             }, 'to be fulfilled');
         }, 'to error', function (err) {
-            expect(err.stack, 'to match', /at thisIsImportant/);
+            expect(err.stack, 'to match', /thisIsImportant/);
         });
     });
 
@@ -169,7 +169,7 @@ describe('to be fulfilled assertion', function () {
                     });
                 }, 'to be fulfilled');
             }, 'to error', function (err) {
-                expect(err.stack, 'to match', /at thisIsImportant/);
+                expect(err.stack, 'to match', /thisIsImportant/);
             });
         });
     });
