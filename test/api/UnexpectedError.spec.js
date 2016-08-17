@@ -131,4 +131,23 @@ describe('UnexpectedError', function () {
             });
         });
     });
+
+    describe('when an originalError instance is passed', function () {
+        if (typeof navigator === 'undefined' || !/phantom/i.test(navigator.userAgent)) {
+            it('should give up', function () {
+                return expect(function () {
+                    return expect(function () {
+                        try {
+                            throw new Error('argh');
+                        } catch (err) {
+                            err.stack = 'foobarquux\n   at yaddayadda';
+                            throw err;
+                        }
+                    }, 'not to error');
+                }, 'to error', function (err) {
+                    expect(err.stack, 'to contain', 'foobarquux\n   at yaddayadda');
+                });
+            });
+        }
+    });
 });
