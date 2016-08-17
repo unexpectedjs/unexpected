@@ -265,4 +265,33 @@ describe('expect.it', function () {
             );
         });
     });
+
+    describe('when passed a function', function () {
+        it('should succeed', function () {
+            expect.it(function (value) {
+                expect(value, 'to equal', 'foo');
+            })('foo');
+        });
+
+        it('should fail with a diff', function () {
+            expect(function () {
+                expect.it(function (value) {
+                    expect(value, 'to equal', 'bar');
+                })('foo');
+            }, 'to throw',
+                "expected 'foo' to equal 'bar'\n" +
+                "\n" +
+                "-foo\n" +
+                "+bar"
+            );
+        });
+
+        it('should fail when passed more than two arguments', function () {
+            expect(function () {
+                expect.it(function (value) {
+                    expect(value, 'to equal', 'bar');
+                }, 'yadda')('foo');
+            }, 'to throw', 'expect.it(<function>) does not accept additional arguments');
+        });
+    });
 });
