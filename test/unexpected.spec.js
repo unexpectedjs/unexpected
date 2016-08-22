@@ -958,4 +958,17 @@ describe('unexpected', function () {
             });
         });
     });
+
+    describe('when failing asynchronously in an asynchronous .then block', function () {
+        it('should produce an error message that includes the location of the top-level expect in the stack trace', function () {
+            return expect(function theOuterFunction() {
+                return expect(123, 'when delayed a little bit to equal', 123)
+                    .then(function theInnerFunction() {
+                        return expect('foo', 'when delayed a little bit to equal', 123);
+                    });
+            }, 'to error with', function (err) {
+                expect(err.stack, 'to match', /unexpected.spec.js:964:20/); // FIXME: This is unstable and unportable
+            });
+        });
+    });
 });
