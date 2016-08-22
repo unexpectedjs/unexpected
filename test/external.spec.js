@@ -100,6 +100,19 @@ if (typeof process === 'object') {
                 });
             });
 
+            it('should render the stack trace of the thrown error without any artifacts when "not to error" encounters an error', function () {
+                return expect('notToErrorCaughtError', 'executed through mocha').spread(function (err, stdout, stderr) {
+                    expect(err, 'to satisfy', { code: 1 });
+                    expect(
+                        stdout,
+                        'to contain',
+                        "not to error\n" +
+                        "  returned promise rejected with: Error('argh')\n" +
+                        "\n" +
+                        "      at thisIsImportant"
+                    );
+                });
+            });
         });
 
         describe('executed through jasmine', function () {
@@ -127,6 +140,20 @@ if (typeof process === 'object') {
                 return expect('forgotToReturnPendingPromiseFromFailingItBlock', 'executed through jasmine').spread(function (err, stdout, stderr) {
                     expect(stdout, 'not to contain', 'should call the callback: You have created a promise that was not returned from the it block');
                     expect(err, 'to satisfy', { code: 1 });
+                });
+            });
+
+            it('should render the stack trace of the thrown error without any artifacts when "not to error" encounters an error', function () {
+                return expect('notToErrorCaughtError', 'executed through jasmine').spread(function (err, stdout, stderr) {
+                    expect(err, 'to satisfy', { code: 1 });
+                    expect(
+                        stdout,
+                        'to contain',
+                        "    not to error\n" +
+                        "      returned promise rejected with: Error('argh')\n" +
+                        "    \n" +
+                        "        at thisIsImportant"
+                    );
                 });
             });
         });
