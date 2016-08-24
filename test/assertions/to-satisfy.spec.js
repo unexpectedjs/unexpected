@@ -1581,14 +1581,14 @@ describe('to satisfy assertion', function () {
                     "to satisfy [ 1, 2, 3, bar: 456, baz: 789, quux: false ]\n" +
                     "\n" +
                     "[\n" +
-                    "  // missing 1\n" +
-                    "  2,\n" +
-                    "  3,\n" +
-                    "  1, // should be removed\n" +
-                    "  foo: 123, // should be removed\n" +
-                    "  bar: 456,\n" +
-                    "  quux: {} // should equal false\n" +
-                    "  // missing baz: 789\n" +
+                    "┌─> \n" +
+                    "│   2,\n" +
+                    "│   3,\n" +
+                    "└── 1, // should be moved\n" +
+                    "    foo: 123, // should be removed\n" +
+                    "    bar: 456,\n" +
+                    "    quux: {} // should equal false\n" +
+                    "    // missing baz: 789\n" +
                     "]"
                 );
             });

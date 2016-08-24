@@ -21,14 +21,10 @@ expect(['c', 'a', 'b'], 'when sorted', 'to equal', ['c', 'b', 'a']);
 expected [ 'c', 'a', 'b' ] when sorted to equal [ 'c', 'b', 'a' ]
 
 [
-  'a', // should equal 'c'
-       //
-       // -a
-       // +c
-  'b',
-  'c' // should equal 'a'
-      //
-      // -c
-      // +a
+┌───> 
+│ ┌─>
+│ │   'a',
+│ └── 'b', // should be moved
+└──── 'c' // should be moved
 ]
 ```

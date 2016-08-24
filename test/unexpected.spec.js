@@ -474,27 +474,34 @@ describe('unexpected', function () {
             it('handles complicated similarities', function () {
                 expect(function () {
                     expect([4, 3, 1, 2], 'to equal', [1, 2, 3, 4]);
-                }, 'to throw', 'expected [ 4, 3, 1, 2 ] to equal [ 1, 2, 3, 4 ]\n' +
-                       '\n' +
-                       '[\n' +
-                       "  4, // should equal 1\n" +
-                       "  3, // should equal 2\n" +
-                       "  1, // should equal 3\n" +
-                       "  2 // should equal 4\n" +
-                       ']'
-                      );
+                }, 'to throw',
+                       "expected [ 4, 3, 1, 2 ] to equal [ 1, 2, 3, 4 ]\n" +
+                       "\n" +
+                       "[\n" +
+                       "┌─────> \n" +
+                       "│ ┌───>\n" +
+                       "│ │ ┌─>\n" +
+                       "│ │ │   4,\n" +
+                       "│ │ └── 3, // should be moved\n" +
+                       "└─│──── 1, // should be moved\n" +
+                       "  └──── 2 // should be moved\n" +
+                       "]"
+                );
 
                 expect(function () {
                     expect([4, 1, 2, 3], 'to equal', [1, 2, 3, 4]);
                 }, 'to throw', 'expected [ 4, 1, 2, 3 ] to equal [ 1, 2, 3, 4 ]\n' +
-                       '\n' +
-                       '[\n' +
-                       "  4, // should equal 1\n" +
-                       "  1, // should equal 2\n" +
-                       "  2, // should equal 3\n" +
-                       "  3 // should equal 4\n" +
-                       ']'
-                      );
+                       "\n" +
+                       "[\n" +
+                       "┌─────> \n" +
+                       "│ ┌───>\n" +
+                       "│ │ ┌─>\n" +
+                       "│ │ │   4,\n" +
+                       "└─│─│── 1, // should be moved\n" +
+                       "  └─│── 2, // should be moved\n" +
+                       "    └── 3 // should be moved\n" +
+                       "]"
+                );
 
                 expect(function () {
                     expect([1, 2, 3, 0], 'to equal', [0, 1, 2, 3]);
@@ -502,24 +509,26 @@ describe('unexpected', function () {
                        "expected [ 1, 2, 3, 0 ] to equal [ 0, 1, 2, 3 ]\n" +
                        "\n" +
                        "[\n" +
-                       "  // missing 0\n" +
-                       "  1,\n" +
-                       "  2,\n" +
-                       "  3,\n" +
-                       "  0 // should be removed\n" +
+                       "┌─> \n" +
+                       "│   1,\n" +
+                       "│   2,\n" +
+                       "│   3,\n" +
+                       "└── 0 // should be moved\n" +
                        "]");
 
                 expect(function () {
                     expect([4, 3, 1, 2], 'to equal', [3, 4]);
-                }, 'to throw', 'expected [ 4, 3, 1, 2 ] to equal [ 3, 4 ]\n' +
-                       '\n' +
-                       '[\n' +
-                       '  4, // should equal 3\n' +
-                       '  3, // should equal 4\n' +
-                       '  1, // should be removed\n' +
-                       '  2 // should be removed\n' +
-                       ']'
-                      );
+                }, 'to throw',
+                        "expected [ 4, 3, 1, 2 ] to equal [ 3, 4 ]\n" +
+                        "\n" +
+                        '[\n' +
+                        "┌─> \n" +
+                        "│   4,\n" +
+                        "└── 3, // should be moved\n" +
+                        "    1, // should be removed\n" +
+                        "    2 // should be removed\n" +
+                        "]"
+                );
             });
 
 
@@ -586,17 +595,18 @@ describe('unexpected', function () {
                        "expected [ 'twoo', 1, 3, 4, 5 ] to equal [ 0, 1, 'two', 3, 4, 5 ]\n" +
                        "\n" +
                        "[\n" +
-                       "  // missing 0\n" +
-                       "  // missing 1\n" +
-                       "  'twoo', // should equal 'two'\n" +
-                       "          //\n" +
-                       "          // -twoo\n" +
-                       "          // +two\n" +
-                       "  1, // should be removed\n" +
-                       "  3,\n" +
-                       "  4,\n" +
-                       "  5\n" +
-                       "]");
+                       "    // missing 0\n" +
+                       "┌─>\n" +
+                       "│   'twoo', // should equal 'two'\n" +
+                       "│           //\n" +
+                       "│           // -twoo\n" +
+                       "│           // +two\n" +
+                       "└── 1, // should be moved\n" +
+                       "    3,\n" +
+                       "    4,\n" +
+                       "    5\n" +
+                       "]"
+                );
             });
 
             it('does not consider different strings candidates for diffing', function () {

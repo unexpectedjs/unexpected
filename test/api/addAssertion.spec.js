@@ -298,9 +298,11 @@ describe('addAssertion', function () {
                        'expected [ 3, 2, 1 ] to equal [ 1, 2, 3 ]\n' +
                        '\n' +
                        '[\n' +
-                       "  3, // should equal 1\n" +
-                       "  2,\n" +
-                       "  1 // should equal 3\n" +
+                       '┌───> \n' +
+                       '│ ┌─>\n' +
+                       '│ │   3,\n' +
+                       '│ └── 2, // should be moved\n' +
+                       '└──── 1 // should be moved\n' +
                        ']');
             });
 
@@ -310,9 +312,11 @@ describe('addAssertion', function () {
                     clonedExpect([3, 2, 1], 'to be sorted');
                 }, 'to throw',
                        '[\n' +
-                       "  3, // should equal 1\n" +
-                       "  2,\n" +
-                       "  1 // should equal 3\n" +
+                       '┌───> \n' +
+                       '│ ┌─>\n' +
+                       '│ │   3,\n' +
+                       '│ └── 2, // should be moved\n' +
+                       '└──── 1 // should be moved\n' +
                        ']');
             });
 
@@ -393,9 +397,11 @@ describe('addAssertion', function () {
                 clonedExpect([3, 2, 1], 'to be sorted after delay', 1, function (err) {
                     expect(err, 'to have message',
                            '[\n' +
-                           "  3, // should equal 1\n" +
-                           "  2,\n" +
-                           "  1 // should equal 3\n" +
+                           '┌───> \n' +
+                           '│ ┌─>\n' +
+                           '│ │   3,\n' +
+                           '│ └── 2, // should be moved\n' +
+                           '└──── 1 // should be moved\n' +
                            ']');
                     done();
                 });
@@ -502,10 +508,12 @@ describe('addAssertion', function () {
                         clonedExpect([3, 2, 1], 'to be sorted after delay', 1),
                         'to be rejected with',
                         '[\n' +
-                            "  3, // should equal 1\n" +
-                            "  2,\n" +
-                            "  1 // should equal 3\n" +
-                            ']'
+                        '┌───> \n' +
+                        '│ ┌─>\n' +
+                        '│ │   3,\n' +
+                        '│ └── 2, // should be moved\n' +
+                        '└──── 1 // should be moved\n' +
+                        ']'
                     );
                 });
 
