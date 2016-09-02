@@ -5581,6 +5581,7 @@ var utils = module.exports = {
         if (f === Function) {
             return 'Function';
         }
+        return '';
     },
 
     wrapConstructorNameAroundOutput: function (output, obj) {
@@ -8945,7 +8946,6 @@ module.exports = function (a, b) {
 };
 
 },{}],39:[function(require,module,exports){
-(function (process){
 var utils = require(49);
 var TextSerializer = require(43);
 var colorDiff = require(31);
@@ -8962,7 +8962,6 @@ Object.keys(ansiStyles).forEach(function (styleName) {
 
 function AnsiSerializer(theme) {
     this.theme = theme;
-    this.force16ColorMode = typeof process === 'object' && process.env && process.env.TERM === 'cygwin';
 }
 
 AnsiSerializer.prototype = new TextSerializer();
@@ -9054,7 +9053,7 @@ AnsiSerializer.prototype.text = function (options) {
         for (var i = styles.length -1; i >= 0; i -= 1) {
             var styleName = styles[i];
 
-            if (ansiStyles[styleName] && !this.force16ColorMode) {
+            if (ansiStyles[styleName]) {
                 content = ansiStyles[styleName].open + content + ansiStyles[styleName].close;
             } else if (rgbRegexp.test(styleName)) {
                 var originalStyleName = styleName;
@@ -9076,7 +9075,7 @@ AnsiSerializer.prototype.text = function (options) {
 
                 var open = ansiStyles[styleName].open;
                 var close = ansiStyles[styleName].close;
-                if (color16Hex !== color256Hex && !this.force16ColorMode) {
+                if (color16Hex !== color256Hex) {
                     open += '\x1b[' + (isBackgroundColor ? 48 : 38) + ';5;' + closest256ColorIndex + 'm';
                 }
                 if (cacheSize < maxColorCacheSize) {
@@ -9094,7 +9093,6 @@ AnsiSerializer.prototype.text = function (options) {
 
 module.exports = AnsiSerializer;
 
-}).call(this,require(51))
 },{}],40:[function(require,module,exports){
 var cssStyles = require(44);
 var flattenBlocksInLines = require(46);
@@ -9193,13 +9191,13 @@ function HtmlSerializer(theme) {
 HtmlSerializer.prototype.format = 'html';
 
 HtmlSerializer.prototype.serialize = function (lines) {
-    return '<div style="font-family: monospace; white-space: nowrap">\n' + this.serializeLines(lines) + '\n</div>';
+    return '<div style="font-family: monospace; white-space: nowrap">' + this.serializeLines(lines) + '</div>';
 };
 
 HtmlSerializer.prototype.serializeLines = function (lines) {
     return lines.map(function (line) {
-        return '  <div>' + (this.serializeLine(line).join('') || '&nbsp;') + '</div>';
-    }, this).join('\n');
+        return '<div>' + (this.serializeLine(line).join('') || '&nbsp;') + '</div>';
+    }, this).join('');
 };
 
 HtmlSerializer.prototype.serializeLine = function (line) {
@@ -9211,9 +9209,9 @@ HtmlSerializer.prototype.serializeLine = function (line) {
 };
 
 HtmlSerializer.prototype.block = function (content) {
-    return '<div style="display: inline-block; vertical-align: top">\n' +
+    return '<div style="display: inline-block; vertical-align: top">' +
         this.serializeLines(content) +
-        '\n</div>';
+        '</div>';
 };
 
 HtmlSerializer.prototype.text = function (options) {
@@ -9297,14 +9295,10 @@ function MagicPen(options) {
     }
 }
 
-if ((typeof process === 'object' && process.env && process.env.TERM === 'cygwin') || (typeof exports === 'object' && typeof exports.nodeName !== 'string' && require(53))) {
+if (typeof exports === 'object' && typeof exports.nodeName !== 'string' && require(53)) {
     MagicPen.defaultFormat = 'ansi'; // colored console
 } else if (typeof window !== 'undefined' && typeof window.navigator !== 'undefined') {
-    if (
-        window._phantom ||
-        window.mochaPhantomJS ||
-        (window.__karma__ && window.__karma__.config.captureConsole)
-    ) {
+    if (window._phantom || window.mochaPhantomJS || (window.__karma__ && window.__karma__.config.captureConsole)) {
         MagicPen.defaultFormat = 'ansi'; // colored console
     } else {
         MagicPen.defaultFormat = 'html'; // Browser
