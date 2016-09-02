@@ -373,23 +373,9 @@
                 </ul>
             
             <p>Asserts that an Error instance the given message.</p>
-<div class="code lang-javascript">
-  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #a71d5d">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'foobar'</span><span style="color: #000000">),</span>&nbsp;<span style="color: #df5000">'to&nbsp;have&nbsp;message'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'foobar'</span><span style="color: #000000">);</span></div>
-</div><p>In case of a failing expectation you get the following output:</p>
-<div class="code lang-javascript">
-  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #a71d5d">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'foobar'</span><span style="color: #000000">),</span>&nbsp;<span style="color: #df5000">'to&nbsp;have&nbsp;message'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'barfoo'</span><span style="color: #000000">);</span></div>
-</div><div class="output">
-  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;Error(<span style="color: #df5000">'foobar'</span>)&nbsp;<span style="color: red; font-weight: bold">to&nbsp;have&nbsp;message</span>&nbsp;<span style="color: #df5000">'barfoo'</span></div>
-  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
-  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #df5000">'foobar'</span>&nbsp;<span style="color: red; font-weight: bold">to&nbsp;equal</span>&nbsp;<span style="color: #df5000">'barfoo'</span></div>
-  <div>&nbsp;</div>
-  <div><span style="background-color: red; color: white">foobar</span></div>
-  <div><span style="background-color: green; color: white">barfoo</span></div>
-</div></div>
-</div><p>The assertion uses <code>to satisfy</code> semantics, so you can also provide a regexp:</p>
-<div class="code lang-javascript">
-  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #a71d5d">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'foobar'</span><span style="color: #000000">),</span>&nbsp;<span style="color: #df5000">'to&nbsp;have&nbsp;message'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #183691">/bar$/</span><span style="color: #000000">);</span></div>
-</div>
+<div class="code lang-javascript"><div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #a71d5d">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'foobar'</span><span style="color: #000000">),</span>&nbsp;<span style="color: #df5000">'to&nbsp;have&nbsp;message'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'foobar'</span><span style="color: #000000">);</span></div></div><p>In case of a failing expectation you get the following output:</p>
+<div class="code lang-javascript"><div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #a71d5d">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'foobar'</span><span style="color: #000000">),</span>&nbsp;<span style="color: #df5000">'to&nbsp;have&nbsp;message'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'barfoo'</span><span style="color: #000000">);</span></div></div><div class="output"><div><span style="color: red; font-weight: bold">expected</span>&nbsp;Error(<span style="color: #df5000">'foobar'</span>)&nbsp;<span style="color: red; font-weight: bold">to&nbsp;have&nbsp;message</span>&nbsp;<span style="color: #df5000">'barfoo'</span></div><div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top"><div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #df5000">'foobar'</span>&nbsp;<span style="color: red; font-weight: bold">to&nbsp;equal</span>&nbsp;<span style="color: #df5000">'barfoo'</span></div><div>&nbsp;</div><div><span style="background-color: red; color: white">foobar</span></div><div><span style="background-color: green; color: white">barfoo</span></div></div></div></div><p>The assertion uses <code>to satisfy</code> semantics, so you can also provide a regexp:</p>
+<div class="code lang-javascript"><div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #a71d5d">new</span>&nbsp;Error<span style="color: #000000">(</span><span style="color: #df5000">'foobar'</span><span style="color: #000000">),</span>&nbsp;<span style="color: #df5000">'to&nbsp;have&nbsp;message'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #183691">/bar$/</span><span style="color: #000000">);</span></div></div>
         </div>
     </div>
 </section>

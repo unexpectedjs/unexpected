@@ -374,63 +374,9 @@
             
             <p>Sort the subject array by the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort">default compare function</a>
 then delegate the return value to another assertion.</p>
-<div class="code lang-javascript">
-  <div><span style="color: #000000">expect</span><span style="color: #000000">([</span><span style="color: #df5000">'c'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'a'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'b'</span><span style="color: #000000">],</span>&nbsp;<span style="color: #df5000">'when&nbsp;sorted'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;equal'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #000000">[</span><span style="color: #df5000">'a'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'b'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'c'</span><span style="color: #000000">]);</span></div>
-</div><p>To sort an array of numbers, use <code>when sorted numerically</code>:</p>
-<div class="code lang-javascript">
-  <div><span style="color: #000000">expect</span><span style="color: #000000">([</span><span style="color: #0086b3">3</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">1</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">2</span><span style="color: #000000">],</span>&nbsp;<span style="color: #df5000">'when&nbsp;sorted&nbsp;numerically'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;equal'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #000000">[</span><span style="color: #0086b3">1</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">2</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">3</span><span style="color: #000000">]);</span></div>
-</div><p>In case of a failing expectation you get the following output:</p>
-<div class="code lang-javascript">
-  <div><span style="color: #000000">expect</span><span style="color: #000000">([</span><span style="color: #df5000">'c'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'a'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'b'</span><span style="color: #000000">],</span>&nbsp;<span style="color: #df5000">'when&nbsp;sorted'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;equal'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #000000">[</span><span style="color: #df5000">'c'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'b'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'a'</span><span style="color: #000000">]);</span></div>
-</div><div class="output">
-  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;[&nbsp;<span style="color: #df5000">'c'</span>,&nbsp;<span style="color: #df5000">'a'</span>,&nbsp;<span style="color: #df5000">'b'</span>&nbsp;]&nbsp;<span style="color: red; font-weight: bold">when&nbsp;sorted</span>&nbsp;<span style="color: red; font-weight: bold">to&nbsp;equal</span>&nbsp;[&nbsp;<span style="color: #df5000">'c'</span>,&nbsp;<span style="color: #df5000">'b'</span>,&nbsp;<span style="color: #df5000">'a'</span>&nbsp;]</div>
-  <div>&nbsp;</div>
-  <div>[</div>
-  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
-  <div><div style="display: inline-block; vertical-align: top">
-  <div><div style="display: inline-block; vertical-align: top">
-  <div><span style="color: #df5000">'a'</span>,&nbsp;<div style="display: inline-block; vertical-align: top">
-  <div><span style="color: red; font-weight: bold">//</span></div>
-  <div><span style="color: red; font-weight: bold">//</span></div>
-  <div><span style="color: red; font-weight: bold">//</span></div>
-  <div><span style="color: red; font-weight: bold">//</span></div>
-</div>&nbsp;<div style="display: inline-block; vertical-align: top">
-  <div><span style="color: red; font-weight: bold">should&nbsp;equal</span>&nbsp;<div style="display: inline-block; vertical-align: top">
-  <div><span style="color: #df5000">'c'</span></div>
-</div></div>
-  <div>&nbsp;</div>
-  <div><span style="background-color: red; color: white">a</span></div>
-  <div><span style="background-color: green; color: white">c</span></div>
-</div></div>
-</div></div>
-</div></div>
-</div></div>
-  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
-  <div><div style="display: inline-block; vertical-align: top">
-  <div><span style="color: #df5000">'b'</span>,</div>
-</div></div>
-</div></div>
-  <div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top">
-  <div><div style="display: inline-block; vertical-align: top">
-  <div><div style="display: inline-block; vertical-align: top">
-  <div><span style="color: #df5000">'c'</span>&nbsp;<div style="display: inline-block; vertical-align: top">
-  <div><span style="color: red; font-weight: bold">//</span></div>
-  <div><span style="color: red; font-weight: bold">//</span></div>
-  <div><span style="color: red; font-weight: bold">//</span></div>
-  <div><span style="color: red; font-weight: bold">//</span></div>
-</div>&nbsp;<div style="display: inline-block; vertical-align: top">
-  <div><span style="color: red; font-weight: bold">should&nbsp;equal</span>&nbsp;<div style="display: inline-block; vertical-align: top">
-  <div><span style="color: #df5000">'a'</span></div>
-</div></div>
-  <div>&nbsp;</div>
-  <div><span style="background-color: red; color: white">c</span></div>
-  <div><span style="background-color: green; color: white">a</span></div>
-</div></div>
-</div></div>
-</div></div>
-</div></div>
-  <div>]</div>
-</div>
+<div class="code lang-javascript"><div><span style="color: #000000">expect</span><span style="color: #000000">([</span><span style="color: #df5000">'c'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'a'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'b'</span><span style="color: #000000">],</span>&nbsp;<span style="color: #df5000">'when&nbsp;sorted'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;equal'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #000000">[</span><span style="color: #df5000">'a'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'b'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'c'</span><span style="color: #000000">]);</span></div></div><p>To sort an array of numbers, use <code>when sorted numerically</code>:</p>
+<div class="code lang-javascript"><div><span style="color: #000000">expect</span><span style="color: #000000">([</span><span style="color: #0086b3">3</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">1</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">2</span><span style="color: #000000">],</span>&nbsp;<span style="color: #df5000">'when&nbsp;sorted&nbsp;numerically'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;equal'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #000000">[</span><span style="color: #0086b3">1</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">2</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">3</span><span style="color: #000000">]);</span></div></div><p>In case of a failing expectation you get the following output:</p>
+<div class="code lang-javascript"><div><span style="color: #000000">expect</span><span style="color: #000000">([</span><span style="color: #df5000">'c'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'a'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'b'</span><span style="color: #000000">],</span>&nbsp;<span style="color: #df5000">'when&nbsp;sorted'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;equal'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #000000">[</span><span style="color: #df5000">'c'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'b'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'a'</span><span style="color: #000000">]);</span></div></div><div class="output"><div><span style="color: red; font-weight: bold">expected</span>&nbsp;[&nbsp;<span style="color: #df5000">'c'</span>,&nbsp;<span style="color: #df5000">'a'</span>,&nbsp;<span style="color: #df5000">'b'</span>&nbsp;]&nbsp;<span style="color: red; font-weight: bold">when&nbsp;sorted</span>&nbsp;<span style="color: red; font-weight: bold">to&nbsp;equal</span>&nbsp;[&nbsp;<span style="color: #df5000">'c'</span>,&nbsp;<span style="color: #df5000">'b'</span>,&nbsp;<span style="color: #df5000">'a'</span>&nbsp;]</div><div>&nbsp;</div><div>[</div><div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top"><div><div style="display: inline-block; vertical-align: top"><div><div style="display: inline-block; vertical-align: top"><div><span style="color: #df5000">'a'</span>,&nbsp;<div style="display: inline-block; vertical-align: top"><div><span style="color: red; font-weight: bold">//</span></div><div><span style="color: red; font-weight: bold">//</span></div><div><span style="color: red; font-weight: bold">//</span></div><div><span style="color: red; font-weight: bold">//</span></div></div>&nbsp;<div style="display: inline-block; vertical-align: top"><div><span style="color: red; font-weight: bold">should&nbsp;equal</span>&nbsp;<div style="display: inline-block; vertical-align: top"><div><span style="color: #df5000">'c'</span></div></div></div><div>&nbsp;</div><div><span style="background-color: red; color: white">a</span></div><div><span style="background-color: green; color: white">c</span></div></div></div></div></div></div></div></div></div><div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top"><div><div style="display: inline-block; vertical-align: top"><div><span style="color: #df5000">'b'</span>,</div></div></div></div></div><div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top"><div><div style="display: inline-block; vertical-align: top"><div><div style="display: inline-block; vertical-align: top"><div><span style="color: #df5000">'c'</span>&nbsp;<div style="display: inline-block; vertical-align: top"><div><span style="color: red; font-weight: bold">//</span></div><div><span style="color: red; font-weight: bold">//</span></div><div><span style="color: red; font-weight: bold">//</span></div><div><span style="color: red; font-weight: bold">//</span></div></div>&nbsp;<div style="display: inline-block; vertical-align: top"><div><span style="color: red; font-weight: bold">should&nbsp;equal</span>&nbsp;<div style="display: inline-block; vertical-align: top"><div><span style="color: #df5000">'a'</span></div></div></div><div>&nbsp;</div><div><span style="background-color: red; color: white">c</span></div><div><span style="background-color: green; color: white">a</span></div></div></div></div></div></div></div></div></div><div>]</div></div>
         </div>
     </div>
 </section>

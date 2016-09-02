@@ -373,32 +373,12 @@
                 </ul>
             
             <p>Asserts that a string ends with a given string.</p>
-<div class="code lang-javascript">
-  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #df5000">'Hello&nbsp;beautiful&nbsp;world!'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;end&nbsp;with'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'world!'</span><span style="color: #000000">);</span></div>
-</div><p>In case of a failing expectation you get the following output:</p>
-<div class="code lang-javascript">
-  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #df5000">'Hello&nbsp;world!'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;end&nbsp;with'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'foo'</span><span style="color: #000000">);</span></div>
-</div><div class="output">
-  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #df5000">'Hello&nbsp;world!'</span>&nbsp;<span style="color: red; font-weight: bold">to&nbsp;end&nbsp;with</span>&nbsp;<span style="color: #df5000">'foo'</span></div>
-</div><p>If there is a partially matching suffix you&#39;ll get a diff with the common
+<div class="code lang-javascript"><div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #df5000">'Hello&nbsp;beautiful&nbsp;world!'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;end&nbsp;with'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'world!'</span><span style="color: #000000">);</span></div></div><p>In case of a failing expectation you get the following output:</p>
+<div class="code lang-javascript"><div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #df5000">'Hello&nbsp;world!'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;end&nbsp;with'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'foo'</span><span style="color: #000000">);</span></div></div><div class="output"><div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #df5000">'Hello&nbsp;world!'</span>&nbsp;<span style="color: red; font-weight: bold">to&nbsp;end&nbsp;with</span>&nbsp;<span style="color: #df5000">'foo'</span></div></div><p>If there is a partially matching suffix you&#39;ll get a diff with the common
 part highlighted:</p>
-<div class="code lang-javascript">
-  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #df5000">'Hello&nbsp;world!'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;end&nbsp;with'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'Hola,&nbsp;world!'</span><span style="color: #000000">);</span></div>
-</div><div class="output">
-  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #df5000">'Hello&nbsp;world!'</span>&nbsp;<span style="color: red; font-weight: bold">to&nbsp;end&nbsp;with</span>&nbsp;<span style="color: #df5000">'Hola,&nbsp;world!'</span></div>
-  <div>&nbsp;</div>
-  <div>Hello<span style="background-color: yellow">&nbsp;world!</span></div>
-</div><p>This assertion can be negated using the <code>not</code> flag:</p>
-<div class="code lang-javascript">
-  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #df5000">'Hello&nbsp;world!'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'not&nbsp;to&nbsp;end&nbsp;with'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'earth!'</span><span style="color: #000000">);</span></div>
-</div><p>In case of a failing expectation you get the following output:</p>
-<div class="code lang-javascript">
-  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #df5000">'Hello&nbsp;beautiful&nbsp;world!'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'not&nbsp;to&nbsp;end&nbsp;with'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'world!'</span><span style="color: #000000">);</span></div>
-</div><div class="output">
-  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #df5000">'Hello&nbsp;beautiful&nbsp;world!'</span>&nbsp;<span style="color: red; font-weight: bold">not&nbsp;to&nbsp;end&nbsp;with</span>&nbsp;<span style="color: #df5000">'world!'</span></div>
-  <div>&nbsp;</div>
-  <div>Hello&nbsp;beautiful&nbsp;<span style="background-color: red; color: white">world!</span></div>
-</div>
+<div class="code lang-javascript"><div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #df5000">'Hello&nbsp;world!'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;end&nbsp;with'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'Hola,&nbsp;world!'</span><span style="color: #000000">);</span></div></div><div class="output"><div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #df5000">'Hello&nbsp;world!'</span>&nbsp;<span style="color: red; font-weight: bold">to&nbsp;end&nbsp;with</span>&nbsp;<span style="color: #df5000">'Hola,&nbsp;world!'</span></div><div>&nbsp;</div><div>Hello<span style="background-color: yellow">&nbsp;world!</span></div></div><p>This assertion can be negated using the <code>not</code> flag:</p>
+<div class="code lang-javascript"><div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #df5000">'Hello&nbsp;world!'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'not&nbsp;to&nbsp;end&nbsp;with'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'earth!'</span><span style="color: #000000">);</span></div></div><p>In case of a failing expectation you get the following output:</p>
+<div class="code lang-javascript"><div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #df5000">'Hello&nbsp;beautiful&nbsp;world!'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'not&nbsp;to&nbsp;end&nbsp;with'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'world!'</span><span style="color: #000000">);</span></div></div><div class="output"><div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #df5000">'Hello&nbsp;beautiful&nbsp;world!'</span>&nbsp;<span style="color: red; font-weight: bold">not&nbsp;to&nbsp;end&nbsp;with</span>&nbsp;<span style="color: #df5000">'world!'</span></div><div>&nbsp;</div><div>Hello&nbsp;beautiful&nbsp;<span style="background-color: red; color: white">world!</span></div></div>
         </div>
     </div>
 </section>

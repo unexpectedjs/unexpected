@@ -128,24 +128,16 @@
     "url": "/assertions/any/when-passed-as-parameter-to/"
   },
   {
-    "label": "to be false (boolean)",
-    "url": "/assertions/boolean/to-be-false/"
-  },
-  {
-    "label": "to be true (boolean)",
-    "url": "/assertions/boolean/to-be-true/"
-  },
-  {
     "label": "to be empty (array-like)",
     "url": "/assertions/array-like/to-be-empty/"
   },
   {
-    "label": "to contain (array-like)",
-    "url": "/assertions/array-like/to-contain/"
-  },
-  {
     "label": "to be non-empty (array-like)",
     "url": "/assertions/array-like/to-be-non-empty/"
+  },
+  {
+    "label": "to contain (array-like)",
+    "url": "/assertions/array-like/to-contain/"
   },
   {
     "label": "to have items satisfying (array-like)",
@@ -166,6 +158,14 @@
   {
     "label": "when sorted (array-like)",
     "url": "/assertions/array-like/when-sorted/"
+  },
+  {
+    "label": "to be false (boolean)",
+    "url": "/assertions/boolean/to-be-false/"
+  },
+  {
+    "label": "to be true (boolean)",
+    "url": "/assertions/boolean/to-be-true/"
   },
   {
     "label": "to call the callback with error (function)",
@@ -216,10 +216,6 @@
     "url": "/assertions/number/to-be-greater-than-or-equal-to/"
   },
   {
-    "label": "to be greater than (number)",
-    "url": "/assertions/number/to-be-greater-than/"
-  },
-  {
     "label": "to be infinite (number)",
     "url": "/assertions/number/to-be-infinite/"
   },
@@ -242,6 +238,10 @@
   {
     "label": "to be within (number)",
     "url": "/assertions/number/to-be-within/"
+  },
+  {
+    "label": "to be greater than (number)",
+    "url": "/assertions/number/to-be-greater-than/"
   },
   {
     "label": "to be canonical (object)",

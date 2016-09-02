@@ -112,11 +112,7 @@
 <p>Perform an assertion about <code>subject</code>.</p>
 <p>The <code>expect</code> function will throw an <code>UnexpectedError</code> if the assertion can be
 decided synchronously and isn&#39;t fulfilled:</p>
-<div class="code lang-javascript">
-  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #0086b3">123</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;equal'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">456</span><span style="color: #000000">);</span></div>
-</div><div class="output">
-  <div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #0086b3">123</span>&nbsp;<span style="color: red; font-weight: bold">to&nbsp;equal</span>&nbsp;<span style="color: #0086b3">456</span></div>
-</div><p>In all other cases <code>expect</code> will return a
+<div class="code lang-javascript"><div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #0086b3">123</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;equal'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">456</span><span style="color: #000000">);</span></div></div><div class="output"><div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #0086b3">123</span>&nbsp;<span style="color: red; font-weight: bold">to&nbsp;equal</span>&nbsp;<span style="color: #0086b3">456</span></div></div><p>In all other cases <code>expect</code> will return a
 <a href="https://github.com/petkaantonov/bluebird">Bluebird promise</a> which will either be
 rejected or fulfilled. For consistency, even successful synchronous assertions will
 return a promise.</p>
@@ -126,11 +122,7 @@ the promise is fulfilled. This works natively in mocha 1.18+, and Unexpected
 does some unholy trickery so it also works in Jasmine.</p>
 <p>Note that if the assertion is asynchronous, you&#39;ll have to return the promise
 to the <code>it</code> block:</p>
-<div class="code lang-javascript">
-  <div><span style="color: #000000">it</span><span style="color: #000000">(</span><span style="color: #df5000">'should&nbsp;call&nbsp;the&nbsp;callback'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>setImmediate<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;call&nbsp;the&nbsp;callback'</span><span style="color: #000000">);</span></div>
-  <div><span style="color: #000000">});</span></div>
-</div><p>Otherwise your test framework will assume that the test has passed and won&#39;t wait
+<div class="code lang-javascript"><div><span style="color: #000000">it</span><span style="color: #000000">(</span><span style="color: #df5000">'should&nbsp;call&nbsp;the&nbsp;callback'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div><div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>setImmediate<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;call&nbsp;the&nbsp;callback'</span><span style="color: #000000">);</span></div><div><span style="color: #000000">});</span></div></div><p>Otherwise your test framework will assume that the test has passed and won&#39;t wait
 for the asynchronous work to complete.</p>
 <p>As of 8.0.0 Unexpected will detect created promises that were never returned
 and make the test fail synchronously. This will uncover some extremely nasty
@@ -139,15 +131,9 @@ feature only works in Mocha and Jasmine.</p>
 <h2 id="expect-and-assertionname-value-">expect(...).and(assertionName, [value, ...])</h2>
 <p>The returned promise will be augmented with an <code>and</code> method that allows you to
 perform more assertions on the same subject:</p>
-<div class="code lang-javascript">
-  <div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #df5000">'abc'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;a&nbsp;string'</span><span style="color: #000000">).</span><span style="color: #000000">and</span><span style="color: #000000">(</span><span style="color: #df5000">'to&nbsp;have&nbsp;length'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">3</span><span style="color: #000000">);</span></div>
-</div><p>Again, note that you need to return the value returned by <code>expect</code> to your <code>it</code>
+<div class="code lang-javascript"><div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #df5000">'abc'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;a&nbsp;string'</span><span style="color: #000000">).</span><span style="color: #000000">and</span><span style="color: #000000">(</span><span style="color: #df5000">'to&nbsp;have&nbsp;length'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #0086b3">3</span><span style="color: #000000">);</span></div></div><p>Again, note that you need to return the value returned by <code>expect</code> to your <code>it</code>
 block if any of the assertions are asynchronous:</p>
-<div class="code lang-javascript">
-  <div><span style="color: #000000">it</span><span style="color: #000000">(</span><span style="color: #df5000">'should&nbsp;do&nbsp;the&nbsp;right&nbsp;thing'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div>
-  <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>setImmediate<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;a&nbsp;function'</span><span style="color: #000000">).</span><span style="color: #000000">and</span><span style="color: #000000">(</span><span style="color: #df5000">'to&nbsp;call&nbsp;the&nbsp;callback'</span><span style="color: #000000">);</span></div>
-  <div><span style="color: #000000">});</span></div>
-</div>
+<div class="code lang-javascript"><div><span style="color: #000000">it</span><span style="color: #000000">(</span><span style="color: #df5000">'should&nbsp;do&nbsp;the&nbsp;right&nbsp;thing'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div><div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>setImmediate<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;a&nbsp;function'</span><span style="color: #000000">).</span><span style="color: #000000">and</span><span style="color: #000000">(</span><span style="color: #df5000">'to&nbsp;call&nbsp;the&nbsp;callback'</span><span style="color: #000000">);</span></div><div><span style="color: #000000">});</span></div></div>
         </div>
     </div>
 </section>
