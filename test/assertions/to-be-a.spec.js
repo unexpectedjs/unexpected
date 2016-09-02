@@ -118,12 +118,17 @@ describe('to be a/an assertion', function () {
     it('should throw when the type is specified as an object with an identify function, but without a name property', function () {
         expect(function () {
             expect('foo', 'to be a', { identify: function () { return true; } });
-        }, 'to throw',
-               "expected 'foo' to be a { identify: function () { return true; } }\n" +
-               "  No matching assertion, did you mean:\n" +
-               "  <any> [not] to be (a|an) <function>\n" +
-               "  <any> [not] to be (a|an) <string>\n" +
-               "  <any> [not] to be (a|an) <type>");
+        }, 'to throw', function (err) {
+            // Compensate for V8 5.1+ setting { identify: function () {} }.identify.name === 'identify'
+            // http://v8project.blogspot.dk/2016/04/v8-release-51.html
+            expect(err.getErrorMessage('text').toString().replace('function identify', 'function '), 'to satisfy',
+                "expected 'foo' to be a { identify: function () { return true; } }\n" +
+                "  No matching assertion, did you mean:\n" +
+                "  <any> [not] to be (a|an) <function>\n" +
+                "  <any> [not] to be (a|an) <string>\n" +
+                "  <any> [not] to be (a|an) <type>"
+            );
+        });
     });
 
     it('throws when the assertion fails', function () {

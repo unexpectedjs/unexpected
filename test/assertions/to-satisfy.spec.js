@@ -1690,14 +1690,18 @@ describe('to satisfy assertion', function () {
         it('should fail when the function throws', function () {
             expect(function () {
                 expect({}, 'to satisfy', { foo: function (value) { expect(value, 'to be a string'); }});
-            }, 'to throw',
-                "expected {}\n" +
-                "to satisfy { foo: function (value) { expect(value, 'to be a string'); } }\n" +
-                "\n" +
-                "{\n" +
-                "  // missing: foo: should be a string\n" +
-                "}"
-            );
+            }, 'to throw', function (err) {
+                // Compensate for V8 5.1+ setting { foo: function () {} }.foo.name === 'foo'
+                // http://v8project.blogspot.dk/2016/04/v8-release-51.html
+                expect(err.getErrorMessage('text').toString().replace('function foo', 'function '), 'to satisfy',
+                    "expected {}\n" +
+                    "to satisfy { foo: function (value) { expect(value, 'to be a string'); } }\n" +
+                    "\n" +
+                    "{\n" +
+                    "  // missing: foo: should be a string\n" +
+                    "}"
+                );
+            });
         });
     });
 
@@ -1722,14 +1726,18 @@ describe('to satisfy assertion', function () {
     it('should not break when the assertion fails and there is a fulfilled function in the RHS', function () {
         expect(function () {
             expect({}, 'to satisfy', { bar: 123, foo: function () {}});
-        }, 'to throw',
-            "expected {} to satisfy { bar: 123, foo: function () {} }\n" +
-            "\n" +
-            "{\n" +
-            "  // missing bar: 123\n" +
-            "  foo:\n" + // FIXME: Come up with something better
-            "}"
-        );
+        }, 'to throw', function (err) {
+            // Compensate for V8 5.1+ setting { foo: function () {} }.foo.name === 'foo'
+            // http://v8project.blogspot.dk/2016/04/v8-release-51.html
+            expect(err.getErrorMessage('text').toString().replace('function foo', 'function '), 'to satisfy',
+                "expected {} to satisfy { bar: 123, foo: function () {} }\n" +
+                "\n" +
+                "{\n" +
+                "  // missing bar: 123\n" +
+                "  foo:\n" + // FIXME: Come up with something better
+                "}"
+            );
+        });
     });
 
     describe('when matching the constructor property of an object', function () {
