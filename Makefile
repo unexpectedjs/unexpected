@@ -50,7 +50,7 @@ test-browser: create-html-runners unexpected.js
 travis-chewbacca:
 	./node_modules/.bin/chewbacca --threshold ${CHEWBACCA_THRESHOLD} `echo ${TRAVIS_COMMIT_RANGE} | sed -e 's/\.\.\..*//;'` -- test/benchmark.spec.js
 
-travis: lint test travis-chewbacca test-phantomjs test-jasmine coverage site-build
+travis: clean lint test travis-chewbacca test-phantomjs test-jasmine coverage site-build
 	-<coverage/lcov.info ./node_modules/coveralls/bin/coveralls.js
 
 .PHONY: git-dirty-check
