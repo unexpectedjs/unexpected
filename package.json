@@ -38,6 +38,7 @@
     "es5-shim": "4.0.5",
     "eslint": "2.4.0",
     "eslint-config-onelint": "1.0.2",
+    "greedy-interval-packer": "1.2.0",
     "istanbul": "0.3.16",
     "jasmine": "2.2.1",
     "jasmine-core": "~2.2.0",
