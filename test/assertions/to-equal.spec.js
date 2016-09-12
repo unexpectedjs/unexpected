@@ -181,7 +181,7 @@ describe('to equal assertion', function () {
                "\n" +
                "[\n" +
                "    0,\n" +
-               "┌─>\n" +
+               "┌─▷\n" +
                "│   {\n" +
                "│     foo: 'bar' // should equal 'baz'\n" +
                "│                //\n" +
@@ -194,7 +194,7 @@ describe('to equal assertion', function () {
                "    { bar: 'bar' }, // should be removed\n" +
                "    [\n" +
                "        1,\n" +
-               "    ┌─>\n" +
+               "    ┌─▷\n" +
                "    │   3,\n" +
                "    └── 2 // should be moved\n" +
                "    ],\n" +

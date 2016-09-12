@@ -198,7 +198,7 @@ describe('array-like type', function () {
             "expected [ 'a', 'b', 'c' ] to equal [ 'c', 'a', 'b' ]\n" +
             "\n" +
             "[\n" +
-            "┌─> \n" +
+            "┌─▷ \n" +
             "│   'a',\n" +
             "│   'b',\n" +
             "└── 'c' // should be moved\n" +
@@ -213,8 +213,8 @@ describe('array-like type', function () {
             "expected [ 'a', 'b', 'c', 'd' ] to equal [ 'd', 'b', 'a', 'c' ]\n" +
             "\n" +
             "[\n" +
-            "┌───> \n" +
-            "│ ┌─>\n" +
+            "┌───▷ \n" +
+            "│ ┌─▷\n" +
             "│ │   'a',\n" +
             "│ └── 'b', // should be moved\n" +
             "│     'c',\n" +
@@ -230,9 +230,9 @@ describe('array-like type', function () {
             "expected [ 'a', 'b', 'c', 'd', 'e' ] to equal [ 'c', 'd', 'e', 'a', 'b' ]\n" +
             "\n" +
             "[\n" +
-            "┌─────> \n" +
-            "│ ┌───>\n" +
-            "│ │ ┌─>\n" +
+            "┌─────▷ \n" +
+            "│ ┌───▷\n" +
+            "│ │ ┌─▷\n" +
             "│ │ │   'a',\n" +
             "│ │ │   'b',\n" +
             "└─│─│── 'c', // should be moved\n" +

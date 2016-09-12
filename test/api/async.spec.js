@@ -83,7 +83,7 @@ describe('async', function () {
                 '\n' +
                 '    [\n' +
                 '        1,\n' +
-                '    ┌─>\n' +
+                '    ┌─▷\n' +
                 '    │   3,\n' +
                 '    └── 2 // should be moved\n' +
                 '    ]'
@@ -99,7 +99,7 @@ describe('async', function () {
                 '\n' +
                 '  [\n' +
                 '      1,\n' +
-                '  ┌─>\n' +
+                '  ┌─▷\n' +
                 '  │   3,\n' +
                 '  └── 2 // should be moved\n' +
                 '  ]'
@@ -122,7 +122,7 @@ describe('async', function () {
                        '\n' +
                        '    [\n' +
                        '        1,\n' +
-                       '    ┌─>\n' +
+                       '    ┌─▷\n' +
                        '    │   3,\n' +
                        '    └── 2 // should be moved\n' +
                        '    ]');

@@ -298,8 +298,8 @@ describe('addAssertion', function () {
                        'expected [ 3, 2, 1 ] to equal [ 1, 2, 3 ]\n' +
                        '\n' +
                        '[\n' +
-                       '┌───> \n' +
-                       '│ ┌─>\n' +
+                       '┌───▷ \n' +
+                       '│ ┌─▷\n' +
                        '│ │   3,\n' +
                        '│ └── 2, // should be moved\n' +
                        '└──── 1 // should be moved\n' +
@@ -312,8 +312,8 @@ describe('addAssertion', function () {
                     clonedExpect([3, 2, 1], 'to be sorted');
                 }, 'to throw',
                        '[\n' +
-                       '┌───> \n' +
-                       '│ ┌─>\n' +
+                       '┌───▷ \n' +
+                       '│ ┌─▷\n' +
                        '│ │   3,\n' +
                        '│ └── 2, // should be moved\n' +
                        '└──── 1 // should be moved\n' +
@@ -397,8 +397,8 @@ describe('addAssertion', function () {
                 clonedExpect([3, 2, 1], 'to be sorted after delay', 1, function (err) {
                     expect(err, 'to have message',
                            '[\n' +
-                           '┌───> \n' +
-                           '│ ┌─>\n' +
+                           '┌───▷ \n' +
+                           '│ ┌─▷\n' +
                            '│ │   3,\n' +
                            '│ └── 2, // should be moved\n' +
                            '└──── 1 // should be moved\n' +
@@ -508,8 +508,8 @@ describe('addAssertion', function () {
                         clonedExpect([3, 2, 1], 'to be sorted after delay', 1),
                         'to be rejected with',
                         '[\n' +
-                        '┌───> \n' +
-                        '│ ┌─>\n' +
+                        '┌───▷ \n' +
+                        '│ ┌─▷\n' +
                         '│ │   3,\n' +
                         '│ └── 2, // should be moved\n' +
                         '└──── 1 // should be moved\n' +

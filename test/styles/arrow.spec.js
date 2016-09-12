@@ -8,7 +8,7 @@ describe('arrow', function () {
             "│\n" +
             "│\n" +
             "│\n" +
-            "└──>"
+            "└──▷"
         );
     });
 
@@ -22,7 +22,7 @@ describe('arrow', function () {
             "   │\n" +
             "   │\n" +
             "   │\n" +
-            "   └──>"
+            "   └──▷"
         );
     });
 
@@ -30,7 +30,7 @@ describe('arrow', function () {
         expect(
             expect.createOutput('text').arrow({ width: 4, height: 5, direction: 'up' }).toString(),
             'to equal',
-            "┌──>\n" +
+            "┌──▷\n" +
             "│\n" +
             "│\n" +
             "│\n" +
