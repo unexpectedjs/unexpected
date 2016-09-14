@@ -6042,6 +6042,10 @@ module.exports = function arrayChanges(actual, expected, equal, similar, include
         };
     }
 
+    equal = equal || function (a, b) {
+        return a === b;
+    };
+
     similar = similar || function (a, b) {
         return false;
     };
@@ -6050,16 +6054,22 @@ module.exports = function arrayChanges(actual, expected, equal, similar, include
         return equal(a, b, aIndex, bIndex) || similar(a, b, aIndex, bIndex);
     });
 
-    var removeTable = [];
     function offsetIndex(index) {
-        return index + (removeTable[index - 1] || 0);
+        var offsetIndex = 0;
+        var i;
+        for (i = 0; i < mutatedArray.length && offsetIndex < index; i += 1) {
+            if (mutatedArray[i].type !== 'remove') {
+                offsetIndex++;
+            }
+        }
+
+        return i;
     }
 
     var removes = itemsDiff.filter(function (diffItem) {
         return diffItem.type === 'remove';
     });
 
-    var removesByIndex = {};
     var removedItems = 0;
     removes.forEach(function (diffItem) {
         var removeIndex = removedItems + diffItem.index;
@@ -6067,26 +6077,15 @@ module.exports = function arrayChanges(actual, expected, equal, similar, include
             v.type = 'remove';
         });
         removedItems += diffItem.howMany;
-        removesByIndex[diffItem.index] = removedItems;
     });
-
-    function updateRemoveTable() {
-        removedItems = 0;
-        Array.prototype.forEach.call(actual, function (_, index) {
-            removedItems += removesByIndex[index] || 0;
-            removeTable[index] = removedItems;
-        });
-    }
-
-    updateRemoveTable();
 
     var moves = itemsDiff.filter(function (diffItem) {
         return diffItem.type === 'move';
     });
 
-    var movedItems = 0;
+
     moves.forEach(function (diffItem) {
-        var moveFromIndex = offsetIndex(diffItem.from);
+        var moveFromIndex = offsetIndex(diffItem.from + 1) - 1;
         var removed = mutatedArray.slice(moveFromIndex, diffItem.howMany + moveFromIndex);
         var added = removed.map(function (v) {
             return extend({}, v, { last: false, type: 'insert' });
@@ -6094,11 +6093,10 @@ module.exports = function arrayChanges(actual, expected, equal, similar, include
         removed.forEach(function (v) {
             v.type = 'remove';
         });
-        Array.prototype.splice.apply(mutatedArray, [offsetIndex(diffItem.to), 0].concat(added));
-        movedItems += diffItem.howMany;
-        removesByIndex[diffItem.from] = movedItems;
-        updateRemoveTable();
+        var insertIndex = offsetIndex(diffItem.to);
+        Array.prototype.splice.apply(mutatedArray, [insertIndex, 0].concat(added));
     });
+
 
     var inserts = itemsDiff.filter(function (diffItem) {
         return diffItem.type === 'insert';
@@ -6113,7 +6111,8 @@ module.exports = function arrayChanges(actual, expected, equal, similar, include
                 expectedIndex: diffItem.index
             };
         }
-        Array.prototype.splice.apply(mutatedArray, [offsetIndex(diffItem.index), 0].concat(added));
+        var insertIndex = offsetIndex(diffItem.index);
+        Array.prototype.splice.apply(mutatedArray, [insertIndex, 0].concat(added));
     });
 
     var offset = 0;
@@ -6131,7 +6130,8 @@ module.exports = function arrayChanges(actual, expected, equal, similar, include
         return item.type === 'similar' ? conflicts : conflicts + 1;
     }, 0);
 
-    for (var i = 0, c = 0; i < Math.max(actual.length, expected.length) && c <= conflicts; i += 1) {
+    var c, i;
+    for (i = 0, c = 0; i < Math.max(actual.length, expected.length) && c <= conflicts; i += 1) {
         if (
             i >= actual.length || i >= expected.length || (!equal(actual[i], expected[i], i, i) && !similar(actual[i], expected[i], i, i))
         ) {
