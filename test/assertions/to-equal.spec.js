@@ -188,9 +188,9 @@ describe('to equal assertion', function () {
                "               // -bar\n" +
                "               // +baz\n" +
                "  },\n" +
-               "  1, // should be removed\n" +
                "  // missing 42\n" +
                "  // missing { qux: 'qux' }\n" +
+               "  1, // should be removed\n" +
                "  { bar: 'bar' }, // should be removed\n" +
                "  [\n" +
                "    1,\n" +

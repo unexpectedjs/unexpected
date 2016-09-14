@@ -22,7 +22,7 @@
   },
   "main": "./lib/index.js",
   "dependencies": {
-    "array-changes": "1.3.0",
+    "array-changes": "1.3.1",
     "array-changes-async": "2.1.0",
     "detect-indent": "3.0.1",
     "diff": "1.1.0",
