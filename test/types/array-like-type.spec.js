@@ -262,4 +262,70 @@ describe('array-like type', function () {
             "]"
         );
     });
+
+    describe('with a subtype that uses unwrap', function () {
+        function MyWrappedArray(items) {
+            this.items = items || [];
+        }
+
+        var clonedExpect = expect.clone();
+
+        clonedExpect.addType({
+            base: 'array-like',
+            name: 'MyWrappedArray',
+            getKeys: function (myWrappedArray) {
+                return Object.keys(myWrappedArray.items);
+            },
+            prefix: function (output) {
+                return output.jsKeyword('MyWrappedArray').text('[');
+            },
+            identify: function (obj) {
+                return obj instanceof MyWrappedArray;
+            },
+            unwrap: function (myWrappedArray) {
+                return myWrappedArray.items;
+            }
+        });
+
+        it('should inspect an instance correctly', function () {
+            expect(
+                clonedExpect.inspect(new MyWrappedArray(['a', 'b'])).toString(),
+                'to equal',
+                "MyWrappedArray[ 'a', 'b' ]"
+            );
+        });
+
+        it('should diff instances correctly', function () {
+            expect(
+                clonedExpect.diff(new MyWrappedArray(['a', 'b']), new MyWrappedArray(['aa', 'bb'])).diff.toString(),
+                'to equal',
+                "MyWrappedArray[\n" +
+                "  'a', // should equal 'aa'\n" +
+                "       //\n" +
+                "       // -a\n" +
+                "       // +aa\n" +
+                "  'b' // should equal 'bb'\n" +
+                "      //\n" +
+                "      // -b\n" +
+                "      // +bb\n" +
+                "]"
+            );
+        });
+
+        it('should render instances correctly in "to satisfy" diffs', function () {
+            expect(function () {
+                clonedExpect(new MyWrappedArray(['a', 'b']), 'to satisfy', { 0: 'aa' });
+            }, 'to throw',
+                "expected MyWrappedArray[ 'a', 'b' ] to satisfy { 0: 'aa' }\n" +
+                "\n" +
+                "MyWrappedArray[\n" +
+                "  'a', // should equal 'aa'\n" +
+                "       //\n" +
+                "       // -a\n" +
+                "       // +aa\n" +
+                "  'b'\n" +
+                "]"
+            );
+        });
+    });
 });
