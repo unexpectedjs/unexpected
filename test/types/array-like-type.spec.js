@@ -206,6 +206,27 @@ describe('array-like type', function () {
         );
     });
 
+    it('should stop rendering more arrows when there would be more than 3 lanes', function () {
+        expect(function () {
+            expect(['a', 'b', 'c', 'd', 'e', 'f'], 'to equal', ['f', 'c', 'd', 'e', 'a', 'b']);
+        }, 'to error with',
+            "expected [ 'a', 'b', 'c', 'd', 'e', 'f' ] to equal [ 'f', 'c', 'd', 'e', 'a', 'b' ]\n" +
+            "\n" +
+            "[\n" +
+            "        // missing 'f'\n" +
+            "┌─────▷\n" +
+            "│ ┌───▷\n" +
+            "│ │ ┌─▷\n" +
+            "│ │ │   'a',\n" +
+            "│ │ │   'b',\n" +
+            "└─│─│── 'c', // should be moved\n" +
+            "  └─│── 'd', // should be moved\n" +
+            "    └── 'e', // should be moved\n" +
+            "        'f' // should be removed\n" +
+            "]"
+        );
+    });
+
     it('should render multiple moved items with arrows', function () {
         expect(function () {
             expect(['a', 'b', 'c', 'd'], 'to equal', ['d', 'b', 'a', 'c']);
