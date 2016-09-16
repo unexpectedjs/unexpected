@@ -478,7 +478,7 @@ describe('unexpected', function () {
                        "expected [ 4, 3, 1, 2 ] to equal [ 1, 2, 3, 4 ]\n" +
                        "\n" +
                        "[\n" +
-                       "┌─────▷ \n" +
+                       "┌─────▷\n" +
                        "│ ┌───▷\n" +
                        "│ │ ┌─▷\n" +
                        "│ │ │   4,\n" +
@@ -493,7 +493,7 @@ describe('unexpected', function () {
                 }, 'to throw', 'expected [ 4, 1, 2, 3 ] to equal [ 1, 2, 3, 4 ]\n' +
                        "\n" +
                        "[\n" +
-                       "┌─────▷ \n" +
+                       "┌─────▷\n" +
                        "│ ┌───▷\n" +
                        "│ │ ┌─▷\n" +
                        "│ │ │   4,\n" +
@@ -509,7 +509,7 @@ describe('unexpected', function () {
                        "expected [ 1, 2, 3, 0 ] to equal [ 0, 1, 2, 3 ]\n" +
                        "\n" +
                        "[\n" +
-                       "┌─▷ \n" +
+                       "┌─▷\n" +
                        "│   1,\n" +
                        "│   2,\n" +
                        "│   3,\n" +
@@ -522,7 +522,7 @@ describe('unexpected', function () {
                         "expected [ 4, 3, 1, 2 ] to equal [ 3, 4 ]\n" +
                         "\n" +
                         '[\n' +
-                        "┌─▷ \n" +
+                        "┌─▷\n" +
                         "│   4,\n" +
                         "└── 3, // should be moved\n" +
                         "    1, // should be removed\n" +

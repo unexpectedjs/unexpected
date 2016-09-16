@@ -21,7 +21,7 @@ expect(['c', 'a', 'b'], 'when sorted', 'to equal', ['c', 'b', 'a']);
 expected [ 'c', 'a', 'b' ] when sorted to equal [ 'c', 'b', 'a' ]
 
 [
-┌───▷ 
+┌───▷
 │ ┌─▷
 │ │   'a',
 │ └── 'b', // should be moved

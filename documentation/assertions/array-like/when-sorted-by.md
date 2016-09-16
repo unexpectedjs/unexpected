@@ -20,7 +20,7 @@ expected [ 2, 1, 3 ]
 when sorted by function (a, b) { return a - b; } to equal [ 3, 2, 1 ]
 
 [
-┌───▷ 
+┌───▷
 │ ┌─▷
 │ │   1,
 │ └── 2, // should be moved

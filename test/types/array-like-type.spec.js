@@ -191,14 +191,14 @@ describe('array-like type', function () {
         expect([[[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]]], 'to inspect as', '[ [ [...] ] ]');
     });
 
-    it('should a moved item with an arrow', function () {
+    it('should render a moved item with an arrow', function () {
         expect(function () {
             expect(['a', 'b', 'c'], 'to equal', ['c', 'a', 'b']);
         }, 'to error with',
             "expected [ 'a', 'b', 'c' ] to equal [ 'c', 'a', 'b' ]\n" +
             "\n" +
             "[\n" +
-            "┌─▷ \n" +
+            "┌─▷\n" +
             "│   'a',\n" +
             "│   'b',\n" +
             "└── 'c' // should be moved\n" +
@@ -234,7 +234,7 @@ describe('array-like type', function () {
             "expected [ 'a', 'b', 'c', 'd' ] to equal [ 'd', 'b', 'a', 'c' ]\n" +
             "\n" +
             "[\n" +
-            "┌───▷ \n" +
+            "┌───▷\n" +
             "│ ┌─▷\n" +
             "│ │   'a',\n" +
             "│ └── 'b', // should be moved\n" +
@@ -251,7 +251,7 @@ describe('array-like type', function () {
             "expected [ 'a', 'b', 'c', 'd', 'e' ] to equal [ 'c', 'd', 'e', 'a', 'b' ]\n" +
             "\n" +
             "[\n" +
-            "┌─────▷ \n" +
+            "┌─────▷\n" +
             "│ ┌───▷\n" +
             "│ │ ┌─▷\n" +
             "│ │ │   'a',\n" +

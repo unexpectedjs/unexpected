@@ -1581,7 +1581,7 @@ describe('to satisfy assertion', function () {
                     "to satisfy [ 1, 2, 3, bar: 456, baz: 789, quux: false ]\n" +
                     "\n" +
                     "[\n" +
-                    "┌─▷ \n" +
+                    "┌─▷\n" +
                     "│   2,\n" +
                     "│   3,\n" +
                     "└── 1, // should be moved\n" +
