@@ -50,19 +50,19 @@ to equal { one: 1, two: 2, three: 3, four: 4 }
 A diff between two arrays.
 
 ```javascript
-expect([ 0, 1, 2, 4, 5], 'to equal', [ 1, 2, 3, 4]);
+expect([ 0, 2, 1, 4 ], 'to equal', [ 0, 1, 2, 3, 4 ])
 ```
 
 ```output
-expected [ 0, 1, 2, 4, 5 ] to equal [ 1, 2, 3, 4 ]
+expected [ 0, 2, 1, 4 ] to equal [ 0, 1, 2, 3, 4 ]
 
 [
-  0, // should be removed
-  1,
-  2,
-  // missing 3
-  4,
-  5 // should be removed
+    0,
+┌─▷
+│   2,
+│   // missing 3
+└── 1, // should be moved
+    4
 ]
 ```
 
