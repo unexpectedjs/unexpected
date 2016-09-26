@@ -82,9 +82,10 @@ describe('async', function () {
                 '    expected [ 1, 3, 2 ] to equal [ 1, 2, 3 ]\n' +
                 '\n' +
                 '    [\n' +
-                '      1,\n' +
-                '      3, // should equal 2\n' +
-                '      2 // should equal 3\n' +
+                '        1,\n' +
+                '    ┌─▷\n' +
+                '    │   3,\n' +
+                '    └── 2 // should be moved\n' +
                 '    ]'
         );
     }));
@@ -97,9 +98,10 @@ describe('async', function () {
                 '  expected [ 1, 3, 2 ] to equal [ 1, 2, 3 ]\n' +
                 '\n' +
                 '  [\n' +
-                '    1,\n' +
-                '    3, // should equal 2\n' +
-                '    2 // should equal 3\n' +
+                '      1,\n' +
+                '  ┌─▷\n' +
+                '  │   3,\n' +
+                '  └── 2 // should be moved\n' +
                 '  ]'
         );
     }));
@@ -119,9 +121,10 @@ describe('async', function () {
                        '    expected [ 1, 3, 2 ] to equal [ 1, 2, 3 ]\n' +
                        '\n' +
                        '    [\n' +
-                       '      1,\n' +
-                       '      3, // should equal 2\n' +
-                       '      2 // should equal 3\n' +
+                       '        1,\n' +
+                       '    ┌─▷\n' +
+                       '    │   3,\n' +
+                       '    └── 2 // should be moved\n' +
                        '    ]');
 
                 workQueue.onUnhandledRejection = null;

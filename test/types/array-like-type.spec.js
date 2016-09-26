@@ -190,4 +190,76 @@ describe('array-like type', function () {
     it('should inspect as [...] at depth 2+', function () {
         expect([[[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]]], 'to inspect as', '[ [ [...] ] ]');
     });
+
+    it('should render a moved item with an arrow', function () {
+        expect(function () {
+            expect(['a', 'b', 'c'], 'to equal', ['c', 'a', 'b']);
+        }, 'to error with',
+            "expected [ 'a', 'b', 'c' ] to equal [ 'c', 'a', 'b' ]\n" +
+            "\n" +
+            "[\n" +
+            "┌─▷\n" +
+            "│   'a',\n" +
+            "│   'b',\n" +
+            "└── 'c' // should be moved\n" +
+            "]"
+        );
+    });
+
+    it('should stop rendering more arrows when there would be more than 3 lanes', function () {
+        expect(function () {
+            expect(['a', 'b', 'c', 'd', 'e', 'f'], 'to equal', ['f', 'c', 'd', 'e', 'a', 'b']);
+        }, 'to error with',
+            "expected [ 'a', 'b', 'c', 'd', 'e', 'f' ] to equal [ 'f', 'c', 'd', 'e', 'a', 'b' ]\n" +
+            "\n" +
+            "[\n" +
+            "        // missing 'f'\n" +
+            "┌─────▷\n" +
+            "│ ┌───▷\n" +
+            "│ │ ┌─▷\n" +
+            "│ │ │   'a',\n" +
+            "│ │ │   'b',\n" +
+            "└─│─│── 'c', // should be moved\n" +
+            "  └─│── 'd', // should be moved\n" +
+            "    └── 'e', // should be moved\n" +
+            "        'f' // should be removed\n" +
+            "]"
+        );
+    });
+
+    it('should render multiple moved items with arrows', function () {
+        expect(function () {
+            expect(['a', 'b', 'c', 'd'], 'to equal', ['d', 'b', 'a', 'c']);
+        }, 'to error with',
+            "expected [ 'a', 'b', 'c', 'd' ] to equal [ 'd', 'b', 'a', 'c' ]\n" +
+            "\n" +
+            "[\n" +
+            "┌───▷\n" +
+            "│ ┌─▷\n" +
+            "│ │   'a',\n" +
+            "│ └── 'b', // should be moved\n" +
+            "│     'c',\n" +
+            "└──── 'd' // should be moved\n" +
+            "]"
+        );
+    });
+
+    it('should render 3 moved neighbor items', function () {
+        expect(function () {
+            expect(['a', 'b', 'c', 'd', 'e'], 'to equal', ['c', 'd', 'e', 'a', 'b']);
+        }, 'to error with',
+            "expected [ 'a', 'b', 'c', 'd', 'e' ] to equal [ 'c', 'd', 'e', 'a', 'b' ]\n" +
+            "\n" +
+            "[\n" +
+            "┌─────▷\n" +
+            "│ ┌───▷\n" +
+            "│ │ ┌─▷\n" +
+            "│ │ │   'a',\n" +
+            "│ │ │   'b',\n" +
+            "└─│─│── 'c', // should be moved\n" +
+            "  └─│── 'd', // should be moved\n" +
+            "    └── 'e' // should be moved\n" +
+            "]"
+        );
+    });
 });

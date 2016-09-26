@@ -180,27 +180,28 @@ describe('to equal assertion', function () {
                "to equal [ 0, 1, { foo: 'baz' }, 42, { qux: 'qux' }, [ 1, 2, 3 ], 'baz' ]\n" +
                "\n" +
                "[\n" +
-               "  0,\n" +
-               "  // missing 1\n" +
-               "  {\n" +
-               "    foo: 'bar' // should equal 'baz'\n" +
-               "               //\n" +
-               "               // -bar\n" +
-               "               // +baz\n" +
-               "  },\n" +
-               "  // missing 42\n" +
-               "  // missing { qux: 'qux' }\n" +
-               "  1, // should be removed\n" +
-               "  { bar: 'bar' }, // should be removed\n" +
-               "  [\n" +
-               "    1,\n" +
-               "    3, // should equal 2\n" +
-               "    2 // should equal 3\n" +
-               "  ],\n" +
-               "  'bar' // should equal 'baz'\n" +
-               "        //\n" +
-               "        // -bar\n" +
-               "        // +baz\n" +
+               "    0,\n" +
+               "┌─▷\n" +
+               "│   {\n" +
+               "│     foo: 'bar' // should equal 'baz'\n" +
+               "│                //\n" +
+               "│                // -bar\n" +
+               "│                // +baz\n" +
+               "│   },\n" +
+               "│   // missing 42\n" +
+               "│   // missing { qux: 'qux' }\n" +
+               "└── 1, // should be moved\n" +
+               "    { bar: 'bar' }, // should be removed\n" +
+               "    [\n" +
+               "        1,\n" +
+               "    ┌─▷\n" +
+               "    │   3,\n" +
+               "    └── 2 // should be moved\n" +
+               "    ],\n" +
+               "    'bar' // should equal 'baz'\n" +
+               "          //\n" +
+               "          // -bar\n" +
+               "          // +baz\n" +
                "]");
     });
 
