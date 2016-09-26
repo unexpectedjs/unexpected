@@ -60,20 +60,20 @@
     "url": "/api/withError/"
   },
   {
-    "label": "when called with (function)",
-    "url": "/assertions/function/when-called-with/"
+    "label": "to be NaN (number)",
+    "url": "/assertions/number/to-be-NaN/"
   },
   {
     "label": "when decoded as (Buffer)",
     "url": "/assertions/Buffer/when-decoded-as/"
   },
   {
-    "label": "to be fulfilled (Promise)",
-    "url": "/assertions/Promise/to-be-fulfilled/"
-  },
-  {
     "label": "to be rejected (Promise)",
     "url": "/assertions/Promise/to-be-rejected/"
+  },
+  {
+    "label": "to be fulfilled (Promise)",
+    "url": "/assertions/Promise/to-be-fulfilled/"
   },
   {
     "label": "when fulfilled (Promise)",
@@ -160,14 +160,6 @@
     "url": "/assertions/array-like/when-sorted/"
   },
   {
-    "label": "to be false (boolean)",
-    "url": "/assertions/boolean/to-be-false/"
-  },
-  {
-    "label": "to be true (boolean)",
-    "url": "/assertions/boolean/to-be-true/"
-  },
-  {
     "label": "to call the callback with error (function)",
     "url": "/assertions/function/to-call-the-callback-with-error/"
   },
@@ -192,16 +184,16 @@
     "url": "/assertions/function/to-throw/"
   },
   {
-    "label": "to have message (Error)",
-    "url": "/assertions/Error/to-have-message/"
+    "label": "when called with (function)",
+    "url": "/assertions/function/when-called-with/"
   },
   {
     "label": "when called (function)",
     "url": "/assertions/function/when-called/"
   },
   {
-    "label": "to be NaN (number)",
-    "url": "/assertions/number/to-be-NaN/"
+    "label": "to have message (Error)",
+    "url": "/assertions/Error/to-have-message/"
   },
   {
     "label": "to be close to (number)",
@@ -264,16 +256,24 @@
     "url": "/assertions/object/to-have-keys/"
   },
   {
-    "label": "to have properties (object)",
-    "url": "/assertions/object/to-have-properties/"
-  },
-  {
     "label": "to have property (object)",
     "url": "/assertions/object/to-have-property/"
   },
   {
+    "label": "to have properties (object)",
+    "url": "/assertions/object/to-have-properties/"
+  },
+  {
     "label": "to have values satisfying (object)",
     "url": "/assertions/object/to-have-values-satisfying/"
+  },
+  {
+    "label": "to be false (boolean)",
+    "url": "/assertions/boolean/to-be-false/"
+  },
+  {
+    "label": "to be true (boolean)",
+    "url": "/assertions/boolean/to-be-true/"
   },
   {
     "label": "to be empty (string)",
