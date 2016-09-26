@@ -29,9 +29,9 @@ module.exports = function AssertionString(text) {
 },{}],2:[function(require,module,exports){
 var createStandardErrorMessage = require(6);
 var utils = require(19);
-var magicpen = require(42);
+var magicpen = require(45);
 var extend = utils.extend;
-var leven = require(38);
+var leven = require(41);
 var makePromise = require(11);
 var addAdditionalPromiseMethods = require(4);
 var isPendingPromise = require(9);
@@ -2837,59 +2837,68 @@ module.exports = function (expect) {
                             if (subjectType.indent) {
                                 output.indentLines();
                             }
-                            changes.forEach(function (diffItem, index) {
+                            var packing = utils.packArrows(changes); // NOTE: Will have side effects in changes if the packing results in too many arrow lanes
+                            output.arrowsAlongsideChangeOutputs(packing, changes.map(function (diffItem, index) {
                                 var delimiterOutput = subjectType.delimiter(output.clone(), index, indexOfLastNonInsert + 1);
-                                output.nl(index > 0 ? 1 : 0).i().block(function () {
-                                    var type = diffItem.type;
-                                    if (type === 'insert') {
-                                        this.annotationBlock(function () {
-                                            var index = typeof diffItem.actualIndex !== 'undefined' ? diffItem.actualIndex : diffItem.expectedIndex;
-                                            if (expect.findTypeOf(diffItem.value).is('function')) {
-                                                this.error('missing: ')
-                                                    .property(index, output.clone().block(function () {
-                                                        this.omitSubject = undefined;
-                                                        var promise = keyPromises[diffItem.expectedIndex];
-                                                        if (promise.isRejected()) {
-                                                            this.appendErrorMessage(promise.reason());
-                                                        } else {
-                                                            this.appendInspected(diffItem.value);
-                                                        }
-                                                    }), true);
-                                            } else {
-                                                this.error('missing ').property(index, inspect(diffItem.value), true);
-                                            }
-                                        });
-                                    } else {
-                                        this.property(diffItem.actualIndex, output.clone().block(function () {
-                                            if (type === 'remove') {
-                                                this.append(inspect(diffItem.value).amend(delimiterOutput.sp()).error('// should be removed'));
-                                            } else if (type === 'equal') {
-                                                this.append(inspect(diffItem.value).amend(delimiterOutput));
-                                            } else {
-                                                var toSatisfyResult = toSatisfyMatrix[diffItem.actualIndex][diffItem.expectedIndex];
-                                                var valueDiff = toSatisfyResult && toSatisfyResult !== true && toSatisfyResult.getDiff({ output: output.clone() });
-                                                if (valueDiff && valueDiff.inline) {
-                                                    this.append(valueDiff.amend(delimiterOutput));
-                                                } else {
-                                                    this.append(inspect(diffItem.value).amend(delimiterOutput)).sp().annotationBlock(function () {
-                                                        this.omitSubject = diffItem.value;
-                                                        var label = toSatisfyResult.getLabel();
-                                                        if (label) {
-                                                            this.error(label).sp()
-                                                                .block(inspect(diffItem.expected));
-                                                            if (valueDiff) {
-                                                                this.nl(2).append(valueDiff);
+                                var type = diffItem.type;
+                                if (type === 'moveTarget') {
+                                    return output.clone();
+                                } else {
+                                    return output.clone().block(function () {
+                                        if (type === 'moveSource') {
+                                            this.property(diffItem.actualIndex, inspect(diffItem.value), true)
+                                                .amend(delimiterOutput.sp()).error('// should be moved');
+                                        } else if (type === 'insert') {
+                                            this.annotationBlock(function () {
+                                                var index = typeof diffItem.actualIndex !== 'undefined' ? diffItem.actualIndex : diffItem.expectedIndex;
+                                                if (expect.findTypeOf(diffItem.value).is('function')) {
+                                                    this.error('missing: ')
+                                                        .property(index, output.clone().block(function () {
+                                                            this.omitSubject = undefined;
+                                                            var promise = keyPromises[diffItem.expectedIndex];
+                                                            if (promise.isRejected()) {
+                                                                this.appendErrorMessage(promise.reason());
+                                                            } else {
+                                                                this.appendInspected(diffItem.value);
                                                             }
-                                                        } else {
-                                                            this.appendErrorMessage(toSatisfyResult);
-                                                        }
-                                                    });
+                                                        }), true);
+                                                } else {
+                                                    this.error('missing ').property(index, inspect(diffItem.value), true);
                                                 }
-                                            }
-                                        }), true);
-                                    }
-                                });
-                            });
+                                            });
+                                        } else {
+                                            this.property(diffItem.actualIndex, output.clone().block(function () {
+                                                if (type === 'remove') {
+                                                    this.append(inspect(diffItem.value).amend(delimiterOutput.sp()).error('// should be removed'));
+                                                } else if (type === 'equal') {
+                                                    this.append(inspect(diffItem.value).amend(delimiterOutput));
+                                                } else {
+                                                    var toSatisfyResult = toSatisfyMatrix[diffItem.actualIndex][diffItem.expectedIndex];
+                                                    var valueDiff = toSatisfyResult && toSatisfyResult !== true && toSatisfyResult.getDiff({ output: output.clone() });
+                                                    if (valueDiff && valueDiff.inline) {
+                                                        this.append(valueDiff.amend(delimiterOutput));
+                                                    } else {
+                                                        this.append(inspect(diffItem.value).amend(delimiterOutput)).sp().annotationBlock(function () {
+                                                            this.omitSubject = diffItem.value;
+                                                            var label = toSatisfyResult.getLabel();
+                                                            if (label) {
+                                                                this.error(label).sp()
+                                                                    .block(inspect(diffItem.expected));
+                                                                if (valueDiff) {
+                                                                    this.nl(2).append(valueDiff);
+                                                                }
+                                                            } else {
+                                                                this.appendErrorMessage(toSatisfyResult);
+                                                            }
+                                                        });
+                                                    }
+                                                }
+                                            }), true);
+                                        }
+                                    });
+                                }
+                            }));
+
                             if (subjectType.indent) {
                                 output.outdentLines();
                             }
@@ -3750,7 +3759,7 @@ if (typeof window !== 'undefined' && typeof window.location !== 'undefined') {
 }
 module.exports = defaultDepth;
 
-}).call(this,require(51))
+}).call(this,require(54))
 },{}],9:[function(require,module,exports){
 module.exports = function isPendingPromise(obj) {
     return obj && typeof obj.then === 'function' && typeof obj.isPending === 'function' && obj.isPending();
@@ -3778,7 +3787,7 @@ module.exports = function makeDiffResultBackwardsCompatible(diff) {
 };
 
 },{}],11:[function(require,module,exports){
-var Promise = require(54);
+var Promise = require(57);
 var oathbreaker = require(13);
 var throwIfNonUnexpectedError = require(16);
 
@@ -3966,7 +3975,7 @@ module.exports = function notifyPendingPromise(promise) {
 
 },{}],13:[function(require,module,exports){
 var workQueue = require(20);
-var Promise = require(54);
+var Promise = require(57);
 var useFullStackTrace = require(18);
 
 module.exports = function oathbreaker(value) {
@@ -4378,6 +4387,120 @@ module.exports = function (expect) {
             }
         }, this);
     });
+
+    expect.addStyle('arrow', function (options) {
+        options = options || {};
+        var styles = options.styles || [];
+        var i;
+        this.nl(options.top || 0).sp(options.left || 0).text('┌', styles);
+        for (i = 1 ; i < options.width ; i += 1) {
+            this.text(i === options.width - 1 && options.direction === 'up' ? '▷' : '─', styles);
+        }
+        this.nl();
+        for (i = 1 ; i < options.height - 1 ; i += 1) {
+            this.sp(options.left || 0).text('│', styles).nl();
+        }
+        this.sp(options.left || 0).text('└', styles);
+        for (i = 1 ; i < options.width ; i += 1) {
+            this.text(i === options.width - 1 && options.direction === 'down' ? '▷' : '─', styles);
+        }
+    });
+
+    var flattenBlocksInLines = require(49);
+    expect.addStyle('merge', function (pens) {
+        var flattenedPens = pens.map(function (pen) {
+            return flattenBlocksInLines(pen.output);
+        }).reverse();
+        var maxHeight = flattenedPens.reduce(function (maxHeight, pen) {
+            return Math.max(maxHeight, pen.length);
+        }, 0);
+        var blockNumbers = new Array(flattenedPens.length);
+        var blockOffsets = new Array(flattenedPens.length);
+        // As long as there's at least one pen with a line left:
+        for (var lineNumber = 0 ; lineNumber < maxHeight ; lineNumber += 1) {
+            if (lineNumber > 0) {
+                this.nl();
+            }
+            var i;
+            for (i = 0 ; i < blockNumbers.length ; i += 1) {
+                blockNumbers[i] = 0;
+                blockOffsets[i] = 0;
+            }
+            var contentLeft;
+            do {
+                contentLeft = false;
+                var hasOutputChar = false;
+                for (i = 0 ; i < flattenedPens.length ; i += 1) {
+                    var currentLine = flattenedPens[i][lineNumber];
+                    if (currentLine) {
+                        while (currentLine[blockNumbers[i]] && blockOffsets[i] >= currentLine[blockNumbers[i]].args.content.length) {
+                            blockNumbers[i] += 1;
+                            blockOffsets[i] = 0;
+                        }
+                        var currentBlock = currentLine[blockNumbers[i]];
+                        if (currentBlock) {
+                            contentLeft = true;
+                            if (!hasOutputChar) {
+                                var ch = currentBlock.args.content.charAt(blockOffsets[i]);
+                                if (ch !== ' ') {
+                                    this.text(ch, currentBlock.args.styles);
+                                    hasOutputChar = true;
+                                }
+                            }
+                            blockOffsets[i] += 1;
+                        }
+                    }
+                }
+                if (!hasOutputChar && contentLeft) {
+                    this.sp();
+                }
+            } while (contentLeft);
+        }
+    });
+
+    expect.addStyle('arrowsAlongsideChangeOutputs', function (packing, changeOutputs) {
+        if (packing) {
+            var topByChangeNumber = {};
+            var top = 0;
+            changeOutputs.forEach(function (changeOutput, index) {
+                topByChangeNumber[index] = top;
+                top += changeOutput.size().height;
+            });
+            var that = this;
+
+            var arrows = [];
+            packing.forEach(function (columnSet, i, packing) {
+                columnSet.forEach(function (entry) {
+                    arrows.push(that.clone().arrow({
+                        left: i * 2,
+                        top: topByChangeNumber[entry.start],
+                        width: 1 + (packing.length - i) * 2,
+                        height: topByChangeNumber[entry.end] - topByChangeNumber[entry.start] + 1,
+                        direction: entry.direction
+                    }));
+                });
+            });
+
+            if (arrows.length === 1) {
+                this.block(arrows[0]);
+            } else if (arrows.length > 1) {
+                this.block(function () {
+                    this.merge(arrows);
+                });
+            }
+        } else {
+            this.i();
+        }
+
+        this.block(function () {
+            changeOutputs.forEach(function (changeOutput, index) {
+                this.nl(index > 0 ? 1 : 0);
+                if (!changeOutput.isEmpty()) {
+                    this.sp(packing ? 1 : 0).append(changeOutput);
+                }
+            }, this);
+        });
+    });
 };
 
 },{}],16:[function(require,module,exports){
@@ -4397,7 +4520,7 @@ var utils = require(19);
 var isRegExp = utils.isRegExp;
 var leftPad = utils.leftPad;
 var arrayChanges = require(24);
-var leven = require(38);
+var leven = require(41);
 var detectIndent = require(33);
 var defaultDepth = require(8);
 var AssertionString = require(1);
@@ -4952,47 +5075,54 @@ module.exports = function (expect) {
             var indexOfLastNonInsert = changes.reduce(function (previousValue, diffItem, index) {
                 return (diffItem.type === 'insert') ? previousValue : index;
             }, -1);
-            changes.forEach(function (diffItem, index) {
+            var packing = utils.packArrows(changes); // NOTE: Will have side effects in changes if the packing results in too many arrow lanes
+            output.arrowsAlongsideChangeOutputs(packing, changes.map(function (diffItem, index) {
                 var delimiterOutput = type.delimiter(output.clone(), index, indexOfLastNonInsert + 1);
-                output.nl(index > 0 ? 1 : 0).i().block(function () {
-                    var type = diffItem.type;
-                    if (type === 'insert') {
-                        this.annotationBlock(function () {
-                            this.error('missing ').block(function () {
-                                var index = typeof diffItem.actualIndex !== 'undefined' ? diffItem.actualIndex : diffItem.expectedIndex;
-                                this.property(index, inspect(diffItem.value), true);
+                if (diffItem.type === 'moveTarget') {
+                    return output.clone();
+                } else {
+                    return output.clone().block(function () {
+                        if (diffItem.type === 'moveSource') {
+                            this.property(diffItem.actualIndex, inspect(diffItem.value), true)
+                                .amend(delimiterOutput.sp()).error('// should be moved');
+                        } else if (diffItem.type === 'insert') {
+                            this.annotationBlock(function () {
+                                this.error('missing ').block(function () {
+                                    var index = typeof diffItem.actualIndex !== 'undefined' ? diffItem.actualIndex : diffItem.expectedIndex;
+                                    this.property(index, inspect(diffItem.value), true);
+                                });
                             });
-                        });
-                    } else if (type === 'remove') {
-                        this.block(function () {
-                            this.property(diffItem.actualIndex, inspect(diffItem.value), true)
-                                .amend(delimiterOutput.sp()).error('// should be removed');
-                        });
-                    } else if (type === 'equal') {
-                        this.block(function () {
-                            this.property(diffItem.actualIndex, inspect(diffItem.value), true)
-                                .amend(delimiterOutput);
-                        });
-                    } else {
-                        this.block(function () {
-                            var valueDiff = diff(diffItem.value, diffItem.expected);
-                            this.property(diffItem.actualIndex, output.clone().block(function () {
-                                if (valueDiff && valueDiff.inline) {
-                                    this.append(valueDiff.amend(delimiterOutput));
-                                } else if (valueDiff) {
-                                    this.append(inspect(diffItem.value).amend(delimiterOutput.sp())).annotationBlock(function () {
-                                        this.shouldEqualError(diffItem.expected, inspect).nl(2).append(valueDiff);
-                                    });
-                                } else {
-                                    this.append(inspect(diffItem.value).amend(delimiterOutput.sp())).annotationBlock(function () {
-                                        this.shouldEqualError(diffItem.expected, inspect);
-                                    });
-                                }
-                            }), true);
-                        });
-                    }
-                });
-            });
+                        } else if (diffItem.type === 'remove') {
+                            this.block(function () {
+                                this.property(diffItem.actualIndex, inspect(diffItem.value), true)
+                                    .amend(delimiterOutput.sp()).error('// should be removed');
+                            });
+                        } else if (diffItem.type === 'equal') {
+                            this.block(function () {
+                                this.property(diffItem.actualIndex, inspect(diffItem.value), true)
+                                    .amend(delimiterOutput);
+                            });
+                        } else {
+                            this.block(function () {
+                                var valueDiff = diff(diffItem.value, diffItem.expected);
+                                this.property(diffItem.actualIndex, output.clone().block(function () {
+                                    if (valueDiff && valueDiff.inline) {
+                                        this.append(valueDiff.amend(delimiterOutput));
+                                    } else if (valueDiff) {
+                                        this.append(inspect(diffItem.value).amend(delimiterOutput.sp())).annotationBlock(function () {
+                                            this.shouldEqualError(diffItem.expected, inspect).nl(2).append(valueDiff);
+                                        });
+                                    } else {
+                                        this.append(inspect(diffItem.value).amend(delimiterOutput.sp())).annotationBlock(function () {
+                                            this.shouldEqualError(diffItem.expected, inspect);
+                                        });
+                                    }
+                                }), true);
+                            });
+                        }
+                    });
+                }
+            }));
 
             if (this.indent) {
                 output.outdentLines();
@@ -5469,7 +5599,7 @@ module.exports = function (expect) {
 },{}],18:[function(require,module,exports){
 (function (process){
 /*global window*/
-var Promise = require(54);
+var Promise = require(57);
 var useFullStackTrace = false;
 if (typeof window !== 'undefined' && typeof window.location !== 'undefined') {
     useFullStackTrace = !!window.location.search.match(/[?&]full-trace=true(?:$|&)/);
@@ -5481,10 +5611,11 @@ if (typeof process !== 'undefined' && process.env && process.env.UNEXPECTED_FULL
 }
 module.exports = useFullStackTrace;
 
-}).call(this,require(51))
+}).call(this,require(54))
 },{}],19:[function(require,module,exports){
 /* eslint-disable no-proto */
 var canSetPrototype = Object.setPrototypeOf || ({ __proto__: [] } instanceof Array);
+var greedyIntervalPacker = require(36);
 
 var setPrototypeOf = Object.setPrototypeOf || function setPrototypeOf(obj, proto) {
     obj.__proto__ = proto;
@@ -5632,11 +5763,52 @@ var utils = module.exports = {
         }, Array.prototype.slice.call(arguments));
     },
 
-    numericalRegExp: /^(?:0|[1-9][0-9]*)$/
+    numericalRegExp: /^(?:0|[1-9][0-9]*)$/,
+
+    packArrows: function (changes) {
+        var moveSourceAndTargetByActualIndex = {};
+        changes.forEach(function (diffItem, index) {
+            if (diffItem.type === 'moveSource') {
+                diffItem.changeIndex = index;
+                (moveSourceAndTargetByActualIndex[diffItem.actualIndex] = moveSourceAndTargetByActualIndex[diffItem.actualIndex] || {}).source = diffItem;
+            } else if (diffItem.type === 'moveTarget') {
+                diffItem.changeIndex = index;
+                (moveSourceAndTargetByActualIndex[diffItem.actualIndex] = moveSourceAndTargetByActualIndex[diffItem.actualIndex] || {}).target = diffItem;
+            }
+        });
+        var moveIndices = Object.keys(moveSourceAndTargetByActualIndex);
+        if (moveIndices.length > 0) {
+            var arrowSpecs = [];
+            moveIndices.sort(function (a, b) {
+                // Order by distance between change indices descending
+                return Math.abs(moveSourceAndTargetByActualIndex[b].source.changeIndex - moveSourceAndTargetByActualIndex[b].target.changeIndex) - Math.abs(moveSourceAndTargetByActualIndex[a].source.changeIndex - moveSourceAndTargetByActualIndex[a].target.changeIndex);
+            }).forEach(function (actualIndex, i, keys) {
+                var moveSourceAndMoveTarget = moveSourceAndTargetByActualIndex[actualIndex];
+                var firstChangeIndex = Math.min(moveSourceAndMoveTarget.source.changeIndex, moveSourceAndMoveTarget.target.changeIndex);
+                var lastChangeIndex = Math.max(moveSourceAndMoveTarget.source.changeIndex, moveSourceAndMoveTarget.target.changeIndex);
+
+                arrowSpecs.push({
+                    start: firstChangeIndex,
+                    end: lastChangeIndex,
+                    direction: moveSourceAndMoveTarget.source.changeIndex < moveSourceAndMoveTarget.target.changeIndex ? 'down' : 'up'
+                });
+            });
+
+            var packing = greedyIntervalPacker(arrowSpecs);
+            while (packing.length > 3) {
+                // The arrow packing takes up too many lanes. Turn the moveSource/moveTarget items into inserts and removes
+                packing.shift().forEach(function (entry) {
+                    changes[entry.direction === 'up' ? entry.start : entry.end].type = 'insert';
+                    changes[entry.direction === 'up' ? entry.end : entry.start].type = 'remove';
+                });
+            }
+            return packing;
+        }
+    }
 };
 
 },{}],20:[function(require,module,exports){
-var Promise = require(54);
+var Promise = require(57);
 
 var workQueue = {
     queue: [],
@@ -5678,8 +5850,8 @@ module.exports = require(2).create()
     .use(require(5));
 
 // Add an inspect method to all the promises we return that will make the REPL, console.log, and util.inspect render it nicely in node.js:
-require(54).prototype.inspect = function () {
-    return module.exports.createOutput(require(42).defaultFormat).appendInspected(this).toString();
+require(57).prototype.inspect = function () {
+    return module.exports.createOutput(require(45).defaultFormat).appendInspected(this).toString();
 };
 
 },{}],22:[function(require,module,exports){
@@ -5789,7 +5961,7 @@ module.exports = function arrayChanges(actual, expected, equal, similar, include
             var offsetIndex = 0;
             var i;
             for (i = 0; i < mutatedArray.length && offsetIndex < index; i += 1) {
-                if (mutatedArray[i].type !== 'remove') {
+                if (mutatedArray[i].type !== 'remove' && mutatedArray[i].type !== 'moveSource') {
                     offsetIndex++;
                 }
             }
@@ -5818,10 +5990,10 @@ module.exports = function arrayChanges(actual, expected, equal, similar, include
             var moveFromIndex = offsetIndex(diffItem.from + 1) - 1;
             var removed = mutatedArray.slice(moveFromIndex, diffItem.howMany + moveFromIndex);
             var added = removed.map(function (v) {
-                return extend({}, v, { last: false, type: 'insert' });
+                return extend({}, v, { last: false, type: 'moveTarget' });
             });
             removed.forEach(function (v) {
-                v.type = 'remove';
+                v.type = 'moveSource';
             });
             var insertIndex = offsetIndex(diffItem.to);
             Array.prototype.splice.apply(mutatedArray, [insertIndex, 0].concat(added));
@@ -5845,7 +6017,7 @@ module.exports = function arrayChanges(actual, expected, equal, similar, include
         var offset = 0;
         mutatedArray.forEach(function (diffItem, index) {
             var type = diffItem.type;
-            if (type === 'remove') {
+            if (type === 'remove' || type === 'moveSource') {
                 offset -= 1;
             } else if (type === 'similar') {
                 diffItem.expected = expected[offset + index];
@@ -5854,7 +6026,7 @@ module.exports = function arrayChanges(actual, expected, equal, similar, include
         });
 
         var conflicts = mutatedArray.reduce(function (conflicts, item) {
-            return item.type === 'similar' ? conflicts : conflicts + 1;
+            return item.type === 'similar' || item.type === 'moveSource' || item.type === 'moveTarget' ? conflicts : conflicts + 1;
         }, 0);
 
         var end = Math.max(actual.length, expected.length);
@@ -6051,7 +6223,7 @@ module.exports = function arrayChanges(actual, expected, equal, similar, include
         var offsetIndex = 0;
         var i;
         for (i = 0; i < mutatedArray.length && offsetIndex < index; i += 1) {
-            if (mutatedArray[i].type !== 'remove') {
+            if (mutatedArray[i].type !== 'remove' && mutatedArray[i].type !== 'moveSource') {
                 offsetIndex++;
             }
         }
@@ -6081,10 +6253,10 @@ module.exports = function arrayChanges(actual, expected, equal, similar, include
         var moveFromIndex = offsetIndex(diffItem.from + 1) - 1;
         var removed = mutatedArray.slice(moveFromIndex, diffItem.howMany + moveFromIndex);
         var added = removed.map(function (v) {
-            return extend({}, v, { last: false, type: 'insert' });
+            return extend({}, v, { last: false, type: 'moveTarget' });
         });
         removed.forEach(function (v) {
-            v.type = 'remove';
+            v.type = 'moveSource';
         });
         var insertIndex = offsetIndex(diffItem.to);
         Array.prototype.splice.apply(mutatedArray, [insertIndex, 0].concat(added));
@@ -6111,7 +6283,7 @@ module.exports = function arrayChanges(actual, expected, equal, similar, include
     var offset = 0;
     mutatedArray.forEach(function (diffItem, index) {
         var type = diffItem.type;
-        if (type === 'remove') {
+        if (type === 'remove' || type === 'moveSource') {
             offset -= 1;
         } else if (type === 'similar') {
             diffItem.expected = expected[offset + index];
@@ -6120,7 +6292,7 @@ module.exports = function arrayChanges(actual, expected, equal, similar, include
     });
 
     var conflicts = mutatedArray.reduce(function (conflicts, item) {
-        return item.type === 'similar' ? conflicts : conflicts + 1;
+        return item.type === 'similar' || item.type === 'moveSource' || item.type === 'moveTarget' ? conflicts : conflicts + 1;
     }, 0);
 
     var c, i;
@@ -6783,8 +6955,8 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
  */
 
 var base64 = require(27)
-var ieee754 = require(35)
-var isArray = require(36)
+var ieee754 = require(38)
+var isArray = require(39)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = Buffer
@@ -8250,7 +8422,7 @@ function diff(c1,c2)
 
 },{}],33:[function(require,module,exports){
 'use strict';
-var repeating = require(52);
+var repeating = require(55);
 
 // detect either spaces or tabs but not both to properly handle tabs
 // for indentation and spaces for alignment
@@ -8761,6 +8933,95 @@ module.exports = function (str) {
 })(this);
 
 },{}],35:[function(require,module,exports){
+module.exports = function (a, b) {
+    var c = b.start - a.start;
+    if (c !== 0) { return c; }
+    return (a.end - a.start) - (b.end - b.start);
+};
+
+},{}],36:[function(require,module,exports){
+var intersectsWithSome = require(37).intersectsWithSome;
+var byDescStartAndLength = require(35);
+
+module.exports = function greedyIntervalPacker(intervals, options) {
+    options = options || {};
+
+    if (!Array.isArray(intervals)) {
+        throw new Error('The interval packer requires an array of objects with start and end properties.');
+    }
+
+    if (intervals.length === 0) {
+        return [];
+    }
+
+    intervals.forEach(function (interval) {
+        if (
+            typeof interval !== 'object' ||
+            typeof interval.start !== 'number' ||
+            typeof interval.end !== 'number' ||
+            interval.end <= interval.start
+        ) {
+            throw new Error('Intervals must be objects with integer properties start and end where start < end.');
+        }
+    });
+
+    intervals = [].concat(intervals).sort(byDescStartAndLength);
+
+    var currentPartition;
+    var partitions = [];
+    var currentPartitionEnd = -Infinity;
+
+    while (intervals.length > 0) {
+        var interval = intervals.pop();
+
+        if (currentPartitionEnd <= interval.start) {
+            currentPartition = [[]];
+            partitions.push(currentPartition);
+        }
+
+        var i = 0;
+
+        while (
+            i < currentPartition.length &&
+            intersectsWithSome(currentPartition[i], interval)
+        ) {
+            i += 1;
+        }
+        (currentPartition[i] = currentPartition[i] || []).push(interval);
+        currentPartitionEnd = Math.max(currentPartitionEnd, interval.end);
+    }
+
+    if (!options.groupPartitions) {
+        return partitions.reduce(function (result, partition) {
+            partition.forEach(function (partitionGroup, i) {
+                result[i] = result[i] || [];
+                Array.prototype.push.apply(result[i], partitionGroup);
+                return result;
+            });
+            return result;
+        }, []);
+    } else {
+        return partitions;
+    }
+};
+
+},{}],37:[function(require,module,exports){
+var intersection = {
+    intersects: function intersects(x, y) {
+        return (x.start < y.end && y.start < x.end) || x.start === y.start;
+    },
+
+    intersectsWithSome: function intersectsWithSome(intervals, interval) {
+        function intersectWithInterval(other) {
+            return intersection.intersects(interval, other);
+        }
+        return intervals.some(intersectWithInterval);
+    }
+};
+
+module.exports = intersection;
+
+},{}],38:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = nBytes * 8 - mLen - 1
@@ -8846,7 +9107,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],36:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 
 /**
  * isArray
@@ -8881,15 +9142,15 @@ module.exports = isArray || function (val) {
   return !! val && '[object Array]' == str.call(val);
 };
 
-},{}],37:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 'use strict';
-var numberIsNan = require(50);
+var numberIsNan = require(53);
 
 module.exports = Number.isFinite || function (val) {
 	return !(typeof val !== 'number' || numberIsNan(val) || val === Infinity || val === -Infinity);
 };
 
-},{}],38:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 /* eslint-disable no-nested-ternary */
 'use strict';
 var arr = [];
@@ -8938,12 +9199,12 @@ module.exports = function (a, b) {
 	return ret;
 };
 
-},{}],39:[function(require,module,exports){
-var utils = require(49);
-var TextSerializer = require(43);
+},{}],42:[function(require,module,exports){
+var utils = require(52);
+var TextSerializer = require(46);
 var colorDiff = require(31);
-var rgbRegexp = require(47);
-var themeMapper = require(48);
+var rgbRegexp = require(50);
+var themeMapper = require(51);
 
 var cacheSize = 0;
 var maxColorCacheSize = 1024;
@@ -9086,11 +9347,11 @@ AnsiSerializer.prototype.text = function (options) {
 
 module.exports = AnsiSerializer;
 
-},{}],40:[function(require,module,exports){
-var cssStyles = require(44);
-var flattenBlocksInLines = require(46);
-var rgbRegexp = require(47);
-var themeMapper = require(48);
+},{}],43:[function(require,module,exports){
+var cssStyles = require(47);
+var flattenBlocksInLines = require(49);
+var rgbRegexp = require(50);
+var themeMapper = require(51);
 
 function ColoredConsoleSerializer(theme) {
     this.theme = theme;
@@ -9172,10 +9433,10 @@ ColoredConsoleSerializer.prototype.raw = function (options) {
 
 module.exports = ColoredConsoleSerializer;
 
-},{}],41:[function(require,module,exports){
-var cssStyles = require(44);
-var rgbRegexp = require(47);
-var themeMapper = require(48);
+},{}],44:[function(require,module,exports){
+var cssStyles = require(47);
+var rgbRegexp = require(50);
+var themeMapper = require(51);
 
 function HtmlSerializer(theme) {
     this.theme = theme;
@@ -9253,14 +9514,14 @@ HtmlSerializer.prototype.raw = function (options) {
 
 module.exports = HtmlSerializer;
 
-},{}],42:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 (function (process){
 /*global window*/
-var utils = require(49);
+var utils = require(52);
 var extend = utils.extend;
-var duplicateText = require(45);
-var rgbRegexp = require(47);
-var cssStyles = require(44);
+var duplicateText = require(48);
+var rgbRegexp = require(50);
+var cssStyles = require(47);
 
 function MagicPen(options) {
     if (!(this instanceof MagicPen)) {
@@ -9288,7 +9549,7 @@ function MagicPen(options) {
     }
 }
 
-if (typeof exports === 'object' && typeof exports.nodeName !== 'string' && require(53)) {
+if (typeof exports === 'object' && typeof exports.nodeName !== 'string' && require(56)) {
     MagicPen.defaultFormat = 'ansi'; // colored console
 } else if (typeof window !== 'undefined' && typeof window.navigator !== 'undefined') {
     if (window._phantom || window.mochaPhantomJS || (window.__karma__ && window.__karma__.config.captureConsole)) {
@@ -9317,10 +9578,10 @@ MagicPen.prototype.newline = MagicPen.prototype.nl = function (count) {
 
 MagicPen.serializers = {};
 [
-    require(43),
-    require(41),
-    require(39),
-    require(40)
+    require(46),
+    require(44),
+    require(42),
+    require(43)
 ].forEach(function (serializer) {
     MagicPen.serializers[serializer.prototype.format] = serializer;
 });
@@ -9950,9 +10211,9 @@ MagicPen.prototype.installTheme = function (formats, theme) {
 
 module.exports = MagicPen;
 
-}).call(this,require(51))
-},{}],43:[function(require,module,exports){
-var flattenBlocksInLines = require(46);
+}).call(this,require(54))
+},{}],46:[function(require,module,exports){
+var flattenBlocksInLines = require(49);
 
 function TextSerializer() {}
 
@@ -9986,7 +10247,7 @@ TextSerializer.prototype.raw = function (options) {
 
 module.exports = TextSerializer;
 
-},{}],44:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 var cssStyles = {
     bold: 'font-weight: bold',
     dim: 'opacity: 0.7',
@@ -10022,7 +10283,7 @@ Object.keys(cssStyles).forEach(function (styleName) {
 
 module.exports = cssStyles;
 
-},{}],45:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 var whitespaceCacheLength = 256;
 var whitespaceCache = [''];
 for (var i = 1; i <= whitespaceCacheLength; i += 1) {
@@ -10058,9 +10319,9 @@ function duplicateText(content, times) {
 
 module.exports = duplicateText;
 
-},{}],46:[function(require,module,exports){
-var utils = require(49);
-var duplicateText = require(45);
+},{}],49:[function(require,module,exports){
+var utils = require(52);
+var duplicateText = require(48);
 
 function createPadding(length) {
     return { style: 'text', args: { content: duplicateText(' ', length), styles: [] } };
@@ -10143,10 +10404,10 @@ function flattenBlocksInLines(lines) {
 
 module.exports = flattenBlocksInLines;
 
-},{}],47:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 module.exports =  /^(?:bg)?#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i;
 
-},{}],48:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 module.exports = function (theme, styles) {
     if (styles.length === 1) {
         var count = 0;
@@ -10171,7 +10432,7 @@ module.exports = function (theme, styles) {
     return styles;
 };
 
-},{}],49:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 var utils = {
     extend: function (target) {
         for (var i = 1; i < arguments.length; i += 1) {
@@ -10280,13 +10541,13 @@ var utils = {
 
 module.exports = utils;
 
-},{}],50:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 'use strict';
 module.exports = Number.isNaN || function (x) {
 	return x !== x;
 };
 
-},{}],51:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -10351,9 +10612,9 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],52:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 'use strict';
-var isFinite = require(37);
+var isFinite = require(40);
 
 module.exports = function (str, n) {
 	if (typeof str !== 'string') {
@@ -10377,7 +10638,7 @@ module.exports = function (str, n) {
 	return ret;
 };
 
-},{}],53:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 (function (process){
 'use strict';
 var argv = process.argv;
@@ -10419,8 +10680,8 @@ module.exports = (function () {
 	return false;
 })();
 
-}).call(this,require(51))
-},{}],54:[function(require,module,exports){
+}).call(this,require(54))
+},{}],57:[function(require,module,exports){
 (function (process,global){
 /* @preserve
  * The MIT License (MIT)
@@ -15280,6 +15541,6 @@ module.exports = ret;
 
 },{"./es5.js":14}]},{},[4])(4)
 });                    ;if (typeof window !== 'undefined' && window !== null) {                               window.P = window.Promise;                                                     } else if (typeof self !== 'undefined' && self !== null) {                             self.P = self.Promise;                                                         }
-}).call(this,require(51),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+}).call(this,require(54),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}]},{},[21])(21)
 });
