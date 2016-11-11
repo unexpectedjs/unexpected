@@ -50,7 +50,7 @@ describe('to have a value satisfying assertion', function () {
                 expect({}, 'to have a value satisfying', 'to be a number');
             },
             'to throw',
-            "expected {} to have a value satisfying 'to be a number'\n" +
+            "expected {} to have a value satisfying to be a number\n" +
             "  expected {} not to equal {}"
         );
     });
@@ -61,7 +61,7 @@ describe('to have a value satisfying assertion', function () {
                 expect([], 'to have a value satisfying', 'to be a number');
             },
             'to throw',
-            "expected [] to have a value satisfying 'to be a number'\n" +
+            "expected [] to have a value satisfying to be a number\n" +
             "  expected [] to be non-empty"
         );
     });

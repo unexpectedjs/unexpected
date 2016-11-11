@@ -30,7 +30,7 @@ describe('to have an item satisfying assertion', function () {
                 expect([], 'to have an item satisfying', 'to be a number');
             },
             'to throw',
-            "expected [] to have an item satisfying 'to be a number'\n" +
+            "expected [] to have an item satisfying to be a number\n" +
             "  expected [] to be non-empty");
     });
 
