@@ -1,5 +1,5 @@
 /*global expect*/
-describe('to be rejected with assertion', function () {
+describe('to be rejected with error satisfying assertion', function () {
     var Promise = typeof weknowhow === 'undefined' ?
         require('rsvp').Promise :
         window.RSVP.Promise;
@@ -9,11 +9,14 @@ describe('to be rejected with assertion', function () {
             setTimeout(function () {
                 reject(new Error('OMG!'));
             }, 0);
-        }), 'to be rejected with', new Error('OMG!'));
+        }), 'to be rejected with error satisfying', new Error('OMG!'));
     });
 
     it('should provide the rejection reason as the fulfillment value', function () {
-        return expect(expect.promise.reject(new Error('foo')), 'to be rejected with', 'foo').then(function (reason) {
+        return expect(
+            expect.promise.reject(new Error('foo')),
+            'to be rejected with error satisfying', 'foo'
+        ).then(function (reason) {
             expect(reason, 'to have message', 'foo');
         });
     });
@@ -23,7 +26,7 @@ describe('to be rejected with assertion', function () {
             setTimeout(function () {
                 reject(new Error('OMG!'));
             }, 0);
-        }), 'to be rejected with', /MG/);
+        }), 'to be rejected with error satisfying', /MG/);
     });
 
     it('should support matching the error message of an UnexpectedError against a regular expression', function () {
@@ -35,7 +38,7 @@ describe('to be rejected with assertion', function () {
                     reject(err);
                 }
             }, 0);
-        }), 'to be rejected with', /to be/);
+        }), 'to be rejected with error satisfying', /to be/);
     });
 
     it('should fail if the promise is rejected with a reason that does not satisfy the argument', function () {
@@ -44,9 +47,9 @@ describe('to be rejected with assertion', function () {
                 setTimeout(function () {
                     reject(new Error('OMG!'));
                 }, 1);
-            }), 'to be rejected with', new Error('foobar')),
+            }), 'to be rejected with error satisfying', new Error('foobar')),
             'to be rejected with',
-            "expected Promise to be rejected with Error('foobar')\n" +
+            "expected Promise to be rejected with error satisfying Error('foobar')\n" +
                 "  expected Error('OMG!') to satisfy Error('foobar')\n" +
                 "\n" +
                 "  Error({\n" +
@@ -58,43 +61,55 @@ describe('to be rejected with assertion', function () {
         );
     });
 
-    describe('when passed a function as the subject', function () {
-        it('should fail if the function returns a promise that is rejected with the wrong reason', function () {
-            expect(function () {
-                return expect(function () {
-                    return expect.promise.reject(new Error('foo'));
-                }, 'to be rejected with', new Error('bar'));
-            }, 'to throw',
-                "expected\n" +
-                "function () {\n" +
-                "  return expect.promise.reject(new Error('foo'));\n" +
-                "}\n" +
-                "to be rejected with Error('bar')\n" +
-                "  expected Promise (rejected) => Error('foo')\n" +
-                "  to be rejected with error satisfying Error('bar')\n" +
-                "    expected Error('foo') to satisfy Error('bar')\n" +
-                "\n" +
-                "    Error({\n" +
-                "      message: 'foo' // should equal 'bar'\n" +
-                "                     //\n" +
-                "                     // -foo\n" +
-                "                     // +bar\n" +
-                "    })"
-            );
+    describe('with the "exhaustively" flag', function () {
+        it('errors if the rejection reason doesn\'t have all the same properties as the value', function () {
+            return expect(function () {
+                var error = new Error('foobar');
+                error.data = { foo: 'bar' };
+                return expect(
+                    expect.promise.reject(error),
+                    'to be rejected with error exhaustively satisfying',
+                    new Error('foobar')
+                );
+            }, 'to error');
         });
 
-        it('should use the stack of the rejection reason when failing', function () {
+        it('errors with the correct error', function () {
+            return expect(
+                function () {
+                    var error = new Error('foobar');
+                    error.data = { foo: 'bar' };
+                    return expect(
+                        expect.promise.reject(error),
+                        'to be rejected with error exhaustively satisfying',
+                        new Error('foobar')
+                    );
+                },
+                'to error with',
+                "expected Promise (rejected) => Error({ message: 'foobar', data: { foo: 'bar' } })\n" +
+                "to be rejected with error exhaustively satisfying Error('foobar')\n" +
+                "  expected Error({ message: 'foobar', data: { foo: 'bar' } })\n" +
+                "  to exhaustively satisfy Error('foobar')\n" +
+                "\n" +
+                "  Error({\n" +
+                "    message: 'foobar',\n" +
+                "    data: { foo: 'bar' } // should be removed\n" +
+                "  })"
+            );
+        });
+    });
+
+    describe('without the "exhaustively" flag', function () {
+        it('does not error if the rejection reason doesn\'t have all the same properties as the value', function () {
             return expect(function () {
-                return expect(function () {
-                    return expect.promise(function () {
-                        (function thisIsImportant() {
-                            throw new Error('argh');
-                        }());
-                    });
-                }, 'to be rejected with', 'foobar');
-            }, 'to error', function (err) {
-                expect(err.stack, 'to match', /thisIsImportant/);
-            });
+                var error = new Error('foobar');
+                error.data = { foo: 'bar' };
+                return expect(
+                    expect.promise.reject(error),
+                    'to be rejected with error satisfying',
+                    new Error('foobar')
+                );
+            }, 'not to error');
         });
     });
 
@@ -111,7 +126,7 @@ describe('to be rejected with assertion', function () {
                             throw new Error('argh');
                         }());
                     });
-                }, 'to be rejected with', 'foobar');
+                }, 'to be rejected with error satisfying', 'foobar');
             }, 'to error', function (err) {
                 expect(err.stack, 'to match', /thisIsImportant/);
             });
