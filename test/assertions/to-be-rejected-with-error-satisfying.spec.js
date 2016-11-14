@@ -113,6 +113,109 @@ describe('to be rejected with error satisfying assertion', function () {
         });
     });
 
+    describe('when passed a function as the subject', function () {
+        it('should fail if the function returns a promise that is rejected with the wrong reason', function () {
+            expect(
+                function () {
+                    return expect(function () {
+                        return expect.promise.reject(new Error('foo'));
+                    }, 'to be rejected with error satisfying', new Error('bar'));
+                },
+                'to throw',
+                "expected\n" +
+                "function () {\n" +
+                "  return expect.promise.reject(new Error('foo'));\n" +
+                "}\n" +
+                "to be rejected with error satisfying Error('bar')\n" +
+                "  expected Promise (rejected) => Error('foo')\n" +
+                "  to be rejected with error satisfying Error('bar')\n" +
+                "    expected Error('foo') to satisfy Error('bar')\n" +
+                "\n" +
+                "    Error({\n" +
+                "      message: 'foo' // should equal 'bar'\n" +
+                "                     //\n" +
+                "                     // -foo\n" +
+                "                     // +bar\n" +
+                "    })"
+            );
+        });
+
+        it('should use the stack of the rejection reason when failing', function () {
+            return expect(function () {
+                return expect(function () {
+                    return expect.promise(function () {
+                        (function thisIsImportant() {
+                            throw new Error('argh');
+                        }());
+                    });
+                }, 'to be rejected with error satisfying', 'foobar');
+            }, 'to error', function (err) {
+                expect(err.stack, 'to match', /thisIsImportant/);
+            });
+        });
+
+        describe('with the "exhaustively" flag', function () {
+            it('errors if the rejection reason doesn\'t have all the same properties as the value', function () {
+                return expect(function () {
+                    return expect(function () {
+                        return expect.promise(function () {
+                            var error = new Error('foobar');
+                            error.data = { foo: 'bar' };
+                            throw error;
+                        });
+                    }, 'to be rejected with error exhaustively satisfying', new Error('foobar'));
+                }, 'to error');
+            });
+
+            it('errors with the correct error', function () {
+                return expect(
+                    function () {
+                        return expect(function () {
+                            return expect.promise(function () {
+                                var error = new Error('foobar');
+                                error.data = { foo: 'bar' };
+                                throw error;
+                            });
+                        }, 'to be rejected with error exhaustively satisfying', new Error('foobar'));
+                    },
+                    'to error with',
+                    "expected\n" +
+                    "function () {\n" +
+                    "  return expect.promise(function () {\n" +
+                    "    var error = new Error('foobar');\n" +
+                    "    error.data = { foo: 'bar' };\n" +
+                    "    throw error;\n" +
+                    "  });\n" +
+                    "}\n" +
+                    "to be rejected with error exhaustively satisfying Error('foobar')\n" +
+                    "  expected Promise (rejected) => Error({ message: 'foobar', data: { foo: 'bar' } })\n" +
+                    "  to be rejected with error exhaustively satisfying Error('foobar')\n" +
+                    "    expected Error({ message: 'foobar', data: { foo: 'bar' } })\n" +
+                    "    to exhaustively satisfy Error('foobar')\n" +
+                    "\n" +
+                    "    Error({\n" +
+                    "      message: 'foobar',\n" +
+                    "      data: { foo: 'bar' } // should be removed\n" +
+                    "    })"
+                );
+            });
+        });
+
+        describe('without the "exhaustively" flag', function () {
+            it('does not error if the rejection reason doesn\'t have all the same properties as the value', function () {
+                return expect(function () {
+                    return expect(function () {
+                        return expect.promise(function () {
+                            var error = new Error('foobar');
+                            error.data = { foo: 'bar' };
+                            throw error;
+                        });
+                    }, 'to be rejected with error satisfying', new Error('foobar'));
+                }, 'not to error');
+            });
+        });
+    });
+
     describe('with another promise library', function () {
         var Promise = typeof weknowhow === 'undefined' ?
             require('rsvp').Promise :
