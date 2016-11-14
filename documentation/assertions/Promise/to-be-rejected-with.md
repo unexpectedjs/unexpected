@@ -1,0 +1,51 @@
+You can assert the promise is rejected with a specific reason (error) by
+passing a second parameter:
+
+```javascript#async:true
+var promiseThatWillBeRejectedWithAReason = expect.promise(function (resolve, reject) {
+    setTimeout(function () {
+        reject(new Error('Oh dear'));
+    }, 10);
+});
+
+return expect(promiseThatWillBeRejectedWithAReason, 'to be rejected with', new Error('Oh dear'));
+```
+
+The expected reason will be matched against the rejection reason with
+[to satisfy](/assertions/any/to-satisfy/) semantics, so you can also pass a string,
+a regular expression, a function, or an object:
+
+
+```javascript#async:true
+var promiseThatWillBeRejectedWithAReason = expect.promise(function (resolve, reject) {
+    setTimeout(function () {
+        reject(new Error('Oh dear'));
+    }, 10);
+});
+
+return expect(promiseThatWillBeRejectedWithAReason, 'to be rejected with', /dear/);
+```
+
+You get a nice diff if the assertion fails:
+
+```javascript#async:true
+var promiseThatWillBeRejectedWithAReason = expect.promise(function (resolve, reject) {
+    setTimeout(function () {
+        reject(new Error('Oh dear'));
+    }, 10);
+});
+
+return expect(promiseThatWillBeRejectedWithAReason, 'to be rejected with', new Error('bugger'));
+```
+
+```output
+expected Promise (rejected) => Error('Oh dear') to be rejected with Error('bugger')
+  expected Error('Oh dear') to satisfy Error('bugger')
+
+  Error({
+    message: 'Oh dear' // should equal 'bugger'
+                       //
+                       // -Oh dear
+                       // +bugger
+  })
+```
