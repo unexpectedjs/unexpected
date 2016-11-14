@@ -52,7 +52,7 @@ describe('to be fulfilled with assertion', function () {
                 "  return expect.promise.resolve(123);\n" +
                 "}\n" +
                 "to be fulfilled with 456\n" +
-                "  expected Promise (fulfilled) => 123 to be fulfilled with a value satisfying 456\n" +
+                "  expected Promise (fulfilled) => 123 to be fulfilled with value satisfying 456\n" +
                 "    expected 123 to equal 456"
             );
         });
