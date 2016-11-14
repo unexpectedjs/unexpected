@@ -1913,6 +1913,16 @@ module.exports = function (expect) {
         expect(subject instanceof Constructor, '[not] to be truthy');
     });
 
+    expect.addAssertion('<any> [not] to be one of <array>', function (expect, subject, superset) {
+        var found = false;
+
+        for (var i = 0; i < superset.length; i += 1) {
+            found = found || objectIs(subject, superset[i]);
+        }
+
+        if (found === expect.flags.not) { expect.fail(); }
+    });
+
     // Alias for common '[not] to be (a|an)' assertions
     expect.addAssertion('<any> [not] to be an (object|array)', function (expect, subject) {
         expect(subject, '[not] to be an', expect.alternations[0]);
@@ -4536,6 +4546,7 @@ module.exports = function (expect) {
             output.append(this.prefix(output.clone(), value));
             output.append(inspect(this.unwrap(value), depth));
             output.append(this.suffix(output.clone(), value));
+            return output;
         },
         diff: function (actual, expected, output, diff, inspect) {
             output.inline = true;
@@ -4571,7 +4582,7 @@ module.exports = function (expect) {
                 return typeof obj === 'symbol';
             },
             inspect: function (obj, depth, output, inspect) {
-                output
+                return output
                     .jsKeyword('Symbol')
                     .text('(')
                     .singleQuotedString(obj.toString().replace(/^Symbol\(|\)$/g, ''))
@@ -4790,7 +4801,7 @@ module.exports = function (expect) {
                     .append(itemsOutput)
                     .sp(suffixOutput.isEmpty() ? 0 : 1);
             }
-            output.append(suffixOutput);
+            return output.append(suffixOutput);
         },
         diff: function (actual, expected, output, diff, inspect, equal) {
             if (actual.constructor !== expected.constructor) {
@@ -4909,7 +4920,7 @@ module.exports = function (expect) {
             return value && value._unexpectedType;
         },
         inspect: function (value, depth, output) {
-            output.text('type: ').jsKeyword(value.name);
+            return output.text('type: ').jsKeyword(value.name);
         }
     });
 
@@ -5028,7 +5039,7 @@ module.exports = function (expect) {
                     output.nl();
                 }
 
-                output.append(suffixOutput);
+                return output.append(suffixOutput);
             } else {
                 output
                     .append(prefixOutput)
@@ -5040,7 +5051,7 @@ module.exports = function (expect) {
                         output.sp();
                     }
                 });
-                output
+                return output
                     .sp(suffixOutput.isEmpty() ? 0 : 1)
                     .append(suffixOutput);
             }
@@ -5129,11 +5140,9 @@ module.exports = function (expect) {
             }
 
             var suffixOutput = this.suffix(output.clone(), actual);
-            output
+            return output
                 .nl(suffixOutput.isEmpty() ? 0 : 1)
                 .append(suffixOutput);
-
-            return output;
         }
     });
 
@@ -5198,7 +5207,7 @@ module.exports = function (expect) {
             } else {
                 output.append(inspect(this.unwrap(value), depth));
             }
-            output.text(')');
+            return output.text(')');
         },
         diff: function (actual, expected, output, diff) {
             if (actual.constructor !== expected.constructor) {
@@ -5240,7 +5249,7 @@ module.exports = function (expect) {
             } else {
                 output.append(errorMessage);
             }
-            output.text(')');
+            return output.text(')');
         }
     });
 
@@ -5264,7 +5273,7 @@ module.exports = function (expect) {
                 dateStr = dateStr.replace(' GMT', '.' + millisecondsStr + ' GMT');
             }
 
-            output.jsKeyword('new').sp().text('Date(').append(inspect(dateStr).text(')'));
+            return output.jsKeyword('new').sp().text('Date(').append(inspect(dateStr).text(')'));
         }
     });
 
@@ -5312,7 +5321,7 @@ module.exports = function (expect) {
                 args = ' /*...*/ ';
                 body = ' /*...*/ ';
             }
-            output.code('function ' + name + '(' + args + ') {' + body + '}', 'javascript');
+            return output.code('function ' + name + '(' + args + ') {' + body + '}', 'javascript');
         }
     });
 
@@ -5347,7 +5356,7 @@ module.exports = function (expect) {
                 orBranch = false;
             });
 
-            output.amend(')');
+            return output.amend(')');
         }
     });
 
@@ -5376,6 +5385,7 @@ module.exports = function (expect) {
                     output.sp().text('=>').sp().append(inspect(promise.reason()));
                 }
             }
+            return output;
         }
     });
 
@@ -5392,7 +5402,7 @@ module.exports = function (expect) {
             );
         },
         inspect: function (regExp, depth, output) {
-            output.jsRegexp(regExp);
+            return output.jsRegexp(regExp);
         },
         diff: function (actual, expected, output, diff, inspect) {
             output.inline = false;
@@ -5470,6 +5480,7 @@ module.exports = function (expect) {
             }
             output.code(codeStr, 'javascript');
             this.suffix(output, obj);
+            return output;
         },
         diffLimit: 512,
         diff: function (actual, expected, output, diff, inspect) {
@@ -5518,7 +5529,7 @@ module.exports = function (expect) {
             return typeof value === 'string';
         },
         inspect: function (value, depth, output) {
-            output.singleQuotedString(value);
+            return output.singleQuotedString(value);
         },
         diffLimit: 4096,
         diff: function (actual, expected, output, diff, inspect) {
@@ -5543,7 +5554,7 @@ module.exports = function (expect) {
             } else {
                 value = String(value);
             }
-            output.jsNumber(String(value));
+            return output.jsNumber(String(value));
         }
     });
 
@@ -5553,7 +5564,7 @@ module.exports = function (expect) {
             return typeof value === 'number' && isNaN(value);
         },
         inspect: function (value, depth, output) {
-            output.jsPrimitive(value);
+            return output.jsPrimitive(value);
         }
     });
 
@@ -5563,7 +5574,7 @@ module.exports = function (expect) {
             return typeof value === 'boolean';
         },
         inspect: function (value, depth, output) {
-            output.jsPrimitive(value);
+            return output.jsPrimitive(value);
         }
     });
 
@@ -5573,7 +5584,7 @@ module.exports = function (expect) {
             return typeof value === 'undefined';
         },
         inspect: function (value, depth, output) {
-            output.jsPrimitive(value);
+            return output.jsPrimitive(value);
         }
     });
 
@@ -5583,7 +5594,7 @@ module.exports = function (expect) {
             return value === null;
         },
         inspect: function (value, depth, output) {
-            output.jsPrimitive(value);
+            return output.jsPrimitive(value);
         }
     });
 
