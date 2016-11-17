@@ -6,7 +6,17 @@ describe('to have values satisfying assertion', function () {
         }, 'to throw',
                "expected [ 1, 2, 3 ] to have values satisfying\n" +
                "  No matching assertion, did you mean:\n" +
-               "  <object> to have values [exhaustively] satisfying <any+>\n" +
+               "  <object> to have values [exhaustively] satisfying <any>\n" +
+               "  <object> to have values [exhaustively] satisfying <assertion>");
+    });
+
+    it('does not accept a fourth argument', function () {
+        expect(function () {
+            expect([1], 'to have values satisfying', 1, 2);
+        }, 'to throw',
+               "expected [ 1 ] to have values satisfying 1, 2\n" +
+               "  No matching assertion, did you mean:\n" +
+               "  <object> to have values [exhaustively] satisfying <any>\n" +
                "  <object> to have values [exhaustively] satisfying <assertion>");
     });
 
@@ -16,7 +26,7 @@ describe('to have values satisfying assertion', function () {
         }, 'to throw',
                "expected 42 to have values satisfying function (value) {}\n" +
                "  No matching assertion, did you mean:\n" +
-               "  <object> to have values [exhaustively] satisfying <any+>\n" +
+               "  <object> to have values [exhaustively] satisfying <any>\n" +
                "  <object> to have values [exhaustively] satisfying <assertion>");
     });
 
