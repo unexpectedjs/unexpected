@@ -53,6 +53,14 @@ describe('to have keys satisfying assertion', function () {
                "  expected {} not to equal {}");
     });
 
+    it('fails for an empty array', function () {
+        expect(function () {
+            expect([], 'to have keys satisfying', 123);
+        }, 'to throw',
+            "expected [] to have keys satisfying 123\n" +
+            "  expected [] not to equal []");
+    });
+
     it('should work with non-enumerable keys returned by the getKeys function of the subject type', function () {
         expect(function () {
             expect(new Error('foo'), 'to have keys satisfying', /bar/);
