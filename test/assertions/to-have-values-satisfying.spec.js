@@ -47,6 +47,14 @@ describe('to have values satisfying assertion', function () {
                "  expected {} not to equal {}");
     });
 
+    it('fails for an empty array', function () {
+        expect(function () {
+            expect([], 'to have values satisfying', 123);
+        }, 'to throw',
+            "expected [] to have values satisfying 123\n" +
+            "  expected [] not to equal []");
+    });
+
     it('fails if the given array is empty', function () {
         expect(function () {
             expect([], 'to have items satisfying', function (item) {
