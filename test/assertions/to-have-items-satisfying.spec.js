@@ -6,7 +6,17 @@ describe('to have items satisfying assertion', function () {
         }, 'to throw',
                "expected [ 1, 2, 3 ] to have items satisfying\n" +
                "  No matching assertion, did you mean:\n" +
-               "  <array-like> to have items [exhaustively] satisfying <any+>\n" +
+               "  <array-like> to have items [exhaustively] satisfying <any>\n" +
+               "  <array-like> to have items [exhaustively] satisfying <assertion>");
+    });
+
+    it('does not accept a fourth argument', function () {
+        expect(function () {
+            expect([1], 'to have items satisfying', 1, 2);
+        }, 'to throw',
+               "expected [ 1 ] to have items satisfying 1, 2\n" +
+               "  No matching assertion, did you mean:\n" +
+               "  <array-like> to have items [exhaustively] satisfying <any>\n" +
                "  <array-like> to have items [exhaustively] satisfying <assertion>");
     });
 
@@ -16,7 +26,7 @@ describe('to have items satisfying assertion', function () {
         }, 'to throw',
                "expected 42 to have items satisfying function (item) {}\n" +
                "  No matching assertion, did you mean:\n" +
-               "  <array-like> to have items [exhaustively] satisfying <any+>\n" +
+               "  <array-like> to have items [exhaustively] satisfying <any>\n" +
                "  <array-like> to have items [exhaustively] satisfying <assertion>");
     });
 

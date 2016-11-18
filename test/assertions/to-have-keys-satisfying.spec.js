@@ -6,7 +6,17 @@ describe('to have keys satisfying assertion', function () {
         }, 'to throw',
                "expected [ 1, 2, 3 ] to have keys satisfying\n" +
                "  No matching assertion, did you mean:\n" +
-               "  <object> to have keys satisfying <any+>\n" +
+               "  <object> to have keys satisfying <any>\n" +
+               "  <object> to have keys satisfying <assertion>");
+    });
+
+    it('does not accept a fourth argument', function () {
+        expect(function () {
+            expect([1], 'to have keys satisfying', 0, 1);
+        }, 'to throw',
+               "expected [ 1 ] to have keys satisfying 0, 1\n" +
+               "  No matching assertion, did you mean:\n" +
+               "  <object> to have keys satisfying <any>\n" +
                "  <object> to have keys satisfying <assertion>");
     });
 
@@ -16,7 +26,7 @@ describe('to have keys satisfying assertion', function () {
         }, 'to throw',
                "expected 42 to have keys satisfying function (key) {}\n" +
                "  No matching assertion, did you mean:\n" +
-               "  <object> to have keys satisfying <any+>\n" +
+               "  <object> to have keys satisfying <any>\n" +
                "  <object> to have keys satisfying <assertion>");
     });
 
