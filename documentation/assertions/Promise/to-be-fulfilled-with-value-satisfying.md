@@ -1,5 +1,4 @@
-You can assert the promise is fulfilled with a specific value by passing a
-second parameter:
+Asserts that a promise is fulfilled with a specific value:
 
 ```javascript#async:true
 var promiseThatWillBeFulfilledWithAValue = expect.promise(function (resolve, reject) {
@@ -18,8 +17,8 @@ return expect(
 ```
 
 The expected value will be matched against the value with
-[to satisfy](/assertions/any/to-satisfy/) semantics, so you can also pass a
-string, a regular expression, a function, an object etc as the expected value:
+[to satisfy](/assertions/any/to-satisfy/) semantics, so you can pass any of the
+values supported by `to satisfy`:
 
 ```javascript#async:true
 return expect(

@@ -1,5 +1,4 @@
-You can assert the promise is rejected with a specific reason (error) by
-passing a second parameter:
+Asserts that a promise is rejected with a specific reason (error):
 
 ```javascript#async:true
 var promiseThatWillBeRejectedWithAReason = expect.promise(function (resolve, reject) {
@@ -12,8 +11,8 @@ return expect(promiseThatWillBeRejectedWithAReason, 'to be rejected with', new E
 ```
 
 The expected reason will be matched against the rejection reason with
-[to satisfy](/assertions/any/to-satisfy/) semantics, so you can also pass a string,
-a regular expression, a function, or an object:
+[to satisfy](/assertions/any/to-satisfy/) semantics, so you can pass any of the
+values supported by `to satisfy`:
 
 
 ```javascript#async:true
