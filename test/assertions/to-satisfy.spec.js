@@ -747,19 +747,46 @@ describe('to satisfy assertion', function () {
                 expect(new Error('foo'), 'to exhaustively satisfy', { message: 'foo' });
             });
 
-            it('should fail with a diff', function () {
-                var err = new Error('foo');
-                err.bar = 123;
-                expect(function () {
-                    expect(err, 'to exhaustively satisfy', { message: 'foo' });
-                }, 'to throw',
-                       "expected Error({ message: 'foo', bar: 123 })\n" +
-                       "to exhaustively satisfy { message: 'foo' }\n" +
-                       "\n" +
-                       "{\n" +
-                       "  message: 'foo',\n" +
-                       "  bar: 123 // should be removed\n" +
-                       "}");
+            describe('should fail with a diff', function () {
+                it('when satisfying against an object', function () {
+                    var err = new Error('foo');
+                    err.bar = 123;
+                    expect(
+                        function () {
+                            expect(err, 'to exhaustively satisfy', { message: 'foo' });
+                        },
+                        'to throw',
+                        "expected Error({ message: 'foo', bar: 123 })\n" +
+                        "to exhaustively satisfy { message: 'foo' }\n" +
+                        "\n" +
+                        "{\n" +
+                        "  message: 'foo',\n" +
+                        "  bar: 123 // should be removed\n" +
+                        "}"
+                    );
+                });
+
+                it('when satisfying against another Error instance', function () {
+                    var error = new Error('foobar');
+                    error.data = { foo: 'bar' };
+                    expect(
+                        function () {
+                            expect(
+                                error,
+                                'to exhaustively satisfy',
+                                new Error('foobar')
+                            );
+                        },
+                        'to throw',
+                        "expected Error({ message: 'foobar', data: { foo: 'bar' } })\n" +
+                        "to exhaustively satisfy Error('foobar')\n" +
+                        "\n" +
+                        "Error({\n" +
+                        "  message: 'foobar',\n" +
+                        "  data: { foo: 'bar' } // should be removed\n" +
+                        "})"
+                    );
+                });
             });
         });
 
