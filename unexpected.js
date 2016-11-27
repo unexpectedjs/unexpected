@@ -2487,13 +2487,17 @@ module.exports = function (expect) {
     });
 
     expect.addAssertion([
-        '<object> to have values [exhaustively] satisfying <any+>',
+        '<object> to have values [exhaustively] satisfying <any>',
         '<object> to have values [exhaustively] satisfying <assertion>',
-        '<object> to be (a map|a hash|an object) whose values [exhaustively] satisfy <any+>',
+        '<object> to be (a map|a hash|an object) whose values [exhaustively] satisfy <any>',
         '<object> to be (a map|a hash|an object) whose values [exhaustively] satisfy <assertion>'
     ], function (expect, subject, nextArg) {
         expect.errorMode = 'nested';
-        expect(subject, 'not to equal', {});
+        if (expect.subjectType.is('array')) {
+            expect(subject, 'not to equal', []);
+        } else {
+            expect(subject, 'not to equal', {});
+        }
         expect.errorMode = 'bubble';
 
         var keys = expect.subjectType.getKeys(subject);
@@ -2528,9 +2532,9 @@ module.exports = function (expect) {
     });
 
     expect.addAssertion([
-        '<array-like> to have items [exhaustively] satisfying <any+>',
+        '<array-like> to have items [exhaustively] satisfying <any>',
         '<array-like> to have items [exhaustively] satisfying <assertion>',
-        '<array-like> to be an array whose items [exhaustively] satisfy <any+>',
+        '<array-like> to be an array whose items [exhaustively] satisfy <any>',
         '<array-like> to be an array whose items [exhaustively] satisfy <assertion>'
     ], function (expect, subject) { // ...
         var extraArgs = Array.prototype.slice.call(arguments, 2);
@@ -2555,15 +2559,18 @@ module.exports = function (expect) {
     });
 
     expect.addAssertion([
-        '<object> to have keys satisfying <any+>',
+        '<object> to have keys satisfying <any>',
         '<object> to have keys satisfying <assertion>',
-        '<object> to be (a map|a hash|an object) whose (keys|properties) satisfy <any+>',
+        '<object> to be (a map|a hash|an object) whose (keys|properties) satisfy <any>',
         '<object> to be (a map|a hash|an object) whose (keys|properties) satisfy <assertion>'
     ], function (expect, subject) {
         var extraArgs = Array.prototype.slice.call(arguments, 2);
         expect.errorMode = 'nested';
-        expect(subject, 'to be an object');
-        expect(subject, 'not to equal', {});
+        if (expect.subjectType.is('array')) {
+            expect(subject, 'not to equal', []);
+        } else {
+            expect(subject, 'not to equal', {});
+        }
         expect.errorMode = 'default';
 
         var keys = expect.subjectType.getKeys(subject);
@@ -2601,7 +2608,22 @@ module.exports = function (expect) {
 
     expect.addAssertion('<Error> to [exhaustively] satisfy <Error>', function (expect, subject, value) {
         expect(subject.constructor, 'to be', value.constructor);
-        expect(subject, 'to have properties', expect.argTypes[0].unwrap(value));
+
+        var unwrappedValue = expect.argTypes[0].unwrap(value);
+        return expect.withError(function () {
+            return expect(subject, 'to [exhaustively] satisfy', unwrappedValue);
+        }, function (e) {
+            expect.fail({
+                diff: function (output, diff) {
+                    output.inline = false;
+                    var unwrappedSubject = expect.subjectType.unwrap(subject);
+                    return utils.wrapConstructorNameAroundOutput(
+                        diff(unwrappedSubject, unwrappedValue),
+                        subject
+                    );
+                }
+            });
+        });
     });
 
     expect.addAssertion('<Error> to [exhaustively] satisfy <object>', function (expect, subject, value) {
@@ -3229,14 +3251,17 @@ module.exports = function (expect) {
         }), 'to be rejected');
     });
 
-    expect.addAssertion('<Promise> to be rejected with <any>', function (expect, subject, value) {
+    expect.addAssertion([
+        '<Promise> to be rejected with <any>',
+        '<Promise> to be rejected with error [exhaustively] satisfying <any>'
+    ], function (expect, subject, value) {
         expect.errorMode = 'nested';
         return expect(subject, 'to be rejected').tap(function (err) {
             return expect.withError(function () {
                 if (err && err._isUnexpected && (typeof value === 'string' || isRegExp(value))) {
                     return expect(err, 'to have message', value);
                 } else {
-                    return expect(err, 'to satisfy', value);
+                    return expect(err, 'to [exhaustively] satisfy', value);
                 }
             }, function (e) {
                 e.originalError = err;
@@ -3245,11 +3270,14 @@ module.exports = function (expect) {
         });
     });
 
-    expect.addAssertion('<function> to be rejected with <any>', function (expect, subject, value) {
+    expect.addAssertion([
+        '<function> to be rejected with <any>',
+        '<function> to be rejected with error [exhaustively] satisfying <any>'
+    ], function (expect, subject, value) {
         expect.errorMode = 'nested';
         return expect(expect.promise(function () {
             return subject();
-        }), 'to be rejected with', value);
+        }), 'to be rejected with error [exhaustively] satisfying', value);
     });
 
     expect.addAssertion('<Promise> to be fulfilled', function (expect, subject) {
@@ -3276,18 +3304,24 @@ module.exports = function (expect) {
         }), 'to be fulfilled');
     });
 
-    expect.addAssertion('<Promise> to be fulfilled with <any>', function (expect, subject, value) {
+    expect.addAssertion([
+        '<Promise> to be fulfilled with <any>',
+        '<Promise> to be fulfilled with value [exhaustively] satisfying <any>'
+    ], function (expect, subject, value) {
         expect.errorMode = 'nested';
         return expect(subject, 'to be fulfilled').tap(function (fulfillmentValue) {
-            return expect(fulfillmentValue, 'to satisfy', value);
+            return expect(fulfillmentValue, 'to [exhaustively] satisfy', value);
         });
     });
 
-    expect.addAssertion('<function> to be fulfilled with <any>', function (expect, subject, value) {
+    expect.addAssertion([
+        '<function> to be fulfilled with <any>',
+        '<function> to be fulfilled with value [exhaustively] satisfying <any>'
+    ], function (expect, subject, value) {
         expect.errorMode = 'nested';
         return expect(expect.promise(function () {
             return subject();
-        }), 'to be fulfilled with', value);
+        }), 'to be fulfilled with value [exhaustively] satisfying', value);
     });
 
     expect.addAssertion('<Promise> when rejected <assertion>', function (expect, subject, nextAssertion) {
