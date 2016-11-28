@@ -35,7 +35,7 @@ test-jasmine-browser: create-html-runners unexpected.js
 TEST_SOURCES = $(shell find test -name '*.spec.js') $(shell find documentation -name '*.md')
 .PHONY: test
 test: lint
-	@mocha $(TEST_SOURCES)
+	@./node_modules/.bin/mocha $(TEST_SOURCES)
 
 .PHONY: coverage
 coverage:
