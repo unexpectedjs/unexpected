@@ -3,7 +3,7 @@ is rejected.
 
 ```javascript
 function willBeRejected() {
-    return expect.promise(function (resolve, reject) {
+    return new Promise(function (resolve, reject) {
         reject(new Error('The reject message'));
     });
 }
@@ -18,7 +18,7 @@ In case of a failing expectation you get the following output:
 
 ```javascript
 function willNotBeRejected() {
-    return expect.promise(function (resolve, reject) {
+    return new Promise(function (resolve, reject) {
         resolve('Hello world');
     });
 }
@@ -27,7 +27,7 @@ expect(willNotBeRejected, 'to error');
 ```output
 expected
 function willNotBeRejected() {
-  return expect.promise(function (resolve, reject) {
+  return new Promise(function (resolve, reject) {
     resolve('Hello world');
   });
 }
@@ -48,7 +48,7 @@ expect(willBeRejected, 'to error', 'The error message');
 ```output
 expected
 function willBeRejected() {
-  return expect.promise(function (resolve, reject) {
+  return new Promise(function (resolve, reject) {
     reject(new Error('The reject message'));
   });
 }
@@ -75,7 +75,7 @@ expect(willBeRejected, 'to error', /error message/);
 ```output
 expected
 function willBeRejected() {
-  return expect.promise(function (resolve, reject) {
+  return new Promise(function (resolve, reject) {
     reject(new Error('The reject message'));
   });
 }
@@ -98,7 +98,7 @@ expect(willBeRejected, 'not to error');
 ```output
 expected
 function willBeRejected() {
-  return expect.promise(function (resolve, reject) {
+  return new Promise(function (resolve, reject) {
     reject(new Error('The reject message'));
   });
 }
@@ -111,7 +111,7 @@ assertions on the error.
 
 ```javascript#async:true
 function willBeRejectedAsync() {
-    return expect.promise(function (resolve, reject) {
+    return new Promise(function (resolve, reject) {
         setTimeout(function () {
             reject(new Error('async error'));
         }, 1);
@@ -128,7 +128,7 @@ You can even do async assertions in the function that you pass in.
 ```javascript#async:true
 var errorCount = 0;
 function willBeRejectedAsync() {
-    return expect.promise(function (resolve, reject) {
+    return new Promise(function (resolve, reject) {
         setTimeout(function () {
             var error = new Error('async error');
             errorCount += 1;

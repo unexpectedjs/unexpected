@@ -1,7 +1,7 @@
 Asserts that a promise is fulfilled with a specific value:
 
 ```javascript#async:true
-var promiseThatWillBeFulfilledWithAValue = expect.promise(function (resolve, reject) {
+var promiseThatWillBeFulfilledWithAValue = new Promise(function (resolve, reject) {
     setTimeout(function () {
         resolve({
             foo: 'bar'
@@ -22,7 +22,7 @@ values supported by `to satisfy`:
 
 ```javascript#async:true
 return expect(
-    expect.promise.resolve('abc'),
+    Promise.resolve('abc'),
     'to be fulfilled with value satisfying',
     /b/
 );
@@ -32,7 +32,7 @@ You get a nice diff if the assertion fails:
 
 ```javascript#async:true
 return expect(
-    expect.promise.resolve('abc'),
+    Promise.resolve('abc'),
     'to be fulfilled with value satisfying',
     'def'
 );
@@ -51,7 +51,7 @@ You can use the `exhaustively` flag to use strict
 
 ```javascript#async:true
 return expect(
-    expect.promise.resolve({
+    Promise.resolve({
         foo: 'foo',
         bar: 'bar'
     }),
