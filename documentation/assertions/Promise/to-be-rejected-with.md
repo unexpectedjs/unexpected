@@ -38,7 +38,7 @@ return expect(promiseThatWillBeRejectedWithAReason, 'to be rejected with', new E
 ```
 
 ```output
-expected Promise (rejected) => Error('Oh dear') to be rejected with Error('bugger')
+expected Promise to be rejected with Error('bugger')
   expected Error('Oh dear') to satisfy Error('bugger')
 
   Error({

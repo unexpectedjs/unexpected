@@ -21,6 +21,6 @@ return expect(rejectedPromise, 'to be fulfilled');
 ```
 
 ```output
-expected Promise (rejected) => Error('argh') to be fulfilled
-  Promise (rejected) => Error('argh') unexpectedly rejected with Error('argh')
+expected Promise to be fulfilled
+  Promise unexpectedly rejected with Error('argh')
 ```

@@ -25,7 +25,7 @@ return expect(Promise.resolve('abc'), 'to be fulfilled with', 'def');
 ```
 
 ```output
-expected Promise (fulfilled) => 'abc' to be fulfilled with 'def'
+expected Promise to be fulfilled with 'def'
   expected 'abc' to equal 'def'
 
   -abc

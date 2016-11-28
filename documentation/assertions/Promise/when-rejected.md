@@ -23,6 +23,6 @@ return expect(Promise.resolve(123), 'when rejected', 'to have message', 'argh');
 ```
 
 ```output
-expected Promise (fulfilled) => 123 when rejected to have message 'argh'
-  Promise (fulfilled) => 123 unexpectedly fulfilled with 123
+expected Promise when rejected to have message 'argh'
+  Promise unexpectedly fulfilled with 123
 ```

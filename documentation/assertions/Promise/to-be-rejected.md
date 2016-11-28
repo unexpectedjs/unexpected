@@ -19,6 +19,6 @@ return expect(fulfilledPromise, 'to be rejected');
 ```
 
 ```output
-expected Promise (fulfilled) to be rejected
-  Promise (fulfilled) unexpectedly fulfilled
+expected Promise to be rejected
+  Promise unexpectedly fulfilled
 ```

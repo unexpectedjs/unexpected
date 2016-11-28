@@ -29,6 +29,6 @@ return expect(rejectedPromise, 'when fulfilled', 'to equal', 123);
 ```
 
 ```output
-expected Promise (rejected) => Error('argh') when fulfilled to equal 123
-  Promise (rejected) => Error('argh') unexpectedly rejected with Error('argh')
+expected Promise when fulfilled to equal 123
+  Promise unexpectedly rejected with Error('argh')
 ```

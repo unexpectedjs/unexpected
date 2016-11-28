@@ -39,7 +39,7 @@ return expect(
 ```
 
 ```output
-expected Promise (fulfilled) => 'abc' to be fulfilled with value satisfying 'def'
+expected Promise to be fulfilled with value satisfying 'def'
   expected 'abc' to equal 'def'
 
   -abc
@@ -63,8 +63,7 @@ return expect(
 ```
 
 ```output
-expected Promise (fulfilled) => { foo: 'foo', bar: 'bar' }
-to be fulfilled with value exhaustively satisfying { foo: 'foo' }
+expected Promise to be fulfilled with value exhaustively satisfying { foo: 'foo' }
   expected { foo: 'foo', bar: 'bar' } to exhaustively satisfy { foo: 'foo' }
 
   {

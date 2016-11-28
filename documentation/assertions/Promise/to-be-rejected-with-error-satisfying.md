@@ -50,8 +50,7 @@ return expect(
 ```
 
 ```output
-expected Promise (rejected) => Error('Oh dear')
-to be rejected with error satisfying Error('bugger')
+expected Promise to be rejected with error satisfying Error('bugger')
   expected Error('Oh dear') to satisfy Error('bugger')
 
   Error({
@@ -76,8 +75,7 @@ return expect(
 ```
 
 ```output
-expected Promise (rejected) => Error({ message: 'Oh dear', data: { foo: 'bar' } })
-to be rejected with error exhaustively satisfying Error('Oh dear')
+expected Promise to be rejected with error exhaustively satisfying Error('Oh dear')
   expected Error({ message: 'Oh dear', data: { foo: 'bar' } })
   to exhaustively satisfy Error('Oh dear')
 
