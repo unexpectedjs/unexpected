@@ -6,7 +6,7 @@ module.exports = {
     rules: {
         'import/no-extraneous-dependencies': [
             'error', {
-                devDependencies: [ '**/test/**/*.js' ],
+                devDependencies: [ '**/test/**/*.js', '**/bootstrap-unexpected-markdown.js' ],
                 optionalDependencies: false,
                 peerDependencies: false
             }
