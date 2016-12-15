@@ -1,9 +1,5 @@
 /*global expect*/
 describe('to be fulfilled with value satisfying assertion', function () {
-    var Promise = typeof weknowhow === 'undefined' ?
-        require('rsvp').Promise :
-        window.RSVP.Promise;
-
     it('should succeed if the response is resolved with a value satisfying the argument', function () {
         return expect(new Promise(function (resolve, reject) {
             setTimeout(function () {

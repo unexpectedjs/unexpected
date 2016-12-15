@@ -1,9 +1,5 @@
 /*global expect*/
 describe('when rejected adverbial assertion', function () {
-    var Promise = typeof weknowhow === 'undefined' ?
-        require('rsvp').Promise :
-        window.RSVP.Promise;
-
     it('should delegate to the next assertion with the rejection reason', function () {
         return expect(new Promise(function (resolve, reject) {
             setTimeout(function () {
