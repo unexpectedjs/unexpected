@@ -38,7 +38,7 @@ test-jasmine-browser: create-html-runners unexpected.js
 .PHONY: test
 TEST_SOURCES = $(shell find test -name '*.spec.js') $(shell find documentation -name '*.md')
 test: lint
-	@./node_modules/.bin/mocha --harmony-async-await $(TEST_SOURCES)
+	@./node_modules/.bin/mocha $(shell node -pe "/^v7\./.test(process.version) ? '--harmony-async-await' : ''") $(TEST_SOURCES)
 
 .PHONY: coverage
 coverage:
