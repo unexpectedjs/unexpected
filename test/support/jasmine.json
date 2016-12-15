@@ -5,6 +5,7 @@
   ],
   "helpers": [
     "common.js",
+    "promisePolyfill.js",
     "./support/jasmineSetup.js",
     "helpers/**/*.js"
   ]
