@@ -114,4 +114,16 @@ describe('function type', function () {
                '}');
         // jscs:enable
     });
+
+    // We can't complete this test if the runtime doesn't support the async keyword:
+    var asyncFunction;
+    try {
+        asyncFunction = new Function('return async function foo(a) {return a + 1;}')();
+    } catch (e) {}
+
+    if (asyncFunction) {
+        it('should render "async" before an AsyncFunction instance', function () {
+            expect(asyncFunction, 'to inspect as', 'async function foo(a) { return a + 1; }');
+        });
+    }
 });
