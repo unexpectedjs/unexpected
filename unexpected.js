@@ -2564,7 +2564,6 @@ module.exports = function (expect) {
         '<object> to be (a map|a hash|an object) whose (keys|properties) satisfy <any>',
         '<object> to be (a map|a hash|an object) whose (keys|properties) satisfy <assertion>'
     ], function (expect, subject) {
-        var extraArgs = Array.prototype.slice.call(arguments, 2);
         expect.errorMode = 'nested';
         if (expect.subjectType.is('array')) {
             expect(subject, 'not to equal', []);
@@ -2574,7 +2573,62 @@ module.exports = function (expect) {
         expect.errorMode = 'default';
 
         var keys = expect.subjectType.getKeys(subject);
+        var extraArgs = Array.prototype.slice.call(arguments, 2);
         return expect.apply(expect, [keys, 'to have items satisfying'].concat(extraArgs));
+    });
+
+    expect.addAssertion([
+        '<object> to have a value [exhaustively] satisfying <any>',
+        '<object> to have a value [exhaustively] satisfying <assertion>'
+    ], function (expect, subject, nextArg) {
+        expect.errorMode = 'nested';
+        if (expect.subjectType.is('array-like')) {
+            expect(subject, 'to be non-empty');
+        } else {
+            expect(subject, 'not to equal', {});
+        }
+        expect.errorMode = 'bubble';
+
+        var keys = expect.subjectType.getKeys(subject);
+        return expect.promise.any(keys.map(function (key, index) {
+            var expected;
+            if (typeof nextArg === 'string') {
+                expected = function (s) {
+                    return expect.shift(s);
+                };
+            } else if (typeof nextArg === 'function') {
+                expected = function (s) {
+                    return nextArg(s, index);
+                };
+            } else {
+                expected = nextArg;
+            }
+            return expect.promise(function () {
+                return expect(subject[key], 'to [exhaustively] satisfy', expected);
+            });
+        })).catch(function (e) {
+            return expect.fail(function (output) {
+                output.append(expect.standardErrorMessage(output.clone(), { compact: true }));
+            });
+        });
+    });
+
+    expect.addAssertion([
+        '<array-like> to have an item [exhaustively] satisfying <any>',
+        '<array-like> to have an item [exhaustively] satisfying <assertion>'
+    ], function (expect, subject) { // ...
+        expect.errorMode = 'nested';
+        expect(subject, 'to be non-empty');
+        expect.errorMode = 'bubble';
+
+        var extraArgs = Array.prototype.slice.call(arguments, 2);
+        return expect.withError(function () {
+            return expect.apply(expect, [subject, 'to have a value [exhaustively] satisfying'].concat(extraArgs));
+        }, function (err) {
+            expect.fail(function (output) {
+                output.append(expect.standardErrorMessage(output.clone(), { compact: true }));
+            });
+        });
     });
 
     expect.addAssertion('<object> to be canonical', function (expect, subject) {
@@ -5326,11 +5380,13 @@ module.exports = function (expect) {
             var name = utils.getFunctionName(f) || '';
             var args;
             var body;
-            var matchSource = source.match(/^\s*function \w*?\s*\(([^\)]*)\)\s*\{([\s\S]*?( *)?)\}\s*$/);
+            var asyncPrefix = '';
+            var matchSource = source.match(/^\s*(async )?function \w*?\s*\(([^\)]*)\)\s*\{([\s\S]*?( *)?)\}\s*$/);
             if (matchSource) {
-                args = matchSource[1];
-                body = matchSource[2];
-                var bodyIndent = matchSource[3] || '';
+                asyncPrefix = matchSource[1] || '';
+                args = matchSource[2];
+                body = matchSource[3];
+                var bodyIndent = matchSource[4] || '';
                 // Remove leading indentation unless the function is a one-liner or it uses multiline string literals
                 if (/\n/.test(body) && !/\\\n/.test(body)) {
                     body = body.replace(new RegExp('^ {' + bodyIndent.length + '}', 'mg'), '');
@@ -5355,7 +5411,7 @@ module.exports = function (expect) {
                 args = ' /*...*/ ';
                 body = ' /*...*/ ';
             }
-            return output.code('function ' + name + '(' + args + ') {' + body + '}', 'javascript');
+            return output.code(asyncPrefix + 'function ' + name + '(' + args + ') {' + body + '}', 'javascript');
         }
     });
 
