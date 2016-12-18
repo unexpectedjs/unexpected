@@ -86,10 +86,6 @@ describe('to error assertion', function () {
         });
 
         describe('with another promise library', function () {
-            var Promise = typeof weknowhow === 'undefined' ?
-                require('rsvp').Promise :
-                window.RSVP.Promise;
-
             it('should use the stack of the rejection reason when failing', function () {
                 return expect(function () {
                     return expect(function () {
@@ -122,10 +118,6 @@ describe('to error assertion', function () {
         });
 
         describe('with another promise library', function () {
-            var Promise = typeof weknowhow === 'undefined' ?
-                require('rsvp').Promise :
-                window.RSVP.Promise;
-
             it('should use the stack of the rejection reason when failing', function () {
                 return expect(function () {
                     return expect(function () {

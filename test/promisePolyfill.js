@@ -1,3 +1,3 @@
 if (typeof Promise === 'undefined') {
-    Promise = require('rsvp').Promise;
+    Promise = (typeof window !== 'undefined' && window.RSVP.Promise) || require('rsvp').Promise;
 }

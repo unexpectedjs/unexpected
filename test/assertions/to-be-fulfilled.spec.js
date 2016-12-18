@@ -1,9 +1,5 @@
 /*global expect*/
 describe('to be fulfilled assertion', function () {
-    var Promise = typeof weknowhow === 'undefined' ?
-        require('rsvp').Promise :
-        window.RSVP.Promise;
-
     it('should succeed if the response is resolved with any value', function () {
         return expect(new Promise(function (resolve, reject) {
             setTimeout(function () {
@@ -99,10 +95,6 @@ describe('to be fulfilled assertion', function () {
     });
 
     describe('with another promise library', function () {
-        var Promise = typeof weknowhow === 'undefined' ?
-            require('rsvp').Promise :
-            window.RSVP.Promise;
-
         it('should use the stack of the thrown error when failing', function () {
             return expect(function () {
                 return expect(function () {

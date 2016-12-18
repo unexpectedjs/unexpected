@@ -1,9 +1,5 @@
 /*global expect*/
 describe('Promise type', function () {
-    var Promise = typeof weknowhow === 'undefined' ?
-        require('rsvp').Promise :
-        window.RSVP.Promise;
-
     it('should inspect a pending promise', function () {
         var promise = new Promise(function (resolve, reject) {
             setTimeout(resolve, 0);
