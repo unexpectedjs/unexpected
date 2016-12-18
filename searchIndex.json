@@ -92,12 +92,12 @@
     "url": "/assertions/Promise/to-be-rejected/"
   },
   {
-    "label": "when fulfilled (Promise)",
-    "url": "/assertions/Promise/when-fulfilled/"
-  },
-  {
     "label": "when rejected (Promise)",
     "url": "/assertions/Promise/when-rejected/"
+  },
+  {
+    "label": "when fulfilled (Promise)",
+    "url": "/assertions/Promise/when-fulfilled/"
   },
   {
     "label": "to be a (any)",
@@ -158,6 +158,10 @@
   {
     "label": "to contain (array-like)",
     "url": "/assertions/array-like/to-contain/"
+  },
+  {
+    "label": "to have an item satisfying (array-like)",
+    "url": "/assertions/array-like/to-have-an-item-satisfying/"
   },
   {
     "label": "to have items satisfying (array-like)",
@@ -272,6 +276,10 @@
     "url": "/assertions/object/to-be-empty/"
   },
   {
+    "label": "to have a value satisfying (object)",
+    "url": "/assertions/object/to-have-a-value-satisfying/"
+  },
+  {
     "label": "to have key (object)",
     "url": "/assertions/object/to-have-key/"
   },
@@ -308,12 +316,12 @@
     "url": "/assertions/string/to-be-greater-than/"
   },
   {
-    "label": "to be less than (string)",
-    "url": "/assertions/string/to-be-less-than/"
-  },
-  {
     "label": "to be less than or equal to (string)",
     "url": "/assertions/string/to-be-less-than-or-equal-to/"
+  },
+  {
+    "label": "to be less than (string)",
+    "url": "/assertions/string/to-be-less-than/"
   },
   {
     "label": "to be non-empty (string)",
