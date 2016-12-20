@@ -1,9 +1,5 @@
 /*global expect*/
 describe('to be rejected assertion', function () {
-    var Promise = typeof weknowhow === 'undefined' ?
-        require('rsvp').Promise :
-        window.RSVP.Promise;
-
     it('should succeed if the response is rejected for any reason', function () {
         return expect(new Promise(function (resolve, reject) {
             setTimeout(function () {

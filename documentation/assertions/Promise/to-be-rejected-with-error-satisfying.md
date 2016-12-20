@@ -1,7 +1,7 @@
 Asserts that a promise is rejected with a specific reason (error):
 
 ```javascript#async:true
-var promiseThatWillBeRejectedWithAReason = expect.promise(function (resolve, reject) {
+var promiseThatWillBeRejectedWithAReason = new Promise(function (resolve, reject) {
     setTimeout(function () {
         reject(new Error('Oh dear'));
     }, 10);
@@ -20,7 +20,7 @@ values supported by `to satisfy`:
 
 
 ```javascript#async:true
-var promiseThatWillBeRejectedWithAReason = expect.promise(function (resolve, reject) {
+var promiseThatWillBeRejectedWithAReason = new Promise(function (resolve, reject) {
     setTimeout(function () {
         reject(new Error('Oh dear'));
     }, 10);
@@ -36,7 +36,7 @@ return expect(
 You get a nice diff if the assertion fails:
 
 ```javascript#async:true
-var promiseThatWillBeRejectedWithAReason = expect.promise(function (resolve, reject) {
+var promiseThatWillBeRejectedWithAReason = new Promise(function (resolve, reject) {
     setTimeout(function () {
         reject(new Error('Oh dear'));
     }, 10);
@@ -50,8 +50,7 @@ return expect(
 ```
 
 ```output
-expected Promise (rejected) => Error('Oh dear')
-to be rejected with error satisfying Error('bugger')
+expected Promise to be rejected with error satisfying Error('bugger')
   expected Error('Oh dear') to satisfy Error('bugger')
 
   Error({
@@ -69,15 +68,14 @@ You can use the `exhaustively` flag to use strict
 var error = new Error('Oh dear');
 error.data = { foo: 'bar' };
 return expect(
-    expect.promise.reject(error),
+    Promise.reject(error),
     'to be rejected with error exhaustively satisfying',
     new Error('Oh dear')
 );
 ```
 
 ```output
-expected Promise (rejected) => Error({ message: 'Oh dear', data: { foo: 'bar' } })
-to be rejected with error exhaustively satisfying Error('Oh dear')
+expected Promise to be rejected with error exhaustively satisfying Error('Oh dear')
   expected Error({ message: 'Oh dear', data: { foo: 'bar' } })
   to exhaustively satisfy Error('Oh dear')
 

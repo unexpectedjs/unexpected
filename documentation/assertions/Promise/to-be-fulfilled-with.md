@@ -1,7 +1,7 @@
 Asserts that a promise is fulfilled with a specific value:
 
 ```javascript#async:true
-var promiseThatWillBeFulfilledWithAValue = expect.promise(function (resolve, reject) {
+var promiseThatWillBeFulfilledWithAValue = new Promise(function (resolve, reject) {
     setTimeout(function () {
         resolve('abc');
     }, 1);
@@ -15,17 +15,17 @@ The expected value will be matched against the value with
 values supported by `to satisfy`:
 
 ```javascript#async:true
-return expect(expect.promise.resolve('abc'), 'to be fulfilled with', /b/);
+return expect(Promise.resolve('abc'), 'to be fulfilled with', /b/);
 ```
 
 You get a nice diff if the assertion fails:
 
 ```javascript#async:true
-return expect(expect.promise.resolve('abc'), 'to be fulfilled with', 'def');
+return expect(Promise.resolve('abc'), 'to be fulfilled with', 'def');
 ```
 
 ```output
-expected Promise (fulfilled) => 'abc' to be fulfilled with 'def'
+expected Promise to be fulfilled with 'def'
   expected 'abc' to equal 'def'
 
   -abc

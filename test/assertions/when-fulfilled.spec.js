@@ -1,9 +1,5 @@
 /*global expect*/
 describe('when fulfilled adverbial assertion', function () {
-    var Promise = typeof weknowhow === 'undefined' ?
-        require('rsvp').Promise :
-        window.RSVP.Promise;
-
     it('should delegate to the next assertion with the resolved value', function () {
         return expect(new Promise(function (resolve, reject) {
             setTimeout(function () {

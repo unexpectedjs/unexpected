@@ -1,7 +1,7 @@
 Asserts that a promise is rejected with a specific reason (error):
 
 ```javascript#async:true
-var promiseThatWillBeRejectedWithAReason = expect.promise(function (resolve, reject) {
+var promiseThatWillBeRejectedWithAReason = new Promise(function (resolve, reject) {
     setTimeout(function () {
         reject(new Error('Oh dear'));
     }, 10);
@@ -16,7 +16,7 @@ values supported by `to satisfy`:
 
 
 ```javascript#async:true
-var promiseThatWillBeRejectedWithAReason = expect.promise(function (resolve, reject) {
+var promiseThatWillBeRejectedWithAReason = new Promise(function (resolve, reject) {
     setTimeout(function () {
         reject(new Error('Oh dear'));
     }, 10);
@@ -28,7 +28,7 @@ return expect(promiseThatWillBeRejectedWithAReason, 'to be rejected with', /dear
 You get a nice diff if the assertion fails:
 
 ```javascript#async:true
-var promiseThatWillBeRejectedWithAReason = expect.promise(function (resolve, reject) {
+var promiseThatWillBeRejectedWithAReason = new Promise(function (resolve, reject) {
     setTimeout(function () {
         reject(new Error('Oh dear'));
     }, 10);
@@ -38,7 +38,7 @@ return expect(promiseThatWillBeRejectedWithAReason, 'to be rejected with', new E
 ```
 
 ```output
-expected Promise (rejected) => Error('Oh dear') to be rejected with Error('bugger')
+expected Promise to be rejected with Error('bugger')
   expected Error('Oh dear') to satisfy Error('bugger')
 
   Error({
