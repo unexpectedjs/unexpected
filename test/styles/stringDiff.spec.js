@@ -98,6 +98,35 @@ describe('stringDiff', function () {
             );
         });
 
+        it('highlights trailing whitespace in an added line', function () {
+            expect(
+                expect.createOutput('ansi').stringDiff('  \n', ''),
+                'to equal',
+                expect.createOutput('ansi')
+                    .diffRemovedHighlight('  ').nl()
+            );
+        });
+
+        it('highlights trailing whitespace in a removed line', function () {
+            expect(
+                expect.createOutput('ansi').stringDiff('', '  \n'),
+                'to equal',
+                expect.createOutput('ansi')
+                    .diffAddedHighlight('  ').nl()
+            );
+        });
+
+        it('does not highlight trailing whitespace in an unchanged line', function () {
+            expect(
+                expect.createOutput('ansi').stringDiff('foo  \nbar', 'foo  \nquux'),
+                'to equal',
+                expect.createOutput('ansi')
+                    .text('foo  ').nl()
+                    .diffRemovedHighlight('bar').nl()
+                    .diffAddedHighlight('quux')
+            );
+        });
+
         it('should escape an added newline immediately following a replaced chunk', function () {
             expect(
                 expect.createOutput('ansi').stringDiff('aa );', '\n);'),
