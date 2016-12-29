@@ -1,7 +1,6 @@
 /*global expect*/
 describe('to be one of', function () {
     it('asserts booleans can be true or false', function () {
-        //expect(true, 'to be one of', true, false);
         expect(true, 'to be one of', [true, false]);
         expect(NaN, 'to be one of', [NaN]);
 

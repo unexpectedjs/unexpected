@@ -21,5 +21,5 @@ expected 42 to be one of [ 0, 1 ]
 This assertion can be negated using the `not` flag:
 
 ```javascript
-expect(true, 'not to be one of', [ 1, 2 ] );
+expect(true, 'not to be one of', [ 1, 2 ]);
 ```
