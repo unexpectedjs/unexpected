@@ -100,42 +100,6 @@
     "url": "/assertions/Promise/when-rejected/"
   },
   {
-    "label": "to be empty (array-like)",
-    "url": "/assertions/array-like/to-be-empty/"
-  },
-  {
-    "label": "to be non-empty (array-like)",
-    "url": "/assertions/array-like/to-be-non-empty/"
-  },
-  {
-    "label": "to contain (array-like)",
-    "url": "/assertions/array-like/to-contain/"
-  },
-  {
-    "label": "to have an item satisfying (array-like)",
-    "url": "/assertions/array-like/to-have-an-item-satisfying/"
-  },
-  {
-    "label": "to have items satisfying (array-like)",
-    "url": "/assertions/array-like/to-have-items-satisfying/"
-  },
-  {
-    "label": "to have length (array-like)",
-    "url": "/assertions/array-like/to-have-length/"
-  },
-  {
-    "label": "when passed as parameters to (array-like)",
-    "url": "/assertions/array-like/when-passed-as-parameters-to/"
-  },
-  {
-    "label": "when sorted by (array-like)",
-    "url": "/assertions/array-like/when-sorted-by/"
-  },
-  {
-    "label": "when sorted (array-like)",
-    "url": "/assertions/array-like/when-sorted/"
-  },
-  {
     "label": "to be a (any)",
     "url": "/assertions/any/to-be-a/"
   },
@@ -184,6 +148,42 @@
     "url": "/assertions/any/when-passed-as-parameter-to/"
   },
   {
+    "label": "to be empty (array-like)",
+    "url": "/assertions/array-like/to-be-empty/"
+  },
+  {
+    "label": "to be non-empty (array-like)",
+    "url": "/assertions/array-like/to-be-non-empty/"
+  },
+  {
+    "label": "to contain (array-like)",
+    "url": "/assertions/array-like/to-contain/"
+  },
+  {
+    "label": "to have an item satisfying (array-like)",
+    "url": "/assertions/array-like/to-have-an-item-satisfying/"
+  },
+  {
+    "label": "to have items satisfying (array-like)",
+    "url": "/assertions/array-like/to-have-items-satisfying/"
+  },
+  {
+    "label": "to have length (array-like)",
+    "url": "/assertions/array-like/to-have-length/"
+  },
+  {
+    "label": "when passed as parameters to (array-like)",
+    "url": "/assertions/array-like/when-passed-as-parameters-to/"
+  },
+  {
+    "label": "when sorted by (array-like)",
+    "url": "/assertions/array-like/when-sorted-by/"
+  },
+  {
+    "label": "when sorted (array-like)",
+    "url": "/assertions/array-like/when-sorted/"
+  },
+  {
     "label": "to be false (boolean)",
     "url": "/assertions/boolean/to-be-false/"
   },
@@ -222,6 +222,42 @@
   {
     "label": "when called (function)",
     "url": "/assertions/function/when-called/"
+  },
+  {
+    "label": "to be canonical (object)",
+    "url": "/assertions/object/to-be-canonical/"
+  },
+  {
+    "label": "to be empty (object)",
+    "url": "/assertions/object/to-be-empty/"
+  },
+  {
+    "label": "to have a value satisfying (object)",
+    "url": "/assertions/object/to-have-a-value-satisfying/"
+  },
+  {
+    "label": "to have key (object)",
+    "url": "/assertions/object/to-have-key/"
+  },
+  {
+    "label": "to have keys satisfying (object)",
+    "url": "/assertions/object/to-have-keys-satisfying/"
+  },
+  {
+    "label": "to have keys (object)",
+    "url": "/assertions/object/to-have-keys/"
+  },
+  {
+    "label": "to have properties (object)",
+    "url": "/assertions/object/to-have-properties/"
+  },
+  {
+    "label": "to have property (object)",
+    "url": "/assertions/object/to-have-property/"
+  },
+  {
+    "label": "to have values satisfying (object)",
+    "url": "/assertions/object/to-have-values-satisfying/"
   },
   {
     "label": "to be NaN (number)",
@@ -266,42 +302,6 @@
   {
     "label": "to be within (number)",
     "url": "/assertions/number/to-be-within/"
-  },
-  {
-    "label": "to be canonical (object)",
-    "url": "/assertions/object/to-be-canonical/"
-  },
-  {
-    "label": "to be empty (object)",
-    "url": "/assertions/object/to-be-empty/"
-  },
-  {
-    "label": "to have a value satisfying (object)",
-    "url": "/assertions/object/to-have-a-value-satisfying/"
-  },
-  {
-    "label": "to have key (object)",
-    "url": "/assertions/object/to-have-key/"
-  },
-  {
-    "label": "to have keys satisfying (object)",
-    "url": "/assertions/object/to-have-keys-satisfying/"
-  },
-  {
-    "label": "to have keys (object)",
-    "url": "/assertions/object/to-have-keys/"
-  },
-  {
-    "label": "to have properties (object)",
-    "url": "/assertions/object/to-have-properties/"
-  },
-  {
-    "label": "to have property (object)",
-    "url": "/assertions/object/to-have-property/"
-  },
-  {
-    "label": "to have values satisfying (object)",
-    "url": "/assertions/object/to-have-values-satisfying/"
   },
   {
     "label": "to be empty (string)",
