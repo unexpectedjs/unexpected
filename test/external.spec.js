@@ -164,9 +164,11 @@ if (typeof process === 'object') {
                         subject = [subject];
                     }
                     return expect.promise(function (run) {
-                        childProcess.execFile(pathModule.resolve(basePath, 'node_modules', '.bin', 'jest'), subject.map(function (fileName) {
+                        childProcess.execFile(pathModule.resolve(basePath, 'node_modules', '.bin', 'jest'), [
+                            '--config', pathModule.resolve(basePath, 'externaltests', 'jestconfig.json')
+                        ].concat(subject.map(function (fileName) {
                             return pathModule.resolve(__dirname, '..', 'externaltests', fileName + '.spec.js');
-                        }), {
+                        })), {
                             cwd: basePath,
                             env: extend({}, process.env, env || {})
                         }, run(function (err, stdout, stderr) {
