@@ -49,7 +49,6 @@
     "mocha-phantomjs-core": "2.0.1",
     "mocha-slow-reporter": "*",
     "nyc": "6.1.1",
-    "proxyquire": "1.7.4",
     "rsvp": "3.0.18",
     "serve": "*",
     "unexpected-documentation-site-generator": "^4.0.0",
@@ -72,9 +71,6 @@
     ],
     "setupTestFrameworkScriptFile": "<rootDir>/test/common.js",
     "testRegex": "test\\/.*\\.spec\\.js$",
-    "testPathIgnorePatterns": [
-      "test\\/utils.spec.js$"
-    ],
     "transformIgnorePatterns": [
       "/node_modules/",
       "/test/"

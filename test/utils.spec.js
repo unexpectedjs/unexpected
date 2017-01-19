@@ -1,47 +1,47 @@
 /*global expect*/
 describe('utils', function () {
     if (typeof process === 'object') {
-        var proxyquire = require('proxyquire');
         var utils = require('../lib/utils');
         describe('#objectIs', function () {
             describe('without Object.is available', function () {
                 var objectIs = Object.is;
-                before(function () {
+                beforeEach(function () {
                     Object.is = undefined;
                 });
 
-                after(function () {
+                afterEach(function () {
                     Object.is = objectIs;
                 });
 
-                var proxyquiredUtils;
+                var utilsWithoutObjectIsAvailable;
                 beforeEach(function () {
                     // Avoid require's cache:
-                    proxyquiredUtils = proxyquire('../lib/utils', {});
+                    delete require.cache[require.resolve('../lib/utils.js')];
+                    utilsWithoutObjectIsAvailable = require('../lib/utils');
                 });
 
                 it('should say that the number 123 is itself', function () {
-                    expect(proxyquiredUtils.objectIs(123, 123), 'to be true');
+                    expect(utilsWithoutObjectIsAvailable.objectIs(123, 123), 'to be true');
                 });
 
                 it('should say that the NaN is itself', function () {
-                    expect(proxyquiredUtils.objectIs(NaN, NaN), 'to be true');
+                    expect(utilsWithoutObjectIsAvailable.objectIs(NaN, NaN), 'to be true');
                 });
 
                 it('should say that -0 is not 0', function () {
-                    expect(proxyquiredUtils.objectIs(-0, 0), 'to be false');
+                    expect(utilsWithoutObjectIsAvailable.objectIs(-0, 0), 'to be false');
                 });
 
                 it('should say that 0 is not -0', function () {
-                    expect(proxyquiredUtils.objectIs(0, -0), 'to be false');
+                    expect(utilsWithoutObjectIsAvailable.objectIs(0, -0), 'to be false');
                 });
 
                 it('should say that 0 is 0', function () {
-                    expect(proxyquiredUtils.objectIs(0, 0), 'to be true');
+                    expect(utilsWithoutObjectIsAvailable.objectIs(0, 0), 'to be true');
                 });
 
                 it('should say that -0 is -0', function () {
-                    expect(proxyquiredUtils.objectIs(-0, -0), 'to be true');
+                    expect(utilsWithoutObjectIsAvailable.objectIs(-0, -0), 'to be true');
                 });
             });
         });
@@ -57,14 +57,14 @@ describe('utils', function () {
 
             describe('with Function.prototype.toString mocked out', function () {
                 var orig;
-                before(function () {
+                beforeEach(function () {
                     orig = Function.prototype.toString;
                     Function.prototype.toString = function () {
                         return 'function whatever() {}';
                     };
                 });
 
-                after(function () {
+                afterEach(function () {
                     Function.prototype.toString = orig;
                 });
 
