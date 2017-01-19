@@ -45,7 +45,6 @@ describe('UnexpectedError', function () {
                 err.useFullStackTrace = false;
                 err._hasSerializedErrorMessage = false;
                 err.stack =
-                    'UnexpectedError:\n' +
                     'wat\n' +
                     '      at oathbreaker (node_modules/unexpected/lib/oathbreaker.js:46:19)\n' +
                     '      at Function.Unexpected.withError (node_modules/unexpected-sinon/lib/unexpected-sinon.js:123:1)\n' +
@@ -58,7 +57,7 @@ describe('UnexpectedError', function () {
                 err.serializeMessage('text');
 
                 expect(err, 'to satisfy', {
-                    stack: 'UnexpectedError:\n' +
+                    stack:
                         'wat\n' +
                         '      at Context.<anonymous> (test/Insection.spec.js:48:17)\n' +
                         '      set UNEXPECTED_FULL_TRACE=true to see the full stack trace'
@@ -74,7 +73,6 @@ describe('UnexpectedError', function () {
                     err.useFullStackTrace = false;
                     err._hasSerializedErrorMessage = false;
                     err.stack =
-                        'UnexpectedError:\n' +
                         'wat\n' +
                         '      at oathbreaker (node_modules/unexpected/lib/oathbreaker.js:46:19)\n' +
                         '      at Function.Unexpected.withError (node_modules/unexpected-sinon/lib/unexpected-sinon.js:123:1)\n' +
@@ -87,7 +85,7 @@ describe('UnexpectedError', function () {
                     err.serializeMessage('html');
 
                     expect(err, 'to satisfy', {
-                        stack: 'UnexpectedError:\n' +
+                        stack:
                             'wat\n' +
                             '      at Context.<anonymous> (test/Insection.spec.js:48:17)\n' +
                             '      set the query parameter full-trace=true to see the full stack trace'
@@ -105,7 +103,6 @@ describe('UnexpectedError', function () {
                 err.useFullStackTrace = true;
                 err._hasSerializedErrorMessage = false;
                 err.stack =
-                    'UnexpectedError:\n' +
                     'wat\n' +
                     '      at oathbreaker (node_modules/unexpected/lib/oathbreaker.js:46:19)\n' +
                     '      at Function.Unexpected.withError (node_modules/unexpected-sinon/lib/unexpected-sinon.js:123:1)\n' +
@@ -118,7 +115,7 @@ describe('UnexpectedError', function () {
                 err.serializeMessage('text');
 
                 expect(err, 'to satisfy', {
-                    stack: 'UnexpectedError:\n' +
+                    stack:
                         'wat\n' +
                         '      at oathbreaker (node_modules/unexpected/lib/oathbreaker.js:46:19)\n' +
                         '      at Function.Unexpected.withError (node_modules/unexpected-sinon/lib/unexpected-sinon.js:123:1)\n' +
