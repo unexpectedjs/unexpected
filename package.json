@@ -71,6 +71,9 @@
       "<rootDir>/test/promisePolyfill"
     ],
     "setupTestFrameworkScriptFile": "<rootDir>/test/common.js",
-    "testRegex": "\\.spec\\.js$"
+    "testRegex": "test\\/.*\\.spec\\.js$",
+    "testPathIgnorePatterns": [
+      "test\\/external.spec.js"
+    ]
   }
 }
