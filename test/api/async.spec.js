@@ -1,31 +1,28 @@
 /*global expect*/
 describe('async', function () {
     var workQueue = typeof weknowhow === 'undefined' ? require('../../lib/workQueue') : null;
-    var clonedExpect;
-    before(function () {
-        clonedExpect = expect.clone()
-            .addAssertion('to be sorted after delay', function (expect, subject, delay) {
-                expect.errorMode = 'nested';
+    var clonedExpect = expect.clone()
+        .addAssertion('to be sorted after delay', function (expect, subject, delay) {
+            expect.errorMode = 'nested';
 
-                return expect.promise(function (run) {
-                    setTimeout(run(function () {
-                        expect(subject, 'to be an array');
-                        expect(subject, 'to equal', [].concat(subject).sort());
-                    }), delay);
-                });
-            })
-            .addAssertion('to be ordered after delay', function (expect, subject) {
-                expect.errorMode = 'nested';
-                return expect(subject, 'to be sorted after delay', 20);
-            })
-            .addAssertion('im sync', function (expect, subject) {
-                return expect.promise(function (run) {
-                    run(function () {
-                        expect(subject, 'to be', 24);
-                    })();
-                });
+            return expect.promise(function (run) {
+                setTimeout(run(function () {
+                    expect(subject, 'to be an array');
+                    expect(subject, 'to equal', [].concat(subject).sort());
+                }), delay);
             });
-    });
+        })
+        .addAssertion('to be ordered after delay', function (expect, subject) {
+            expect.errorMode = 'nested';
+            return expect(subject, 'to be sorted after delay', 20);
+        })
+        .addAssertion('im sync', function (expect, subject) {
+            return expect.promise(function (run) {
+                run(function () {
+                    expect(subject, 'to be', 24);
+                })();
+            });
+        });
 
 
     it('fails if it is called without a callback', function () {
