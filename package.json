@@ -73,7 +73,6 @@
     "setupTestFrameworkScriptFile": "<rootDir>/test/common.js",
     "testRegex": "test\\/.*\\.spec\\.js$",
     "testPathIgnorePatterns": [
-      "test\\/external.spec.js$",
       "test\\/utils.spec.js$"
     ],
     "transformIgnorePatterns": [

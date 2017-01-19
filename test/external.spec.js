@@ -61,7 +61,7 @@ if (typeof process === 'object') {
 
             it('should render a long stack trace for an async test', function () {
                 return expect('failingAsync', 'executed through mocha').spread(function (err, stdout, stderr) {
-                    expect(err, 'to be an', Error);
+                    expect(err, 'to be truthy');
                     expect(stdout, 'to contain', 'From previous event:');
                 });
             });
@@ -213,7 +213,7 @@ if (typeof process === 'object') {
 
                 it('should render a long stack trace for an async test', function () {
                     return expect('failingAsync', 'executed through jest').spread(function (err, stdout, stderr) {
-                        expect(err, 'to be an', Error);
+                        expect(err, 'to be truthy');
                         expect(stderr, 'to contain', 'From previous event:');
                     });
                 });
