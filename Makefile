@@ -26,6 +26,9 @@ create-html-runners: test/tests.tpl.html test/JasmineRunner.tpl.html
 test-phantomjs: create-html-runners ${TARGETS}
 	phantomjs ./node_modules/mocha-phantomjs-core/mocha-phantomjs-core.js test/tests.html spec "`node -pe 'JSON.stringify({useColors:true,grep:process.env.grep})'`"
 
+test-jest:
+	./node_modules/.bin/jest
+
 test-jasmine: ${TARGETS}
 	./node_modules/.bin/jasmine JASMINE_CONFIG_PATH=test/support/jasmine.json
 
@@ -53,7 +56,7 @@ test-browser: create-html-runners unexpected.js
 travis-chewbacca:
 	./node_modules/.bin/chewbacca --threshold ${CHEWBACCA_THRESHOLD} `echo ${TRAVIS_COMMIT_RANGE} | sed -e 's/\.\.\..*//;'` -- test/benchmark.spec.js
 
-travis: clean lint test travis-chewbacca test-phantomjs test-jasmine coverage site-build
+travis: clean lint test travis-chewbacca test-phantomjs test-jasmine test-jest coverage site-build
 	-<coverage/lcov.info ./node_modules/coveralls/bin/coveralls.js
 
 .PHONY: git-dirty-check
