@@ -1,4 +1,4 @@
-var expect = require('../../');
+var expect = require('../');
 
 expect.addAssertion('<any> when delayed a little bit <assertion?>', function (expect, subject) {
     return expect.promise(function (run) {

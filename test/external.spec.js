@@ -15,7 +15,7 @@ if (typeof process === 'object') {
                 }
                 return expect.promise(function (run) {
                     childProcess.execFile(pathModule.resolve(basePath, 'node_modules', '.bin', 'mocha'), subject.map(function (fileName) {
-                        return pathModule.resolve(__dirname, 'external', fileName + '.externaljs');
+                        return pathModule.resolve(basePath, 'externaltests', fileName + '.spec.js');
                     }), {
                         cwd: basePath,
                         env: extend({}, process.env, env || {})
@@ -121,7 +121,7 @@ if (typeof process === 'object') {
                     childProcess.execFile(pathModule.resolve(__dirname, '..', 'node_modules', '.bin', 'jasmine'), {
                         cwd: basePath,
                         env: extend({}, process.env, {
-                            JASMINE_CONFIG_PATH: 'test/external/' + subject + '.jasmine.json'
+                            JASMINE_CONFIG_PATH: 'externaltests/' + subject + '.jasmine.json'
                         })
                     }, run(function (err, stdout, stderr) {
                         return [err, stdout, stderr];

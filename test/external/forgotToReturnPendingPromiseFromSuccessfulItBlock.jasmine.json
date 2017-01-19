@@ -1,6 +1,0 @@
-{
-  "spec_dir": "test/external",
-  "spec_files": [
-    "forgotToReturnPendingPromiseFromSuccessfulItBlock.externaljs"
-  ]
-}
