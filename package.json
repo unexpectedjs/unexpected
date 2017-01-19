@@ -65,5 +65,12 @@
     "include": [
       "lib/**"
     ]
+  },
+  "jest": {
+    "setupFiles": [
+      "<rootDir>/test/promisePolyfill"
+    ],
+    "setupTestFrameworkScriptFile": "<rootDir>/test/common.js",
+    "testRegex": "\\.spec\\.js$"
   }
 }
