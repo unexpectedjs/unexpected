@@ -1,4 +1,4 @@
-var expect = require('../../');
+var expect = require('../');
 
 it('should fail', function () {
     expect.addAssertion('<any> to foo', function (expect, subject) {

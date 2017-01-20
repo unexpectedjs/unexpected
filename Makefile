@@ -26,6 +26,13 @@ create-html-runners: test/tests.tpl.html test/JasmineRunner.tpl.html
 test-phantomjs: create-html-runners ${TARGETS}
 	phantomjs ./node_modules/mocha-phantomjs-core/mocha-phantomjs-core.js test/tests.html spec "`node -pe 'JSON.stringify({useColors:true,grep:process.env.grep})'`"
 
+test-jest-if-supported-node-version:
+ifeq ($(shell node --version | grep -vP '^v[0123]\.'),)
+	@echo Skipping, jest is unsupported with node $(shell node --version)
+else
+	./node_modules/.bin/jest
+endif
+
 test-jasmine: ${TARGETS}
 	./node_modules/.bin/jasmine JASMINE_CONFIG_PATH=test/support/jasmine.json
 
@@ -53,7 +60,7 @@ test-browser: create-html-runners unexpected.js
 travis-chewbacca:
 	./node_modules/.bin/chewbacca --threshold ${CHEWBACCA_THRESHOLD} `echo ${TRAVIS_COMMIT_RANGE} | sed -e 's/\.\.\..*//;'` -- test/benchmark.spec.js
 
-travis: clean lint test travis-chewbacca test-phantomjs test-jasmine coverage site-build
+travis: clean lint test travis-chewbacca test-phantomjs test-jasmine test-jest-if-supported-node-version coverage site-build
 	-<coverage/lcov.info ./node_modules/coveralls/bin/coveralls.js
 
 .PHONY: git-dirty-check
@@ -75,7 +82,7 @@ commit-unexpected: unexpected.js
 	fi
 
 .PHONY: release-%
-release-%: git-dirty-check lint ${TARGETS} test-phantomjs commit-unexpected deploy-site
+release-%: git-dirty-check lint ${TARGETS} test-phantomjs test-jasmine test-jest-if-supported-node-version commit-unexpected deploy-site
 	./node_modules/.bin/chewbacca --threshold ${CHEWBACCA_THRESHOLD} `git describe --abbrev=0 --tags --match 'v*'` -- test/benchmark.spec.js
 	IS_MAKE_RELEASE=yes npm version $*
 	@echo $* release ready to be publised to NPM

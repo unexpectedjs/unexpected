@@ -43,12 +43,12 @@
     "istanbul": "0.3.16",
     "jasmine": "2.2.1",
     "jasmine-core": "~2.2.0",
+    "jest": "18.1.0",
     "minimist": "1.1.1",
     "mocha": "2.4.5",
     "mocha-phantomjs-core": "2.0.1",
     "mocha-slow-reporter": "*",
     "nyc": "6.1.1",
-    "proxyquire": "1.7.4",
     "rsvp": "3.0.18",
     "serve": "*",
     "unexpected-documentation-site-generator": "^4.0.0",
@@ -63,6 +63,17 @@
   "nyc": {
     "include": [
       "lib/**"
+    ]
+  },
+  "jest": {
+    "setupFiles": [
+      "<rootDir>/test/promisePolyfill"
+    ],
+    "setupTestFrameworkScriptFile": "<rootDir>/test/common.js",
+    "testRegex": "test\\/.*\\.spec\\.js$",
+    "transformIgnorePatterns": [
+      "/node_modules/",
+      "/test/"
     ]
   }
 }
