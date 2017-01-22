@@ -11,9 +11,12 @@ describe('to be infinite assertion', function () {
         expect(function () {
             expect(NaN, 'not to be infinite');
         }, 'to throw',
-               "expected NaN not to be infinite\n" +
-               "  No matching assertion, did you mean:\n" +
-               "  <number> [not] to be infinite");
+            "expected NaN not to be infinite\n" +
+            "  The assertion does not have a matching signature for:\n" +
+            "    <NaN> not to be infinite\n" +
+            "  did you mean:\n" +
+            "    <number> [not] to be infinite"
+        );
     });
 
     it('throws when the assertion fails', function () {

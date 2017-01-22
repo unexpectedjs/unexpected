@@ -130,17 +130,23 @@ describe('to have properties assertion', function () {
         expect(function () {
             expect({a: 'foo', b: 'bar'}, 'to have properties', 'a', 'b');
         }, 'to throw',
-               "expected { a: 'foo', b: 'bar' } to have properties 'a', 'b'\n" +
-               "  No matching assertion, did you mean:\n" +
-               "  <object|function> [not] to have [own] properties <array>\n" +
-               "  <object|function> to have [own] properties <object>");
+            "expected { a: 'foo', b: 'bar' } to have properties 'a', 'b'\n" +
+            "  The assertion does not have a matching signature for:\n" +
+            "    <object> to have properties <string> <string>\n" +
+            "  did you mean:\n" +
+            "    <object|function> [not] to have [own] properties <array>\n" +
+            "    <object|function> to have [own] properties <object>"
+        );
 
         expect(function () {
             expect({a: 'foo', b: 'bar'}, 'not to have properties', {a: 'foo', b: 'bar'});
         }, 'to throw',
-               "expected { a: 'foo', b: 'bar' } not to have properties { a: 'foo', b: 'bar' }\n" +
-               "  No matching assertion, did you mean:\n" +
-               "  <object|function> [not] to have [own] properties <array>");
+            "expected { a: 'foo', b: 'bar' } not to have properties { a: 'foo', b: 'bar' }\n" +
+            "  The assertion does not have a matching signature for:\n" +
+            "    <object> not to have properties <object>\n" +
+            "  did you mean:\n" +
+            "    <object|function> [not] to have [own] properties <array>"
+        );
     });
 
     it('works with function objects as well', function () {

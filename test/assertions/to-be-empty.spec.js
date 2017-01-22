@@ -25,10 +25,13 @@ describe('empty assertion', function () {
         expect(function () {
             expect(null, 'to be empty');
         }, 'to throw exception',
-               "expected null to be empty\n" +
-               "  No matching assertion, did you mean:\n" +
-               "  <object> [not] to be empty\n" +
-               "  <string|array-like> [not] to be empty");
+            "expected null to be empty\n" +
+            "  The assertion does not have a matching signature for:\n" +
+            "    <null> to be empty\n" +
+            "  did you mean:\n" +
+            "    <object> [not] to be empty\n" +
+            "    <string|array-like> [not] to be empty"
+        );
 
         expect(function () {
             expect({ a: 'b' }, 'to be empty');

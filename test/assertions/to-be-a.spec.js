@@ -75,44 +75,56 @@ describe('to be a/an assertion', function () {
         expect(function () {
             expect('foo', 'to be an', undefined);
         }, 'to throw',
-               "expected 'foo' to be an undefined\n" +
-               "  No matching assertion, did you mean:\n" +
-               "  <any> [not] to be (a|an) <function>\n" +
-               "  <any> [not] to be (a|an) <string>\n" +
-               "  <any> [not] to be (a|an) <type>");
+            "expected 'foo' to be an undefined\n" +
+            "  The assertion does not have a matching signature for:\n" +
+            "    <string> to be an <undefined>\n" +
+            "  did you mean:\n" +
+            "    <any> [not] to be (a|an) <function>\n" +
+            "    <any> [not] to be (a|an) <string>\n" +
+            "    <any> [not] to be (a|an) <type>"
+        );
     });
 
     it('should throw when the type is specified as null', function () {
         expect(function () {
             expect('foo', 'to be a', null);
         }, 'to throw',
-               "expected 'foo' to be a null\n" +
-               "  No matching assertion, did you mean:\n" +
-               "  <any> [not] to be (a|an) <function>\n" +
-               "  <any> [not] to be (a|an) <string>\n" +
-               "  <any> [not] to be (a|an) <type>");
+            "expected 'foo' to be a null\n" +
+            "  The assertion does not have a matching signature for:\n" +
+            "    <string> to be a <null>\n" +
+            "  did you mean:\n" +
+            "    <any> [not] to be (a|an) <function>\n" +
+            "    <any> [not] to be (a|an) <string>\n" +
+            "    <any> [not] to be (a|an) <type>"
+        );
     });
 
     it('should not consider a string a to be an instance of an object without a name property', function () {
         expect(function () {
             expect('foo', 'to be a', {});
         }, 'to throw',
-               "expected 'foo' to be a {}\n" +
-               "  No matching assertion, did you mean:\n" +
-               "  <any> [not] to be (a|an) <function>\n" +
-               "  <any> [not] to be (a|an) <string>\n" +
-               "  <any> [not] to be (a|an) <type>");
+            "expected 'foo' to be a {}\n" +
+            "  The assertion does not have a matching signature for:\n" +
+            "    <string> to be a <object>\n" +
+            "  did you mean:\n" +
+            "    <any> [not] to be (a|an) <function>\n" +
+            "    <any> [not] to be (a|an) <string>\n" +
+            "    <any> [not] to be (a|an) <type>"
+        );
     });
 
     it('should throw when the type is specified as an object without an identify function', function () {
         expect(function () {
             expect('foo', 'to be a', { name: 'bar' });
         }, 'to throw',
-               "expected 'foo' to be a { name: 'bar' }\n" +
-               "  No matching assertion, did you mean:\n" +
-               "  <any> [not] to be (a|an) <function>\n" +
-               "  <any> [not] to be (a|an) <string>\n" +
-               "  <any> [not] to be (a|an) <type>");
+            "expected 'foo' to be a { name: 'bar' }\n" +
+            "  The assertion does not have a matching signature for:\n" +
+            "    <string> to be a <object>\n" +
+            "  did you mean:\n" +
+            "    <any> [not] to be (a|an) <function>\n" +
+            "    <any> [not] to be (a|an) <string>\n" +
+            "    <any> [not] to be (a|an) <type>"
+        );
     });
 
     it('should throw when the type is specified as an object with an identify function, but without a name property', function () {
@@ -123,10 +135,12 @@ describe('to be a/an assertion', function () {
             // http://v8project.blogspot.dk/2016/04/v8-release-51.html
             expect(err.getErrorMessage('text').toString().replace('function identify', 'function '), 'to satisfy',
                 "expected 'foo' to be a { identify: function () { return true; } }\n" +
-                "  No matching assertion, did you mean:\n" +
-                "  <any> [not] to be (a|an) <function>\n" +
-                "  <any> [not] to be (a|an) <string>\n" +
-                "  <any> [not] to be (a|an) <type>"
+                "  The assertion does not have a matching signature for:\n" +
+                "    <string> to be a <object>\n" +
+                "  did you mean:\n" +
+                "    <any> [not] to be (a|an) <function>\n" +
+                "    <any> [not] to be (a|an) <string>\n" +
+                "    <any> [not] to be (a|an) <type>"
             );
         });
     });

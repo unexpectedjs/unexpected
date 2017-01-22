@@ -43,9 +43,12 @@ describe('clone', function () {
                 expect(function () {
                     clonedExpect('foobarquux', 'to foobarquux');
                 }, 'to throw',
-                       "expected 'foobarquux' to foobarquux\n" +
-                       "  No matching assertion, did you mean:\n" +
-                       "  <array> to foobarquux");
+                    "expected 'foobarquux' to foobarquux\n" +
+                    "  The assertion does not have a matching signature for:\n" +
+                    "    <string> to foobarquux\n" +
+                    "  did you mean:\n" +
+                    "    <array> to foobarquux"
+                );
             });
 
             it('prefers to suggest a similarly named assertion defined for the correct type over an exact match defined for other types', function () {
@@ -57,9 +60,12 @@ describe('clone', function () {
                 expect(function () {
                     clonedExpect(['fooo'], 'to fooo');
                 }, 'to throw',
-                       "expected [ 'fooo' ] to fooo\n" +
-                       "  No matching assertion, did you mean:\n" +
-                       "  <string> to fooo");
+                    "expected [ 'fooo' ] to fooo\n" +
+                    "  The assertion does not have a matching signature for:\n" +
+                    "    <array> to fooo\n" +
+                    "  did you mean:\n" +
+                    "    <string> to fooo"
+                );
 
                 clonedExpect.addAssertion('<null> to fooo', function (expect, subject) {
                     expect(subject.message, 'to equal', 'fooo');
@@ -67,10 +73,13 @@ describe('clone', function () {
                 expect(function () {
                     clonedExpect(['fooo'], 'to fooo');
                 }, 'to throw',
-                       "expected [ 'fooo' ] to fooo\n" +
-                       "  No matching assertion, did you mean:\n" +
-                       "  <null> to fooo\n" +
-                       "  <string> to fooo");
+                    "expected [ 'fooo' ] to fooo\n" +
+                    "  The assertion does not have a matching signature for:\n" +
+                    "    <array> to fooo\n" +
+                    "  did you mean:\n" +
+                    "    <null> to fooo\n" +
+                    "    <string> to fooo"
+                );
             });
 
             it('prefers to suggest a similarly named assertion for a more specific type', function () {

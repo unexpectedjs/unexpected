@@ -16,9 +16,12 @@ describe('greater than assertion', function () {
         expect(function () {
             expect(NaN, 'not to be greater than', 1);
         }, 'to throw',
-               "expected NaN not to be greater than 1\n" +
-               "  No matching assertion, did you mean:\n" +
-               "  <number> [not] to be (greater than|above) <number>\n" +
-               "  <string> [not] to be (greater than|above) <string>");
+            "expected NaN not to be greater than 1\n" +
+            "  The assertion does not have a matching signature for:\n" +
+            "    <NaN> not to be greater than <number>\n" +
+            "  did you mean:\n" +
+            "    <number> [not] to be (greater than|above) <number>\n" +
+            "    <string> [not] to be (greater than|above) <string>"
+        );
     });
 });

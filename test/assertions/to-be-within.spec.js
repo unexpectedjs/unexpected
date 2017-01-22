@@ -17,10 +17,13 @@ describe('within assertion', function () {
         expect(function () {
             expect(null, 'not to be within', 0, 4);
         }, 'to throw exception',
-               "expected null not to be within 0, 4\n" +
-               "  No matching assertion, did you mean:\n" +
-               "  <number> [not] to be within <number> <number>\n" +
-               "  <string> [not] to be within <string> <string>");
+            "expected null not to be within 0, 4\n" +
+            "  The assertion does not have a matching signature for:\n" +
+            "    <null> not to be within <number> <number>\n" +
+            "  did you mean:\n" +
+            "    <number> [not] to be within <number> <number>\n" +
+            "    <string> [not] to be within <string> <string>"
+        );
     });
 
     it('throws with the correct error message when the end points are strings', function () {

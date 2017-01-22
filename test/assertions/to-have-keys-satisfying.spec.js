@@ -4,30 +4,39 @@ describe('to have keys satisfying assertion', function () {
         expect(function () {
             expect([1, 2, 3], 'to have keys satisfying');
         }, 'to throw',
-               "expected [ 1, 2, 3 ] to have keys satisfying\n" +
-               "  No matching assertion, did you mean:\n" +
-               "  <object> to have keys satisfying <any>\n" +
-               "  <object> to have keys satisfying <assertion>");
+            "expected [ 1, 2, 3 ] to have keys satisfying\n" +
+            "  The assertion does not have a matching signature for:\n" +
+            "    <array> to have keys satisfying\n" +
+            "  did you mean:\n" +
+            "    <object> to have keys satisfying <any>\n" +
+            "    <object> to have keys satisfying <assertion>"
+        );
     });
 
     it('does not accept a fourth argument', function () {
         expect(function () {
             expect([1], 'to have keys satisfying', 0, 1);
         }, 'to throw',
-               "expected [ 1 ] to have keys satisfying 0, 1\n" +
-               "  No matching assertion, did you mean:\n" +
-               "  <object> to have keys satisfying <any>\n" +
-               "  <object> to have keys satisfying <assertion>");
+            "expected [ 1 ] to have keys satisfying 0, 1\n" +
+            "  The assertion does not have a matching signature for:\n" +
+            "    <array> to have keys satisfying <number> <number>\n" +
+            "  did you mean:\n" +
+            "    <object> to have keys satisfying <any>\n" +
+            "    <object> to have keys satisfying <assertion>"
+        );
     });
 
     it('only accepts objects as the target', function () {
         expect(function () {
             expect(42, 'to have keys satisfying', function (key) {});
         }, 'to throw',
-               "expected 42 to have keys satisfying function (key) {}\n" +
-               "  No matching assertion, did you mean:\n" +
-               "  <object> to have keys satisfying <any>\n" +
-               "  <object> to have keys satisfying <assertion>");
+            "expected 42 to have keys satisfying function (key) {}\n" +
+            "  The assertion does not have a matching signature for:\n" +
+            "    <number> to have keys satisfying <function>\n" +
+            "  did you mean:\n" +
+            "    <object> to have keys satisfying <any>\n" +
+            "    <object> to have keys satisfying <assertion>"
+        );
     });
 
     it('asserts that the given callback does not throw for any keys in the map', function () {

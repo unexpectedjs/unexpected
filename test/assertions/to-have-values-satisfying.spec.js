@@ -4,30 +4,39 @@ describe('to have values satisfying assertion', function () {
         expect(function () {
             expect([1, 2, 3], 'to have values satisfying');
         }, 'to throw',
-               "expected [ 1, 2, 3 ] to have values satisfying\n" +
-               "  No matching assertion, did you mean:\n" +
-               "  <object> to have values [exhaustively] satisfying <any>\n" +
-               "  <object> to have values [exhaustively] satisfying <assertion>");
+            "expected [ 1, 2, 3 ] to have values satisfying\n" +
+            "  The assertion does not have a matching signature for:\n" +
+            "    <array> to have values satisfying\n" +
+            "  did you mean:\n" +
+            "    <object> to have values [exhaustively] satisfying <any>\n" +
+            "    <object> to have values [exhaustively] satisfying <assertion>"
+        );
     });
 
     it('does not accept a fourth argument', function () {
         expect(function () {
             expect([1], 'to have values satisfying', 1, 2);
         }, 'to throw',
-               "expected [ 1 ] to have values satisfying 1, 2\n" +
-               "  No matching assertion, did you mean:\n" +
-               "  <object> to have values [exhaustively] satisfying <any>\n" +
-               "  <object> to have values [exhaustively] satisfying <assertion>");
+            "expected [ 1 ] to have values satisfying 1, 2\n" +
+            "  The assertion does not have a matching signature for:\n" +
+            "    <array> to have values satisfying <number> <number>\n" +
+            "  did you mean:\n" +
+            "    <object> to have values [exhaustively] satisfying <any>\n" +
+            "    <object> to have values [exhaustively] satisfying <assertion>"
+        );
     });
 
     it('only accepts objects and arrays as the target', function () {
         expect(function () {
             expect(42, 'to have values satisfying', function (value) {});
         }, 'to throw',
-               "expected 42 to have values satisfying function (value) {}\n" +
-               "  No matching assertion, did you mean:\n" +
-               "  <object> to have values [exhaustively] satisfying <any>\n" +
-               "  <object> to have values [exhaustively] satisfying <assertion>");
+            "expected 42 to have values satisfying function (value) {}\n" +
+            "  The assertion does not have a matching signature for:\n" +
+            "    <number> to have values satisfying <function>\n" +
+            "  did you mean:\n" +
+            "    <object> to have values [exhaustively] satisfying <any>\n" +
+            "    <object> to have values [exhaustively] satisfying <assertion>"
+        );
     });
 
     it('asserts that the given callback does not throw for any values in the map', function () {

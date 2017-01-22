@@ -7,9 +7,11 @@ describe('to have a value satisfying assertion', function () {
             },
             'to throw',
             "expected [ 1, 2, 3 ] to have a value satisfying\n" +
-            "  No matching assertion, did you mean:\n" +
-            "  <object> to have a value [exhaustively] satisfying <any>\n" +
-            "  <object> to have a value [exhaustively] satisfying <assertion>"
+            "  The assertion does not have a matching signature for:\n" +
+            "    <array> to have a value satisfying\n" +
+            "  did you mean:\n" +
+            "    <object> to have a value [exhaustively] satisfying <any>\n" +
+            "    <object> to have a value [exhaustively] satisfying <assertion>"
         );
     });
 
@@ -38,9 +40,11 @@ describe('to have a value satisfying assertion', function () {
             },
             'to throw',
             "expected 42 to have a value satisfying function (value) {}\n" +
-            "  No matching assertion, did you mean:\n" +
-            "  <object> to have a value [exhaustively] satisfying <any>\n" +
-            "  <object> to have a value [exhaustively] satisfying <assertion>"
+            "  The assertion does not have a matching signature for:\n" +
+            "    <number> to have a value satisfying <function>\n" +
+            "  did you mean:\n" +
+            "    <object> to have a value [exhaustively] satisfying <any>\n" +
+            "    <object> to have a value [exhaustively] satisfying <assertion>"
         );
     });
 

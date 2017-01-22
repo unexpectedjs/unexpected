@@ -53,6 +53,21 @@ describe('unexpected', function () {
         }, 'to throw exception', "Unknown assertion 'to bee', did you mean: 'to be'");
     });
 
+    it('shows a specific error message when the assertion exists, but not for the given type signature', function () {
+        var clonedExpect = expect.clone().addAssertion('<string> [not] to foo <array>', function (expect) {
+            expect();
+        });
+        expect(function () {
+            clonedExpect(123, 'to foo', 456);
+        }, 'to throw',
+            "expected 123 to foo 456\n" +
+            "  The assertion does not have a matching signature for:\n" +
+            "    <number> to foo <number>\n" +
+            "  did you mean:\n" +
+            "    <string> [not] to foo <array>"
+        );
+    });
+
     describe('expect', function () {
         it('should catch non-Unexpected error caught from a nested assertion', function () {
             var clonedExpect = expect.clone().addAssertion('to foo', function (expect, subject) {
@@ -887,8 +902,10 @@ describe('unexpected', function () {
         }, 'to throw',
             "expected function () { return 123; } when called when called with 'abc', /123/\n" +
             "  expected 123 when called with 'abc', /123/\n" +
-            "    No matching assertion, did you mean:\n" +
-            "    <function> [when] called with <array-like> <assertion?>"
+            "    The assertion does not have a matching signature for:\n" +
+            "      <number> when called with <string> <regexp>\n" +
+            "    did you mean:\n" +
+            "      <function> [when] called with <array-like> <assertion?>"
         );
     });
 

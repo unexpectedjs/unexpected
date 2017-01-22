@@ -119,10 +119,12 @@ describe('expect.shift', function () {
         expect(function () {
             clonedExpect('foo', 'when prepended with foo', function () {});
         }, 'to throw',
-               "expected 'foo' when prepended with foo function () {}\n" +
-               "  No matching assertion, did you mean:\n" +
-               "  <string> when prepended with foo <assertion>"
-              );
+            "expected 'foo' when prepended with foo function () {}\n" +
+            "  The assertion does not have a matching signature for:\n" +
+            "    <string> when prepended with foo <function>\n" +
+            "  did you mean:\n" +
+            "    <string> when prepended with foo <assertion>"
+        );
     });
 
     describe('with an async assertion', function () {

@@ -55,10 +55,13 @@ describe('to throw assertion', function () {
         expect(function () {
             expect(1, 'to throw exception');
         }, 'to throw exception',
-               "expected 1 to throw exception\n" +
-               "  No matching assertion, did you mean:\n" +
-               "  <function> to (throw|throw error|throw exception)\n" +
-               "  <function> to (throw|throw error|throw exception) <any>");
+            "expected 1 to throw exception\n" +
+            "  The assertion does not have a matching signature for:\n" +
+            "    <number> to throw exception\n" +
+            "  did you mean:\n" +
+            "    <function> to (throw|throw error|throw exception)\n" +
+            "    <function> to (throw|throw error|throw exception) <any>"
+        );
     });
 
     it('given a function the function is called with the exception', function () {
@@ -81,13 +84,16 @@ describe('to throw assertion', function () {
                 throw new Error('matches the exception message');
             }, 'not to throw', /matches the exception message/);
         }, 'to throw',
-               "expected\n" +
-               "function () {\n" +
-               "  throw new Error('matches the exception message');\n" +
-               "}\n" +
-               "not to throw /matches the exception message/\n" +
-               "  No matching assertion, did you mean:\n" +
-               "  <function> not to throw");
+            "expected\n" +
+            "function () {\n" +
+            "  throw new Error('matches the exception message');\n" +
+            "}\n" +
+            "not to throw /matches the exception message/\n" +
+            "  The assertion does not have a matching signature for:\n" +
+            "    <function> not to throw <regexp>\n" +
+            "  did you mean:\n" +
+            "    <function> not to throw"
+        );
     });
 
     it('provides a diff when the exception message does not match the given string', function () {

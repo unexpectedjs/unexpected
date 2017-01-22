@@ -7,9 +7,12 @@ describe('to have an item satisfying assertion', function () {
             },
             'to throw',
             "expected [ 1, 2, 3 ] to have an item satisfying\n" +
-            "  No matching assertion, did you mean:\n" +
-            "  <array-like> to have an item [exhaustively] satisfying <any>\n" +
-            "  <array-like> to have an item [exhaustively] satisfying <assertion>");
+            "  The assertion does not have a matching signature for:\n" +
+            "    <array> to have an item satisfying\n" +
+            "  did you mean:\n" +
+            "    <array-like> to have an item [exhaustively] satisfying <any>\n" +
+            "    <array-like> to have an item [exhaustively] satisfying <assertion>"
+        );
     });
 
     it('only accepts arrays as the subject', function () {
@@ -19,9 +22,12 @@ describe('to have an item satisfying assertion', function () {
             },
             'to throw',
             "expected 42 to have an item satisfying 'to be a number'\n" +
-            "  No matching assertion, did you mean:\n" +
-            "  <array-like> to have an item [exhaustively] satisfying <any>\n" +
-            "  <array-like> to have an item [exhaustively] satisfying <assertion>");
+            "  The assertion does not have a matching signature for:\n" +
+            "    <number> to have an item satisfying <string>\n" +
+            "  did you mean:\n" +
+            "    <array-like> to have an item [exhaustively] satisfying <any>\n" +
+            "    <array-like> to have an item [exhaustively] satisfying <assertion>"
+        );
     });
 
     it('fails if the given array is empty', function () {

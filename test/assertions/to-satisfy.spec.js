@@ -1084,8 +1084,10 @@ describe('to satisfy assertion', function () {
                "\n" +
                "{\n" +
                "  bool: 'true' // expected 'true' to be true\n" +
-               "               //   No matching assertion, did you mean:\n" +
-               "               //   <boolean> [not] to be true\n" +
+               "               //   The assertion does not have a matching signature for:\n" +
+               "               //     <string> to be true\n" +
+               "               //   did you mean:\n" +
+               "               //     <boolean> [not] to be true\n" +
                "}");
     });
 

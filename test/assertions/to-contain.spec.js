@@ -22,10 +22,13 @@ describe('to contain assertion', function () {
         expect(function () {
             expect(null, 'not to contain', 'world');
         }, 'to throw',
-               "expected null not to contain 'world'\n" +
-               "  No matching assertion, did you mean:\n" +
-               "  <array-like> [not] to contain <any+>\n" +
-               "  <string> [not] to contain <string+>");
+            "expected null not to contain 'world'\n" +
+            "  The assertion does not have a matching signature for:\n" +
+            "    <null> not to contain <string>\n" +
+            "  did you mean:\n" +
+            "    <array-like> [not] to contain <any+>\n" +
+            "    <string> [not] to contain <string+>"
+        );
 
         expect(function () {
             expect('hello world', 'to contain', 'foo');
@@ -51,10 +54,13 @@ describe('to contain assertion', function () {
         expect(function () {
             expect(1, 'to contain', 1);
         }, 'to throw exception',
-               "expected 1 to contain 1\n" +
-               "  No matching assertion, did you mean:\n" +
-               "  <array-like> [not] to contain <any+>\n" +
-               "  <string> [not] to contain <string+>");
+            "expected 1 to contain 1\n" +
+            "  The assertion does not have a matching signature for:\n" +
+            "    <number> to contain <number>\n" +
+            "  did you mean:\n" +
+            "    <array-like> [not] to contain <any+>\n" +
+            "    <string> [not] to contain <string+>"
+        );
     });
 
     it('produces a diff showing full and partial matches for each needle when the assertion fails', function () {

@@ -34,16 +34,22 @@ describe('to have length assertion', function () {
         expect(function () {
             expect(null, 'to have length', 4);
         }, 'to throw exception',
-               "expected null to have length 4\n" +
-               "  No matching assertion, did you mean:\n" +
-               "  <string|array-like> [not] to have length <number>");
+            "expected null to have length 4\n" +
+            "  The assertion does not have a matching signature for:\n" +
+            "    <null> to have length <number>\n" +
+            "  did you mean:\n" +
+            "    <string|array-like> [not] to have length <number>"
+        );
 
         expect(function () {
             expect({ length: 4 }, 'to have length', 4);
         }, 'to throw exception',
-               "expected { length: 4 } to have length 4\n" +
-               "  No matching assertion, did you mean:\n" +
-               "  <string|array-like> [not] to have length <number>");
+            "expected { length: 4 } to have length 4\n" +
+            "  The assertion does not have a matching signature for:\n" +
+            "    <object> to have length <number>\n" +
+            "  did you mean:\n" +
+            "    <string|array-like> [not] to have length <number>"
+        );
     });
 
     if (typeof Buffer !== 'undefined') {

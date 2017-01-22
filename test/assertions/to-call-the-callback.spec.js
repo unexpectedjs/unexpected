@@ -241,9 +241,9 @@ describe('to call the callback assertion', function () {
                         setTimeout(cb, 0);
                     }, 'to call the callback with error', new Error('bla'));
                 }, 'to error',
-                              "expected function (cb) { setTimeout(cb, 0); }\n" +
-                              "to call the callback with error Error('bla')"
-                             );
+                    "expected function (cb) { setTimeout(cb, 0); }\n" +
+                    "to call the callback with error Error('bla')"
+                );
             });
         });
 
@@ -262,8 +262,8 @@ describe('to call the callback assertion', function () {
                         setTimeout(cb, 0);
                     }, 'to call the callback with error');
                 }, 'to error',
-                              "expected function (cb) { setTimeout(cb, 0); } to call the callback with error"
-                             );
+                    "expected function (cb) { setTimeout(cb, 0); } to call the callback with error"
+                );
             });
         });
     });
@@ -277,15 +277,18 @@ describe('to call the callback assertion', function () {
                     }, 0);
                 }, 'to call the callback without error', new Error('bla'));
             }, 'to throw',
-                   "expected\n" +
-                   "function (cb) {\n" +
-                   "  setTimeout(function () {\n" +
-                   "    cb(new Error('bla'));\n" +
-                   "  }, 0);\n" +
-                   "}\n" +
-                   "to call the callback without error Error('bla')\n" +
-                   "  No matching assertion, did you mean:\n" +
-                   "  <function> to call the callback without error");
+                "expected\n" +
+                "function (cb) {\n" +
+                "  setTimeout(function () {\n" +
+                "    cb(new Error('bla'));\n" +
+                "  }, 0);\n" +
+                "}\n" +
+                "to call the callback without error Error('bla')\n" +
+                "  The assertion does not have a matching signature for:\n" +
+                "    <function> to call the callback without error <Error>\n" +
+                "  did you mean:\n" +
+                "    <function> to call the callback without error"
+            );
         });
 
         it('should succeed', function () {
