@@ -876,6 +876,7 @@ function calculateLimits(items) {
 
 Unexpected.prototype.throwAssertionNotFoundError = function (subject, testDescriptionString, args) {
     var candidateHandlers = this.assertions[testDescriptionString];
+    var that = this;
     if (candidateHandlers) {
         this.fail({
             message: function (output) {
@@ -887,7 +888,19 @@ Unexpected.prototype.throwAssertionNotFoundError = function (subject, testDescri
                 };
                 output.append(createStandardErrorMessage(output.clone(), subjectOutput, testDescriptionString, argsOutput)).nl()
                     .indentLines();
-                output.i().error('No matching assertion, did you mean:').nl();
+                output.i().error('The assertion does not have a matching signature for:').nl()
+                    .indentLines().i().text('<').text(that.findTypeOf(subject).name).text('>').sp().text(testDescriptionString);
+
+                args.forEach(function (arg, i) {
+                    output.sp().text('<').text(that.findTypeOf(arg).name).text('>');
+                });
+
+                output
+                    .outdentLines()
+                    .nl()
+                    .i().text('did you mean:')
+                    .indentLines()
+                    .nl();
                 var assertionDeclarations = Object.keys(candidateHandlers.reduce(function (result, handler) {
                     result[handler.declaration] = true;
                     return result;
@@ -895,13 +908,13 @@ Unexpected.prototype.throwAssertionNotFoundError = function (subject, testDescri
                 assertionDeclarations.forEach(function (declaration, i) {
                     output.nl(i > 0 ? 1 : 0).i().text(declaration);
                 });
+                output.outdentLines();
             }
         });
     }
 
     var assertionsWithScore = [];
     var assertionStrings = Object.keys(this.assertions);
-    var that = this;
 
     function compareAssertions(a, b) {
         var aAssertion = that.lookupAssertionRule(subject, a, args);
