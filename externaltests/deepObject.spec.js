@@ -1,7 +1,7 @@
 var expect = require('../');
 it('should not dot out the object in the diff', function () {
     expect(function () {
-        expect({0:{0:{0:{0:{0:{0:{}}}}}}}, 'to equal', {});
+        expect({0: {0: {0: {0: {0: {0: {}}}}}}}, 'to equal', {});
     }, 'to throw',
         "expected { 0: { 0: { 0: { 0: { 0: { 0: ... } } } } } } to equal {}\n" +
         "\n" +

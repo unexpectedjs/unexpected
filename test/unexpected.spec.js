@@ -381,12 +381,12 @@ describe('unexpected', function () {
                     expect({
                         pill: {
                             red: "I'll show you how deep the rabbit hole goes",
-                            blue: { ignorance: { of:  'illusion' } }
+                            blue: { ignorance: { of: 'illusion' } }
                         }
                     }, 'to equal', {
                         pill: {
                             red: "I'll show you how deep the rabbit hole goes.",
-                            blue: { ignorance: { of:  'illusion' } }
+                            blue: { ignorance: { of: 'illusion' } }
                         }
                     });
                 }, 'to throw',
