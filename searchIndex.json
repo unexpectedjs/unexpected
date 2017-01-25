@@ -68,42 +68,6 @@
     "url": "/assertions/Buffer/when-decoded-as/"
   },
   {
-    "label": "to be fulfilled with value satisfying (Promise)",
-    "url": "/assertions/Promise/to-be-fulfilled-with-value-satisfying/"
-  },
-  {
-    "label": "to be fulfilled with (Promise)",
-    "url": "/assertions/Promise/to-be-fulfilled-with/"
-  },
-  {
-    "label": "to be fulfilled (Promise)",
-    "url": "/assertions/Promise/to-be-fulfilled/"
-  },
-  {
-    "label": "to be rejected with error satisfying (Promise)",
-    "url": "/assertions/Promise/to-be-rejected-with-error-satisfying/"
-  },
-  {
-    "label": "to be rejected with (Promise)",
-    "url": "/assertions/Promise/to-be-rejected-with/"
-  },
-  {
-    "label": "to be rejected (Promise)",
-    "url": "/assertions/Promise/to-be-rejected/"
-  },
-  {
-    "label": "when fulfilled (Promise)",
-    "url": "/assertions/Promise/when-fulfilled/"
-  },
-  {
-    "label": "when rejected (Promise)",
-    "url": "/assertions/Promise/when-rejected/"
-  },
-  {
-    "label": "to be a (any)",
-    "url": "/assertions/any/to-be-a/"
-  },
-  {
     "label": "to be defined (any)",
     "url": "/assertions/any/to-be-defined/"
   },
@@ -146,6 +110,42 @@
   {
     "label": "when passed as parameter to (any)",
     "url": "/assertions/any/when-passed-as-parameter-to/"
+  },
+  {
+    "label": "to have message (Error)",
+    "url": "/assertions/Error/to-have-message/"
+  },
+  {
+    "label": "to be fulfilled with value satisfying (Promise)",
+    "url": "/assertions/Promise/to-be-fulfilled-with-value-satisfying/"
+  },
+  {
+    "label": "to be fulfilled with (Promise)",
+    "url": "/assertions/Promise/to-be-fulfilled-with/"
+  },
+  {
+    "label": "to be fulfilled (Promise)",
+    "url": "/assertions/Promise/to-be-fulfilled/"
+  },
+  {
+    "label": "to be rejected with error satisfying (Promise)",
+    "url": "/assertions/Promise/to-be-rejected-with-error-satisfying/"
+  },
+  {
+    "label": "to be rejected with (Promise)",
+    "url": "/assertions/Promise/to-be-rejected-with/"
+  },
+  {
+    "label": "to be rejected (Promise)",
+    "url": "/assertions/Promise/to-be-rejected/"
+  },
+  {
+    "label": "when fulfilled (Promise)",
+    "url": "/assertions/Promise/when-fulfilled/"
+  },
+  {
+    "label": "when rejected (Promise)",
+    "url": "/assertions/Promise/when-rejected/"
   },
   {
     "label": "to be empty (array-like)",
@@ -208,8 +208,8 @@
     "url": "/assertions/function/to-error/"
   },
   {
-    "label": "to have message (Error)",
-    "url": "/assertions/Error/to-have-message/"
+    "label": "to be a (any)",
+    "url": "/assertions/any/to-be-a/"
   },
   {
     "label": "to throw (function)",
