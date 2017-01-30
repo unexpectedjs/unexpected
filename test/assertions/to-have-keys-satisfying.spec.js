@@ -69,7 +69,7 @@ describe('to have keys satisfying assertion', function () {
                "function (key) {\n" +
                "  expect(key, 'to match', /^[a-z]{3}$/);\n" +
                "}\n" +
-               "  expected {} not to equal {}");
+               "  expected {} not to be empty");
     });
 
     it('fails for an empty array', function () {
@@ -77,7 +77,7 @@ describe('to have keys satisfying assertion', function () {
             expect([], 'to have keys satisfying', 123);
         }, 'to throw',
             "expected [] to have keys satisfying 123\n" +
-            "  expected [] not to equal []");
+            "  expected [] not to be empty");
     });
 
     it('should work with non-enumerable keys returned by the getKeys function of the subject type', function () {
