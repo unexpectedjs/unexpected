@@ -32,4 +32,6 @@ expect(willNotThrow, 'to throw a', RangeError);
 
 ```output
 expected function willNotThrow() {} to throw a RangeError
+  expected function willNotThrow() {} to throw
+    did not throw
 ```
