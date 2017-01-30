@@ -17,6 +17,7 @@ expect(function willNotThrow() {}, 'to throw');
 
 ```output
 expected function willNotThrow() {} to throw
+  did not throw
 ```
 
 You can assert the error message is a given string if you provide a
