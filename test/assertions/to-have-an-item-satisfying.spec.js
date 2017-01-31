@@ -37,7 +37,7 @@ describe('to have an item satisfying assertion', function () {
             },
             'to throw',
             "expected [] to have an item satisfying to be a number\n" +
-            "  expected [] to be non-empty");
+            "  expected [] not to be empty");
     });
 
     it('asserts that at least one item in the array satisfies the RHS expectation', function () {

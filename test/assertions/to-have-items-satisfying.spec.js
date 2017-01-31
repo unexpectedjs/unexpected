@@ -49,7 +49,7 @@ describe('to have items satisfying assertion', function () {
                "function (item) {\n" +
                "  expect(item, 'to be a number');\n" +
                "}\n" +
-               "  expected [] to be non-empty");
+               "  expected [] not to be empty");
     });
 
     it('asserts that the given callback does not throw for any items in the array', function () {

@@ -63,7 +63,7 @@ describe('to have values satisfying assertion', function () {
                "function (value) {\n" +
                "  expect(value, 'to equal', '0');\n" +
                "}\n" +
-               "  expected {} not to equal {}");
+               "  expected {} not to be empty");
     });
 
     it('fails for an empty array', function () {
@@ -71,7 +71,7 @@ describe('to have values satisfying assertion', function () {
             expect([], 'to have values satisfying', 123);
         }, 'to throw',
             "expected [] to have values satisfying 123\n" +
-            "  expected [] not to equal []");
+            "  expected [] not to be empty");
     });
 
     it('fails if the given array is empty', function () {
@@ -84,7 +84,7 @@ describe('to have values satisfying assertion', function () {
                "function (item) {\n" +
                "  expect(item, 'to be a number');\n" +
                "}\n" +
-               "  expected [] to be non-empty");
+               "  expected [] not to be empty");
     });
 
     it('supports legacy aliases', function () {
