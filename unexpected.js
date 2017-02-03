@@ -2070,7 +2070,7 @@ module.exports = function (expect) {
         expect(subject, '[not] to have length', 0);
     });
 
-    expect.addAssertion('<string|array-like> to be non-empty', function (expect, subject) {
+    expect.addAssertion('<string|array-like|object> to be non-empty', function (expect, subject) {
         expect(subject, 'not to be empty');
     });
 
@@ -2478,10 +2478,25 @@ module.exports = function (expect) {
         } catch (e) {
             return e;
         }
-        expect.fail();
+        expect.errorMode = 'nested';
+        expect.fail('did not throw');
+    });
+
+    expect.addAssertion('<function> to throw (a|an) <function>', function (expect, subject, value) {
+        var constructorName = utils.getFunctionName(value);
+        if (constructorName) {
+            expect.argsOutput[0] = function (output) {
+                output.jsFunctionName(constructorName);
+            };
+        }
+        expect.errorMode = 'nested';
+        return expect(subject, 'to throw').then(function (error) {
+            expect(error, 'to be a', value);
+        });
     });
 
     expect.addAssertion('<function> to (throw|throw error|throw exception) <any>', function (expect, subject, arg) {
+        expect.errorMode = 'nested';
         return expect(subject, 'to throw').then(function (error) {
             var isUnexpected = error && error._isUnexpected;
             // in the presence of a matcher an error must have been thrown.
@@ -2511,11 +2526,7 @@ module.exports = function (expect) {
         '<object> to be (a map|a hash|an object) whose values [exhaustively] satisfy <assertion>'
     ], function (expect, subject, nextArg) {
         expect.errorMode = 'nested';
-        if (expect.subjectType.is('array')) {
-            expect(subject, 'not to equal', []);
-        } else {
-            expect(subject, 'not to equal', {});
-        }
+        expect(subject, 'not to be empty');
         expect.errorMode = 'bubble';
 
         var keys = expect.subjectType.getKeys(subject);
@@ -2557,7 +2568,7 @@ module.exports = function (expect) {
     ], function (expect, subject) { // ...
         var extraArgs = Array.prototype.slice.call(arguments, 2);
         expect.errorMode = 'nested';
-        expect(subject, 'to be non-empty');
+        expect(subject, 'not to be empty');
         expect.errorMode = 'bubble';
 
         return expect.withError(function () {
@@ -2583,11 +2594,7 @@ module.exports = function (expect) {
         '<object> to be (a map|a hash|an object) whose (keys|properties) satisfy <assertion>'
     ], function (expect, subject) {
         expect.errorMode = 'nested';
-        if (expect.subjectType.is('array')) {
-            expect(subject, 'not to equal', []);
-        } else {
-            expect(subject, 'not to equal', {});
-        }
+        expect(subject, 'not to be empty');
         expect.errorMode = 'default';
 
         var keys = expect.subjectType.getKeys(subject);
@@ -2600,11 +2607,7 @@ module.exports = function (expect) {
         '<object> to have a value [exhaustively] satisfying <assertion>'
     ], function (expect, subject, nextArg) {
         expect.errorMode = 'nested';
-        if (expect.subjectType.is('array-like')) {
-            expect(subject, 'to be non-empty');
-        } else {
-            expect(subject, 'not to equal', {});
-        }
+        expect(subject, 'not to be empty');
         expect.errorMode = 'bubble';
 
         var keys = expect.subjectType.getKeys(subject);
@@ -2636,7 +2639,7 @@ module.exports = function (expect) {
         '<array-like> to have an item [exhaustively] satisfying <assertion>'
     ], function (expect, subject) { // ...
         expect.errorMode = 'nested';
-        expect(subject, 'to be non-empty');
+        expect(subject, 'not to be empty');
         expect.errorMode = 'bubble';
 
         var extraArgs = Array.prototype.slice.call(arguments, 2);
