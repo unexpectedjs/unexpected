@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../../../static/normalize.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="../../../static/main.css" type="text/css" media="screen" />
     <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="../../../static/bug-icon-black.ico">
-    <title>Promise - to be fulfilled with value satisfying</title>
+    <title>function - to throw a</title>
 </head>
 <body class="sidebar-hidden has-sidebar"> 
     <header>
@@ -201,43 +201,43 @@
             
         </ul>
     
-        <h3 class=""><a href="../../function">function</a></h3>
+        <h3 class=""><a href="..">function</a></h3>
         <ul>
             
             <li class="">
-                <a href="../../function/to-call-the-callback">to call the callback</a>
+                <a href="../to-call-the-callback">to call the callback</a>
             </li>
             
             <li class="">
-                <a href="../../function/to-call-the-callback-with-error">to call the callback with error</a>
+                <a href="../to-call-the-callback-with-error">to call the callback with error</a>
             </li>
             
             <li class="">
-                <a href="../../function/to-call-the-callback-without-error">to call the callback without error</a>
+                <a href="../to-call-the-callback-without-error">to call the callback without error</a>
             </li>
             
             <li class="">
-                <a href="../../function/to-error">to error</a>
+                <a href="../to-error">to error</a>
             </li>
             
             <li class="">
-                <a href="../../function/to-have-arity">to have arity</a>
+                <a href="../to-have-arity">to have arity</a>
             </li>
             
             <li class="">
-                <a href="../../function/to-throw">to throw</a>
+                <a href="../to-throw">to throw</a>
+            </li>
+            
+            <li class="active">
+                <a href="">to throw a</a>
             </li>
             
             <li class="">
-                <a href="../../function/to-throw-a">to throw a</a>
+                <a href="../when-called">when called</a>
             </li>
             
             <li class="">
-                <a href="../../function/when-called">when called</a>
-            </li>
-            
-            <li class="">
-                <a href="../../function/when-called-with">when called with</a>
+                <a href="../when-called-with">when called with</a>
             </li>
             
         </ul>
@@ -296,39 +296,39 @@
             
         </ul>
     
-        <h3 class=""><a href="..">Promise</a></h3>
+        <h3 class=""><a href="../../Promise">Promise</a></h3>
         <ul>
             
             <li class="">
-                <a href="../to-be-fulfilled">to be fulfilled</a>
+                <a href="../../Promise/to-be-fulfilled">to be fulfilled</a>
             </li>
             
             <li class="">
-                <a href="../to-be-fulfilled-with">to be fulfilled with</a>
-            </li>
-            
-            <li class="active">
-                <a href="">to be fulfilled with value satisfying</a>
+                <a href="../../Promise/to-be-fulfilled-with">to be fulfilled with</a>
             </li>
             
             <li class="">
-                <a href="../to-be-rejected">to be rejected</a>
+                <a href="../../Promise/to-be-fulfilled-with-value-satisfying">to be fulfilled with value satisfying</a>
             </li>
             
             <li class="">
-                <a href="../to-be-rejected-with">to be rejected with</a>
+                <a href="../../Promise/to-be-rejected">to be rejected</a>
             </li>
             
             <li class="">
-                <a href="../to-be-rejected-with-error-satisfying">to be rejected with error satisfying</a>
+                <a href="../../Promise/to-be-rejected-with">to be rejected with</a>
             </li>
             
             <li class="">
-                <a href="../when-fulfilled">when fulfilled</a>
+                <a href="../../Promise/to-be-rejected-with-error-satisfying">to be rejected with error satisfying</a>
             </li>
             
             <li class="">
-                <a href="../when-rejected">when rejected</a>
+                <a href="../../Promise/when-fulfilled">when fulfilled</a>
+            </li>
+            
+            <li class="">
+                <a href="../../Promise/when-rejected">when rejected</a>
             </li>
             
         </ul>
@@ -396,22 +396,18 @@
 
     <div class="main" tabindex="-1">
         <div class="content">
-            <h1>to be fulfilled with value satisfying</h1>
+            <h1>to throw a</h1>
             
                 <ul class="declarations">
                 
-                    <li>&lt;Promise&gt; to be fulfilled with value [exhaustively] satisfying &lt;any&gt;</li>
+                    <li>&lt;function&gt; to throw (a|an) &lt;function&gt;</li>
                 
                 </ul>
             
-            <p>Asserts that a promise is fulfilled with a specific value:</p>
-<div class="code lang-javascript"><div><span style="color: #a71d5d">var</span>&nbsp;promiseThatWillBeFulfilledWithAValue&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #a71d5d">new</span>&nbsp;Promise<span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>resolve<span style="color: #000000">,</span>&nbsp;reject<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div><div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">setTimeout</span><span style="color: #000000">(</span><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">resolve</span><span style="color: #000000">({</span></div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foo<span style="color: #000000">:</span>&nbsp;<span style="color: #df5000">'bar'</span></div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">});</span></div><div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">},</span>&nbsp;<span style="color: #0086b3">1</span><span style="color: #000000">);</span></div><div><span style="color: #000000">});</span></div><div>&nbsp;</div><div><span style="color: #a71d5d">return</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span></div><div>&nbsp;&nbsp;&nbsp;&nbsp;promiseThatWillBeFulfilledWithAValue<span style="color: #000000">,</span></div><div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;fulfilled&nbsp;with&nbsp;value&nbsp;satisfying'</span><span style="color: #000000">,</span></div><div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">{</span>&nbsp;foo<span style="color: #000000">:</span>&nbsp;<span style="color: #df5000">'bar'</span>&nbsp;<span style="color: #000000">}</span></div><div><span style="color: #000000">);</span></div></div><p>The expected value will be matched against the value with
-<a href="/assertions/any/to-satisfy/">to satisfy</a> semantics, so you can pass any of the
-values supported by <code>to satisfy</code>:</p>
-<div class="code lang-javascript"><div><span style="color: #a71d5d">return</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span></div><div>&nbsp;&nbsp;&nbsp;&nbsp;Promise<span style="color: #000000">.</span><span style="color: #000000">resolve</span><span style="color: #000000">(</span><span style="color: #df5000">'abc'</span><span style="color: #000000">),</span></div><div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;fulfilled&nbsp;with&nbsp;value&nbsp;satisfying'</span><span style="color: #000000">,</span></div><div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #183691">/b/</span></div><div><span style="color: #000000">);</span></div></div><p>You get a nice diff if the assertion fails:</p>
-<div class="code lang-javascript"><div><span style="color: #a71d5d">return</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span></div><div>&nbsp;&nbsp;&nbsp;&nbsp;Promise<span style="color: #000000">.</span><span style="color: #000000">resolve</span><span style="color: #000000">(</span><span style="color: #df5000">'abc'</span><span style="color: #000000">),</span></div><div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;fulfilled&nbsp;with&nbsp;value&nbsp;satisfying'</span><span style="color: #000000">,</span></div><div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #df5000">'def'</span></div><div><span style="color: #000000">);</span></div></div><div class="output"><div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #795da3">Promise</span>&nbsp;<span style="color: red; font-weight: bold">to&nbsp;be&nbsp;fulfilled&nbsp;with&nbsp;value&nbsp;satisfying</span>&nbsp;<span style="color: #df5000">'def'</span></div><div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top"><div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #df5000">'abc'</span>&nbsp;<span style="color: red; font-weight: bold">to&nbsp;equal</span>&nbsp;<span style="color: #df5000">'def'</span></div><div>&nbsp;</div><div><span style="background-color: red; color: white">abc</span></div><div><span style="background-color: green; color: white">def</span></div></div></div></div><p>You can use the <code>exhaustively</code> flag to use strict
-<a href="/assertions/any/to-satisfy/">to satisfy</a> semantics:</p>
-<div class="code lang-javascript"><div><span style="color: #a71d5d">return</span>&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span></div><div>&nbsp;&nbsp;&nbsp;&nbsp;Promise<span style="color: #000000">.</span><span style="color: #000000">resolve</span><span style="color: #000000">({</span></div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foo<span style="color: #000000">:</span>&nbsp;<span style="color: #df5000">'foo'</span><span style="color: #000000">,</span></div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bar<span style="color: #000000">:</span>&nbsp;<span style="color: #df5000">'bar'</span></div><div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">}),</span></div><div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #df5000">'to&nbsp;be&nbsp;fulfilled&nbsp;with&nbsp;value&nbsp;exhaustively&nbsp;satisfying'</span><span style="color: #000000">,</span></div><div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">{</span></div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foo<span style="color: #000000">:</span>&nbsp;<span style="color: #df5000">'foo'</span></div><div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">}</span></div><div><span style="color: #000000">);</span></div></div><div class="output"><div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #795da3">Promise</span>&nbsp;<span style="color: red; font-weight: bold">to&nbsp;be&nbsp;fulfilled&nbsp;with&nbsp;value&nbsp;exhaustively&nbsp;satisfying</span>&nbsp;{&nbsp;<span style="color: #555">foo</span>:&nbsp;<span style="color: #df5000">'foo'</span>&nbsp;}</div><div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top"><div><span style="color: red; font-weight: bold">expected</span>&nbsp;{&nbsp;<span style="color: #555">foo</span>:&nbsp;<span style="color: #df5000">'foo'</span>,&nbsp;<span style="color: #555">bar</span>:&nbsp;<span style="color: #df5000">'bar'</span>&nbsp;}&nbsp;<span style="color: red; font-weight: bold">to&nbsp;exhaustively&nbsp;satisfy</span>&nbsp;{&nbsp;<span style="color: #555">foo</span>:&nbsp;<span style="color: #df5000">'foo'</span>&nbsp;}</div><div>&nbsp;</div><div>{</div><div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top"><div><span style="color: #555">foo</span>:&nbsp;<span style="color: #df5000">'foo'</span>,</div></div></div><div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top"><div><span style="color: #555">bar</span>:&nbsp;<span style="color: #df5000">'bar'</span>&nbsp;<div style="display: inline-block; vertical-align: top"><div><span style="color: red; font-weight: bold">//</span></div></div>&nbsp;<div style="display: inline-block; vertical-align: top"><div><span style="color: red; font-weight: bold">should&nbsp;be&nbsp;removed</span></div></div></div></div></div><div>}</div></div></div></div>
+            <p>Asserts that the function throws an instance of a specific constructor.</p>
+<div class="code lang-javascript"><div><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">willThrow</span><span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div><div>&nbsp;&nbsp;<span style="color: #a71d5d">throw</span>&nbsp;<span style="color: #a71d5d">new</span>&nbsp;SyntaxError<span style="color: #000000">(</span><span style="color: #df5000">'The&nbsp;error&nbsp;message'</span><span style="color: #000000">);</span></div><div><span style="color: #000000">}</span></div><div><span style="color: #000000">expect</span><span style="color: #000000">(</span>willThrow<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;throw&nbsp;a'</span><span style="color: #000000">,</span>&nbsp;SyntaxError<span style="color: #000000">);</span></div></div><p>In case of a failing expectation you get the following output:</p>
+<div class="code lang-javascript"><div><span style="color: #000000">expect</span><span style="color: #000000">(</span>willThrow<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;throw&nbsp;a'</span><span style="color: #000000">,</span>&nbsp;RangeError<span style="color: #000000">);</span></div></div><div class="output"><div><span style="color: red; font-weight: bold">expected</span></div><div><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">willThrow</span><span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{</span></div><div>&nbsp;&nbsp;<span style="color: #a71d5d">throw</span>&nbsp;<span style="color: #a71d5d">new</span>&nbsp;SyntaxError<span style="color: #000000">(</span><span style="color: #df5000">'The&nbsp;error&nbsp;message'</span><span style="color: #000000">);</span></div><div><span style="color: #000000">}</span></div><div><span style="color: red; font-weight: bold">to&nbsp;throw&nbsp;a</span>&nbsp;<span style="color: #795da3">RangeError</span></div><div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top"><div><span style="color: red; font-weight: bold">expected</span>&nbsp;SyntaxError(<span style="color: #df5000">'The&nbsp;error&nbsp;message'</span>)&nbsp;<span style="color: red; font-weight: bold">to&nbsp;be&nbsp;a</span>&nbsp;RangeError</div></div></div></div><p>The assertion also fails if the function doesn&#39;t throw at all:</p>
+<div class="code lang-javascript"><div><span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">willNotThrow</span><span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{}</span></div><div>&nbsp;</div><div><span style="color: #000000">expect</span><span style="color: #000000">(</span>willNotThrow<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;throw&nbsp;a'</span><span style="color: #000000">,</span>&nbsp;RangeError<span style="color: #000000">);</span></div></div><div class="output"><div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">willNotThrow</span><span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{}</span>&nbsp;<span style="color: red; font-weight: bold">to&nbsp;throw&nbsp;a</span>&nbsp;<span style="color: #795da3">RangeError</span></div><div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top"><div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">willNotThrow</span><span style="color: #000000">()</span>&nbsp;<span style="color: #000000">{}</span>&nbsp;<span style="color: red; font-weight: bold">to&nbsp;throw</span></div><div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top"><div><span style="color: red; font-weight: bold">did&nbsp;not&nbsp;throw</span></div></div></div></div></div></div>
         </div>
     </div>
 </section>
