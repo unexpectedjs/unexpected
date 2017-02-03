@@ -10,11 +10,13 @@ describe('to throw assertion', function () {
             // PhantomJS adds a semicolon after the comment
             message = message.replace(';', '');
             expect(message, 'to equal',
-                   'expected\n' +
-                   'function () {\n' +
-                   '  // Don\'t throw\n' +
-                   '}\n' +
-                   'to throw exception');
+                'expected\n' +
+                'function () {\n' +
+                '  // Don\'t throw\n' +
+                '}\n' +
+                'to throw exception\n' +
+                '  did not throw'
+            );
         });
     });
 
