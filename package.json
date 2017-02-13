@@ -40,6 +40,7 @@
     "eslint": "2.13.1",
     "eslint-config-onelint": "1.2.0",
     "eslint-plugin-import": "1.16.0",
+    "fixpect": "papandreou/fixpect#fdb31060473a42e7a2d28ec63ef5607a1af9c0cd",
     "istanbul": "0.3.16",
     "jasmine": "2.2.1",
     "jasmine-core": "~2.2.0",

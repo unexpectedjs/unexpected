@@ -22,12 +22,12 @@ unexpected.addAssertion('<any> to inspect as <string>', function (expect, subjec
     });
 });
 
-expect = unexpected.clone();
+expect = require('fixpect')(unexpected.clone());
 
-expectWithUnexpectedMagicPen = unexpected.clone().use(typeof weknowhow === 'undefined' ?
+expectWithUnexpectedMagicPen = require('fixpect')(unexpected.clone().use(typeof weknowhow === 'undefined' ?
     require('unexpected-magicpen') :
     weknowhow.unexpectedMagicPen
-);
+));
 
 if (typeof setImmediate !== 'function') {
     setImmediate = function (cb) {
