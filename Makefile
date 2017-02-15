@@ -55,6 +55,10 @@ test-browser: create-html-runners unexpected.js
 
 .PHONY: travis-chewbacca
 travis-chewbacca:
+	# Revert me: Needed because fixpect changes the test files, which makes
+	# chewbacca attampt to stash, which makes the build fail because
+	# no git config is available :)
+	git checkout .
 	./node_modules/.bin/chewbacca --threshold ${CHEWBACCA_THRESHOLD} `echo ${TRAVIS_COMMIT_RANGE} | sed -e 's/\.\.\..*//;'` -- test/benchmark.spec.js
 
 travis: clean lint test travis-chewbacca test-phantomjs test-jasmine test-jest-if-supported-node-version coverage site-build
