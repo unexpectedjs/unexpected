@@ -604,6 +604,7 @@ Unexpected.prototype.addAssertion = function (patternOrPatterns, handler) {
 
     var defaultValueByFlag = {};
     var assertionHandlers = [];
+    var maxNumberOfArgs = 0;
     patterns.forEach(function (pattern) {
         var assertionDeclarations = that.parseAssertion(pattern);
         assertionDeclarations.forEach(function (assertionDeclaration) {
@@ -613,7 +614,9 @@ Unexpected.prototype.addAssertion = function (patternOrPatterns, handler) {
                 Object.keys(expandedAssertion.flags).forEach(function (flag) {
                     defaultValueByFlag[flag] = false;
                 });
-
+                maxNumberOfArgs = Math.max(maxNumberOfArgs, assertionDeclaration.args.reduce(function (previous, argDefinition) {
+                    return previous + (argDefinition.maximum === null ? Infinity : argDefinition.maximum);
+                }, 0));
                 assertionHandlers.push({
                     handler: handler,
                     alternations: expandedAssertion.alternations,
@@ -626,6 +629,9 @@ Unexpected.prototype.addAssertion = function (patternOrPatterns, handler) {
             });
         });
     });
+    if (handler.length - 2 > maxNumberOfArgs) {
+        throw new Error('The provided assertion handler takes ' + (handler.length - 2) + ' parameters, but the type signature specifies a maximum of ' + maxNumberOfArgs);
+    }
 
     assertionHandlers.forEach(function (handler) {
         // Make sure that all flags are defined.
@@ -2429,7 +2435,7 @@ module.exports = function (expect) {
         });
     });
 
-    expect.addAssertion('<function> not to error', function (expect, subject, arg) {
+    expect.addAssertion('<function> not to error', function (expect, subject) {
         var threw = false;
         return expect.promise(function () {
             try {
@@ -2472,7 +2478,7 @@ module.exports = function (expect) {
         }
     });
 
-    expect.addAssertion('<function> to (throw|throw error|throw exception)', function (expect, subject, arg) {
+    expect.addAssertion('<function> to (throw|throw error|throw exception)', function (expect, subject) {
         try {
             subject();
         } catch (e) {
@@ -3059,10 +3065,16 @@ module.exports = function (expect) {
         return expect.promise.all([
             expect.promise(function () {
                 if (expect.flags.exhaustively) {
-                    var nonOwnKeys = keys.filter(function (key) {
-                        return !Object.prototype.hasOwnProperty.call(subject, key);
+                    var nonOwnKeysWithDefinedValues = keys.filter(function (key) {
+                        return !Object.prototype.hasOwnProperty.call(subject, key) && typeof subject[key] !== 'undefined';
                     });
-                    expect(keys.length - nonOwnKeys.length, 'to equal', subjectKeys.length);
+                    var valueKeysWithDefinedValues = keys.filter(function (key) {
+                        return typeof value[key] !== 'undefined';
+                    });
+                    var subjectKeysWithDefinedValues = subjectKeys.filter(function (key) {
+                        return typeof subject[key] !== 'undefined';
+                    });
+                    expect(valueKeysWithDefinedValues.length - nonOwnKeysWithDefinedValues.length, 'to equal', subjectKeysWithDefinedValues.length);
                 }
             }),
             expect.promise.all(promiseByKey)
