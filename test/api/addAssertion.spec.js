@@ -23,7 +23,7 @@ describe('addAssertion', function () {
         }, 'to throw', 'expected [ 1, 2, 3 ] not to be sorted');
     });
 
-    it('throws when a handler that takes more parameters than are specified in the type signature', function () {
+    it('throws when a handler takes more parameters than are specified in the type signature', function () {
         expect(function () {
             expect.addAssertion('<string> to foobar <number>', function (expect, subject, one, toomany) {});
         }, 'to throw', 'The provided assertion handler takes 2 parameters, but the type signature specifies a maximum of 1');
