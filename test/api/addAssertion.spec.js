@@ -23,6 +23,16 @@ describe('addAssertion', function () {
         }, 'to throw', 'expected [ 1, 2, 3 ] not to be sorted');
     });
 
+    it('throws when a handler that takes more parameters than are specified in the type signature', function () {
+        expect(function () {
+            expect.addAssertion('<string> to foobar <number>', function (expect, subject, one, toomany) {});
+        }, 'to throw', 'The provided assertion handler takes 2 parameters, but the type signature specifies a maximum of 1');
+    });
+
+    it('allows a handler with many parameters when the type signature contains varargs', function () {
+        expect.clone().addAssertion('<string> to foobar <number+>', function (expect, subject, quite, a, lot) {});
+    });
+
     describe('when overriding an assertion', function () {
         it('uses the most specific version', function () {
             var clonedExpect = expect.clone()
