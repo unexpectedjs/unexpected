@@ -64,8 +64,12 @@
     "url": "/assertions/function/to-have-arity/"
   },
   {
-    "label": "to have message (Error)",
-    "url": "/assertions/Error/to-have-message/"
+    "label": "when decoded as (Buffer)",
+    "url": "/assertions/Buffer/when-decoded-as/"
+  },
+  {
+    "label": "to be fulfilled with value satisfying (Promise)",
+    "url": "/assertions/Promise/to-be-fulfilled-with-value-satisfying/"
   },
   {
     "label": "to be fulfilled with (Promise)",
@@ -96,6 +100,10 @@
     "url": "/assertions/Promise/when-rejected/"
   },
   {
+    "label": "to be a (any)",
+    "url": "/assertions/any/to-be-a/"
+  },
+  {
     "label": "to be defined (any)",
     "url": "/assertions/any/to-be-defined/"
   },
@@ -108,12 +116,16 @@
     "url": "/assertions/any/to-be-null/"
   },
   {
-    "label": "to be a (any)",
-    "url": "/assertions/any/to-be-a/"
-  },
-  {
     "label": "to be ok (any)",
     "url": "/assertions/any/to-be-ok/"
+  },
+  {
+    "label": "to be one of (any)",
+    "url": "/assertions/any/to-be-one-of/"
+  },
+  {
+    "label": "to be truthy (any)",
+    "url": "/assertions/any/to-be-truthy/"
   },
   {
     "label": "to be undefined (any)",
@@ -122,10 +134,6 @@
   {
     "label": "to be (any)",
     "url": "/assertions/any/to-be/"
-  },
-  {
-    "label": "to be truthy (any)",
-    "url": "/assertions/any/to-be-truthy/"
   },
   {
     "label": "to equal (any)",
@@ -140,12 +148,8 @@
     "url": "/assertions/any/when-passed-as-parameter-to/"
   },
   {
-    "label": "to be one of (any)",
-    "url": "/assertions/any/to-be-one-of/"
-  },
-  {
-    "label": "when decoded as (Buffer)",
-    "url": "/assertions/Buffer/when-decoded-as/"
+    "label": "to be empty (array-like)",
+    "url": "/assertions/array-like/to-be-empty/"
   },
   {
     "label": "to be non-empty (array-like)",
@@ -154,10 +158,6 @@
   {
     "label": "to contain (array-like)",
     "url": "/assertions/array-like/to-contain/"
-  },
-  {
-    "label": "to be empty (array-like)",
-    "url": "/assertions/array-like/to-be-empty/"
   },
   {
     "label": "to have an item satisfying (array-like)",
@@ -208,8 +208,8 @@
     "url": "/assertions/function/to-error/"
   },
   {
-    "label": "to be fulfilled with value satisfying (Promise)",
-    "url": "/assertions/Promise/to-be-fulfilled-with-value-satisfying/"
+    "label": "to have message (Error)",
+    "url": "/assertions/Error/to-have-message/"
   },
   {
     "label": "to throw a (function)",
