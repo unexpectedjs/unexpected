@@ -788,6 +788,14 @@ describe('to satisfy assertion', function () {
                     );
                 });
             });
+
+            it('should treat a missing value property the same as a subject property of undefined', function () {
+                expect({ foo: undefined }, 'to exhaustively satisfy', {});
+            });
+
+            it('should treat a missing subject property the same as a value property of undefined', function () {
+                expect({}, 'to exhaustively satisfy', { foo: undefined });
+            });
         });
 
         it('should support satisfying against a regexp', function () {
