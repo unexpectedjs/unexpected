@@ -114,7 +114,7 @@ if (typeof process === 'object') {
         });
 
         describe('executed through jasmine', function () {
-            expect.addAssertion('<string> executed through jasmine', function (expect, subject, value) {
+            expect.addAssertion('<string> executed through jasmine', function (expect, subject) {
                 return expect.promise(function (run) {
                     childProcess.execFile(pathModule.resolve(__dirname, '..', 'node_modules', '.bin', 'jasmine'), {
                         cwd: basePath,

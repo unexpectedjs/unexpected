@@ -95,7 +95,7 @@ describe('fail assertion', function () {
     describe('with a diff function', function () {
         it('should generate the diff', function () {
             var clonedExpect = expect.clone();
-            clonedExpect.addAssertion('<any> to foo', function (expect, subject, value) {
+            clonedExpect.addAssertion('<any> to foo', function (expect, subject) {
                 expect.fail({
                     diff: function (output, diff, inspect, equal) {
                         return output.text('custom');
@@ -113,7 +113,7 @@ describe('fail assertion', function () {
 
         it('should support a diff function that uses the old API', function () {
             var clonedExpect = expect.clone();
-            clonedExpect.addAssertion('<any> to foo', function (expect, subject, value) {
+            clonedExpect.addAssertion('<any> to foo', function (expect, subject) {
                 expect.fail({
                     diff: function (output, diff, inspect, equal) {
                         return {
