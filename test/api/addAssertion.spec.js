@@ -26,7 +26,7 @@ describe('addAssertion', function () {
     it('throws when a handler takes more parameters than are specified in the type signature', function () {
         expect(function () {
             expect.addAssertion('<string> to foobar <number>', function (expect, subject, one, toomany) {});
-        }, 'to throw', 'The provided assertion handler takes 2 parameters, but the type signature specifies a maximum of 1');
+        }, 'to throw', 'The provided assertion handler takes 2 parameters, but the type signature specifies a maximum of 1:\n\n    ["<string> to foobar <number>"]');
     });
 
     it('allows a handler with many parameters when the type signature contains varargs', function () {
@@ -102,19 +102,19 @@ describe('addAssertion', function () {
         it("can't start or end with whitespace", function () {
             expect(function () {
                 expect.addAssertion('   ', function () {});
-            }, 'to throw', "Assertion patterns can't start or end with whitespace");
+            }, 'to throw', "Assertion patterns can't start or end with whitespace:\n\n    \"   \"");
         });
 
         it("can't start with whitespace", function () {
             expect(function () {
                 expect.addAssertion(' foo', function () {});
-            }, 'to throw', "Assertion patterns can't start or end with whitespace");
+            }, 'to throw', "Assertion patterns can't start or end with whitespace:\n\n    \" foo\"");
         });
 
         it("can't end with whitespace", function () {
             expect(function () {
                 expect.addAssertion('foo   ', function () {});
-            }, 'to throw', "Assertion patterns can't start or end with whitespace");
+            }, 'to throw', "Assertion patterns can't start or end with whitespace:\n\n    \"foo   \"");
         });
 
         it("must not contain unbalanced brackets", function () {
