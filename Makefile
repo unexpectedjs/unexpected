@@ -39,13 +39,10 @@ test-jasmine: ${TARGETS}
 test-jasmine-browser: create-html-runners unexpected.js
 	@./node_modules/.bin/serve .
 
-# Pass --harmony-async-await so the AsyncFunction inspection test(s) will
-# get exercised with node.js 7 on Travis. Remove this when async/await
-# are no longer behind a switch:
 .PHONY: test
 TEST_SOURCES = $(shell find test -name '*.spec.js') $(shell find documentation -name '*.md')
 test: lint
-	@./node_modules/.bin/mocha $(shell node -pe "/^v7\./.test(process.version) ? '--harmony-async-await' : ''") $(TEST_SOURCES)
+	@./node_modules/.bin/mocha $(TEST_SOURCES)
 
 .PHONY: coverage
 coverage:
