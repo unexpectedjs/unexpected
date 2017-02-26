@@ -594,7 +594,7 @@ Unexpected.prototype.addAssertion = function (patternOrPatterns, handler) {
             throw new Error('Assertion patterns must be a non-empty string');
         } else {
             if (pattern !== pattern.trim()) {
-                throw new Error("Assertion patterns can't start or end with whitespace");
+                throw new Error("Assertion patterns can't start or end with whitespace:\n\n    " + JSON.stringify(pattern));
             }
         }
     });
@@ -630,7 +630,7 @@ Unexpected.prototype.addAssertion = function (patternOrPatterns, handler) {
         });
     });
     if (handler.length - 2 > maxNumberOfArgs) {
-        throw new Error('The provided assertion handler takes ' + (handler.length - 2) + ' parameters, but the type signature specifies a maximum of ' + maxNumberOfArgs);
+        throw new Error('The provided assertion handler takes ' + (handler.length - 2) + ' parameters, but the type signature specifies a maximum of ' + maxNumberOfArgs + ':\n\n    ' + JSON.stringify(patterns));
     }
 
     assertionHandlers.forEach(function (handler) {
@@ -715,7 +715,7 @@ Unexpected.prototype.addType = function (type) {
     var originalInspect = extendedType.inspect;
 
     extendedType.inspect = function (obj, depth, output, inspect) {
-        if (arguments.length < 2) {
+        if (arguments.length < 2 || (!output || !output.isMagicPen)) {
             return 'type: ' + type.name;
         } else {
             return originalInspect.call(this, obj, depth, output, inspect);
@@ -9667,6 +9667,14 @@ var duplicateText = require(48);
 var rgbRegexp = require(50);
 var cssStyles = require(47);
 
+var builtInStyleNames = [
+    'bold', 'dim', 'italic', 'underline', 'inverse', 'hidden',
+    'strikeThrough', 'black', 'red', 'green', 'yellow', 'blue',
+    'magenta', 'cyan', 'white', 'gray', 'bgBlack', 'bgRed',
+    'bgGreen', 'bgYellow', 'bgBlue', 'bgMagenta', 'bgCyan',
+    'bgWhite'
+];
+
 function MagicPen(options) {
     if (!(this instanceof MagicPen)) {
         return new MagicPen(options);
@@ -9686,7 +9694,12 @@ function MagicPen(options) {
     this.output = [[]];
     this.styles = Object.create(null);
     this.installedPlugins = [];
-    this._themes = {};
+    // Ready to be cloned individually:
+    this._themes = {
+        html: { styles: {} },
+        ansi: { styles: {} },
+        text: { styles: {} }
+    };
     this.preferredWidth = (!process.browser && process.stdout.columns) || 80;
     if (options.format) {
         this.format = options.format;
@@ -9807,19 +9820,22 @@ MagicPen.prototype.outdentLines = function () {
 };
 
 MagicPen.prototype.addStyle = function (style, handler, allowRedefinition) {
-    var existingType = typeof this[style];
-    if (existingType === 'function') {
-        if (!allowRedefinition) {
-            throw new Error('"' + style + '" style is already defined, set 3rd arg (allowRedefinition) to true to define it anyway');
-        }
-    } else if (existingType !== 'undefined') {
+    if (this[style] === false || ((this.hasOwnProperty(style) || MagicPen.prototype[style]) && !Object.prototype.hasOwnProperty.call(this.styles, style) && builtInStyleNames.indexOf(style) === -1)) {
         throw new Error('"' + style + '" style cannot be defined, it clashes with a built-in attribute');
     }
 
-    var styles = this.styles;
-    this.styles = Object.create(null);
-    for (var p in styles) {
-        this.styles[p] = styles[p];
+    // Refuse to redefine a built-in style or a style already defined directly on this pen unless allowRedefinition is true:
+    if (this.hasOwnProperty(style) || builtInStyleNames.indexOf(style) !== -1) {
+        var existingType = typeof this[style];
+        if (existingType === 'function') {
+            if (!allowRedefinition) {
+                throw new Error('"' + style + '" style is already defined, set 3rd arg (allowRedefinition) to true to define it anyway');
+            }
+        }
+    }
+    if (this._stylesHaveNotBeenClonedYet) {
+        this.styles = Object.create(this.styles);
+        this._stylesHaveNotBeenClonedYet = false;
     }
 
     this.styles[style] = handler;
@@ -10099,13 +10115,7 @@ MagicPen.prototype.space = MagicPen.prototype.sp = function (count) {
     return this.text(duplicateText(' ', count));
 };
 
-[
-    'bold', 'dim', 'italic', 'underline', 'inverse', 'hidden',
-    'strikeThrough', 'black', 'red', 'green', 'yellow', 'blue',
-    'magenta', 'cyan', 'white', 'gray', 'bgBlack', 'bgRed',
-    'bgGreen', 'bgYellow', 'bgBlue', 'bgMagenta', 'bgCyan',
-    'bgWhite'
-].forEach(function (textStyle) {
+builtInStyleNames.forEach(function (textStyle) {
     MagicPen.prototype[textStyle] = MagicPen.prototype[textStyle.toLowerCase()] = function (content) {
         return this.text(content, textStyle);
     };
@@ -10120,11 +10130,14 @@ MagicPen.prototype.clone = function (format) {
     MagicPenClone.prototype = this;
     var clonedPen = new MagicPenClone();
     clonedPen.styles = this.styles;
+    clonedPen._stylesHaveNotBeenClonedYet = true;
     clonedPen.indentationLevel = 0;
     clonedPen.output = [[]];
-    clonedPen.installedPlugins = this.installedPlugins;
+    clonedPen.installedPlugins = [];
     clonedPen._themes = this._themes;
+    clonedPen._themesHaveNotBeenClonedYet = true;
     clonedPen.format = format || this.format;
+    clonedPen.parent = this;
     return clonedPen;
 };
 
@@ -10175,10 +10188,17 @@ MagicPen.prototype.use = function (plugin) {
     }
 
     if (plugin.dependencies) {
-        var installedPlugins = this.installedPlugins;
+        var instance = this;
+        var thisAndParents = [];
+        do {
+            thisAndParents.push(instance);
+            instance = instance.parent;
+        } while (instance);
         var unfulfilledDependencies = plugin.dependencies.filter(function (dependency) {
-            return !installedPlugins.some(function (plugin) {
-                return plugin.name === dependency;
+            return !thisAndParents.some(function (instance) {
+                return instance.installedPlugins.some(function (plugin) {
+                    return plugin.name === dependency;
+                });
             });
         });
 
@@ -10329,6 +10349,15 @@ MagicPen.prototype.installTheme = function (formats, theme) {
         };
     }
 
+    if (that._themesHaveNotBeenClonedYet) {
+        var clonedThemes = {};
+        Object.keys(that._themes).forEach(function (format) {
+            clonedThemes[format] = Object.create(that._themes[format]);
+        });
+        that._themes = clonedThemes;
+        that._themesHaveNotBeenClonedYet = false;
+    }
+
     Object.keys(theme.styles).forEach(function (themeKey) {
         if (rgbRegexp.test(themeKey) || cssStyles[themeKey]) {
             throw new Error("Invalid theme key: '" + themeKey + "' you can't map build styles.");
@@ -10341,7 +10370,6 @@ MagicPen.prototype.installTheme = function (formats, theme) {
         }
     });
 
-    that._themes = extend({}, that._themes);
     formats.forEach(function (format) {
         var baseTheme = that._themes[format] || { styles: {} };
         var extendedTheme = extend({}, baseTheme, theme);
