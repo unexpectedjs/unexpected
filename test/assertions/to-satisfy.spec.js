@@ -1797,4 +1797,17 @@ describe('to satisfy assertion', function () {
             );
         });
     });
+
+    it('should not break when the assertion fails and the subject has a property that also exists on Object.prototype', function () {
+        expect(function () {
+            expect({constructor: 123}, 'to satisfy', {foo: 456});
+        }, 'to throw',
+            "expected { constructor: 123 } to satisfy { foo: 456 }\n" +
+            "\n" +
+            "{\n" +
+            "  constructor: 123\n" +
+            "  // missing foo: 456\n" +
+            "}"
+        );
+    });
 });
