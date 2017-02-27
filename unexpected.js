@@ -29,9 +29,9 @@ module.exports = function AssertionString(text) {
 },{}],2:[function(require,module,exports){
 var createStandardErrorMessage = require(6);
 var utils = require(19);
-var magicpen = require(45);
+var magicpen = require(40);
 var extend = utils.extend;
-var leven = require(41);
+var leven = require(36);
 var makePromise = require(11);
 var addAdditionalPromiseMethods = require(4);
 var isPendingPromise = require(9);
@@ -1817,8 +1817,8 @@ module.exports = function addAdditionalPromiseMethods(promise, expect, subject) 
 (function (Buffer){
 /*global setTimeout*/
 var utils = require(19);
-var arrayChanges = require(24);
-var arrayChangesAsync = require(23);
+var arrayChanges = require(23);
+var arrayChangesAsync = require(22);
 var throwIfNonUnexpectedError = require(16);
 var objectIs = utils.objectIs;
 var isRegExp = utils.isRegExp;
@@ -3102,7 +3102,7 @@ module.exports = function (expect) {
                                 var annotation = output.clone();
                                 var conflicting;
 
-                                if (promiseByKey[key] && promiseByKey[key].isRejected()) {
+                                if (Object.prototype.hasOwnProperty.call(promiseByKey, key) && promiseByKey[key].isRejected()) {
                                     conflicting = promiseByKey[key].reason();
                                 }
 
@@ -3556,7 +3556,7 @@ module.exports = function (expect) {
     });
 };
 
-}).call(this,require(28).Buffer)
+}).call(this,require(27).Buffer)
 },{}],6:[function(require,module,exports){
 var AssertionString = require(1);
 
@@ -3892,7 +3892,7 @@ if (matchDepthParameter) {
 }
 module.exports = defaultDepth;
 
-}).call(this,require(54))
+}).call(this,require(55))
 },{}],9:[function(require,module,exports){
 module.exports = function isPendingPromise(obj) {
     return obj && typeof obj.then === 'function' && typeof obj.isPending === 'function' && obj.isPending();
@@ -4172,7 +4172,7 @@ module.exports = /([\x00-\x09\x0B-\x1F\x7F-\x9F\xAD\u0378\u0379\u037F-\u0383\u03
 
 },{}],15:[function(require,module,exports){
 var utils = require(19);
-var stringDiff = require(34);
+var stringDiff = require(29);
 var specialCharRegExp = require(14);
 
 module.exports = function (expect) {
@@ -4547,7 +4547,7 @@ module.exports = function (expect) {
         }
     });
 
-    var flattenBlocksInLines = require(49);
+    var flattenBlocksInLines = require(44);
     expect.addStyle('merge', function (pens) {
         var flattenedPens = pens.map(function (pen) {
             return flattenBlocksInLines(pen.output);
@@ -4660,9 +4660,9 @@ module.exports = function throwIfNonUnexpectedError(err) {
 var utils = require(19);
 var isRegExp = utils.isRegExp;
 var leftPad = utils.leftPad;
-var arrayChanges = require(24);
-var leven = require(41);
-var detectIndent = require(33);
+var arrayChanges = require(23);
+var leven = require(36);
+var detectIndent = require(28);
 var defaultDepth = require(8);
 var AssertionString = require(1);
 
@@ -5739,7 +5739,7 @@ module.exports = function (expect) {
     });
 };
 
-}).call(this,require(28).Buffer)
+}).call(this,require(27).Buffer)
 },{}],18:[function(require,module,exports){
 (function (process){
 /*global window*/
@@ -5755,11 +5755,11 @@ if (typeof process !== 'undefined' && process.env && process.env.UNEXPECTED_FULL
 }
 module.exports = useFullStackTrace;
 
-}).call(this,require(54))
+}).call(this,require(55))
 },{}],19:[function(require,module,exports){
 /* eslint-disable no-proto */
 var canSetPrototype = Object.setPrototypeOf || ({ __proto__: [] } instanceof Array);
-var greedyIntervalPacker = require(36);
+var greedyIntervalPacker = require(31);
 
 var setPrototypeOf = Object.setPrototypeOf || function setPrototypeOf(obj, proto) {
     obj.__proto__ = proto;
@@ -5995,70 +5995,12 @@ module.exports = require(2).create()
 
 // Add an inspect method to all the promises we return that will make the REPL, console.log, and util.inspect render it nicely in node.js:
 require(57).prototype.inspect = function () {
-    return module.exports.createOutput(require(45).defaultFormat).appendInspected(this).toString();
+    return module.exports.createOutput(require(40).defaultFormat).appendInspected(this).toString();
 };
 
 },{}],22:[function(require,module,exports){
-'use strict';
-
-var styles = module.exports = {
-	modifiers: {
-		reset: [0, 0],
-		bold: [1, 22], // 21 isn't widely supported and 22 does the same thing
-		dim: [2, 22],
-		italic: [3, 23],
-		underline: [4, 24],
-		inverse: [7, 27],
-		hidden: [8, 28],
-		strikethrough: [9, 29]
-	},
-	colors: {
-		black: [30, 39],
-		red: [31, 39],
-		green: [32, 39],
-		yellow: [33, 39],
-		blue: [34, 39],
-		magenta: [35, 39],
-		cyan: [36, 39],
-		white: [37, 39],
-		gray: [90, 39]
-	},
-	bgColors: {
-		bgBlack: [40, 49],
-		bgRed: [41, 49],
-		bgGreen: [42, 49],
-		bgYellow: [43, 49],
-		bgBlue: [44, 49],
-		bgMagenta: [45, 49],
-		bgCyan: [46, 49],
-		bgWhite: [47, 49]
-	}
-};
-
-// fix humans
-styles.colors.grey = styles.colors.gray;
-
-Object.keys(styles).forEach(function (groupName) {
-	var group = styles[groupName];
-
-	Object.keys(group).forEach(function (styleName) {
-		var style = group[styleName];
-
-		styles[styleName] = group[styleName] = {
-			open: '\u001b[' + style[0] + 'm',
-			close: '\u001b[' + style[1] + 'm'
-		};
-	});
-
-	Object.defineProperty(styles, groupName, {
-		value: group,
-		enumerable: false
-	});
-});
-
-},{}],23:[function(require,module,exports){
 /*global setTimeout */
-var arrayDiff = require(25);
+var arrayDiff = require(24);
 var MAX_STACK_DEPTH = 1000;
 
 function extend(target) {
@@ -6327,8 +6269,8 @@ module.exports = function arrayChanges(actual, expected, equal, similar, include
     });
 };
 
-},{}],24:[function(require,module,exports){
-var arrayDiff = require(26);
+},{}],23:[function(require,module,exports){
+var arrayDiff = require(25);
 
 function extend(target) {
     for (var i = 1; i < arguments.length; i += 1) {
@@ -6544,7 +6486,7 @@ module.exports = function arrayChanges(actual, expected, equal, similar, include
     return mutatedArray;
 };
 
-},{}],25:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 
 module.exports = arrayDiff;
 
@@ -6785,7 +6727,7 @@ function arrayDiff(before, after, equalFn, callback) {
     });
 }
 
-},{}],26:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 module.exports = arrayDiff;
 
 // Based on some rough benchmarking, this algorithm is about O(2n) worst case,
@@ -6968,7 +6910,7 @@ function arrayDiff(before, after, equalFn) {
   return removes.concat(outputMoves, inserts);
 }
 
-},{}],27:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 ;(function (exports) {
@@ -7090,7 +7032,7 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 	exports.fromByteArray = uint8ToBase64
 }(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
 
-},{}],28:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -7098,9 +7040,9 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
  * @license  MIT
  */
 
-var base64 = require(27)
-var ieee754 = require(38)
-var isArray = require(39)
+var base64 = require(26)
+var ieee754 = require(33)
+var isArray = require(34)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = Buffer
@@ -8144,429 +8086,9 @@ function decodeUtf8Char (str) {
   }
 }
 
-},{}],29:[function(require,module,exports){
-/**
- * @author Markus Ekholm
- * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
- * @license Copyright (c) 2012-2015, Markus Ekholm
- * All rights reserved.
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *    * Redistributions of source code must retain the above copyright
- *      notice, this list of conditions and the following disclaimer.
- *    * Redistributions in binary form must reproduce the above copyright
- *      notice, this list of conditions and the following disclaimer in the
- *      documentation and/or other materials provided with the distribution.
- *    * Neither the name of the <organization> nor the
- *      names of its contributors may be used to endorse or promote products
- *      derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL MARKUS EKHOLM BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/**
-* EXPORTS
-*/
-exports.rgb_to_lab = rgb_to_lab;
-
-/**
-* IMPORTS
-*/
-var pow  = Math.pow;
-var sqrt = Math.sqrt;
-
-/**
- * API FUNCTIONS
- */
-
-/**
-* Returns c converted to labcolor.
-* @param {rgbcolor} c should have fields R,G,B
-* @return {labcolor} c converted to labcolor
-*/
-function rgb_to_lab(c)
-{
-  return xyz_to_lab(rgb_to_xyz(c))
-}
-
-/**
-* Returns c converted to xyzcolor.
-* @param {rgbcolor} c should have fields R,G,B
-* @return {xyzcolor} c converted to xyzcolor
-*/
-function rgb_to_xyz(c)
-{
-  // Based on http://www.easyrgb.com/index.php?X=MATH&H=02
-  var R = ( c.R / 255 );
-  var G = ( c.G / 255 );
-  var B = ( c.B / 255 );
-
-  if ( R > 0.04045 ) R = pow(( ( R + 0.055 ) / 1.055 ),2.4);
-  else               R = R / 12.92;
-  if ( G > 0.04045 ) G = pow(( ( G + 0.055 ) / 1.055 ),2.4);
-  else               G = G / 12.92;
-  if ( B > 0.04045 ) B = pow(( ( B + 0.055 ) / 1.055 ), 2.4);
-  else               B = B / 12.92;
-
-  R *= 100;
-  G *= 100;
-  B *= 100;
-
-  // Observer. = 2°, Illuminant = D65
-  var X = R * 0.4124 + G * 0.3576 + B * 0.1805;
-  var Y = R * 0.2126 + G * 0.7152 + B * 0.0722;
-  var Z = R * 0.0193 + G * 0.1192 + B * 0.9505;
-  return {'X' : X, 'Y' : Y, 'Z' : Z};
-}
-
-/**
-* Returns c converted to labcolor.
-* @param {xyzcolor} c should have fields X,Y,Z
-* @return {labcolor} c converted to labcolor
-*/
-function xyz_to_lab(c)
-{
-  // Based on http://www.easyrgb.com/index.php?X=MATH&H=07
-  var ref_Y = 100.000;
-  var ref_Z = 108.883;
-  var ref_X = 95.047; // Observer= 2°, Illuminant= D65
-  var Y = c.Y / ref_Y;
-  var Z = c.Z / ref_Z;
-  var X = c.X / ref_X;
-  if ( X > 0.008856 ) X = pow(X, 1/3);
-  else                X = ( 7.787 * X ) + ( 16 / 116 );
-  if ( Y > 0.008856 ) Y = pow(Y, 1/3);
-  else                Y = ( 7.787 * Y ) + ( 16 / 116 );
-  if ( Z > 0.008856 ) Z = pow(Z, 1/3);
-  else                Z = ( 7.787 * Z ) + ( 16 / 116 );
-  var L = ( 116 * Y ) - 16;
-  var a = 500 * ( X - Y );
-  var b = 200 * ( Y - Z );
-  return {'L' : L , 'a' : a, 'b' : b};
-}
-
-// Local Variables:
-// allout-layout: t
-// js-indent-level: 2
-// End:
-
-},{}],30:[function(require,module,exports){
-/**
- * @author Markus Ekholm
- * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
- * @license Copyright (c) 2012-2015, Markus Ekholm
- * All rights reserved.
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *    * Redistributions of source code must retain the above copyright
- *      notice, this list of conditions and the following disclaimer.
- *    * Redistributions in binary form must reproduce the above copyright
- *      notice, this list of conditions and the following disclaimer in the
- *      documentation and/or other materials provided with the distribution.
- *    * Neither the name of the <organization> nor the
- *      names of its contributors may be used to endorse or promote products
- *      derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL MARKUS EKHOLM BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/**
-* EXPORTS
-*/
-exports.ciede2000 = ciede2000;
-
-/**
-* IMPORTS
-*/
-var sqrt = Math.sqrt;
-var pow = Math.pow;
-var cos = Math.cos;
-var atan2 = Math.atan2;
-var sin = Math.sin;
-var abs = Math.abs;
-var exp = Math.exp;
-var PI = Math.PI;
-
-/**
- * API FUNCTIONS
- */
-
-/**
-* Returns diff between c1 and c2 using the CIEDE2000 algorithm
-* @param {labcolor} c1    Should have fields L,a,b
-* @param {labcolor} c2    Should have fields L,a,b
-* @return {float}   Difference between c1 and c2
-*/
-function ciede2000(c1,c2)
-{
-  /**
-   * Implemented as in "The CIEDE2000 Color-Difference Formula:
-   * Implementation Notes, Supplementary Test Data, and Mathematical Observations"
-   * by Gaurav Sharma, Wencheng Wu and Edul N. Dalal.
-   */
-
-  // Get L,a,b values for color 1
-  var L1 = c1.L;
-  var a1 = c1.a;
-  var b1 = c1.b;
-
-  // Get L,a,b values for color 2
-  var L2 = c2.L;
-  var a2 = c2.a;
-  var b2 = c2.b;
-
-  // Weight factors
-  var kL = 1;
-  var kC = 1;
-  var kH = 1;
-
-  /**
-   * Step 1: Calculate C1p, C2p, h1p, h2p
-   */
-  var C1 = sqrt(pow(a1, 2) + pow(b1, 2)) //(2)
-  var C2 = sqrt(pow(a2, 2) + pow(b2, 2)) //(2)
-
-  var a_C1_C2 = (C1+C2)/2.0;             //(3)
-
-  var G = 0.5 * (1 - sqrt(pow(a_C1_C2 , 7.0) /
-                          (pow(a_C1_C2, 7.0) + pow(25.0, 7.0)))); //(4)
-
-  var a1p = (1.0 + G) * a1; //(5)
-  var a2p = (1.0 + G) * a2; //(5)
-
-  var C1p = sqrt(pow(a1p, 2) + pow(b1, 2)); //(6)
-  var C2p = sqrt(pow(a2p, 2) + pow(b2, 2)); //(6)
-
-  var hp_f = function(x,y) //(7)
-  {
-    if(x== 0 && y == 0) return 0;
-    else{
-      var tmphp = degrees(atan2(x,y));
-      if(tmphp >= 0) return tmphp
-      else           return tmphp + 360;
-    }
-  }
-
-  var h1p = hp_f(b1, a1p); //(7)
-  var h2p = hp_f(b2, a2p); //(7)
-
-  /**
-   * Step 2: Calculate dLp, dCp, dHp
-   */
-  var dLp = L2 - L1; //(8)
-  var dCp = C2p - C1p; //(9)
-
-  var dhp_f = function(C1, C2, h1p, h2p) //(10)
-  {
-    if(C1*C2 == 0)               return 0;
-    else if(abs(h2p-h1p) <= 180) return h2p-h1p;
-    else if((h2p-h1p) > 180)     return (h2p-h1p)-360;
-    else if((h2p-h1p) < -180)    return (h2p-h1p)+360;
-    else                         throw(new Error());
-  }
-  var dhp = dhp_f(C1,C2, h1p, h2p); //(10)
-  var dHp = 2*sqrt(C1p*C2p)*sin(radians(dhp)/2.0); //(11)
-
-  /**
-   * Step 3: Calculate CIEDE2000 Color-Difference
-   */
-  var a_L = (L1 + L2) / 2.0; //(12)
-  var a_Cp = (C1p + C2p) / 2.0; //(13)
-
-  var a_hp_f = function(C1, C2, h1p, h2p) { //(14)
-    if(C1*C2 == 0)                                      return h1p+h2p
-    else if(abs(h1p-h2p)<= 180)                         return (h1p+h2p)/2.0;
-    else if((abs(h1p-h2p) > 180) && ((h1p+h2p) < 360))  return (h1p+h2p+360)/2.0;
-    else if((abs(h1p-h2p) > 180) && ((h1p+h2p) >= 360)) return (h1p+h2p-360)/2.0;
-    else                                                throw(new Error());
-  }
-  var a_hp = a_hp_f(C1,C2,h1p,h2p); //(14)
-  var T = 1-0.17*cos(radians(a_hp-30))+0.24*cos(radians(2*a_hp))+
-    0.32*cos(radians(3*a_hp+6))-0.20*cos(radians(4*a_hp-63)); //(15)
-  var d_ro = 30 * exp(-(pow((a_hp-275)/25,2))); //(16)
-  var RC = sqrt((pow(a_Cp, 7.0)) / (pow(a_Cp, 7.0) + pow(25.0, 7.0)));//(17)
-  var SL = 1 + ((0.015 * pow(a_L - 50, 2)) /
-                sqrt(20 + pow(a_L - 50, 2.0)));//(18)
-  var SC = 1 + 0.045 * a_Cp;//(19)
-  var SH = 1 + 0.015 * a_Cp * T;//(20)
-  var RT = -2 * RC * sin(radians(2 * d_ro));//(21)
-  var dE = sqrt(pow(dLp /(SL * kL), 2) + pow(dCp /(SC * kC), 2) +
-                pow(dHp /(SH * kH), 2) + RT * (dCp /(SC * kC)) *
-                (dHp / (SH * kH))); //(22)
-  return dE;
-}
-
-/**
- * INTERNAL FUNCTIONS
- */
-function degrees(n) { return n*(180/PI); }
-function radians(n) { return n*(PI/180); }
-
-// Local Variables:
-// allout-layout: t
-// js-indent-level: 2
-// End:
-
-},{}],31:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 'use strict';
-
-var diff = require(30);
-var convert = require(29);
-var palette = require(32);
-
-var color = module.exports = {};
-
-color.diff             = diff.ciede2000;
-color.rgb_to_lab       = convert.rgb_to_lab;
-color.map_palette      = palette.map_palette;
-color.palette_map_key  = palette.palette_map_key;
-
-color.closest = function(target, relative) {
-    var key = color.palette_map_key(target);
-
-    var result = color.map_palette([target], relative, 'closest');
-
-    return result[key];
-};
-
-color.furthest = function(target, relative) {
-    var key = color.palette_map_key(target);
-
-    var result = color.map_palette([target], relative, 'furthest');
-
-    return result[key];
-};
-
-},{}],32:[function(require,module,exports){
-/**
- * @author Markus Ekholm
- * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
- * @license Copyright (c) 2012-2015, Markus Ekholm
- * All rights reserved.
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *    * Redistributions of source code must retain the above copyright
- *      notice, this list of conditions and the following disclaimer.
- *    * Redistributions in binary form must reproduce the above copyright
- *      notice, this list of conditions and the following disclaimer in the
- *      documentation and/or other materials provided with the distribution.
- *    * Neither the name of the <organization> nor the
- *      names of its contributors may be used to endorse or promote products
- *      derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL MARKUS EKHOLM BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/**
-* EXPORTS
-*/
-exports.map_palette     = map_palette;
-exports.palette_map_key = palette_map_key;
-
-/**
-* IMPORTS
-*/
-var color_diff    = require(30);
-var color_convert = require(29);
-
-/**
- * API FUNCTIONS
- */
-
-/**
-* Returns the hash key used for a {rgbcolor} in a {palettemap}
-* @param {rgbcolor} c should have fields R,G,B
-* @return {string}
-*/
-function palette_map_key(c)
-{
-  return "R" + c.R + "B" + c.B + "G" + c.G;
-}
-
-/**
-* Returns a mapping from each color in a to the closest color in b
-* @param [{rgbcolor}] a each element should have fields R,G,B
-* @param [{rgbcolor}] b each element should have fields R,G,B
-* @param 'type' should be the string 'closest' or 'furthest'
-* @return {palettemap}
-*/
-function map_palette(a, b, type)
-{
-  var c = {};
-  type = type || 'closest';
-  for (var idx1 = 0; idx1 < a.length; idx1 += 1){
-    var color1 = a[idx1];
-    var best_color      = undefined;
-    var best_color_diff = undefined;
-    for (var idx2 = 0; idx2 < b.length; idx2 += 1)
-    {
-      var color2 = b[idx2];
-      var current_color_diff = diff(color1,color2);
-
-      if((best_color == undefined) || ((type === 'closest') && (current_color_diff < best_color_diff)))
-      {
-        best_color      = color2;
-        best_color_diff = current_color_diff;
-        continue;
-      }
-      if((type === 'furthest') && (current_color_diff > best_color_diff))
-      {
-        best_color      = color2;
-        best_color_diff = current_color_diff;
-        continue;
-      }
-    }
-    c[palette_map_key(color1)] = best_color;
-  }
-  return c;
-}
-
-/**
- * INTERNAL FUNCTIONS
- */
-
-function diff(c1,c2)
-{
-  c1 = color_convert.rgb_to_lab(c1);
-  c2 = color_convert.rgb_to_lab(c2);
-  return color_diff.ciede2000(c1,c2);
-}
-
-// Local Variables:
-// allout-layout: t
-// js-indent-level: 2
-// End:
-
-},{}],33:[function(require,module,exports){
-'use strict';
-var repeating = require(55);
+var repeating = require(56);
 
 // detect either spaces or tabs but not both to properly handle tabs
 // for indentation and spaces for alignment
@@ -8685,7 +8207,7 @@ module.exports = function (str) {
 	};
 };
 
-},{}],34:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 /* See LICENSE file for terms of use */
 
 /*
@@ -9076,16 +8598,16 @@ module.exports = function (str) {
   }
 })(this);
 
-},{}],35:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 module.exports = function (a, b) {
     var c = b.start - a.start;
     if (c !== 0) { return c; }
     return (a.end - a.start) - (b.end - b.start);
 };
 
-},{}],36:[function(require,module,exports){
-var intersectsWithSome = require(37).intersectsWithSome;
-var byDescStartAndLength = require(35);
+},{}],31:[function(require,module,exports){
+var intersectsWithSome = require(32).intersectsWithSome;
+var byDescStartAndLength = require(30);
 
 module.exports = function greedyIntervalPacker(intervals, options) {
     options = options || {};
@@ -9149,7 +8671,7 @@ module.exports = function greedyIntervalPacker(intervals, options) {
     }
 };
 
-},{}],37:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 var intersection = {
     intersects: function intersects(x, y) {
         return (x.start < y.end && y.start < x.end) || x.start === y.start;
@@ -9165,7 +8687,7 @@ var intersection = {
 
 module.exports = intersection;
 
-},{}],38:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = nBytes * 8 - mLen - 1
@@ -9251,7 +8773,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],39:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 
 /**
  * isArray
@@ -9286,15 +8808,15 @@ module.exports = isArray || function (val) {
   return !! val && '[object Array]' == str.call(val);
 };
 
-},{}],40:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 'use strict';
-var numberIsNan = require(53);
+var numberIsNan = require(54);
 
 module.exports = Number.isFinite || function (val) {
 	return !(typeof val !== 'number' || numberIsNan(val) || val === Infinity || val === -Infinity);
 };
 
-},{}],41:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 /* eslint-disable no-nested-ternary */
 'use strict';
 var arr = [];
@@ -9343,17 +8865,17 @@ module.exports = function (a, b) {
 	return ret;
 };
 
-},{}],42:[function(require,module,exports){
-var utils = require(52);
-var TextSerializer = require(46);
-var colorDiff = require(31);
-var rgbRegexp = require(50);
-var themeMapper = require(51);
+},{}],37:[function(require,module,exports){
+var utils = require(47);
+var TextSerializer = require(41);
+var colorDiff = require(51);
+var rgbRegexp = require(45);
+var themeMapper = require(46);
 
 var cacheSize = 0;
 var maxColorCacheSize = 1024;
 
-var ansiStyles = utils.extend({}, require(22));
+var ansiStyles = utils.extend({}, require(48));
 Object.keys(ansiStyles).forEach(function (styleName) {
     ansiStyles[styleName.toLowerCase()] = ansiStyles[styleName];
 });
@@ -9491,11 +9013,11 @@ AnsiSerializer.prototype.text = function (options) {
 
 module.exports = AnsiSerializer;
 
-},{}],43:[function(require,module,exports){
-var cssStyles = require(47);
-var flattenBlocksInLines = require(49);
-var rgbRegexp = require(50);
-var themeMapper = require(51);
+},{}],38:[function(require,module,exports){
+var cssStyles = require(42);
+var flattenBlocksInLines = require(44);
+var rgbRegexp = require(45);
+var themeMapper = require(46);
 
 function ColoredConsoleSerializer(theme) {
     this.theme = theme;
@@ -9577,10 +9099,10 @@ ColoredConsoleSerializer.prototype.raw = function (options) {
 
 module.exports = ColoredConsoleSerializer;
 
-},{}],44:[function(require,module,exports){
-var cssStyles = require(47);
-var rgbRegexp = require(50);
-var themeMapper = require(51);
+},{}],39:[function(require,module,exports){
+var cssStyles = require(42);
+var rgbRegexp = require(45);
+var themeMapper = require(46);
 
 function HtmlSerializer(theme) {
     this.theme = theme;
@@ -9658,14 +9180,14 @@ HtmlSerializer.prototype.raw = function (options) {
 
 module.exports = HtmlSerializer;
 
-},{}],45:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 (function (process){
 /*global window*/
-var utils = require(52);
+var utils = require(47);
 var extend = utils.extend;
-var duplicateText = require(48);
-var rgbRegexp = require(50);
-var cssStyles = require(47);
+var duplicateText = require(43);
+var rgbRegexp = require(45);
+var cssStyles = require(42);
 
 var builtInStyleNames = [
     'bold', 'dim', 'italic', 'underline', 'inverse', 'hidden',
@@ -9706,7 +9228,7 @@ function MagicPen(options) {
     }
 }
 
-if (typeof exports === 'object' && typeof exports.nodeName !== 'string' && require(56)) {
+if (typeof exports === 'object' && typeof exports.nodeName !== 'string' && require(53)) {
     MagicPen.defaultFormat = 'ansi'; // colored console
 } else if (typeof window !== 'undefined' && typeof window.navigator !== 'undefined') {
     if (window._phantom || window.mochaPhantomJS || (window.__karma__ && window.__karma__.config.captureConsole)) {
@@ -9735,10 +9257,10 @@ MagicPen.prototype.newline = MagicPen.prototype.nl = function (count) {
 
 MagicPen.serializers = {};
 [
-    require(46),
-    require(44),
-    require(42),
-    require(43)
+    require(41),
+    require(39),
+    require(37),
+    require(38)
 ].forEach(function (serializer) {
     MagicPen.serializers[serializer.prototype.format] = serializer;
 });
@@ -10383,9 +9905,9 @@ MagicPen.prototype.installTheme = function (formats, theme) {
 
 module.exports = MagicPen;
 
-}).call(this,require(54))
-},{}],46:[function(require,module,exports){
-var flattenBlocksInLines = require(49);
+}).call(this,require(55))
+},{}],41:[function(require,module,exports){
+var flattenBlocksInLines = require(44);
 
 function TextSerializer() {}
 
@@ -10419,7 +9941,7 @@ TextSerializer.prototype.raw = function (options) {
 
 module.exports = TextSerializer;
 
-},{}],47:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 var cssStyles = {
     bold: 'font-weight: bold',
     dim: 'opacity: 0.7',
@@ -10455,7 +9977,7 @@ Object.keys(cssStyles).forEach(function (styleName) {
 
 module.exports = cssStyles;
 
-},{}],48:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 var whitespaceCacheLength = 256;
 var whitespaceCache = [''];
 for (var i = 1; i <= whitespaceCacheLength; i += 1) {
@@ -10491,9 +10013,9 @@ function duplicateText(content, times) {
 
 module.exports = duplicateText;
 
-},{}],49:[function(require,module,exports){
-var utils = require(52);
-var duplicateText = require(48);
+},{}],44:[function(require,module,exports){
+var utils = require(47);
+var duplicateText = require(43);
 
 function createPadding(length) {
     return { style: 'text', args: { content: duplicateText(' ', length), styles: [] } };
@@ -10576,10 +10098,10 @@ function flattenBlocksInLines(lines) {
 
 module.exports = flattenBlocksInLines;
 
-},{}],50:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 module.exports =  /^(?:bg)?#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i;
 
-},{}],51:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 module.exports = function (theme, styles) {
     if (styles.length === 1) {
         var count = 0;
@@ -10604,7 +10126,7 @@ module.exports = function (theme, styles) {
     return styles;
 };
 
-},{}],52:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 var utils = {
     extend: function (target) {
         for (var i = 1; i < arguments.length; i += 1) {
@@ -10713,13 +10235,534 @@ var utils = {
 
 module.exports = utils;
 
+},{}],48:[function(require,module,exports){
+'use strict';
+
+var styles = module.exports = {
+	modifiers: {
+		reset: [0, 0],
+		bold: [1, 22], // 21 isn't widely supported and 22 does the same thing
+		dim: [2, 22],
+		italic: [3, 23],
+		underline: [4, 24],
+		inverse: [7, 27],
+		hidden: [8, 28],
+		strikethrough: [9, 29]
+	},
+	colors: {
+		black: [30, 39],
+		red: [31, 39],
+		green: [32, 39],
+		yellow: [33, 39],
+		blue: [34, 39],
+		magenta: [35, 39],
+		cyan: [36, 39],
+		white: [37, 39],
+		gray: [90, 39]
+	},
+	bgColors: {
+		bgBlack: [40, 49],
+		bgRed: [41, 49],
+		bgGreen: [42, 49],
+		bgYellow: [43, 49],
+		bgBlue: [44, 49],
+		bgMagenta: [45, 49],
+		bgCyan: [46, 49],
+		bgWhite: [47, 49]
+	}
+};
+
+// fix humans
+styles.colors.grey = styles.colors.gray;
+
+Object.keys(styles).forEach(function (groupName) {
+	var group = styles[groupName];
+
+	Object.keys(group).forEach(function (styleName) {
+		var style = group[styleName];
+
+		styles[styleName] = group[styleName] = {
+			open: '\u001b[' + style[0] + 'm',
+			close: '\u001b[' + style[1] + 'm'
+		};
+	});
+
+	Object.defineProperty(styles, groupName, {
+		value: group,
+		enumerable: false
+	});
+});
+
+},{}],49:[function(require,module,exports){
+/**
+ * @author Markus Ekholm
+ * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
+ * @license Copyright (c) 2012-2015, Markus Ekholm
+ * All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *    * Redistributions of source code must retain the above copyright
+ *      notice, this list of conditions and the following disclaimer.
+ *    * Redistributions in binary form must reproduce the above copyright
+ *      notice, this list of conditions and the following disclaimer in the
+ *      documentation and/or other materials provided with the distribution.
+ *    * Neither the name of the <organization> nor the
+ *      names of its contributors may be used to endorse or promote products
+ *      derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL MARKUS EKHOLM BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/**
+* EXPORTS
+*/
+exports.rgb_to_lab = rgb_to_lab;
+
+/**
+* IMPORTS
+*/
+var pow  = Math.pow;
+var sqrt = Math.sqrt;
+
+/**
+ * API FUNCTIONS
+ */
+
+/**
+* Returns c converted to labcolor.
+* @param {rgbcolor} c should have fields R,G,B
+* @return {labcolor} c converted to labcolor
+*/
+function rgb_to_lab(c)
+{
+  return xyz_to_lab(rgb_to_xyz(c))
+}
+
+/**
+* Returns c converted to xyzcolor.
+* @param {rgbcolor} c should have fields R,G,B
+* @return {xyzcolor} c converted to xyzcolor
+*/
+function rgb_to_xyz(c)
+{
+  // Based on http://www.easyrgb.com/index.php?X=MATH&H=02
+  var R = ( c.R / 255 );
+  var G = ( c.G / 255 );
+  var B = ( c.B / 255 );
+
+  if ( R > 0.04045 ) R = pow(( ( R + 0.055 ) / 1.055 ),2.4);
+  else               R = R / 12.92;
+  if ( G > 0.04045 ) G = pow(( ( G + 0.055 ) / 1.055 ),2.4);
+  else               G = G / 12.92;
+  if ( B > 0.04045 ) B = pow(( ( B + 0.055 ) / 1.055 ), 2.4);
+  else               B = B / 12.92;
+
+  R *= 100;
+  G *= 100;
+  B *= 100;
+
+  // Observer. = 2°, Illuminant = D65
+  var X = R * 0.4124 + G * 0.3576 + B * 0.1805;
+  var Y = R * 0.2126 + G * 0.7152 + B * 0.0722;
+  var Z = R * 0.0193 + G * 0.1192 + B * 0.9505;
+  return {'X' : X, 'Y' : Y, 'Z' : Z};
+}
+
+/**
+* Returns c converted to labcolor.
+* @param {xyzcolor} c should have fields X,Y,Z
+* @return {labcolor} c converted to labcolor
+*/
+function xyz_to_lab(c)
+{
+  // Based on http://www.easyrgb.com/index.php?X=MATH&H=07
+  var ref_Y = 100.000;
+  var ref_Z = 108.883;
+  var ref_X = 95.047; // Observer= 2°, Illuminant= D65
+  var Y = c.Y / ref_Y;
+  var Z = c.Z / ref_Z;
+  var X = c.X / ref_X;
+  if ( X > 0.008856 ) X = pow(X, 1/3);
+  else                X = ( 7.787 * X ) + ( 16 / 116 );
+  if ( Y > 0.008856 ) Y = pow(Y, 1/3);
+  else                Y = ( 7.787 * Y ) + ( 16 / 116 );
+  if ( Z > 0.008856 ) Z = pow(Z, 1/3);
+  else                Z = ( 7.787 * Z ) + ( 16 / 116 );
+  var L = ( 116 * Y ) - 16;
+  var a = 500 * ( X - Y );
+  var b = 200 * ( Y - Z );
+  return {'L' : L , 'a' : a, 'b' : b};
+}
+
+// Local Variables:
+// allout-layout: t
+// js-indent-level: 2
+// End:
+
+},{}],50:[function(require,module,exports){
+/**
+ * @author Markus Ekholm
+ * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
+ * @license Copyright (c) 2012-2015, Markus Ekholm
+ * All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *    * Redistributions of source code must retain the above copyright
+ *      notice, this list of conditions and the following disclaimer.
+ *    * Redistributions in binary form must reproduce the above copyright
+ *      notice, this list of conditions and the following disclaimer in the
+ *      documentation and/or other materials provided with the distribution.
+ *    * Neither the name of the <organization> nor the
+ *      names of its contributors may be used to endorse or promote products
+ *      derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL MARKUS EKHOLM BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/**
+* EXPORTS
+*/
+exports.ciede2000 = ciede2000;
+
+/**
+* IMPORTS
+*/
+var sqrt = Math.sqrt;
+var pow = Math.pow;
+var cos = Math.cos;
+var atan2 = Math.atan2;
+var sin = Math.sin;
+var abs = Math.abs;
+var exp = Math.exp;
+var PI = Math.PI;
+
+/**
+ * API FUNCTIONS
+ */
+
+/**
+* Returns diff between c1 and c2 using the CIEDE2000 algorithm
+* @param {labcolor} c1    Should have fields L,a,b
+* @param {labcolor} c2    Should have fields L,a,b
+* @return {float}   Difference between c1 and c2
+*/
+function ciede2000(c1,c2)
+{
+  /**
+   * Implemented as in "The CIEDE2000 Color-Difference Formula:
+   * Implementation Notes, Supplementary Test Data, and Mathematical Observations"
+   * by Gaurav Sharma, Wencheng Wu and Edul N. Dalal.
+   */
+
+  // Get L,a,b values for color 1
+  var L1 = c1.L;
+  var a1 = c1.a;
+  var b1 = c1.b;
+
+  // Get L,a,b values for color 2
+  var L2 = c2.L;
+  var a2 = c2.a;
+  var b2 = c2.b;
+
+  // Weight factors
+  var kL = 1;
+  var kC = 1;
+  var kH = 1;
+
+  /**
+   * Step 1: Calculate C1p, C2p, h1p, h2p
+   */
+  var C1 = sqrt(pow(a1, 2) + pow(b1, 2)) //(2)
+  var C2 = sqrt(pow(a2, 2) + pow(b2, 2)) //(2)
+
+  var a_C1_C2 = (C1+C2)/2.0;             //(3)
+
+  var G = 0.5 * (1 - sqrt(pow(a_C1_C2 , 7.0) /
+                          (pow(a_C1_C2, 7.0) + pow(25.0, 7.0)))); //(4)
+
+  var a1p = (1.0 + G) * a1; //(5)
+  var a2p = (1.0 + G) * a2; //(5)
+
+  var C1p = sqrt(pow(a1p, 2) + pow(b1, 2)); //(6)
+  var C2p = sqrt(pow(a2p, 2) + pow(b2, 2)); //(6)
+
+  var hp_f = function(x,y) //(7)
+  {
+    if(x== 0 && y == 0) return 0;
+    else{
+      var tmphp = degrees(atan2(x,y));
+      if(tmphp >= 0) return tmphp
+      else           return tmphp + 360;
+    }
+  }
+
+  var h1p = hp_f(b1, a1p); //(7)
+  var h2p = hp_f(b2, a2p); //(7)
+
+  /**
+   * Step 2: Calculate dLp, dCp, dHp
+   */
+  var dLp = L2 - L1; //(8)
+  var dCp = C2p - C1p; //(9)
+
+  var dhp_f = function(C1, C2, h1p, h2p) //(10)
+  {
+    if(C1*C2 == 0)               return 0;
+    else if(abs(h2p-h1p) <= 180) return h2p-h1p;
+    else if((h2p-h1p) > 180)     return (h2p-h1p)-360;
+    else if((h2p-h1p) < -180)    return (h2p-h1p)+360;
+    else                         throw(new Error());
+  }
+  var dhp = dhp_f(C1,C2, h1p, h2p); //(10)
+  var dHp = 2*sqrt(C1p*C2p)*sin(radians(dhp)/2.0); //(11)
+
+  /**
+   * Step 3: Calculate CIEDE2000 Color-Difference
+   */
+  var a_L = (L1 + L2) / 2.0; //(12)
+  var a_Cp = (C1p + C2p) / 2.0; //(13)
+
+  var a_hp_f = function(C1, C2, h1p, h2p) { //(14)
+    if(C1*C2 == 0)                                      return h1p+h2p
+    else if(abs(h1p-h2p)<= 180)                         return (h1p+h2p)/2.0;
+    else if((abs(h1p-h2p) > 180) && ((h1p+h2p) < 360))  return (h1p+h2p+360)/2.0;
+    else if((abs(h1p-h2p) > 180) && ((h1p+h2p) >= 360)) return (h1p+h2p-360)/2.0;
+    else                                                throw(new Error());
+  }
+  var a_hp = a_hp_f(C1,C2,h1p,h2p); //(14)
+  var T = 1-0.17*cos(radians(a_hp-30))+0.24*cos(radians(2*a_hp))+
+    0.32*cos(radians(3*a_hp+6))-0.20*cos(radians(4*a_hp-63)); //(15)
+  var d_ro = 30 * exp(-(pow((a_hp-275)/25,2))); //(16)
+  var RC = sqrt((pow(a_Cp, 7.0)) / (pow(a_Cp, 7.0) + pow(25.0, 7.0)));//(17)
+  var SL = 1 + ((0.015 * pow(a_L - 50, 2)) /
+                sqrt(20 + pow(a_L - 50, 2.0)));//(18)
+  var SC = 1 + 0.045 * a_Cp;//(19)
+  var SH = 1 + 0.015 * a_Cp * T;//(20)
+  var RT = -2 * RC * sin(radians(2 * d_ro));//(21)
+  var dE = sqrt(pow(dLp /(SL * kL), 2) + pow(dCp /(SC * kC), 2) +
+                pow(dHp /(SH * kH), 2) + RT * (dCp /(SC * kC)) *
+                (dHp / (SH * kH))); //(22)
+  return dE;
+}
+
+/**
+ * INTERNAL FUNCTIONS
+ */
+function degrees(n) { return n*(180/PI); }
+function radians(n) { return n*(PI/180); }
+
+// Local Variables:
+// allout-layout: t
+// js-indent-level: 2
+// End:
+
+},{}],51:[function(require,module,exports){
+'use strict';
+
+var diff = require(50);
+var convert = require(49);
+var palette = require(52);
+
+var color = module.exports = {};
+
+color.diff             = diff.ciede2000;
+color.rgb_to_lab       = convert.rgb_to_lab;
+color.map_palette      = palette.map_palette;
+color.palette_map_key  = palette.palette_map_key;
+
+color.closest = function(target, relative) {
+    var key = color.palette_map_key(target);
+
+    var result = color.map_palette([target], relative, 'closest');
+
+    return result[key];
+};
+
+color.furthest = function(target, relative) {
+    var key = color.palette_map_key(target);
+
+    var result = color.map_palette([target], relative, 'furthest');
+
+    return result[key];
+};
+
+},{}],52:[function(require,module,exports){
+/**
+ * @author Markus Ekholm
+ * @copyright 2012-2015 (c) Markus Ekholm <markus at botten dot org >
+ * @license Copyright (c) 2012-2015, Markus Ekholm
+ * All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *    * Redistributions of source code must retain the above copyright
+ *      notice, this list of conditions and the following disclaimer.
+ *    * Redistributions in binary form must reproduce the above copyright
+ *      notice, this list of conditions and the following disclaimer in the
+ *      documentation and/or other materials provided with the distribution.
+ *    * Neither the name of the <organization> nor the
+ *      names of its contributors may be used to endorse or promote products
+ *      derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL MARKUS EKHOLM BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/**
+* EXPORTS
+*/
+exports.map_palette     = map_palette;
+exports.palette_map_key = palette_map_key;
+
+/**
+* IMPORTS
+*/
+var color_diff    = require(50);
+var color_convert = require(49);
+
+/**
+ * API FUNCTIONS
+ */
+
+/**
+* Returns the hash key used for a {rgbcolor} in a {palettemap}
+* @param {rgbcolor} c should have fields R,G,B
+* @return {string}
+*/
+function palette_map_key(c)
+{
+  return "R" + c.R + "B" + c.B + "G" + c.G;
+}
+
+/**
+* Returns a mapping from each color in a to the closest color in b
+* @param [{rgbcolor}] a each element should have fields R,G,B
+* @param [{rgbcolor}] b each element should have fields R,G,B
+* @param 'type' should be the string 'closest' or 'furthest'
+* @return {palettemap}
+*/
+function map_palette(a, b, type)
+{
+  var c = {};
+  type = type || 'closest';
+  for (var idx1 = 0; idx1 < a.length; idx1 += 1){
+    var color1 = a[idx1];
+    var best_color      = undefined;
+    var best_color_diff = undefined;
+    for (var idx2 = 0; idx2 < b.length; idx2 += 1)
+    {
+      var color2 = b[idx2];
+      var current_color_diff = diff(color1,color2);
+
+      if((best_color == undefined) || ((type === 'closest') && (current_color_diff < best_color_diff)))
+      {
+        best_color      = color2;
+        best_color_diff = current_color_diff;
+        continue;
+      }
+      if((type === 'furthest') && (current_color_diff > best_color_diff))
+      {
+        best_color      = color2;
+        best_color_diff = current_color_diff;
+        continue;
+      }
+    }
+    c[palette_map_key(color1)] = best_color;
+  }
+  return c;
+}
+
+/**
+ * INTERNAL FUNCTIONS
+ */
+
+function diff(c1,c2)
+{
+  c1 = color_convert.rgb_to_lab(c1);
+  c2 = color_convert.rgb_to_lab(c2);
+  return color_diff.ciede2000(c1,c2);
+}
+
+// Local Variables:
+// allout-layout: t
+// js-indent-level: 2
+// End:
+
 },{}],53:[function(require,module,exports){
+(function (process){
+'use strict';
+var argv = process.argv;
+
+module.exports = (function () {
+	if (argv.indexOf('--no-color') !== -1 ||
+		argv.indexOf('--no-colors') !== -1 ||
+		argv.indexOf('--color=false') !== -1) {
+		return false;
+	}
+
+	if (argv.indexOf('--color') !== -1 ||
+		argv.indexOf('--colors') !== -1 ||
+		argv.indexOf('--color=true') !== -1 ||
+		argv.indexOf('--color=always') !== -1) {
+		return true;
+	}
+
+	if (process.stdout && !process.stdout.isTTY) {
+		return false;
+	}
+
+	if (process.platform === 'win32') {
+		return true;
+	}
+
+	if ('COLORTERM' in process.env) {
+		return true;
+	}
+
+	if (process.env.TERM === 'dumb') {
+		return false;
+	}
+
+	if (/^screen|^xterm|^vt100|color|ansi|cygwin|linux/i.test(process.env.TERM)) {
+		return true;
+	}
+
+	return false;
+})();
+
+}).call(this,require(55))
+},{}],54:[function(require,module,exports){
 'use strict';
 module.exports = Number.isNaN || function (x) {
 	return x !== x;
 };
 
-},{}],54:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -10784,9 +10827,9 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],55:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 'use strict';
-var isFinite = require(40);
+var isFinite = require(35);
 
 module.exports = function (str, n) {
 	if (typeof str !== 'string') {
@@ -10810,49 +10853,6 @@ module.exports = function (str, n) {
 	return ret;
 };
 
-},{}],56:[function(require,module,exports){
-(function (process){
-'use strict';
-var argv = process.argv;
-
-module.exports = (function () {
-	if (argv.indexOf('--no-color') !== -1 ||
-		argv.indexOf('--no-colors') !== -1 ||
-		argv.indexOf('--color=false') !== -1) {
-		return false;
-	}
-
-	if (argv.indexOf('--color') !== -1 ||
-		argv.indexOf('--colors') !== -1 ||
-		argv.indexOf('--color=true') !== -1 ||
-		argv.indexOf('--color=always') !== -1) {
-		return true;
-	}
-
-	if (process.stdout && !process.stdout.isTTY) {
-		return false;
-	}
-
-	if (process.platform === 'win32') {
-		return true;
-	}
-
-	if ('COLORTERM' in process.env) {
-		return true;
-	}
-
-	if (process.env.TERM === 'dumb') {
-		return false;
-	}
-
-	if (/^screen|^xterm|^vt100|color|ansi|cygwin|linux/i.test(process.env.TERM)) {
-		return true;
-	}
-
-	return false;
-})();
-
-}).call(this,require(54))
 },{}],57:[function(require,module,exports){
 (function (process,global){
 /* @preserve
@@ -15713,6 +15713,6 @@ module.exports = ret;
 
 },{"./es5.js":14}]},{},[4])(4)
 });                    ;if (typeof window !== 'undefined' && window !== null) {                               window.P = window.Promise;                                                     } else if (typeof self !== 'undefined' && self !== null) {                             self.P = self.Promise;                                                         }
-}).call(this,require(54),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+}).call(this,require(55),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}]},{},[21])(21)
 });
