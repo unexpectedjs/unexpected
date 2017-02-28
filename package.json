@@ -43,7 +43,7 @@
     "istanbul": "0.3.16",
     "jasmine": "2.2.1",
     "jasmine-core": "~2.2.0",
-    "jest": "18.1.0",
+    "jest": "19.0.2",
     "minimist": "1.1.1",
     "mocha": "2.4.5",
     "mocha-phantomjs-core": "2.0.1",
