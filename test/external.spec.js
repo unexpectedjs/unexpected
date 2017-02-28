@@ -179,7 +179,7 @@ if (typeof process === 'object') {
 
                 it('should report that a promise was created, but not returned by the it block', function () {
                     return expect('forgotToReturnPendingPromiseFromSuccessfulItBlock', 'executed through jest').spread(function (err, stdout, stderr) {
-                        expect(stderr, 'to contain', 'test should call the callback: You have created a promise that was not returned from the it block');
+                        expect(stderr, 'to contain', 'should call the callback: You have created a promise that was not returned from the it block');
                         expect(err, 'to satisfy', { code: 1 });
                     });
                 });
@@ -220,7 +220,7 @@ if (typeof process === 'object') {
 
                 it('should fail when a promise failing in the next tick is created but not returned', function () {
                     return expect('forgotToReturnPromiseRejectedInTheNextTick', 'executed through jest').spread(function (err, stdout, stderr) {
-                        expect(stderr, 'to contain', 'test should fail: You have created a promise that was not returned from the it block');
+                        expect(stderr, 'to contain', 'should fail: You have created a promise that was not returned from the it block');
                         expect(err, 'to satisfy', { code: 1 });
                     });
                 });
@@ -228,14 +228,14 @@ if (typeof process === 'object') {
                 describe('with a test suite spanning multiple files', function () {
                     it('should report that a promise was created, but not returned by the it block in the first test', function () {
                         return expect(['forgotToReturnPendingPromiseFromSuccessfulItBlock', 'successful'], 'executed through jest').spread(function (err, stdout, stderr) {
-                            expect(stderr, 'to contain', 'test should call the callback: You have created a promise that was not returned from the it block');
+                            expect(stderr, 'to contain', 'should call the callback: You have created a promise that was not returned from the it block');
                             expect(err, 'to satisfy', { code: 1 });
                         });
                     });
 
                     it('should report that a promise was created, but not returned by the it block in the second test', function () {
                         return expect(['successful', 'forgotToReturnPendingPromiseFromSuccessfulItBlock'], 'executed through jest').spread(function (err, stdout, stderr) {
-                            expect(stderr, 'to contain', 'test should call the callback: You have created a promise that was not returned from the it block');
+                            expect(stderr, 'to contain', 'should call the callback: You have created a promise that was not returned from the it block');
                             expect(err, 'to satisfy', { code: 1 });
                         });
                     });
@@ -244,7 +244,7 @@ if (typeof process === 'object') {
                 describe('with an assertion that succeeds, but creates a promise that remains pending', function () {
                     it('should pass', function () {
                         return expect('assertionSucceedsWhilePromiseIsPending', 'executed through jest').spread(function (err, stdout, stderr) {
-                            expect(stderr, 'not to contain', 'test should call the callback: You have created a promise that was not returned from the it block');
+                            expect(stderr, 'not to contain', 'should call the callback: You have created a promise that was not returned from the it block');
                             expect(err, 'to be falsy');
                         });
                     });
