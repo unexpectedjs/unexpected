@@ -796,6 +796,19 @@ describe('to satisfy assertion', function () {
             it('should treat a missing subject property the same as a value property of undefined', function () {
                 expect({}, 'to exhaustively satisfy', { foo: undefined });
             });
+
+            // Regression test for #380
+            it('should display a proper error message when a missing key is satisfied against an expect.it', function () {
+                expect(function () {
+                    expect({}, 'to exhaustively satisfy', {foo: expect.it('to be undefined')});
+                }, 'to throw',
+                    "expected {} to exhaustively satisfy { foo: expect.it('to be undefined') }\n" +
+                    "\n" +
+                    "{\n" +
+                    "  // missing foo: should satisfy expect.it('to be undefined')\n" +
+                    "}"
+                );
+            });
         });
 
         it('should support satisfying against a regexp', function () {
@@ -1766,12 +1779,12 @@ describe('to satisfy assertion', function () {
         }, 'to throw', function (err) {
             // Compensate for V8 5.1+ setting { foo: function () {} }.foo.name === 'foo'
             // http://v8project.blogspot.dk/2016/04/v8-release-51.html
-            expect(err.getErrorMessage('text').toString().replace('function foo', 'function '), 'to satisfy',
+            expect(err.getErrorMessage('text').toString().replace(/function foo/g, 'function '), 'to satisfy',
                 "expected {} to satisfy { bar: 123, foo: function () {} }\n" +
                 "\n" +
                 "{\n" +
                 "  // missing bar: 123\n" +
-                "  foo:\n" + // FIXME: Come up with something better
+                "  // missing foo: should satisfy function () {}\n" +
                 "}"
             );
         });
