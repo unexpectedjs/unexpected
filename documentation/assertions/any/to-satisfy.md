@@ -20,7 +20,41 @@ against the corresponding values in the subject:
 expect({ bar: 'quux', baz: true }, 'to satisfy', { bar: /QU*X/i });
 ```
 
-Can be combined with `expect.it` or functions to create complex
+Arrays in the right-hand side will require all the items to be present:
+
+```javascript
+expect([0,1,2], 'to satisfy', [0,1]);
+```
+
+```output
+expected [ 0, 1, 2 ] to satisfy [ 0, 1 ]
+
+[
+  0,
+  1,
+  2 // should be removed
+]
+```
+
+If you want to make assertions about the individual indexes in an array, you can
+do it the following way:
+
+```javascript
+expect([0,1,2,3], 'to satisfy', {1: 2, 2: 1});
+```
+
+```output
+expected [ 0, 1, 2, 3 ] to satisfy { 1: 2, 2: 1 }
+
+[
+  0,
+  1, // should equal 2
+  2, // should equal 1
+  3
+]
+```
+
+`to satisfy` can be combined with `expect.it` or functions to create complex
 specifications that delegate to existing assertions:
 
 ```javascript
