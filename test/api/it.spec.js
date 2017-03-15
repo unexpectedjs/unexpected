@@ -243,4 +243,26 @@ describe('expect.it', function () {
     it('should not fail when the first clause in an or group specifies an assertion that is not defined for the given arguments', function () {
         expect([ false, 'foo', 'bar' ], 'to have items satisfying', expect.it('to be false').or('to be a string'));
     });
+
+    describe('with forwarding of flags', function () {
+        var clonedExpect = expect.clone().addAssertion('<object> [not] to have a foo property of bar', function (expect, subject) {
+            return expect(subject, 'to satisfy', { foo: expect.it('[not] to equal', 'bar') });
+        });
+
+        it('should succeed', function () {
+            clonedExpect({ quux: 123 }, 'not to have a foo property of bar');
+        });
+
+        it('should fail with a diff', function () {
+            return expect(function () {
+                clonedExpect({ foo: 'bar' }, 'not to have a foo property of bar');
+            }, 'to throw',
+                "expected { foo: 'bar' } not to have a foo property of bar\n" +
+                "\n" +
+                "{\n" +
+                "  foo: 'bar' // should not equal 'bar'\n" +
+                "}"
+            );
+        });
+    });
 });
