@@ -264,6 +264,14 @@ if (typeof process === 'object') {
                         );
                     });
                 });
+
+                it('should fail two tests in the same suite that both fail to return a promise that was created', function () {
+                    return expect('twoTestsWithPendingPromises', 'executed through jest').spread(function (err, stdout, stderr) {
+                        expect(stderr, 'to contain', 'first test: You have created a promise that was not returned from the it block')
+                            .and('to contain', 'second test: You have created a promise that was not returned from the it block');
+                        expect(err, 'to satisfy', { code: 1 });
+                    });
+                });
             });
         }
     });
