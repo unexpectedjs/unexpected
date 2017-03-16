@@ -14,7 +14,22 @@ describe('hook', function () {
         expect(called, 'to be true');
     });
 
-    it('should not affect clones', function () {
+    it('should not affect clones made before hooking in', function () {
+        var clonedExpect = expect.clone();
+        var clonedClonedExpect = clonedExpect.clone();
+
+        var called = false;
+        clonedExpect.hook(function (next) {
+            return function (subject, testDescriptionString) {
+                called = true;
+                return next.apply(this, arguments);
+            };
+        });
+        clonedClonedExpect(123, 'to equal', 123);
+        expect(called, 'to be false');
+    });
+
+    it('should affect clones made after hooking in', function () {
         var clonedExpect = expect.clone();
         var called = false;
         clonedExpect.hook(function (next) {
@@ -25,7 +40,7 @@ describe('hook', function () {
         });
         var clonedClonedExpect = clonedExpect.clone();
         clonedClonedExpect(123, 'to equal', 123);
-        expect(called, 'to be false');
+        expect(called, 'to be true');
     });
 
     it('should allow rewriting the assertion string', function () {
