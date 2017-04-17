@@ -358,7 +358,7 @@ describe('inspect', function () {
                '            var quux = \'baz\\\n' +
                '            blah\';\n' +
                '            foo = foo + quux;\n' +
-               '        }');
+               '}');
         /*eslint-enable no-multi-str*/
     });
 
