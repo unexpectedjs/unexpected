@@ -73,30 +73,6 @@ use browserify or a script loader instead of the Common.js `require` in the abov
 Please consult the documentation for each individual plugin.
 
 
-## Caveats with plugins that depend on other plugins
-
-The unexpected-express, unexpected-mitm, and unexpected-http plugins all depend
-on unexpected-messy being available. If you use more than one of these in the same
-test suite, it's important that only one version of unexpected-messy is installed.
-
-All three plugins list `unexpected-messy` under both `peerDependencies` and `dependencies`
-in their package.json. This strategy is carefully thought out to be forward compatible
-with how `peerDependencies` work with npm 3. Unfortunately, users of npm 1 and 2 will
-sometimes be in for a bit of a rough ride.
-
-Unexpected's [use method](/api/use/) will throw an error if you install two different
-versions of unexpected-messy, so there's a stop gap that prevents `expect` from
-ending up in a broken state. Still, recovering from that error condition or an
-`EPEERINVALID` error can be tricky. We recommend trying the following:
-
-1. Upgrade to `npm 3`, then remove the `node_modules` folder and run a fresh `npm install`.
-2. If you're stuck on a previous npm version, you should still try to remove `node_modules`
-   and run a fresh `npm install`.
-3. If that doesn't work, upgrade unexpected and the plugins you're using to the newest
-   versions at once. The newest versions should be using the same version of
-   unexpected-messy, which will resolve the problem in most cases.
-
-
 ## Mixing plugins
 
 All of these plugins should be able coexist in the same Unexpected instance and

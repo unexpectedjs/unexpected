@@ -140,4 +140,66 @@ describe('expect.shift', function () {
             );
         });
     });
+
+    describe('in legacy mode where the assertion index is passed as the second parameter', function () {
+        it('should get the assertion string from that index', function () {
+            var clonedExpect = expect.clone().addAssertion('<string> when prepended with <string> <assertion>', function (expect, subject, value) {
+                return expect.shift(value + subject, 1);
+            });
+
+            expect(function () {
+                clonedExpect('bar', 'when prepended with', 'foo', 'to equal', 'foobarquux');
+            }, 'to throw',
+                "expected 'bar' when prepended with 'foo' to equal 'foobarquux'\n" +
+                "\n" +
+                "-foobar\n" +
+                "+foobarquux"
+            );
+        });
+
+        it('should render the correct error message when there is several non-string parameters following the assertion index', function () {
+            var clonedExpect = expect.clone().addAssertion('<string> when prepended with foo <string> <number+>', function (expect, subject) {
+                expect.shift('foo' + subject, 0);
+                expect('abc', 'to equal', 'def');
+            });
+
+            expect(function () {
+                clonedExpect('bar', 'when prepended with foo', 'to equal', 123, 456);
+            }, 'to throw',
+                "expected 'bar' when prepended with foo to equal 123, 456"
+            );
+        });
+
+        it('should render the correct error message when the assertion being shifted to is not a string', function () {
+            var clonedExpect = expect.clone().addAssertion('<string> when prepended with foo <number+>', function (expect, subject) {
+                expect.shift('foo' + subject, 0);
+                expect('abc', 'to equal', 'def');
+            });
+
+            expect(function () {
+                clonedExpect('bar', 'when prepended with foo', 123, 456);
+            }, 'to throw',
+                "expected 'bar' when prepended with foo 123 456\n" +
+                "\n" +
+                "-abc\n" +
+                "+def"
+            );
+        });
+
+        it('should render the correct error message when there are no parameters following the assertion index', function () {
+            var clonedExpect = expect.clone().addAssertion('<string> when prepended with foo', function (expect, subject) {
+                expect.shift('foo' + subject, 1);
+                expect('abc', 'to equal', 'def');
+            });
+
+            expect(function () {
+                clonedExpect('bar', 'when prepended with foo');
+            }, 'to throw',
+                "expected 'bar' when prepended with foo\n" +
+                "\n" +
+                "-abc\n" +
+                "+def"
+            );
+        });
+    });
 });
