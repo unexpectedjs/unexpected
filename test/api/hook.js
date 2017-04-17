@@ -45,6 +45,41 @@ describe('hook', function () {
         });
     });
 
+    describe('with expect.child', function () {
+        it('should not affect child instances made before installing the hook', function () {
+            var parentExpect = expect.clone();
+            var childExpect = parentExpect.child();
+
+            var called = false;
+            parentExpect.hook(function (next) {
+                return function (subject, testDescriptionString) {
+                    called = true;
+                    return next.apply(this, arguments);
+                };
+            });
+
+            childExpect(123, 'to equal', 123);
+            expect(called, 'to be false');
+        });
+
+        it('should not affect child instances made after installing the hook', function () {
+            var parentExpect = expect.clone();
+
+            var called = false;
+            parentExpect.hook(function (next) {
+                return function (subject, testDescriptionString) {
+                    called = true;
+                    return next.apply(this, arguments);
+                };
+            });
+
+            var childExpect = parentExpect.clone();
+
+            childExpect(123, 'to equal', 123);
+            expect(called, 'to be true');
+        });
+    });
+
     it('should allow rewriting the assertion string', function () {
         var clonedExpect = expect.clone();
         clonedExpect.hook(function (next) {
