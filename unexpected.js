@@ -111,14 +111,17 @@ function Unexpected(options) {
     // Make bound versions of these two helpers up front to save a bit when creating wrapped expects:
     var that = this;
     this.getType = function (typeName) {
-        return utils.findFirst(that.types, function (type) {
-            return type.name === typeName;
-        });
+        return that.typeByName[typeName] || (that.parent && that.parent.getType(typeName));
     };
     this.findTypeOf = function (obj) {
         return utils.findFirst(that.types || [], function (type) {
-            return type.identify(obj);
-        });
+            return type.identify && type.identify(obj);
+        }) || (that.parent && that.parent.findTypeOf(obj));
+    };
+    this.findTypeOfWithParentType = function (obj, requiredParentType) {
+        return utils.findFirst(that.types || [], function (type) {
+            return type.identify && type.identify(obj) && (!requiredParentType || type.is(requiredParentType));
+        }) || (that.parent && that.parent.findTypeOfWithParentType(obj, requiredParentType));
     };
     this.findCommonType = function (a, b) {
         var aAncestorIndex = {};
@@ -345,10 +348,10 @@ Unexpected.prototype.expandTypeAlternations = function (assertion) {
             } else if (arg.type.is('assertion')) {
                 result.push([
                     { type: arg.type, minimum: 1, maximum: 1 },
-                    { type: that.typeByName.any, minimum: 0, maximum: Infinity }
+                    { type: that.getType('any'), minimum: 0, maximum: Infinity }
                 ]);
                 result.push([
-                    { type: that.typeByName['expect.it'], minimum: 1, maximum: 1 }
+                    { type: that.getType('expect.it'), minimum: 1, maximum: 1 }
                 ]);
                 if (arg.minimum === 0) { // <assertion?>
                     result.push([]);
@@ -383,25 +386,21 @@ Unexpected.prototype.parseAssertion = function (assertionString) {
     var tokens = [];
     var nextIndex = 0;
 
-    function lookupType(typeName) {
-        var result = that.typeByName[typeName];
-        if (!result) {
-            throw new Error('Unknown type: ' + typeName + ' in ' + assertionString);
-        }
-        return result;
-    }
-
-    function parseType(assertionString) {
-        return assertionString.split('|').map(function (type) {
-            var matchNameAndOperator = type.match(/^([a-z_](?:|[a-z0-9_.-]*[_a-z0-9]))([+*?]|)$/i);
+    function parseTypeToken(typeToken) {
+        return typeToken.split('|').map(function (typeDeclaration) {
+            var matchNameAndOperator = typeDeclaration.match(/^([a-z_](?:|[a-z0-9_.-]*[_a-z0-9]))([+*?]|)$/i);
             if (!matchNameAndOperator) {
-                throw new SyntaxError('Cannot parse type declaration:' + type);
+                throw new SyntaxError('Cannot parse type declaration:' + typeDeclaration);
+            }
+            var type = that.getType(matchNameAndOperator[1]);
+            if (!type) {
+                throw new Error('Unknown type: ' + matchNameAndOperator[1] + ' in ' + assertionString);
             }
             var operator = matchNameAndOperator[2];
             return {
                 minimum: !operator || operator === '+' ? 1 : 0,
                 maximum: operator === '*' || operator === '+' ? Infinity : 1,
-                type: lookupType(matchNameAndOperator[1])
+                type: type
             };
         });
     }
@@ -416,7 +415,7 @@ Unexpected.prototype.parseAssertion = function (assertionString) {
             throw new SyntaxError('Cannot parse token at index ' + nextIndex + ' in ' + assertionString);
         }
         if ($1) {
-            tokens.push(parseType($1));
+            tokens.push(parseTypeToken($1));
         } else {
             tokens.push($2.trim());
         }
@@ -426,9 +425,9 @@ Unexpected.prototype.parseAssertion = function (assertionString) {
     var assertion;
     if (tokens.length === 1 && typeof tokens[0] === 'string') {
         assertion = {
-            subject: parseType('any'),
+            subject: parseTypeToken('any'),
             assertion: tokens[0],
-            args: [parseType('any*')]
+            args: [parseTypeToken('any*')]
         };
     } else {
         assertion = {
@@ -476,7 +475,6 @@ Unexpected.prototype.parseAssertion = function (assertionString) {
     })) {
         throw new SyntaxError('<assertion+> and <assertion*> are not allowed: ' + assertionString);
     }
-
     return this.expandTypeAlternations(assertion);
 };
 
@@ -513,14 +511,30 @@ Unexpected.prototype.fail = function (arg) {
                 output.error('Explicit failure');
             }
         };
+        var expect = this.expect;
         Object.keys(arg).forEach(function (key) {
             var value = arg[key];
             if (key === 'diff') {
-                error.createDiff = value;
+                if (typeof value === 'function' && this.parent) {
+                    error.createDiff = function (output, diff, inspect, equal) {
+                        var childOutput = expect.createOutput(output.format);
+                        childOutput.inline = output.inline;
+                        childOutput.output = output.output;
+                        return value(childOutput, function diff(actual, expected) {
+                            return expect.diff(actual, expected, childOutput.clone());
+                        }, function inspect(v, depth) {
+                            return childOutput.clone().appendInspected(v, (depth || defaultDepth) - 1);
+                        }, function (actual, expected) {
+                            return expect.equal(actual, expected);
+                        });
+                    };
+                } else {
+                    error.createDiff = value;
+                }
             } else if (key !== 'message') {
                 error[key] = value;
             }
-        });
+        }, this);
     } else {
         var placeholderArgs;
         if (arguments.length > 0) {
@@ -576,10 +590,14 @@ function calculateAssertionSpecificity(assertion) {
     }));
 }
 
-// expect.addAssertion(pattern, handler)
-// expect.addAssertion([pattern, ...], handler)
-Unexpected.prototype.addAssertion = function (patternOrPatterns, handler) {
-    if (arguments.length > 2 || typeof handler !== 'function' || (typeof patternOrPatterns !== 'string' && !Array.isArray(patternOrPatterns))) {
+Unexpected.prototype.addAssertion = function (patternOrPatterns, handler, childUnexpected) {
+    var maxArguments;
+    if (typeof childUnexpected === 'object') {
+        maxArguments = 3;
+    } else {
+        maxArguments = 2;
+    }
+    if (arguments.length > maxArguments || typeof handler !== 'function' || (typeof patternOrPatterns !== 'string' && !Array.isArray(patternOrPatterns))) {
         var errorMessage = "Syntax: expect.addAssertion(<string|array[string]>, function (expect, subject, ...) { ... });";
         if ((typeof handler === 'string' || Array.isArray(handler)) && typeof arguments[2] === 'function') {
             errorMessage +=
@@ -624,7 +642,8 @@ Unexpected.prototype.addAssertion = function (patternOrPatterns, handler) {
                     subject: assertionDeclaration.subject,
                     args: assertionDeclaration.args,
                     testDescriptionString: expandedAssertion.text,
-                    declaration: pattern
+                    declaration: pattern,
+                    unexpected: childUnexpected
                 });
             });
         });
@@ -653,7 +672,7 @@ Unexpected.prototype.addAssertion = function (patternOrPatterns, handler) {
     return this.expect; // for chaining
 };
 
-Unexpected.prototype.addType = function (type) {
+Unexpected.prototype.addType = function (type, childUnexpected) {
     var that = this;
     var baseType;
     if (typeof type.name !== 'string' || !/^[a-z_](?:|[a-z0-9_.-]*[_a-z0-9])$/i.test(type.name)) {
@@ -664,14 +683,12 @@ Unexpected.prototype.addType = function (type) {
         throw new Error('Type ' + type.name + ' must specify an identify function or be declared abstract by setting identify to false');
     }
 
-    if (this.getType(type.name)) {
+    if (this.typeByName[type.name]) {
         throw new Error('The type with the name ' + type.name + ' already exists');
     }
 
     if (type.base) {
-        baseType = utils.findFirst(this.types, function (t) {
-            return t.name === type.base;
-        });
+        baseType = this.getType(type.base);
 
         if (!baseType) {
             throw new Error('Unknown base type: ' + type.base);
@@ -686,7 +703,7 @@ Unexpected.prototype.addType = function (type) {
             throw new Error('You need to pass the output to baseType.inspect() as the third parameter');
         }
 
-        return baseType.inspect(value, depth, output.clone(), function (value, depth) {
+        return baseType.inspect(value, depth, output, function (value, depth) {
             return output.clone().appendInspected(value, depth);
         });
     };
@@ -717,10 +734,25 @@ Unexpected.prototype.addType = function (type) {
     extendedType.inspect = function (obj, depth, output, inspect) {
         if (arguments.length < 2 || (!output || !output.isMagicPen)) {
             return 'type: ' + type.name;
+        } else if (childUnexpected) {
+            var childOutput = childUnexpected.createOutput(output.format);
+            return originalInspect.call(this, obj, depth, childOutput, inspect) || childOutput;
         } else {
-            return originalInspect.call(this, obj, depth, output, inspect);
+            return originalInspect.call(this, obj, depth, output, inspect) || output;
         }
     };
+
+    if (childUnexpected) {
+        extendedType.childUnexpected = childUnexpected;
+        var originalDiff = extendedType.diff;
+        extendedType.diff = function (actual, expected, output, inspect, diff, equal) {
+            var childOutput = childUnexpected.createOutput(output.format);
+            // Make sure that already buffered up output is preserved:
+            childOutput.output = output.output;
+            return originalDiff.call(this, actual, expected, childOutput, inspect, diff, equal) || output;
+        };
+    }
+
     if (extendedType.identify === false) {
         this.types.push(extendedType);
     } else {
@@ -798,6 +830,11 @@ Unexpected.prototype.use = function (plugin) {
 
     if (plugin.dependencies) {
         var installedPlugins = this.installedPlugins;
+        var instance = this.parent;
+        while (instance) {
+            Array.prototype.push.apply(installedPlugins, instance.installedPlugins);
+            instance = instance.parent;
+        }
         var unfulfilledDependencies = plugin.dependencies.filter(function (dependency) {
             return !installedPlugins.some(function (plugin) {
                 return getPluginName(plugin) === dependency;
@@ -832,8 +869,10 @@ Unexpected.prototype.withError = function (body, handler) {
 
 Unexpected.prototype.installPlugin = Unexpected.prototype.use; // Legacy alias
 
-function installExpectMethods(unexpected, expectFunction) {
-    var expect = expectFunction.bind(unexpected);
+function installExpectMethods(unexpected) {
+    var expect = function () { /// ...
+        return unexpected._expect.apply(unexpected, arguments);
+    };
     expect.it = unexpected.it.bind(unexpected);
     expect.equal = unexpected.equal.bind(unexpected);
     expect.inspect = unexpected.inspect.bind(unexpected);
@@ -860,12 +899,16 @@ function installExpectMethods(unexpected, expectFunction) {
     expect.addType = unexpected.addType.bind(unexpected);
     expect.getType = unexpected.getType;
     expect.clone = unexpected.clone.bind(unexpected);
+    expect.child = unexpected.child.bind(unexpected);
     expect.toString = unexpected.toString.bind(unexpected);
     expect.assertions = unexpected.assertions;
     expect.use = expect.installPlugin = unexpected.use.bind(unexpected);
     expect.output = unexpected.output;
     expect.outputFormat = unexpected.outputFormat.bind(unexpected);
     expect.notifyPendingPromise = notifyPendingPromise;
+    expect.hook = function (fn) {
+        unexpected._expect = fn(unexpected._expect.bind(unexpected));
+    };
     // TODO For testing purpose while we don't have all the pieces yet
     expect.parseAssertion = unexpected.parseAssertion.bind(unexpected);
 
@@ -920,7 +963,12 @@ Unexpected.prototype.throwAssertionNotFoundError = function (subject, testDescri
     }
 
     var assertionsWithScore = [];
-    var assertionStrings = Object.keys(this.assertions);
+    var assertionStrings = [];
+    var instance = this;
+    while (instance) {
+        Array.prototype.push.apply(assertionStrings, Object.keys(instance.assertions));
+        instance = instance.parent;
+    }
 
     function compareAssertions(a, b) {
         var aAssertion = that.lookupAssertionRule(subject, a, args);
@@ -983,7 +1031,15 @@ Unexpected.prototype.lookupAssertionRule = function (subject, testDescriptionStr
     if (typeof testDescriptionString !== 'string') {
         throw new Error('The expect function requires the second parameter to be a string or an expect.it.');
     }
-    var handlers = this.assertions[testDescriptionString];
+    var handlers;
+    var instance = this;
+    while (instance) {
+        var instanceHandlers = instance.assertions[testDescriptionString];
+        if (instanceHandlers) {
+            handlers = handlers ? handlers.concat(instanceHandlers) : instanceHandlers;
+        }
+        instance = instance.parent;
+    }
     if (!handlers) {
         return null;
     }
@@ -1059,7 +1115,7 @@ Unexpected.prototype.lookupAssertionRule = function (subject, testDescriptionStr
 };
 
 function makeExpectFunction(unexpected) {
-    var expect = installExpectMethods(unexpected, unexpected.expect);
+    var expect = installExpectMethods(unexpected);
     unexpected.expect = expect;
     return expect;
 }
@@ -1068,7 +1124,7 @@ Unexpected.prototype.setErrorMessage = function (err) {
     err.serializeMessage(this.outputFormat());
 };
 
-Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
+Unexpected.prototype._expect = function expect(subject, testDescriptionString) {
     var that = this;
     if (arguments.length < 2) {
         throw new Error('The expect function requires at least two parameters.');
@@ -1105,6 +1161,9 @@ Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
                 that.throwAssertionNotFoundError(subject, testDescriptionString, args);
             }
         }
+        if (assertionRule && assertionRule.unexpected && assertionRule.unexpected !== that) {
+            return assertionRule.unexpected.expect.apply(assertionRule.unexpected.expect, [subject, testDescriptionString].concat(args));
+        }
 
         var flags = extend({}, assertionRule.flags);
         var wrappedExpect = function (subject, testDescriptionString) {
@@ -1120,9 +1179,7 @@ Unexpected.prototype.expect = function expect(subject, testDescriptionString) {
                     wrappedExpect.fail(err);
                 });
             }
-            testDescriptionString = testDescriptionString.replace(/\[(!?)([^\]]+)\] ?/g, function (match, negate, flag) {
-                return Boolean(flags[flag]) !== Boolean(negate) ? flag + ' ' : '';
-            }).trim();
+            testDescriptionString = utils.forwardFlags(testDescriptionString, flags);
 
             var args = new Array(arguments.length - 2);
             for (var i = 2 ; i < arguments.length ; i += 1) {
@@ -1309,8 +1366,39 @@ Unexpected.prototype.clone = function () {
         format: this.outputFormat(),
         installedPlugins: [].concat(this.installedPlugins)
     });
-
+    // Install the hooks:
+    unexpected._expect = this._expect;
     return makeExpectFunction(unexpected);
+};
+
+Unexpected.prototype.child = function () {
+    var childUnexpected = new Unexpected({
+        assertions: {},
+        types: [],
+        typeByName: {},
+        output: this.output.clone(),
+        format: this.outputFormat(),
+        installedPlugins: []
+    });
+    var parent = childUnexpected.parent = this;
+    var childExpect = makeExpectFunction(childUnexpected);
+
+    childExpect.exportAssertion = function (testDescription, handler) {
+        parent.addAssertion(testDescription, handler, childUnexpected);
+        return this;
+    };
+    childExpect.exportType = function (type) {
+        parent.addType(type, childUnexpected);
+        return this;
+    };
+    childExpect.exportStyle = function (name, handler) {
+        parent.addStyle(name, function () { // ...
+            var childOutput = childExpect.createOutput(this.format);
+            this.append(handler.apply(childOutput, arguments) || childOutput);
+        });
+        return this;
+    };
+    return childExpect;
 };
 
 Unexpected.prototype.outputFormat = function (format) {
@@ -3657,17 +3745,29 @@ function isAssertionArg(arg) {
     return arg.type.is('assertion');
 }
 
-function findSuffixAssertions(assertionString, assertions) {
+function lookupAssertionsInParentChain(assertionString, unexpected) {
+    var assertions = [];
+    for (var instance = unexpected ; instance ; instance = instance.parent) {
+        if (instance.assertions[assertionString]) {
+            Array.prototype.push.apply(assertions, instance.assertions[assertionString]);
+        }
+    }
+    return assertions;
+}
+
+function findSuffixAssertions(assertionString, unexpected) {
     if (typeof assertionString !== 'string') {
         return null;
     }
-    if (assertions[assertionString]) {
-        return assertions[assertionString];
+    var straightforwardAssertions = lookupAssertionsInParentChain(assertionString, unexpected);
+    if (straightforwardAssertions.length > 0) {
+        return straightforwardAssertions;
     }
     var tokens = assertionString.split(' ');
     for (var n = tokens.length - 1 ; n > 0 ; n -= 1) {
-        var suffixAssertions = assertions[tokens.slice(n).join(' ')];
-        if (findSuffixAssertions(tokens.slice(0, n).join(' '), assertions) && suffixAssertions) {
+        var suffix = tokens.slice(n).join(' ');
+        var suffixAssertions = lookupAssertionsInParentChain(suffix, unexpected);
+        if (findSuffixAssertions(tokens.slice(0, n).join(' '), unexpected) && suffixAssertions.length > 0) {
             return suffixAssertions;
         }
     }
@@ -3683,8 +3783,19 @@ module.exports = function createWrappedExpectProto(unexpected) {
         inspect: unexpected.inspect,
         createOutput: unexpected.createOutput.bind(unexpected),
         findTypeOf: unexpected.findTypeOf.bind(unexpected),
+        findTypeOfWithParentType: unexpected.findTypeOfWithParentType.bind(unexpected),
         findCommonType: unexpected.findCommonType.bind(unexpected),
-        it: unexpected.it.bind(unexpected),
+        it: function () { // ...
+            var length = arguments.length;
+            var args = new Array(length);
+            for (var i = 0 ; i < length ; i += 1) {
+                args[i] = arguments[i];
+            }
+            if (typeof args[0] === 'string') {
+                args[0] = utils.forwardFlags(args[0], this.flags);
+            }
+            return unexpected.it.apply(unexpected, args);
+        },
         diff: unexpected.diff,
         getType: unexpected.getType,
         output: unexpected.output,
@@ -3782,7 +3893,7 @@ module.exports = function createWrappedExpectProto(unexpected) {
                         }
                         if (nextArgumentType.is('string')) {
                             output.error(rest[0]);
-                        } else {
+                        } else if (rest.length > 0) {
                             output.appendInspected(rest[0]);
                         }
                         if (rest.length > 1) {
@@ -3814,19 +3925,12 @@ module.exports = function createWrappedExpectProto(unexpected) {
             }
         },
         _getSubjectType: function () {
-            var subject = this.subject;
-            var assertionSubjectType = this.assertionRule.subject.type;
-            return utils.findFirst(unexpected.types, function (type) {
-                return type.identify && type.is(assertionSubjectType) && type.identify(subject);
-            });
+            return this.findTypeOfWithParentType(this.subject, this.assertionRule.subject.type);
         },
         _getArgTypes: function (index) {
             var lastIndex = this.assertionRule.args.length - 1;
             return this.args.map(function (arg, index) {
-                var assertionArgType = this.assertionRule.args[Math.min(index, lastIndex)].type;
-                return utils.findFirst(unexpected.types, function (type) {
-                    return type.identify && type.is(assertionArgType) && type.identify(arg);
-                });
+                return this.findTypeOfWithParentType(arg, this.assertionRule.args[Math.min(index, lastIndex)].type);
             }, this);
         },
         _getAssertionIndices: function () {
@@ -3838,7 +3942,7 @@ module.exports = function createWrappedExpectProto(unexpected) {
                 OUTER: while (true) {
                     if (currentAssertionRule.args.length > 1 && isAssertionArg(currentAssertionRule.args[currentAssertionRule.args.length - 2])) {
                         assertionIndices.push(offset + currentAssertionRule.args.length - 2);
-                        var suffixAssertions = findSuffixAssertions(args[offset + currentAssertionRule.args.length - 2], unexpected.assertions);
+                        var suffixAssertions = findSuffixAssertions(args[offset + currentAssertionRule.args.length - 2], unexpected);
                         if (suffixAssertions) {
                             for (var i = 0 ; i < suffixAssertions.length ; i += 1) {
                                 if (suffixAssertions[i].args.some(isAssertionArg)) {
@@ -3862,14 +3966,14 @@ module.exports = function createWrappedExpectProto(unexpected) {
         Object.defineProperty(wrappedExpectProto, 'subjectType', {
             enumerable: true,
             get: function () {
-                return this._getSubjectType();
+                return this.assertionRule && this._getSubjectType();
             }
         });
 
         Object.defineProperty(wrappedExpectProto, 'argTypes', {
             enumerable: true,
             get: function () {
-                return this._getArgTypes();
+                return this.assertionRule && this._getArgTypes();
             }
         });
     }
@@ -5806,10 +5910,9 @@ var utils = module.exports = {
         return target;
     },
 
-    findFirst: function (arr, predicate, thisObj) {
-        var scope = thisObj || null;
+    findFirst: function (arr, predicate) {
         for (var i = 0 ; i < arr.length ; i += 1) {
-            if (predicate.call(scope, arr[i], i, arr)) {
+            if (predicate(arr[i])) {
                 return arr[i];
             }
         }
@@ -5908,6 +6011,12 @@ var utils = module.exports = {
         return utils.uniqueStringsAndSymbols(function (stringOrSymbol) {
             return typeof stringOrSymbol === 'symbol' || !utils.numericalRegExp.test(stringOrSymbol);
         }, Array.prototype.slice.call(arguments));
+    },
+
+    forwardFlags: function (testDescriptionString, flags) {
+        return testDescriptionString.replace(/\[(!?)([^\]]+)\] ?/g, function (match, negate, flag) {
+            return Boolean(flags[flag]) !== Boolean(negate) ? flag + ' ' : '';
+        }).trim();
     },
 
     numericalRegExp: /^(?:0|[1-9][0-9]*)$/,
@@ -9670,6 +9779,14 @@ var duplicateText = require(48);
 var rgbRegexp = require(50);
 var cssStyles = require(47);
 
+var builtInStyleNames = [
+    'bold', 'dim', 'italic', 'underline', 'inverse', 'hidden',
+    'strikeThrough', 'black', 'red', 'green', 'yellow', 'blue',
+    'magenta', 'cyan', 'white', 'gray', 'bgBlack', 'bgRed',
+    'bgGreen', 'bgYellow', 'bgBlue', 'bgMagenta', 'bgCyan',
+    'bgWhite'
+];
+
 function MagicPen(options) {
     if (!(this instanceof MagicPen)) {
         return new MagicPen(options);
@@ -9689,7 +9806,11 @@ function MagicPen(options) {
     this.output = [[]];
     this.styles = Object.create(null);
     this.installedPlugins = [];
+    // Ready to be cloned individually:
     this._themes = {};
+    Object.keys(MagicPen.serializers).forEach(function (serializerName) {
+        this._themes[serializerName] = { styles: {} };
+    }, this);
     this.preferredWidth = (!process.browser && process.stdout.columns) || 80;
     if (options.format) {
         this.format = options.format;
@@ -9810,19 +9931,22 @@ MagicPen.prototype.outdentLines = function () {
 };
 
 MagicPen.prototype.addStyle = function (style, handler, allowRedefinition) {
-    var existingType = typeof this[style];
-    if (existingType === 'function') {
-        if (!allowRedefinition) {
-            throw new Error('"' + style + '" style is already defined, set 3rd arg (allowRedefinition) to true to define it anyway');
-        }
-    } else if (existingType !== 'undefined') {
+    if (this[style] === false || ((this.hasOwnProperty(style) || MagicPen.prototype[style]) && !Object.prototype.hasOwnProperty.call(this.styles, style) && builtInStyleNames.indexOf(style) === -1)) {
         throw new Error('"' + style + '" style cannot be defined, it clashes with a built-in attribute');
     }
 
-    var styles = this.styles;
-    this.styles = Object.create(null);
-    for (var p in styles) {
-        this.styles[p] = styles[p];
+    // Refuse to redefine a built-in style or a style already defined directly on this pen unless allowRedefinition is true:
+    if (this.hasOwnProperty(style) || builtInStyleNames.indexOf(style) !== -1) {
+        var existingType = typeof this[style];
+        if (existingType === 'function') {
+            if (!allowRedefinition) {
+                throw new Error('"' + style + '" style is already defined, set 3rd arg (allowRedefinition) to true to define it anyway');
+            }
+        }
+    }
+    if (this._stylesHaveNotBeenClonedYet) {
+        this.styles = Object.create(this.styles);
+        this._stylesHaveNotBeenClonedYet = false;
     }
 
     this.styles[style] = handler;
@@ -10102,13 +10226,7 @@ MagicPen.prototype.space = MagicPen.prototype.sp = function (count) {
     return this.text(duplicateText(' ', count));
 };
 
-[
-    'bold', 'dim', 'italic', 'underline', 'inverse', 'hidden',
-    'strikeThrough', 'black', 'red', 'green', 'yellow', 'blue',
-    'magenta', 'cyan', 'white', 'gray', 'bgBlack', 'bgRed',
-    'bgGreen', 'bgYellow', 'bgBlue', 'bgMagenta', 'bgCyan',
-    'bgWhite'
-].forEach(function (textStyle) {
+builtInStyleNames.forEach(function (textStyle) {
     MagicPen.prototype[textStyle] = MagicPen.prototype[textStyle.toLowerCase()] = function (content) {
         return this.text(content, textStyle);
     };
@@ -10123,11 +10241,14 @@ MagicPen.prototype.clone = function (format) {
     MagicPenClone.prototype = this;
     var clonedPen = new MagicPenClone();
     clonedPen.styles = this.styles;
+    clonedPen._stylesHaveNotBeenClonedYet = true;
     clonedPen.indentationLevel = 0;
     clonedPen.output = [[]];
-    clonedPen.installedPlugins = this.installedPlugins;
+    clonedPen.installedPlugins = [];
     clonedPen._themes = this._themes;
+    clonedPen._themesHaveNotBeenClonedYet = true;
     clonedPen.format = format || this.format;
+    clonedPen.parent = this;
     return clonedPen;
 };
 
@@ -10178,10 +10299,17 @@ MagicPen.prototype.use = function (plugin) {
     }
 
     if (plugin.dependencies) {
-        var installedPlugins = this.installedPlugins;
+        var instance = this;
+        var thisAndParents = [];
+        do {
+            thisAndParents.push(instance);
+            instance = instance.parent;
+        } while (instance);
         var unfulfilledDependencies = plugin.dependencies.filter(function (dependency) {
-            return !installedPlugins.some(function (plugin) {
-                return plugin.name === dependency;
+            return !thisAndParents.some(function (instance) {
+                return instance.installedPlugins.some(function (plugin) {
+                    return plugin.name === dependency;
+                });
             });
         });
 
@@ -10332,6 +10460,15 @@ MagicPen.prototype.installTheme = function (formats, theme) {
         };
     }
 
+    if (that._themesHaveNotBeenClonedYet) {
+        var clonedThemes = {};
+        Object.keys(that._themes).forEach(function (format) {
+            clonedThemes[format] = Object.create(that._themes[format]);
+        });
+        that._themes = clonedThemes;
+        that._themesHaveNotBeenClonedYet = false;
+    }
+
     Object.keys(theme.styles).forEach(function (themeKey) {
         if (rgbRegexp.test(themeKey) || cssStyles[themeKey]) {
             throw new Error("Invalid theme key: '" + themeKey + "' you can't map build styles.");
@@ -10344,7 +10481,6 @@ MagicPen.prototype.installTheme = function (formats, theme) {
         }
     });
 
-    that._themes = extend({}, that._themes);
     formats.forEach(function (format) {
         var baseTheme = that._themes[format] || { styles: {} };
         var extendedTheme = extend({}, baseTheme, theme);
