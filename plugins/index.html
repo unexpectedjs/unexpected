@@ -92,26 +92,6 @@ node.js streams.</li>
 <div class="code lang-javascript"><div><span style="color: #a71d5d">var</span>&nbsp;expect&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #000000">require</span><span style="color: #000000">(</span><span style="color: #df5000">'unexpected'</span><span style="color: #000000">).</span><span style="color: #000000">clone</span><span style="color: #000000">()</span></div><div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">.</span><span style="color: #000000">use</span><span style="color: #000000">(</span><span style="color: #000000">require</span><span style="color: #000000">(</span><span style="color: #df5000">'unexpected-dom'</span><span style="color: #000000">));</span></div></div><p>For plugins that work in the browser, you&#39;ll either need to add an extra <code>&lt;script&gt;</code>, or
 use browserify or a script loader instead of the Common.js <code>require</code> in the above example.
 Please consult the documentation for each individual plugin.</p>
-<h2 id="caveats-with-plugins-that-depend-on-other-plugins">Caveats with plugins that depend on other plugins</h2>
-<p>The unexpected-express, unexpected-mitm, and unexpected-http plugins all depend
-on unexpected-messy being available. If you use more than one of these in the same
-test suite, it&#39;s important that only one version of unexpected-messy is installed.</p>
-<p>All three plugins list <code>unexpected-messy</code> under both <code>peerDependencies</code> and <code>dependencies</code>
-in their package.json. This strategy is carefully thought out to be forward compatible
-with how <code>peerDependencies</code> work with npm 3. Unfortunately, users of npm 1 and 2 will
-sometimes be in for a bit of a rough ride.</p>
-<p>Unexpected&#39;s <a href="/api/use/">use method</a> will throw an error if you install two different
-versions of unexpected-messy, so there&#39;s a stop gap that prevents <code>expect</code> from
-ending up in a broken state. Still, recovering from that error condition or an
-<code>EPEERINVALID</code> error can be tricky. We recommend trying the following:</p>
-<ol>
-<li>Upgrade to <code>npm 3</code>, then remove the <code>node_modules</code> folder and run a fresh <code>npm install</code>.</li>
-<li>If you&#39;re stuck on a previous npm version, you should still try to remove <code>node_modules</code>
-and run a fresh <code>npm install</code>.</li>
-<li>If that doesn&#39;t work, upgrade unexpected and the plugins you&#39;re using to the newest
-versions at once. The newest versions should be using the same version of
-unexpected-messy, which will resolve the problem in most cases.</li>
-</ol>
 <h2 id="mixing-plugins">Mixing plugins</h2>
 <p>All of these plugins should be able coexist in the same Unexpected instance and
 compose well together. For instance, you can grab a few and assert that an express

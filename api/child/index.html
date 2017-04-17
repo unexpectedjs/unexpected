@@ -1,0 +1,148 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0">
+    <link rel="stylesheet" href="../../static/normalize.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../../static/main.css" type="text/css" media="screen" />
+    <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="../../static/bug-icon-black.ico">
+    <title>child</title>
+</head>
+<body class="sidebar-hidden has-sidebar"> 
+    <header>
+        <div class="logo-icon"></div>
+        <nav>
+            <ul>
+                <li class="menu-toggle-item">
+                    <button class="menu-toggle" onclick="toggleSidebar()"></button>
+                </li>
+                
+                <li class=""><a href="../..">Unexpected</a></li>
+                
+                
+                <li class=""><a href="../../assertions/any/to-be">Assertions</a></li>
+                
+                
+                <li class="active"><a href="../addAssertion">API</a></li>
+                
+                
+                <li class=""><a href="../../plugins">Plugins</a></li>
+                
+            </ul>
+        </nav>
+        <div class="search" style="visibility: hidden">
+            <input id="search" placeholder="Search..." value="">
+            <div id="searchDropDown" class="dropDown">
+                <ul id="searchResults"></ul>
+            </div>
+        </div>
+    </header>
+
+<section id="api">
+    <nav id="api-menu" class="sidebar js-remember-scroll-position">
+    <ul>
+        
+        <li class="">
+            <a href="../addAssertion">addAssertion</a>
+        </li>
+        
+        <li class="">
+            <a href="../addType">addType</a>
+        </li>
+        
+        <li class="">
+            <a href="../async">async</a>
+        </li>
+        
+        <li class="active">
+            <a href="">child</a>
+        </li>
+        
+        <li class="">
+            <a href="../clone">clone</a>
+        </li>
+        
+        <li class="">
+            <a href="../expect">expect</a>
+        </li>
+        
+        <li class="">
+            <a href="../fail">fail</a>
+        </li>
+        
+        <li class="">
+            <a href="../promise">promise</a>
+        </li>
+        
+        <li class="">
+            <a href="../promise-all">promise.all</a>
+        </li>
+        
+        <li class="">
+            <a href="../promise-any">promise.any</a>
+        </li>
+        
+        <li class="">
+            <a href="../promise-settle">promise.settle</a>
+        </li>
+        
+        <li class="">
+            <a href="../shift">shift</a>
+        </li>
+        
+        <li class="">
+            <a href="../toString">toString</a>
+        </li>
+        
+        <li class="">
+            <a href="../UnexpectedError">UnexpectedError</a>
+        </li>
+        
+        <li class="">
+            <a href="../use">use</a>
+        </li>
+        
+        <li class="">
+            <a href="../withError">withError</a>
+        </li>
+        
+    </ul>
+</nav>
+
+    <div class="main" tabindex="-1">
+        <div class="content">
+            <h1 id="expect-child-">expect.child()</h1>
+<p>Create a new <code>expect</code> function that maintains a close relationship
+to the instance it is created from. The child instance has access to
+all assertions, types, and styles defined in the parent, even ones
+that are added after <code>child()</code> is called.</p>
+<p>This is mostly useful when creating plugins that have secondary dependencies
+that can aid in implementing the plugin itself, but which should not
+leak out into the &quot;primary&quot; instance belonging to the user. This can avoid
+a class of dependency hell-like problems -- for instance when a plugin
+depends on another plugin that&#39;s also installed directly by the user at
+the top level, and most likely in an incompatible version.</p>
+<p>The child instance has the ability to export assertions, types, and styles
+to the parent using the <code>exportAssertion</code>, <code>exportType</code>, and <code>exportStyle</code>
+methods. These methods have the same signature as <code>addAssertion</code>, <code>addType</code>,
+and <code>addStyle</code>, respectively, but affect the parent <code>expect</code>:</p>
+<div class="code lang-javascript"><div><span style="color: #a71d5d">var</span>&nbsp;childExpect&nbsp;<span style="color: #a71d5d">=</span>&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">child</span><span style="color: #000000">();</span></div><div>&nbsp;</div><div><span style="color: #969896">//&nbsp;Only&nbsp;available&nbsp;in&nbsp;childExpect:</span></div><div>childExpect<span style="color: #000000">.</span><span style="color: #000000">addAssertion</span><span style="color: #000000">(</span><span style="color: #df5000">'&lt;string&gt;&nbsp;to&nbsp;begin&nbsp;with&nbsp;foo'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>expect<span style="color: #000000">,</span>&nbsp;subject<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div><div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>subject<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;begin&nbsp;with'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'foo'</span><span style="color: #000000">);</span></div><div><span style="color: #000000">});</span></div><div>&nbsp;</div><div><span style="color: #969896">//&nbsp;Available&nbsp;in&nbsp;parentExpect,&nbsp;but&nbsp;has&nbsp;access&nbsp;to&nbsp;&quot;to&nbsp;begin&nbsp;with&nbsp;foo&quot;&nbsp;internally:</span></div><div>childExpect<span style="color: #000000">.</span><span style="color: #000000">exportAssertion</span><span style="color: #000000">(</span><span style="color: #df5000">'&lt;string&gt;&nbsp;to&nbsp;foobar'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>expect<span style="color: #000000">,</span>&nbsp;subject<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div><div>&nbsp;&nbsp;&nbsp;&nbsp;expect<span style="color: #000000">.</span>errorMode&nbsp;<span style="color: #a71d5d">=</span>&nbsp;<span style="color: #df5000">'nested'</span><span style="color: #000000">;</span></div><div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>subject<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;begin&nbsp;with&nbsp;foo'</span><span style="color: #000000">).</span><span style="color: #000000">and</span><span style="color: #000000">(</span><span style="color: #df5000">'to&nbsp;end&nbsp;with'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'bar'</span><span style="color: #000000">);</span></div><div><span style="color: #000000">});</span></div><div>&nbsp;</div><div><span style="color: #000000">expect</span><span style="color: #000000">(</span><span style="color: #df5000">'fo0bar'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;foobar'</span><span style="color: #000000">);</span></div></div><div class="output"><div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #df5000">'fo0bar'</span>&nbsp;<span style="color: red; font-weight: bold">to&nbsp;foobar</span></div><div>&nbsp;&nbsp;<div style="display: inline-block; vertical-align: top"><div><span style="color: red; font-weight: bold">expected</span>&nbsp;<span style="color: #df5000">'fo0bar'</span>&nbsp;<span style="color: red; font-weight: bold">to&nbsp;begin&nbsp;with&nbsp;foo</span></div><div>&nbsp;</div><div><span style="background-color: yellow">fo</span>0bar</div></div></div></div><p>Note that in order to reference a type in the signature used with
+<code>exportAssertion</code>, the type itself must also be exported to the parent <code>expect</code>.
+In other words, this won&#39;t work:</p>
+<div class="code lang-javascript"><div><span style="color: #a71d5d">var</span>&nbsp;childExpect&nbsp;<span style="color: #a71d5d">=</span>&nbsp;expect<span style="color: #000000">.</span><span style="color: #000000">child</span><span style="color: #000000">();</span></div><div>&nbsp;</div><div>childExpect<span style="color: #000000">.</span><span style="color: #000000">addType</span><span style="color: #000000">({</span></div><div>&nbsp;&nbsp;&nbsp;&nbsp;name<span style="color: #000000">:</span>&nbsp;<span style="color: #df5000">'foosomething'</span><span style="color: #000000">,</span></div><div>&nbsp;&nbsp;&nbsp;&nbsp;identify<span style="color: #000000">:</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>value<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a71d5d">return</span>&nbsp;<span style="color: #183691">/^foo/</span><span style="color: #000000">.</span><span style="color: #000000">test</span><span style="color: #000000">(</span><span style="color: #000000">String</span><span style="color: #000000">(</span>value<span style="color: #000000">));</span></div><div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">}</span></div><div><span style="color: #000000">});</span></div><div>&nbsp;</div><div>childExpect<span style="color: #000000">.</span><span style="color: #000000">exportAssertion</span><span style="color: #000000">(</span><span style="color: #df5000">'&lt;foosomething&gt;&nbsp;to&nbsp;end&nbsp;with&nbsp;bar'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #a71d5d">function</span>&nbsp;<span style="color: #000000">(</span>expect<span style="color: #000000">,</span>&nbsp;subject<span style="color: #000000">)</span>&nbsp;<span style="color: #000000">{</span></div><div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #000000">expect</span><span style="color: #000000">(</span>subject<span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'to&nbsp;end&nbsp;with'</span><span style="color: #000000">,</span>&nbsp;<span style="color: #df5000">'bar'</span><span style="color: #000000">);</span></div><div><span style="color: #000000">});</span></div></div><div class="output"><div><span style="color: red; font-weight: bold">Unknown&nbsp;type:&nbsp;foosomething&nbsp;in&nbsp;&lt;foosomething&gt;&nbsp;to&nbsp;end&nbsp;with&nbsp;bar</span></div></div><p>It can be fixed by exporting the <code>foosomething</code> type instead of just adding it
+to the child.</p>
+
+        </div>
+    </div>
+</section>
+<script type="text/javascript">
+    baseUrl = '../..';
+</script>
+<script type="text/javascript" src="../../static/toggleSidebar.js"></script>
+<script type="text/javascript" src="../../static/rememberScrollPosition.js"></script>
+<script type="text/javascript" src="../../static/focusMain.js"></script>
+<script type="text/javascript" src="../../static/search.js"></script>
+</body>
+</html>
+
