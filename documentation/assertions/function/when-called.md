@@ -27,3 +27,20 @@ return expect(giveMeFive, 'called').then(function (result) {
     expect(result, 'to equal', 5);
 });
 ```
+
+When this assertion in used together with [to satisfy](/assertions/any/to-satisfy)
+we make sure that `this` is bound correctly:
+
+```js
+function Person(name) {
+    this.name = name;
+}
+
+Person.prototype.toString = function () {
+    return this.name;
+};
+
+expect(new Person('John Doe'), 'to satisfy', {
+    toString: expect.it('when called to equal', 'John Doe')
+});
+```

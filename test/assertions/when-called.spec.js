@@ -46,4 +46,20 @@ describe('when called assertion', function () {
             );
         });
     });
+
+    describe('when assertion is executed in context of another object', function () {
+        it('should call the function in the context of that object', function () {
+            function Person(name) {
+                this.name = name;
+            }
+
+            Person.prototype.toString = function () {
+                return this.name;
+            };
+
+            expect(new Person('John Doe'), 'to satisfy', {
+                toString: expect.it('when called to equal', 'John Doe')
+            });
+        });
+    });
 });

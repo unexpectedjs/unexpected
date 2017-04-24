@@ -21,4 +21,20 @@ describe('when called with assertion', function () {
             expect(sum, 'to equal', 7);
         });
     });
+
+    describe('when assertion is executed in context of another object', function () {
+        it('should call the function in the context of that object', function () {
+            function Greeter(prefix) {
+                this.prefix = prefix;
+            }
+
+            Greeter.prototype.greet = function (name) {
+                return this.prefix + name;
+            };
+
+            expect(new Greeter('Hello, '), 'to satisfy', {
+                greet: expect.it('when called with', ['John Doe'], 'to equal', 'Hello, John Doe')
+            });
+        });
+    });
 });
