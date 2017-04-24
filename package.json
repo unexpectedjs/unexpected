@@ -51,7 +51,7 @@
     "nyc": "6.1.1",
     "rsvp": "3.0.18",
     "serve": "*",
-    "unexpected-documentation-site-generator": "^4.0.0",
+    "unexpected-documentation-site-generator": "^4.4.0",
     "unexpected-magicpen": "0.2.1",
     "unexpected-markdown": "^1.7.2"
   },
