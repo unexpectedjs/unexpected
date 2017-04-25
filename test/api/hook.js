@@ -6,7 +6,7 @@ describe('hook', function () {
         clonedExpect.hook(function (next) {
             return function (context, args) {
                 called = true;
-                return next.call(this, context, args);
+                return next(context, args);
             };
         });
         expect(called, 'to be false');
@@ -23,7 +23,7 @@ describe('hook', function () {
             clonedExpect.hook(function (next) {
                 return function (context, args) {
                     called = true;
-                    return next.call(this, context, args);
+                    return next(context, args);
                 };
             });
             clonedClonedExpect(123, 'to equal', 123);
@@ -36,7 +36,7 @@ describe('hook', function () {
             clonedExpect.hook(function (next) {
                 return function (context, args) {
                     called = true;
-                    return next.call(this, context, args);
+                    return next(context, args);
                 };
             });
             var clonedClonedExpect = clonedExpect.clone();
@@ -54,7 +54,7 @@ describe('hook', function () {
             parentExpect.hook(function (next) {
                 return function (context, args) {
                     called = true;
-                    return next.call(this, context, args);
+                    return next(context, args);
                 };
             });
 
@@ -69,7 +69,7 @@ describe('hook', function () {
             parentExpect.hook(function (next) {
                 return function (context, args) {
                     called = true;
-                    return next.call(this, context, args);
+                    return next(context, args);
                 };
             });
 
@@ -85,7 +85,7 @@ describe('hook', function () {
         clonedExpect.hook(function (next) {
             return function (context, args) {
                 args[1] = 'to equal';
-                return next.call(this, context, args);
+                return next(context, args);
             };
         });
         clonedExpect(123, 'to foobarquux', 123);
@@ -96,7 +96,7 @@ describe('hook', function () {
         clonedExpect.hook(function (next) {
             return function (context, args) {
                 try {
-                    next.call(this, context, args);
+                    next(context, args);
                 } catch (e) {
                     return expect.promise.resolve();
                 }
@@ -112,13 +112,13 @@ describe('hook', function () {
         clonedExpect.hook(function (next) {
             return function (context, args) {
                 firstCalled = true;
-                return next.call(this, context, args);
+                return next(context, args);
             };
         });
         clonedExpect.hook(function (next) {
             return function (context, args) {
                 secondCalled = true;
-                return next.call(this, context, args);
+                return next(context, args);
             };
         });
         clonedExpect(123, 'to equal', 123);
