@@ -1,6 +1,12 @@
-# Unexpected
+<h1 align=center>
+  <a href="http://unexpected.js.org/" title="Unexpected Documentation">
+    <img alt="Unexpected" width="200" src="http://unexpected.js.org/static/bug-icon-black.svg">
+  </a>
+  <br>
+  Unexpected
+</h1>
 
-Extensible BDD assertion toolkit
+The extensible BDD assertion toolkit
 
 [![NPM version](https://badge.fury.io/js/unexpected.svg)](http://badge.fury.io/js/unexpected)
 [![Build Status](https://travis-ci.org/unexpectedjs/unexpected.svg?branch=master)](https://travis-ci.org/unexpectedjs/unexpected)
