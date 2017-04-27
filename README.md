@@ -1,6 +1,6 @@
 <h1 align=center>
   <a href="http://unexpected.js.org/" title="Unexpected Documentation">
-    <img alt="Unexpected logo" width="200" src="http://unexpected.js.org/static/bug-icon-black.svg">
+    <img alt="Unexpected logo" width="200" src="http://unexpected.js.org/logo.svg">
   </a>
   <br>
   Unexpected
