@@ -64,8 +64,8 @@
     "url": "/api/withError/"
   },
   {
-    "label": "to have arity (function)",
-    "url": "/assertions/function/to-have-arity/"
+    "label": "to throw (function)",
+    "url": "/assertions/function/to-throw/"
   },
   {
     "label": "when decoded as (Buffer)",
@@ -102,6 +102,42 @@
   {
     "label": "when rejected (Promise)",
     "url": "/assertions/Promise/when-rejected/"
+  },
+  {
+    "label": "to be empty (array-like)",
+    "url": "/assertions/array-like/to-be-empty/"
+  },
+  {
+    "label": "to be non-empty (array-like)",
+    "url": "/assertions/array-like/to-be-non-empty/"
+  },
+  {
+    "label": "to contain (array-like)",
+    "url": "/assertions/array-like/to-contain/"
+  },
+  {
+    "label": "to have an item satisfying (array-like)",
+    "url": "/assertions/array-like/to-have-an-item-satisfying/"
+  },
+  {
+    "label": "to have items satisfying (array-like)",
+    "url": "/assertions/array-like/to-have-items-satisfying/"
+  },
+  {
+    "label": "to have length (array-like)",
+    "url": "/assertions/array-like/to-have-length/"
+  },
+  {
+    "label": "when passed as parameters to (array-like)",
+    "url": "/assertions/array-like/when-passed-as-parameters-to/"
+  },
+  {
+    "label": "when sorted by (array-like)",
+    "url": "/assertions/array-like/when-sorted-by/"
+  },
+  {
+    "label": "when sorted (array-like)",
+    "url": "/assertions/array-like/when-sorted/"
   },
   {
     "label": "to be a (any)",
@@ -152,50 +188,6 @@
     "url": "/assertions/any/when-passed-as-parameter-to/"
   },
   {
-    "label": "to be empty (array-like)",
-    "url": "/assertions/array-like/to-be-empty/"
-  },
-  {
-    "label": "to be non-empty (array-like)",
-    "url": "/assertions/array-like/to-be-non-empty/"
-  },
-  {
-    "label": "to contain (array-like)",
-    "url": "/assertions/array-like/to-contain/"
-  },
-  {
-    "label": "to have an item satisfying (array-like)",
-    "url": "/assertions/array-like/to-have-an-item-satisfying/"
-  },
-  {
-    "label": "to have items satisfying (array-like)",
-    "url": "/assertions/array-like/to-have-items-satisfying/"
-  },
-  {
-    "label": "to have length (array-like)",
-    "url": "/assertions/array-like/to-have-length/"
-  },
-  {
-    "label": "when passed as parameters to (array-like)",
-    "url": "/assertions/array-like/when-passed-as-parameters-to/"
-  },
-  {
-    "label": "when sorted by (array-like)",
-    "url": "/assertions/array-like/when-sorted-by/"
-  },
-  {
-    "label": "when sorted (array-like)",
-    "url": "/assertions/array-like/when-sorted/"
-  },
-  {
-    "label": "to be true (boolean)",
-    "url": "/assertions/boolean/to-be-true/"
-  },
-  {
-    "label": "to be false (boolean)",
-    "url": "/assertions/boolean/to-be-false/"
-  },
-  {
     "label": "to call the callback with error (function)",
     "url": "/assertions/function/to-call-the-callback-with-error/"
   },
@@ -212,16 +204,16 @@
     "url": "/assertions/function/to-error/"
   },
   {
-    "label": "to have message (Error)",
-    "url": "/assertions/Error/to-have-message/"
+    "label": "to have arity (function)",
+    "url": "/assertions/function/to-have-arity/"
   },
   {
     "label": "to throw a (function)",
     "url": "/assertions/function/to-throw-a/"
   },
   {
-    "label": "to throw (function)",
-    "url": "/assertions/function/to-throw/"
+    "label": "to have message (Error)",
+    "url": "/assertions/Error/to-have-message/"
   },
   {
     "label": "when called with (function)",
@@ -232,12 +224,12 @@
     "url": "/assertions/function/when-called/"
   },
   {
-    "label": "to be close to (number)",
-    "url": "/assertions/number/to-be-close-to/"
-  },
-  {
     "label": "to be NaN (number)",
     "url": "/assertions/number/to-be-NaN/"
+  },
+  {
+    "label": "to be close to (number)",
+    "url": "/assertions/number/to-be-close-to/"
   },
   {
     "label": "to be finite (number)",
@@ -274,6 +266,14 @@
   {
     "label": "to be within (number)",
     "url": "/assertions/number/to-be-within/"
+  },
+  {
+    "label": "to be false (boolean)",
+    "url": "/assertions/boolean/to-be-false/"
+  },
+  {
+    "label": "to be true (boolean)",
+    "url": "/assertions/boolean/to-be-true/"
   },
   {
     "label": "to be canonical (object)",
