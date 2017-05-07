@@ -863,6 +863,20 @@ describe('unexpected', function () {
                 );
             });
         });
+
+        // https://github.com/unexpectedjs/unexpected/issues/394
+        it('should produce a meaningful error message when the last half of a compound assertion is not a valid assertion name', function () {
+            expect(function () {
+                expect(function () {}, 'when called with', 'M1', 'to throw a', SyntaxError);
+            }, 'to throw',
+                "expected function () {}\n" +
+                "when called with 'M1', 'to throw a', function SyntaxError() { /* native code */ }\n" +
+                "  The assertion does not have a matching signature for:\n" +
+                "    <function> when called with <string> <string> <function>\n" +
+                "  did you mean:\n" +
+                "    <function> [when] called with <array-like> <assertion?>"
+            );
+        });
     });
 
     describe('#output', function () {
