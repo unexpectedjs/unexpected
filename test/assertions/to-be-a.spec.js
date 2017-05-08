@@ -53,7 +53,19 @@ describe('to be a/an assertion', function () {
         it('should fail when the type is not defined', function () {
             expect(function () {
                 expect(123, 'to be a', 'FoopQuuxDoop');
-            }, 'to throw', 'expected 123 to be a FoopQuuxDoop');
+            }, 'to throw',
+                'expected 123 to be a FoopQuuxDoop\n' +
+                '  No FoopQuuxDoop type is defined'
+            );
+        });
+
+        it('should fail when the type is not defined in the "not" case', function () {
+            expect(function () {
+                expect(123, 'not to be a', 'FoopQuuxDoop');
+            }, 'to throw',
+                'expected 123 not to be a FoopQuuxDoop\n' +
+                '  No FoopQuuxDoop type is defined'
+            );
         });
     });
 
