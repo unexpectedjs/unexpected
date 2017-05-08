@@ -59,6 +59,7 @@ return expect.promise.any({
     output.error(aggregateError.message);
     var errors = [];
     for (var i = 0; i < aggregateError.length; i += 1) {
+      aggregateError[i].serializeMessage(expect.outputFormat())
       errors.push(aggregateError[i]);
     }
 

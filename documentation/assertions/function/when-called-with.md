@@ -27,3 +27,25 @@ return expect(add, 'called with', [1, 2]).then(function (result) {
     expect(result, 'to equal', 3);
 });
 ```
+
+When this assertion in used together with [to satisfy](/assertions/any/to-satisfy)
+we make sure that `this` is bound correctly:
+
+```js
+function Greeter(prefix) {
+    this.prefix = prefix;
+}
+
+Greeter.prototype.greet = function (name) {
+    return this.prefix + name;
+};
+
+var helloGreeter = new Greeter('Hello, ')
+
+expect(helloGreeter, 'to satisfy', {
+    greet: expect.it(
+      'when called with', ['John Doe'],
+      'to equal', 'Hello, John Doe'
+    )
+});
+```

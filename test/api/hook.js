@@ -4,9 +4,9 @@ describe('hook', function () {
         var clonedExpect = expect.clone();
         var called = false;
         clonedExpect.hook(function (next) {
-            return function (subject, testDescriptionString) {
+            return function (context, args) {
                 called = true;
-                return next.apply(this, arguments);
+                return next(context, args);
             };
         });
         expect(called, 'to be false');
@@ -21,9 +21,9 @@ describe('hook', function () {
 
             var called = false;
             clonedExpect.hook(function (next) {
-                return function (subject, testDescriptionString) {
+                return function (context, args) {
                     called = true;
-                    return next.apply(this, arguments);
+                    return next(context, args);
                 };
             });
             clonedClonedExpect(123, 'to equal', 123);
@@ -34,9 +34,9 @@ describe('hook', function () {
             var clonedExpect = expect.clone();
             var called = false;
             clonedExpect.hook(function (next) {
-                return function (subject, testDescriptionString) {
+                return function (context, args) {
                     called = true;
-                    return next.apply(this, arguments);
+                    return next(context, args);
                 };
             });
             var clonedClonedExpect = clonedExpect.clone();
@@ -52,9 +52,9 @@ describe('hook', function () {
 
             var called = false;
             parentExpect.hook(function (next) {
-                return function (subject, testDescriptionString) {
+                return function (context, args) {
                     called = true;
-                    return next.apply(this, arguments);
+                    return next(context, args);
                 };
             });
 
@@ -67,9 +67,9 @@ describe('hook', function () {
 
             var called = false;
             parentExpect.hook(function (next) {
-                return function (subject, testDescriptionString) {
+                return function (context, args) {
                     called = true;
-                    return next.apply(this, arguments);
+                    return next(context, args);
                 };
             });
 
@@ -83,9 +83,9 @@ describe('hook', function () {
     it('should allow rewriting the assertion string', function () {
         var clonedExpect = expect.clone();
         clonedExpect.hook(function (next) {
-            return function () {
-                arguments[1] = 'to equal';
-                return next.apply(this, arguments);
+            return function (context, args) {
+                args[1] = 'to equal';
+                return next(context, args);
             };
         });
         clonedExpect(123, 'to foobarquux', 123);
@@ -94,9 +94,9 @@ describe('hook', function () {
     it('should allow suppressing the return value of the "next" expect', function () {
         var clonedExpect = expect.clone();
         clonedExpect.hook(function (next) {
-            return function () {
+            return function (context, args) {
                 try {
-                    next.apply(this, arguments);
+                    next(context, args);
                 } catch (e) {
                     return expect.promise.resolve();
                 }
@@ -110,15 +110,15 @@ describe('hook', function () {
         var secondCalled = false;
         var clonedExpect = expect.clone();
         clonedExpect.hook(function (next) {
-            return function () {
+            return function (context, args) {
                 firstCalled = true;
-                return next.apply(this, arguments);
+                return next(context, args);
             };
         });
         clonedExpect.hook(function (next) {
-            return function () {
+            return function (context, args) {
                 secondCalled = true;
-                return next.apply(this, arguments);
+                return next(context, args);
             };
         });
         clonedExpect(123, 'to equal', 123);
