@@ -55,7 +55,7 @@ describe('to be a/an assertion', function () {
                 expect(123, 'to be a', 'FoopQuuxDoop');
             }, 'to throw',
                 'expected 123 to be a FoopQuuxDoop\n' +
-                '  No FoopQuuxDoop type is defined'
+                '  Unknown type: FoopQuuxDoop'
             );
         });
 
@@ -64,7 +64,7 @@ describe('to be a/an assertion', function () {
                 expect(123, 'not to be a', 'FoopQuuxDoop');
             }, 'to throw',
                 'expected 123 not to be a FoopQuuxDoop\n' +
-                '  No FoopQuuxDoop type is defined'
+                '  Unknown type: FoopQuuxDoop'
             );
         });
     });
