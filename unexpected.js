@@ -48,6 +48,17 @@ function isAssertionArg(arg) {
     return arg.type.is('assertion');
 }
 
+function Context(unexpected) {
+    this.expect = unexpected;
+    this.level = 0;
+}
+
+Context.prototype.child = function () {
+    var child = Object.create(this);
+    child.level++;
+    return child;
+};
+
 var anyType = {
     _unexpectedType: true,
     name: 'any',
@@ -154,7 +165,7 @@ function getOrGroups(expectations) {
     return orGroups;
 }
 
-function evaluateGroup(expect, subject, orGroup) {
+function evaluateGroup(unexpected, context, subject, orGroup) {
     return orGroup.map(function (expectation) {
         var args = Array.prototype.slice.call(expectation);
         args.unshift(subject);
@@ -169,14 +180,14 @@ function evaluateGroup(expect, subject, orGroup) {
                         return args[1](args[0]);
                     }
                 } else {
-                    return expect.apply(expect, args);
+                    return unexpected._expect(context.child(), args);
                 }
             })
         };
     });
 }
 
-function writeGroupEvaluationsToOutput(expect, output, groupEvaluations) {
+function writeGroupEvaluationsToOutput(output, groupEvaluations) {
     var hasOrClauses = groupEvaluations.length > 1;
     var hasAndClauses = groupEvaluations.some(function (groupEvaluation) {
         return groupEvaluation.length > 1;
@@ -237,21 +248,27 @@ function writeGroupEvaluationsToOutput(expect, output, groupEvaluations) {
     });
 }
 
-function createExpectIt(expect, expectations) {
+function createExpectIt(unexpected, expectations) {
     var orGroups = getOrGroups(expectations);
 
-    function expectIt(subject) {
+    function expectIt(subject, context) {
+        context = (
+            context &&
+            typeof context === 'object' &&
+            context instanceof Context
+        ) ? context : new Context(unexpected);
+
         var groupEvaluations = [];
         var promises = [];
         orGroups.forEach(function (orGroup) {
-            var evaluations = evaluateGroup(expect, subject, orGroup);
+            var evaluations = evaluateGroup(unexpected, context, subject, orGroup);
             evaluations.forEach(function (evaluation) {
                 promises.push(evaluation.promise);
             });
             groupEvaluations.push(evaluations);
         });
 
-        return oathbreaker(expect.promise.settle(promises).then(function () {
+        return oathbreaker(makePromise.settle(promises).then(function () {
             groupEvaluations.forEach(function (groupEvaluation) {
                 groupEvaluation.forEach(function (evaluation) {
                     if (evaluation.promise.isRejected() && evaluation.promise.reason().errorMode === 'bubbleThrough') {
@@ -265,8 +282,8 @@ function createExpectIt(expect, expectations) {
                     return evaluation.promise.isFulfilled();
                 });
             })) {
-                expect.fail(function (output) {
-                    writeGroupEvaluationsToOutput(expect, output, groupEvaluations);
+                unexpected.fail(function (output) {
+                    writeGroupEvaluationsToOutput(output, groupEvaluations);
                 });
             }
         }));
@@ -277,18 +294,18 @@ function createExpectIt(expect, expectations) {
     expectIt.and = function () {
         var copiedExpectations = expectations.slice();
         copiedExpectations.push(arguments);
-        return createExpectIt(expect, copiedExpectations);
+        return createExpectIt(unexpected, copiedExpectations);
     };
     expectIt.or = function () {
         var copiedExpectations = expectations.slice();
         copiedExpectations.push(OR, arguments);
-        return createExpectIt(expect, copiedExpectations);
+        return createExpectIt(unexpected, copiedExpectations);
     };
     return expectIt;
 }
 
 Unexpected.prototype.it = function () { // ...
-    return createExpectIt(this.expect, [arguments]);
+    return createExpectIt(this, [arguments]);
 };
 
 Unexpected.prototype.equal = function (actual, expected, depth, seen) {
@@ -880,7 +897,7 @@ Unexpected.prototype.installPlugin = Unexpected.prototype.use; // Legacy alias
 
 function installExpectMethods(unexpected) {
     var expect = function () { /// ...
-        return unexpected._expect.apply(unexpected, arguments);
+        return unexpected._expect(new Context(unexpected), arguments);
     };
     expect.it = unexpected.it.bind(unexpected);
     expect.equal = unexpected.equal.bind(unexpected);
@@ -1133,9 +1150,12 @@ Unexpected.prototype.setErrorMessage = function (err) {
     err.serializeMessage(this.outputFormat());
 };
 
-Unexpected.prototype._expect = function expect(subject, testDescriptionString) {
+Unexpected.prototype._expect = function expect(context, args) {
     var that = this;
-    if (arguments.length < 2) {
+    var subject = args[0];
+    var testDescriptionString = args[1];
+
+    if (args.length < 2) {
         throw new Error('The expect function requires at least two parameters.');
     } else if (testDescriptionString && testDescriptionString._expectIt) {
         return that.expect.withError(function () {
@@ -1145,12 +1165,7 @@ Unexpected.prototype._expect = function expect(subject, testDescriptionString) {
         });
     }
 
-    var executionContext = {
-        expect: that,
-        serializeErrorsFromWrappedExpect: false
-    };
-
-    function executeExpect(subject, testDescriptionString, args) {
+    function executeExpect(context, subject, testDescriptionString, args) {
         var assertionRule = that.lookupAssertionRule(subject, testDescriptionString, args);
 
         if (!assertionRule) {
@@ -1195,13 +1210,13 @@ Unexpected.prototype._expect = function expect(subject, testDescriptionString) {
                 args[i - 2] = arguments[i];
             }
             return wrappedExpect.callInNestedContext(function () {
-                return executeExpect(subject, testDescriptionString, args);
+                return executeExpect(context.child(), subject, testDescriptionString, args);
             });
         };
 
         utils.setPrototypeOfOrExtend(wrappedExpect, that._wrappedExpectProto);
 
-        wrappedExpect._context = executionContext;
+        wrappedExpect.context = context;
         wrappedExpect.execute = wrappedExpect;
         wrappedExpect.alternations = assertionRule.alternations;
         wrappedExpect.flags = flags;
@@ -1234,22 +1249,17 @@ Unexpected.prototype._expect = function expect(subject, testDescriptionString) {
         return oathbreaker(assertionRule.handler.apply(wrappedExpect, [wrappedExpect, subject].concat(args)));
     }
 
-    var args = new Array(arguments.length - 2);
-    for (var i = 2 ; i < arguments.length ; i += 1) {
-        args[i - 2] = arguments[i];
-    }
     try {
-        var result = executeExpect(subject, testDescriptionString, args);
+        var result = executeExpect(context, subject, testDescriptionString, Array.prototype.slice.call(args, 2));
         if (isPendingPromise(result)) {
             that.expect.notifyPendingPromise(result);
             result = result.then(undefined, function (e) {
-                if (e && e._isUnexpected) {
+                if (e && e._isUnexpected && context.level === 0) {
                     that.setErrorMessage(e);
                 }
                 throw e;
             });
         } else {
-            executionContext.serializeErrorsFromWrappedExpect = true;
             if (!result || typeof result.then !== 'function') {
                 result = makePromise.resolve(result);
             }
@@ -1261,7 +1271,9 @@ Unexpected.prototype._expect = function expect(subject, testDescriptionString) {
             if (typeof mochaPhantomJS !== 'undefined') {
                 newError = e.clone();
             }
-            that.setErrorMessage(newError);
+            if (context.level === 0) {
+                that.setErrorMessage(newError);
+            }
             throw newError;
         }
         throw e;
@@ -2647,7 +2659,9 @@ module.exports = function (expect) {
                 };
             } else if (typeof nextArg === 'function') {
                 expected[key] = function (s) {
-                    return nextArg(s, index);
+                    return nextArg._expectIt
+                      ? nextArg(s, expect.context)
+                      : nextArg(s, index);
                 };
             } else {
                 expected[key] = nextArg;
@@ -2831,7 +2845,7 @@ module.exports = function (expect) {
 
     expect.addAssertion('<binaryArray> to [exhaustively] satisfy <expect.it>', function (expect, subject, value) {
         return expect.withError(function () {
-            return value(subject);
+            return value(subject, expect.context);
         }, function (e) {
             expect.fail({
                 diff: function (output, diff, inspect, equal) {
@@ -2839,6 +2853,13 @@ module.exports = function (expect) {
                     return output.appendErrorMessage(e);
                 }
             });
+        });
+    });
+
+    expect.addAssertion('<UnexpectedError> to [exhaustively] satisfy <function>', function (expect, subject, value) {
+        return expect.promise(function () {
+            subject.serializeMessage(expect.outputFormat());
+            return value(subject);
         });
     });
 
@@ -2886,7 +2907,7 @@ module.exports = function (expect) {
 
     expect.addAssertion('<any> to [exhaustively] satisfy [assertion] <expect.it>', function (expect, subject, value) {
         return expect.withError(function () {
-            return value(subject);
+            return value(subject, expect.context);
         }, function (e) {
             expect.fail({
                 diff: function (output) {
@@ -3157,7 +3178,10 @@ module.exports = function (expect) {
         keys.forEach(function (key, index) {
             promiseByKey[key] = expect.promise(function () {
                 var valueKeyType = expect.findTypeOf(value[key]);
-                if (valueKeyType.is('function')) {
+                if (valueKeyType.is('expect.it')) {
+                    expect.context.thisObject = subject;
+                    return value[key](subject[key], expect.context);
+                } else if (valueKeyType.is('function')) {
                     return value[key](subject[key]);
                 } else {
                     return expect(subject[key], 'to [exhaustively] satisfy', value[key]);
@@ -3353,12 +3377,18 @@ module.exports = function (expect) {
         expect.argsOutput[0] = function (output) {
             output.appendItems(args, ', ');
         };
-        return expect.shift(subject.apply(subject, args));
+
+        var thisObject = expect.context.thisObject || null;
+
+        return expect.shift(subject.apply(thisObject, args));
     });
 
     expect.addAssertion('<function> [when] called <assertion?>', function (expect, subject) {
         expect.errorMode = 'nested';
-        return expect.shift(subject.call(subject));
+
+        var thisObject = expect.context.thisObject || null;
+
+        return expect.shift(subject.call(thisObject));
     });
 
     function instantiate(Constructor, args) {
@@ -3814,13 +3844,13 @@ module.exports = function createWrappedExpectProto(unexpected) {
         diff: unexpected.diff,
         getType: unexpected.getType,
         output: unexpected.output,
-        outputFormat: unexpected.outputFormat,
+        outputFormat: unexpected.outputFormat.bind(unexpected),
         format: unexpected.format,
         withError: unexpected.withError,
 
         fail: function () {
             var args = arguments;
-            var expect = this._context.expect;
+            var expect = this.context.expect;
             this.callInNestedContext(function () {
                 expect.fail.apply(expect, args);
             });
@@ -3842,7 +3872,7 @@ module.exports = function createWrappedExpectProto(unexpected) {
         },
         callInNestedContext: function (callback) {
             var that = this;
-            var expect = that._context.expect;
+
             try {
                 var result = oathbreaker(callback());
                 if (isPendingPromise(result)) {
@@ -3862,9 +3892,6 @@ module.exports = function createWrappedExpectProto(unexpected) {
                 if (e && e._isUnexpected) {
                     var wrappedError = new UnexpectedError(that, e);
                     wrappedError.originalError = e.originalError;
-                    if (that._context.serializeErrorsFromWrappedExpect) {
-                        expect.setErrorMessage(wrappedError);
-                    }
                     throw wrappedError;
                 }
                 throw e;
@@ -11629,6 +11656,10 @@ process.off = noop;
 process.removeListener = noop;
 process.removeAllListeners = noop;
 process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
 
 process.binding = function (name) {
     throw new Error('process.binding is not supported');
