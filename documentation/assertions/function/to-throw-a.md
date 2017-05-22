@@ -35,3 +35,15 @@ expected function willNotThrow() {} to throw a RangeError
   expected function willNotThrow() {} to throw
     did not throw
 ```
+
+To test functions that require input wrap the function invocation in an anonymous function
+
+```javascript
+function willThrow(input) {
+  if(input) throw new SyntaxError('The error message');
+  return input;
+}
+expect(function() {
+    willThrow('input.here')
+}, 'to throw a', SyntaxError);
+```
