@@ -36,7 +36,7 @@ expected function willNotThrow() {} to throw a RangeError
     did not throw
 ```
 
-To test functions that require input wrap the function invocation in an anonymous function
+To test functions that require input wrap the function invocation in an anonymous function:
 
 ```javascript
 function willThrow(input) {

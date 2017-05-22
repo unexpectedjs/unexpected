@@ -158,3 +158,15 @@ function () {
 not to throw
   threw: Error('threw anyway')
 ```
+
+To test functions that require input wrap the function invocation in an anonymous function:
+
+```javascript
+function willThrow(input) {
+  if(input) throw new SyntaxError('The error message');
+  return input;
+}
+expect(function() {
+    willThrow('input.here')
+}, 'to throw', new SyntaxError('The error message'));
+```
