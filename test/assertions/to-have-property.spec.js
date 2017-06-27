@@ -12,6 +12,37 @@ describe('to have property assertion', function () {
         expect(function () {}, 'to have property', 'toString');
     });
 
+    describe('property descriptor', function () {
+        before(function () {
+            this.subject = { a: 'b' };
+
+            Object.defineProperty(this.subject, 'enumFalse', { enumerable: false, value: 't' });
+            Object.defineProperty(this.subject, 'configFalse', { configurable: false, value: 't' });
+            Object.defineProperty(this.subject, 'writableFalse', { writable: false, value: 't' });
+        });
+
+        it('asserts validity of property descriptor', function () {
+            expect(this.subject, 'to have enumerable property', 'a');
+            expect(this.subject, 'not to have enumerable property', 'enumFalse');
+            expect(this.subject, 'to have configurable property', 'a');
+            expect(this.subject, 'not to have configurable property', 'configFalse');
+            expect(this.subject, 'to have writable property', 'a');
+            expect(this.subject, 'not to have writable property', 'writableFalse');
+        });
+
+        it('throws when assertion fails', function () {
+            expect(function () {
+                expect(this.subject, 'to have enumerable property', 'enumFalse');
+            }.bind(this), 'to throw exception', "expected { a: 'b' } to have enumerable property 'enumFalse'");
+            expect(function () {
+                expect(this.subject, 'to have configurable property', 'configFalse');
+            }.bind(this), 'to throw exception', "expected { a: 'b' } to have configurable property 'configFalse'");
+            expect(function () {
+                expect(this.subject, 'to have writable property', 'writableFalse');
+            }.bind(this), 'to throw exception', "expected { a: 'b' } to have writable property 'writableFalse'");
+        });
+    });
+
     it('throws when the assertion fails', function () {
         expect(function () {
             expect({a: 'b'}, 'to have property', 'b');
