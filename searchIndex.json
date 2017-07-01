@@ -72,6 +72,10 @@
     "url": "/assertions/Buffer/when-decoded-as/"
   },
   {
+    "label": "to be fulfilled with value satisfying (Promise)",
+    "url": "/assertions/Promise/to-be-fulfilled-with-value-satisfying/"
+  },
+  {
     "label": "to be fulfilled with (Promise)",
     "url": "/assertions/Promise/to-be-fulfilled-with/"
   },
@@ -148,18 +152,6 @@
     "url": "/assertions/any/when-passed-as-parameter-to/"
   },
   {
-    "label": "to have message (Error)",
-    "url": "/assertions/Error/to-have-message/"
-  },
-  {
-    "label": "to be false (boolean)",
-    "url": "/assertions/boolean/to-be-false/"
-  },
-  {
-    "label": "to be true (boolean)",
-    "url": "/assertions/boolean/to-be-true/"
-  },
-  {
     "label": "to be empty (array-like)",
     "url": "/assertions/array-like/to-be-empty/"
   },
@@ -196,6 +188,14 @@
     "url": "/assertions/array-like/when-sorted/"
   },
   {
+    "label": "to be false (boolean)",
+    "url": "/assertions/boolean/to-be-false/"
+  },
+  {
+    "label": "to be true (boolean)",
+    "url": "/assertions/boolean/to-be-true/"
+  },
+  {
     "label": "to call the callback with error (function)",
     "url": "/assertions/function/to-call-the-callback-with-error/"
   },
@@ -212,8 +212,8 @@
     "url": "/assertions/function/to-error/"
   },
   {
-    "label": "to be fulfilled with value satisfying (Promise)",
-    "url": "/assertions/Promise/to-be-fulfilled-with-value-satisfying/"
+    "label": "to have message (Error)",
+    "url": "/assertions/Error/to-have-message/"
   },
   {
     "label": "to throw a (function)",
