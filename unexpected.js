@@ -793,11 +793,13 @@ Unexpected.prototype.addType = function (type, childUnexpected) {
 };
 
 Unexpected.prototype.addStyle = function () { // ...
-    return this.output.addStyle.apply(this.output, arguments);
+    this.output.addStyle.apply(this.output, arguments);
+    return this.expect;
 };
 
 Unexpected.prototype.installTheme = function () { // ...
-    return this.output.installTheme.apply(this.output, arguments);
+    this.output.installTheme.apply(this.output, arguments);
+    return this.expect;
 };
 
 function getPluginName(plugin) {
@@ -1170,15 +1172,22 @@ Unexpected.prototype._expect = function expect(context, args) {
 
         if (!assertionRule) {
             var tokens = testDescriptionString.split(' ');
-            for (var n = tokens.length - 1; n > 0 ; n -= 1) {
+            OUTER: for (var n = tokens.length - 1; n > 0 ; n -= 1) {
                 var prefix = tokens.slice(0, n).join(' ');
-                var argsWithAssertionPrepended = [ tokens.slice(n).join(' ') ].concat(args);
+                var remainingTokens = tokens.slice(n);
+                var argsWithAssertionPrepended = [ remainingTokens.join(' ') ].concat(args);
                 assertionRule = that.lookupAssertionRule(subject, prefix, argsWithAssertionPrepended, true);
                 if (assertionRule) {
-                    // Great, found the longest prefix of the string that yielded a suitable assertion for the given subject and args
-                    testDescriptionString = prefix;
-                    args = argsWithAssertionPrepended;
-                    break;
+                    // Found the longest prefix of the string that yielded a suitable assertion for the given subject and args
+                    // To avoid bogus error messages when shifting later (#394) we require some prefix of the remaining tokens
+                    // to be a valid assertion name:
+                    for (var i = 1 ; i < remainingTokens.length ; i += 1) {
+                        if (that.assertions.hasOwnProperty(remainingTokens.slice(0, i + 1).join(' '))) {
+                            testDescriptionString = prefix;
+                            args = argsWithAssertionPrepended;
+                            break OUTER;
+                        }
+                    }
                 }
             }
             if (!assertionRule) {
@@ -5570,15 +5579,25 @@ module.exports = function (expect) {
         inspect: function (f, depth, output, inspect) {
             var source = f.toString().replace(/\r\n?|\n\r?/g, '\n');
             var name = utils.getFunctionName(f) || '';
-            var args;
+            var preamble;
             var body;
-            var asyncPrefix = '';
-            var matchSource = source.match(/^\s*(async )?function \w*?\s*\(([^\)]*)\)\s*\{([\s\S]*?( *)?)\}\s*$/);
+            var bodyIndent;
+            var matchSource = source.match(/^\s*((?:async )?\s*(?:\S+\s*=>|\([^\)]*\)\s*=>|function \w*?\s*\([^\)]*\)))([\s\S]*)$/);
             if (matchSource) {
-                asyncPrefix = matchSource[1] || '';
-                args = matchSource[2];
-                body = matchSource[3];
-                var bodyIndent = matchSource[4] || '';
+                preamble = matchSource[1];
+                body = matchSource[2];
+                var matchBodyAndIndent = body.match(/^(\s*\{)([\s\S]*?)([ ]*)\}\s*$/);
+                var openingBrace;
+                var closingBrace = '}';
+                if (matchBodyAndIndent) {
+                    openingBrace = matchBodyAndIndent[1];
+                    body = matchBodyAndIndent[2];
+                    bodyIndent = matchBodyAndIndent[3] || '';
+                    if (bodyIndent.length === 1) {
+                        closingBrace = ' }';
+                    }
+                }
+
                 // Remove leading indentation unless the function is a one-liner or it uses multiline string literals
                 if (/\n/.test(body) && !/\\\n/.test(body)) {
                     body = body.replace(new RegExp('^ {' + bodyIndent.length + '}', 'mg'), '');
@@ -5592,18 +5611,26 @@ module.exports = function (expect) {
                 }
                 if (/^\s*\[native code\]\s*$/.test(body)) {
                     body = ' /* native code */ ';
+                    closingBrace = '}';
                 } else if (/^\s*$/.test(body)) {
                     body = '';
                 } else if (/^\s*[^\r\n]{1,30}\s*$/.test(body) && body.indexOf('//') === -1) {
                     body = ' ' + body.trim() + ' ';
+                    closingBrace = '}';
                 } else {
                     body = body.replace(/^((?:.*\n){3}( *).*\n)[\s\S]*?\n[\s\S]*?\n((?:.*\n){3})$/, '$1$2// ... lines removed ...\n$3');
                 }
+                if (matchBodyAndIndent) {
+                    body = openingBrace + body + closingBrace;
+                } else {
+                    // Strip trailing space from arrow function body
+                    body = body.replace(/[ ]*$/, '');
+                }
             } else {
-                args = ' /*...*/ ';
-                body = ' /*...*/ ';
+                preamble = 'function ' + name + '( /*...*/ ) ';
+                body = '{ /*...*/ }';
             }
-            return output.code(asyncPrefix + 'function ' + name + '(' + args + ') {' + body + '}', 'javascript');
+            return output.code(preamble + body, 'javascript');
         }
     });
 
