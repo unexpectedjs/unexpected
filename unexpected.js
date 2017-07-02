@@ -2131,6 +2131,12 @@ module.exports = function (expect) {
         return subject[key];
     });
 
+    expect.addAssertion('<object|function> [not] to have (enumerable|configurable|writable) property <string>', function (expect, subject, key) {
+        var descriptor = expect.alternations[0];
+        expect(Object.getOwnPropertyDescriptor(subject, key)[descriptor], '[not] to be truthy');
+        return subject[key];
+    });
+
     expect.addAssertion('<object|function> [not] to have property <string>', function (expect, subject, key) {
         expect(subject[key], '[!not] to be undefined');
         return subject[key];
