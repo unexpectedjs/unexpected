@@ -31,6 +31,14 @@ expect(Object.create({ a: 'b' }), 'to have own property', 'a');
 expected {} to have own property 'a'
 ```
 
+You can assert for property descriptors too.
+
+```javascript
+expect({ a: 'b' }, 'to have enumerable property', 'a');
+expect({ a: 'b' }, 'to have configurable property', 'a');
+expect({ a: 'b' }, 'to have writable property', 'a');
+```
+
 This assertion can be negated using the `not` flag:
 
 ```javascript
