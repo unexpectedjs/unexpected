@@ -12,6 +12,34 @@ describe('to have property assertion', function () {
         expect(function () {}, 'to have property', 'toString');
     });
 
+    describe('property descriptor', function () {
+        var subject = { a: 'b' };
+        Object.defineProperty(subject, 'enumFalse', { enumerable: false, value: 't' });
+        Object.defineProperty(subject, 'configFalse', { configurable: false, value: 't' });
+        Object.defineProperty(subject, 'writableFalse', { writable: false, value: 't' });
+
+        it('asserts validity of property descriptor', function () {
+            expect(subject, 'to have enumerable property', 'a');
+            expect(subject, 'not to have enumerable property', 'enumFalse');
+            expect(subject, 'to have configurable property', 'a');
+            expect(subject, 'not to have configurable property', 'configFalse');
+            expect(subject, 'to have writable property', 'a');
+            expect(subject, 'not to have writable property', 'writableFalse');
+        });
+
+        it('throws when assertion fails', function () {
+            expect(function () {
+                expect(subject, 'to have enumerable property', 'enumFalse');
+            }, 'to throw exception', "expected { a: 'b' } to have enumerable property 'enumFalse'");
+            expect(function () {
+                expect(subject, 'to have configurable property', 'configFalse');
+            }, 'to throw exception', "expected { a: 'b' } to have configurable property 'configFalse'");
+            expect(function () {
+                expect(subject, 'to have writable property', 'writableFalse');
+            }, 'to throw exception', "expected { a: 'b' } to have writable property 'writableFalse'");
+        });
+    });
+
     it('throws when the assertion fails', function () {
         expect(function () {
             expect({a: 'b'}, 'to have property', 'b');
