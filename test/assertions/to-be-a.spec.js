@@ -32,6 +32,10 @@ describe('to be a/an assertion', function () {
         expect(expect, 'to be a', 'function');
         expect(expect, 'to be a function');
         expect(circular, 'to be an object');
+        expect(new Date(), 'to be a', 'date');
+        expect(new Date(), 'to be a date');
+        expect({}, 'not to be a date');
+        expect((new Date()).toISOString(), 'not to be a date');
     });
 
     it('should support type objects', function () {
