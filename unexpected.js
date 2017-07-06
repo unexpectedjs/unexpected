@@ -2076,7 +2076,7 @@ module.exports = function (expect) {
         expect(subject, '[not] to be an', expect.alternations[0]);
     });
 
-    expect.addAssertion('<any> [not] to be a (boolean|number|string|function|regexp|regex|regular expression)', function (expect, subject) {
+    expect.addAssertion('<any> [not] to be a (boolean|number|string|function|regexp|regex|regular expression|date)', function (expect, subject) {
         expect(subject, '[not] to be a', expect.alternations[0]);
     });
 
