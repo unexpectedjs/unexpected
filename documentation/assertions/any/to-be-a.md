@@ -17,6 +17,7 @@ expect(/regex/, 'to be a', 'regexp');
 expect(/regex/, 'to be a', 'regex');
 expect(/regex/, 'to be a', 'regular expression');
 expect(new Error(), 'to be an', 'Error');
+expect(new Date(), 'to be a', 'date');
 ```
 
 The assertions also respect the inheritance chain:
@@ -38,6 +39,7 @@ expect([123], 'to be an array');
 expect(/regex/, 'to be a regexp');
 expect(/regex/, 'to be a regex');
 expect(/regex/, 'to be a regular expression');
+expect(new Date(), 'to be a date');
 ```
 
 If you provide a constructor as the type the assertion will use `instanceof`.
