@@ -34,6 +34,30 @@ describe('to equal assertion', function () {
         expect({ foo: 'foo', bar: 'bar' }, 'to equal', { bar: 'bar', foo: 'foo' });
     });
 
+    if (typeof Map !== undefined) {
+        it('treats an empty Map as equal to Map', function () {
+            expect(new Map(), 'to equal', new Map());
+        });
+
+        it('treats an matching Maps as equal', function () {
+            expect(new Map([['foo', 'bar']]), 'to equal', new Map([['foo', 'bar']]));
+        });
+
+        it('should output a value diff on matching Map', function () {
+            expect(function () {
+                expect(new Map([['foo', 'bar']]), 'to equal', new Map([['foo', 'baz']]));
+            }, 'to throw exception',
+                   "expected Map([ ['foo', 'bar'] ]) to equal Map([ ['foo', 'baz'] ])\n" +
+                   "\n" +
+                   "Map([\n" +
+                   "  ['foo', 'bar'] // should equal 'baz'\n" +
+                   "                 //\n" +
+                   "                 // -bar\n" +
+                   "                 // +baz\n" +
+                   "])");
+        });
+    }
+
     it('treats NaN as equal to NaN', function () {
         expect(NaN, 'to equal', NaN);
     });
