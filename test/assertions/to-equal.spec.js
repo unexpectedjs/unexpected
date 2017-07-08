@@ -64,7 +64,7 @@ describe('to equal assertion', function () {
                    "to equal Map([ ['quux', 'bar'] ])\n" +
                    "\n" +
                    "Map([\n" +
-                   "  ['quux', 'bar']\n" +
+                   "  ['quux', 'bar'],\n" +
                    "  ['zuuq', 'baz'] // should be removed\n" +
                    "])");
         });
