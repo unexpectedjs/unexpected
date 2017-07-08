@@ -56,6 +56,19 @@ describe('to equal assertion', function () {
                    "])");
         });
 
+        it('should mark unecessary Map keys', function () {
+            expect(function () {
+                expect(new Map([['quux', 'bar'], ['zuuq', 'baz']]), 'to equal', new Map([['quux', 'bar']]));
+            }, 'to throw exception',
+                   "expected Map([ ['quux', 'bar'], ['zuuq', 'baz'] ])\n" +
+                   "to equal Map([ ['quux', 'bar'] ])\n" +
+                   "\n" +
+                   "Map([\n" +
+                   "  ['quux', 'bar']\n" +
+                   "  ['zuuq', 'baz'] // should be removed\n" +
+                   "])");
+        });
+
         it('should output a value diff on matching Map', function () {
             expect(function () {
                 expect(new Map([['foo', 'bar']]), 'to equal', new Map([['foo', 'baz']]));
