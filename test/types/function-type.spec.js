@@ -16,21 +16,28 @@ describe('function type', function () {
         );
     });
 
-    it('should inspect an anonymous bound function correctly', function () {
-        expect(
-            function () {}.bind({}),
-            'to inspect as',
-            'function bound () { /* native code */ }'
-         );
-    });
+    if (typeof navigator === 'undefined' || !/phantom/i.test(navigator.userAgent)) {
+        // Phantom.js doesn't include "bound " and the old version that's currently
+        // available on Travis doesn't have Function#bind, which we then polyfill
+        // via es5-shim, leading to even more different output.
+        // For now let's just disable these tests in Phantom.js
 
-    it('should inspect a named bound function correctly', function () {
-        expect(
-            function foo() {}.bind({}),
-            'to inspect as',
-            'function bound foo() { /* native code */ }'
-        );
-    });
+        it('should inspect an anonymous bound function correctly', function () {
+            expect(
+                function () {}.bind({}),
+                'to inspect as',
+                'function bound () { /* native code */ }'
+             );
+        });
+
+        it('should inspect a named bound function correctly', function () {
+            expect(
+                function foo() {}.bind({}),
+                'to inspect as',
+                'function bound foo() { /* native code */ }'
+            );
+        });
+    }
 
     it('should inspect an function with just a newline correctly', function () {
         expect(function () {}, 'to inspect as', 'function () {}');
