@@ -16,11 +16,14 @@ describe('function type', function () {
         );
     });
 
-    if (typeof navigator === 'undefined' || !/phantom/i.test(navigator.userAgent)) {
-        // Phantom.js doesn't include "bound " and the old version that's currently
-        // available on Travis doesn't have Function#bind, which we then polyfill
-        // via es5-shim, leading to even more different output.
-        // For now let's just disable these tests in Phantom.js
+    var isNodeJs3OrBelow = typeof process === 'object' && /^v[0123]\./.test(process.version);
+    var isPhantomJs = typeof navigator !== 'undefined' && /phantom/i.test(navigator.userAgent);
+    if (!isNodeJs3OrBelow && !isPhantomJs) {
+        // Node.js 3 and below and phantom.js don't include "bound " and the
+        // old Phantom.js version that's currently available on Travis doesn't
+        // even have Function#bind, which we then polyfill via es5-shim, leading
+        // to even more different output.
+        // For now let's just disable these tests in those environments
 
         it('should inspect an anonymous bound function correctly', function () {
             expect(
