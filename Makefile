@@ -10,7 +10,7 @@ lint:
 .PHONY: lint
 
 unexpected.js: lib/*
-	(echo '/*!' && <LICENSE sed -e's/^/ * /' | sed -e's/\s+$$//' && echo ' */' && ./node_modules/.bin/browserify -p bundle-collapser/plugin -e lib -s weknowhow.expect) > $@
+	./node_modules/.bin/rollup --config -o $@ lib/index.js
 
 .PHONY: unexpected.js
 
