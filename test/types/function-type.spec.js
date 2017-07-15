@@ -1,16 +1,49 @@
 /*global expect*/
 describe('function type', function () {
-    it('should inspect an empty function correctly', function () {
-        expect(function () {}, 'to inspect as',
-               'function () {}'
-              );
+    it('should inspect an empty anonymous function correctly', function () {
+        expect(
+            function () {},
+            'to inspect as',
+            'function () {}'
+        );
     });
 
+    it('should inspect an empty named function correctly', function () {
+        expect(
+            function foo() {},
+            'to inspect as',
+            'function foo() {}'
+        );
+    });
+
+    var isNodeJs3OrBelow = typeof process === 'object' && /^v[0123]\./.test(process.version);
+    var isPhantomJs = typeof navigator !== 'undefined' && /phantom/i.test(navigator.userAgent);
+    if (!isNodeJs3OrBelow && !isPhantomJs) {
+        // Node.js 3 and below and phantom.js don't include "bound " and the
+        // old Phantom.js version that's currently available on Travis doesn't
+        // even have Function#bind, which we then polyfill via es5-shim, leading
+        // to even more different output.
+        // For now let's just disable these tests in those environments
+
+        it('should inspect an anonymous bound function correctly', function () {
+            expect(
+                function () {}.bind({}),
+                'to inspect as',
+                'function bound () { /* native code */ }'
+             );
+        });
+
+        it('should inspect a named bound function correctly', function () {
+            expect(
+                function foo() {}.bind({}),
+                'to inspect as',
+                'function bound foo() { /* native code */ }'
+            );
+        });
+    }
+
     it('should inspect an function with just a newline correctly', function () {
-        expect(function () {
-        }, 'to inspect as',
-               'function () {}'
-              );
+        expect(function () {}, 'to inspect as', 'function () {}');
     });
 
     it('should inspect a one-line function correctly', function () {
