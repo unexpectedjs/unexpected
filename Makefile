@@ -56,9 +56,10 @@ test-browser: create-html-runners ${TARGETS}
 travis-chewbacca:
 	./node_modules/.bin/chewbacca --threshold ${CHEWBACCA_THRESHOLD} `echo ${TRAVIS_COMMIT_RANGE} | sed -e 's/\.\.\..*//;'` -- test/benchmark.spec.js
 
-travis: clean lint test travis-chewbacca test-phantomjs test-jasmine test-jest-if-supported-node-version coverage
+travis: clean lint test travis-chewbacca test-jasmine test-jest-if-supported-node-version coverage
 ifneq ($(shell node --version | grep -vP '^v[0123]\.'),)
 	make site-build
+	make test-phantomjs
 endif
 	-<coverage/lcov.info ./node_modules/coveralls/bin/coveralls.js
 
