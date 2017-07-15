@@ -1,6 +1,6 @@
 REPORTER = dot
 
-TARGETS ?= unexpected.js
+TARGETS ?= unexpected.js unexpected.js.map
 
 CHEWBACCA_THRESHOLD ?= 25
 
@@ -9,10 +9,9 @@ lint:
 
 .PHONY: lint
 
-unexpected.js: lib/*
-	./node_modules/.bin/rollup --config -o $@ lib/index.js
-
-.PHONY: unexpected.js
+.PHONY: ${TARGETS}
+${TARGETS}: lib/*
+	./node_modules/.bin/rollup --config --sourcemap --format umd --name weknowhow.expect -o unexpected.js lib/index.js
 
 create-html-runners: test/tests.tpl.html test/JasmineRunner.tpl.html
 	@for file in tests JasmineRunner ; do \
@@ -33,10 +32,10 @@ else
 	./node_modules/.bin/jest
 endif
 
-test-jasmine: ${TARGETS}
+test-jasmine:
 	./node_modules/.bin/jasmine JASMINE_CONFIG_PATH=test/support/jasmine.json
 
-test-jasmine-browser: create-html-runners unexpected.js
+test-jasmine-browser: create-html-runners ${TARGETS}
 	@./node_modules/.bin/serve .
 
 .PHONY: test
@@ -50,7 +49,7 @@ coverage:
 	@echo google-chrome coverage/lcov-report/index.html
 
 .PHONY: test-browser
-test-browser: create-html-runners unexpected.js
+test-browser: create-html-runners ${TARGETS}
 	@./node_modules/.bin/serve .
 
 .PHONY: travis-chewbacca
@@ -75,8 +74,8 @@ deploy-site: site-build
     git push git@github.com:unexpectedjs/unexpectedjs.github.io.git +site-build:master
 
 .PHONY: commit-unexpected
-commit-unexpected: unexpected.js
-	git add unexpected.js
+commit-unexpected: ${TARGETS}
+	git add ${TARGETS}
 	if [ "`git status --porcelain`" != "" ]; then \
 		git commit -m "Build unexpected.js" ; \
 	fi
