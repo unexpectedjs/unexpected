@@ -220,48 +220,6 @@ describe('addType', function() {
         );
       });
     });
-
-    it('allows adding a type whose diff method returns an old-style { inline: <boolean>, diff: <magicpen> } object', function() {
-      clonedExpect.addType({
-        name: 'box',
-        identify(obj) {
-          return obj && typeof obj === 'object' && obj.isBox;
-        },
-        equal(a, b, equal) {
-          return a === b || equal(a.value, b.value);
-        },
-        inspect(obj, depth, output, inspect) {
-          return output
-            .text('box(')
-            .append(inspect(obj.value))
-            .text(')');
-        },
-        diff(actual, expected, output, diff) {
-          return {
-            inline: true,
-            diff: output
-              .text('box(')
-              .append(diff({ value: actual.value }, { value: expected.value }))
-              .text(')')
-          };
-        }
-      });
-
-      expect(
-        function() {
-          clonedExpect(box('abc'), 'to equal', box('abe'));
-        },
-        'to throw',
-        "expected box('abc') to equal box('abe')\n" +
-          '\n' +
-          'box({\n' +
-          "  value: 'abc' // should equal 'abe'\n" +
-          '               //\n' +
-          '               // -abc\n' +
-          '               // +abe\n' +
-          '})'
-      );
-    });
   });
 
   describe('#inspect', function() {
