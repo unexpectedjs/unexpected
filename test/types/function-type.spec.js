@@ -1,16 +1,39 @@
 /*global expect*/
 describe('function type', function () {
-    it('should inspect an empty function correctly', function () {
-        expect(function () {}, 'to inspect as',
-               'function () {}'
-              );
+    it('should inspect an empty anonymous function correctly', function () {
+        expect(
+            function () {},
+            'to inspect as',
+            'function () {}'
+        );
+    });
+
+    it('should inspect an empty named function correctly', function () {
+        expect(
+            function foo() {},
+            'to inspect as',
+            'function foo() {}'
+        );
+    });
+
+    it('should inspect an anonymous bound function correctly', function () {
+        expect(
+            function () {}.bind({}),
+            'to inspect as',
+            'function bound () { /* native code */ }'
+         );
+    });
+
+    it('should inspect a named bound function correctly', function () {
+        expect(
+            function foo() {}.bind({}),
+            'to inspect as',
+            'function bound foo() { /* native code */ }'
+        );
     });
 
     it('should inspect an function with just a newline correctly', function () {
-        expect(function () {
-        }, 'to inspect as',
-               'function () {}'
-              );
+        expect(function () {}, 'to inspect as', 'function () {}');
     });
 
     it('should inspect a one-line function correctly', function () {
