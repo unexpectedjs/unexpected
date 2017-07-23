@@ -18,6 +18,7 @@ Here's a partial list of plugins for Unexpected:
   strings representing colors.
 * [unexpected-couchdb](https://github.com/alexjeffburke/unexpected-couchdb/):
   Run your tests against a mock CouchDB server initialized to a given state.
+* [unexpected-date](https://github.com/sushantdhiman/unexpected-date): Date/time assertions on Date object.
 * [unexpected-dom](https://github.com/munter/unexpected-dom/): Assertions for
   XML/HTML DOM and HTML/XML strings. Works in the browser and in node.js via
   [jsdom](https://github.com/tmpvar/jsdom).
