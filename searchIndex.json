@@ -64,16 +64,12 @@
     "url": "/api/withError/"
   },
   {
-    "label": "to throw (function)",
-    "url": "/assertions/function/to-throw/"
+    "label": "to throw a (function)",
+    "url": "/assertions/function/to-throw-a/"
   },
   {
-    "label": "when decoded as (Buffer)",
-    "url": "/assertions/Buffer/when-decoded-as/"
-  },
-  {
-    "label": "to be fulfilled with value satisfying (Promise)",
-    "url": "/assertions/Promise/to-be-fulfilled-with-value-satisfying/"
+    "label": "to have message (Error)",
+    "url": "/assertions/Error/to-have-message/"
   },
   {
     "label": "to be fulfilled with (Promise)",
@@ -152,6 +148,14 @@
     "url": "/assertions/any/when-passed-as-parameter-to/"
   },
   {
+    "label": "to be false (boolean)",
+    "url": "/assertions/boolean/to-be-false/"
+  },
+  {
+    "label": "to be true (boolean)",
+    "url": "/assertions/boolean/to-be-true/"
+  },
+  {
     "label": "to be empty (array-like)",
     "url": "/assertions/array-like/to-be-empty/"
   },
@@ -208,12 +212,12 @@
     "url": "/assertions/function/to-have-arity/"
   },
   {
-    "label": "to throw a (function)",
-    "url": "/assertions/function/to-throw-a/"
+    "label": "to be fulfilled with value satisfying (Promise)",
+    "url": "/assertions/Promise/to-be-fulfilled-with-value-satisfying/"
   },
   {
-    "label": "to have message (Error)",
-    "url": "/assertions/Error/to-have-message/"
+    "label": "to throw (function)",
+    "url": "/assertions/function/to-throw/"
   },
   {
     "label": "when called with (function)",
@@ -232,12 +236,12 @@
     "url": "/assertions/number/to-be-close-to/"
   },
   {
-    "label": "to be finite (number)",
-    "url": "/assertions/number/to-be-finite/"
-  },
-  {
     "label": "to be greater than or equal to (number)",
     "url": "/assertions/number/to-be-greater-than-or-equal-to/"
+  },
+  {
+    "label": "to be finite (number)",
+    "url": "/assertions/number/to-be-finite/"
   },
   {
     "label": "to be greater than (number)",
@@ -268,48 +272,8 @@
     "url": "/assertions/number/to-be-within/"
   },
   {
-    "label": "to be canonical (object)",
-    "url": "/assertions/object/to-be-canonical/"
-  },
-  {
-    "label": "to be empty (object)",
-    "url": "/assertions/object/to-be-empty/"
-  },
-  {
-    "label": "to have a value satisfying (object)",
-    "url": "/assertions/object/to-have-a-value-satisfying/"
-  },
-  {
-    "label": "to have key (object)",
-    "url": "/assertions/object/to-have-key/"
-  },
-  {
-    "label": "to have keys satisfying (object)",
-    "url": "/assertions/object/to-have-keys-satisfying/"
-  },
-  {
-    "label": "to have keys (object)",
-    "url": "/assertions/object/to-have-keys/"
-  },
-  {
-    "label": "to have properties (object)",
-    "url": "/assertions/object/to-have-properties/"
-  },
-  {
-    "label": "to have property (object)",
-    "url": "/assertions/object/to-have-property/"
-  },
-  {
-    "label": "to have values satisfying (object)",
-    "url": "/assertions/object/to-have-values-satisfying/"
-  },
-  {
-    "label": "to be false (boolean)",
-    "url": "/assertions/boolean/to-be-false/"
-  },
-  {
-    "label": "to be true (boolean)",
-    "url": "/assertions/boolean/to-be-true/"
+    "label": "when decoded as (Buffer)",
+    "url": "/assertions/Buffer/when-decoded-as/"
   },
   {
     "label": "to be empty (string)",
@@ -362,5 +326,41 @@
   {
     "label": "to match (string)",
     "url": "/assertions/string/to-match/"
+  },
+  {
+    "label": "to be canonical (object)",
+    "url": "/assertions/object/to-be-canonical/"
+  },
+  {
+    "label": "to be empty (object)",
+    "url": "/assertions/object/to-be-empty/"
+  },
+  {
+    "label": "to have a value satisfying (object)",
+    "url": "/assertions/object/to-have-a-value-satisfying/"
+  },
+  {
+    "label": "to have key (object)",
+    "url": "/assertions/object/to-have-key/"
+  },
+  {
+    "label": "to have keys satisfying (object)",
+    "url": "/assertions/object/to-have-keys-satisfying/"
+  },
+  {
+    "label": "to have keys (object)",
+    "url": "/assertions/object/to-have-keys/"
+  },
+  {
+    "label": "to have property (object)",
+    "url": "/assertions/object/to-have-property/"
+  },
+  {
+    "label": "to have values satisfying (object)",
+    "url": "/assertions/object/to-have-values-satisfying/"
+  },
+  {
+    "label": "to have properties (object)",
+    "url": "/assertions/object/to-have-properties/"
   }
 ]
