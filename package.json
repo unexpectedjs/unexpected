@@ -32,8 +32,6 @@
     "unexpected-bluebird": "2.9.34-longstack2"
   },
   "devDependencies": {
-    "browserify": "14.3.0",
-    "bundle-collapser": "1.2.1",
     "chewbacca": "1.10.0",
     "coveralls": "^2.11.9",
     "es5-shim": "4.0.5",
@@ -49,6 +47,11 @@
     "mocha-phantomjs-core": "2.0.1",
     "mocha-slow-reporter": "*",
     "nyc": "6.1.1",
+    "rollup": "0.45.2",
+    "rollup-plugin-commonjs": "8.0.2",
+    "rollup-plugin-node-globals": "1.1.0",
+    "rollup-plugin-node-resolve": "3.0.0",
+    "rollup-plugin-uglify": "2.0.1",
     "rsvp": "3.0.18",
     "serve": "*",
     "unexpected-documentation-site-generator": "^4.4.0",
