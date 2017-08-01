@@ -33,7 +33,6 @@ describe('use', function () {
                '{\n' +
                '  name: <an optional plugin name>,\n' +
                '  version: <an optional semver version string>,\n' +
-               '  dependencies: <an optional list of dependencies>,\n' +
                '  installInto: <a function that will update the given expect instance>\n' +
                '}');
     });
@@ -81,38 +80,6 @@ describe('use', function () {
         };
         clonedExpect.use(pluginA);
         clonedExpect.use(pluginB);
-    });
-
-    it('throws if the plugin has unfulfilled plugin dependencies', function () {
-        var pluginB = {
-            name: 'PluginB',
-            dependencies: ['PluginA'],
-            installInto: function (clonedExpect) {}
-        };
-
-        expect(function () {
-            clonedExpect.use(pluginB);
-        }, 'to throw', 'PluginB requires plugin PluginA');
-
-        var pluginC = {
-            name: 'PluginC',
-            dependencies: ['PluginA', 'PluginB'],
-            installInto: function (clonedExpect) {}
-        };
-
-        expect(function () {
-            clonedExpect.use(pluginC);
-        }, 'to throw', 'PluginC requires plugins PluginA and PluginB');
-
-        var pluginD = {
-            name: 'PluginD',
-            dependencies: ['PluginA', 'PluginB', 'PluginC'],
-            installInto: function (clonedExpect) {}
-        };
-
-        expect(function () {
-            clonedExpect.use(pluginD);
-        }, 'to throw', 'PluginD requires plugins PluginA, PluginB and PluginC');
     });
 
     it('dependencies can be fulfilled across clones', function (done) {
