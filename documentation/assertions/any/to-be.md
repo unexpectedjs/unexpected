@@ -1,4 +1,4 @@
-Asserts equality using `Object.is`/the [SameValue](http://people.mozilla.org/~jorendorff/es6-draft.html#sec-samevalue) algorithm.
+Asserts equality using `Object.is`/the [SameValue](http://ecma-international.org/ecma-262/5.1/#sec-9.12) algorithm.
 
 ```javascript
 var obj = {};
