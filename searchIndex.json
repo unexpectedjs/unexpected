@@ -64,12 +64,16 @@
     "url": "/api/withError/"
   },
   {
-    "label": "to throw a (function)",
-    "url": "/assertions/function/to-throw-a/"
+    "label": "to have keys satisfying (object)",
+    "url": "/assertions/object/to-have-keys-satisfying/"
   },
   {
-    "label": "to have message (Error)",
-    "url": "/assertions/Error/to-have-message/"
+    "label": "when decoded as (Buffer)",
+    "url": "/assertions/Buffer/when-decoded-as/"
+  },
+  {
+    "label": "to be fulfilled with value satisfying (Promise)",
+    "url": "/assertions/Promise/to-be-fulfilled-with-value-satisfying/"
   },
   {
     "label": "to be fulfilled with (Promise)",
@@ -148,14 +152,6 @@
     "url": "/assertions/any/when-passed-as-parameter-to/"
   },
   {
-    "label": "to be false (boolean)",
-    "url": "/assertions/boolean/to-be-false/"
-  },
-  {
-    "label": "to be true (boolean)",
-    "url": "/assertions/boolean/to-be-true/"
-  },
-  {
     "label": "to be empty (array-like)",
     "url": "/assertions/array-like/to-be-empty/"
   },
@@ -192,40 +188,48 @@
     "url": "/assertions/array-like/when-sorted/"
   },
   {
-    "label": "to call the callback with error (function)",
-    "url": "/assertions/function/to-call-the-callback-with-error/"
+    "label": "to be false (boolean)",
+    "url": "/assertions/boolean/to-be-false/"
   },
   {
-    "label": "to call the callback without error (function)",
-    "url": "/assertions/function/to-call-the-callback-without-error/"
+    "label": "to be true (boolean)",
+    "url": "/assertions/boolean/to-be-true/"
   },
   {
-    "label": "to call the callback (function)",
-    "url": "/assertions/function/to-call-the-callback/"
+    "label": "to be canonical (object)",
+    "url": "/assertions/object/to-be-canonical/"
   },
   {
-    "label": "to error (function)",
-    "url": "/assertions/function/to-error/"
+    "label": "to be empty (object)",
+    "url": "/assertions/object/to-be-empty/"
   },
   {
-    "label": "to have arity (function)",
-    "url": "/assertions/function/to-have-arity/"
+    "label": "to have a value satisfying (object)",
+    "url": "/assertions/object/to-have-a-value-satisfying/"
   },
   {
-    "label": "to be fulfilled with value satisfying (Promise)",
-    "url": "/assertions/Promise/to-be-fulfilled-with-value-satisfying/"
+    "label": "to have key (object)",
+    "url": "/assertions/object/to-have-key/"
   },
   {
-    "label": "to throw (function)",
-    "url": "/assertions/function/to-throw/"
+    "label": "to have message (Error)",
+    "url": "/assertions/Error/to-have-message/"
   },
   {
-    "label": "when called with (function)",
-    "url": "/assertions/function/when-called-with/"
+    "label": "to have keys (object)",
+    "url": "/assertions/object/to-have-keys/"
   },
   {
-    "label": "when called (function)",
-    "url": "/assertions/function/when-called/"
+    "label": "to have properties (object)",
+    "url": "/assertions/object/to-have-properties/"
+  },
+  {
+    "label": "to have property (object)",
+    "url": "/assertions/object/to-have-property/"
+  },
+  {
+    "label": "to have values satisfying (object)",
+    "url": "/assertions/object/to-have-values-satisfying/"
   },
   {
     "label": "to be NaN (number)",
@@ -236,12 +240,12 @@
     "url": "/assertions/number/to-be-close-to/"
   },
   {
-    "label": "to be greater than or equal to (number)",
-    "url": "/assertions/number/to-be-greater-than-or-equal-to/"
-  },
-  {
     "label": "to be finite (number)",
     "url": "/assertions/number/to-be-finite/"
+  },
+  {
+    "label": "to be greater than or equal to (number)",
+    "url": "/assertions/number/to-be-greater-than-or-equal-to/"
   },
   {
     "label": "to be greater than (number)",
@@ -270,10 +274,6 @@
   {
     "label": "to be within (number)",
     "url": "/assertions/number/to-be-within/"
-  },
-  {
-    "label": "when decoded as (Buffer)",
-    "url": "/assertions/Buffer/when-decoded-as/"
   },
   {
     "label": "to be empty (string)",
@@ -328,39 +328,39 @@
     "url": "/assertions/string/to-match/"
   },
   {
-    "label": "to be canonical (object)",
-    "url": "/assertions/object/to-be-canonical/"
+    "label": "to call the callback with error (function)",
+    "url": "/assertions/function/to-call-the-callback-with-error/"
   },
   {
-    "label": "to be empty (object)",
-    "url": "/assertions/object/to-be-empty/"
+    "label": "to call the callback without error (function)",
+    "url": "/assertions/function/to-call-the-callback-without-error/"
   },
   {
-    "label": "to have a value satisfying (object)",
-    "url": "/assertions/object/to-have-a-value-satisfying/"
+    "label": "to call the callback (function)",
+    "url": "/assertions/function/to-call-the-callback/"
   },
   {
-    "label": "to have key (object)",
-    "url": "/assertions/object/to-have-key/"
+    "label": "to error (function)",
+    "url": "/assertions/function/to-error/"
   },
   {
-    "label": "to have keys satisfying (object)",
-    "url": "/assertions/object/to-have-keys-satisfying/"
+    "label": "to have arity (function)",
+    "url": "/assertions/function/to-have-arity/"
   },
   {
-    "label": "to have keys (object)",
-    "url": "/assertions/object/to-have-keys/"
+    "label": "to throw a (function)",
+    "url": "/assertions/function/to-throw-a/"
   },
   {
-    "label": "to have property (object)",
-    "url": "/assertions/object/to-have-property/"
+    "label": "to throw (function)",
+    "url": "/assertions/function/to-throw/"
   },
   {
-    "label": "to have values satisfying (object)",
-    "url": "/assertions/object/to-have-values-satisfying/"
+    "label": "when called with (function)",
+    "url": "/assertions/function/when-called-with/"
   },
   {
-    "label": "to have properties (object)",
-    "url": "/assertions/object/to-have-properties/"
+    "label": "when called (function)",
+    "url": "/assertions/function/when-called/"
   }
 ]
