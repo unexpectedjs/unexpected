@@ -184,7 +184,7 @@ describe('function type', function () {
 
     if (evilImplicitReturnMultilineArrowFunction) {
         it('should render an implicit return multiline arrow function with an evil alternation', function () {
-            expect(evilImplicitReturnMultilineArrowFunction, 'to inspect as', 'a => \n    a || {};');
+            expect(evilImplicitReturnMultilineArrowFunction, 'to inspect as', 'a => \n    a || {}');
         });
     }
 
