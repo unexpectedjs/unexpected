@@ -161,6 +161,20 @@ describe('function type', function () {
     }
 
     // We can't complete this test if the runtime doesn't support arrow functions:
+    var implicitReturnMultilineArrowFunction;
+    try {
+        implicitReturnMultilineArrowFunction = new Function(
+            'return a => \n    a + 1;'
+        )();
+    } catch (e) {}
+
+    if (implicitReturnMultilineArrowFunction) {
+        it('should render an implicit return multiline arrow function', function () {
+            expect(implicitReturnMultilineArrowFunction, 'to inspect as', 'a => \n     a + 1');
+        });
+    }
+
+    // We can't complete this test if the runtime doesn't support arrow functions:
     var multiParamArrowFunction;
     try {
         multiParamArrowFunction = new Function('return (a, b) => a + b;')();
