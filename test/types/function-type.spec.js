@@ -170,7 +170,7 @@ describe('function type', function () {
 
     if (implicitReturnMultilineArrowFunction) {
         it('should render an implicit return multiline arrow function', function () {
-            expect(implicitReturnMultilineArrowFunction, 'to inspect as', 'a => \n     a + 1');
+            expect(implicitReturnMultilineArrowFunction, 'to inspect as', 'a => \n    a + 1');
         });
     }
 
