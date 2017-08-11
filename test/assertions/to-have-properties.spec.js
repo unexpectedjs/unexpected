@@ -161,4 +161,50 @@ describe('to have properties assertion', function () {
             baz: 'baz'
         });
     });
+
+    describe('with expected numerical property names listed as numbers', function () {
+        it('should succeed', function () {
+            expect({ 1: 'foo', 2: 'bar' }, 'to have properties', [ 1, 2 ]);
+        });
+
+        it('should fail with a diff', function () {
+            expect(function () {
+                expect({ 1: 123, 2: 456 }, 'to have properties', [ 1, 3 ]);
+            }, 'to error', 'expected { 1: 123, 2: 456 } to have properties [ 1, 3 ]');
+        });
+    });
+
+    describe('with expected property names listed as neither strings nor numbers', function () {
+        it('should fail when a boolean is passed, even if there is a corresponding string property', function () {
+            expect(function () {
+                expect({ true: 123 }, 'to have properties', [ true ]);
+            }, 'to error',
+                'expected { true: 123 } to have properties [ true ]\n' +
+                '  All expected properties must be passed as strings or numbers, but these are not:\n' +
+                '    true'
+            );
+        });
+
+        it('should fail when an object is passed, even if there is a corresponding string property', function () {
+            expect(function () {
+                expect({ foo: 123 }, 'to have properties', [ { toString: function toString() { return 'foo'; } } ]);
+            }, 'to error',
+                "expected { foo: 123 }\n" +
+                "to have properties [ { toString: function toString() { return 'foo'; } } ]\n" +
+                "  All expected properties must be passed as strings or numbers, but these are not:\n" +
+                "    { toString: function toString() { return 'foo'; } }"
+            );
+        });
+
+        it('should should mention all the non-string, non-number property names in a list after the error message', function () {
+            expect(function () {
+                expect({ foo: 123 }, 'to have properties', [ true, false ]);
+            }, 'to error',
+                'expected { foo: 123 } to have properties [ true, false ]\n' +
+                '  All expected properties must be passed as strings or numbers, but these are not:\n' +
+                '    true\n' +
+                '    false'
+            );
+        });
+    });
 });
