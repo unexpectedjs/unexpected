@@ -16,6 +16,16 @@ describe('function type', function () {
         );
     });
 
+    it('should inspect a function with a custom toString correctly', function () {
+        var fn = function foo() {};
+        fn.toString = 'breakage';
+        expect(
+            fn,
+            'to inspect as',
+            'function foo() {}'
+        );
+    });
+
     var isNodeJs3OrBelow = typeof process === 'object' && /^v[0123]\./.test(process.version);
     var isPhantomJs = typeof navigator !== 'undefined' && /phantom/i.test(navigator.userAgent);
     if (!isNodeJs3OrBelow && !isPhantomJs) {

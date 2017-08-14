@@ -328,23 +328,6 @@ describe('inspect', function () {
         });
     }
 
-    it('should output ellipsis when the toString method of a function returns something unparsable', function () {
-        function foo() {}
-        foo.toString = function () {
-            return 'quux';
-        };
-        expect(foo, 'to inspect as', 'function foo( /*...*/ ) { /*...*/ }');
-    });
-
-    it('should render a function within a nested structure ellipsis when the toString method of a function returns something unparsable', function () {
-        function foo() {}
-        foo.toString = function () {
-            return 'quux';
-        };
-        expect({ bar: { quux: foo } }, 'to inspect as',
-               '{ bar: { quux: function foo( /*...*/ ) { /*...*/ } } }');
-    });
-
     it('should bail out of removing the indentation of functions that use multiline string literals', function () {
         /*eslint-disable no-multi-str*/
         expect(function () {
