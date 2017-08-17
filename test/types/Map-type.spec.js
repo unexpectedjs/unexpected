@@ -64,4 +64,38 @@
                 "  // missing [[ 'a', 'c' ], 'bar']\n" +
                 "])");
     });
+
+    it('should satisfy a Map', function () {
+        expect(function () {
+            const key = [];
+
+            expect(new Map([[key, { foo: null }]]), 'to satisfy', new Map([[key, { foo: null }]]));
+        }, 'not to error');
+    });
+
+    it('should output a diff on mistatching key in "to satisfy"', function () {
+        expect(function () {
+            expect(new Map([[[], { foo: null }]]), 'to satisfy', new Map([[[], { foo: null }]]));
+        }, 'to throw exception',
+            "expected Map([ [[], { foo: null }] ]) to satisfy Map([ [[], { foo: null }] ])\n" +
+            "\n" +
+            "Map([\n" +
+            "  []: { foo: null }\n" +
+            "  // missing bar: { foo: null }\n" +
+            "])"
+        );
+    });
+
+    it('should output a diff when failing "to satisfy"', function () {
+        expect(function () {
+            expect(new Map([['foo', { foo: null }]]), 'to satisfy', new Map([['bar', { foo: null }]]));
+        }, 'to throw exception',
+            "expected Map([ ['foo', { foo: null }] ]) to satisfy Map([ ['bar', { foo: null }] ])\n" +
+            "\n" +
+            "Map([\n" +
+            "  foo: { foo: null }\n" +
+            "  // missing bar: { foo: null }\n" +
+            "])"
+        );
+    });
 });
