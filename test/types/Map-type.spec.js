@@ -80,21 +80,22 @@
             "expected Map([ [[], { foo: null }] ]) to satisfy Map([ [[], { foo: null }] ])\n" +
             "\n" +
             "Map([\n" +
-            "  []: { foo: null }\n" +
-            "  // missing bar: { foo: null }\n" +
+            "  [[], { foo: null }]\n" +
             "])"
         );
     });
 
     it('should output a diff when failing "to satisfy"', function () {
         expect(function () {
-            expect(new Map([['foo', { foo: null }]]), 'to satisfy', new Map([['bar', { foo: null }]]));
+            expect(new Map([['foo', { foo: null }], ['bar', null]]), 'to satisfy', new Map([['baz', { foo: null }]]));
         }, 'to throw exception',
-            "expected Map([ ['foo', { foo: null }] ]) to satisfy Map([ ['bar', { foo: null }] ])\n" +
+            "expected Map([ ['foo', { foo: null }], ['bar', null] ])\n" +
+            "to satisfy Map([ ['baz', { foo: null }] ])\n" +
             "\n" +
             "Map([\n" +
-            "  foo: { foo: null }\n" +
-            "  // missing bar: { foo: null }\n" +
+            "  ['foo', { foo: null }],\n" +
+            "  ['bar', null]\n" +
+            "  // missing ['baz', { foo: null }]\n" +
             "])"
         );
     });
