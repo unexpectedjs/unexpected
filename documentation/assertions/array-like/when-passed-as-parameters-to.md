@@ -51,7 +51,7 @@ If you don't provide an assertion to delegate to, the return value will be provi
 as the fulfillment value of the promise:
 
 ```js
-return expect([1, 3], 'passed as parameters to', add).then(function (result) {
+expect([1, 3], 'passed as parameters to', add).then(function (result) {
     expect(result, 'to equal', 4);
 });
 ```
