@@ -14,6 +14,9 @@ module.exports = {
                     return /^!|@preserve|@license|@cc_on/i.test(comment.value);
                 }
             }
+        }),
+        require('rollup-plugin-babel')({
+            exclude: 'node_modules/**'
         })
     ]
 };
