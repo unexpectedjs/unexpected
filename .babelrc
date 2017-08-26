@@ -3,7 +3,7 @@
     ["env", {
       "modules": false,
       "targets": {
-        "browsers": ["ie >= 7", "safari >= 7"]
+        "node": "current"
       }
     }]
   ]
