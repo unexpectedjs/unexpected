@@ -17,7 +17,19 @@ module.exports = {
         }),
         require('rollup-plugin-babel')({
             exclude: 'node_modules/**',
-            plugins: ['external-helpers']
+            plugins: ['external-helpers'],
+            babelrc: false,
+            presets: [
+                [
+                    'env',
+                    {
+                        modules: false,
+                        targets: {
+                            browsers: 'last 999 versions'
+                        }
+                    }
+                ]
+            ]
         })
     ]
 };
