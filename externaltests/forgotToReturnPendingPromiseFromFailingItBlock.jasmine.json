@@ -4,6 +4,6 @@
     "forgotToReturnPendingPromiseFromFailingItBlock.spec.js"
   ],
   "helpers": [
-    "../test/support/maybeRequireBabelRegister.js",
+    "../node_modules/maybabel/index.js"
   ]
 }

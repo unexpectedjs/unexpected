@@ -16,8 +16,8 @@
   "scripts": {
     "test": "make test && make test-phantomjs",
     "lint": "eslint .",
-    "generate-site": "generate-site --require ./test/support/maybeRequireBabelRegister.js --require ./bootstrap-unexpected-markdown.js",
-    "update-examples": "generate-site --require ./test/support/maybeRequireBabelRegister.js --require ./bootstrap-unexpected-markdown.js --update-examples",
+    "generate-site": "generate-site --require maybabel --require ./bootstrap-unexpected-markdown.js",
+    "update-examples": "generate-site --require maybabel --require ./bootstrap-unexpected-markdown.js --update-examples",
     "preversion": "test -n \"${IS_MAKE_RELEASE}\" || (echo Please run make release instead && exit 1)"
   },
   "main": "./lib/index.js",
@@ -47,6 +47,7 @@
     "jasmine": "2.2.1",
     "jasmine-core": "~2.2.0",
     "jest": "19.0.2",
+    "maybabel": "1.0.3",
     "minimist": "1.1.1",
     "mocha": "^3.2.0",
     "mocha-phantomjs-core": "2.0.1",
@@ -59,7 +60,6 @@
     "rollup-plugin-node-resolve": "3.0.0",
     "rollup-plugin-uglify": "2.0.1",
     "rsvp": "3.0.18",
-    "semver": "5.4.1",
     "serve": "*",
     "unexpected-documentation-site-generator": "^4.6.1",
     "unexpected-magicpen": "0.2.1",
