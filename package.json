@@ -56,7 +56,7 @@
     "rollup-plugin-uglify": "2.0.1",
     "rsvp": "3.0.18",
     "serve": "*",
-    "unexpected-documentation-site-generator": "^4.4.0",
+    "unexpected-documentation-site-generator": "^4.6.1",
     "unexpected-magicpen": "0.2.1",
     "unexpected-markdown": "^1.7.4"
   },
