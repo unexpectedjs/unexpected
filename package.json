@@ -32,6 +32,7 @@
     "unexpected-bluebird": "2.9.34-longstack2"
   },
   "devDependencies": {
+    "babel-jest": "20.0.3",
     "babel-plugin-external-helpers": "6.22.0",
     "babel-polyfill": "6.26.0",
     "babel-preset-env": "1.6.0",
