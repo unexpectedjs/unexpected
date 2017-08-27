@@ -4,6 +4,7 @@
     "**/*.spec.js"
   ],
   "helpers": [
+    "./support/maybeRequireBabelRegister.js",
     "common.js",
     "promisePolyfill.js",
     "./support/jasmineSetup.js",
