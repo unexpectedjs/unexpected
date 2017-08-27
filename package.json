@@ -61,7 +61,7 @@
     "rsvp": "3.0.18",
     "semver": "5.4.1",
     "serve": "*",
-    "unexpected-documentation-site-generator": "^4.6.0",
+    "unexpected-documentation-site-generator": "^4.6.1",
     "unexpected-magicpen": "0.2.1",
     "unexpected-markdown": "^1.7.2"
   },
