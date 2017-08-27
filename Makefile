@@ -11,7 +11,7 @@ lint:
 
 .PHONY: ${TARGETS}
 ${TARGETS}: lib/*
-	./node_modules/.bin/rollup --config --sourcemap --format umd --name weknowhow.expect -o unexpected.js lib/index.js
+	./node_modules/.bin/rollup --config --sourcemap --format umd --name weknowhow.expect -o unexpected.js lib/indexWithBabelPolyfill.js
 
 create-html-runners: test/tests.tpl.html test/JasmineRunner.tpl.html
 	@for file in tests JasmineRunner ; do \
