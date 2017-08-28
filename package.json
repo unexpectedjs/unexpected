@@ -37,7 +37,6 @@
     "babel-polyfill": "6.26.0",
     "babel-preset-env": "1.6.0",
     "babel-register": "6.26.0",
-    "chewbacca": "1.10.0",
     "coveralls": "^2.11.9",
     "es5-shim": "4.0.5",
     "eslint": "2.13.1",

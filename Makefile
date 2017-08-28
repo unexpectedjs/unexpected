@@ -2,8 +2,6 @@ REPORTER = dot
 
 TARGETS ?= unexpected.js unexpected.js.map
 
-CHEWBACCA_THRESHOLD ?= 25
-
 lint:
 	npm run lint
 
@@ -52,11 +50,7 @@ coverage:
 test-browser: create-html-runners ${TARGETS}
 	@./node_modules/.bin/serve .
 
-.PHONY: travis-chewbacca
-travis-chewbacca:
-	./node_modules/.bin/chewbacca --threshold ${CHEWBACCA_THRESHOLD} `echo ${TRAVIS_COMMIT_RANGE} | sed -e 's/\.\.\..*//;'` -- test/benchmark.spec.js
-
-travis: clean lint test travis-chewbacca test-jasmine test-jest-if-supported-node-version coverage
+travis: clean lint test test-jasmine test-jest-if-supported-node-version coverage
 ifneq ($(shell node --version | grep -vP '^v[0123]\.'),)
 	make site-build
 	make test-phantomjs
@@ -83,7 +77,6 @@ commit-unexpected: ${TARGETS}
 
 .PHONY: release-%
 release-%: git-dirty-check lint ${TARGETS} test-phantomjs test-jasmine test-jest-if-supported-node-version commit-unexpected deploy-site
-	./node_modules/.bin/chewbacca --threshold ${CHEWBACCA_THRESHOLD} `git describe --abbrev=0 --tags --match 'v*'` -- test/benchmark.spec.js
 	IS_MAKE_RELEASE=yes npm version $*
 	@echo $* release ready to be publised to NPM
 	@echo Remember to push tags
@@ -99,7 +92,3 @@ site-build:
 .PHONY: update-examples
 update-examples:
 	npm run update-examples
-
-.PHONY: benchmark
-benchmark:
-	./node_modules/.bin/mocha --no-timeouts --ui chewbacca/mocha-benchmark-ui --reporter chewbacca/mocha-benchmark-reporter test/benchmark.spec.js
