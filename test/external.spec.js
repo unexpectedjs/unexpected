@@ -1,8 +1,10 @@
-/*global unexpected*/
-
+/*global unexpected, jasmine*/
 var expect = unexpected.clone();
-
 if (typeof process === 'object') {
+    if (typeof jasmine !== 'undefined') {
+        jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000;
+    }
+
     describe('invoked in a test via an external test runner', function () {
         var pathModule = require('path');
         var childProcess = require('child_process');
