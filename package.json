@@ -51,7 +51,7 @@
     "mocha": "^3.2.0",
     "mocha-phantomjs-core": "2.0.1",
     "mocha-slow-reporter": "*",
-    "nyc": "11.1.0",
+    "nyc": "10.3.2",
     "rollup": "0.45.2",
     "rollup-plugin-babel": "3.0.2",
     "rollup-plugin-commonjs": "8.0.2",
