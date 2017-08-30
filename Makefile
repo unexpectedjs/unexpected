@@ -9,9 +9,16 @@ lint:
 
 .PHONY: lint
 
-build: src/* test/*
-	babel --out-dir build/lib --quiet src
-	babel --out-dir build/test --quiet test
+build/lib: lib/*
+	babel --copy-files --out-dir build/lib --quiet src
+
+build/test: test/*
+	babel --copy-files --out-dir build/test --quiet test
+
+build/externaltests: externaltests/*
+	babel --copy-files --out-dir build/externaltests --quiet externaltests
+
+build: build/lib build/test build/externaltests
 
 .PHONY: ${TARGETS}
 ${TARGETS}: build

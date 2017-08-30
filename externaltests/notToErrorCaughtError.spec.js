@@ -1,4 +1,4 @@
-var expect = require('../');
+var expect = require('../lib');
 
 it('should foo', function () {
     return expect(function () {
