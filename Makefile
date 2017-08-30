@@ -9,8 +9,11 @@ lint:
 
 .PHONY: lint
 
+lib: src/*
+	babel --out-dir lib --quiet src
+
 .PHONY: ${TARGETS}
-${TARGETS}: lib/*
+${TARGETS}: lib
 	./node_modules/.bin/rollup --config --sourcemap --format umd --name weknowhow.expect -o unexpected.js lib/index.js
 
 create-html-runners: test/tests.tpl.html test/JasmineRunner.tpl.html
