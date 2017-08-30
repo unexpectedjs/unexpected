@@ -75,8 +75,8 @@ test-browser: create-html-runners ${TARGETS}
 travis-chewbacca:
 	./node_modules/.bin/chewbacca --threshold ${CHEWBACCA_THRESHOLD} `echo ${TRAVIS_COMMIT_RANGE} | sed -e 's/\.\.\..*//;'` -- test/benchmark.spec.js
 
-.PHONY: travis-old
-travis-old: test-transpiled coverage
+.PHONY: travis-secondary
+travis-secondary: test-transpiled coverage
 
 .PHONY: travis-main
 travis-main: clean lint test travis-chewbacca test-jasmine test-jest coverage
@@ -88,7 +88,7 @@ travis:
 ifeq (${TRAVIS_NODE_VERSION}, $(shell cat .nvmrc))
 	make travis-main
 else
-	make travis-old
+	make travis-secondary
 endif
 
 .PHONY: git-dirty-check
