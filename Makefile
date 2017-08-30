@@ -36,35 +36,41 @@ create-html-runners: test/tests.tpl.html test/JasmineRunner.tpl.html
 test-phantomjs: create-html-runners ${TARGETS}
 	phantomjs ./node_modules/mocha-phantomjs-core/mocha-phantomjs-core.js test/tests.html spec "`node -pe 'JSON.stringify({useColors:true,grep:process.env.grep})'`"
 
-.PHONY: test-jest
-	./node_modules/.bin/jest
-
-test-jest-if-supported-node-version:
-ifeq ($(shell node --version | grep -vP '^v[0123]\.'),)
-	@echo Skipping, jest is unsupported with node $(shell node --version)
-else
-	make test-jest
-endif
-
 test-jasmine:
 	./node_modules/.bin/jasmine JASMINE_CONFIG_PATH=test/support/jasmine.json
 
 test-jasmine-browser: create-html-runners ${TARGETS}
 	@./node_modules/.bin/serve .
 
-.PHONY: test
+test-sources:
+ifeq (${TRAVIS_NODE_VERSION}, $(shell cat .nvmrc))
 TEST_SOURCES = $(shell find test -name '*.spec.js') $(shell find documentation -name '*.md')
-test: lint
+else
+TEST_SOURCES = $(shell find build/test -name '*.spec.js')  $(shell find documentation -name '*.md')
+endif
+
+.PHONY: test-jest
+test-jest: test-sources
+	./node_modules/.bin/jest $(TEST_SOURCES)
+
+test-jest-if-supported-node-version: test-sources
+ifeq ($(shell node --version | grep -vP '^v[0123]\.'),)
+	@echo Skipping, jest is unsupported with node $(shell node --version)
+else
+	make test-jest
+endif
+
+.PHONY: test
+test: lint test-sources
 	@./node_modules/.bin/mocha $(TEST_SOURCES)
 
 .PHONY: test-transpiled
-TEST_SOURCES = $(shell find build/test -name '*.spec.js')  $(shell find documentation -name '*.md')
-test-transpiled: build
+test-transpiled: build test-sources
 	@./node_modules/.bin/mocha $(TEST_SOURCES)
 
 .PHONY: coverage
-coverage:
-	@./node_modules/.bin/nyc --reporter=lcov --reporter=text --all -- mocha --compilers md:unexpected-markdown test/*.js $(TEST_SOURCES)
+coverage: test-sources
+	@./node_modules/.bin/nyc --reporter=lcov --reporter=text --all -- mocha --compilers md:unexpected-markdown $(TEST_SOURCES)
 	@echo google-chrome coverage/lcov-report/index.html
 
 .PHONY: test-browser
