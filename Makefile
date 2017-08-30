@@ -58,7 +58,7 @@ test: lint
 	@./node_modules/.bin/mocha $(TEST_SOURCES)
 
 .PHONY: test-transpiled
-TEST_SOURCES = $(shell find build/test -name '*.spec.js')
+TEST_SOURCES = $(shell find build/test -name '*.spec.js')  $(shell find documentation -name '*.md')
 test-transpiled: build
 	@./node_modules/.bin/mocha $(TEST_SOURCES)
 

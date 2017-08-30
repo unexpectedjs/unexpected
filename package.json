@@ -59,7 +59,7 @@
     "serve": "*",
     "unexpected-documentation-site-generator": "^4.4.0",
     "unexpected-magicpen": "0.2.1",
-    "unexpected-markdown": "^1.7.2"
+    "unexpected-markdown": "^1.7.3"
   },
   "jspm": {
     "dependencies": {},
