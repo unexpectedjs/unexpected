@@ -9,12 +9,13 @@ lint:
 
 .PHONY: lint
 
-lib: src/*
-	babel --out-dir lib --quiet src
+build: src/* test/*
+	babel --out-dir build/lib --quiet src
+	babel --out-dir build/test --quiet test
 
 .PHONY: ${TARGETS}
-${TARGETS}: lib
-	./node_modules/.bin/rollup --config --sourcemap --format umd --name weknowhow.expect -o unexpected.js lib/index.js
+${TARGETS}: build
+	./node_modules/.bin/rollup --config --sourcemap --format umd --name weknowhow.expect -o unexpected.js build/lib/index.js
 
 create-html-runners: test/tests.tpl.html test/JasmineRunner.tpl.html
 	@for file in tests JasmineRunner ; do \

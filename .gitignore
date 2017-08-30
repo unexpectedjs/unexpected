@@ -1,6 +1,6 @@
 /node_modules/
 /coverage/
-/lib/
+/build/
 /site-build/
 /test/tests.html
 /test/JasmineRunner.html
