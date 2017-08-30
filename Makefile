@@ -36,11 +36,14 @@ create-html-runners: test/tests.tpl.html test/JasmineRunner.tpl.html
 test-phantomjs: create-html-runners ${TARGETS}
 	phantomjs ./node_modules/mocha-phantomjs-core/mocha-phantomjs-core.js test/tests.html spec "`node -pe 'JSON.stringify({useColors:true,grep:process.env.grep})'`"
 
+.PHONY: test-jest
+	./node_modules/.bin/jest
+
 test-jest-if-supported-node-version:
 ifeq ($(shell node --version | grep -vP '^v[0123]\.'),)
 	@echo Skipping, jest is unsupported with node $(shell node --version)
 else
-	./node_modules/.bin/jest
+	make test-jest
 endif
 
 test-jasmine:
@@ -52,6 +55,11 @@ test-jasmine-browser: create-html-runners ${TARGETS}
 .PHONY: test
 TEST_SOURCES = $(shell find test -name '*.spec.js') $(shell find documentation -name '*.md')
 test: lint
+	@./node_modules/.bin/mocha $(TEST_SOURCES)
+
+.PHONY: test-transpiled
+TEST_SOURCES = $(shell find build/test -name '*.spec.js')
+test-transpiled: build
 	@./node_modules/.bin/mocha $(TEST_SOURCES)
 
 .PHONY: coverage
@@ -67,12 +75,21 @@ test-browser: create-html-runners ${TARGETS}
 travis-chewbacca:
 	./node_modules/.bin/chewbacca --threshold ${CHEWBACCA_THRESHOLD} `echo ${TRAVIS_COMMIT_RANGE} | sed -e 's/\.\.\..*//;'` -- test/benchmark.spec.js
 
-travis: clean lint test travis-chewbacca test-jasmine test-jest-if-supported-node-version coverage
-ifneq ($(shell node --version | grep -vP '^v[0123]\.'),)
+.PHONY: travis-old
+travis-old: test-transpiled
+
+.PHONY: travis-main
+travis-main: clean lint test travis-chewbacca test-jasmine test-jest coverage
 	make site-build
 	make test-phantomjs
-endif
 	-<coverage/lcov.info ./node_modules/coveralls/bin/coveralls.js
+
+travis:
+ifeq (${TRAVIS_NODE_VERSION}, $(shell cat .nvmrc))
+	make travis-main
+else
+	make travis-old
+endif
 
 .PHONY: git-dirty-check
 git-dirty-check:
