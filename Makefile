@@ -14,6 +14,7 @@ build/lib: lib/*
 
 build/test: test/*
 	babel --copy-files --out-dir build/test --quiet test
+	sed -i -e 's#--require ./test#--require ./build/test#g' ./build/test/mocha.opts
 
 build/externaltests: externaltests/*
 	babel --copy-files --out-dir build/externaltests --quiet externaltests
@@ -44,8 +45,11 @@ test-jasmine-browser: create-html-runners ${TARGETS}
 
 test-sources:
 ifeq (${TRAVIS_NODE_VERSION}, $(shell cat .nvmrc))
+MOCHA_OPTS = ./test/mocha.opts
 TEST_SOURCES = $(shell find test -name '*.spec.js') $(shell find documentation -name '*.md')
 else
+	make build
+MOCHA_OPTS = ./build/test/mocha.opts
 TEST_SOURCES = $(shell find build/test -name '*.spec.js')  $(shell find documentation -name '*.md')
 endif
 
@@ -61,16 +65,12 @@ else
 endif
 
 .PHONY: test
-test: lint test-sources
-	@./node_modules/.bin/mocha $(TEST_SOURCES)
-
-.PHONY: test-transpiled
-test-transpiled: build test-sources
-	@./node_modules/.bin/mocha $(TEST_SOURCES)
+test: test-sources
+	@./node_modules/.bin/mocha --opts $(MOCHA_OPTS) $(TEST_SOURCES)
 
 .PHONY: coverage
 coverage: test-sources
-	@./node_modules/.bin/nyc --reporter=lcov --reporter=text --all -- mocha --compilers md:unexpected-markdown $(TEST_SOURCES)
+	@./node_modules/.bin/nyc --reporter=lcov --reporter=text --all -- mocha --opts $(MOCHA_OPTS) $(TEST_SOURCES)
 	@echo google-chrome coverage/lcov-report/index.html
 
 .PHONY: test-browser
@@ -82,7 +82,7 @@ travis-chewbacca:
 	./node_modules/.bin/chewbacca --threshold ${CHEWBACCA_THRESHOLD} `echo ${TRAVIS_COMMIT_RANGE} | sed -e 's/\.\.\..*//;'` -- test/benchmark.spec.js
 
 .PHONY: travis-secondary
-travis-secondary: test-transpiled test-jest-if-supported-node-version coverage
+travis-secondary: test test-jest-if-supported-node-version coverage
 
 .PHONY: travis-main
 travis-main: clean lint test travis-chewbacca test-jasmine test-jest coverage
