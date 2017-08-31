@@ -29,11 +29,11 @@ build: build/lib build/test build/externaltests
 ${TARGETS}: build
 	./node_modules/.bin/rollup --config --sourcemap --format umd --name weknowhow.expect -o unexpected.js build/lib/index.js
 
-create-html-runners: test/tests.tpl.html test/JasmineRunner.tpl.html
+create-html-runners: build/test test/tests.tpl.html test/JasmineRunner.tpl.html
 	@for file in tests JasmineRunner ; do \
-		(sed '/test files/q' ./test/$${file}.tpl.html | sed '$$d' && \
+		(sed '/test files/q' ./build/test/$${file}.tpl.html | sed '$$d' && \
 		find test -name '*.spec.js' | sed 's/test/    <script src="./' | sed 's/$$/"><\/script>/' && \
-		sed -n '/test files/,$$p' ./test/$${file}.tpl.html | sed '1d') > ./test/$${file}.html;\
+		sed -n '/test files/,$$p' ./build/test/$${file}.tpl.html | sed '1d') > ./build/test/$${file}.html;\
 	done
 
 .PHONY: create-html-runners
@@ -45,6 +45,7 @@ test-jasmine:
 	./node_modules/.bin/jasmine JASMINE_CONFIG_PATH=test/support/jasmine.json
 
 test-jasmine-browser: create-html-runners ${TARGETS}
+	@echo open http://localhost:5000/build/test/JasmineRunner.html
 	@./node_modules/.bin/serve .
 
 test-sources:
@@ -79,6 +80,7 @@ coverage: test-sources
 
 .PHONY: test-browser
 test-browser: create-html-runners ${TARGETS}
+	@echo open http://localhost:5000/build/test/tests.html
 	@./node_modules/.bin/serve .
 
 .PHONY: travis-secondary
