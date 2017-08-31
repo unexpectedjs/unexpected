@@ -81,15 +81,11 @@ coverage: test-sources
 test-browser: create-html-runners ${TARGETS}
 	@./node_modules/.bin/serve .
 
-.PHONY: travis-chewbacca
-travis-chewbacca:
-	./node_modules/.bin/chewbacca --threshold ${CHEWBACCA_THRESHOLD} `echo ${TRAVIS_COMMIT_RANGE} | sed -e 's/\.\.\..*//;'` -- test/benchmark.spec.js
-
 .PHONY: travis-secondary
 travis-secondary: test test-jest-if-supported-node-version coverage
 
 .PHONY: travis-main
-travis-main: clean lint test travis-chewbacca test-jasmine test-jest coverage
+travis-main: clean lint test test-jasmine test-jest coverage
 	make site-build
 	make test-phantomjs
 	-<coverage/lcov.info ./node_modules/coveralls/bin/coveralls.js
@@ -121,7 +117,6 @@ commit-unexpected: ${TARGETS}
 
 .PHONY: release-%
 release-%: git-dirty-check lint ${TARGETS} test-phantomjs test-jasmine test-jest-if-supported-node-version commit-unexpected deploy-site
-	./node_modules/.bin/chewbacca --threshold ${CHEWBACCA_THRESHOLD} `git describe --abbrev=0 --tags --match 'v*'` -- test/benchmark.spec.js
 	IS_MAKE_RELEASE=yes npm version $*
 	@echo $* release ready to be publised to NPM
 	@echo Remember to push tags
@@ -137,7 +132,3 @@ site-build:
 .PHONY: update-examples
 update-examples:
 	npm run update-examples
-
-.PHONY: benchmark
-benchmark:
-	./node_modules/.bin/mocha --no-timeouts --ui chewbacca/mocha-benchmark-ui --reporter chewbacca/mocha-benchmark-reporter test/benchmark.spec.js

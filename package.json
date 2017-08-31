@@ -34,7 +34,6 @@
   "devDependencies": {
     "babel-cli": "6.26.0",
     "babel-preset-es2015-without-strict": "0.0.4",
-    "chewbacca": "1.10.0",
     "coveralls": "^2.11.9",
     "es5-shim": "4.0.5",
     "eslint": "2.13.1",
