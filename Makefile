@@ -82,7 +82,7 @@ travis-chewbacca:
 	./node_modules/.bin/chewbacca --threshold ${CHEWBACCA_THRESHOLD} `echo ${TRAVIS_COMMIT_RANGE} | sed -e 's/\.\.\..*//;'` -- test/benchmark.spec.js
 
 .PHONY: travis-secondary
-travis-secondary: test-transpiled coverage
+travis-secondary: test-transpiled test-jest-if-supported-node-version coverage
 
 .PHONY: travis-main
 travis-main: clean lint test travis-chewbacca test-jasmine test-jest coverage
