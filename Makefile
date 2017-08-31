@@ -61,8 +61,8 @@ endif
 test-jest:
 	./node_modules/.bin/jest
 
-test-jest-if-supported-node-version: test-sources
-ifeq ($(shell node --version | grep -vP '^v[0123]\.'),)
+test-jest-if-supported-node-version:
+ifeq ($(shell node -p -e '/^v[0123]\./.test(process.version)'),true)
 	@echo Skipping, jest is unsupported with node $(shell node --version)
 else
 	make test-jest
