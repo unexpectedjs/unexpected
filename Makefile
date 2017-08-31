@@ -10,7 +10,7 @@ lint:
 .PHONY: lint
 
 build/lib: lib/*
-	babel --copy-files --out-dir build/lib --quiet src
+	babel --copy-files --out-dir build/lib --quiet lib
 
 build/test: test/*
 	babel --copy-files --out-dir build/test --quiet test
