@@ -4,6 +4,10 @@ TARGETS ?= unexpected.js unexpected.js.map
 
 CHEWBACCA_THRESHOLD ?= 25
 
+TEST_SOURCES_MARKDOWN =  $(shell find documentation -name '*.md')
+
+NODE_VERSION = $(shell node --version)
+
 lint:
 	npm run lint
 
@@ -44,18 +48,18 @@ test-jasmine-browser: create-html-runners ${TARGETS}
 	@./node_modules/.bin/serve .
 
 test-sources:
-ifeq (${TRAVIS_NODE_VERSION}, $(shell cat .nvmrc))
+ifeq ($(NODE_VERSION), $(shell cat .nvmrc))
 MOCHA_OPTS = ./test/mocha.opts
-TEST_SOURCES = $(shell find test -name '*.spec.js') $(shell find documentation -name '*.md')
+TEST_SOURCES = $(shell find test -name '*.spec.js')
 else
 	make build
 MOCHA_OPTS = ./build/test/mocha.opts
-TEST_SOURCES = $(shell find build/test -name '*.spec.js')  $(shell find documentation -name '*.md')
+TEST_SOURCES = $(shell find build/test -name '*.spec.js')
 endif
 
 .PHONY: test-jest
-test-jest: test-sources
-	./node_modules/.bin/jest $(TEST_SOURCES)
+test-jest:
+	./node_modules/.bin/jest
 
 test-jest-if-supported-node-version: test-sources
 ifeq ($(shell node --version | grep -vP '^v[0123]\.'),)
@@ -66,11 +70,11 @@ endif
 
 .PHONY: test
 test: test-sources
-	@./node_modules/.bin/mocha --opts $(MOCHA_OPTS) $(TEST_SOURCES)
+	@./node_modules/.bin/mocha --opts $(MOCHA_OPTS) $(TEST_SOURCES) $(TEST_SOURCE_MARKDOWN)
 
 .PHONY: coverage
 coverage: test-sources
-	@./node_modules/.bin/nyc --reporter=lcov --reporter=text --all -- mocha --opts $(MOCHA_OPTS) $(TEST_SOURCES)
+	@./node_modules/.bin/nyc --reporter=lcov --reporter=text --all -- mocha --opts $(MOCHA_OPTS) $(TEST_SOURCES) $(TEST_SOURCES_MARKDOWN)
 	@echo google-chrome coverage/lcov-report/index.html
 
 .PHONY: test-browser
@@ -91,7 +95,7 @@ travis-main: clean lint test travis-chewbacca test-jasmine test-jest coverage
 	-<coverage/lcov.info ./node_modules/coveralls/bin/coveralls.js
 
 travis:
-ifeq (${TRAVIS_NODE_VERSION}, $(shell cat .nvmrc))
+ifeq ($(NODE_VERSION), $(shell cat .nvmrc))
 	make travis-main
 else
 	make travis-secondary
