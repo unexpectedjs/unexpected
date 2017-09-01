@@ -60,7 +60,7 @@ endif
 
 .PHONY: test-jest
 test-jest:
-	./node_modules/.bin/jest
+	./node_modules/.bin/jest -c test/jest.es5.config.json
 
 test-jest-if-supported-node-version:
 ifeq ($(shell node -p -e '/^v[0123]\./.test(process.version)'),true)
