@@ -39,7 +39,7 @@ create-html-runners: build/test test/tests.tpl.html test/JasmineRunner.tpl.html
 .PHONY: create-html-runners
 
 test-phantomjs: create-html-runners ${TARGETS}
-	phantomjs ./node_modules/mocha-phantomjs-core/mocha-phantomjs-core.js test/tests.html spec "`node -pe 'JSON.stringify({useColors:true,grep:process.env.grep})'`"
+	phantomjs ./node_modules/mocha-phantomjs-core/mocha-phantomjs-core.js build/test/tests.html spec "`node -pe 'JSON.stringify({useColors:true,grep:process.env.grep})'`"
 
 test-jasmine:
 	./node_modules/.bin/jasmine JASMINE_CONFIG_PATH=test/support/jasmine.json
