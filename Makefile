@@ -77,9 +77,16 @@ endif
 test: test-sources
 	@./node_modules/.bin/mocha --opts $(MOCHA_OPTS) $(TEST_SOURCES) $(TEST_SOURCE_MARKDOWN)
 
+nyc-includes:
+ifeq ($(NODE_VERSION), $(shell cat .nvmrc))
+NYC_INCLUDES='lib/**'
+else
+NYC_INCLUDES='build/lib/**'
+endif
+
 .PHONY: coverage
-coverage: test-sources
-	@./node_modules/.bin/nyc --reporter=lcov --reporter=text --all -- mocha --opts $(MOCHA_OPTS) $(TEST_SOURCES) $(TEST_SOURCES_MARKDOWN)
+coverage: nyc-includes test-sources
+	@./node_modules/.bin/nyc --include $(NYC_INCLUDES) --reporter=lcov --reporter=text --all -- mocha --opts $(MOCHA_OPTS) $(TEST_SOURCES) $(TEST_SOURCES_MARKDOWN)
 	@echo google-chrome coverage/lcov-report/index.html
 
 .PHONY: test-browser
