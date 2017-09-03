@@ -64,16 +64,20 @@
     "url": "/api/withError/"
   },
   {
-    "label": "to be greater than (number)",
-    "url": "/assertions/number/to-be-greater-than/"
+    "label": "to have arity (function)",
+    "url": "/assertions/function/to-have-arity/"
   },
   {
-    "label": "to have message (Error)",
-    "url": "/assertions/Error/to-have-message/"
+    "label": "when decoded as (Buffer)",
+    "url": "/assertions/Buffer/when-decoded-as/"
   },
   {
     "label": "to be fulfilled with (Promise)",
     "url": "/assertions/Promise/to-be-fulfilled-with/"
+  },
+  {
+    "label": "to be fulfilled with value satisfying (Promise)",
+    "url": "/assertions/Promise/to-be-fulfilled-with-value-satisfying/"
   },
   {
     "label": "to be fulfilled (Promise)",
@@ -98,10 +102,6 @@
   {
     "label": "when rejected (Promise)",
     "url": "/assertions/Promise/when-rejected/"
-  },
-  {
-    "label": "when decoded as (Buffer)",
-    "url": "/assertions/Buffer/when-decoded-as/"
   },
   {
     "label": "to be a (any)",
@@ -196,6 +196,42 @@
     "url": "/assertions/boolean/to-be-true/"
   },
   {
+    "label": "to call the callback with error (function)",
+    "url": "/assertions/function/to-call-the-callback-with-error/"
+  },
+  {
+    "label": "to call the callback without error (function)",
+    "url": "/assertions/function/to-call-the-callback-without-error/"
+  },
+  {
+    "label": "to call the callback (function)",
+    "url": "/assertions/function/to-call-the-callback/"
+  },
+  {
+    "label": "to error (function)",
+    "url": "/assertions/function/to-error/"
+  },
+  {
+    "label": "to have message (Error)",
+    "url": "/assertions/Error/to-have-message/"
+  },
+  {
+    "label": "to throw a (function)",
+    "url": "/assertions/function/to-throw-a/"
+  },
+  {
+    "label": "to throw (function)",
+    "url": "/assertions/function/to-throw/"
+  },
+  {
+    "label": "when called with (function)",
+    "url": "/assertions/function/when-called-with/"
+  },
+  {
+    "label": "when called (function)",
+    "url": "/assertions/function/when-called/"
+  },
+  {
     "label": "to be NaN (number)",
     "url": "/assertions/number/to-be-NaN/"
   },
@@ -212,8 +248,8 @@
     "url": "/assertions/number/to-be-greater-than-or-equal-to/"
   },
   {
-    "label": "to be fulfilled with value satisfying (Promise)",
-    "url": "/assertions/Promise/to-be-fulfilled-with-value-satisfying/"
+    "label": "to be greater than (number)",
+    "url": "/assertions/number/to-be-greater-than/"
   },
   {
     "label": "to be infinite (number)",
@@ -232,48 +268,12 @@
     "url": "/assertions/number/to-be-negative/"
   },
   {
-    "label": "to be positive (number)",
-    "url": "/assertions/number/to-be-positive/"
-  },
-  {
     "label": "to be within (number)",
     "url": "/assertions/number/to-be-within/"
   },
   {
-    "label": "to call the callback with error (function)",
-    "url": "/assertions/function/to-call-the-callback-with-error/"
-  },
-  {
-    "label": "to call the callback without error (function)",
-    "url": "/assertions/function/to-call-the-callback-without-error/"
-  },
-  {
-    "label": "to call the callback (function)",
-    "url": "/assertions/function/to-call-the-callback/"
-  },
-  {
-    "label": "to error (function)",
-    "url": "/assertions/function/to-error/"
-  },
-  {
-    "label": "to have arity (function)",
-    "url": "/assertions/function/to-have-arity/"
-  },
-  {
-    "label": "to throw a (function)",
-    "url": "/assertions/function/to-throw-a/"
-  },
-  {
-    "label": "to throw (function)",
-    "url": "/assertions/function/to-throw/"
-  },
-  {
-    "label": "when called with (function)",
-    "url": "/assertions/function/when-called-with/"
-  },
-  {
-    "label": "when called (function)",
-    "url": "/assertions/function/when-called/"
+    "label": "to be positive (number)",
+    "url": "/assertions/number/to-be-positive/"
   },
   {
     "label": "to be canonical (object)",
@@ -316,12 +316,12 @@
     "url": "/assertions/string/to-be-empty/"
   },
   {
-    "label": "to be greater than (string)",
-    "url": "/assertions/string/to-be-greater-than/"
-  },
-  {
     "label": "to be greater than or equal to (string)",
     "url": "/assertions/string/to-be-greater-than-or-equal-to/"
+  },
+  {
+    "label": "to be greater than (string)",
+    "url": "/assertions/string/to-be-greater-than/"
   },
   {
     "label": "to be less than or equal to (string)",
@@ -336,16 +336,16 @@
     "url": "/assertions/string/to-be-non-empty/"
   },
   {
+    "label": "to be within (string)",
+    "url": "/assertions/string/to-be-within/"
+  },
+  {
     "label": "to be (string)",
     "url": "/assertions/string/to-be/"
   },
   {
     "label": "to begin with (string)",
     "url": "/assertions/string/to-begin-with/"
-  },
-  {
-    "label": "to be within (string)",
-    "url": "/assertions/string/to-be-within/"
   },
   {
     "label": "to contain (string)",
