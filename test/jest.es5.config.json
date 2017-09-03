@@ -1,0 +1,7 @@
+{
+    "setupFiles": [
+        "<rootDir>/build/test/promisePolyfill"
+    ],
+    "setupTestFrameworkScriptFile": "<rootDir>/build/test/common.js",
+    "testRegex": "<rootDir>/build/test\\/.*\\.spec\\.js$"
+}
