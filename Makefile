@@ -91,7 +91,7 @@ test-browser: create-html-runners ${TARGETS}
 	@./node_modules/.bin/serve .
 
 .PHONY: travis-secondary
-travis-secondary: test test-jest-if-supported-node-version coverage
+travis-secondary: clean test test-jest-if-supported-node-version coverage
 
 .PHONY: travis-main
 travis-main: clean lint test test-jasmine test-jest coverage
