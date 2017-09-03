@@ -72,12 +72,12 @@
     "url": "/assertions/Buffer/when-decoded-as/"
   },
   {
-    "label": "to be fulfilled with (Promise)",
-    "url": "/assertions/Promise/to-be-fulfilled-with/"
-  },
-  {
     "label": "to be fulfilled with value satisfying (Promise)",
     "url": "/assertions/Promise/to-be-fulfilled-with-value-satisfying/"
+  },
+  {
+    "label": "to be fulfilled with (Promise)",
+    "url": "/assertions/Promise/to-be-fulfilled-with/"
   },
   {
     "label": "to be fulfilled (Promise)",
@@ -188,12 +188,12 @@
     "url": "/assertions/array-like/when-sorted/"
   },
   {
-    "label": "to be false (boolean)",
-    "url": "/assertions/boolean/to-be-false/"
-  },
-  {
     "label": "to be true (boolean)",
     "url": "/assertions/boolean/to-be-true/"
+  },
+  {
+    "label": "to be false (boolean)",
+    "url": "/assertions/boolean/to-be-false/"
   },
   {
     "label": "to call the callback with error (function)",
@@ -230,50 +230,6 @@
   {
     "label": "when called (function)",
     "url": "/assertions/function/when-called/"
-  },
-  {
-    "label": "to be NaN (number)",
-    "url": "/assertions/number/to-be-NaN/"
-  },
-  {
-    "label": "to be close to (number)",
-    "url": "/assertions/number/to-be-close-to/"
-  },
-  {
-    "label": "to be finite (number)",
-    "url": "/assertions/number/to-be-finite/"
-  },
-  {
-    "label": "to be greater than or equal to (number)",
-    "url": "/assertions/number/to-be-greater-than-or-equal-to/"
-  },
-  {
-    "label": "to be greater than (number)",
-    "url": "/assertions/number/to-be-greater-than/"
-  },
-  {
-    "label": "to be infinite (number)",
-    "url": "/assertions/number/to-be-infinite/"
-  },
-  {
-    "label": "to be less than or equal to (number)",
-    "url": "/assertions/number/to-be-less-than-or-equal-to/"
-  },
-  {
-    "label": "to be less than (number)",
-    "url": "/assertions/number/to-be-less-than/"
-  },
-  {
-    "label": "to be negative (number)",
-    "url": "/assertions/number/to-be-negative/"
-  },
-  {
-    "label": "to be within (number)",
-    "url": "/assertions/number/to-be-within/"
-  },
-  {
-    "label": "to be positive (number)",
-    "url": "/assertions/number/to-be-positive/"
   },
   {
     "label": "to be canonical (object)",
@@ -362,5 +318,49 @@
   {
     "label": "to match (string)",
     "url": "/assertions/string/to-match/"
+  },
+  {
+    "label": "to be NaN (number)",
+    "url": "/assertions/number/to-be-NaN/"
+  },
+  {
+    "label": "to be close to (number)",
+    "url": "/assertions/number/to-be-close-to/"
+  },
+  {
+    "label": "to be finite (number)",
+    "url": "/assertions/number/to-be-finite/"
+  },
+  {
+    "label": "to be greater than or equal to (number)",
+    "url": "/assertions/number/to-be-greater-than-or-equal-to/"
+  },
+  {
+    "label": "to be greater than (number)",
+    "url": "/assertions/number/to-be-greater-than/"
+  },
+  {
+    "label": "to be infinite (number)",
+    "url": "/assertions/number/to-be-infinite/"
+  },
+  {
+    "label": "to be less than or equal to (number)",
+    "url": "/assertions/number/to-be-less-than-or-equal-to/"
+  },
+  {
+    "label": "to be less than (number)",
+    "url": "/assertions/number/to-be-less-than/"
+  },
+  {
+    "label": "to be negative (number)",
+    "url": "/assertions/number/to-be-negative/"
+  },
+  {
+    "label": "to be positive (number)",
+    "url": "/assertions/number/to-be-positive/"
+  },
+  {
+    "label": "to be within (number)",
+    "url": "/assertions/number/to-be-within/"
   }
 ]
