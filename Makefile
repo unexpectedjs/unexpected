@@ -132,7 +132,7 @@ release-%: git-dirty-check lint ${TARGETS} test-phantomjs test-jasmine test-jest
 
 .PHONY: clean
 clean:
-	-rm -fr ${TARGETS} coverage
+	-rm -fr ${TARGETS} coverage build
 
 .PHONY: site-build
 site-build:
