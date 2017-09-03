@@ -2,5 +2,8 @@
   "spec_dir": "externaltests",
   "spec_files": [
     "notToErrorCaughtError.spec.js"
+  ],
+  "helpers": [
+    "../node_modules/maybabel/index.js"
   ]
 }

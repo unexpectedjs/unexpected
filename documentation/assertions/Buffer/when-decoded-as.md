@@ -22,7 +22,7 @@ If you don't provide an assertion to delegate to, the decoded value will be prov
 as the fulfillment value of the promise:
 
 ```js#skipBrowser:true
-return expect(new Buffer([0xe2, 0x98, 0xba]), 'decoded as', 'utf-8').then(function (result) {
+expect(new Buffer([0xe2, 0x98, 0xba]), 'decoded as', 'utf-8').then(function (result) {
     expect(result, 'to equal', '☺');
 });
 ```

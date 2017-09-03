@@ -23,7 +23,7 @@ If you don't provide an assertion to delegate to, the return value will be provi
 as the fulfillment value of the promise:
 
 ```js
-return expect(giveMeFive, 'called').then(function (result) {
+expect(giveMeFive, 'called').then(function (result) {
     expect(result, 'to equal', 5);
 });
 ```

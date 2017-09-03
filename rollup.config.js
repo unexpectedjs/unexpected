@@ -14,6 +14,22 @@ module.exports = {
                     return /^!|@preserve|@license|@cc_on/i.test(comment.value);
                 }
             }
+        }),
+        require('rollup-plugin-babel')({
+            exclude: 'node_modules/**',
+            plugins: ['external-helpers'],
+            babelrc: false,
+            presets: [
+                [
+                    'env',
+                    {
+                        modules: false,
+                        targets: {
+                            browsers: 'last 999 versions'
+                        }
+                    }
+                ]
+            ]
         })
     ]
 };

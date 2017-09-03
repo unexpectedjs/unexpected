@@ -159,8 +159,7 @@ describe('to have message/diff assertion', function () {
                     expect(function () {
                         expect('abc', 'to equal', 'def');
                     }, 'to throw', expect.it('to have ansi diff', function () {
-                        this.red('-').text('abc').nl()
-                            .green('+').text('def', ['bgGreen', 'black']);
+                        this.red('-').text('abc').nl().green('+').text('def', ['bgGreen', 'black']);
                     }));
                 }, 'to throw',
                        "expected\n" +
@@ -169,8 +168,7 @@ describe('to have message/diff assertion', function () {
                        "}\n" +
                        "to throw\n" +
                        "expect.it('to have ansi diff', function () {\n" +
-                       "  this.red('-').text('abc').nl()\n" +
-                       "    .green('+').text('def', ['bgGreen', 'black']);\n" +
+                       "  this.red('-').text('abc').nl().green('+').text('def', ['bgGreen', 'black']);\n" +
                        "})\n" +
                        "  expected\n" +
                        "  UnexpectedError(\n" +
@@ -181,8 +179,7 @@ describe('to have message/diff assertion', function () {
                        "  )\n" +
                        "  to have ansi diff\n" +
                        "  function () {\n" +
-                       "    this.red('-').text('abc').nl()\n" +
-                       "      .green('+').text('def', ['bgGreen', 'black']);\n" +
+                       "    this.red('-').text('abc').nl().green('+').text('def', ['bgGreen', 'black']);\n" +
                        "  }\n" +
                        "    expected\n" +
                        "    magicpen('ansi')\n" +

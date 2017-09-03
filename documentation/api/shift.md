@@ -35,7 +35,7 @@ expect.addAssertion('<string> [when] parsed as an integer <assertion?>', functio
     return expect.shift(parseInt(subject, 10));
 });
 
-return expect('42', 'parsed as an integer').then(function (integer) {
+expect('42', 'parsed as an integer').then(function (integer) {
     return expect(integer, 'to be within', 30, 50);
 });
 ```

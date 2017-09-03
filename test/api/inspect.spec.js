@@ -298,8 +298,7 @@ describe('inspect', function () {
             var foo = 'bar';
             var quux = 'baz';
             while (foo) {
-                foo = foo
-                    .substr(0, foo.length - 1);
+                foo = foo.substr(0, foo.length - 1);
             }
             return quux;
         }, 'to inspect as',
@@ -307,8 +306,7 @@ describe('inspect', function () {
                '  var foo = \'bar\';\n' +
                '  var quux = \'baz\';\n' +
                '  while (foo) {\n' +
-               '    foo = foo\n' +
-               '      .substr(0, foo.length - 1);\n' +
+               '    foo = foo.substr(0, foo.length - 1);\n' +
                '  }\n' +
                '  return quux;\n' +
                '}');
@@ -347,8 +345,8 @@ describe('inspect', function () {
 
     it('should bail out of removing the indentation of one-liner functions', function () {
         expect(function () {
-            var foo = 123; return foo;
-        }, 'to inspect as', 'function () { var foo = 123; return foo; }');
+            var foo = 123;return foo;
+        }, 'to inspect as', 'function () { var foo = 123;return foo; }');
     });
 
     it('should not show the body of a function with native code', function () {
