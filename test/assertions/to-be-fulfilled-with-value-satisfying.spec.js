@@ -136,11 +136,7 @@ describe('to be fulfilled with value satisfying assertion', function () {
                     function () {
                         return expect(
                             function () {
-                                return Promise.resolve({
-                                    foo: 'foo',
-                                    bar: 'bar',
-                                    quux: 'quux'
-                                });
+                                return Promise.resolve({ foo: 'foo', bar: 'bar', quux: 'quux' });
                             },
                             'to be fulfilled with value exhaustively satisfying',
                             {
@@ -152,11 +148,7 @@ describe('to be fulfilled with value satisfying assertion', function () {
                     'to be rejected with',
                     "expected\n" +
                     "function () {\n" +
-                    "  return Promise.resolve({\n" +
-                    "    foo: 'foo',\n" +
-                    "    bar: 'bar',\n" +
-                    "    quux: 'quux'\n" +
-                    "  });\n" +
+                    "  return Promise.resolve({ foo: 'foo', bar: 'bar', quux: 'quux' });\n" +
                     "}\n" +
                     "to be fulfilled with value exhaustively satisfying { foo: 'foo', bar: 'bar' }\n" +
                     "  expected Promise (fulfilled) => { foo: 'foo', bar: 'bar', quux: 'quux' }\n" +
@@ -180,8 +172,7 @@ describe('to be fulfilled with value satisfying assertion', function () {
                         return expect.promise.resolve({
                             foo: 'foo',
                             bar: 'bar',
-                            quux: 'quux'
-                        });
+                            quux: 'quux' });
                     },
                     'to be fulfilled with value satisfying',
                     {

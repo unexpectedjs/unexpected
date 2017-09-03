@@ -20,7 +20,7 @@
     "update-examples": "generate-site --require ./bootstrap-unexpected-markdown.js --update-examples",
     "preversion": "test -n \"${IS_MAKE_RELEASE}\" || (echo Please run make release instead && exit 1)"
   },
-  "main": "./lib/index.js",
+  "main": "./build/lib/index.js",
   "dependencies": {
     "array-changes": "2.0.0",
     "array-changes-async": "3.0.0",
@@ -32,12 +32,14 @@
     "unexpected-bluebird": "2.9.34-longstack2"
   },
   "devDependencies": {
-    "chewbacca": "1.10.0",
+    "babel-cli": "6.26.0",
+    "babel-preset-es2015-without-strict": "0.0.4",
     "coveralls": "^2.11.9",
     "es5-shim": "4.0.5",
     "eslint": "2.13.1",
     "eslint-config-onelint": "1.2.0",
     "eslint-plugin-import": "1.16.0",
+    "find-node-modules": "1.0.4",
     "istanbul": "0.3.16",
     "jasmine": "2.2.1",
     "jasmine-core": "~2.2.0",
@@ -46,7 +48,8 @@
     "mocha": "^3.2.0",
     "mocha-phantomjs-core": "2.0.1",
     "mocha-slow-reporter": "*",
-    "nyc": "11.1.0",
+    "node-version-check": "2.2.0",
+    "nyc": "10.3.2",
     "rollup": "0.45.2",
     "rollup-plugin-commonjs": "8.0.2",
     "rollup-plugin-node-globals": "1.1.0",
@@ -54,29 +57,20 @@
     "rollup-plugin-uglify": "2.0.1",
     "rsvp": "3.0.18",
     "serve": "*",
-    "unexpected-documentation-site-generator": "^4.4.0",
+    "unexpected-documentation-site-generator": "^4.6.1",
     "unexpected-magicpen": "0.2.1",
-    "unexpected-markdown": "^1.7.2"
+    "unexpected-markdown": "^1.7.4"
   },
   "jspm": {
     "dependencies": {},
     "main": "unexpected.js",
     "jspmPackage": true
   },
-  "nyc": {
-    "include": [
-      "lib/**"
-    ]
-  },
   "jest": {
     "setupFiles": [
       "<rootDir>/test/promisePolyfill"
     ],
     "setupTestFrameworkScriptFile": "<rootDir>/test/common.js",
-    "testRegex": "test\\/.*\\.spec\\.js$",
-    "transformIgnorePatterns": [
-      "/node_modules/",
-      "/test/"
-    ]
+    "testRegex": "<rootDir>/test\\/.*\\.spec\\.js$"
   }
 }

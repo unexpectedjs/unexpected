@@ -1,4 +1,4 @@
-/*global unexpected:true, expect:true, expectWithUnexpectedMagicPen:true, setImmediate:true, weknowhow*/
+/*global unexpected:true, expect:true, expectWithUnexpectedMagicPen:true, setImmediate:true, weknowhow, jasmine*/
 /* eslint no-unused-vars: "off" */
 unexpected = typeof weknowhow === 'undefined' ?
     require('../lib/').clone() :
@@ -33,4 +33,8 @@ if (typeof setImmediate !== 'function') {
     setImmediate = function (cb) {
         setTimeout(cb, 0);
     };
+}
+
+if (typeof jasmine !== 'undefined') {
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
 }

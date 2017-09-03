@@ -1743,10 +1743,7 @@ describe('to satisfy assertion', function () {
             }, 'to throw', function (err) {
                 // Compensate for V8 5.1+ setting { foo: function () {} }.foo.name === 'foo'
                 // http://v8project.blogspot.dk/2016/04/v8-release-51.html
-                expect(err.getErrorMessage('text').toString().replace('function foo', 'function '), 'to satisfy',
-                    "expected {}\n" +
-                    "to satisfy { foo: function (value) { expect(value, 'to be a string'); } }\n" +
-                    "\n" +
+                expect(err.getErrorMessage('text').toString().replace('function foo', 'function '), 'to contain',
                     "{\n" +
                     "  // missing: foo: should be a string\n" +
                     "}"

@@ -27,7 +27,7 @@ assertion and also supports the `async` and `constructor` flags.
 If you don't provide an assertion to delegate to, the return value will be provided
 as the fulfillment value of the promise:
 
-```js
+```js#async:true
 return expect(10, 'passed as parameter to', increment).then(function (result) {
     expect(result, 'to equal', 11);
 });
