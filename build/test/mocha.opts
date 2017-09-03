@@ -1,7 +1,0 @@
---reporter spec
---recursive
---check-leaks
---timeout 20000
---require ./build/test/common
---require ./build/test/promisePolyfill
---compilers md:unexpected-markdown
