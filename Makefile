@@ -67,11 +67,7 @@ else
 endif
 
 test-jest-if-supported-node-version:
-ifeq ($(shell node -p -e '/^v[0123]\./.test(process.version)'),true)
-	@echo Skipping, jest is unsupported with node $(shell node --version)
-else
-	make test-jest
-endif
+	@node-version-gte-4 && make test-jest || echo Skipping, jest is unsupported with node $(shell node --version)
 
 .PHONY: test
 test: test-sources
