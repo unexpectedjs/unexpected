@@ -4,11 +4,9 @@ var expect = unexpected.clone();
 
 if (typeof process === 'object') {
     describe('invoked in a test via an external test runner', function () {
-        var findNodeModules = require('find-node-modules');
         var pathModule = require('path');
         var childProcess = require('child_process');
-        var basePath = pathModule.join(findNodeModules()[0], '..');
-        var externaltestsDir = pathModule.join(__dirname, '..', 'externaltests');
+        var basePath = pathModule.resolve(__dirname, '..');
         var extend = require('../lib/utils').extend;
         describe('executed through mocha', function () {
             expect.addAssertion('<array|string> executed through mocha <object?>', function (expect, subject, env) {
@@ -16,9 +14,9 @@ if (typeof process === 'object') {
                     subject = [subject];
                 }
                 return expect.promise(function (run) {
-                    childProcess.execFile(pathModule.resolve(basePath, 'node_modules', '.bin', 'mocha'), ['--opts', 'mocha.opts'].concat(subject.map(function (fileName) {
-                        return pathModule.resolve(externaltestsDir, fileName + '.spec.js');
-                    })), {
+                    childProcess.execFile(pathModule.resolve(basePath, 'node_modules', '.bin', 'mocha'), subject.map(function (fileName) {
+                        return pathModule.resolve(basePath, 'externaltests', fileName + '.spec.js');
+                    }), {
                         cwd: basePath,
                         env: extend({}, process.env, env || {})
                     }, run(function (err, stdout, stderr) {
@@ -118,10 +116,10 @@ if (typeof process === 'object') {
         describe('executed through jasmine', function () {
             expect.addAssertion('<string> executed through jasmine', function (expect, subject) {
                 return expect.promise(function (run) {
-                    childProcess.execFile(pathModule.resolve(basePath, 'node_modules', '.bin', 'jasmine'), {
-                        cwd: pathModule.join(externaltestsDir, '..'),
+                    childProcess.execFile(pathModule.resolve(__dirname, '..', 'node_modules', '.bin', 'jasmine'), {
+                        cwd: basePath,
                         env: extend({}, process.env, {
-                            JASMINE_CONFIG_PATH: externaltestsDir + '/' + subject + '.jasmine.json'
+                            JASMINE_CONFIG_PATH: 'externaltests/' + subject + '.jasmine.json'
                         })
                     }, run(function (err, stdout, stderr) {
                         return [err, stdout, stderr];
@@ -167,9 +165,9 @@ if (typeof process === 'object') {
                     }
                     return expect.promise(function (run) {
                         childProcess.execFile(pathModule.resolve(basePath, 'node_modules', '.bin', 'jest'), [
-                            '--config', pathModule.resolve(externaltestsDir, 'jestconfig.json')
+                            '--config', pathModule.resolve(basePath, 'externaltests', 'jestconfig.json')
                         ].concat(subject.map(function (fileName) {
-                            return pathModule.resolve(externaltestsDir, fileName + '.spec.js');
+                            return pathModule.resolve(__dirname, '..', 'externaltests', fileName + '.spec.js');
                         })), {
                             cwd: basePath,
                             env: extend({}, process.env, env || {})

@@ -1,7 +1,5 @@
 /node_modules/
 /site-build/
-/build/test/
-/build/externaltests/
 /test/
 /documentation/
 /coverage/

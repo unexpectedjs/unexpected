@@ -1,6 +1,5 @@
 /*global expect, Symbol*/
-// babel-polyfill's implementation of Symbol serializes very wonkily, so skip these tests when it's active:
-if (typeof Symbol === 'function' && Symbol('foo').toString() === 'Symbol(foo)') {
+if (typeof Symbol === 'function') {
     describe('Symbol type', function () {
         var symbolA = Symbol('a');
         var anotherSymbolA = Symbol('a');
