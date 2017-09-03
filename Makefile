@@ -6,7 +6,7 @@ CHEWBACCA_THRESHOLD ?= 25
 
 TEST_SOURCES_MARKDOWN =  $(shell find documentation -name '*.md')
 
-NODE_VERSION = $(shell node --version)
+MODERN_NODE = $(shell node -p -e 'require("node-version-check").gte(require("fs").readFileSync(".nvmrc", "utf8").trim())')
 
 lint:
 	npm run lint
@@ -49,7 +49,7 @@ test-jasmine-browser: create-html-runners ${TARGETS}
 	@./node_modules/.bin/serve .
 
 test-sources:
-ifeq ($(NODE_VERSION), $(shell cat .nvmrc))
+ifeq ($(MODERN_NODE), true)
 MOCHA_OPTS = ./test/mocha.opts
 TEST_SOURCES = $(shell find test -name '*.spec.js')
 else
@@ -60,7 +60,7 @@ endif
 
 .PHONY: test-jest
 test-jest:
-ifeq ($(NODE_VERSION), $(shell cat .nvmrc))
+ifeq ($(MODERN_NODE), true)
 	./node_modules/.bin/jest
 else
 	./node_modules/.bin/jest -c test/jest.es5.config.json
@@ -78,7 +78,7 @@ test: test-sources
 	@./node_modules/.bin/mocha --opts $(MOCHA_OPTS) $(TEST_SOURCES) $(TEST_SOURCE_MARKDOWN)
 
 nyc-includes:
-ifeq ($(NODE_VERSION), $(shell cat .nvmrc))
+ifeq ($(MODERN_NODE), true)
 NYC_INCLUDES='lib/**'
 else
 NYC_INCLUDES='build/lib/**'
@@ -104,7 +104,7 @@ travis-main: clean lint test test-jasmine test-jest coverage
 	-<coverage/lcov.info ./node_modules/coveralls/bin/coveralls.js
 
 travis:
-ifeq ($(NODE_VERSION), $(shell cat .nvmrc))
+ifeq ($(MODERN_NODE), true)
 	make travis-main
 else
 	make travis-secondary
