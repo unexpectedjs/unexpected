@@ -61,6 +61,12 @@
     "unexpected-magicpen": "0.2.1",
     "unexpected-markdown": "^1.7.4"
   },
+  "files": [
+    "unexpected.js",
+    "unexpected.js.map",
+    "lib",
+    "build/lib"
+  ],
   "jspm": {
     "dependencies": {},
     "main": "unexpected.js",
