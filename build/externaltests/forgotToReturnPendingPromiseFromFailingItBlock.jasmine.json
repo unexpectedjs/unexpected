@@ -1,0 +1,6 @@
+{
+  "spec_dir": "externaltests",
+  "spec_files": [
+    "forgotToReturnPendingPromiseFromFailingItBlock.spec.js"
+  ]
+}
