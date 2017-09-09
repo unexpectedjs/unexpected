@@ -17,7 +17,7 @@ build/lib: lib/*
 	babel --copy-files --out-dir build/lib --quiet lib
 
 build/test: test/*
-	babel --copy-files --out-dir build/test --quiet test
+	BABEL_ENV=test babel --copy-files --out-dir build/test --quiet test
 	sed -i -e 's#--require ./test#--require ./build/test#g' ./build/test/mocha.opts
 
 build/externaltests: externaltests/*
