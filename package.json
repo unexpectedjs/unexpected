@@ -24,6 +24,7 @@
   "dependencies": {
     "array-changes": "2.0.0",
     "array-changes-async": "3.0.0",
+    "babel-runtime": "6.26.0",
     "detect-indent": "3.0.1",
     "diff": "1.1.0",
     "greedy-interval-packer": "1.2.0",
@@ -33,6 +34,7 @@
   },
   "devDependencies": {
     "babel-cli": "6.26.0",
+    "babel-plugin-transform-runtime": "6.23.0",
     "babel-preset-es2015-without-strict": "0.0.4",
     "coveralls": "^2.11.9",
     "es5-shim": "4.0.5",

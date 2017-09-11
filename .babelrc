@@ -1,5 +1,25 @@
 {
-  "presets": [
-    "es2015-without-strict"
-  ]
+    "env": {
+        "development": {
+            "presets": [
+                "es2015-without-strict"
+            ],
+            "plugins": [
+                ["transform-runtime", {
+                    "polyfill": false
+                }]
+            ]
+        },
+        "test": {
+            "presets": [
+                "es2015-without-strict"
+            ],
+            "plugins": [
+                ["transform-runtime", {
+                    "polyfill": false,
+                    "helpers": false
+                }]
+            ]
+        }
+    }
 }

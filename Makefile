@@ -17,7 +17,7 @@ build/lib: lib/*
 	babel --copy-files --out-dir build/lib --quiet lib
 
 build/test: test/*
-	babel --copy-files --out-dir build/test --quiet test
+	BABEL_ENV=test babel --copy-files --out-dir build/test --quiet test
 	sed -i -e 's#--require ./test#--require ./build/test#g' ./build/test/mocha.opts
 
 build/externaltests: externaltests/*
@@ -27,7 +27,7 @@ build: build/lib build/test build/externaltests
 
 .PHONY: ${TARGETS}
 ${TARGETS}: build
-	./node_modules/.bin/rollup --config --sourcemap --format umd --name weknowhow.expect -o unexpected.js build/lib/index.js
+	./node_modules/.bin/rollup --config rollup.config.js --sourcemap --format umd --name weknowhow.expect -o unexpected.js build/lib/index.js
 
 create-html-runners: build/test test/tests.tpl.html test/JasmineRunner.tpl.html
 	@for file in tests JasmineRunner ; do \
