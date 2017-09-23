@@ -1,17 +1,15 @@
 /*global expect*/
-var assertionTree = require('../lib/assertionTree');
+const assertionTree = require('../lib/assertionTree');
 
-function type(name, minimum, maximum) {
-    return {
-        type: expect.getType(name),
-        minimum: typeof minimum === 'number' ? minimum : 1,
-        maximum: typeof maximum === 'number' ? maximum : 1
-    };
-}
+const type = (name, minimum, maximum) => ({
+    type: expect.getType(name),
+    minimum: typeof minimum === 'number' ? minimum : 1,
+    maximum: typeof maximum === 'number' ? maximum : 1
+});
 
 describe.only('assertionTree', () => {
     it('works :-)', () => {
-        var tree = assertionTree.emptyNode;
+        let tree = assertionTree.emptyNode;
         tree = assertionTree.addAssertion(tree, [type('string'), 'to be', type('string')]);
         tree = assertionTree.addAssertion(tree, [type('any'), 'to be', type('any')]);
         tree = assertionTree.addAssertion(tree, [type('any'), 'to equal', type('any')]);
