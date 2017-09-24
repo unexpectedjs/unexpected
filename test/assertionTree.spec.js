@@ -7,21 +7,28 @@ const type = (name, minimum, maximum) => ({
     maximum: typeof maximum === 'number' ? maximum : 1
 });
 
+const handler = () => {};
+
 describe('assertionTree', () => {
     it('works :-)', () => {
         let tree = assertionTree.emptyTree;
-        tree = assertionTree.addAssertion(tree, [type('string'), 'to be', type('string')]);
-        tree = assertionTree.addAssertion(tree, [type('any'), 'to be', type('any')]);
-        tree = assertionTree.addAssertion(tree, [type('any'), 'to equal', type('any')]);
-        tree = assertionTree.addAssertion(tree, [type('object'), 'to have keys', type('string', 1, Infinity)]);
-        tree = assertionTree.addAssertion(tree, [type('object'), 'to have keys', type('array')]);
+        tree = assertionTree.addAssertion(tree, [type('string'), 'to be', type('string')], handler);
+        tree = assertionTree.addAssertion(tree, [type('any'), 'to be', type('any')], handler);
+        tree = assertionTree.addAssertion(tree, [type('any'), 'to equal', type('any')], handler);
+        tree = assertionTree.addAssertion(tree, [type('object'), 'to have keys', type('string', 1, Infinity)], handler);
+        tree = assertionTree.addAssertion(tree, [type('object'), 'to have keys', type('array')], handler);
 
         expect(tree, 'to equal', {
             typeEdges: [
                 {
                     value: type('string'),
                     typeEdges: [],
-                    textEdges: { 'to be': { typeEdges: [ { value: type('string') } ], textEdges: {} } }
+                    textEdges: {
+                        'to be': {
+                            typeEdges: [ { value: type('string'), handler } ],
+                            textEdges: {}
+                        }
+                    }
                 },
                 {
                     value: type('object'),
@@ -29,8 +36,8 @@ describe('assertionTree', () => {
                     textEdges: {
                         'to have keys': {
                             typeEdges: [
-                                { value: type('string', 1, Infinity) },
-                                { value: type('array') }
+                                { value: type('string', 1, Infinity), handler },
+                                { value: type('array'), handler }
                             ],
                             textEdges: {}
                         }
@@ -40,8 +47,8 @@ describe('assertionTree', () => {
                     value: type('any'),
                     typeEdges: [],
                     textEdges: {
-                        'to be': { typeEdges: [ { value: type('any') } ], textEdges: {} },
-                        'to equal': { typeEdges: [ { value: type('any') } ], textEdges: {} }
+                        'to be': { typeEdges: [ { value: type('any'), handler } ], textEdges: {} },
+                        'to equal': { typeEdges: [ { value: type('any'), handler } ], textEdges: {} }
                     }
                 }
             ],
