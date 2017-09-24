@@ -7,7 +7,7 @@ const type = (name, minimum, maximum) => ({
     maximum: typeof maximum === 'number' ? maximum : 1
 });
 
-describe.only('assertionTree', () => {
+describe('assertionTree', () => {
     it('works :-)', () => {
         let tree = assertionTree.emptyNode;
         tree = assertionTree.addAssertion(tree, [type('string'), 'to be', type('string')]);
