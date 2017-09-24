@@ -18,6 +18,9 @@ describe('assertionTree', () => {
         tree = assertionTree.addAssertion(tree, [type('object'), 'to have keys', type('string', 1, Infinity)], handler);
         tree = assertionTree.addAssertion(tree, [type('object'), 'to have keys', type('array')], handler);
 
+        tree = assertionTree.addAssertion(tree, [type('object'), 'to be evil'], handler);
+        tree = assertionTree.addAssertion(tree, [type('object'), 'to be evil', type('string')], handler);
+
         expect(tree, 'to equal', {
             typeEdges: [
                 {
@@ -25,7 +28,14 @@ describe('assertionTree', () => {
                     typeEdges: [],
                     textEdges: {
                         'to be': {
-                            typeEdges: [ { value: type('string'), handler } ],
+                            typeEdges: [
+                                {
+                                    value: type('string'),
+                                    typeEdges: [],
+                                    textEdges: {},
+                                    handler
+                                }
+                            ],
                             textEdges: {}
                         }
                     }
@@ -36,10 +46,32 @@ describe('assertionTree', () => {
                     textEdges: {
                         'to have keys': {
                             typeEdges: [
-                                { value: type('string', 1, Infinity), handler },
-                                { value: type('array'), handler }
+                                {
+                                    value: type('string', 1, Infinity),
+                                    typeEdges: [],
+                                    textEdges: {},
+                                    handler
+                                },
+                                {
+                                    value: type('array'),
+                                    typeEdges: [],
+                                    textEdges: {},
+                                    handler
+                                }
                             ],
                             textEdges: {}
+                        },
+                        'to be evil': {
+                            typeEdges: [
+                                {
+                                    value: type('string'),
+                                    typeEdges: [],
+                                    textEdges: {},
+                                    handler
+                                }
+                            ],
+                            textEdges: {},
+                            handler
                         }
                     }
                 },
@@ -47,8 +79,28 @@ describe('assertionTree', () => {
                     value: type('any'),
                     typeEdges: [],
                     textEdges: {
-                        'to be': { typeEdges: [ { value: type('any'), handler } ], textEdges: {} },
-                        'to equal': { typeEdges: [ { value: type('any'), handler } ], textEdges: {} }
+                        'to be': {
+                            typeEdges: [
+                                {
+                                    value: type('any'),
+                                    typeEdges: [],
+                                    textEdges: {},
+                                    handler
+                                }
+                            ],
+                            textEdges: {}
+                        },
+                        'to equal': {
+                            typeEdges: [
+                                {
+                                    value: type('any'),
+                                    typeEdges: [],
+                                    textEdges: {},
+                                    handler
+                                }
+                            ],
+                            textEdges: {}
+                        }
                     }
                 }
             ],
