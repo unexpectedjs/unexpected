@@ -9,7 +9,7 @@ const type = (name, minimum, maximum) => ({
 
 describe('assertionTree', () => {
     it('works :-)', () => {
-        let tree = assertionTree.emptyNode;
+        let tree = assertionTree.emptyTree;
         tree = assertionTree.addAssertion(tree, [type('string'), 'to be', type('string')]);
         tree = assertionTree.addAssertion(tree, [type('any'), 'to be', type('any')]);
         tree = assertionTree.addAssertion(tree, [type('any'), 'to equal', type('any')]);
@@ -20,34 +20,28 @@ describe('assertionTree', () => {
             typeEdges: [
                 {
                     value: type('string'),
-                    node: {
-                        typeEdges: [],
-                        textEdges: { 'to be': { typeEdges: [ { value: type('string'), node: {} } ], textEdges: {} } }
-                    }
+                    typeEdges: [],
+                    textEdges: { 'to be': { typeEdges: [ { value: type('string') } ], textEdges: {} } }
                 },
                 {
                     value: type('object'),
-                    node: {
-                        typeEdges: [],
-                        textEdges: {
-                            'to have keys': {
-                                typeEdges: [
-                                    { value: type('string', 1, Infinity), node: {} },
-                                    { value: type('array'), node: {} }
-                                ],
-                                textEdges: {}
-                            }
+                    typeEdges: [],
+                    textEdges: {
+                        'to have keys': {
+                            typeEdges: [
+                                { value: type('string', 1, Infinity) },
+                                { value: type('array') }
+                            ],
+                            textEdges: {}
                         }
                     }
                 },
                 {
                     value: type('any'),
-                    node: {
-                        typeEdges: [],
-                        textEdges: {
-                            'to be': { typeEdges: [ { value: type('any'), node: {} } ], textEdges: {} },
-                            'to equal': { typeEdges: [ { value: type('any'), node: {} } ], textEdges: {} }
-                        }
+                    typeEdges: [],
+                    textEdges: {
+                        'to be': { typeEdges: [ { value: type('any') } ], textEdges: {} },
+                        'to equal': { typeEdges: [ { value: type('any') } ], textEdges: {} }
                     }
                 }
             ],
