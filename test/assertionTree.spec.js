@@ -54,7 +54,7 @@ describe('assertionTree', () => {
 
                 {
                     value: type('function'),
-                    textEdgeLengths: {
+                    splitRange: {
                         minimum: 11,
                         maximum: 11
                     },
