@@ -54,6 +54,10 @@ describe('assertionTree', () => {
 
                 {
                     value: type('function'),
+                    textEdgeLengths: {
+                        minimum: 11,
+                        maximum: 11
+                    },
                     typeEdges: [],
                     textEdges: {
                         'when called': {
