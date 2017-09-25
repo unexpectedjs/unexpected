@@ -48,6 +48,7 @@ describe('assertionTree', () => {
                         }
                     }
                 },
+
                 {
                     value: type('object'),
                     typeEdges: [],
@@ -135,6 +136,79 @@ describe('assertionTree', () => {
                                     typeEdges: [],
                                     textEdges: {},
                                     handler
+                                }
+                            ],
+                            textEdges: {}
+                        }
+                    }
+                }
+            ],
+            textEdges: {}
+        });
+    });
+
+    it('supports multiple subjects', () => {
+        let tree = assertionTree.emptyTree;
+        tree = assertionTree.addAssertion(tree, [type('object'), type('string'), 'to have multiple subjects', type('number')], handler);
+
+        expect(tree, 'to equal', {
+            typeEdges: [
+                {
+                    value: type('object'),
+                    typeEdges: [
+                        {
+                            value: type('string'),
+                            typeEdges: [],
+                            textEdges: {
+                                'to have multiple subjects': {
+                                    typeEdges: [
+                                        {
+                                            value: type('number'),
+                                            typeEdges: [],
+                                            textEdges: {},
+                                            handler
+                                        }
+                                    ],
+                                    textEdges: {}
+                                }
+                            }
+                        }
+                    ],
+                    textEdges: {}
+                }
+            ],
+            textEdges: {}
+        });
+    });
+
+    it('supports multiple assertion strings', () => {
+        let tree = assertionTree.emptyTree;
+        tree = assertionTree.addAssertion(tree, [type('number'), 'to be between', type('number'), 'and', type('number')], handler);
+
+        expect(tree, 'to equal', {
+            typeEdges: [
+                {
+                    value: type('number'),
+                    typeEdges: [],
+                    textEdges: {
+                        'to be between': {
+                            typeEdges: [
+                                {
+                                    value: type('number'),
+                                    typeEdges: [],
+                                    textEdges: {
+                                        and: {
+                                            typeEdges: [
+                                                {
+                                                    value: type('number'),
+                                                    handler,
+                                                    typeEdges: [],
+                                                    textEdges: {}
+                                                }
+                                            ],
+                                            textEdges: {}
+                                        }
+                                    }
                                 }
                             ],
                             textEdges: {}
