@@ -25,6 +25,7 @@ describe('assertionTree', () => {
         tree = assertionTree.addAssertion(tree, [type('object'), 'to be evil', type('string', 0, Infinity)], handler);
 
         tree = assertionTree.addAssertion(tree, [type('function'), 'when called with', type('array-like'), type('assertion', 0, 1)], handler);
+        tree = assertionTree.addAssertion(tree, [type('function'), 'when called', type('assertion', 0, 1)], handler);
 
         tree = assertionTree.addAssertion(tree, [type('object'), 'to be evil', type('number')], handler);
         tree = assertionTree.addAssertion(tree, [type('object'), 'to be evil', type('number', 0, Infinity)], handler);
@@ -55,6 +56,15 @@ describe('assertionTree', () => {
                     value: type('function'),
                     typeEdges: [],
                     textEdges: {
+                        'when called': {
+                            typeEdges: [{
+                                value: type('assertion', 0, 1),
+                                typeEdges: [],
+                                textEdges: {},
+                                handler
+                            }],
+                            textEdges: {}
+                        },
                         'when called with': {
                             typeEdges: [
                                 {
