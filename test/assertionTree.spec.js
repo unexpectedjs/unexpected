@@ -20,6 +20,14 @@ describe('assertionTree', () => {
 
         tree = assertionTree.addAssertion(tree, [type('object'), 'to be evil'], handler);
         tree = assertionTree.addAssertion(tree, [type('object'), 'to be evil', type('string')], handler);
+        tree = assertionTree.addAssertion(tree, [type('object'), 'to be evil', type('string', 0, 1)], handler);
+        tree = assertionTree.addAssertion(tree, [type('object'), 'to be evil', type('string', 1, Infinity)], handler);
+        tree = assertionTree.addAssertion(tree, [type('object'), 'to be evil', type('string', 0, Infinity)], handler);
+
+        tree = assertionTree.addAssertion(tree, [type('object'), 'to be evil', type('number')], handler);
+        tree = assertionTree.addAssertion(tree, [type('object'), 'to be evil', type('number', 0, Infinity)], handler);
+        tree = assertionTree.addAssertion(tree, [type('object'), 'to be evil', type('number', 1, Infinity)], handler);
+        tree = assertionTree.addAssertion(tree, [type('object'), 'to be evil', type('number', 0, 1)], handler);
 
         expect(tree, 'to equal', {
             typeEdges: [
@@ -64,7 +72,37 @@ describe('assertionTree', () => {
                         'to be evil': {
                             typeEdges: [
                                 {
+                                    value: type('number'),
+                                    typeEdges: [],
+                                    textEdges: {},
+                                    handler
+                                },
+                                {
+                                    value: type('number', 0, 1),
+                                    typeEdges: [],
+                                    textEdges: {},
+                                    handler
+                                },
+                                {
+                                    value: type('number', 1, Infinity),
+                                    typeEdges: [],
+                                    textEdges: {},
+                                    handler
+                                },
+                                {
+                                    value: type('number', 0, Infinity),
+                                    typeEdges: [],
+                                    textEdges: {},
+                                    handler
+                                },
+                                {
                                     value: type('string'),
+                                    typeEdges: [],
+                                    textEdges: {},
+                                    handler
+                                },
+                                {
+                                    value: type('string', 0, Infinity),
                                     typeEdges: [],
                                     textEdges: {},
                                     handler
