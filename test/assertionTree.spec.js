@@ -32,7 +32,7 @@ describe('assertionTree', () => {
         tree = assertionTree.addAssertion(tree, [type('object'), 'to be evil', type('number', 1, Infinity)], handler);
         tree = assertionTree.addAssertion(tree, [type('object'), 'to be evil', type('number', 0, 1)], handler);
 
-        expect(tree, 'to equal', {
+        expect(tree, 'to exhaustively satisfy', {
             typeEdges: [
                 {
                     value: type('string'),
@@ -182,7 +182,28 @@ describe('assertionTree', () => {
                     }
                 }
             ],
-            textEdges: {}
+            textEdges: {},
+            fastTrack: expect.it('to satisfy', {
+                'to be': [
+                    {value: type('string')},
+                    {value: type('any')}
+                ],
+                'to equal': [
+                    {value: type('any')}
+                ],
+                'to have keys': [
+                    {value: type('object')}
+                ],
+                'to be evil': [
+                    {value: type('object')}
+                ],
+                'when called with': [
+                    {value: type('function')}
+                ],
+                'when called': [
+                    {value: type('function')}
+                ]
+            })
         });
     });
 
@@ -216,7 +237,7 @@ describe('assertionTree', () => {
                     textEdges: {}
                 }
             ],
-            textEdges: {}
+            textEdges: {},
         });
     });
 
@@ -224,7 +245,7 @@ describe('assertionTree', () => {
         let tree = assertionTree.emptyTree;
         tree = assertionTree.addAssertion(tree, [type('number'), 'to be between', type('number'), 'and', type('number')], handler);
 
-        expect(tree, 'to equal', {
+        expect(tree, 'to exhaustively satisfy', {
             typeEdges: [
                 {
                     value: type('number'),
@@ -255,7 +276,8 @@ describe('assertionTree', () => {
                     }
                 }
             ],
-            textEdges: {}
+            textEdges: {},
+            fastTrack: expect.it('to be an object')
         });
     });
 });
