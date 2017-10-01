@@ -286,4 +286,47 @@ describe('AssertionTree', () => {
             fastTrack: expect.it('to be an object')
         });
     });
+
+    describe('find', () => {
+        let tree = AssertionTree.emptyTree;
+        tree = AssertionTree.addAssertion(tree, [type('string'), 'to be', type('string')], assertionRule);
+        tree = AssertionTree.addAssertion(tree, [type('any'), 'to be', type('any')], assertionRule);
+        tree = AssertionTree.addAssertion(tree, [type('any'), 'to equal', type('any')], assertionRule);
+        tree = AssertionTree.addAssertion(tree, [type('object'), 'to have keys', type('string', 1, Infinity)], assertionRule);
+        tree = AssertionTree.addAssertion(tree, [type('object'), 'to have keys', type('array')], assertionRule);
+
+        tree = AssertionTree.addAssertion(tree, [type('object'), 'to be evil'], assertionRule);
+        tree = AssertionTree.addAssertion(tree, [type('object'), 'to be evil', type('string')], assertionRule);
+        tree = AssertionTree.addAssertion(tree, [type('object'), 'to be evil', type('string', 0, 1)], assertionRule);
+        tree = AssertionTree.addAssertion(tree, [type('object'), 'to be evil', type('string', 1, Infinity)], assertionRule);
+        tree = AssertionTree.addAssertion(tree, [type('object'), 'to be evil', type('string', 0, Infinity)], assertionRule);
+
+        tree = AssertionTree.addAssertion(tree, [type('function'), 'when called with', type('array-like'), type('assertion', 0, 1)], assertionRule);
+        tree = AssertionTree.addAssertion(tree, [type('function'), 'when called', type('assertion', 0, 1)], assertionRule);
+
+        tree = AssertionTree.addAssertion(tree, [type('object'), 'to be evil', type('number')], assertionRule);
+        tree = AssertionTree.addAssertion(tree, [type('object'), 'to be evil', type('number', 0, Infinity)], assertionRule);
+        tree = AssertionTree.addAssertion(tree, [type('object'), 'to be evil', type('number', 1, Infinity)], assertionRule);
+        tree = AssertionTree.addAssertion(tree, [type('object'), 'to be evil', type('number', 0, 1)], assertionRule);
+
+        it('returns null if the given path can not be found', () => {
+            const result = AssertionTree.find(tree, [42, 'to contain', 2]);
+            expect(result, 'to be null');
+        });
+
+        it('returns a search result if given path is found', () => {
+            const result = AssertionTree.find(tree, [42, 'to be', 24]);
+            expect(result, 'to equal', {
+                node: {
+                    typeEdges: [{
+                        constraint: type('any'),
+                        value: assertionRule,
+                        typeEdges: [],
+                        textEdges: {}
+                    }],
+                    textEdges: {}
+                }
+            });
+        });
+    });
 });
