@@ -317,6 +317,7 @@ describe('AssertionTree', () => {
         it('returns a search result if given path is found', () => {
             const result = AssertionTree.find(tree, [42, 'to be', 24]);
             expect(result, 'to equal', {
+                path: [type('number'), type('assertion'), type('number')],
                 node: {
                     typeEdges: [{
                         constraint: type('any'),
