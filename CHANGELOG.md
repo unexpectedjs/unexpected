@@ -1,3 +1,8 @@
+### v10.36.0 (2017-10-05)
+
+- [#422](https://github.com/unexpectedjs/unexpected/pull/422) Generate changelog ([Sune Simonsen](mailto://sune@we-knowhow.dk))
+- [#421](https://github.com/unexpectedjs/unexpected/pull/421) Use ...rest params instead of Array#apply ([Sune Simonsen](mailto://sune@we-knowhow.dk))
+
 ### v10.34.2 (2017-09-03)
 
 - [#420](https://github.com/unexpectedjs/unexpected/pull/420) Reintroduce Babel ([Sune Simonsen](mailto://sune@we-knowhow.dk))
