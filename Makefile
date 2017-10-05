@@ -127,7 +127,9 @@ commit-unexpected: ${TARGETS}
 changelog: git-dirty-check
 	@./node_modules/.bin/offline-github-changelog > CHANGELOG.md
 	@git add CHANGELOG.md
-	@git ci -m 'Updated the changelog'
+	@if [ "`git status --porcelain`" != "" ]; then \
+		git ci -m "Updated the changelog" ; \
+	fi
 
 .PHONY: release-%
 release-%: git-dirty-check lint ${TARGETS} test-phantomjs test-jasmine test-jest-if-supported-node-version commit-unexpected deploy-site
