@@ -123,11 +123,18 @@ commit-unexpected: ${TARGETS}
 		git commit -m "Build unexpected.js" ; \
 	fi
 
+.PHONY: changelog
+changelog: git-dirty-check
+	@./node_modules/.bin/offline-github-changelog > CHANGELOG.md
+	@git add CHANGELOG.md
+	@git ci -m 'Updated the changelog'
+
 .PHONY: release-%
 release-%: git-dirty-check lint ${TARGETS} test-phantomjs test-jasmine test-jest-if-supported-node-version commit-unexpected deploy-site
 	IS_MAKE_RELEASE=yes npm version $*
+	make changelog
 	@echo $* release ready to be publised to NPM
-	@echo Remember to push tags
+	@echo Remember to push master and tags
 
 .PHONY: clean
 clean:

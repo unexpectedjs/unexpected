@@ -128,6 +128,8 @@ The source for Unexpected can be found on
 
 ## Releases
 
+See [changelog](https://github.com/unexpectedjs/unexpected/CHANGELOG.md) for more details.
+
 ### 10.0.0
 
 * Assertions are now declared with explicit type requirements for
