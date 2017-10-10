@@ -9,17 +9,29 @@ repository: https://github.com/unexpectedjs/unexpected
 # The extensible BDD assertion toolkit
 
 ```javascript
-expect({ text: 'f00!' }, 'to equal', { text: 'foo!' });
+const library = {
+  name: 'un3xp3c73d',
+  created: 2013,
+  site: 'http://unexpected.js.org',
+}
+
+expect(library, 'to satisfy', {
+  name: 'Unexpected',
+  created: 2013
+})
 ```
 
 ```output
-expected { text: 'f00!' } to equal { text: 'foo!' }
+expected { name: 'un3xp3c73d', created: 2013, site: 'http://unexpected.js.org' }
+to satisfy { name: 'Unexpected', created: 2013 }
 
 {
-  text: 'f00!' // should equal 'foo!'
-               //
-               // -f00!
-               // +foo!
+  name: 'un3xp3c73d', // should equal 'Unexpected'
+                      //
+                      // -un3xp3c73d
+                      // +Unexpected
+  created: 2013,
+  site: 'http://unexpected.js.org'
 }
 ```
 
