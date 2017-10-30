@@ -22,7 +22,7 @@
   },
   "main": "./build/lib/index.js",
   "dependencies": {
-    "array-changes": "2.0.0",
+    "array-changes": "3.0.0",
     "array-changes-async": "3.0.0",
     "babel-runtime": "6.26.0",
     "detect-indent": "3.0.1",
