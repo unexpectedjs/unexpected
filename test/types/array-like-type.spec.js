@@ -157,9 +157,10 @@ describe('array-like type', function () {
     });
 
     describe('with a custom subtype that comes with its own getKeys', function () {
-        it('should bar', function () {
+        it('should process the elements in both inspection and diff in "to equal"', function () {
             var a = [ 'a' ];
             var b = [ 'a' ];
+            b.foobar = true;
 
             var clonedExpect = expect.clone().addType({
                 name: 'foo',
@@ -181,7 +182,37 @@ describe('array-like type', function () {
                 "\n" +
                 "[\n" +
                 "  'a'\n" +
-                "  // missing foobar: undefined\n" +
+                "  // missing foobar: true\n" +
+                "]"
+            );
+        });
+
+        it('should process the elements in both inspection and diff in "to satisfy"', function () {
+            var a = [ 'a' ];
+            var b = [ 'a' ];
+            b.foobar = true;
+
+            var clonedExpect = expect.clone().addType({
+                name: 'foo',
+                base: 'array-like',
+                identify: Array.isArray,
+                numericalPropertiesOnly: false,
+                getKeys: function (obj) {
+                    var keys = this.baseType.getKeys(obj);
+                    if (obj === a) {
+                        keys.push('foobar');
+                    }
+                    return keys;
+                }
+            });
+            expect(function () {
+                clonedExpect(a, 'to satisfy', b);
+            }, 'to throw',
+                "expected [ 'a', foobar: undefined ] to satisfy [ 'a' ]\n" +
+                "\n" +
+                "[\n" +
+                "  'a'\n" +
+                "  // missing foobar: true\n" +
                 "]"
             );
         });
