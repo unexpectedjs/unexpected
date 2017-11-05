@@ -1,5 +1,41 @@
 /*global expect*/
 describe('array-like type', function () {
+    describe('equal()', function () {
+        var clonedExpect = expect.clone().addType({
+            name: 'simpleArrayLike',
+            base: 'array-like',
+            identify: Array.isArray,
+            numericalPropertiesOnly: false
+        });
+
+        it('should treat properties with a value of undefined as equivalent to missing properties', function () {
+            var a = [];
+            a.ignoreMe = undefined;
+            var b = [];
+
+            clonedExpect(a, 'to equal', b);
+            clonedExpect(b, 'to equal', a);
+        });
+
+        it('should error when a LHS key is undefined on the RHS', function () {
+            var a = [ 'a' ];
+            a.foobar = true;
+            var b = [ 'a' ];
+            b.foobar = undefined;
+
+            expect(function () {
+                clonedExpect(a, 'to equal', b);
+            }, 'to throw',
+                "expected [ 'a', foobar: true ] to equal [ 'a', foobar: undefined ]\n" +
+                "\n" +
+                "[\n" +
+                "  'a',\n" +
+                "  foobar: true // should be removed\n" +
+                "]"
+            );
+        });
+    });
+
     describe('with a subtype that disables indentation', function () {
         var clonedExpect = expect.clone();
 
