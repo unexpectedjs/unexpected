@@ -34,6 +34,26 @@ describe('array-like type', function () {
                 "]"
             );
         });
+
+        if (typeof Symbol === 'function') {
+            it('should error when a LHS key is a Symbol but undefined on the RHS', function () {
+                var s = Symbol('foo');
+                var a = [ 'a' ];
+                a[s] = true;
+                var b = [ 'a' ];
+
+                expect(function () {
+                    clonedExpect(a, 'to equal', b);
+                }, 'to throw',
+                    "expected [ 'a', Symbol('foo'): true ] to equal [ 'a' ]\n" +
+                    "\n" +
+                    "[\n" +
+                    "  'a',\n" +
+                    "  Symbol('foo'): true // should be removed\n" +
+                    "]"
+                );
+            });
+        }
     });
 
     describe('with a subtype that disables indentation', function () {
