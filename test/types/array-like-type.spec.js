@@ -1,12 +1,13 @@
 /*global expect*/
 describe('array-like type', function () {
     describe('equal()', function () {
-        var clonedExpect = expect.clone().addType({
+        var simpleArrayLikeType = {
             name: 'simpleArrayLike',
             base: 'array-like',
             identify: Array.isArray,
             numericalPropertiesOnly: false
-        });
+        };
+        var clonedExpect = expect.clone().addType(simpleArrayLikeType);
 
         it('should treat properties with a value of undefined as equivalent to missing properties', function () {
             var a = [];
@@ -37,8 +38,8 @@ describe('array-like type', function () {
 
         if (typeof Symbol === 'function') {
             it('should error when a LHS key is a Symbol but undefined on the RHS', function () {
-                var s = Symbol('foo');
                 var a = [ 'a' ];
+                var s = Symbol('foo');
                 a[s] = true;
                 var b = [ 'a' ];
 
@@ -50,6 +51,35 @@ describe('array-like type', function () {
                     "[\n" +
                     "  'a',\n" +
                     "  Symbol('foo'): true // should be removed\n" +
+                    "]"
+                );
+            });
+
+            (typeof weknowhow === 'undefined' ? it : it.skip)('should correctly fetch keys in the absence of symbol support', function () {
+                // stash away then clobber object symbol support
+                var getOwnPropertySymbols = Object.getOwnPropertySymbols;
+                delete Object.getOwnPropertySymbols;
+                // grab a fresh copy of Unexpected with object symbol support disabled
+                delete require.cache[require.resolve('../../lib/')];
+                var localExpect = require('../../lib/').clone().addType(simpleArrayLikeType);
+                // restore object symbol support for the rest of the suite
+                Object.getOwnPropertySymbols = getOwnPropertySymbols;
+
+                var a = [ 'a' ];
+                a.foobar = true;
+                var s = Symbol('foo');
+                a[s] = true; // should be ignored
+                var b = [ 'a' ];
+                b.foobar = undefined;
+
+                localExpect(function () {
+                    localExpect(a, 'to equal', b);
+                }, 'to throw',
+                    "expected [ 'a', foobar: true ] to equal [ 'a', foobar: undefined ]\n" +
+                    "\n" +
+                    "[\n" +
+                    "  'a',\n" +
+                    "  foobar: true // should be removed\n" +
                     "]"
                 );
             });
