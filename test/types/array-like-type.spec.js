@@ -60,7 +60,12 @@ describe('array-like type', function () {
                 var getOwnPropertySymbols = Object.getOwnPropertySymbols;
                 delete Object.getOwnPropertySymbols;
                 // grab a fresh copy of Unexpected with object symbol support disabled
-                delete require.cache[require.resolve('../../lib/')];
+                if (typeof jest !== 'undefined') {
+                    /*global jest*/
+                    jest.resetModules();
+                } else {
+                    delete require.cache[require.resolve('../../lib/')];
+                }
                 var localExpect = require('../../lib/').clone().addType(simpleArrayLikeType);
                 // restore object symbol support for the rest of the suite
                 Object.getOwnPropertySymbols = getOwnPropertySymbols;
