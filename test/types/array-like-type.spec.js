@@ -259,17 +259,19 @@ describe('array-like type', function () {
                 identify: Array.isArray,
                 numericalPropertiesOnly: false,
                 getKeys: function (obj) {
-                    var keys = this.baseType.getKeys(obj);
+                    // use array-like getKeys() method in non-numerical mode
+                    var keys = this.baseType.getKeys.call(this, obj);
                     if (obj === a) {
                         keys.push('foobar');
                     }
                     return keys;
                 }
             });
+
             expect(function () {
                 clonedExpect(a, 'to equal', b);
             }, 'to throw',
-                "expected [ 'a', foobar: undefined ] to equal [ 'a' ]\n" +
+                "expected [ 'a', foobar: undefined ] to equal [ 'a', foobar: true ]\n" +
                 "\n" +
                 "[\n" +
                 "  'a'\n" +
@@ -289,17 +291,19 @@ describe('array-like type', function () {
                 identify: Array.isArray,
                 numericalPropertiesOnly: false,
                 getKeys: function (obj) {
-                    var keys = this.baseType.getKeys(obj);
+                    // use array-like getKeys in non-numerical mode
+                    var keys = this.baseType.getKeys.call(this, obj);
                     if (obj === a) {
                         keys.push('foobar');
                     }
                     return keys;
                 }
             });
+
             expect(function () {
                 clonedExpect(a, 'to satisfy', b);
             }, 'to throw',
-                "expected [ 'a', foobar: undefined ] to satisfy [ 'a' ]\n" +
+                "expected [ 'a', foobar: undefined ] to satisfy [ 'a', foobar: true ]\n" +
                 "\n" +
                 "[\n" +
                 "  'a'\n" +
