@@ -83,11 +83,11 @@ describe('array-like type', function () {
                 expect(function () {
                     clonedExpect(a, 'to equal', b);
                 }, 'to throw',
-                    "expected [ 'a', Symbol('foo'): true ] to equal [ 'a' ]\n" +
+                    "expected [ 'a', [Symbol('foo')]: true ] to equal [ 'a' ]\n" +
                     "\n" +
                     "[\n" +
                     "  'a',\n" +
-                    "  Symbol('foo'): true // should be removed\n" +
+                    "  [Symbol('foo')]: true // should be removed\n" +
                     "]"
                 );
             });
