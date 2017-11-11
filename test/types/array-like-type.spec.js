@@ -16,9 +16,27 @@ describe('array-like type', function () {
 
             clonedExpect(a, 'to equal', b);
             clonedExpect(b, 'to equal', a);
+            clonedExpect(a, 'to satisfy', b);
         });
 
         it('should error when a LHS key is undefined on the RHS', function () {
+            var a = [ 'a' ];
+            a.foobar = true;
+            var b = [ 'a' ];
+
+            expect(function () {
+                clonedExpect(a, 'to equal', b);
+            }, 'to throw',
+                "expected [ 'a', foobar: true ] to equal [ 'a' ]\n" +
+                "\n" +
+                "[\n" +
+                "  'a',\n" +
+                "  foobar: true // should be removed\n" +
+                "]"
+            );
+        });
+
+        it('should error when a LHS key is explicitly undefined on the RHS', function () {
             var a = [ 'a' ];
             a.foobar = true;
             var b = [ 'a' ];
@@ -28,6 +46,24 @@ describe('array-like type', function () {
                 clonedExpect(a, 'to equal', b);
             }, 'to throw',
                 "expected [ 'a', foobar: true ] to equal [ 'a', foobar: undefined ]\n" +
+                "\n" +
+                "[\n" +
+                "  'a',\n" +
+                "  foobar: true // should be removed\n" +
+                "]"
+            );
+        });
+
+        it('should error when a LHS key is undefined on the RHS in "to satisfy"', function () {
+            var a = [ 'a' ];
+            a.foobar = true;
+            var b = [ 'a' ];
+            b.foobar = undefined;
+
+            expect(function () {
+                clonedExpect(a, 'to satisfy', b);
+            }, 'to throw',
+                "expected [ 'a', foobar: true ] to satisfy [ 'a', foobar: undefined ]\n" +
                 "\n" +
                 "[\n" +
                 "  'a',\n" +
