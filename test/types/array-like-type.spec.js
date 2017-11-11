@@ -17,6 +17,7 @@ describe('array-like type', function () {
             clonedExpect(a, 'to equal', b);
             clonedExpect(b, 'to equal', a);
             clonedExpect(a, 'to satisfy', b);
+            clonedExpect(b, 'to satisfy', a);
         });
 
         it('should error when a LHS key is undefined on the RHS', function () {
