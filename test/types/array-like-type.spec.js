@@ -1,5 +1,133 @@
 /*global expect*/
 describe('array-like type', function () {
+    describe('equal()', function () {
+        var simpleArrayLikeType = {
+            name: 'simpleArrayLike',
+            base: 'array-like',
+            identify: Array.isArray,
+            numericalPropertiesOnly: false
+        };
+        var clonedExpect = expect.clone().addType(simpleArrayLikeType);
+
+        it('should treat properties with a value of undefined as equivalent to missing properties', function () {
+            var a = [];
+            a.ignoreMe = undefined;
+            var b = [];
+
+            clonedExpect(a, 'to equal', b);
+            clonedExpect(b, 'to equal', a);
+            clonedExpect(a, 'to satisfy', b);
+            clonedExpect(b, 'to satisfy', a);
+        });
+
+        it('should error when a LHS key is undefined on the RHS', function () {
+            var a = [ 'a' ];
+            a.foobar = true;
+            var b = [ 'a' ];
+
+            expect(function () {
+                clonedExpect(a, 'to equal', b);
+            }, 'to throw',
+                "expected [ 'a', foobar: true ] to equal [ 'a' ]\n" +
+                "\n" +
+                "[\n" +
+                "  'a',\n" +
+                "  foobar: true // should be removed\n" +
+                "]"
+            );
+        });
+
+        it('should error when a LHS key is explicitly undefined on the RHS', function () {
+            var a = [ 'a' ];
+            a.foobar = true;
+            var b = [ 'a' ];
+            b.foobar = undefined;
+
+            expect(function () {
+                clonedExpect(a, 'to equal', b);
+            }, 'to throw',
+                "expected [ 'a', foobar: true ] to equal [ 'a', foobar: undefined ]\n" +
+                "\n" +
+                "[\n" +
+                "  'a',\n" +
+                "  foobar: true // should be removed\n" +
+                "]"
+            );
+        });
+
+        it('should error when a LHS key is undefined on the RHS in "to satisfy"', function () {
+            var a = [ 'a' ];
+            a.foobar = true;
+            var b = [ 'a' ];
+            b.foobar = undefined;
+
+            expect(function () {
+                clonedExpect(a, 'to satisfy', b);
+            }, 'to throw',
+                "expected [ 'a', foobar: true ] to satisfy [ 'a', foobar: undefined ]\n" +
+                "\n" +
+                "[\n" +
+                "  'a',\n" +
+                "  foobar: true // should be removed\n" +
+                "]"
+            );
+        });
+
+        if (typeof Symbol === 'function') {
+            it('should error when a LHS key is a Symbol but undefined on the RHS', function () {
+                var a = [ 'a' ];
+                var s = Symbol('foo');
+                a[s] = true;
+                var b = [ 'a' ];
+
+                expect(function () {
+                    clonedExpect(a, 'to equal', b);
+                }, 'to throw',
+                    "expected [ 'a', [Symbol('foo')]: true ] to equal [ 'a' ]\n" +
+                    "\n" +
+                    "[\n" +
+                    "  'a',\n" +
+                    "  [Symbol('foo')]: true // should be removed\n" +
+                    "]"
+                );
+            });
+
+            (typeof weknowhow === 'undefined' ? it : it.skip)('should correctly fetch keys in the absence of symbol support', function () {
+                // stash away then clobber object symbol support
+                var getOwnPropertySymbols = Object.getOwnPropertySymbols;
+                delete Object.getOwnPropertySymbols;
+                // grab a fresh copy of Unexpected with object symbol support disabled
+                if (typeof jest !== 'undefined') {
+                    /*global jest*/
+                    jest.resetModules();
+                } else {
+                    delete require.cache[require.resolve('../../lib/')];
+                }
+                var localExpect = require('../../lib/').clone().addType(simpleArrayLikeType);
+                // restore object symbol support for the rest of the suite
+                Object.getOwnPropertySymbols = getOwnPropertySymbols;
+
+                var a = [ 'a' ];
+                a.foobar = true;
+                var s = Symbol('foo');
+                a[s] = true; // should be ignored
+                var b = [ 'a' ];
+                b.foobar = undefined;
+
+                localExpect(function () {
+                    localExpect(a, 'to equal', b);
+                }, 'to throw',
+                    "expected [ 'a', foobar: true ] to equal [ 'a', foobar: undefined ]\n" +
+                    "\n" +
+                    "[\n" +
+                    "  'a',\n" +
+                    "  foobar: true // should be removed\n" +
+                    "]"
+                );
+            });
+        }
+    });
+
     describe('with a subtype that disables indentation', function () {
         var clonedExpect = expect.clone();
 
@@ -157,9 +285,10 @@ describe('array-like type', function () {
     });
 
     describe('with a custom subtype that comes with its own getKeys', function () {
-        it('should bar', function () {
+        it('should process the elements in both inspection and diff in "to equal"', function () {
             var a = [ 'a' ];
             var b = [ 'a' ];
+            b.foobar = true;
 
             var clonedExpect = expect.clone().addType({
                 name: 'foo',
@@ -167,21 +296,55 @@ describe('array-like type', function () {
                 identify: Array.isArray,
                 numericalPropertiesOnly: false,
                 getKeys: function (obj) {
-                    var keys = this.baseType.getKeys(obj);
+                    // use array-like getKeys() method in non-numerical mode
+                    var keys = this.baseType.getKeys.call(this, obj);
                     if (obj === a) {
                         keys.push('foobar');
                     }
                     return keys;
                 }
             });
+
             expect(function () {
                 clonedExpect(a, 'to equal', b);
             }, 'to throw',
-                "expected [ 'a', foobar: undefined ] to equal [ 'a' ]\n" +
+                "expected [ 'a', foobar: undefined ] to equal [ 'a', foobar: true ]\n" +
                 "\n" +
                 "[\n" +
                 "  'a'\n" +
-                "  // missing foobar: undefined\n" +
+                "  // missing foobar: true\n" +
+                "]"
+            );
+        });
+
+        it('should process the elements in both inspection and diff in "to satisfy"', function () {
+            var a = [ 'a' ];
+            var b = [ 'a' ];
+            b.foobar = true;
+
+            var clonedExpect = expect.clone().addType({
+                name: 'foo',
+                base: 'array-like',
+                identify: Array.isArray,
+                numericalPropertiesOnly: false,
+                getKeys: function (obj) {
+                    // use array-like getKeys in non-numerical mode
+                    var keys = this.baseType.getKeys.call(this, obj);
+                    if (obj === a) {
+                        keys.push('foobar');
+                    }
+                    return keys;
+                }
+            });
+
+            expect(function () {
+                clonedExpect(a, 'to satisfy', b);
+            }, 'to throw',
+                "expected [ 'a', foobar: undefined ] to satisfy [ 'a', foobar: true ]\n" +
+                "\n" +
+                "[\n" +
+                "  'a'\n" +
+                "  // missing foobar: true\n" +
                 "]"
             );
         });

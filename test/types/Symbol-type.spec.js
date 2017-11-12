@@ -13,7 +13,7 @@ if (typeof Symbol === 'function' && Symbol('foo').toString() === 'Symbol(foo)') 
         it('inspects correctly when used as a key in an object', function () {
             var obj = {};
             obj[symbolA] = 123;
-            expect(obj, 'to inspect as', "{ [ Symbol('a') ]: 123 }");
+            expect(obj, 'to inspect as', "{ [Symbol('a')]: 123 }");
         });
 
         describe('when compared for equality', function () {
@@ -41,16 +41,16 @@ if (typeof Symbol === 'function' && Symbol('foo').toString() === 'Symbol(foo)') 
                 expect(function () {
                     expect(a, 'to equal', b);
                 }, 'to throw',
-                    "expected { foo: 123, [ Symbol('a') ]: 'foo', [ Symbol('b') ]: 123 }\n" +
-                    "to equal { foo: 456, [ Symbol('a') ]: 'bar', [ Symbol('b') ]: 123 }\n" +
+                    "expected { foo: 123, [Symbol('a')]: 'foo', [Symbol('b')]: 123 }\n" +
+                    "to equal { foo: 456, [Symbol('a')]: 'bar', [Symbol('b')]: 123 }\n" +
                     "\n" +
                     "{\n" +
                     "  foo: 123, // should equal 456\n" +
-                    "  [ Symbol('a') ]: 'foo', // should equal 'bar'\n" +
-                    "                          //\n" +
-                    "                          // -foo\n" +
-                    "                          // +bar\n" +
-                    "  [ Symbol('b') ]: 123\n" +
+                    "  [Symbol('a')]: 'foo', // should equal 'bar'\n" +
+                    "                        //\n" +
+                    "                        // -foo\n" +
+                    "                        // +bar\n" +
+                    "  [Symbol('b')]: 123\n" +
                     "}"
                 );
             });
@@ -87,16 +87,16 @@ if (typeof Symbol === 'function' && Symbol('foo').toString() === 'Symbol(foo)') 
                 expect(function () {
                     expect(a, 'to satisfy', b);
                 }, 'to throw',
-                    "expected { foo: 123, [ Symbol('a') ]: 'foo', [ Symbol('b') ]: 123 }\n" +
-                    "to satisfy { foo: 456, [ Symbol('a') ]: 'bar', [ Symbol('b') ]: 123 }\n" +
+                    "expected { foo: 123, [Symbol('a')]: 'foo', [Symbol('b')]: 123 }\n" +
+                    "to satisfy { foo: 456, [Symbol('a')]: 'bar', [Symbol('b')]: 123 }\n" +
                     "\n" +
                     "{\n" +
                     "  foo: 123, // should equal 456\n" +
-                    "  [ Symbol('a') ]: 'foo', // should equal 'bar'\n" +
-                    "                          //\n" +
-                    "                          // -foo\n" +
-                    "                          // +bar\n" +
-                    "  [ Symbol('b') ]: 123\n" +
+                    "  [Symbol('a')]: 'foo', // should equal 'bar'\n" +
+                    "                        //\n" +
+                    "                        // -foo\n" +
+                    "                        // +bar\n" +
+                    "  [Symbol('b')]: 123\n" +
                     "}"
                 );
             });
