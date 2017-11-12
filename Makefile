@@ -128,7 +128,7 @@ changelog: git-dirty-check
 	@./node_modules/.bin/offline-github-changelog > CHANGELOG.md
 	@git add CHANGELOG.md
 	@if [ "`git status --porcelain`" != "" ]; then \
-		git ci -m "Updated the changelog" ; \
+		git commit -m "Updated the changelog" ; \
 	fi
 
 .PHONY: release-%
