@@ -202,4 +202,17 @@ describe('expect.shift', function () {
             );
         });
     });
+
+    describe('when a promise is passed to shift', function () {
+        it('should allow a subsequent .and()', function () {
+            var clonedExpect = expect.clone().addAssertion('promisified', function (expect, subject) {
+                return expect.shift(new Promise(subject));
+            });
+            return clonedExpect((resolve) => {
+                setTimeout(function () {
+                    resolve('usefully');
+                }, 100);
+            }, 'promisified').and('to be truthy');
+        });
+    });
 });
