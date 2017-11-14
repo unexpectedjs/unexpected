@@ -76,6 +76,51 @@ describe('to begin with assertion', function() {
         );
       });
     });
+
+    it('builds the diff correctly when the string is truncated with no common prefix', function() {
+      expect(
+        function() {
+          expect(
+            'foobarbaz-AtSomePointThisStringWillBeTruncated',
+            'to begin with',
+            'barbazquux'
+          );
+        },
+        'to throw exception',
+        "expected 'foobarbaz-AtSomePointThisStringWill'... to begin with 'barbazquux'"
+      );
+    });
+
+    it('builds the diff correctly when the string contains a space and is truncated', function() {
+      expect(
+        function() {
+          expect(
+            'foobarbaz-StringTruncates AtTheSpace',
+            'to begin with',
+            'barbazquux'
+          );
+        },
+        'to throw exception',
+        "expected 'foobarbaz-StringTruncates'... to begin with 'barbazquux'"
+      );
+    });
+
+    it('builds the diff correctly when the string is truncated after a partial match', function() {
+      expect(
+        function() {
+          expect(
+            'foobarbaz-ButAtSomePointThisStringWillBeTruncated',
+            'to begin with',
+            'foobarquux'
+          );
+        },
+        'to throw exception',
+        "expected 'foobarbaz-ButAtSomePointThisStringW'... to begin with 'foobarquux'\n" +
+          '\n' +
+          'foobarbaz-ButAtSomePointThisStringW...\n' +
+          '^^^^^^'
+      );
+    });
   });
 
   describe('with the "not" flag', function() {
