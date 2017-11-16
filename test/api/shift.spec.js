@@ -214,5 +214,21 @@ describe('expect.shift', function () {
                 }, 100);
             }, 'promisified').and('to be truthy');
         });
+
+        it('should allow a subsequent .and() within a nested context', function () {
+            var clonedExpect = expect.clone().addAssertion('promisified', function (expect, subject) {
+                return expect.shift(new Promise(subject));
+            }).addAssertion('<function> executed inside an assertion', function (expect, subject) {
+                return subject(expect);
+            });
+
+            return clonedExpect(expect => {
+                expect(resolve => {
+                    setTimeout(function () {
+                        resolve('usefully');
+                    }, 100);
+                }, 'promisified').and('to be truthy');
+            }, 'executed inside an assertion');
+        });
     });
 });
