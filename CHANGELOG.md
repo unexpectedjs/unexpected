@@ -1,3 +1,7 @@
+### v10.36.2 (2017-11-20)
+
+- [#428](https://github.com/alexjeffburke/unexpected/pull/428) Fix error on promise .and() ([Alex J Burke](mailto://alex@alexjeffburke.com))
+
 ### v10.36.1 (2017-11-12)
 
 - [#426](https://github.com/alexjeffburke/unexpected/pull/426) Fix array-like undefined non numerical keys and add Symbol support. ([Alex J Burke](mailto://alex@alexjeffburke.com))
