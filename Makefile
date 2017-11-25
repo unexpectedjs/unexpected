@@ -48,14 +48,17 @@ test-jasmine-browser: create-html-runners ${TARGETS}
 	@echo open http://localhost:5000/build/test/JasmineRunner.html
 	@./node_modules/.bin/serve .
 
-test-sources:
 ifeq ($(MODERN_NODE), true)
 MOCHA_OPTS = ./test/mocha.opts
 TEST_SOURCES = $(shell find test -name '*.spec.js')
 else
-	make build
 MOCHA_OPTS = ./build/test/mocha.opts
 TEST_SOURCES = $(shell find build/test -name '*.spec.js')
+endif
+
+test-sources:
+ifneq ($(MODERN_NODE), true)
+	make build
 endif
 
 .PHONY: test-jest
