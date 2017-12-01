@@ -53,6 +53,7 @@ Here's a partial list of plugins for Unexpected:
 * [unexpected-stream](http://unexpected.js.org/unexpected-stream/): Assertions for
   node.js streams.
 * [unexpected-webdriver](https://github.com/LiquidLabsGmbH/unexpected-webdriver): Assertions for Selenium WebDriver.
+* [unexpected-generator](https://github.com/gertsonderby/unexpected-generator): Assertions for ES2015 generators and iterators.
 
 ## Installation
 
