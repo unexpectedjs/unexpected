@@ -272,5 +272,35 @@ describe('#child', function () {
 
         expect(childExpect.createOutput('text').appendInspected('yaddayaddafoo').toString(), 'to equal', '>>yaddayaddafoo<<>>yaddayaddafoo<<');
     });
+
+    it('#inspect should use the exported types when inspecting failed assertions', () => {
+        childExpect.addStyle('fancyQuotes', function (text) {
+            this.text('>>').text(text).text('<<');
+        });
+
+        childExpect.addType({
+            name: 'yadda-no-qoutes',
+            identify: (obj) => /^yaddayadda/.test(obj),
+            inspect: (value, depth, output) => {
+                output.text(value);
+            }
+        });
+
+        childExpect.exportType({
+            name: 'yadda',
+            identify: (obj) => /^yaddayadda/.test(obj),
+            inspect: (value, depth, output) => {
+                output.fancyQuotes(value);
+            }
+        });
+
+        childExpect.exportAssertion('<yadda> to be short gibberish', (expect, gibberish) => (
+            expect(gibberish.length < 10, 'to be true')
+        ));
+
+        expect(() => {
+            parentExpect('yaddayaddafoo', 'to be short gibberish');
+        }, 'to throw', 'expected >>yaddayaddafoo<< to be short gibberish');
+    });
 });
 
