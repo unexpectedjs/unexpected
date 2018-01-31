@@ -1,3 +1,8 @@
+### v10.37.0 (2018-02-01)
+
+- [#434](https://github.com/unexpectedjs/unexpected/pull/434) Remove user defined addAssertion handlers from stack ([Sune Simonsen](mailto:sune@we-knowhow.dk))
+- [#435](https://github.com/unexpectedjs/unexpected/pull/435) add unexpected-eventemitter to plugin list ([Sune Simonsen](mailto:sune@we-knowhow.dk))
+
 ### v10.36.3 (2018-01-19)
 
 - [#433](https://github.com/unexpectedjs/unexpected/pull/433) Adding a failing test for expect.child not honoring type order ([Sune Simonsen](mailto:sune@we-knowhow.dk))
@@ -11,9 +16,6 @@
 ### v10.36.1 (2017-11-12)
 
 - [#426](https://github.com/unexpectedjs/unexpected/pull/426) Fix array-like undefined non numerical keys and add Symbol support. ([Alex J Burke](mailto:alex@alexjeffburke.com))
-
-### v10.37.0 (2017-10-30)
-
 - [#425](https://github.com/unexpectedjs/unexpected/pull/425) Upgrade to array-changes 3.0.0. ([Sune Simonsen](mailto:sune@we-knowhow.dk))
 
 ### v10.36.0 (2017-10-05)
