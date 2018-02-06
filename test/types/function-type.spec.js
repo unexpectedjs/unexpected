@@ -27,7 +27,8 @@ describe('function type', function() {
 
     it('should inspect an anonymous bound function correctly', function() {
       expect(
-        function() {},
+        // eslint-disable-next-line no-extra-bind
+        function() {}.bind({}),
         'to inspect as',
         'function bound () { /* native code */ }'
       );
@@ -35,7 +36,8 @@ describe('function type', function() {
 
     it('should inspect a named bound function correctly', function() {
       expect(
-        function foo() {},
+        // eslint-disable-next-line no-extra-bind
+        function foo() {}.bind({}),
         'to inspect as',
         'function bound foo() { /* native code */ }'
       );
@@ -49,12 +51,10 @@ describe('function type', function() {
   it('should inspect a one-line function correctly', function() {
     /* eslint-disable no-unused-vars */
     expect(
-      function() {
-        var a = 123;
-        a = 456;
-      },
+      // prettier-ignore
+      function() { var a = 123; a = 456; },
       'to inspect as',
-      'function () { var a = 123;a = 456; }'
+      'function () { var a = 123; a = 456; }'
     );
     /* eslint-enable no-unused-vars */
   });
@@ -62,12 +62,10 @@ describe('function type', function() {
   it('should inspect a short one-line function with leading and trailing newline correctly', function() {
     /* eslint-disable no-unused-vars */
     expect(
-      function() {
-        var a = 123;
-        a = 456;
-      },
+      // prettier-ignore
+      function() { var a = 123; a = 456; },
       'to inspect as',
-      'function () { var a = 123;a = 456; }'
+      'function () { var a = 123; a = 456; }'
     );
     /* eslint-enable no-unused-vars */
   });
@@ -75,13 +73,13 @@ describe('function type', function() {
   it('should inspect a long one-line function with leading and trailing newline correctly', function() {
     /* eslint-disable no-unused-vars */
     expect(
+      // prettier-ignore
       function() {
-        var a = 123 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2;
-        a = 456;
+        var a = 123 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2; a = 456;
       },
       'to inspect as',
       'function () {\n' +
-        '  var a = 123 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2;a = 456;\n' +
+        '  var a = 123 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2; a = 456;\n' +
         '}'
     );
     /* eslint-enable no-unused-vars */
@@ -100,12 +98,12 @@ describe('function type', function() {
     it('should inspect a short one-line function with leading and trailing newline correctly and a C++-style comment correctly', function() {
       /* eslint-disable no-unused-vars */
       expect(
+        // prettier-ignore
         function() {
-          var a = 123;
-          a = 456; // foo
+          var a = 123; a = 456; // foo
         },
         'to inspect as',
-        'function () {\n' + '  var a = 123;a = 456; // foo\n' + '}'
+        'function () {\n' + '  var a = 123; a = 456; // foo\n' + '}'
       );
       /* eslint-enable no-unused-vars */
     });

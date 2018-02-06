@@ -195,7 +195,7 @@ describe('to have values satisfying assertion', function() {
       'to throw',
       'expected object to have values satisfying\n' +
         'function (arr) {\n' +
-        "  expect(arr, 'to have items satisfying', function (item) {\n" +
+        "  expect(arr, 'to have items satisfying', function(item) {\n" +
         "    expect(item, 'to be a number');\n" +
         '  });\n' +
         '}\n' +

@@ -62,10 +62,9 @@ describe('to throw a/an assertion', function() {
     expect(
       function() {
         expect(
-          function() {
-            // eslint-disable-next-line no-throw-literal
-            throw null;
-          },
+          // prettier-ignore
+          // eslint-disable-next-line no-throw-literal
+          function() { throw null; },
           'to throw a',
           RangeError
         );
@@ -80,10 +79,9 @@ describe('to throw a/an assertion', function() {
     expect(
       function() {
         expect(
-          function() {
-            // eslint-disable-next-line no-throw-literal
-            throw '';
-          },
+          // prettier-ignore
+          // eslint-disable-next-line no-throw-literal
+          function() { throw ''; },
           'to throw a',
           RangeError
         );

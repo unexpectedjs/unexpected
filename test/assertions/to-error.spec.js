@@ -31,8 +31,8 @@ describe('to error assertion', function() {
           'to be rejected with',
           'expected\n' +
             'function () {\n' +
-            '  return expect.promise(function (resolve, reject) {\n' +
-            '    setTimeout(function () {\n' +
+            '  return expect.promise(function(resolve, reject) {\n' +
+            '    setTimeout(function() {\n' +
             "      reject(new Error('wat'));\n" +
             '    }, 1);\n' +
             '  });\n' +

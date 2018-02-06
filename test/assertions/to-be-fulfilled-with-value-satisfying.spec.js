@@ -176,7 +176,11 @@ describe('to be fulfilled with value satisfying assertion', function() {
           'to be rejected with',
           'expected\n' +
             'function () {\n' +
-            "  return Promise.resolve({ foo: 'foo', bar: 'bar', quux: 'quux' });\n" +
+            '  return Promise.resolve({\n' +
+            "    foo: 'foo',\n" +
+            "    bar: 'bar',\n" +
+            "    quux: 'quux'\n" +
+            '  });\n' +
             '}\n' +
             "to be fulfilled with value exhaustively satisfying { foo: 'foo', bar: 'bar' }\n" +
             "  expected Promise (fulfilled) => { foo: 'foo', bar: 'bar', quux: 'quux' }\n" +

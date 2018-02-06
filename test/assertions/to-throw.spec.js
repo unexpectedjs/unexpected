@@ -58,10 +58,12 @@ describe('to throw assertion', function() {
       'to throw',
       'expected\n' +
         'function testFunction() {\n' +
-        '  expect.fail(function (output) {\n' +
-        "    output.text('foo').block(function () {\n" +
-        "      this.text('bar').nl().text('baz');\n" +
-        "    }).text('quux');\n" +
+        '  expect.fail(function(output) {\n' +
+        '    output\n' +
+        "      .text('foo')\n" +
+        '      // ... lines removed ...\n' +
+        '      })\n' +
+        "      .text('quux');\n" +
         '  });\n' +
         '}\n' +
         'not to throw\n' +
@@ -202,10 +204,9 @@ describe('to throw assertion', function() {
   it('does not break if null is thrown', function() {
     expect(
       function() {
-        expect(function() {
-          // eslint-disable-next-line no-throw-literal
-          throw null;
-        }, 'not to throw');
+        // prettier-ignore
+        // eslint-disable-next-line no-throw-literal
+        expect(function() { throw null; }, 'not to throw');
       },
       'to throw',
       'expected function () { throw null; } not to throw\n' + '  threw: null'

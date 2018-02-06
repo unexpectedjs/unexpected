@@ -414,17 +414,17 @@ describe('inspect', function() {
       function() {
         var foo = 'bar';
         var quux = 'baz\
-            blah';
+          blah';
         foo = foo + quux;
         return foo;
       },
       'to inspect as',
       'function () {\n' +
-        "            var foo = 'bar';\n" +
-        "            var quux = 'baz\\\n" +
-        "            blah';\n" +
-        '            foo = foo + quux;\n' +
-        '            return foo;\n' +
+        "        var foo = 'bar';\n" +
+        "        var quux = 'baz\\\n" +
+        "          blah';\n" +
+        '        foo = foo + quux;\n' +
+        '        return foo;\n' +
         '}'
     );
     /*eslint-enable no-multi-str*/
@@ -432,12 +432,10 @@ describe('inspect', function() {
 
   it('should bail out of removing the indentation of one-liner functions', function() {
     expect(
-      function() {
-        var foo = 123;
-        return foo;
-      },
+      // prettier-ignore
+      function() { var foo = 123; return foo; },
       'to inspect as',
-      'function () { var foo = 123;return foo; }'
+      'function () { var foo = 123; return foo; }'
     );
   });
 

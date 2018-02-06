@@ -118,8 +118,11 @@ describe('to have an item satisfying assertion', function() {
       'to throw',
       'expected array to have an item satisfying\n' +
         'function (item) {\n' +
-        '  expect.fail(function (output) {\n' +
-        "    output.text('foo').nl().text('bar');\n" +
+        '  expect.fail(function(output) {\n' +
+        '    output\n' +
+        "      .text('foo')\n" +
+        '      .nl()\n' +
+        "      .text('bar');\n" +
         '  });\n' +
         '}'
     );

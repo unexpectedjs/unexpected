@@ -214,7 +214,7 @@ describe('to be rejected with error satisfying assertion', function() {
           'to error with',
           'expected\n' +
             'function () {\n' +
-            '  return expect.promise(function () {\n' +
+            '  return expect.promise(function() {\n' +
             "    var error = new Error('foobar');\n" +
             "    error.data = { foo: 'bar' };\n" +
             '    throw error;\n' +

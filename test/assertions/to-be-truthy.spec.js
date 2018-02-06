@@ -23,7 +23,7 @@ describe('to be ok/truthy assertion', function() {
         expect(2 < 1, 'to be truthy', '2 < 1');
       },
       'to throw exception',
-      "expected false to be truthy 2 < 1'"
+      "expected false to be truthy '2 < 1'"
     );
   });
 });

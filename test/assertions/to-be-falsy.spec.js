@@ -23,7 +23,7 @@ describe('to be falsy assertion', function() {
         expect(2 + 2 === 4, 'to be falsy', '2 + 2 === 4');
       },
       'to throw exception',
-      "expected true to be falsy '4 === 4'"
+      "expected true to be falsy '2 + 2 === 4'"
     );
   });
 });

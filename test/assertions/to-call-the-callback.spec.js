@@ -38,7 +38,7 @@ describe('to call the callback assertion', function() {
       'to error',
       'expected\n' +
         'function (cb) {\n' +
-        '  setTimeout(function () {\n' +
+        '  setTimeout(function() {\n' +
         '    cb();\n' +
         '    cb();\n' +
         '  }, 0);\n' +
@@ -169,7 +169,7 @@ describe('to call the callback assertion', function() {
             'to error',
             'expected\n' +
               'function (cb) {\n' +
-              '  setTimeout(function () {\n' +
+              '  setTimeout(function() {\n' +
               "    cb(new Error('bla'));\n" +
               '  }, 0);\n' +
               '}\n' +
@@ -211,7 +211,7 @@ describe('to call the callback assertion', function() {
             'to error',
             'expected\n' +
               'function (cb) {\n' +
-              '  setTimeout(function () {\n' +
+              '  setTimeout(function() {\n' +
               "    cb(new Error('bla'));\n" +
               '  }, 0);\n' +
               '}\n' +
@@ -240,7 +240,7 @@ describe('to call the callback assertion', function() {
             'to error',
             'expected\n' +
               'function (cb) {\n' +
-              '  setTimeout(function () {\n' +
+              '  setTimeout(function() {\n' +
               '    try {\n' +
               "      expect(false, 'to be truthy');\n" +
               '    } catch (err) {\n' +
@@ -271,7 +271,7 @@ describe('to call the callback assertion', function() {
           'to error',
           'expected\n' +
             'function (cb) {\n' +
-            '  setTimeout(function () {\n' +
+            '  setTimeout(function() {\n' +
             "    cb(new Error('foo'));\n" +
             '  }, 0);\n' +
             '}\n' +
@@ -345,7 +345,7 @@ describe('to call the callback assertion', function() {
         'to throw',
         'expected\n' +
           'function (cb) {\n' +
-          '  setTimeout(function () {\n' +
+          '  setTimeout(function() {\n' +
           "    cb(new Error('bla'));\n" +
           '  }, 0);\n' +
           '}\n' +
@@ -375,7 +375,7 @@ describe('to call the callback assertion', function() {
         'to error',
         'expected\n' +
           'function (cb) {\n' +
-          '  return setTimeout(function () {\n' +
+          '  return setTimeout(function() {\n' +
           "    cb(new Error('wat'));\n" +
           '  }, 0);\n' +
           '}\n' +
@@ -408,7 +408,7 @@ describe('to call the callback assertion', function() {
         'to error',
         'expected\n' +
           'function (cb) {\n' +
-          '  setTimeout(function () {\n' +
+          '  setTimeout(function() {\n' +
           '    try {\n' +
           "      expect(false, 'to be truthy');\n" +
           '    } catch (err) {\n' +
