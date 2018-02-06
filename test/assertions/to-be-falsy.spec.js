@@ -20,7 +20,7 @@ describe('to be falsy assertion', function() {
   it('throws with message when the assertion fails', function() {
     expect(
       function() {
-        expect(4 === 4, 'to be falsy', '4 === 4');
+        expect(2 + 2 === 4, 'to be falsy', '2 + 2 === 4');
       },
       'to throw exception',
       "expected true to be falsy '4 === 4'"

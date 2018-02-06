@@ -30,6 +30,7 @@ describe('Promise type', function() {
 
   it('should inspect a rejected promise without a value', function() {
     var promise = new Promise(function(resolve, reject) {
+      // eslint-disable-next-line prefer-promise-reject-errors
       reject();
     });
 

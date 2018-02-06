@@ -4,6 +4,7 @@ describe('to be rejected assertion', function() {
     return expect(
       new Promise(function(resolve, reject) {
         setTimeout(function() {
+          // eslint-disable-next-line prefer-promise-reject-errors
           reject();
         }, 0);
       }),

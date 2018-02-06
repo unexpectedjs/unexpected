@@ -416,6 +416,7 @@ describe('inspect', function() {
         var quux = 'baz\
             blah';
         foo = foo + quux;
+        return foo;
       },
       'to inspect as',
       'function () {\n' +
@@ -423,6 +424,7 @@ describe('inspect', function() {
         "            var quux = 'baz\\\n" +
         "            blah';\n" +
         '            foo = foo + quux;\n' +
+        '            return foo;\n' +
         '}'
     );
     /*eslint-enable no-multi-str*/

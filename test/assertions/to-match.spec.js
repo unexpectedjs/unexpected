@@ -8,8 +8,8 @@ describe('to match assertion', function() {
   it('does not keep state between invocations', function() {
     // This tests that the assertion does not depend on the lastIndex
     // property of the regexp:
-    var regExp = /a/g,
-      str = 'aa';
+    const regExp = /a/g;
+    const str = 'aa';
     expect(str, 'to match', regExp);
     expect(str, 'to match', regExp);
     expect(str, 'to match', regExp);

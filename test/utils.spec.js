@@ -65,12 +65,14 @@ describe('utils', function() {
         var orig;
         beforeEach(function() {
           orig = Function.prototype.toString;
+          // eslint-disable-next-line no-extend-native
           Function.prototype.toString = function() {
             return 'function whatever() {}';
           };
         });
 
         afterEach(function() {
+          // eslint-disable-next-line no-extend-native
           Function.prototype.toString = orig;
         });
 

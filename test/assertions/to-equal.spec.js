@@ -101,8 +101,8 @@ describe('to equal assertion', function() {
   });
 
   it('fails gracefully when comparing circular structures', function() {
-    var foo = {},
-      bar = {};
+    const foo = {};
+    const bar = {};
     foo.foo = foo;
     bar.foo = bar;
     expect(
@@ -403,8 +403,8 @@ describe('to equal assertion', function() {
     it('suppresses Buffer diff for large buffers', function() {
       expect(
         function() {
-          var a = new Buffer(1024),
-            b = new Buffer(1024);
+          const a = new Buffer(1024);
+          const b = new Buffer(1024);
           a[0] = 1;
           b[0] = 2;
           expect(a, 'to equal', b);
@@ -758,22 +758,22 @@ describe('to equal assertion', function() {
     });
 
     it('considers Error instances with the same message but different stacks to be equal', function() {
-      var err1 = new Error('foo'),
-        err2 = new Error('foo');
+      const err1 = new Error('foo');
+      const err2 = new Error('foo');
       expect(err1, 'to equal', err2);
     });
 
     it('considers Error instances with the same message and extra properties to be equal', function() {
-      var err1 = new Error('foo'),
-        err2 = new Error('foo');
+      const err1 = new Error('foo');
+      const err2 = new Error('foo');
       err1.extra = 'foo';
       err2.extra = 'foo';
       expect(err1, 'to equal', err2);
     });
 
     it('considers Error instances with the same message but different extra properties to be different', function() {
-      var err1 = new Error('foo'),
-        err2 = new Error('foo');
+      const err1 = new Error('foo');
+      const err2 = new Error('foo');
       err1.extra = 'foo';
       err2.extra = 'bar';
       expect(

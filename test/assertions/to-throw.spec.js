@@ -203,6 +203,7 @@ describe('to throw assertion', function() {
     expect(
       function() {
         expect(function() {
+          // eslint-disable-next-line no-throw-literal
           throw null;
         }, 'not to throw');
       },

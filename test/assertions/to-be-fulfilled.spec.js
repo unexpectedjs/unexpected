@@ -16,6 +16,7 @@ describe('to be fulfilled assertion', function() {
       expect(
         new Promise(function(resolve, reject) {
           setTimeout(function() {
+            // eslint-disable-next-line prefer-promise-reject-errors
             reject('unhappy times');
           }, 0);
         }),

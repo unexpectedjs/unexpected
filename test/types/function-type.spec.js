@@ -172,6 +172,7 @@ describe('function type', function() {
   // We can't complete this test if the runtime doesn't support arrow functions:
   var singleParamArrowFunction;
   try {
+    // eslint-disable-next-line no-new-func
     singleParamArrowFunction = new Function('return a => a + 1;')();
   } catch (e) {}
 
@@ -184,6 +185,7 @@ describe('function type', function() {
   // We can't complete this test if the runtime doesn't support arrow functions:
   var implicitReturnMultilineArrowFunction;
   try {
+    // eslint-disable-next-line no-new-func
     implicitReturnMultilineArrowFunction = new Function(
       'return a => \n    a + 1;'
     )();
@@ -202,6 +204,7 @@ describe('function type', function() {
   // We can't complete this test if the runtime doesn't support arrow functions:
   var evilImplicitReturnMultilineArrowFunction;
   try {
+    // eslint-disable-next-line no-new-func
     evilImplicitReturnMultilineArrowFunction = new Function(
       'return a => \n    a || {};'
     )();
@@ -220,6 +223,7 @@ describe('function type', function() {
   // We can't complete this test if the runtime doesn't support arrow functions:
   var multiParamArrowFunction;
   try {
+    // eslint-disable-next-line no-new-func
     multiParamArrowFunction = new Function('return (a, b) => a + b;')();
   } catch (e) {}
 
@@ -232,6 +236,7 @@ describe('function type', function() {
   // We can't complete this test if the runtime doesn't support the async keyword:
   var asyncFunction;
   try {
+    // eslint-disable-next-line no-new-func
     asyncFunction = new Function(
       'return async function foo(a) {return a + 1;}'
     )();

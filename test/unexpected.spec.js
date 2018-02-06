@@ -585,8 +585,8 @@ describe('unexpected', function() {
       it('suppresses array diff for large arrays', function() {
         expect(
           function() {
-            var a = new Array(513),
-              b = new Array(513);
+            const a = new Array(513);
+            const b = new Array(513);
             a[0] = 1;
             b[0] = 2;
             expect(a, 'to equal', b);

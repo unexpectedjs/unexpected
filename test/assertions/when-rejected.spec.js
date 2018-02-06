@@ -4,6 +4,7 @@ describe('when rejected adverbial assertion', function() {
     return expect(
       new Promise(function(resolve, reject) {
         setTimeout(function() {
+          // eslint-disable-next-line prefer-promise-reject-errors
           reject({ foo: 'bar' });
         }, 0);
       }),
@@ -18,6 +19,7 @@ describe('when rejected adverbial assertion', function() {
       expect(
         new Promise(function(resolve, reject) {
           setTimeout(function() {
+            // eslint-disable-next-line prefer-promise-reject-errors
             reject({ foo: 'bar' });
           }, 0);
         }),

@@ -63,6 +63,7 @@ describe('to throw a/an assertion', function() {
       function() {
         expect(
           function() {
+            // eslint-disable-next-line no-throw-literal
             throw null;
           },
           'to throw a',
@@ -80,15 +81,16 @@ describe('to throw a/an assertion', function() {
       function() {
         expect(
           function() {
-            throw null;
+            // eslint-disable-next-line no-throw-literal
+            throw '';
           },
           'to throw a',
           RangeError
         );
       },
       'to throw',
-      'expected function () { throw null; } to throw a RangeError\n' +
-        '  expected null to be a RangeError'
+      "expected function () { throw ''; } to throw a RangeError\n" +
+        "  expected '' to be a RangeError"
     );
   });
 });

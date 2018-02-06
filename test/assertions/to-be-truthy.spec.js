@@ -20,10 +20,10 @@ describe('to be ok/truthy assertion', function() {
   it('throws with message when the assertion fails', function() {
     expect(
       function() {
-        expect(4 < 4, 'to be truthy', '4 < 4');
+        expect(2 < 1, 'to be truthy', '2 < 1');
       },
       'to throw exception',
-      "expected false to be truthy '4 < 4'"
+      "expected false to be truthy 2 < 1'"
     );
   });
 });
