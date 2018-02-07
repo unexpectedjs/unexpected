@@ -408,34 +408,36 @@ describe('inspect', function() {
     });
   }
 
+  /*eslint-disable no-multi-str*/
+  function multilineStringLiteral() {
+    var foo = 'bar';
+    var quux = 'baz\
+      blah';
+    foo = foo + quux;
+    return foo;
+  }
+  /*eslint-enable no-multi-str*/
+
   it('should bail out of removing the indentation of functions that use multiline string literals', function() {
-    /*eslint-disable no-multi-str*/
     expect(
-      function() {
-        var foo = 'bar';
-        var quux = 'baz\
-          blah';
-        foo = foo + quux;
-        return foo;
-      },
+      multilineStringLiteral,
       'to inspect as',
-      'function () {\n' +
-        "        var foo = 'bar';\n" +
-        "        var quux = 'baz\\\n" +
-        "          blah';\n" +
-        '        foo = foo + quux;\n' +
-        '        return foo;\n' +
+      'function multilineStringLiteral() {\n' +
+        "    var foo = 'bar';\n" +
+        "    var quux = 'baz\\\n" +
+        "      blah';\n" +
+        '    foo = foo + quux;\n' +
+        '    return foo;\n' +
         '}'
     );
-    /*eslint-enable no-multi-str*/
   });
 
   it('should bail out of removing the indentation of one-liner functions', function() {
     expect(
       // prettier-ignore
-      function() { var foo = 123; return foo; },
+      function() { var foo = 123;return foo; },
       'to inspect as',
-      'function () { var foo = 123; return foo; }'
+      'function () { var foo = 123;return foo; }'
     );
   });
 

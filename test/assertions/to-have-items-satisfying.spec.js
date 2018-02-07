@@ -219,8 +219,9 @@ describe('to have items satisfying assertion', function() {
         expect(
           [[0, 1, 2], [4, '5', 6], [7, 8, '9']],
           'to have items satisfying',
+          // prettier-ignore
           function(arr) {
-            expect(arr, 'to have items satisfying', function(item) {
+            expect(arr, 'to have items satisfying', function (item) {
               expect(item, 'to be a number');
             });
           }
@@ -229,7 +230,7 @@ describe('to have items satisfying assertion', function() {
       'to throw',
       'expected array to have items satisfying\n' +
         'function (arr) {\n' +
-        "  expect(arr, 'to have items satisfying', function(item) {\n" +
+        "  expect(arr, 'to have items satisfying', function (item) {\n" +
         "    expect(item, 'to be a number');\n" +
         '  });\n' +
         '}\n' +

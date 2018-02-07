@@ -105,12 +105,10 @@ describe('to have an item satisfying assertion', function() {
             ]
           ],
           'to have an item satisfying',
-          function(item) {
-            expect.fail(function(output) {
-              output
-                .text('foo')
-                .nl()
-                .text('bar');
+          // prettier-ignore
+          function (item) {
+            expect.fail(function (output) {
+              output.text('foo').nl().text('bar');
             });
           }
         );
@@ -118,11 +116,8 @@ describe('to have an item satisfying assertion', function() {
       'to throw',
       'expected array to have an item satisfying\n' +
         'function (item) {\n' +
-        '  expect.fail(function(output) {\n' +
-        '    output\n' +
-        "      .text('foo')\n" +
-        '      .nl()\n' +
-        "      .text('bar');\n" +
+        '  expect.fail(function (output) {\n' +
+        "    output.text('foo').nl().text('bar');\n" +
         '  });\n' +
         '}'
     );

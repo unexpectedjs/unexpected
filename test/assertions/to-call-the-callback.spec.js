@@ -199,8 +199,9 @@ describe('to call the callback assertion', function() {
           return expect(
             function() {
               return expect(
-                function(cb) {
-                  setTimeout(function() {
+                // prettier-ignore
+                function (cb) {
+                  setTimeout(function () {
                     cb(new Error('bla'));
                   }, 0);
                 },
@@ -211,7 +212,7 @@ describe('to call the callback assertion', function() {
             'to error',
             'expected\n' +
               'function (cb) {\n' +
-              '  setTimeout(function() {\n' +
+              '  setTimeout(function () {\n' +
               "    cb(new Error('bla'));\n" +
               '  }, 0);\n' +
               '}\n' +
@@ -224,8 +225,9 @@ describe('to call the callback assertion', function() {
           return expect(
             function() {
               return expect(
+                // prettier-ignore
                 function(cb) {
-                  setTimeout(function() {
+                  setTimeout(function () {
                     try {
                       expect(false, 'to be truthy');
                     } catch (err) {
@@ -240,7 +242,7 @@ describe('to call the callback assertion', function() {
             'to error',
             'expected\n' +
               'function (cb) {\n' +
-              '  setTimeout(function() {\n' +
+              '  setTimeout(function () {\n' +
               '    try {\n' +
               "      expect(false, 'to be truthy');\n" +
               '    } catch (err) {\n' +
@@ -395,8 +397,9 @@ describe('to call the callback assertion', function() {
     it('should support UnexpectedError instances', function() {
       return expect(
         function() {
+          // prettier-ignore
           return expect(function(cb) {
-            setTimeout(function() {
+            setTimeout(function () {
               try {
                 expect(false, 'to be truthy');
               } catch (err) {
@@ -408,7 +411,7 @@ describe('to call the callback assertion', function() {
         'to error',
         'expected\n' +
           'function (cb) {\n' +
-          '  setTimeout(function() {\n' +
+          '  setTimeout(function () {\n' +
           '    try {\n' +
           "      expect(false, 'to be truthy');\n" +
           '    } catch (err) {\n' +

@@ -52,9 +52,9 @@ describe('function type', function() {
     /* eslint-disable no-unused-vars */
     expect(
       // prettier-ignore
-      function() { var a = 123; a = 456; },
+      function() { var a = 123;a = 456; },
       'to inspect as',
-      'function () { var a = 123; a = 456; }'
+      'function () { var a = 123;a = 456; }'
     );
     /* eslint-enable no-unused-vars */
   });
@@ -63,9 +63,9 @@ describe('function type', function() {
     /* eslint-disable no-unused-vars */
     expect(
       // prettier-ignore
-      function() { var a = 123; a = 456; },
+      function() { var a = 123;a = 456; },
       'to inspect as',
-      'function () { var a = 123; a = 456; }'
+      'function () { var a = 123;a = 456; }'
     );
     /* eslint-enable no-unused-vars */
   });
@@ -75,11 +75,11 @@ describe('function type', function() {
     expect(
       // prettier-ignore
       function() {
-        var a = 123 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2; a = 456;
+        var a = 123 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2;a = 456;
       },
       'to inspect as',
       'function () {\n' +
-        '  var a = 123 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2; a = 456;\n' +
+        '  var a = 123 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2;a = 456;\n' +
         '}'
     );
     /* eslint-enable no-unused-vars */
@@ -100,10 +100,10 @@ describe('function type', function() {
       expect(
         // prettier-ignore
         function() {
-          var a = 123; a = 456; // foo
+          var a = 123;a = 456; // foo
         },
         'to inspect as',
-        'function () {\n' + '  var a = 123; a = 456; // foo\n' + '}'
+        'function () {\n' + '  var a = 123;a = 456; // foo\n' + '}'
       );
       /* eslint-enable no-unused-vars */
     });

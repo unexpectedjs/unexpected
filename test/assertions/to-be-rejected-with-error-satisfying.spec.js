@@ -198,10 +198,11 @@ describe('to be rejected with error satisfying assertion', function() {
 
       it('errors with the correct error', function() {
         return expect(
-          function() {
+          // prettier-ignore
+          function () {
             return expect(
               function() {
-                return expect.promise(function() {
+                return expect.promise(function () {
                   var error = new Error('foobar');
                   error.data = { foo: 'bar' };
                   throw error;
@@ -214,7 +215,7 @@ describe('to be rejected with error satisfying assertion', function() {
           'to error with',
           'expected\n' +
             'function () {\n' +
-            '  return expect.promise(function() {\n' +
+            '  return expect.promise(function () {\n' +
             "    var error = new Error('foobar');\n" +
             "    error.data = { foo: 'bar' };\n" +
             '    throw error;\n' +

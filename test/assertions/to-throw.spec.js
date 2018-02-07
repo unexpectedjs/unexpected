@@ -41,29 +41,23 @@ describe('to throw assertion', function() {
 
   it('fails with the correct message when an Unexpected error is thrown', function() {
     expect(
+      // prettier-ignore
       function() {
         expect(function testFunction() {
-          expect.fail(function(output) {
-            output
-              .text('foo')
-              .block(function() {
-                this.text('bar')
-                  .nl()
-                  .text('baz');
-              })
-              .text('quux');
+          expect.fail(function (output) {
+            output.text('foo').block(function () {
+              this.text('bar').nl().text('baz');
+            }).text('quux');
           });
         }, 'not to throw');
       },
       'to throw',
       'expected\n' +
         'function testFunction() {\n' +
-        '  expect.fail(function(output) {\n' +
-        '    output\n' +
-        "      .text('foo')\n" +
-        '      // ... lines removed ...\n' +
-        '      })\n' +
-        "      .text('quux');\n" +
+        '  expect.fail(function (output) {\n' +
+        "    output.text('foo').block(function () {\n" +
+        "      this.text('bar').nl().text('baz');\n" +
+        "    }).text('quux');\n" +
         '  });\n' +
         '}\n' +
         'not to throw\n' +
