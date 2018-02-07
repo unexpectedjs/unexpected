@@ -16,7 +16,7 @@ lint:
 build/lib: lib/*
 	babel --copy-files --out-dir build/lib --quiet lib
 
-build/test: test/*
+build/test: $(shell find test -type f)
 	BABEL_ENV=test babel --copy-files --out-dir build/test --quiet test
 	sed -i -e 's#--require ./test#--require ./build/test#g' ./build/test/mocha.opts
 
@@ -38,7 +38,7 @@ create-html-runners: build/test test/tests.tpl.html test/JasmineRunner.tpl.html
 
 .PHONY: create-html-runners
 
-test-phantomjs: create-html-runners ${TARGETS}
+test-phantomjs: build/test create-html-runners ${TARGETS}
 	phantomjs ./node_modules/mocha-phantomjs-core/mocha-phantomjs-core.js build/test/tests.html spec "`node -pe 'JSON.stringify({useColors:true,grep:process.env.grep})'`"
 
 test-jasmine:
