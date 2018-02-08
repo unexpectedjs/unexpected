@@ -81,14 +81,14 @@ if (typeof it === 'function' && shouldApplyPatch) {
 }
 
 if (!it.skip && xit) {
-  it.skip = function() {
-    xit.apply(it, arguments);
+  it.skip = function(...args) {
+    xit.apply(it, args);
   };
 }
 
 if (!describe.skip && xdescribe) {
-  describe.skip = function() {
-    xdescribe.apply(describe, arguments, 1);
+  describe.skip = function(...args) {
+    xdescribe.apply(describe, args, 1);
   };
 }
 
