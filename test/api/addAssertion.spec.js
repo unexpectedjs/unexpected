@@ -327,10 +327,10 @@ describe('addAssertion', function() {
         .addType({
           name: 'box',
           base: 'object',
-          identify: function(obj) {
+          identify(obj) {
             return obj instanceof Box;
           },
-          inspect: function(box, depth, output, inspect) {
+          inspect(box, depth, output, inspect) {
             output
               .text('[Box ')
               .append(inspect(box.value))
@@ -369,10 +369,10 @@ describe('addAssertion', function() {
       var clonedExpect = expect.clone().addType({
         name: 'box',
         base: 'object',
-        identify: function(obj) {
+        identify(obj) {
           return obj instanceof Box;
         },
-        inspect: function(box, depth, output, inspect) {
+        inspect(box, depth, output, inspect) {
           output
             .text('[Box ')
             .append(inspect(box.value, depth))

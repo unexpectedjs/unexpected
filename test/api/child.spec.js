@@ -28,7 +28,7 @@ describe('#child', function() {
   it('should not leak a "private" type into the parent', function() {
     childExpect.addType({
       name: 'abc',
-      identify: function(obj) {
+      identify(obj) {
         return obj === 'abc';
       }
     });
@@ -98,7 +98,7 @@ describe('#child', function() {
   it('should have access to types defined in the parent after the child was created', function() {
     parentExpect.addType({
       name: 'yadda',
-      identify: function(obj) {
+      identify(obj) {
         return /^yadda/.test(obj);
       }
     });
@@ -111,7 +111,7 @@ describe('#child', function() {
   it('should have access to types defined in the parent after the child was created, also in the wrapped expect', function() {
     parentExpect.addType({
       name: 'yadda',
-      identify: function(obj) {
+      identify(obj) {
         return /^yadda/.test(obj);
       }
     });
@@ -146,24 +146,24 @@ describe('#child', function() {
     parentExpect.use({
       name: 'foo',
       version: '1.2.3',
-      installInto: function() {}
+      installInto() {}
     });
     childExpect.use({
       name: 'foo',
       version: '4.5.6',
-      installInto: function() {}
+      installInto() {}
     });
   });
 
   it('should allow a plugin dependency to be satisfied by a plugin installed in the parent', function() {
     parentExpect.use({
       name: 'foo',
-      installInto: function() {}
+      installInto() {}
     });
     childExpect.use({
       name: 'bar',
       dependencies: ['foo'],
-      installInto: function() {}
+      installInto() {}
     });
   });
 
@@ -171,14 +171,14 @@ describe('#child', function() {
     beforeEach(function() {
       parentExpect.addType({
         name: 'foo',
-        identify: function(obj) {
+        identify(obj) {
           return /^foo/.test(obj);
         },
         parent: true // marker so the type can be detected in the tests
       });
       childExpect.addType({
         name: 'foo',
-        identify: function(obj) {
+        identify(obj) {
           return obj === 'foo';
         },
         child: true // marker so the type can be detected in the tests
@@ -307,20 +307,20 @@ describe('#child', function() {
   it('#inspect should be able to delegate to another private type', function() {
     childExpect.addType({
       name: 'yadda',
-      identify: function(obj) {
+      identify(obj) {
         return /^yadda/.test(obj);
       },
-      inspect: function(value, depth, output) {
+      inspect(value, depth, output) {
         output.fancyQuotes(value);
       }
     });
     childExpect.addType({
       name: 'yaddayadda',
       base: 'yadda',
-      identify: function(obj) {
+      identify(obj) {
         return /^yaddayadda/.test(obj);
       },
-      inspect: function(value, depth, output, inspect) {
+      inspect(value, depth, output, inspect) {
         this.baseType.inspect(value, depth, output);
         output.fancyQuotes(value);
       }

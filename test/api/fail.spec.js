@@ -137,7 +137,7 @@ describe('fail assertion', function() {
       var clonedExpect = expect.clone();
       clonedExpect.addAssertion('<any> to foo', function(expect, subject) {
         expect.fail({
-          diff: function(output, diff, inspect, equal) {
+          diff(output, diff, inspect, equal) {
             return output.text('custom');
           }
         });
@@ -155,7 +155,7 @@ describe('fail assertion', function() {
       var clonedExpect = expect.clone();
       clonedExpect.addAssertion('<any> to foo', function(expect, subject) {
         expect.fail({
-          diff: function(output, diff, inspect, equal) {
+          diff(output, diff, inspect, equal) {
             return {
               inline: false,
               diff: output.text('custom')

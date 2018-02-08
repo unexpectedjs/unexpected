@@ -19,7 +19,7 @@ describe('exportType', function() {
   it('makes the type available to the parent expect', function() {
     childExpect.exportType({
       name: 'fooString',
-      identify: function(obj) {
+      identify(obj) {
         return typeof obj === 'string' && /^foo/.test(obj);
       }
     });
@@ -32,7 +32,7 @@ describe('exportType', function() {
   it('does not make the type available to a parent parent expect', function() {
     childExpect.child().exportType({
       name: 'abc',
-      identify: function(obj) {
+      identify(obj) {
         return obj === 'abc';
       }
     });
@@ -48,10 +48,10 @@ describe('exportType', function() {
 
     childExpect.exportType({
       name: 'yadda',
-      identify: function(obj) {
+      identify(obj) {
         return /^yadda/.test(obj);
       },
-      inspect: function(value, depth, output, inspect) {
+      inspect(value, depth, output, inspect) {
         return output.fancyQuotes(value);
       }
     });
@@ -74,13 +74,13 @@ describe('exportType', function() {
 
     childExpect.exportType({
       name: 'yadda',
-      identify: function(obj) {
+      identify(obj) {
         return /^yadda/.test(obj);
       },
-      inspect: function(value, depth, output, inspect) {
+      inspect(value, depth, output, inspect) {
         return output.fancyQuotes(value);
       },
-      diff: function(actual, expected, output) {
+      diff(actual, expected, output) {
         output
           .text('got ')
           .fancyQuotes(actual)
@@ -111,10 +111,10 @@ describe('exportType', function() {
 
     childExpect.exportType({
       name: 'yadda',
-      identify: function(obj) {
+      identify(obj) {
         return /^yadda/.test(obj);
       },
-      inspect: function(value, depth, output, inspect) {
+      inspect(value, depth, output, inspect) {
         output.fancyQuotes(value);
         if (value.length > 5) {
           output.append(value.substr(0, value.length - 1));
@@ -136,7 +136,7 @@ describe('exportType', function() {
   it('should not break when inspecting the exported type in a diff', function() {
     childExpect.exportType({
       name: 'abc',
-      identify: function(obj) {
+      identify(obj) {
         return obj === 'abc';
       }
     });

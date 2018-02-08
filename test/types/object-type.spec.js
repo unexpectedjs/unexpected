@@ -4,10 +4,10 @@ describe('object type', function() {
     it('should show identical multiline values correctly in diffs', function() {
       var clonedExpect = expect.clone().addType({
         name: 'numberNine',
-        identify: function(obj) {
+        identify(obj) {
           return obj === 9;
         },
-        inspect: function(value, depth, output) {
+        inspect(value, depth, output) {
           output.block(function() {
             this.text('NUMBER')
               .nl()
@@ -48,7 +48,7 @@ describe('object type', function() {
     clonedExpect.addType({
       base: 'object',
       name: 'bogusobject',
-      identify: function(obj) {
+      identify(obj) {
         return obj && typeof obj === 'object' && !Array.isArray(obj);
       },
       indent: false
@@ -114,13 +114,13 @@ describe('object type', function() {
     clonedExpect.addType({
       base: 'object',
       name: 'bogusobject',
-      identify: function(obj) {
+      identify(obj) {
         return obj && typeof obj === 'object' && !Array.isArray(obj);
       },
-      prefix: function(output) {
+      prefix(output) {
         return output;
       },
-      suffix: function(output) {
+      suffix(output) {
         return output;
       }
     });
@@ -179,7 +179,7 @@ describe('object type', function() {
     clonedExpect.addType({
       base: 'object',
       name: 'bogusobject',
-      identify: function(obj) {
+      identify(obj) {
         return obj && typeof obj === 'object' && !Array.isArray(obj);
       },
       forceMultipleLines: true

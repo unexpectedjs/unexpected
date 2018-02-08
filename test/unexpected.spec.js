@@ -839,13 +839,13 @@ describe('unexpected', function() {
 
         var clonedExpect = expect.clone().addType({
           name: 'Person',
-          identify: function(value) {
+          identify(value) {
             return value instanceof Person;
           },
-          equal: function(a, b) {
+          equal(a, b) {
             return a.firstName === b.firstName && a.lastName === b.lastName;
           },
-          inspect: function(person, depth, output) {
+          inspect(person, depth, output) {
             return output
               .text("new Person('")
               .text(person.firstName)
@@ -853,7 +853,7 @@ describe('unexpected', function() {
               .text(person.lastName)
               .text("')");
           },
-          diff: function() {
+          diff() {
             return null;
           }
         });

@@ -21,7 +21,7 @@ describe('addType', function() {
         clonedExpect.addType({
           name: 'foo',
           base: 'barquux',
-          identify: function() {
+          identify() {
             return false;
           }
         });
@@ -119,19 +119,19 @@ describe('addType', function() {
       beforeEach(function() {
         clonedExpect.addType({
           name: 'box',
-          identify: function(obj) {
+          identify(obj) {
             return obj && typeof obj === 'object' && obj.isBox;
           },
-          equal: function(a, b, equal) {
+          equal(a, b, equal) {
             return a === b || equal(a.value, b.value);
           },
-          inspect: function(obj, depth, output, inspect) {
+          inspect(obj, depth, output, inspect) {
             return output
               .text('box(')
               .append(inspect(obj.value))
               .text(')');
           },
-          diff: function(actual, expected, output, diff) {
+          diff(actual, expected, output, diff) {
             output = output
               .text('box(')
               .append(diff({ value: actual.value }, { value: expected.value }))
@@ -169,16 +169,16 @@ describe('addType', function() {
         clonedExpect.addType({
           name: 'box',
           base: 'wrapperObject',
-          identify: function(obj) {
+          identify(obj) {
             return obj && typeof obj === 'object' && obj.isBox;
           },
-          unwrap: function(box) {
+          unwrap(box) {
             return box.value;
           },
-          prefix: function(output) {
+          prefix(output) {
             return output.text('box(');
           },
-          suffix: function(output) {
+          suffix(output) {
             return output.text(')');
           }
         });
@@ -224,19 +224,19 @@ describe('addType', function() {
     it('allows adding a type whose diff method returns an old-style { inline: <boolean>, diff: <magicpen> } object', function() {
       clonedExpect.addType({
         name: 'box',
-        identify: function(obj) {
+        identify(obj) {
           return obj && typeof obj === 'object' && obj.isBox;
         },
-        equal: function(a, b, equal) {
+        equal(a, b, equal) {
           return a === b || equal(a.value, b.value);
         },
-        inspect: function(obj, depth, output, inspect) {
+        inspect(obj, depth, output, inspect) {
           return output
             .text('box(')
             .append(inspect(obj.value))
             .text(')');
         },
-        diff: function(actual, expected, output, diff) {
+        diff(actual, expected, output, diff) {
           return {
             inline: true,
             diff: output
@@ -300,10 +300,10 @@ describe('addType', function() {
       it('provides an inspect function as the 4th parameter', function() {
         clonedExpect.addType({
           name: 'foo',
-          identify: function() {
+          identify() {
             return false;
           },
-          inspect: function(value, depth, output, inspect) {
+          inspect(value, depth, output, inspect) {
             return output.append(inspect('foo'));
           }
         });
@@ -311,10 +311,10 @@ describe('addType', function() {
         clonedExpect.addType({
           name: 'bar',
           base: 'foo',
-          identify: function() {
+          identify() {
             return false;
           },
-          inspect: function(value, depth, output, inspect) {
+          inspect(value, depth, output, inspect) {
             return inspect(value);
           }
         });

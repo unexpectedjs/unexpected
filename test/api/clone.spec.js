@@ -124,21 +124,21 @@ describe('clone', function() {
           .addType({
             name: 'myType',
             base: 'string',
-            identify: function(obj) {
+            identify(obj) {
               return /^a/.test(obj);
             }
           })
           .addType({
             name: 'myMoreSpecificType',
             base: 'myType',
-            identify: function(obj) {
+            identify(obj) {
               return /^aa/.test(obj);
             }
           })
           .addType({
             name: 'myMostSpecificType',
             base: 'myMoreSpecificType',
-            identify: function(obj) {
+            identify(obj) {
               return /^aaa/.test(obj);
             }
           })

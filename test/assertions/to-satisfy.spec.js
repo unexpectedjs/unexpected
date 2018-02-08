@@ -405,10 +405,10 @@ describe('to satisfy assertion', function() {
       var clonedExpect = expect.clone().addType({
         name: 'MyThing',
         base: 'object',
-        identify: function(obj) {
+        identify(obj) {
           return obj instanceof MyThing;
         },
-        getKeys: function() {
+        getKeys() {
           return ['a', 'b'];
         }
       });
@@ -637,7 +637,7 @@ describe('to satisfy assertion', function() {
     it('should not call functions in the LHS object', function() {
       expect(
         {
-          foo: function() {
+          foo() {
             throw new Error('Explosion');
           }
         },
@@ -913,7 +913,7 @@ describe('to satisfy assertion', function() {
     it('should only consider functions that are identified as functions by the type system', function() {
       var clonedExpect = expect.clone().addType({
         name: 'functionStartingWithF',
-        identify: function(obj) {
+        identify(obj) {
           return typeof obj === 'function' && /^f/i.test(obj.name);
         }
       });
@@ -1183,7 +1183,7 @@ describe('to satisfy assertion', function() {
     it('should satisfy on the value returned by the getter', function() {
       var subject = { nextLevel: {} };
       Object.defineProperty(subject.nextLevel, 'getMe', {
-        get: function() {
+        get() {
           return 'got me';
         },
         enumerable: false
@@ -1601,16 +1601,16 @@ describe('to satisfy assertion', function() {
       clonedExpect = expect.clone().addType({
         base: 'wrapperObject',
         name: 'mysteryBox',
-        identify: function(obj) {
+        identify(obj) {
           return obj instanceof MysteryBox;
         },
-        unwrap: function(box) {
+        unwrap(box) {
           return box[box.propertyName];
         },
-        prefix: function(output) {
+        prefix(output) {
           return output.text('MysteryBox(');
         },
-        suffix: function(output) {
+        suffix(output) {
           return output.text(')');
         }
       });
@@ -1622,10 +1622,10 @@ describe('to satisfy assertion', function() {
           clonedExpect.addType({
             base: 'number',
             name: 'numberBox',
-            identify: function(obj) {
+            identify(obj) {
               return typeof obj === 'number' && obj > 0 && obj < 10;
             },
-            inspect: function(obj, depth, output) {
+            inspect(obj, depth, output) {
               return output.block(function() {
                 this.text('+-+')
                   .nl()
@@ -2184,7 +2184,7 @@ describe('to satisfy assertion', function() {
       expect(
         function() {
           expect({}, 'to satisfy', {
-            foo: function(value) {
+            foo(value) {
               expect(value, 'to be a string');
             }
           });

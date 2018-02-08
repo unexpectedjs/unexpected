@@ -41,10 +41,10 @@ describe('exportAssertion', function() {
   it('binds the assertion to the child expect so custom types are available', function() {
     childExpect.addType({
       name: 'yadda',
-      identify: function(obj) {
+      identify(obj) {
         return /^yadda/.test(obj);
       },
-      inspect: function(value, depth, output, inspect) {
+      inspect(value, depth, output, inspect) {
         output
           .text('>>')
           .text(value)
@@ -93,7 +93,7 @@ describe('exportAssertion', function() {
     childExpect.exportAssertion('<any> to foo', function(expect, subject) {
       if (subject !== 'foo') {
         expect.fail({
-          diff: function(output, diff, inspect, equal) {
+          diff(output, diff, inspect, equal) {
             return output
               .text('got ')
               .fancyQuotes(subject)
@@ -136,7 +136,7 @@ describe('exportAssertion', function() {
     childExpect.exportAssertion('<any> to foo', function(expect, subject) {
       if (subject !== 'foo') {
         expect.fail({
-          diff: function(output, diff, inspect, equal) {
+          diff(output, diff, inspect, equal) {
             return output
               .text('got ')
               .fancyQuotes(subject)

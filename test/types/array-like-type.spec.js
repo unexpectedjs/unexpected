@@ -212,10 +212,10 @@ describe('array-like type', function() {
       base: 'array-like',
       name: 'bogusarray',
       identify: Array.isArray,
-      prefix: function(output) {
+      prefix(output) {
         return output;
       },
-      suffix: function(output) {
+      suffix(output) {
         return output;
       }
     });
@@ -315,7 +315,7 @@ describe('array-like type', function() {
         base: 'array-like',
         identify: Array.isArray,
         numericalPropertiesOnly: false,
-        getKeys: function(obj) {
+        getKeys(obj) {
           // use array-like getKeys() method in non-numerical mode
           var keys = this.baseType.getKeys.call(this, obj);
           if (obj === a) {
@@ -349,7 +349,7 @@ describe('array-like type', function() {
         base: 'array-like',
         identify: Array.isArray,
         numericalPropertiesOnly: false,
-        getKeys: function(obj) {
+        getKeys(obj) {
           // use array-like getKeys in non-numerical mode
           var keys = this.baseType.getKeys.call(this, obj);
           if (obj === a) {

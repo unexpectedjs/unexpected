@@ -170,7 +170,7 @@ describe('to be a/an assertion', function() {
     expect(
       function() {
         expect('foo', 'to be a', {
-          identify: function() {
+          identify() {
             return true;
           }
         });

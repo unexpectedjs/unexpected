@@ -28,13 +28,13 @@ describe('Error type', function() {
     var clonedExpect = expect.clone().addType({
       name: 'numericalError',
       base: 'Error',
-      identify: function(obj) {
+      identify(obj) {
         return this.baseType.identify(obj) && /^\d+$/.test(obj.message);
       },
-      inspect: function(err, depth, output) {
+      inspect(err, depth, output) {
         output.text(`Error#${err.message}`);
       },
-      unwrap: function(obj) {
+      unwrap(obj) {
         return parseInt(obj.message, 10);
       }
     });

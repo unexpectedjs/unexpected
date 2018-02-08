@@ -8,7 +8,7 @@ describe('use', function() {
   it('calls the given plugin with the clonedExpect instance as the parameter', function(done) {
     var plugin = {
       name: 'test',
-      installInto: function(expectInstance) {
+      installInto(expectInstance) {
         clonedExpect(expectInstance, 'to be', clonedExpect);
         done();
       }
@@ -19,7 +19,7 @@ describe('use', function() {
   it('supports installPlugin as a legacy alias', function(done) {
     clonedExpect.installPlugin({
       name: 'test',
-      installInto: function(expectInstance) {
+      installInto(expectInstance) {
         expect(expectInstance, 'to be', clonedExpect);
         done();
       }
@@ -77,12 +77,12 @@ describe('use', function() {
   it('does not fail if all plugin dependencies has been fulfilled', function(done) {
     var pluginA = {
       name: 'PluginA',
-      installInto: function(clonedExpect) {}
+      installInto(clonedExpect) {}
     };
     var pluginB = {
       name: 'PluginB',
       dependencies: ['PluginA'],
-      installInto: function(clonedExpect) {
+      installInto(clonedExpect) {
         done();
       }
     };
@@ -93,12 +93,12 @@ describe('use', function() {
   it('dependencies can be fulfilled across clones', function(done) {
     var pluginA = {
       name: 'PluginA',
-      installInto: function(clonedExpect) {}
+      installInto(clonedExpect) {}
     };
     var pluginB = {
       name: 'PluginB',
       dependencies: ['PluginA'],
-      installInto: function(clonedExpect) {
+      installInto(clonedExpect) {
         done();
       }
     };
@@ -110,7 +110,7 @@ describe('use', function() {
     var callCount = 0;
     var plugin = {
       name: 'plugin',
-      installInto: function() {
+      installInto() {
         callCount += 1;
       }
     };
@@ -125,7 +125,7 @@ describe('use', function() {
     var plugin1 = {
       name: 'plugin',
       version: '1.2.3',
-      installInto: function() {
+      installInto() {
         callCount1 += 1;
       }
     };
@@ -133,7 +133,7 @@ describe('use', function() {
     var plugin2 = {
       name: 'plugin',
       version: '1.2.3',
-      installInto: function() {
+      installInto() {
         callCount2 += 1;
       }
     };
@@ -146,14 +146,14 @@ describe('use', function() {
     clonedExpect.use({
       name: 'plugin',
       version: '1.2.3',
-      installInto: function() {}
+      installInto() {}
     });
     expect(
       function() {
         clonedExpect.use({
           name: 'plugin',
           version: '1.5.6',
-          installInto: function() {}
+          installInto() {}
         });
       },
       'to throw',
@@ -165,13 +165,13 @@ describe('use', function() {
     clonedExpect.use({
       name: 'plugin',
       version: '1.2.3',
-      installInto: function() {}
+      installInto() {}
     });
     expect(
       function() {
         clonedExpect.use({
           name: 'plugin',
-          installInto: function() {}
+          installInto() {}
         });
       },
       'to throw',
@@ -182,13 +182,13 @@ describe('use', function() {
   it('installing a version-less plugin with the same name as another plugin (but not ===) throws an error', function() {
     clonedExpect.use({
       name: 'test',
-      installInto: function() {}
+      installInto() {}
     });
     expect(
       function() {
         clonedExpect.use({
           name: 'test',
-          installInto: function() {}
+          installInto() {}
         });
       },
       'to throw',
@@ -201,7 +201,7 @@ describe('use', function() {
       function() {
         expect.use({
           name: 'unexpected-promise',
-          installInto: function() {}
+          installInto() {}
         });
       },
       'to throw',

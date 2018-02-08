@@ -99,10 +99,10 @@ describe('inspect', function() {
     var clonedExpect = expect.clone().addType({
       name: 'multiline',
       base: 'string',
-      identify: function(value) {
+      identify(value) {
         return typeof value === 'string' && value.indexOf('\n') !== -1;
       },
-      inspect: function(value, depth, output) {
+      inspect(value, depth, output) {
         output.block(function() {
           this.jsString("'")
             .block(function() {
