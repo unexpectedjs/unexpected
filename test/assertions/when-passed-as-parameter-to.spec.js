@@ -103,8 +103,9 @@ describe('when passed as parameters to assertion', function() {
   });
 
   describe('with the async flag', function() {
+    // prettier-ignore
     function delayedIncrement(num, cb) {
-      setTimeout(function() {
+      setTimeout(function () {
         if (typeof num === 'number') {
           cb(null, num + 1);
         } else {
@@ -135,7 +136,7 @@ describe('when passed as parameters to assertion', function() {
         'to be rejected with',
         'expected [ 123 ] when passed as parameters to async\n' +
           'function delayedIncrement(num, cb) {\n' +
-          '  setTimeout(function() {\n' +
+          '  setTimeout(function () {\n' +
           "    if (typeof num === 'number') {\n" +
           '      cb(null, num + 1);\n' +
           '    } else {\n' +
@@ -159,7 +160,7 @@ describe('when passed as parameters to assertion', function() {
         'to be rejected with',
         'expected [ false ] when passed as parameters to async\n' +
           'function delayedIncrement(num, cb) {\n' +
-          '  setTimeout(function() {\n' +
+          '  setTimeout(function () {\n' +
           "    if (typeof num === 'number') {\n" +
           '      cb(null, num + 1);\n' +
           '    } else {\n' +

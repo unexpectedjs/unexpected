@@ -28,8 +28,9 @@ describe('to call the callback assertion', function() {
   it('should fail when the callback is called twice asynchronously', function() {
     return expect(
       function() {
-        return expect(function(cb) {
-          setTimeout(function() {
+        // prettier-ignore
+        return expect(function (cb) {
+          setTimeout(function () {
             cb();
             cb();
           }, 0);
@@ -38,7 +39,7 @@ describe('to call the callback assertion', function() {
       'to error',
       'expected\n' +
         'function (cb) {\n' +
-        '  setTimeout(function() {\n' +
+        '  setTimeout(function () {\n' +
         '    cb();\n' +
         '    cb();\n' +
         '  }, 0);\n' +
@@ -157,8 +158,9 @@ describe('to call the callback assertion', function() {
           return expect(
             function() {
               return expect(
-                function(cb) {
-                  setTimeout(function() {
+                // prettier-ignore
+                function (cb) {
+                  setTimeout(function () {
                     cb(new Error('bla'));
                   }, 0);
                 },
@@ -169,7 +171,7 @@ describe('to call the callback assertion', function() {
             'to error',
             'expected\n' +
               'function (cb) {\n' +
-              '  setTimeout(function() {\n' +
+              '  setTimeout(function () {\n' +
               "    cb(new Error('bla'));\n" +
               '  }, 0);\n' +
               '}\n' +
@@ -261,8 +263,9 @@ describe('to call the callback assertion', function() {
         return expect(
           function() {
             return expect(
-              function(cb) {
-                setTimeout(function() {
+              // prettier-ignore
+              function (cb) {
+                setTimeout(function () {
                   cb(new Error('foo'));
                 }, 0);
               },
@@ -273,7 +276,7 @@ describe('to call the callback assertion', function() {
           'to error',
           'expected\n' +
             'function (cb) {\n' +
-            '  setTimeout(function() {\n' +
+            '  setTimeout(function () {\n' +
             "    cb(new Error('foo'));\n" +
             '  }, 0);\n' +
             '}\n' +
@@ -335,8 +338,9 @@ describe('to call the callback assertion', function() {
       expect(
         function() {
           return expect(
-            function(cb) {
-              setTimeout(function() {
+            // prettier-ignore
+            function (cb) {
+              setTimeout(function () {
                 cb(new Error('bla'));
               }, 0);
             },
@@ -347,7 +351,7 @@ describe('to call the callback assertion', function() {
         'to throw',
         'expected\n' +
           'function (cb) {\n' +
-          '  setTimeout(function() {\n' +
+          '  setTimeout(function () {\n' +
           "    cb(new Error('bla'));\n" +
           '  }, 0);\n' +
           '}\n' +
@@ -368,8 +372,9 @@ describe('to call the callback assertion', function() {
     it('should fail with a diff', function() {
       return expect(
         function() {
-          return expect(function(cb) {
-            return setTimeout(function() {
+          // prettier-ignore
+          return expect(function (cb) {
+            return setTimeout(function () {
               cb(new Error('wat'));
             }, 0);
           }, 'to call the callback without error');
@@ -377,7 +382,7 @@ describe('to call the callback assertion', function() {
         'to error',
         'expected\n' +
           'function (cb) {\n' +
-          '  return setTimeout(function() {\n' +
+          '  return setTimeout(function () {\n' +
           "    cb(new Error('wat'));\n" +
           '  }, 0);\n' +
           '}\n' +

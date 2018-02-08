@@ -21,9 +21,10 @@ describe('to error assertion', function() {
     describe('with the "not" flag', function() {
       it('should indicate that the function returned a rejected promise', function() {
         return expect(
+          // prettier-ignore
           expect(function() {
-            return expect.promise(function(resolve, reject) {
-              setTimeout(function() {
+            return expect.promise(function (resolve, reject) {
+              setTimeout(function () {
                 reject(new Error('wat'));
               }, 1);
             });
@@ -31,8 +32,8 @@ describe('to error assertion', function() {
           'to be rejected with',
           'expected\n' +
             'function () {\n' +
-            '  return expect.promise(function(resolve, reject) {\n' +
-            '    setTimeout(function() {\n' +
+            '  return expect.promise(function (resolve, reject) {\n' +
+            '    setTimeout(function () {\n' +
             "      reject(new Error('wat'));\n" +
             '    }, 1);\n' +
             '  });\n' +
