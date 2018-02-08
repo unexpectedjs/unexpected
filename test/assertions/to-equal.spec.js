@@ -15,7 +15,7 @@ describe('to equal assertion', function() {
     var now = new Date();
     expect(now, 'to equal', now);
     expect(now, 'to equal', new Date(now.getTime()));
-    expect({ now: now }, 'to equal', { now: now });
+    expect({ now }, 'to equal', { now });
     expect(null, 'to equal', null);
     expect(null, 'not to equal', undefined);
     expect(undefined, 'to equal', undefined);

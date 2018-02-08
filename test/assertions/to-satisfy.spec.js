@@ -923,7 +923,7 @@ describe('to satisfy assertion', function() {
       }
 
       clonedExpect(foo, 'to satisfy', foo);
-      clonedExpect({ foo: foo }, 'to satisfy', { foo: foo });
+      clonedExpect({ foo }, 'to satisfy', { foo });
     });
   });
 

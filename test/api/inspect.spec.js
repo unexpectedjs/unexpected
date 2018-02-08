@@ -201,7 +201,7 @@ describe('inspect', function() {
           { id: 4, name: 'Barbara Lynn' },
           { id: 5, name: 'Sharpe Downs' }
         ],
-        circular: circular,
+        circular,
         this: {
           is: {
             deeply: {

@@ -111,7 +111,7 @@ describe('addType', function() {
     function box(value) {
       return {
         isBox: true,
-        value: value
+        value
       };
     }
 
