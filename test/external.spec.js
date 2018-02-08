@@ -193,8 +193,7 @@ if (typeof process === 'object') {
             {
               cwd: pathModule.join(externaltestsDir, '..'),
               env: extend({}, process.env, {
-                JASMINE_CONFIG_PATH:
-                  `${externaltestsDir}/${subject}.jasmine.json`
+                JASMINE_CONFIG_PATH: `${externaltestsDir}/${subject}.jasmine.json`
               })
             },
             run(function(err, stdout, stderr) {
