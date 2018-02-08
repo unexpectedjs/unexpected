@@ -40,7 +40,7 @@
     "es5-shim": "4.5.9",
     "eslint": "4.17.0",
     "eslint-config-pretty-standard": "papandreou/eslint-config-pretty-standard#96baeff625f841c8c5199c1802355b5a5d16fa6f",
-    "eslint-plugin-import": "1.16.0",
+    "eslint-plugin-import": "2.8.0",
     "eslint-plugin-prettier": "2.6.0",
     "find-node-modules": "1.0.4",
     "gh-pages": "1.1.0",
