@@ -32,7 +32,7 @@ describe('Error type', function() {
         return this.baseType.identify(obj) && /^\d+$/.test(obj.message);
       },
       inspect: function(err, depth, output) {
-        output.text('Error#' + err.message);
+        output.text(`Error#${err.message}`);
       },
       unwrap: function(obj) {
         return parseInt(obj.message, 10);

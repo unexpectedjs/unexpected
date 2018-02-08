@@ -293,7 +293,7 @@ describe('#child', function() {
       expect,
       subject
     ) {
-      return expect.shift(String(subject) + 'foo');
+      return expect.shift(`${String(subject)}foo`);
     });
     expect(childExpect.assertions.foo, 'to satisfy', {
       1: {

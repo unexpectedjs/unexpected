@@ -1592,7 +1592,7 @@ describe('to satisfy assertion', function() {
 
   describe('with a custom type', function() {
     function MysteryBox(value) {
-      this.propertyName = 'prop' + Math.floor(1000 * Math.random());
+      this.propertyName = `prop${Math.floor(1000 * Math.random())}`;
       this[this.propertyName] = value;
     }
     var clonedExpect;
@@ -1629,7 +1629,7 @@ describe('to satisfy assertion', function() {
               return output.block(function() {
                 this.text('+-+')
                   .nl()
-                  .text('|' + obj + '|')
+                  .text(`|${obj}|`)
                   .nl()
                   .text('|_|');
               });

@@ -72,7 +72,7 @@ describe('expect.shift', function() {
           expect,
           subject
         ) {
-          return expect.shift(subject + 'bar');
+          return expect.shift(`${subject}bar`);
         });
       clonedExpect('foo', 'when appended with bar', 'to equal', 'foobar');
     });
@@ -84,7 +84,7 @@ describe('expect.shift', function() {
           expect,
           subject
         ) {
-          return expect.shift(subject + 'bar');
+          return expect.shift(`${subject}bar`);
         });
       expect(
         function() {
@@ -109,7 +109,7 @@ describe('expect.shift', function() {
         if (subject === 'crow') {
           expect.fail();
         }
-        return expect.shift(subject + 'bar');
+        return expect.shift(`${subject}bar`);
       });
     expect(
       function() {
@@ -133,7 +133,7 @@ describe('expect.shift', function() {
         expect,
         subject
       ) {
-        return this.shift(expect, 'foo' + subject, 0);
+        return this.shift(expect, `foo${subject}`, 0);
       });
     clonedExpect(
       'foo',
@@ -149,7 +149,7 @@ describe('expect.shift', function() {
         .addAssertion(
           '<string> when surrounded by <string> <string> <assertion>',
           function(expect, subject) {
-            return expect.shift('foo' + subject, 2);
+            return expect.shift(`foo${subject}`, 2);
           }
         );
 
@@ -177,7 +177,7 @@ describe('expect.shift', function() {
           expect,
           subject
         ) {
-          return expect.shift('foo' + subject);
+          return expect.shift(`foo${subject}`);
         });
       clonedExpect(
         'foo',
@@ -194,7 +194,7 @@ describe('expect.shift', function() {
         expect,
         subject
       ) {
-        return expect.shift('foo' + subject);
+        return expect.shift(`foo${subject}`);
       });
     expect(
       function() {
@@ -258,7 +258,7 @@ describe('expect.shift', function() {
         .addAssertion(
           '<string> when prepended with foo <string> <number+>',
           function(expect, subject) {
-            expect.shift('foo' + subject, 0);
+            expect.shift(`foo${subject}`, 0);
             expect('abc', 'to equal', 'def');
           }
         );
@@ -279,7 +279,7 @@ describe('expect.shift', function() {
           expect,
           subject
         ) {
-          expect.shift('foo' + subject, 0);
+          expect.shift(`foo${subject}`, 0);
           expect('abc', 'to equal', 'def');
         });
 
@@ -302,7 +302,7 @@ describe('expect.shift', function() {
           expect,
           subject
         ) {
-          expect.shift('foo' + subject, 1);
+          expect.shift(`foo${subject}`, 1);
           expect('abc', 'to equal', 'def');
         });
 

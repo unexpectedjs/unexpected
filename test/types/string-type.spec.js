@@ -7,9 +7,7 @@ describe('string type', function() {
         expect(longString, 'to equal', 'foo');
       },
       'to throw',
-      "expected '" +
-        longString +
-        "'\nto equal 'foo'\n\nDiff suppressed due to size > 4096"
+      `expected '${longString}'\nto equal 'foo'\n\nDiff suppressed due to size > 4096`
     );
   });
 
@@ -20,9 +18,7 @@ describe('string type', function() {
         expect('foo', 'to equal', longString);
       },
       'to throw',
-      "expected 'foo'\nto equal '" +
-        longString +
-        "'\n\nDiff suppressed due to size > 4096"
+      `expected 'foo'\nto equal '${longString}'\n\nDiff suppressed due to size > 4096`
     );
   });
 });

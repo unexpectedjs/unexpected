@@ -24,7 +24,7 @@ if (typeof process === 'object') {
                 subject.map(function(fileName) {
                   return pathModule.resolve(
                     externaltestsDir,
-                    fileName + '.spec.js'
+                    `${fileName}.spec.js`
                   );
                 })
               ),
@@ -194,7 +194,7 @@ if (typeof process === 'object') {
               cwd: pathModule.join(externaltestsDir, '..'),
               env: extend({}, process.env, {
                 JASMINE_CONFIG_PATH:
-                  externaltestsDir + '/' + subject + '.jasmine.json'
+                  `${externaltestsDir}/${subject}.jasmine.json`
               })
             },
             run(function(err, stdout, stderr) {
@@ -269,7 +269,7 @@ if (typeof process === 'object') {
                   subject.map(function(fileName) {
                     return pathModule.resolve(
                       externaltestsDir,
-                      fileName + '.spec.js'
+                      `${fileName}.spec.js`
                     );
                   })
                 ),

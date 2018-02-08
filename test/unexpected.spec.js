@@ -1237,7 +1237,7 @@ describe('unexpected', function() {
         for (var _key = 2; _key < _len; _key++) {
           rest[_key - 2] = arguments[_key];
         }
-        return expect.apply(undefined, [subject + 'foo'].concat(rest));
+        return expect.apply(undefined, [`${subject}foo`].concat(rest));
       }
     );
 
@@ -1303,7 +1303,7 @@ describe('unexpected', function() {
           for (var _key = 2; _key < _len; _key++) {
             rest[_key - 2] = arguments[_key];
           }
-          var result = subject + 'bar';
+          var result = `${subject}bar`;
           return expect
             .apply(undefined, [result].concat(rest))
             .and('to equal', 'foobar')

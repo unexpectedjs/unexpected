@@ -106,7 +106,7 @@ describe('exportAssertion', function() {
               .append(diff(subject, 'foo'))
               .nl()
               .text(
-                'and they really are different, see: ' + equal(subject, 'foo')
+                `and they really are different, see: ${equal(subject, 'foo')}`
               );
           }
         });
@@ -182,7 +182,7 @@ describe('exportAssertion', function() {
       childExpect.exportAssertion(
         '<string> when prepended with foo <assertion?>',
         function(expect, subject) {
-          return expect.shift('foo' + subject);
+          return expect.shift(`foo${subject}`);
         }
       );
 
@@ -214,7 +214,7 @@ describe('exportAssertion', function() {
       childExpect.exportAssertion(
         '<string> when prepended with foo <assertion?>',
         function(expect, subject) {
-          return expect.shift('foo' + subject);
+          return expect.shift(`foo${subject}`);
         }
       );
 
@@ -248,7 +248,7 @@ describe('exportAssertion', function() {
       childExpect.exportAssertion(
         '<string> when prepended with foo <assertion?>',
         function(expect, subject) {
-          return expect.shift('foo' + subject);
+          return expect.shift(`foo${subject}`);
         }
       );
 
