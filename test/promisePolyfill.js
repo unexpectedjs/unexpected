@@ -1,3 +1,6 @@
 if (typeof Promise === 'undefined') {
-    Promise = (typeof window !== 'undefined' && window.RSVP.Promise) || require('rsvp').Promise;
+  // eslint-disable-next-line no-global-assign
+  Promise =
+    (typeof window !== 'undefined' && window.RSVP.Promise) ||
+    require('rsvp').Promise;
 }
