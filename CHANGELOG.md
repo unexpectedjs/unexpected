@@ -1,3 +1,7 @@
+### v10.37.1 (2018-02-11)
+
+- [#436](https://github.com/unexpectedjs/unexpected/pull/436) Add prettier setup, run lebab, switch to 2 space indent ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+
 ### v10.37.0 (2018-02-01)
 
 - [#434](https://github.com/unexpectedjs/unexpected/pull/434) Remove user defined addAssertion handlers from stack ([Sune Simonsen](mailto:sune@we-knowhow.dk))
