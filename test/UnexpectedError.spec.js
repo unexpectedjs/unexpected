@@ -1,3 +1,5 @@
+/*global expect*/
+
 describe('UnexpectedError', function() {
   describe('#stack', function() {
     it('should not mess up when the error message contains $&', function() {
