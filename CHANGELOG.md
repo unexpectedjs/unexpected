@@ -124,9 +124,6 @@
 
 - [#338](https://github.com/unexpectedjs/unexpected/pull/338) Add <object|array-like> to have (a value|an item) satisfying <any|assertion> ([Andreas Lind](mailto:andreas@one.com))
 - [#355](https://github.com/unexpectedjs/unexpected/pull/355) Inspect async functions ([Andreas Lind](mailto:andreas@one.com))
-
-### v10.20.0 (2016-11-27)
-
 - [#340](https://github.com/unexpectedjs/unexpected/pull/340) Add 'to be fulfilled with a value satisfying' and 'to be rejected with error satisfying' ([Sune Simonsen](mailto:sune@we-knowhow.dk))
 - [#348](https://github.com/unexpectedjs/unexpected/pull/348) to have (items|values|keys) satisfying: Only allow one <any> as the value, not <any+> ([Andreas Lind](mailto:andreas@one.com))
 - [#349](https://github.com/unexpectedjs/unexpected/pull/349) to have keys satisfying, to have values satisfying: Disallow an empty array ([Andreas Lind](mailto:andreas@one.com))
