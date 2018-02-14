@@ -19,7 +19,7 @@ if (process.stdin.isTTY) {
     // eslint verify prettier formatting, while not being bothered by it in our
     // editors.
     config.plugins.push('prettier');
-    config.rules['prettier/prettier'] = error;
+    config.rules['prettier/prettier'] = 'error';
 }
 
 module.exports = config;
