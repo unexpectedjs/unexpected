@@ -195,4 +195,49 @@ describe('object type', function() {
       );
     });
   });
+
+  describe('with a custom subtype that overrides property()', function() {
+    it('should bar', function() {
+      var clonedExpect = expect.clone();
+      var customObject = { quux: 'xuuq', foobar: 'faz' };
+
+      clonedExpect.addStyle('xuuqProperty', function(key, inspectedValue) {
+        this.text('<')
+          .appendInspected(key)
+          .text('> --> ')
+          .append(inspectedValue);
+      });
+
+      clonedExpect.addType({
+        name: 'xuuq',
+        base: 'object',
+        identify: function(obj) {
+          return obj && typeof 'object' && obj.quux === 'xuuq';
+        },
+        property: function(output, key, inspectedValue) {
+          return output.xuuqProperty(key, inspectedValue);
+        }
+      });
+
+      expect(
+        function() {
+          clonedExpect(customObject, 'to equal', {
+            quux: 'xuuq',
+            foobar: 'baz'
+          });
+        },
+        'to throw',
+        "expected { <'quux'> --> 'xuuq', <'foobar'> --> 'faz' }\n" +
+          "to equal { <'quux'> --> 'xuuq', <'foobar'> --> 'baz' }\n" +
+          '\n' +
+          '{\n' +
+          "  <'quux'> --> 'xuuq',\n" +
+          "  <'foobar'> --> 'faz' // should equal 'baz'\n" +
+          '                       //\n' +
+          '                       // -faz\n' +
+          '                       // +baz\n' +
+          '}'
+      );
+    });
+  });
 });
