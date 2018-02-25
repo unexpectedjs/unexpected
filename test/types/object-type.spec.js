@@ -42,6 +42,46 @@ describe('object type', function() {
     });
   });
 
+  describe('#equal', function() {
+    it('should ignore undefined properties on the LHS', function() {
+      expect(function() {
+        expect({ lhs: undefined }, 'to equal', {});
+      }, 'not to throw');
+    });
+
+    it('should ignore undefined properties on the RHS', function() {
+      expect(function() {
+        expect({}, 'to equal', { rhs: undefined });
+      }, 'not to throw');
+    });
+  });
+
+  describe('#getKeys', function() {
+    var clonedExpect = expect.clone();
+
+    clonedExpect.addType({
+      name: 'fooObject',
+      base: 'object',
+      identify: function(obj) {
+        return obj && typeof 'object' && obj.foo;
+      },
+      getKeys: function(obj) {
+        return Object.keys(obj).filter(function(key) {
+          return key[0] !== '_';
+        });
+      }
+    });
+
+    it('should restrict the compared properties', function() {
+      expect(function() {
+        clonedExpect({ foo: true, _bar: true }, 'to equal', {
+          foo: true,
+          _bar: false
+        });
+      }, 'not to throw');
+    });
+  });
+
   describe('with a subtype that disables indentation', function() {
     var clonedExpect = expect.clone();
 
