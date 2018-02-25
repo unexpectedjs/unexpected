@@ -54,6 +54,36 @@ describe('object type', function() {
         expect({}, 'to equal', { rhs: undefined });
       }, 'not to throw');
     });
+
+    describe('with a subtype that overrides valueForKey()', function() {
+      var clonedExpect = expect.clone();
+
+      clonedExpect.addType({
+        name: 'undefinerObject',
+        base: 'object',
+        identify: function(obj) {
+          return obj && typeof 'object' && obj.xuuq;
+        },
+        valueForKey: function(obj, key) {
+          if (key !== 'xuuq') {
+            return undefined;
+          }
+          return obj[key];
+        }
+      });
+
+      it('should ignore undefined properties on the LHS', function() {
+        expect(function() {
+          expect({ xuuq: true, lhs: undefined }, 'to equal', { xuuq: true });
+        }, 'not to throw');
+      });
+
+      it('should ignore undefined properties on the RHS', function() {
+        expect(function() {
+          expect({ xuuq: true }, 'to equal', { xuuq: true, rhs: undefined });
+        }, 'not to throw');
+      });
+    });
   });
 
   describe('#getKeys', function() {
