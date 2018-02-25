@@ -196,8 +196,8 @@ describe('object type', function() {
     });
   });
 
-  describe('with a custom subtype that overrides property()', function() {
-    it('should bar', function() {
+  describe('with a subtype that overrides property()', function() {
+    it('should render correctly in both inspection and diff', function() {
       var clonedExpect = expect.clone();
       var customObject = { quux: 'xuuq', foobar: 'faz' };
 
@@ -236,6 +236,44 @@ describe('object type', function() {
           '                       //\n' +
           '                       // -faz\n' +
           '                       // +baz\n' +
+          '}'
+      );
+    });
+  });
+
+  describe('with a subtype that overrides valueForKey()', function() {
+    var clonedExpect = expect.clone();
+
+    clonedExpect.addType({
+      name: 'nineObject',
+      base: 'object',
+      identify: function(obj) {
+        return obj && typeof 'object' && obj.nine === 9;
+      },
+      valueForKey: function(obj, key) {
+        if (typeof obj[key] === 'string') {
+          return obj[key].toUpperCase();
+        }
+        return obj[key];
+      }
+    });
+
+    it('should process propeties in both inspection and diff', function() {
+      expect(
+        function() {
+          clonedExpect({ nine: 9, zero: 1, foo: 'bAr' }, 'to equal', {
+            nine: 9,
+            zero: 0,
+            foo: 'BaR'
+          });
+        },
+        'to throw',
+        "expected { nine: 9, zero: 1, foo: 'BAR' } to equal { nine: 9, zero: 0, foo: 'BAR' }\n" +
+          '\n' +
+          '{\n' +
+          '  nine: 9,\n' +
+          '  zero: 1, // should equal 0\n' +
+          "  foo: 'BAR'\n" +
           '}'
       );
     });
