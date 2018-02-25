@@ -112,6 +112,62 @@ describe('object type', function() {
     });
   });
 
+  describe('#similar', function() {
+    var clonedExpect = expect.clone();
+
+    clonedExpect.addType({
+      name: 'ignoreUnderscoresObject',
+      base: 'object',
+      identify(obj) {
+        return obj && typeof 'object' && obj.xuuq;
+      },
+      valueForKey(obj, key) {
+        if (key[0] === '_') {
+          return undefined;
+        }
+        return obj[key];
+      }
+    });
+
+    it('should pass with values overriding valueForKey()', function() {
+      expect(function() {
+        clonedExpect(
+          [{ xuuq: true, quux: 'foo', _bob: true }, 'foobar'],
+          'to equal',
+          [{ xuuq: true, quux: 'foo', _bob: false }, 'foobar']
+        );
+      }, 'not to throw');
+    });
+
+    it('should fail with values overriding valueForKey()', function() {
+      expect(
+        function() {
+          clonedExpect(
+            [{ xuuq: true, quux: 'bar', _bob: true }, 'foobar'],
+            'to equal',
+            ['foobar', { xuuq: true, quux: 'baz', _bob: false }]
+          );
+        },
+        'to throw',
+        "expected [ { xuuq: true, quux: 'bar', _bob: undefined }, 'foobar' ]\n" +
+          "to equal [ 'foobar', { xuuq: true, quux: 'baz', _bob: undefined } ]\n" +
+          '\n' +
+          '[\n' +
+          '┌─▷\n' +
+          '│   {\n' +
+          '│     xuuq: true,\n' +
+          "│     quux: 'bar', // should equal 'baz'\n" +
+          '│                  //\n' +
+          '│                  // -bar\n' +
+          '│                  // +baz\n' +
+          '│     _bob: undefined\n' +
+          '│   },\n' +
+          "└── 'foobar' // should be moved\n" +
+          ']'
+      );
+    });
+  });
+
   describe('with a subtype that disables indentation', function() {
     var clonedExpect = expect.clone();
 
