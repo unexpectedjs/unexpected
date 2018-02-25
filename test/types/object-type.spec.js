@@ -384,7 +384,7 @@ describe('object type', function() {
       }
     });
 
-    it('should process propeties in both inspection and diff', function() {
+    it('should process propeties in both inspection and diff in "to equal"', function() {
       expect(
         function() {
           clonedExpect({ nine: 9, zero: 1, foo: 'bAr' }, 'to equal', {
@@ -400,6 +400,28 @@ describe('object type', function() {
           '  nine: 9,\n' +
           '  zero: 1, // should equal 0\n' +
           "  foo: 'BAR'\n" +
+          '}'
+      );
+    });
+
+    it('should process propeties in both inspection and diff in "to satsify"', function() {
+      expect(
+        function() {
+          clonedExpect(
+            { nine: 9, zero: 1, foo: 'bAr', baz: undefined },
+            'to satisfy',
+            { nine: 9, zero: 0, foo: 'BaR', baz: expect.it('to be undefined') }
+          );
+        },
+        'to throw',
+        "expected { nine: 9, zero: 1, foo: 'BAR', baz: undefined }\n" +
+          "to satisfy { nine: 9, zero: 0, foo: 'BAR', baz: expect.it('to be undefined') }\n" +
+          '\n' +
+          '{\n' +
+          '  nine: 9,\n' +
+          '  zero: 1, // should equal 0\n' +
+          "  foo: 'BAR',\n" +
+          '  baz: undefined\n' +
           '}'
       );
     });
