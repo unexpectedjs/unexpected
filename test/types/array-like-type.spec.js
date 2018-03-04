@@ -374,6 +374,28 @@ describe('array-like type', function() {
     });
   });
 
+  describe('with a custom subtype that comes with its own hasKey', function() {
+    it('should honour the presence of a key within inspection', function() {
+      var clonedExpect = expect.clone().addType({
+        name: 'allExceptFoo',
+        base: 'array-like',
+        identify: Array.isArray,
+        numericalPropertiesOnly: false,
+        hasKey: function(obj, key) {
+          if (String(key).indexOf('foo') === 0) {
+            return false;
+          }
+          return obj[key];
+        }
+      });
+
+      var arr = ['a'];
+      arr.fooAndBar = true;
+
+      clonedExpect(arr, 'to inspect as', "[ 'a', fooAndBar: undefined ]");
+    });
+  });
+
   describe('with a custom subtype that comes with its own valueForKeys', function() {
     it('should process the elements in both inspection and diff in "to equal"', function() {
       var clonedExpect = expect.clone().addType({
