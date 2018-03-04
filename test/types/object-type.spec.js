@@ -42,6 +42,132 @@ describe('object type', function() {
     });
   });
 
+  describe('#equal', function() {
+    it('should ignore undefined properties on the LHS', function() {
+      expect(function() {
+        expect({ lhs: undefined }, 'to equal', {});
+      }, 'not to throw');
+    });
+
+    it('should ignore undefined properties on the RHS', function() {
+      expect(function() {
+        expect({}, 'to equal', { rhs: undefined });
+      }, 'not to throw');
+    });
+
+    describe('with a subtype that overrides valueForKey()', function() {
+      var clonedExpect = expect.clone();
+
+      clonedExpect.addType({
+        name: 'undefinerObject',
+        base: 'object',
+        identify: function(obj) {
+          return obj && typeof 'object' && obj.xuuq;
+        },
+        valueForKey: function(obj, key) {
+          if (key !== 'xuuq') {
+            return undefined;
+          }
+          return obj[key];
+        }
+      });
+
+      it('should ignore undefined properties on the LHS', function() {
+        expect(function() {
+          expect({ xuuq: true, lhs: undefined }, 'to equal', { xuuq: true });
+        }, 'not to throw');
+      });
+
+      it('should ignore undefined properties on the RHS', function() {
+        expect(function() {
+          expect({ xuuq: true }, 'to equal', { xuuq: true, rhs: undefined });
+        }, 'not to throw');
+      });
+    });
+  });
+
+  describe('#getKeys', function() {
+    var clonedExpect = expect.clone();
+
+    clonedExpect.addType({
+      name: 'fooObject',
+      base: 'object',
+      identify: function(obj) {
+        return obj && typeof 'object' && obj.foo;
+      },
+      getKeys: function(obj) {
+        return Object.keys(obj).filter(function(key) {
+          return key[0] !== '_';
+        });
+      }
+    });
+
+    it('should restrict the compared properties', function() {
+      expect(function() {
+        clonedExpect({ foo: true, _bar: true }, 'to equal', {
+          foo: true,
+          _bar: false
+        });
+      }, 'not to throw');
+    });
+  });
+
+  describe('#similar', function() {
+    var clonedExpect = expect.clone();
+
+    clonedExpect.addType({
+      name: 'ignoreUnderscoresObject',
+      base: 'object',
+      identify(obj) {
+        return obj && typeof 'object' && obj.xuuq;
+      },
+      valueForKey(obj, key) {
+        if (key[0] === '_') {
+          return undefined;
+        }
+        return obj[key];
+      }
+    });
+
+    it('should pass with values overriding valueForKey()', function() {
+      expect(function() {
+        clonedExpect(
+          [{ xuuq: true, quux: 'foo', _bob: true }, 'foobar'],
+          'to equal',
+          [{ xuuq: true, quux: 'foo', _bob: false }, 'foobar']
+        );
+      }, 'not to throw');
+    });
+
+    it('should fail with values overriding valueForKey()', function() {
+      expect(
+        function() {
+          clonedExpect(
+            [{ xuuq: true, quux: 'bar', _bob: true }, 'foobar'],
+            'to equal',
+            ['foobar', { xuuq: true, quux: 'baz', _bob: false }]
+          );
+        },
+        'to throw',
+        "expected [ { xuuq: true, quux: 'bar', _bob: undefined }, 'foobar' ]\n" +
+          "to equal [ 'foobar', { xuuq: true, quux: 'baz', _bob: undefined } ]\n" +
+          '\n' +
+          '[\n' +
+          '┌─▷\n' +
+          '│   {\n' +
+          '│     xuuq: true,\n' +
+          "│     quux: 'bar', // should equal 'baz'\n" +
+          '│                  //\n' +
+          '│                  // -bar\n' +
+          '│                  // +baz\n' +
+          '│     _bob: undefined\n' +
+          '│   },\n' +
+          "└── 'foobar' // should be moved\n" +
+          ']'
+      );
+    });
+  });
+
   describe('with a subtype that disables indentation', function() {
     var clonedExpect = expect.clone();
 
@@ -191,6 +317,111 @@ describe('object type', function() {
         'to equal',
         '{\n' +
         "  a: 'a', b: 'b'\n" + // This is the 'compact' feature kicking in
+          '}'
+      );
+    });
+  });
+
+  describe('with a subtype that overrides property()', function() {
+    it('should render correctly in both inspection and diff', function() {
+      var clonedExpect = expect.clone();
+      var customObject = { quux: 'xuuq', foobar: 'faz' };
+
+      clonedExpect.addStyle('xuuqProperty', function(key, inspectedValue) {
+        this.text('<')
+          .appendInspected(key)
+          .text('> --> ')
+          .append(inspectedValue);
+      });
+
+      clonedExpect.addType({
+        name: 'xuuq',
+        base: 'object',
+        identify: function(obj) {
+          return obj && typeof 'object' && obj.quux === 'xuuq';
+        },
+        property: function(output, key, inspectedValue) {
+          return output.xuuqProperty(key, inspectedValue);
+        }
+      });
+
+      expect(
+        function() {
+          clonedExpect(customObject, 'to equal', {
+            quux: 'xuuq',
+            foobar: 'baz'
+          });
+        },
+        'to throw',
+        "expected { <'quux'> --> 'xuuq', <'foobar'> --> 'faz' }\n" +
+          "to equal { <'quux'> --> 'xuuq', <'foobar'> --> 'baz' }\n" +
+          '\n' +
+          '{\n' +
+          "  <'quux'> --> 'xuuq',\n" +
+          "  <'foobar'> --> 'faz' // should equal 'baz'\n" +
+          '                       //\n' +
+          '                       // -faz\n' +
+          '                       // +baz\n' +
+          '}'
+      );
+    });
+  });
+
+  describe('with a subtype that overrides valueForKey()', function() {
+    var clonedExpect = expect.clone();
+
+    clonedExpect.addType({
+      name: 'nineObject',
+      base: 'object',
+      identify: function(obj) {
+        return obj && typeof 'object' && obj.nine === 9;
+      },
+      valueForKey: function(obj, key) {
+        if (typeof obj[key] === 'string') {
+          return obj[key].toUpperCase();
+        }
+        return obj[key];
+      }
+    });
+
+    it('should process propeties in both inspection and diff in "to equal"', function() {
+      expect(
+        function() {
+          clonedExpect({ nine: 9, zero: 1, foo: 'bAr' }, 'to equal', {
+            nine: 9,
+            zero: 0,
+            foo: 'BaR'
+          });
+        },
+        'to throw',
+        "expected { nine: 9, zero: 1, foo: 'BAR' } to equal { nine: 9, zero: 0, foo: 'BAR' }\n" +
+          '\n' +
+          '{\n' +
+          '  nine: 9,\n' +
+          '  zero: 1, // should equal 0\n' +
+          "  foo: 'BAR'\n" +
+          '}'
+      );
+    });
+
+    it('should process propeties in both inspection and diff in "to satsify"', function() {
+      expect(
+        function() {
+          clonedExpect(
+            { nine: 9, zero: 1, foo: 'bAr', baz: undefined },
+            'to satisfy',
+            { nine: 9, zero: 0, foo: 'BaR', baz: expect.it('to be undefined') }
+          );
+        },
+        'to throw',
+        "expected { nine: 9, zero: 1, foo: 'BAR', baz: undefined }\n" +
+          "to satisfy { nine: 9, zero: 0, foo: 'BAR', baz: expect.it('to be undefined') }\n" +
+          '\n' +
+          '{\n' +
+          '  nine: 9,\n' +
+          '  zero: 1, // should equal 0\n' +
+          "  foo: 'BAR',\n" +
+          '  baz: undefined\n' +
           '}'
       );
     });

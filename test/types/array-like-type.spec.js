@@ -374,6 +374,60 @@ describe('array-like type', function() {
     });
   });
 
+  describe('with a custom subtype that comes with its own hasKey', function() {
+    it('should honour the presence of a key within inspection', function() {
+      var clonedExpect = expect.clone().addType({
+        name: 'allExceptFoo',
+        base: 'array-like',
+        identify: Array.isArray,
+        numericalPropertiesOnly: false,
+        hasKey: function(obj, key) {
+          if (String(key).indexOf('foo') === 0) {
+            return false;
+          }
+          return obj[key];
+        }
+      });
+
+      var arr = ['a'];
+      arr.fooAndBar = true;
+
+      clonedExpect(arr, 'to inspect as', "[ 'a', fooAndBar: undefined ]");
+    });
+  });
+
+  describe('with a custom subtype that comes with its own valueForKeys', function() {
+    it('should process the elements in both inspection and diff in "to equal"', function() {
+      var clonedExpect = expect.clone().addType({
+        name: 'firstElemUpper',
+        base: 'array-like',
+        identify: Array.isArray,
+        valueForKey: function(arr, key) {
+          var value = arr[key];
+          if (key === 0) {
+            return value.toUpperCase();
+          }
+          return value;
+        }
+      });
+      expect(
+        function() {
+          clonedExpect(['foobar', 'barbar'], 'to equal', ['foobar', 'barbaz']);
+        },
+        'to throw',
+        "expected [ 'FOOBAR', 'barbar' ] to equal [ 'FOOBAR', 'barbaz' ]\n" +
+          '\n' +
+          '[\n' +
+          "  'FOOBAR',\n" +
+          "  'barbar' // should equal 'barbaz'\n" +
+          '           //\n' +
+          '           // -barbar\n' +
+          '           // +barbaz\n' +
+          ']'
+      );
+    });
+  });
+
   it('should inspect as [...] at depth 2+', function() {
     expect(
       [[[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]]],
