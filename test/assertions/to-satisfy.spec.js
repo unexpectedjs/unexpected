@@ -123,6 +123,48 @@ describe('to satisfy assertion', function() {
       );
     });
 
+    it('should render missing custom items nicely', function() {
+      var clonedExpect = expect.clone();
+
+      clonedExpect.addStyle('xuuqProperty', function(key, inspectedValue) {
+        this.text('<')
+          .appendInspected(key)
+          .text('> --> ')
+          .append(inspectedValue);
+      });
+
+      clonedExpect.addType({
+        name: 'xuuq',
+        base: 'object',
+        identify: function(obj) {
+          return obj && typeof 'object' && obj.quux === 'xuuq';
+        },
+        property: function(output, key, inspectedValue) {
+          return output.xuuqProperty(key, inspectedValue);
+        }
+      });
+
+      expect(
+        function() {
+          clonedExpect([], 'to satisfy', [
+            { quux: 'xuuq', foo: true },
+            { quux: 'xuuq', baz: false }
+          ]);
+        },
+        'to throw',
+        'expected [] to satisfy\n' +
+          '[\n' +
+          "  { <'quux'> --> 'xuuq', <'foo'> --> true },\n" +
+          "  { <'quux'> --> 'xuuq', <'baz'> --> false }\n" +
+          ']\n' +
+          '\n' +
+          '[\n' +
+          "  // missing { <'quux'> --> 'xuuq', <'foo'> --> true }\n" +
+          "  // missing { <'quux'> --> 'xuuq', <'baz'> --> false }\n" +
+          ']'
+      );
+    });
+
     it('should fall back to comparing index-by-index if one of the arrays has more than 10 entries', function() {
       expect(
         function() {
