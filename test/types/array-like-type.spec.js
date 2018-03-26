@@ -396,6 +396,76 @@ describe('array-like type', function() {
     });
   });
 
+  describe('with a subtype that overrides property()', function() {
+    it('should render correctly in both inspection and diff in "to equal"', function() {
+      var clonedExpect = expect.clone();
+
+      clonedExpect.addStyle('xuuqProperty', function(key, inspectedValue) {
+        this.text('<')
+          .appendInspected(key)
+          .text('> --> ')
+          .append(inspectedValue);
+      });
+
+      clonedExpect.addType({
+        name: 'xuuq',
+        base: 'array-like',
+        numericalPropertiesOnly: false,
+        identify: function(obj) {
+          return obj && typeof 'object' && obj.quux === 'xuuq';
+        },
+        property: function(output, key, inspectedValue, isSubjectArrayLike) {
+          if (isSubjectArrayLike && !isNaN(Number(key))) {
+            return this.baseType.property(
+              output,
+              key,
+              inspectedValue,
+              isSubjectArrayLike
+            );
+          }
+          return output.xuuqProperty(key, inspectedValue);
+        }
+      });
+
+      const lhs = [1, 2, 3];
+      lhs.quux = 'xuuq';
+      lhs.foobar = 'faz';
+      lhs.missing = true;
+      const rhs = [1, 2, 4];
+      rhs.quux = 'xuuq';
+      rhs.foobar = 'baz';
+
+      expect(
+        function() {
+          clonedExpect(lhs, 'to equal', rhs);
+        },
+        'to throw',
+        'expected\n' +
+          '[\n' +
+          '  1,\n' +
+          '  2,\n' +
+          '  3,\n' +
+          "  <'quux'> --> 'xuuq',\n" +
+          "  <'foobar'> --> 'faz',\n" +
+          "  <'missing'> --> true\n" +
+          ']\n' +
+          "to equal [ 1, 2, 4, <'quux'> --> 'xuuq', <'foobar'> --> 'baz' ]\n" +
+          '\n' +
+          '[\n' +
+          '  1,\n' +
+          '  2,\n' +
+          '  3, // should equal 4\n' +
+          "  <'quux'> --> 'xuuq',\n" +
+          "  <'foobar'> --> 'faz', // should equal 'baz'\n" +
+          '                        //\n' +
+          '                        // -faz\n' +
+          '                        // +baz\n' +
+          "  <'missing'> --> true // should be removed\n" +
+          ']'
+      );
+    });
+  });
+
   describe('with a custom subtype that comes with its own valueForKeys', function() {
     it('should process the elements in both inspection and diff in "to equal"', function() {
       var clonedExpect = expect.clone().addType({
