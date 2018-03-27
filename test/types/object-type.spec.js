@@ -325,7 +325,6 @@ describe('object type', function() {
   describe('with a subtype that overrides property()', function() {
     it('should render correctly in both inspection and diff', function() {
       var clonedExpect = expect.clone();
-      var customObject = { quux: 'xuuq', foobar: 'faz' };
 
       clonedExpect.addStyle('xuuqProperty', function(key, inspectedValue) {
         this.text('<')
@@ -347,7 +346,7 @@ describe('object type', function() {
 
       expect(
         function() {
-          clonedExpect(customObject, 'to equal', {
+          clonedExpect({ quux: 'xuuq', foobar: 'faz' }, 'to equal', {
             quux: 'xuuq',
             foobar: 'baz'
           });
@@ -377,6 +376,9 @@ describe('object type', function() {
         return obj && typeof 'object' && obj.nine === 9;
       },
       valueForKey: function(obj, key) {
+        if (key === 'oof') {
+          return;
+        }
         if (typeof obj[key] === 'string') {
           return obj[key].toUpperCase();
         }
@@ -425,5 +427,39 @@ describe('object type', function() {
           '}'
       );
     });
+
+    (Object.setPrototypeOf ? it : it.skip)(
+      'should process keys from the prototype chain in "to exhaustively satisfy"',
+      function() {
+        var fooObject = {
+          foo: 'bAr',
+          oof: 'should not appear'
+        };
+        var chainedObject = { nine: 9, baz: undefined };
+        Object.setPrototypeOf(chainedObject, fooObject);
+
+        expect(
+          function() {
+            clonedExpect(chainedObject, 'to exhaustively satisfy', {
+              nine: 9,
+              foo: 'BaZ',
+              baz: expect.it('to be undefined')
+            });
+          },
+          'to throw',
+          'expected { nine: 9, baz: undefined }\n' +
+            "to exhaustively satisfy { nine: 9, foo: 'BAZ', baz: expect.it('to be undefined') }\n" +
+            '\n' +
+            '{\n' +
+            '  nine: 9,\n' +
+            '  baz: undefined\n' +
+            "  foo: 'BAR' // should equal 'BAZ'\n" +
+            '             //\n' +
+            '             // -BAR\n' +
+            '             // +BAZ\n' +
+            '}'
+        );
+      }
+    );
   });
 });
