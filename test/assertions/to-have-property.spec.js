@@ -157,4 +157,30 @@ describe('to have property assertion', function() {
         '    <object|function> [not] to have own property <string>'
     );
   });
+
+  describe('with a subtype that overrides valueForKey()', function() {
+    var clonedExpect = expect.clone();
+
+    clonedExpect.addType({
+      name: 'upperCaseObject',
+      base: 'object',
+      identify: function(obj) {
+        return obj && typeof 'object';
+      },
+      valueForKey: function(obj, key) {
+        if (typeof obj[key] === 'string') {
+          return obj[key].toUpperCase();
+        }
+        return obj[key];
+      }
+    });
+
+    it('should process the value in "to have property"', function() {
+      expect(
+        clonedExpect({ foo: 'bAr' }, 'to have property', 'foo'),
+        'to be fulfilled with',
+        'BAR'
+      );
+    });
+  });
 });

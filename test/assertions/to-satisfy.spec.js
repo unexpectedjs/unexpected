@@ -93,7 +93,7 @@ describe('to satisfy assertion', function() {
   });
 
   describe('with an array satisfied against an array', function() {
-    it('should render missing items nicely', function() {
+    it('should render missing number items nicely', function() {
       expect(
         function() {
           expect([], 'to satisfy', [1, 2]);
@@ -104,6 +104,63 @@ describe('to satisfy assertion', function() {
           '[\n' +
           '  // missing 1\n' +
           '  // missing 2\n' +
+          ']'
+      );
+    });
+
+    it('should render missing object items nicely', function() {
+      expect(
+        function() {
+          expect([], 'to satisfy', [{ foo: true }, { baz: false }]);
+        },
+        'to throw',
+        'expected [] to satisfy [ { foo: true }, { baz: false } ]\n' +
+          '\n' +
+          '[\n' +
+          '  // missing { foo: true }\n' +
+          '  // missing { baz: false }\n' +
+          ']'
+      );
+    });
+
+    it('should render missing custom items nicely', function() {
+      var clonedExpect = expect.clone();
+
+      clonedExpect.addStyle('xuuqProperty', function(key, inspectedValue) {
+        this.text('<')
+          .appendInspected(key)
+          .text('> --> ')
+          .append(inspectedValue);
+      });
+
+      clonedExpect.addType({
+        name: 'xuuq',
+        base: 'object',
+        identify: function(obj) {
+          return obj && typeof 'object' && obj.quux === 'xuuq';
+        },
+        property: function(output, key, inspectedValue) {
+          return output.xuuqProperty(key, inspectedValue);
+        }
+      });
+
+      expect(
+        function() {
+          clonedExpect([], 'to satisfy', [
+            { quux: 'xuuq', foo: true },
+            { quux: 'xuuq', baz: false }
+          ]);
+        },
+        'to throw',
+        'expected [] to satisfy\n' +
+          '[\n' +
+          "  { <'quux'> --> 'xuuq', <'foo'> --> true },\n" +
+          "  { <'quux'> --> 'xuuq', <'baz'> --> false }\n" +
+          ']\n' +
+          '\n' +
+          '[\n' +
+          "  // missing { <'quux'> --> 'xuuq', <'foo'> --> true }\n" +
+          "  // missing { <'quux'> --> 'xuuq', <'baz'> --> false }\n" +
           ']'
       );
     });

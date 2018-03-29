@@ -157,4 +157,33 @@ describe('to have a value satisfying assertion', function() {
       );
     });
   });
+
+  describe('with a subtype that overrides valueForKey()', function() {
+    var clonedExpect = expect.clone();
+
+    clonedExpect.addType({
+      name: 'oneFooObject',
+      base: 'object',
+      identify: function(obj) {
+        return obj && typeof 'object' && obj.foo === '';
+      },
+      valueForKey: function(obj, key) {
+        if (key === 'foo') {
+          return 1;
+        }
+        return obj[key];
+      }
+    });
+
+    it('should process the value in "to have a value satisfying"', function() {
+      expect(
+        clonedExpect(
+          { foo: '' },
+          'to have a value satisfying',
+          expect.it('to be a number')
+        ),
+        'to be fulfilled'
+      );
+    });
+  });
 });

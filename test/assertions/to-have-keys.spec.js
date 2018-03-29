@@ -51,4 +51,39 @@ describe('to have keys assertion', function() {
   it('should work with non-enumerable keys returned by the getKeys function of the subject type', function() {
     expect(new Error('foo'), 'to only have key', 'message');
   });
+
+  describe('with a subtype that overrides valueForKey()', function() {
+    var clonedExpect = expect.clone();
+
+    clonedExpect.addType({
+      name: 'upperFooObject',
+      base: 'object',
+      identify: function(obj) {
+        return obj && typeof 'object' && obj.foo === '';
+      },
+      valueForKey: function(obj, key) {
+        if (key === 'foo') {
+          return 'FOO';
+        }
+        return obj[key];
+      }
+    });
+
+    it('should process the value in "to only have keys"', function() {
+      expect(
+        function() {
+          clonedExpect({ oof: undefined, foo: '' }, 'to only have keys', [
+            'oof'
+          ]);
+        },
+        'to throw',
+        "expected { oof: undefined, foo: 'FOO' } to only have keys [ 'oof' ]\n" +
+          '\n' +
+          '{\n' +
+          '  oof: undefined,\n' +
+          "  foo: 'FOO' // should be removed\n" +
+          '}'
+      );
+    });
+  });
 });

@@ -372,6 +372,179 @@ describe('array-like type', function() {
           ']'
       );
     });
+
+    it('should honour the precise list of keys returned by getKeys in "to satisfy"', () => {
+      var clonedExpect = expect.clone();
+
+      clonedExpect.addType({
+        name: 'foo',
+        base: 'array-like',
+        identify: function(obj) {
+          return obj && obj._isFoo;
+        },
+        numericalPropertiesOnly: false,
+        getKeys: function(obj) {
+          var keys = this.baseType.getKeys(obj);
+          var fooIndex = keys.indexOf('_isFoo');
+          if (fooIndex > -1) {
+            keys = keys.splice(fooIndex, 1);
+          }
+          keys.push('bar');
+          return keys;
+        }
+      });
+
+      var foo1 = ['hey', 'there'];
+      foo1._isFoo = true;
+      Object.defineProperty(foo1, 'bar', {
+        value: 123,
+        enumerable: false
+      });
+      var foo2 = ['hey', 'there'];
+      foo2._isFoo = true;
+      Object.defineProperty(foo2, 'bar', {
+        value: 456,
+        enumerable: false
+      });
+
+      expect(
+        function() {
+          clonedExpect(foo1, 'to satisfy', foo2);
+        },
+        'to throw',
+        "expected [ 'hey', 'there', bar: 123 ] to satisfy [ 'hey', 'there', bar: 456 ]\n" +
+          '\n' +
+          '[\n' +
+          "  'hey',\n" +
+          "  'there',\n" +
+          '  bar: 123 // should equal 456\n' +
+          ']'
+      );
+    });
+  });
+
+  describe('with a custom subtype that comes with its own hasKey', function() {
+    it('should honour the presence of a key within inspection', function() {
+      var clonedExpect = expect.clone().addType({
+        name: 'allExceptFoo',
+        base: 'array-like',
+        identify: Array.isArray,
+        numericalPropertiesOnly: false,
+        hasKey: function(obj, key) {
+          if (String(key).indexOf('foo') === 0) {
+            return false;
+          }
+          return obj[key];
+        }
+      });
+
+      var arr = ['a'];
+      arr.fooAndBar = true;
+
+      clonedExpect(arr, 'to inspect as', "[ 'a', fooAndBar: undefined ]");
+    });
+  });
+
+  describe('with a subtype that overrides property()', function() {
+    it('should render correctly in both inspection and diff in "to equal"', function() {
+      var clonedExpect = expect.clone();
+
+      clonedExpect.addStyle('xuuqProperty', function(key, inspectedValue) {
+        this.text('<')
+          .appendInspected(key)
+          .text('> --> ')
+          .append(inspectedValue);
+      });
+
+      clonedExpect.addType({
+        name: 'xuuq',
+        base: 'array-like',
+        numericalPropertiesOnly: false,
+        identify: function(obj) {
+          return obj && typeof 'object' && obj.quux === 'xuuq';
+        },
+        property: function(output, key, inspectedValue, isSubjectArrayLike) {
+          if (isSubjectArrayLike && !isNaN(Number(key))) {
+            return this.baseType.property(
+              output,
+              key,
+              inspectedValue,
+              isSubjectArrayLike
+            );
+          }
+          return output.xuuqProperty(key, inspectedValue);
+        }
+      });
+
+      const lhs = [1, 2, 3];
+      lhs.quux = 'xuuq';
+      lhs.foobar = 'faz';
+      lhs.missing = true;
+      const rhs = [1, 2, 4];
+      rhs.quux = 'xuuq';
+      rhs.foobar = 'baz';
+
+      expect(
+        function() {
+          clonedExpect(lhs, 'to equal', rhs);
+        },
+        'to throw',
+        'expected\n' +
+          '[\n' +
+          '  1,\n' +
+          '  2,\n' +
+          '  3,\n' +
+          "  <'quux'> --> 'xuuq',\n" +
+          "  <'foobar'> --> 'faz',\n" +
+          "  <'missing'> --> true\n" +
+          ']\n' +
+          "to equal [ 1, 2, 4, <'quux'> --> 'xuuq', <'foobar'> --> 'baz' ]\n" +
+          '\n' +
+          '[\n' +
+          '  1,\n' +
+          '  2,\n' +
+          '  3, // should equal 4\n' +
+          "  <'quux'> --> 'xuuq',\n" +
+          "  <'foobar'> --> 'faz', // should equal 'baz'\n" +
+          '                        //\n' +
+          '                        // -faz\n' +
+          '                        // +baz\n' +
+          "  <'missing'> --> true // should be removed\n" +
+          ']'
+      );
+    });
+  });
+
+  describe('with a custom subtype that comes with its own valueForKeys', function() {
+    it('should process the elements in both inspection and diff in "to equal"', function() {
+      var clonedExpect = expect.clone().addType({
+        name: 'firstElemUpper',
+        base: 'array-like',
+        identify: Array.isArray,
+        valueForKey: function(arr, key) {
+          var value = arr[key];
+          if (key === 0) {
+            return value.toUpperCase();
+          }
+          return value;
+        }
+      });
+      expect(
+        function() {
+          clonedExpect(['foobar', 'barbar'], 'to equal', ['foobar', 'barbaz']);
+        },
+        'to throw',
+        "expected [ 'FOOBAR', 'barbar' ] to equal [ 'FOOBAR', 'barbaz' ]\n" +
+          '\n' +
+          '[\n' +
+          "  'FOOBAR',\n" +
+          "  'barbar' // should equal 'barbaz'\n" +
+          '           //\n' +
+          '           // -barbar\n' +
+          '           // +barbaz\n' +
+          ']'
+      );
+    });
   });
 
   it('should inspect as [...] at depth 2+', function() {
