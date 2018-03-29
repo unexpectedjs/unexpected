@@ -14,14 +14,14 @@ lint:
 .PHONY: lint
 
 build/lib: lib/*
-	babel --copy-files --out-dir build/lib --quiet lib
+	./node_modules/.bin/babel --copy-files --out-dir build/lib --quiet lib
 
 build/test: $(shell find test -type f)
-	BABEL_ENV=test babel --copy-files --out-dir build/test --quiet test
+	BABEL_ENV=test ./node_modules/.bin/babel --copy-files --out-dir build/test --quiet test
 	sed -i -e 's#--require ./test#--require ./build/test#g' ./build/test/mocha.opts
 
 build/externaltests: externaltests/*
-	babel --copy-files --out-dir build/externaltests --quiet externaltests
+	./node_modules/.bin/babel --copy-files --out-dir build/externaltests --quiet externaltests
 
 build: build/lib build/test build/externaltests
 
@@ -29,14 +29,13 @@ build: build/lib build/test build/externaltests
 ${TARGETS}: build
 	./node_modules/.bin/rollup --config rollup.config.js --sourcemap --format umd --name weknowhow.expect -o unexpected.js build/lib/index.js
 
+.PHONY: create-html-runners
 create-html-runners: build/test test/tests.tpl.html test/JasmineRunner.tpl.html
 	@for file in tests JasmineRunner ; do \
 		(sed '/test files/q' ./build/test/$${file}.tpl.html | sed '$$d' && \
 		find test -name '*.spec.js' | sed 's/test/    <script src="./' | sed 's/$$/"><\/script>/' && \
 		sed -n '/test files/,$$p' ./build/test/$${file}.tpl.html | sed '1d') > ./build/test/$${file}.html;\
 	done
-
-.PHONY: create-html-runners
 
 test-phantomjs: build/test create-html-runners ${TARGETS}
 	phantomjs ./node_modules/mocha-phantomjs-core/mocha-phantomjs-core.js build/test/tests.html spec "`node -pe 'JSON.stringify({useColors:true,grep:process.env.grep})'`"
