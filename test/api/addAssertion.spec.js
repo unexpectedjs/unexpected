@@ -844,4 +844,225 @@ describe('addAssertion', function() {
       "expected 'bar' to equal 'foo'\n" + '\n' + '-bar\n' + '+foo'
     );
   });
+
+  describe('with multiple assertion strings', function() {
+    it('omits the assertion strings in the argument list, leaving only the <type>s', function() {
+      var clonedExpect = expect.clone();
+      clonedExpect.addAssertion(
+        '<number> [not] to be in the range from <number> up to [and including] <number>',
+        function(expect, subject, lower, upper) {
+          expect.errorMode = 'nested';
+          expect(lower, 'to equal', 200);
+          expect(upper, 'to equal', 400);
+        }
+      );
+      clonedExpect(
+        123,
+        'not to be in the range from',
+        200,
+        'up to and including',
+        400
+      );
+    });
+
+    it('populates expect.flags with all flags set across the assertion strings', function() {
+      var clonedExpect = expect.clone();
+      clonedExpect.addAssertion(
+        '<number> [not] to be in the range from <number> up to [and including] <number>',
+        function(expect) {
+          expect.errorMode = 'nested';
+          expect(expect.flags, 'to equal', {
+            not: true,
+            'and including': true
+          });
+        }
+      );
+      clonedExpect(
+        123,
+        'not to be in the range from',
+        200,
+        'up to and including',
+        400
+      );
+    });
+
+    it('populates expect.alternations with all alternations set across the assertion strings', function() {
+      var clonedExpect = expect.clone();
+      clonedExpect.addAssertion(
+        '<number> to be (within|in) the range from <number> up (to|foo) <number>',
+        function(expect) {
+          expect.errorMode = 'nested';
+          expect(expect.alternations, 'to equal', ['within', 'foo']);
+        }
+      );
+      clonedExpect(123, 'to be within the range from', 200, 'up foo', 400);
+    });
+
+    it('should render the error message correctly when the assertion fails', function() {
+      var clonedExpect = expect.clone();
+      clonedExpect.addAssertion(
+        '<number> [not] to be in the range from <number> up to [and including] <number>',
+        function(expect, subject, lower, upper) {
+          expect.errorMode = 'nested';
+          expect(subject, 'to be greater than or equal to', lower).and(
+            'to be less than or equal to',
+            upper
+          );
+        }
+      );
+      expect(
+        function() {
+          clonedExpect(
+            500,
+            'to be in the range from',
+            200,
+            'up to and including',
+            400
+          );
+        },
+        'to throw',
+        'expected 500 to be in the range from 200 up to and including 400\n' +
+          '  expected 500 to be less than or equal to 400'
+      );
+    });
+    it('should use the full form of the assertion when suggesting it in case of a typo', function() {
+      var clonedExpect = expect.clone();
+      clonedExpect.addAssertion(
+        '<number> [not] to be in the range from <number> up to [and including] <number>',
+        function(expect, subject, lower, upper) {
+          expect.errorMode = 'nested';
+          expect(subject, 'to be greater than or equal to', lower).and(
+            'to be less than or equal to',
+            upper
+          );
+        }
+      );
+      expect(
+        function() {
+          clonedExpect(
+            300,
+            'to be in the range from',
+            200,
+            'up to and including',
+            'four hundred'
+          );
+        },
+        'to throw',
+        "expected 300 to be in the range from 200, 'up to and including', 'four hundred'\n" +
+          '  The assertion does not have a matching signature for:\n' +
+          '    <number> to be in the range from <number> <string> <string>\n' +
+          // Maybe: "    <number> to be in the range from <number> up to and including <string>\n" +
+          '  did you mean:\n' +
+          '    <number> [not] to be in the range from <number> up to [and including] <number>'
+      );
+    });
+
+    it('works with expect.it', function() {
+      var clonedExpect = expect.clone();
+      clonedExpect.addAssertion(
+        '<number> [not] to be in the range from <number> up to [and including] <number>',
+        function(expect, subject, lower, upper) {
+          expect.errorMode = 'nested';
+          expect(subject, 'to be greater than or equal to', lower).and(
+            'to be less than or equal to',
+            upper
+          );
+        }
+      );
+      expect({ foo: 300 }, 'to satisfy', {
+        foo: clonedExpect.it(
+          'to be in the range from',
+          200,
+          'up to and including',
+          400
+        )
+      });
+    });
+
+    describe('with a multi-string assertion that ends with <assertion>', function() {
+      var clonedExpect = expect.clone();
+      clonedExpect.addAssertion(
+        '<number> [when] divided by <number> and multiplied [twice] by <number> <assertion?>',
+        function(expect, subject, divisor, factor) {
+          expect.errorMode = 'nested';
+          return expect.shift(
+            subject / divisor * (expect.flags.twice ? 2 : 1) * factor
+          );
+        }
+      );
+
+      it('should succeed', function() {
+        clonedExpect(
+          4,
+          'when divided by',
+          2,
+          'and multiplied twice by',
+          3,
+          'to equal',
+          12
+        );
+      });
+
+      it('should fail with a the right error message', function() {
+        expect(
+          function() {
+            clonedExpect(
+              4,
+              'when divided by',
+              2,
+              'and multiplied twice by',
+              3,
+              'to equal',
+              14
+            );
+          },
+          'to throw',
+          'expected 4 when divided by 2 and multiplied twice by 3 to equal 14\n' +
+            '  expected 12 to equal 14'
+        );
+      });
+      describe('when applied multiple times', function() {
+        it('should succeed', function() {
+          clonedExpect(
+            4,
+            'when divided by',
+            2,
+            'and multiplied twice by',
+            3,
+            'when divided by',
+            6,
+            'and multiplied by',
+            4,
+            'to equal',
+            8
+          );
+        });
+
+        it('should fail with a the right error message', function() {
+          expect(
+            function() {
+              clonedExpect(
+                4,
+                'when divided by',
+                2,
+                'and multiplied twice by',
+                3,
+                'when divided by',
+                6,
+                'and multiplied by',
+                4,
+                'to equal',
+                16
+              );
+            },
+            'to throw',
+            'expected 4\n' +
+              'when divided by 2 and multiplied twice by 3 when divided by 6 and multiplied by 4 to equal 16\n' +
+              '  expected 12 when divided by 6 and multiplied by 4 to equal 16\n' +
+              '    expected 8 to equal 16'
+          );
+        });
+      });
+    });
+  });
 });

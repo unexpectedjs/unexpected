@@ -147,19 +147,6 @@ describe('parseAssertion', function() {
     );
   });
 
-  // Under consideration here: https://github.com/unexpectedjs/unexpected/issues/225
-  it('throws if the argument list contains multiple assertion strings', function() {
-    expect(
-      function() {
-        expect.parseAssertion(
-          '<number> to be in range from <number> up to [and including] <number> '
-        );
-      },
-      'to throw',
-      'Only one assertion string is supported (see #225)'
-    );
-  });
-
   it('handles types with upper case characters', function() {
     var assertion = expect.parseAssertion('<number|NaN> [not] to be NaN');
     expect(assertion, 'to satisfy', [
@@ -255,6 +242,58 @@ describe('parseAssertion', function() {
         },
         'to throw',
         'Cannot parse token at index 19 in <Buffer> wh!!en foo<>'
+      );
+    });
+  });
+
+  describe('with multiple assertion strings', function() {
+    it('represents the additional assertion strings as a separate items with variants', function() {
+      expect(
+        expect.parseAssertion(
+          '<number> to be in range from <number> up to [and including] <number>'
+        ),
+        'to satisfy',
+        [
+          {
+            subject: {
+              minimum: 1,
+              maximum: 1,
+              type: { name: 'number' }
+            },
+            assertion: 'to be in range from',
+            args: [
+              {
+                minimum: 1,
+                maximum: 1,
+                type: { name: 'number' }
+              },
+              {
+                type: { name: 'assertion' },
+                minimum: 1,
+                maximum: 1,
+                variants: {
+                  'up to and including': {
+                    text: 'up to and including',
+                    flags: { 'and including': true },
+                    alternations: []
+                  },
+                  'up to': {
+                    text: 'up to',
+                    flags: { 'and including': false },
+                    alternations: []
+                  }
+                }
+              },
+              {
+                minimum: 1,
+                maximum: 1,
+                type: {
+                  name: 'number'
+                }
+              }
+            ]
+          }
+        ]
       );
     });
   });
