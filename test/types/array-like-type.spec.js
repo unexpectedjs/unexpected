@@ -372,6 +372,55 @@ describe('array-like type', function() {
           ']'
       );
     });
+
+    it('should honour the precise list of keys returned by getKeys in "to satisfy"', () => {
+      var clonedExpect = expect.clone();
+
+      clonedExpect.addType({
+        name: 'foo',
+        base: 'array-like',
+        identify: function(obj) {
+          return obj && obj._isFoo;
+        },
+        numericalPropertiesOnly: false,
+        getKeys: function(obj) {
+          var keys = this.baseType.getKeys(obj);
+          var fooIndex = keys.indexOf('_isFoo');
+          if (fooIndex > -1) {
+            keys = keys.splice(fooIndex, 1);
+          }
+          keys.push('bar');
+          return keys;
+        }
+      });
+
+      var foo1 = ['hey', 'there'];
+      foo1._isFoo = true;
+      Object.defineProperty(foo1, 'bar', {
+        value: 123,
+        enumerable: false
+      });
+      var foo2 = ['hey', 'there'];
+      foo2._isFoo = true;
+      Object.defineProperty(foo2, 'bar', {
+        value: 456,
+        enumerable: false
+      });
+
+      expect(
+        function() {
+          clonedExpect(foo1, 'to satisfy', foo2);
+        },
+        'to throw',
+        "expected [ 'hey', 'there', bar: 123 ] to satisfy [ 'hey', 'there', bar: 456 ]\n" +
+          '\n' +
+          '[\n' +
+          "  'hey',\n" +
+          "  'there',\n" +
+          '  bar: 123 // should equal 456\n' +
+          ']'
+      );
+    });
   });
 
   describe('with a custom subtype that comes with its own hasKey', function() {
