@@ -54,7 +54,7 @@
     "mocha-slow-reporter": "*",
     "node-version-check": "2.2.0",
     "nyc": "10.3.2",
-    "offline-github-changelog": "1.1.2",
+    "offline-github-changelog": "1.2.0",
     "prettier": "1.10.2",
     "rollup": "0.51.8",
     "rollup-plugin-commonjs": "8.2.6",
