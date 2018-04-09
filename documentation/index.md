@@ -54,8 +54,7 @@ to satisfy { name: 'Unexpected', created: 2013 }
 - Node.JS ready (`require('unexpected')`)
 - Supports [asynchronous assertions using promises](/api/addAssertion/#asynchronous-assertions)
 - Single global with no prototype extensions or shims.
-- Cross-browser: works on Chrome, Firefox, Safari, Opera, IE7+,
-  (IE7-IE8 with [es5-shim](https://github.com/es-shims/es5-shim))
+- Cross-browser: works on Chrome, Firefox, Safari, Opera, IE11, Edge
 
 ### Node
 
