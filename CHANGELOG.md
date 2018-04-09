@@ -1,3 +1,10 @@
+### v10.37.3 (2018-04-09)
+
+- [#443](https://github.com/unexpectedjs/unexpected/pull/443) Trim stack traces with windows paths ([Peter Müller](mailto:munter@fumle.dk))
+- [#442](https://github.com/unexpectedjs/unexpected/pull/442) Update offline GitHub changelog to credit PR authors ([Sune Simonsen](mailto:sune@we-knowhow.dk))
+- [#423](https://github.com/unexpectedjs/unexpected/pull/423) Additional object type overrides ([Alex J Burke](mailto:alex@alexjeffburke.com))
+- [#437](https://github.com/unexpectedjs/unexpected/pull/437) Only use eslint-plugin-prettier in a TTY ([Gustav Nikolaj Olsen](mailto:gno@one.com))
+
 ### v10.37.1 (2018-02-11)
 
 - [#436](https://github.com/unexpectedjs/unexpected/pull/436) Add prettier setup, run lebab, switch to 2 space indent ([Andreas Lind](mailto:andreas.lind@peakon.com), [Andreas Lind](mailto:andreaslindpetersen@gmail.com))
