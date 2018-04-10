@@ -1,1 +1,1 @@
-../node_modules/rsvp/dist/rsvp.js
+../node_modules/rsvp/dist/rsvp.min.js
