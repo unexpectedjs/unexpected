@@ -1,3 +1,7 @@
+### v10.37.4 (2018-04-10)
+
+- [#444](https://github.com/unexpectedjs/unexpected/pull/444) Fixed IE11+ browser support ([Sune Simonsen](mailto:sune@we-knowhow.dk))
+
 ### v10.37.3 (2018-04-09)
 
 - [#443](https://github.com/unexpectedjs/unexpected/pull/443) Trim stack traces with windows paths ([Peter Müller](mailto:munter@fumle.dk))
