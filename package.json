@@ -49,7 +49,7 @@
     "jasmine-core": "^2.8.0",
     "jest": "^21.2.1",
     "minimist": "^1.2.0",
-    "mocha": "^3.2.0",
+    "mocha": "^5.1.0",
     "mocha-phantomjs-core": "^2.1.2",
     "mocha-slow-reporter": "^*",
     "node-version-check": "^2.2.0",
@@ -74,7 +74,8 @@
     "build/lib"
   ],
   "jspm": {
-    "dependencies": {},
+    "dependencies": {
+    },
     "main": "unexpected.js",
     "jspmPackage": true
   },
