@@ -423,11 +423,8 @@ if (typeof process === 'object') {
               stderr,
               'to contain',
               '    not to error\n' +
-                "      returned promise rejected with: Error('argh')\n" +
-                '      \n' +
-                '      \n' +
-                '      at thisIsImportant'
-            );
+                "      returned promise rejected with: Error('argh')\n"
+            ).and('to contain', '      at thisIsImportant');
           });
         });
       });
