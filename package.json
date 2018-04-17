@@ -84,6 +84,6 @@
       "<rootDir>/test/promisePolyfill"
     ],
     "setupTestFrameworkScriptFile": "<rootDir>/test/common.js",
-    "testRegex": "<rootDir>/test\\/.*\\.spec\\.js$"
+    "testRegex": "test\\/.*\\.spec\\.js$"
   }
 }
