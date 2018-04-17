@@ -173,10 +173,8 @@ if (typeof process === 'object') {
               stdout,
               'to contain',
               'not to error\n' +
-                "  returned promise rejected with: Error('argh')\n" +
-                '\n' +
-                '      at thisIsImportant'
-            );
+                "  returned promise rejected with: Error('argh')\n"
+            ).and('to contain', '      at thisIsImportant');
           }
         );
       });
@@ -241,10 +239,8 @@ if (typeof process === 'object') {
             stdout,
             'to contain',
             '    not to error\n' +
-              "      returned promise rejected with: Error('argh')\n" +
-              '    \n' +
-              '        at thisIsImportant'
-          );
+              "      returned promise rejected with: Error('argh')\n"
+          ).and('to contain', '        at thisIsImportant');
         });
       });
     });
