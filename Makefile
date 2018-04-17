@@ -69,7 +69,7 @@ else
 endif
 
 test-jest-if-supported-node-version:
-	@node-version-gte-4 && make test-jest || echo Skipping, jest is unsupported with node $(shell node --version)
+	@node-version-gte-6 && make test-jest || echo Skipping, jest is unsupported with node $(shell node --version)
 
 .PHONY: test
 test: test-sources

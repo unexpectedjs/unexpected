@@ -249,8 +249,8 @@ if (typeof process === 'object') {
       });
     });
 
-    // jest requires node.js 4 or above:
-    if (!/^v[0123]\./.test(process.version)) {
+    // jest requires node.js 6 or above:
+    if (!/^v[012345]\./.test(process.version)) {
       describe('executed through jest', function() {
         expect.addAssertion(
           '<array|string> executed through jest <object?>',
@@ -423,11 +423,8 @@ if (typeof process === 'object') {
               stderr,
               'to contain',
               '    not to error\n' +
-                "      returned promise rejected with: Error('argh')\n" +
-                '      \n' +
-                '      \n' +
-                '      at thisIsImportant'
-            );
+                "      returned promise rejected with: Error('argh')\n"
+            ).and('to contain', '      at thisIsImportant');
           });
         });
       });
