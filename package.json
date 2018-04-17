@@ -57,7 +57,7 @@
     "offline-github-changelog": "^1.2.0",
     "prettier": "^1.10.2",
     "rollup": "^0.58.0",
-    "rollup-plugin-commonjs": "^8.2.6",
+    "rollup-plugin-commonjs": "^9.1.0",
     "rollup-plugin-node-globals": "^1.1.0",
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-uglify": "^2.0.1",
