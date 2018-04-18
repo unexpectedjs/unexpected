@@ -1,3 +1,12 @@
+### v10.37.5 (2018-04-18)
+
+- [#457](https://github.com/unexpectedjs/unexpected/pull/457)  Fixed wrong error message seen in unexpected-dom ([Sune Simonsen](mailto:sune@we-knowhow.dk))
+- [#451](https://github.com/unexpectedjs/unexpected/pull/451) Upgrade jest to version 22.4.3 ([Andreas Lind](mailto:andreaslindpetersen@gmail.com), [depfu[bot]](mailto:bot@depfu.com))
+- [#456](https://github.com/unexpectedjs/unexpected/pull/456) Upgrade rollup-plugin-uglify to version 3.0.0 ([depfu[bot]](mailto:bot@depfu.com))
+- [#455](https://github.com/unexpectedjs/unexpected/pull/455) Upgrade rollup-plugin-commonjs to version 9.1.0 ([depfu[bot]](mailto:bot@depfu.com))
+- [#454](https://github.com/unexpectedjs/unexpected/pull/454) Upgrade rollup to version 0.58.0 ([depfu[bot]](mailto:bot@depfu.com))
+- [#450](https://github.com/unexpectedjs/unexpected/pull/450) Upgrade jasmine-core to version 3.1.0 ([depfu[bot]](mailto:bot@depfu.com))
+
 ### v10.37.4 (2018-04-10)
 
 - [#444](https://github.com/unexpectedjs/unexpected/pull/444) Fixed IE11+ browser support ([Sune Simonsen](mailto:sune@we-knowhow.dk))
