@@ -352,4 +352,57 @@ describe('expect.shift', function() {
       }, 'executed inside an assertion');
     });
   });
+
+  it('fails when the given assertion does not accept the shifted subject type', () => {
+    var clonedExpect = expect
+      .clone()
+      .addAssertion('<number> when stringified <assertion>', function(
+        expect,
+        subject
+      ) {
+        expect.errorMode = 'nested';
+        return expect.shift(String(subject));
+      });
+
+    expect(
+      () => {
+        clonedExpect(666, 'when stringified', 'to be negative');
+      },
+      'to throw',
+      'expected 666 when stringified to be negative\n' +
+        "  expected '666' to be negative\n" +
+        '    The assertion does not have a matching signature for:\n' +
+        '      <string> to be negative\n' +
+        '    did you mean:\n' +
+        '      <number> [not] to be negative'
+    );
+  });
+
+  describe('when you shift to an assertion in the parent expect', () => {
+    it('fails when the given assertion does not accept the shifted subject type', () => {
+      var clonedExpect = expect
+        .clone()
+        .child()
+        .exportAssertion('<number> when stringified <assertion>', function(
+          expect,
+          subject
+        ) {
+          expect.errorMode = 'nested';
+          return expect.shift(String(subject));
+        });
+
+      expect(
+        () => {
+          clonedExpect(666, 'when stringified', 'to be negative');
+        },
+        'to throw',
+        'expected 666 when stringified to be negative\n' +
+          "  expected '666' to be negative\n" +
+          '    The assertion does not have a matching signature for:\n' +
+          '      <string> to be negative\n' +
+          '    did you mean:\n' +
+          '      <number> [not] to be negative'
+      );
+    });
+  });
 });

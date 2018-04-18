@@ -41,6 +41,39 @@ describe('unexpected', function() {
       );
     });
 
+    it('fails if the given assertion can not be found', () => {
+      expect(
+        () => {
+          expect(
+            ['foo', 'bar', 'baz'],
+            'to have entries satisfying',
+            expect.it('to be a string')
+          );
+        },
+        'to throw',
+        "Unknown assertion 'to have entries satisfying', did you mean: 'to have an item satisfying'"
+      );
+    });
+
+    it('fails if the given assertion is not defined for the provided parameters', () => {
+      expect(
+        () => {
+          expect(
+            'foo',
+            'to have items satisfying',
+            expect.it('to be a string')
+          );
+        },
+        'to throw',
+        "expected 'foo' to have items satisfying expect.it('to be a string')\n" +
+          '  The assertion does not have a matching signature for:\n' +
+          '    <string> to have items satisfying <expect.it>\n' +
+          '  did you mean:\n' +
+          '    <array-like> to have items [exhaustively] satisfying <any>\n' +
+          '    <array-like> to have items [exhaustively] satisfying <assertion>'
+      );
+    });
+
     describe('in a nested expect', function() {
       it('fails when given no parameters', function() {
         var clonedExpect = expect
