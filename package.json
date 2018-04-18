@@ -1,8 +1,12 @@
 {
   "name": "unexpected",
-  "version": "10.37.4",
+  "version": "10.37.5",
   "author": "Sune Sloth Simonsen <sune@we-knowhow.dk>",
-  "keywords": ["assertion", "test", "assert"],
+  "keywords": [
+    "assertion",
+    "test",
+    "assert"
+  ],
   "license": "MIT",
   "bugs": "https://github.com/unexpectedjs/unexpected/issues",
   "repository": {
@@ -12,12 +16,9 @@
   "scripts": {
     "test": "make test && make test-phantomjs",
     "lint": "eslint .",
-    "generate-site":
-      "generate-site --require ./bootstrap-unexpected-markdown.js",
-    "update-examples":
-      "generate-site --require ./bootstrap-unexpected-markdown.js --update-examples",
-    "preversion":
-      "test -n \"${IS_MAKE_RELEASE}\" || (echo Please run make release instead && exit 1)"
+    "generate-site": "generate-site --require ./bootstrap-unexpected-markdown.js",
+    "update-examples": "generate-site --require ./bootstrap-unexpected-markdown.js --update-examples",
+    "preversion": "test -n \"${IS_MAKE_RELEASE}\" || (echo Please run make release instead && exit 1)"
   },
   "main": "./build/lib/index.js",
   "dependencies": {
@@ -66,15 +67,24 @@
     "unexpected-magicpen": "^0.2.2",
     "unexpected-markdown": "^1.7.4"
   },
-  "files": ["unexpected.js", "unexpected.js.map", "lib", "build/lib"],
+  "files": [
+    "unexpected.js",
+    "unexpected.js.map",
+    "lib",
+    "build/lib"
+  ],
   "jspm": {
     "dependencies": {},
     "main": "unexpected.js",
     "jspmPackage": true
   },
   "jest": {
-    "setupFiles": ["<rootDir>/test/promisePolyfill"],
+    "setupFiles": [
+      "<rootDir>/test/promisePolyfill"
+    ],
     "setupTestFrameworkScriptFile": "<rootDir>/test/common.js",
-    "testMatch": ["<rootDir>/test/**.spec.js"]
+    "testMatch": [
+      "<rootDir>/test/**.spec.js"
+    ]
   }
 }
