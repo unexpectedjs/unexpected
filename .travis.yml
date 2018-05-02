@@ -8,4 +8,5 @@ node_js:
    - "7"
    - "8.4.0"
    - "9"
+   - "10"
 script: "make travis"
