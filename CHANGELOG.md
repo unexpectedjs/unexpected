@@ -1,3 +1,7 @@
+### v10.37.6 (2018-05-02)
+
+- [#464](https://github.com/unexpectedjs/unexpected/pull/464) Add support for node.js 10 ([Andreas Lind](mailto:andreas.lind@peakon.com))
+
 ### v10.37.5 (2018-04-18)
 
 - [#457](https://github.com/unexpectedjs/unexpected/pull/457)  Fixed wrong error message seen in unexpected-dom ([Sune Simonsen](mailto:sune@we-knowhow.dk))
