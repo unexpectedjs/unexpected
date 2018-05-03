@@ -462,4 +462,65 @@ describe('object type', function() {
       }
     );
   });
+
+  describe('with a subtype that key presence and retrieval', function() {
+    function NestedObject(contentObject) {
+      this.contentObject = contentObject;
+    }
+
+    var clonedExpect = expect.clone();
+
+    clonedExpect.addType({
+      name: 'NestedObject',
+      base: 'object',
+      identify: function(obj) {
+        return obj && obj instanceof NestedObject;
+      },
+      getKeys: function(obj) {
+        return Object.keys(obj.contentObject);
+      },
+      hasKey: function(obj, key) {
+        return obj.contentObject[key];
+      },
+      valueForKey: function(obj, key) {
+        return obj.contentObject[key];
+      }
+    });
+
+    it('should mark keys missing', function() {
+      expect(
+        function() {
+          clonedExpect(
+            new NestedObject({}),
+            'to equal',
+            new NestedObject({ foo: 'bar' })
+          );
+        },
+        'to throw',
+        "expected NestedObject({}) to equal NestedObject({ foo: 'bar' })\n" +
+          '\n' +
+          'NestedObject({\n' +
+          "  // missing foo: 'bar'\n" +
+          '})'
+      );
+    });
+
+    it('should mark keys unecessary', function() {
+      expect(
+        function() {
+          clonedExpect(
+            new NestedObject({ foo: 'bar' }),
+            'to equal',
+            new NestedObject({})
+          );
+        },
+        'to throw',
+        "expected NestedObject({ foo: 'bar' }) to equal NestedObject({})\n" +
+          '\n' +
+          'NestedObject({\n' +
+          "  foo: 'bar' // should be removed\n" +
+          '})'
+      );
+    });
+  });
 });
