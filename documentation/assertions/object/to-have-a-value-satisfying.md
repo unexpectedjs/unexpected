@@ -54,7 +54,7 @@ expect(
 ```
 
 ```output
-expected object to have a value satisfying
+expected { foo: [ 10, 11, 12 ], bar: [ 14, 15, 16 ], baz: [ 17, 18, 19 ] } to have a value satisfying
 to have items satisfying expect.it('to be a number')
         .and('to be below', 8)
 ```

@@ -55,7 +55,8 @@ expect(
 ```
 
 ```output
-expected array to have an item satisfying to have an item satisfying to be a number
+expected [ [ '0', '1' ], [ '5', '6' ], [ '7', '8' ] ]
+to have an item satisfying to have an item satisfying to be a number
 ```
 
 Here a another example:
