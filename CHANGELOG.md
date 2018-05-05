@@ -1,3 +1,7 @@
+### v10.37.7 (2018-05-05)
+
+- [#465](https://github.com/unexpectedjs/unexpected/pull/465) Fix key in value check that were not converted to type.hasKey(). ([Alex J Burke](mailto:alex@alexjeffburke.com))
+
 ### v10.37.6 (2018-05-02)
 
 - [#464](https://github.com/unexpectedjs/unexpected/pull/464) Add support for node.js 10 ([Andreas Lind](mailto:andreas.lind@peakon.com))
