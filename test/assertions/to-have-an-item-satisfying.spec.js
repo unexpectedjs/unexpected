@@ -10,8 +10,8 @@ describe('to have an item satisfying assertion', function() {
         '  The assertion does not have a matching signature for:\n' +
         '    <array> to have an item satisfying\n' +
         '  did you mean:\n' +
-        '    <array-like> to have an item [exhaustively] satisfying <any>\n' +
-        '    <array-like> to have an item [exhaustively] satisfying <assertion>'
+        '    <array-like> [not] to have an item [exhaustively] satisfying <any>\n' +
+        '    <array-like> [not] to have an item [exhaustively] satisfying <assertion>'
     );
   });
 
@@ -25,8 +25,8 @@ describe('to have an item satisfying assertion', function() {
         '  The assertion does not have a matching signature for:\n' +
         '    <number> to have an item satisfying <string>\n' +
         '  did you mean:\n' +
-        '    <array-like> to have an item [exhaustively] satisfying <any>\n' +
-        '    <array-like> to have an item [exhaustively] satisfying <assertion>'
+        '    <array-like> [not] to have an item [exhaustively] satisfying <any>\n' +
+        '    <array-like> [not] to have an item [exhaustively] satisfying <assertion>'
     );
   });
 
@@ -62,6 +62,27 @@ describe('to have an item satisfying assertion', function() {
     );
   });
 
+  it('asserts that no items in the array satisfies the RHS expectation', function() {
+    expect(['foo', 'bar'], 'not to have an item satisfying', 'to be a number');
+
+    expect(['foo', 'bar'], 'not to have an item satisfying', function(item) {
+      expect(item, 'to be a number');
+    });
+
+    expect(
+      [0, 1, 42, 2],
+      'not to have an item satisfying',
+      'not to be a number'
+    );
+
+    expect(
+      [['bar'], ['bar']],
+      'not to have an item satisfying',
+      'to have an item satisfying',
+      'to be a number'
+    );
+  });
+
   it("throws the correct error if none of the subject's values match the RHS expectation", function() {
     expect(
       function() {
@@ -73,6 +94,20 @@ describe('to have an item satisfying assertion', function() {
       },
       'to throw',
       "expected [ 'foo', 'bar' ] to have an item satisfying expect.it('to be a number')"
+    );
+  });
+
+  it("throws the correct error, when negated, if any of the subject's values match the RHS expectation", function() {
+    expect(
+      function() {
+        expect(
+          ['foo', 1],
+          'not to have an item satisfying',
+          expect.it('to be a number')
+        );
+      },
+      'to throw',
+      "expected [ 'foo', 1 ] not to have an item satisfying expect.it('to be a number')"
     );
   });
 
