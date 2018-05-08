@@ -96,7 +96,9 @@ describe('to have a value satisfying assertion', function() {
       'to be a string'
     );
 
-    expect({ foo: '0', bar: '1' }, 'not to have a value satisfying', function(value) {
+    expect({ foo: '0', bar: '1' }, 'not to have a value satisfying', function(
+      value
+    ) {
       expect(value, 'to be a number');
     });
 
@@ -140,7 +142,7 @@ describe('to have a value satisfying assertion', function() {
       },
       'to throw',
       "expected { foo: 'foo', bar: 1 }\n" +
-      "not to have a value satisfying expect.it('to be a number')"
+        "not to have a value satisfying expect.it('to be a number')"
     );
   });
 
