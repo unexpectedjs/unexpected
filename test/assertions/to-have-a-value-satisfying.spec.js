@@ -142,7 +142,11 @@ describe('to have a value satisfying assertion', function() {
       },
       'to throw',
       "expected { foo: 'foo', bar: 1 }\n" +
-        "not to have a value satisfying expect.it('to be a number')"
+        "not to have a value satisfying expect.it('to be a number')\n\n" +
+        '{\n' +
+        "  foo: 'foo',\n" +
+        '  bar: 1 // should be removed\n' +
+        '}'
     );
   });
 

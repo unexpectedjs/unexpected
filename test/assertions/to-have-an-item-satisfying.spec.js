@@ -107,7 +107,11 @@ describe('to have an item satisfying assertion', function() {
         );
       },
       'to throw',
-      "expected [ 'foo', 1 ] not to have an item satisfying expect.it('to be a number')"
+      "expected [ 'foo', 1 ] not to have an item satisfying expect.it('to be a number')\n\n" +
+        '[\n' +
+        "  'foo',\n" +
+        '  1 // should be removed\n' +
+        ']'
     );
   });
 

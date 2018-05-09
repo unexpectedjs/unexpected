@@ -67,4 +67,8 @@ expect({ foo: { a: 1, b: 2 } }, 'not to have a value satisfying', { a: 1 });
 
 ```output
 expected { foo: { a: 1, b: 2 } } not to have a value satisfying { a: 1 }
+
+{
+  foo: { a: 1, b: 2 } // should be removed
+}
 ```
