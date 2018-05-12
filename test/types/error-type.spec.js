@@ -140,4 +140,38 @@ describe('Error type', function() {
       });
     });
   });
+
+  describe('when comparing error with differeing enumerable keys', function() {
+    it('should not break', () => {
+      var e1 = new Error('foo');
+      var e2 = new Error();
+      e2.message = 'foo';
+
+      expect(() => {
+        expect(e1, 'to equal', e2);
+      }, 'not to throw');
+    });
+  });
+
+  describe('with objects that differ only in the enumerability of keys', function() {
+    it('should succeed when the lhs object has a non-enumerable key', function() {
+      var a = { a: 123 };
+      var b = { a: 123, b: 456 };
+      Object.defineProperty(a, 'b', {
+        value: 456,
+        enumerable: false
+      });
+      expect(a, 'to equal', b);
+    });
+
+    it('should succeed when the rhs object has a non-enumerable key', function() {
+      var a = { a: 123, b: 456 };
+      var b = { a: 123 };
+      Object.defineProperty(b, 'b', {
+        value: 456,
+        enumerable: false
+      });
+      expect(a, 'to equal', b);
+    });
+  });
 });
