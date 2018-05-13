@@ -46,6 +46,7 @@ Here's a partial list of plugins for Unexpected:
 * [unexpected-moment](http://unexpected.js.org/unexpected-moment/):
   Assertions for testing [moment.js](http://momentjs.com/) instances.
 * [unexpected-react](http://bruderstein.github.io/unexpected-react): Assertions for React.js. Assert using JSX.
+* [unexpected-reaction](http://unexpected.js.org/unexpected-reaction/): An Unexpected plugin to make React testing with [unexpected-dom](https://munter.github.io/unexpected-dom/) more convenient.
 * [unexpected-resemble](http://unexpected.js.org/unexpected-resemble/): Image resemblance
   assertions based on [resemble.js](http://huddle.github.io/Resemble.js/). Works in
   both node.js and the browser.
