@@ -61,8 +61,14 @@ describe('Error type', function() {
     }
 
     function MyError(message) {
-      Error.call(this);
-      this.message = message;
+      var instance = new Error(message);
+      var proto = Object.getPrototypeOf(this);
+      if (Object.setPrototypeOf) {
+        Object.setPrototypeOf(instance, proto);
+      } else {
+        instance.__proto__ = proto; // eslint-disable-line no-proto
+      }
+      return instance;
     }
 
     inherits(MyError, Error);
