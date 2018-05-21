@@ -91,4 +91,79 @@ describe('freeze', function() {
       'Cannot install a theme into a frozen instance, please run .clone() first'
     );
   });
+
+  describe('with .child()', function() {
+    it('does not throw', function() {
+      expect
+        .clone()
+        .freeze()
+        .child();
+    });
+
+    it('allows addAssertion', function() {
+      expect
+        .clone()
+        .freeze()
+        .child()
+        .addAssertion('<string> to foo', function(expect, subject) {
+          expect(subject, 'to equal', 'foo');
+        });
+    });
+
+    it('throws on exportAssertion', function() {
+      expect(
+        function() {
+          expect
+            .clone()
+            .freeze()
+            .child()
+            .exportAssertion('<string> to foo', function(expect, subject) {
+              expect(subject, 'to equal', 'foo');
+            });
+        },
+        'to throw',
+        'Cannot add an assertion to a frozen instance, please run .clone() first'
+      );
+    });
+
+    it('throws on exportType', function() {
+      expect(
+        function() {
+          expect
+            .clone()
+            .freeze()
+            .child()
+            .exportType({ name: 'foo', identify: false });
+        },
+        'to throw',
+        'Cannot add a type to a frozen instance, please run .clone() first'
+      );
+    });
+
+    it('allows .addStyle(...)', function() {
+      expect
+        .clone()
+        .freeze()
+        .child()
+        .addStyle('smiley', function() {
+          this.red('\u263a');
+        });
+    });
+
+    it('throws on exportStyle', function() {
+      expect(
+        function() {
+          expect
+            .clone()
+            .freeze()
+            .child()
+            .exportStyle('smiley', function() {
+              this.red('\u263a');
+            });
+        },
+        'to throw',
+        'Cannot add a style to a frozen instance, please run .clone() first'
+      );
+    });
+  });
 });
