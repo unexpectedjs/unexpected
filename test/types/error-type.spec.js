@@ -140,4 +140,16 @@ describe('Error type', function() {
       });
     });
   });
+
+  describe('when comparing error with differeing enumarable keys', () => {
+    it('should not break', () => {
+      var e1 = new Error('foo');
+      var e2 = new Error();
+      e2.message = 'foo';
+
+      expect(() => {
+        expect(e1, 'to equal', e2);
+      }, 'not to throw');
+    });
+  });
 });
