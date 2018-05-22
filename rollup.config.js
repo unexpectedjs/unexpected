@@ -2,13 +2,15 @@ var fs = require('fs');
 var pathModule = require('path');
 
 module.exports = {
-  banner:
-    '/*!\n' +
-    fs
-      .readFileSync(pathModule.resolve(__dirname, 'LICENSE'), 'utf-8')
-      .replace(/^/gm, ' * ')
-      .replace(/\s+$/g, '') +
-    '/\n',
+  output: {
+    banner:
+      '/*!\n' +
+      fs
+        .readFileSync(pathModule.resolve(__dirname, 'LICENSE'), 'utf-8')
+        .replace(/^/gm, ' * ')
+        .replace(/\s+$/g, '') +
+      '/\n'
+  },
   plugins: [
     /* eslint import/no-extraneous-dependencies: ["error", {"devDependencies": true}] */
     require('rollup-plugin-commonjs')(),
