@@ -58,3 +58,17 @@ expected { foo: [ 10, 11, 12 ], bar: [ 14, 15, 16 ], baz: [ 17, 18, 19 ] } to ha
 to have items satisfying expect.it('to be a number')
         .and('to be below', 8)
 ```
+
+This assertion can be negated using the `not` flag:
+
+```javascript
+expect({ foo: { a: 1, b: 2 } }, 'not to have a value satisfying', { a: 1 });
+```
+
+```output
+expected { foo: { a: 1, b: 2 } } not to have a value satisfying { a: 1 }
+
+{
+  foo: { a: 1, b: 2 } // should be removed
+}
+```

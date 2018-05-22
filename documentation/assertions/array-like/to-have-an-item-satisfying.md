@@ -74,3 +74,27 @@ expected [ 0, -1, -2, -3, -4 ] to have an item satisfying
 expect.it('to be a number')
         .and('to be positive')
 ```
+
+This assertion can be negated using the `not` flag:
+
+```javascript
+expect(
+    [0, -1, -2, -3, -4],
+    'not to have an item satisfying',
+    expect.it('to be a number').and('to be negative')
+);
+```
+
+```output
+expected [ 0, -1, -2, -3, -4 ] not to have an item satisfying
+expect.it('to be a number')
+        .and('to be negative')
+
+[
+  0,
+  -1, // should be removed
+  -2, // should be removed
+  -3, // should be removed
+  -4 // should be removed
+]
+```
