@@ -1,3 +1,12 @@
+### v10.38.0 (2018-05-22)
+
+- [#476](https://github.com/unexpectedjs/unexpected/pull/476) Implement Unexpected#freeze / expect.freeze ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [#467](https://github.com/unexpectedjs/unexpected/pull/467) add: negated assertions for 'to have an item satisfying' and 'to have… ([Jan Aagaard Meier](mailto:janzeh@gmail.com))
+- [#475](https://github.com/unexpectedjs/unexpected/pull/475) Upgrade rollup-plugin-uglify to version 4.0.0 ([Andreas Lind](mailto:andreaslindpetersen@gmail.com), [depfu[bot]](mailto:depfu[bot]@users.noreply.github.com))
+- [#472](https://github.com/unexpectedjs/unexpected/pull/472) Upgrade rollup to version 0.59.0 ([depfu[bot]](mailto:bot@depfu.com))
+- [#471](https://github.com/unexpectedjs/unexpected/pull/471) Added link to the unexpected-reaction plugin ([Sune Simonsen](mailto:sune@we-knowhow.dk))
+- [#441](https://github.com/unexpectedjs/unexpected/pull/441) Only compact the subject when there is a diff ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+
 ### v10.37.7 (2018-05-05)
 
 - [#465](https://github.com/unexpectedjs/unexpected/pull/465) Fix key in value check that were not converted to type.hasKey(). ([Alex J Burke](mailto:alex@alexjeffburke.com))
@@ -152,9 +161,6 @@
 
 - [#338](https://github.com/unexpectedjs/unexpected/pull/338) Add <object|array-like> to have (a value|an item) satisfying <any|assertion> ([Andreas Lind](mailto:andreas@one.com), [Joel Mukuthu](mailto:jmu@one.com))
 - [#355](https://github.com/unexpectedjs/unexpected/pull/355) Inspect async functions ([Andreas Lind](mailto:andreas@one.com))
-
-### v10.20.0 (2016-11-27)
-
 - [#340](https://github.com/unexpectedjs/unexpected/pull/340) Add 'to be fulfilled with a value satisfying' and 'to be rejected with error satisfying' ([Joel Mukuthu](mailto:jmu@one.com))
 - [#348](https://github.com/unexpectedjs/unexpected/pull/348) to have (items|values|keys) satisfying: Only allow one <any> as the value, not <any+> ([Andreas Lind](mailto:andreas@one.com))
 - [#349](https://github.com/unexpectedjs/unexpected/pull/349) to have keys satisfying, to have values satisfying: Disallow an empty array ([Andreas Lind](mailto:andreas@one.com))
