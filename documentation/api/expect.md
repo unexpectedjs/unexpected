@@ -5,7 +5,7 @@ Perform an assertion about `subject`.
 The `expect` function will throw an `UnexpectedError` if the assertion can be
 decided synchronously and isn't fulfilled:
 
-```javascript
+```js
 expect(123, 'to equal', 456);
 ```
 
@@ -26,7 +26,7 @@ does some unholy trickery so it also works in Jasmine.
 Note that if the assertion is asynchronous, you'll have to return the promise
 to the `it` block:
 
-```javascript#eval:false
+```js#eval:false
 it('should call the callback', function () {
     return expect(setImmediate, 'to call the callback');
 });
@@ -40,20 +40,19 @@ and make the test fail synchronously. This will uncover some extremely nasty
 bugs where the test suite succeeds when it should actually fail. However, this
 feature only works in Mocha and Jasmine.
 
-
 ## expect(...).and(assertionName, [value, ...])
 
 The returned promise will be augmented with an `and` method that allows you to
 perform more assertions on the same subject:
 
-```javascript
+```js
 expect('abc', 'to be a string').and('to have length', 3);
 ```
 
 Again, note that you need to return the value returned by `expect` to your `it`
 block if any of the assertions are asynchronous:
 
-```javascript#eval:false
+```js#eval:false
 it('should do the right thing', function () {
     return expect(setImmediate, 'to be a function').and('to call the callback');
 });

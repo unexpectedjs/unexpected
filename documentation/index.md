@@ -8,7 +8,7 @@ repository: https://github.com/unexpectedjs/unexpected
 # Welcome to Unexpected
 # The extensible BDD assertion toolkit
 
-```javascript
+```js
 const library = {
   name: 'un3xp3c73d',
   created: 2013,

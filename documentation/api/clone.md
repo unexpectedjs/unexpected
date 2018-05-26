@@ -10,10 +10,12 @@ original instance:
 ```js
 var originalExpect = expect;
 
-expect = expect.clone().addAssertion('to be an integer', function (expect, subject) {
-  expect(subject, 'to be a number');
-  expect(Math.round(subject), 'to be', subject);
-});
+expect = expect
+  .clone()
+  .addAssertion('to be an integer', function(expect, subject) {
+    expect(subject, 'to be a number');
+    expect(Math.round(subject), 'to be', subject);
+  });
 
 expect(42, 'to be an integer');
 ```

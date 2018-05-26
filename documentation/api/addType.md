@@ -18,8 +18,8 @@ implement the required parts of the following interface:
 
 Required members:
 
-* __name__: `String` - the name of the type.
-* __identify__: `boolean function(value)` - a function deciding if the type
+* **name**: `String` - the name of the type.
+* **identify**: `boolean function(value)` - a function deciding if the type
   should be used for the given value.
 
 Note that your type has the option to take precedence over all the built-in
@@ -29,14 +29,14 @@ first, so `identify` functions should take care not to break with `undefined`,
 
 Optional members:
 
-* __base__: `String` - the name of the base type. Defaults to `any`.
-* __equal__: `boolean function(a, b, equal)` -
+* **base**: `String` - the name of the base type. Defaults to `any`.
+* **equal**: `boolean function(a, b, equal)` -
   a function capable of comparing two values of this type for
   equality. If not specified it is inherited from the base type.
-* __inspect__: `function(value, depth, output, inspect)` -
+* **inspect**: `function(value, depth, output, inspect)` -
   a function capable of inspecting a value of this type. If not
   specified it is inherited from the base type.
-* __diff__: `comparison function(actual, expected, output, diff, inspect)` -
+* **diff**: `comparison function(actual, expected, output, diff, inspect)` -
   a function producing a comparison between two values of this
   type. If not specified it is inherited from the base type.
 
@@ -45,10 +45,10 @@ Optional members:
 Adding new types to the system is best explained by an example. Let's
 say we wanted to add first class support for a `Person` type:
 
-```javascript
+```js
 function Person(name, age) {
-    this.name = name;
-    this.age = age;
+  this.name = name;
+  this.age = age;
 }
 ```
 
@@ -57,13 +57,13 @@ instances. The name of the type should be `Person` and it should
 inherit from the built-in `object` type. Furthermore we add an
 `identify` method that will recognize `Person` instances.
 
-```javascript
+```js
 expect.addType({
-    name: 'Person',
-    base: 'object',
-    identify: function (value) {
-        return value instanceof Person;
-    }
+  name: 'Person',
+  base: 'object',
+  identify: function(value) {
+    return value instanceof Person;
+  }
 });
 ```
 
@@ -73,7 +73,7 @@ didn't implement. In this case we inherited the methods `equal`,
 
 Imagine that we make a failing expectation on a `Person` instance:
 
-```javascript
+```js
 expect(new Person('John Doe', 42), 'to equal', new Person('Jane Doe', 24));
 ```
 
@@ -94,7 +94,7 @@ That is already quite helpful, but it would be even nicer if the
 stringification of `Person` instances could read as valid calls to the
 constructor. We can fix that by implementing an `inspect` method on the type.
 
-```javascript#freshExpect:true
+```js#freshExpect:true
 expect.addType({
     name: 'Person',
     base: 'object',
@@ -113,7 +113,7 @@ expect.addType({
 
 Now we get the following output:
 
-```javascript
+```js
 expect(new Person('John Doe', 42), 'to equal', new Person('Jane Doe', 24));
 ```
 
@@ -138,7 +138,7 @@ inspect members. The output is an instance of
 number of [styles](https://github.com/unexpectedjs/unexpected/blob/master/lib/styles.js).
 
 We write `new Person(` without styling, then we append the inspected
-`name`, write a `, `, inspect the `age` and finish with the closing
+`name`, write a `,`, inspect the `age` and finish with the closing
 parenthesis. When `inspect` is called without a depth parameter it
 defaults to `depth-1`. Values inspected with depth zero will be
 inspected as `...`. In this case we always want the name so we forward the
@@ -147,7 +147,7 @@ same depth to the `inspect` function.
 Let's say we wanted `Person` instances only to be compared by name and not by
 age. Then we need to override the `equal` method:
 
-```javascript#freshExpect:true
+```js#freshExpect:true
 expect.addType({
     name: 'Person',
     base: 'object',
@@ -171,7 +171,7 @@ This will produce the same output as above, but that means the diff if
 wrong. It states that the age should be changed. We can fix that the
 following way:
 
-```javascript#freshExpect:true
+```js#freshExpect:true
 expect.addType({
     name: 'Person',
     base: 'object',
@@ -194,7 +194,7 @@ expect.addType({
 });
 ```
 
-```javascript
+```js
 expect(new Person('John Doe', 42), 'to equal', new Person('Jane Doe', 24));
 ```
 
@@ -218,7 +218,7 @@ on the base directly when you know it is the one you need.
 
 You could also do something really custom as seen below:
 
-```javascript#freshExpect:true
+```js#freshExpect:true
 var inlineDiff = true; // used to change inlining in a later example
 
 expect.addType({
@@ -270,7 +270,7 @@ expect.addType({
 
 That would produce the following output.
 
-```javascript
+```js
 expect(new Person('John Doe', 42), 'to equal', new Person('Jane Doe', 24));
 ```
 
@@ -295,12 +295,18 @@ into the parent; otherwise the diff will be inserted in an annotation
 block. The outputs below shows the contrast between setting the
 `Person` diff to inline or not.
 
-```javascript
+```js
 inlineDiff = true;
 expect(
-  {'John Doe': new Person('John Doe', 42), 'Jane Doe': new Person('Janie Doe', 24)},
+  {
+    'John Doe': new Person('John Doe', 42),
+    'Jane Doe': new Person('Janie Doe', 24)
+  },
   'to equal',
-  {'John Doe': new Person('John Doe', 42), 'Jane Doe': new Person('Jane Doe', 24)}
+  {
+    'John Doe': new Person('John Doe', 42),
+    'Jane Doe': new Person('Jane Doe', 24)
+  }
 );
 ```
 
@@ -327,12 +333,18 @@ to equal
 }
 ```
 
-```javascript
+```js
 inlineDiff = false;
 expect(
-  {'John Doe': new Person('John Doe', 42), 'Jane Doe': new Person('Janie Doe', 24)},
+  {
+    'John Doe': new Person('John Doe', 42),
+    'Jane Doe': new Person('Janie Doe', 24)
+  },
   'to equal',
-  {'John Doe': new Person('John Doe', 42), 'Jane Doe': new Person('Jane Doe', 24)}
+  {
+    'John Doe': new Person('John Doe', 42),
+    'Jane Doe': new Person('Jane Doe', 24)
+  }
 );
 ```
 
@@ -365,9 +377,12 @@ Now that we have implemented a type, we can start adding assertions to
 it. These assertions will only work on this type or types inheriting
 from the type.
 
-```javascript
-expect.addAssertion('<Person> to be above legal age', function (expect, subject) {
-    expect(subject.age, 'to be greater than or equal to', 18);
+```js
+expect.addAssertion('<Person> to be above legal age', function(
+  expect,
+  subject
+) {
+  expect(subject.age, 'to be greater than or equal to', 18);
 });
 
 expect(new Person('Jane Doe', 24), 'to be above legal age');
@@ -376,11 +391,11 @@ expect(new Person('Jane Doe', 24), 'to be above legal age');
 Because `Person` inherits from `object` you can use all assertion
 defined for `object` or any of its ancestors. Here is an example:
 
-```javascript
+```js
 expect(new Person('Jane Doe', 24), 'to have keys', 'name', 'age');
 expect(new Person('Jane Doe', 24), 'to satisfy', {
-    name: expect.it('to be a string').and('not to be empty'),
-    age: expect.it('to be a number').and('not to be negative')
+  name: expect.it('to be a string').and('not to be empty'),
+  age: expect.it('to be a number').and('not to be negative')
 });
 ```
 

@@ -2,7 +2,7 @@ Apply a function to the subject array (or array-like object), then delegate the 
 
 ```js
 function add(a, b) {
-    return a + b;
+  return a + b;
 }
 
 expect([1, 2], 'when passed as parameters to', add, 'to equal', 3);
@@ -24,14 +24,20 @@ To call an node-style async function, use the `async` flag to automatically
 add a callback to the parameter list and do further assertions on the value it
 passes to the callback.
 
-```javascript#async:true
+```js#async:true
 function delayedAdd(a, b, cb) {
-    setTimeout(function () {
-        cb(null, a + b);
-    }, 1);
+  setTimeout(function() {
+    cb(null, a + b);
+  }, 1);
 }
 
-return expect([1, 2], 'when passed as parameters to async', delayedAdd, 'to equal', 3);
+return expect(
+  [1, 2],
+  'when passed as parameters to async',
+  delayedAdd,
+  'to equal',
+  3
+);
 ```
 
 The assertion will fail if the async function passes an error to the callback.
@@ -39,9 +45,9 @@ The assertion will fail if the async function passes an error to the callback.
 You can also use the `constructor` flag to create an instance of a constructor
 function (using the `new` operator):
 
-```javascript
+```js
 function Foo(value) {
-    this.value = value;
+  this.value = value;
 }
 
 expect([123], 'when passed as parameters to constructor', Foo, 'to be a', Foo);
@@ -51,7 +57,7 @@ If you don't provide an assertion to delegate to, the return value will be provi
 as the fulfillment value of the promise:
 
 ```js#async:true
-return expect([1, 3], 'passed as parameters to', add).then(function (result) {
-    expect(result, 'to equal', 4);
+return expect([1, 3], 'passed as parameters to', add).then(function(result) {
+  expect(result, 'to equal', 4);
 });
 ```

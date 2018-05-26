@@ -1,12 +1,12 @@
 Asserts that the value is `undefined`.
 
-```javascript
+```js
 expect(undefined, 'to be undefined');
 ```
 
 In case of a failing expectation you get the following output:
 
-```javascript
+```js
 expect('Hello world', 'to be undefined');
 ```
 
@@ -16,14 +16,14 @@ expected 'Hello world' to be undefined
 
 This assertion can be negated using the `not` flag:
 
-```javascript
+```js
 expect('Hello world!', 'not to be undefined');
 expect({ foo: { bar: 'baz' } }, 'not to be undefined');
 ```
 
 In case of a failing expectation you get the following output:
 
-```javascript
+```js
 expect(undefined, 'not to be undefined');
 ```
 

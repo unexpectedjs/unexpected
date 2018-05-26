@@ -1,12 +1,12 @@
 Asserts that the value is `false`.
 
-```javascript
+```js
 expect(false, 'to be false');
 ```
 
 In case of a failing expectation you get the following output:
 
-```javascript
+```js
 expect(true, 'to be false');
 ```
 

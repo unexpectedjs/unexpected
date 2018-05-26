@@ -2,7 +2,7 @@ Apply a function to the subject, then delegate the return value to another asser
 
 ```js
 function increment(n) {
-    return n + 1;
+  return n + 1;
 }
 
 expect(1, 'when passed as parameter to', increment, 'to equal', 2);

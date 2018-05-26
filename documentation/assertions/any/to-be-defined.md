@@ -1,13 +1,13 @@
 Asserts that the value is defined.
 
-```javascript
+```js
 expect('Hello world!', 'to be defined');
 expect({ foo: { bar: 'baz' } }, 'to be defined');
 ```
 
 In case of a failing expectation you get the following output:
 
-```javascript
+```js
 expect(undefined, 'to be defined');
 ```
 

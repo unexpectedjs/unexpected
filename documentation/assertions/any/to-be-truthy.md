@@ -1,6 +1,6 @@
 Asserts that the value is _truthy_.
 
-```javascript
+```js
 expect(1, 'to be truthy');
 expect(true, 'to be truthy');
 expect({}, 'to be truthy');
@@ -10,7 +10,7 @@ expect(/foo/, 'to be truthy');
 
 In case of a failing expectation you get the following output:
 
-```javascript
+```js
 expect('', 'to be truthy');
 ```
 
@@ -20,7 +20,7 @@ expected '' to be truthy
 
 This assertion can be negated using the `not` flag:
 
-```javascript
+```js
 expect(0, 'not to be truthy');
 expect(false, 'not to be truthy');
 expect('', 'not to be truthy');
@@ -30,7 +30,7 @@ expect(null, 'not to be truthy');
 
 In case of a failing expectation you get the following output:
 
-```javascript
+```js
 expect({}, 'not to be truthy');
 ```
 

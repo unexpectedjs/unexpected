@@ -9,13 +9,13 @@ Unexpected plugins are functions or objects that adhere to the following interfa
 
 Optional properties:
 
-* __name__: `String` - the name of the plugin.
-* __version__: `String` - the semver version of the plugin (string).
-* __dependencies__: `String array` - a list of dependencies.
+* **name**: `String` - the name of the plugin.
+* **version**: `String` - the semver version of the plugin (string).
+* **dependencies**: `String array` - a list of dependencies.
 
 Required:
 
-* __installInto__: `function(expect)` - a function that will update the given expect instance.
+* **installInto**: `function(expect)` - a function that will update the given expect instance.
 
 If you pass a function to `use`, it will be used as the `installInto`
 function, and the name of the function will be used as the name of the plugin,
@@ -59,21 +59,26 @@ Now we will define an example plugin that will add support for this type:
 ```js
 expect.use({
   name: 'unexpected-integer-intervals',
-  installInto: function (expect) {
-      expect.addType({
-        name: 'IntegerInterval',
-        base: 'object',
-        identify: function (value) {
-          return value && value instanceof IntegerInterval;
-        },
-        inspect: function (value, depth, output) {
-          output.text('[').jsNumber(value.from).text(',').jsNumber(value.to).text(']');
-        }
-      });
+  installInto: function(expect) {
+    expect.addType({
+      name: 'IntegerInterval',
+      base: 'object',
+      identify: function(value) {
+        return value && value instanceof IntegerInterval;
+      },
+      inspect: function(value, depth, output) {
+        output
+          .text('[')
+          .jsNumber(value.from)
+          .text(',')
+          .jsNumber(value.to)
+          .text(']');
+      }
+    });
 
-     expect.addAssertion('[not] to contain', function (expect, subject, value) {
-       expect(value, '[not] to be within', subject.from, subject.to);
-     });
+    expect.addAssertion('[not] to contain', function(expect, subject, value) {
+      expect(value, '[not] to be within', subject.from, subject.to);
+    });
   }
 });
 ```

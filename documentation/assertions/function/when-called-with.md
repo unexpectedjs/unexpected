@@ -2,7 +2,7 @@ Apply the subject function to an array of parameters, then delegate the return v
 
 ```js
 function add(a, b) {
-    return a + b;
+  return a + b;
 }
 
 expect(add, 'when called with', [1, 2], 'to equal', 3);
@@ -33,19 +33,21 @@ we make sure that `this` is bound correctly:
 
 ```js
 function Greeter(prefix) {
-    this.prefix = prefix;
+  this.prefix = prefix;
 }
 
-Greeter.prototype.greet = function (name) {
-    return this.prefix + name;
+Greeter.prototype.greet = function(name) {
+  return this.prefix + name;
 };
 
-var helloGreeter = new Greeter('Hello, ')
+var helloGreeter = new Greeter('Hello, ');
 
 expect(helloGreeter, 'to satisfy', {
-    greet: expect.it(
-      'when called with', ['John Doe'],
-      'to equal', 'Hello, John Doe'
-    )
+  greet: expect.it(
+    'when called with',
+    ['John Doe'],
+    'to equal',
+    'Hello, John Doe'
+  )
 });
 ```

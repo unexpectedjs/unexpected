@@ -1,12 +1,12 @@
 Asserts that an Error instance the given message.
 
-```javascript
+```js
 expect(new Error('foobar'), 'to have message', 'foobar');
 ```
 
 In case of a failing expectation you get the following output:
 
-```javascript
+```js
 expect(new Error('foobar'), 'to have message', 'barfoo');
 ```
 
@@ -20,6 +20,6 @@ expected Error('foobar') to have message 'barfoo'
 
 The assertion uses `to satisfy` semantics, so you can also provide a regexp:
 
-```javascript
+```js
 expect(new Error('foobar'), 'to have message', /bar$/);
 ```

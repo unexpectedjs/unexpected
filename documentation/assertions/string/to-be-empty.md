@@ -2,13 +2,13 @@ Asserts that the string is empty.
 
 Aliases: `to be the empty string`, `to be an empty string`
 
-```javascript
+```js
 expect('', 'to be empty');
 ```
 
 In case of a failing expectation you get the following output:
 
-```javascript
+```js
 expect('Hello world', 'to be empty');
 ```
 
@@ -18,13 +18,13 @@ expected 'Hello world' to be empty
 
 This assertion can be negated using the `not` flag:
 
-```javascript
+```js
 expect('Hello world', 'not to be empty');
 ```
 
 In case of a failing expectation you get the following output:
 
-```javascript
+```js
 expect('', 'not to be empty');
 ```
 

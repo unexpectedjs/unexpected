@@ -15,29 +15,40 @@ function Person(options) {
   this.gender = options.gender;
 }
 
-Person.prototype.genderSign = function () {
+Person.prototype.genderSign = function() {
   switch (this.gender) {
-  case 'female': return '♀';
-  case 'male': return '♂';
-  default: return '⚧';
+    case 'female':
+      return '♀';
+    case 'male':
+      return '♂';
+    default:
+      return '⚧';
   }
 };
 
-expect.addAssertion('to have same gender as', function (expect, subject, value) {
-  expect.withError(function () {
-    expect(subject.gender, 'to be', value.gender);
-  }, function (e) {
-    expect.fail({
-      diff: function (output) {
-        return output.bold(subject.genderSign()).text(' ≠ ').bold(value.genderSign());
-      }
-    });
-  });
+expect.addAssertion('to have same gender as', function(expect, subject, value) {
+  expect.withError(
+    function() {
+      expect(subject.gender, 'to be', value.gender);
+    },
+    function(e) {
+      expect.fail({
+        diff: function(output) {
+          return output
+            .bold(subject.genderSign())
+            .text(' ≠ ')
+            .bold(value.genderSign());
+        }
+      });
+    }
+  );
 });
 
-expect(new Person({ name: 'John Doe', gender: 'male' }),
-       'to have same gender as',
-       new Person({ name: 'Jane Doe', gender: 'female' }));
+expect(
+  new Person({ name: 'John Doe', gender: 'male' }),
+  'to have same gender as',
+  new Person({ name: 'Jane Doe', gender: 'female' })
+);
 ```
 
 ```output

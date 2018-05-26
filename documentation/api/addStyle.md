@@ -9,20 +9,20 @@ See the documentation there.
 Example:
 
 ```js
-expect.addStyle('jsString', function (text, rainbowColors) {
-    rainbowColors = rainbowColors || [
-        'gray',
-        'red',
-        'green',
-        'yellow',
-        'blue',
-        'magenta',
-        'cyan'
-    ];
-    for (var i = 0; i < text.length; i += 1) {
-        var color = rainbowColors[i % rainbowColors.length];
-        this.text(text[i], color);
-    }
+expect.addStyle('jsString', function(text, rainbowColors) {
+  rainbowColors = rainbowColors || [
+    'gray',
+    'red',
+    'green',
+    'yellow',
+    'blue',
+    'magenta',
+    'cyan'
+  ];
+  for (var i = 0; i < text.length; i += 1) {
+    var color = rainbowColors[i % rainbowColors.length];
+    this.text(text[i], color);
+  }
 });
 
 expect('foobar', 'to equal', 'foo bar');

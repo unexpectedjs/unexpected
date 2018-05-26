@@ -1,18 +1,21 @@
 Asserts that a promise is fulfilled with a specific value:
 
-```javascript#async:true
-var promiseThatWillBeFulfilledWithAValue = new Promise(function (resolve, reject) {
-    setTimeout(function () {
-        resolve({
-            foo: 'bar'
-        });
-    }, 1);
+```js#async:true
+var promiseThatWillBeFulfilledWithAValue = new Promise(function(
+  resolve,
+  reject
+) {
+  setTimeout(function() {
+    resolve({
+      foo: 'bar'
+    });
+  }, 1);
 });
 
 return expect(
-    promiseThatWillBeFulfilledWithAValue,
-    'to be fulfilled with value satisfying',
-    { foo: 'bar' }
+  promiseThatWillBeFulfilledWithAValue,
+  'to be fulfilled with value satisfying',
+  { foo: 'bar' }
 );
 ```
 
@@ -20,21 +23,21 @@ The expected value will be matched against the value with
 [to satisfy](/assertions/any/to-satisfy/) semantics, so you can pass any of the
 values supported by `to satisfy`:
 
-```javascript#async:true
+```js#async:true
 return expect(
-    Promise.resolve('abc'),
-    'to be fulfilled with value satisfying',
-    /b/
+  Promise.resolve('abc'),
+  'to be fulfilled with value satisfying',
+  /b/
 );
 ```
 
 You get a nice diff if the assertion fails:
 
-```javascript#async:true
+```js#async:true
 return expect(
-    Promise.resolve('abc'),
-    'to be fulfilled with value satisfying',
-    'def'
+  Promise.resolve('abc'),
+  'to be fulfilled with value satisfying',
+  'def'
 );
 ```
 
@@ -49,16 +52,16 @@ expected Promise to be fulfilled with value satisfying 'def'
 You can use the `exhaustively` flag to use strict
 [to satisfy](/assertions/any/to-satisfy/) semantics:
 
-```javascript#async:true
+```js#async:true
 return expect(
-    Promise.resolve({
-        foo: 'foo',
-        bar: 'bar'
-    }),
-    'to be fulfilled with value exhaustively satisfying',
-    {
-        foo: 'foo'
-    }
+  Promise.resolve({
+    foo: 'foo',
+    bar: 'bar'
+  }),
+  'to be fulfilled with value exhaustively satisfying',
+  {
+    foo: 'foo'
+  }
 );
 ```
 

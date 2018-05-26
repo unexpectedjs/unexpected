@@ -1,40 +1,60 @@
 Asserts that a promise is rejected with a specific reason (error):
 
-```javascript#async:true
-var promiseThatWillBeRejectedWithAReason = new Promise(function (resolve, reject) {
-    setTimeout(function () {
-        reject(new Error('Oh dear'));
-    }, 10);
+```js#async:true
+var promiseThatWillBeRejectedWithAReason = new Promise(function(
+  resolve,
+  reject
+) {
+  setTimeout(function() {
+    reject(new Error('Oh dear'));
+  }, 10);
 });
 
-return expect(promiseThatWillBeRejectedWithAReason, 'to be rejected with', new Error('Oh dear'));
+return expect(
+  promiseThatWillBeRejectedWithAReason,
+  'to be rejected with',
+  new Error('Oh dear')
+);
 ```
 
 The expected reason will be matched against the rejection reason with
 [to satisfy](/assertions/any/to-satisfy/) semantics, so you can pass any of the
 values supported by `to satisfy`:
 
-
-```javascript#async:true
-var promiseThatWillBeRejectedWithAReason = new Promise(function (resolve, reject) {
-    setTimeout(function () {
-        reject(new Error('Oh dear'));
-    }, 10);
+```js#async:true
+var promiseThatWillBeRejectedWithAReason = new Promise(function(
+  resolve,
+  reject
+) {
+  setTimeout(function() {
+    reject(new Error('Oh dear'));
+  }, 10);
 });
 
-return expect(promiseThatWillBeRejectedWithAReason, 'to be rejected with', /dear/);
+return expect(
+  promiseThatWillBeRejectedWithAReason,
+  'to be rejected with',
+  /dear/
+);
 ```
 
 You get a nice diff if the assertion fails:
 
-```javascript#async:true
-var promiseThatWillBeRejectedWithAReason = new Promise(function (resolve, reject) {
-    setTimeout(function () {
-        reject(new Error('Oh dear'));
-    }, 10);
+```js#async:true
+var promiseThatWillBeRejectedWithAReason = new Promise(function(
+  resolve,
+  reject
+) {
+  setTimeout(function() {
+    reject(new Error('Oh dear'));
+  }, 10);
 });
 
-return expect(promiseThatWillBeRejectedWithAReason, 'to be rejected with', new Error('bugger'));
+return expect(
+  promiseThatWillBeRejectedWithAReason,
+  'to be rejected with',
+  new Error('bugger')
+);
 ```
 
 ```output

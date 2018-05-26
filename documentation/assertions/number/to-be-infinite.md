@@ -1,13 +1,13 @@
 Asserts that a number is infinite.
 
-```javascript
+```js
 expect(Infinity, 'to be infinite');
 expect(-Infinity, 'to be infinite');
 ```
 
 In case of a failing expectation you get the following output:
 
-```javascript
+```js
 expect(123, 'to be infinite');
 ```
 
@@ -17,13 +17,13 @@ expected 123 to be infinite
 
 This assertion can be negated using the `not` flag:
 
-```javascript
+```js
 expect(123, 'not to be infinite');
 ```
 
 In case of a failing expectation you get the following output:
 
-```javascript
+```js
 expect(Infinity, 'not to be infinite');
 ```
 

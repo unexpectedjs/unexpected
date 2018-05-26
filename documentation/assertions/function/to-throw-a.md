@@ -1,6 +1,6 @@
 Asserts that the function throws an instance of a specific constructor.
 
-```javascript
+```js
 function willThrow() {
   throw new SyntaxError('The error message');
 }
@@ -9,7 +9,7 @@ expect(willThrow, 'to throw a', SyntaxError);
 
 In case of a failing expectation you get the following output:
 
-```javascript
+```js
 expect(willThrow, 'to throw a', RangeError);
 ```
 
@@ -24,7 +24,7 @@ to throw a RangeError
 
 The assertion also fails if the function doesn't throw at all:
 
-```javascript
+```js
 function willNotThrow() {}
 
 expect(willNotThrow, 'to throw a', RangeError);
@@ -38,12 +38,16 @@ expected function willNotThrow() {} to throw a RangeError
 
 To test functions that require input wrap the function invocation in an anonymous function:
 
-```javascript
+```js
 function willThrow(input) {
-  if(input) throw new SyntaxError('The error message');
+  if (input) throw new SyntaxError('The error message');
   return input;
 }
-expect(function() {
-    willThrow('input.here')
-}, 'to throw a', SyntaxError);
+expect(
+  function() {
+    willThrow('input.here');
+  },
+  'to throw a',
+  SyntaxError
+);
 ```

@@ -1,12 +1,12 @@
 Asserts that the number is positive.
 
-```javascript
+```js
 expect(42, 'to be positive');
 ```
 
 In case of a failing expectation you get the following output:
 
-```javascript
+```js
 expect(0, 'to be positive');
 ```
 
@@ -16,14 +16,14 @@ expected 0 to be positive
 
 This assertion can be negated using the `not` flag:
 
-```javascript
+```js
 expect(0, 'not to be positive');
 expect(-42, 'not to be positive');
 ```
 
 In case of a failing expectation you get the following output:
 
-```javascript
+```js
 expect(1, 'not to be positive');
 ```
 

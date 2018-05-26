@@ -2,7 +2,7 @@ Call the subject function without arguments, then delegate the return value to a
 
 ```js
 function giveMeFive() {
-    return 5;
+  return 5;
 }
 
 expect(giveMeFive, 'when called', 'to equal', 5);
@@ -33,14 +33,14 @@ we make sure that `this` is bound correctly:
 
 ```js
 function Person(name) {
-    this.name = name;
+  this.name = name;
 }
 
-Person.prototype.toString = function () {
-    return this.name;
+Person.prototype.toString = function() {
+  return this.name;
 };
 
 expect(new Person('John Doe'), 'to satisfy', {
-    toString: expect.it('when called to equal', 'John Doe')
+  toString: expect.it('when called to equal', 'John Doe')
 });
 ```
