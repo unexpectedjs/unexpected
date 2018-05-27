@@ -6,19 +6,20 @@ repository: https://github.com/unexpectedjs/unexpected
 ---
 
 # Welcome to Unexpected
+
 # The extensible BDD assertion toolkit
 
 ```js
 const library = {
   name: 'un3xp3c73d',
   created: 2013,
-  site: 'http://unexpected.js.org',
-}
+  site: 'http://unexpected.js.org'
+};
 
 expect(library, 'to satisfy', {
   name: 'Unexpected',
   created: 2013
-})
+});
 ```
 
 ```output
@@ -46,15 +47,15 @@ to satisfy { name: 'Unexpected', created: 2013 }
 
 ## Features
 
-- Extensible
-- Fast
-- Provides really nice error messages
-- Helps you if you misspells assertions
-- Compatible with all test frameworks.
-- Node.JS ready (`require('unexpected')`)
-- Supports [asynchronous assertions using promises](/api/addAssertion/#asynchronous-assertions)
-- Single global with no prototype extensions or shims.
-- Cross-browser: works on Chrome, Firefox, Safari, Opera, IE11, Edge
+* Extensible
+* Fast
+* Provides really nice error messages
+* Helps you if you misspells assertions
+* Compatible with all test frameworks.
+* Node.JS ready (`require('unexpected')`)
+* Supports [asynchronous assertions using promises](/api/addAssertion/#asynchronous-assertions)
+* Single global with no prototype extensions or shims.
+* Cross-browser: works on Chrome, Firefox, Safari, Opera, IE11, Edge
 
 ### Node
 
@@ -198,8 +199,7 @@ See [changelog](https://github.com/unexpectedjs/unexpected/blob/master/CHANGELOG
   feature only works in [Mocha](http://mochajs.org/) and [Jasmine](http://jasmine.github.io/).
 * Deprecated error.output, please use error.getErrorMessage() instead.
 * Deprecated error.label, please use error.getLabel() instead.
-* `when decoded as`, `when called with`, `when passed as parameter
-  to`, `when passed as parameters to`: Require the 4th argument to be
+* `when decoded as`, `when called with`, `when passed as parameter to`, `when passed as parameters to`: Require the 4th argument to be
   a string specifying an assertion. Previously a function was also
   allowed, which turned out to be error prone. This also affects all
   plugins that use the internal function `Assertion.prototype.shift`
@@ -222,10 +222,10 @@ See [changelog](https://github.com/unexpectedjs/unexpected/blob/master/CHANGELOG
   more flexible alternatives.
 * Renamed assertions so that the subject type isn't mentioned in the assertion name.
   The old names are kept around as aliases for now. These assertions are affected:
-    * `to be an array whose items satisfy` => `to have items satisfying`
-    * `to be an (object|hash|map) whose keys satisfy` => `to have keys satisfying`
-    * `to be an (object|hash|map) whose values satisfy` => `to have values satisfying`
-  Also, these 3 assertions no longer pass for empty collections.
+  * `to be an array whose items satisfy` => `to have items satisfying`
+  * `to be an (object|hash|map) whose keys satisfy` => `to have keys satisfying`
+  * `to be an (object|hash|map) whose values satisfy` => `to have values satisfying`
+    Also, these 3 assertions no longer pass for empty collections.
 * New `when passed as parameter to constructor` and `when passed as parameter to async` "adverbial" assertions.
 * New `when decoded as` "adverbial" assertion for `Buffer` instances.
 * New `to have message` assertion defined for `Error` instances.
@@ -268,7 +268,7 @@ to the inspection depth you want.
 
 ## MIT License
 
-Copyright (c) 2013 Sune Simonsen <sune@we-knowhow.dk>
+Copyright (c) 2013 Sune Simonsen <mailto:sune@we-knowhow.dk>
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

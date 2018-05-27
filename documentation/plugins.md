@@ -77,7 +77,6 @@ For plugins that work in the browser, you'll either need to add an extra `<scrip
 use browserify or a script loader instead of the Common.js `require` in the above example.
 Please consult the documentation for each individual plugin.
 
-
 ## Mixing plugins
 
 All of these plugins should be able coexist in the same Unexpected instance and
@@ -85,30 +84,36 @@ compose well together. For instance, you can grab a few and assert that an expre
 app serves an HTML response body that contains a yellow `<div>`:
 
 ```js#evaluate:false
-var expect = require('unexpected').clone()
-    .use(require('unexpected-express'))
-    .use(require('unexpected-dom'))
-    .use(require('unexpected-color'));
+var expect = require('unexpected')
+  .clone()
+  .use(require('unexpected-express'))
+  .use(require('unexpected-dom'))
+  .use(require('unexpected-color'));
 
-var app = require('express')()
-    .get('/myPage', function (req, res, next) {
-        res.send('<html><body><div style="color: #ff0">Hey!</div></body></html>');
-    });
+var app = require('express')().get('/myPage', function(req, res, next) {
+  res.send('<html><body><div style="color: #ff0">Hey!</div></body></html>');
+});
 
-it('should deliver something pretty', function () {
-    return expect(app, 'to yield exchange', {
-        request: 'GET /myPage',
-        response: {
-            headers: { 'Content-Type': 'text/html; charset=utf-8' },
-            body: expect.it('when parsed as HTML', 'queried for first', 'div', 'to satisfy', {
-                attributes: {
-                    style: {
-                        color: expect.it('to be colored', 'yellow')
-                    }
-                }
-            })
+it('should deliver something pretty', function() {
+  return expect(app, 'to yield exchange', {
+    request: 'GET /myPage',
+    response: {
+      headers: { 'Content-Type': 'text/html; charset=utf-8' },
+      body: expect.it(
+        'when parsed as HTML',
+        'queried for first',
+        'div',
+        'to satisfy',
+        {
+          attributes: {
+            style: {
+              color: expect.it('to be colored', 'yellow')
+            }
+          }
         }
-    });
+      )
+    }
+  });
 });
 ```
 
@@ -116,22 +121,25 @@ Or you could assert that a node.js readable stream outputs an image that's at mo
 10% different from a reference image:
 
 ```js#evaluate:false
-var expect = require('unexpected').clone()
-    .use(require('unexpected-stream'))
-    .use(require('unexpected-image'))
-    .use(require('unexpected-resemble'));
+var expect = require('unexpected')
+  .clone()
+  .use(require('unexpected-stream'))
+  .use(require('unexpected-image'))
+  .use(require('unexpected-resemble'));
 
-it('should spew out the expected image', function () {
-    var myStream = require('fs').createReadStream('foo.png');
+it('should spew out the expected image', function() {
+  var myStream = require('fs').createReadStream('foo.png');
 
-    return expect(
-        myStream,
-        'to yield output satisfying',
-        expect.it('to resemble', 'bar.png', {
-            mismatchPercentage: expect.it('to be less than', 10)
-        }).and('to have metadata satisfying', {
-            format: 'PNG'
-        })
-    );
+  return expect(
+    myStream,
+    'to yield output satisfying',
+    expect
+      .it('to resemble', 'bar.png', {
+        mismatchPercentage: expect.it('to be less than', 10)
+      })
+      .and('to have metadata satisfying', {
+        format: 'PNG'
+      })
+  );
 });
 ```
