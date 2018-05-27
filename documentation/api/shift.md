@@ -5,9 +5,12 @@ the `<assertion>` type, you can use `expect.shift` to invoke that assertion,
 optionally replacing the subject with an alternative one.
 
 ```js
-expect.addAssertion('<string> when parsed as an integer <assertion>', function (expect, subject) {
-    expect(subject, 'to match', /^[1-9][0-9]*$/);
-    return expect.shift(parseInt(subject, 10));
+expect.addAssertion('<string> when parsed as an integer <assertion>', function(
+  expect,
+  subject
+) {
+  expect(subject, 'to match', /^[1-9][0-9]*$/);
+  return expect.shift(parseInt(subject, 10));
 });
 
 expect('42', 'when parsed as an integer', 'to be greater than', 10);
@@ -49,18 +52,27 @@ sure to gather up the return values and use `expect.promise.all` or a similar
 construct to resolve them all, for example:
 
 ```js
-expect.addAssertion('<number> up to [and including] <number> <assertion?>', function (expect, subject, value) {
+expect.addAssertion(
+  '<number> up to [and including] <number> <assertion?>',
+  function(expect, subject, value) {
     expect.errorMode = 'nested';
     var numbers = [];
-    for (var i = subject ; i < (expect.flags['and including'] ? value + 1 : value) ; i += 1) {
-        numbers.push(i);
+    for (
+      var i = subject;
+      i < (expect.flags['and including'] ? value + 1 : value);
+      i += 1
+    ) {
+      numbers.push(i);
     }
-    return expect.promise.all(numbers.map(function (number) {
-        return expect.promise(function () {
-            return expect.shift(number);
+    return expect.promise.all(
+      numbers.map(function(number) {
+        return expect.promise(function() {
+          return expect.shift(number);
         });
-    }));
-});
+      })
+    );
+  }
+);
 
 expect(5, 'up to and including', 100, 'to be greater than', 4);
 ```

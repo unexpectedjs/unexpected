@@ -11,20 +11,25 @@ New assertions can be added to Unexpected the following way.
 
 ```js
 var errorMode = 'default'; // use to control the error mode later in the example
-expect.addAssertion('<array> [not] to be (sorted|ordered) <function?>', function (expect, subject, cmp) {
-  expect.errorMode = errorMode;
-  expect(subject, '[not] to equal', [].concat(subject).sort(cmp));
-});
+expect.addAssertion(
+  '<array> [not] to be (sorted|ordered) <function?>',
+  function(expect, subject, cmp) {
+    expect.errorMode = errorMode;
+    expect(subject, '[not] to equal', [].concat(subject).sort(cmp));
+  }
+);
 ```
 
 The above assertion definition makes the following expects possible:
 
 ```js
-expect([1,2,3], 'to be sorted');
-expect([1,2,3], 'to be ordered');
-expect([2,1,3], 'not to be sorted');
-expect([2,1,3], 'not to be ordered');
-expect([3,2,1], 'to be sorted', function (x, y) { return y - x; });
+expect([1, 2, 3], 'to be sorted');
+expect([1, 2, 3], 'to be ordered');
+expect([2, 1, 3], 'not to be sorted');
+expect([2, 1, 3], 'not to be ordered');
+expect([3, 2, 1], 'to be sorted', function(x, y) {
+  return y - x;
+});
 ```
 
 Let's dissect the different parts of the custom assertion we just
@@ -88,14 +93,25 @@ an output function on the assertion.
 Here is a few examples:
 
 ```js
-expect.addAssertion('<number> to be contained by <number> <number>', function (expect, subject, start, finish) {
-    expect.subjectOutput = function (output) {
-        output.text('point ').jsNumber(subject);
-    };
-    expect.argsOutput = function (output) {
-        output.text('interval ').text('[').appendInspected(start).text(';').appendInspected(finish).text(']');
-    };
-    expect(subject >= start && subject <= finish, '[not] to be truthy');
+expect.addAssertion('<number> to be contained by <number> <number>', function(
+  expect,
+  subject,
+  start,
+  finish
+) {
+  expect.subjectOutput = function(output) {
+    output.text('point ').jsNumber(subject);
+  };
+  expect.argsOutput = function(output) {
+    output
+      .text('interval ')
+      .text('[')
+      .appendInspected(start)
+      .text(';')
+      .appendInspected(finish)
+      .text(']');
+  };
+  expect(subject >= start && subject <= finish, '[not] to be truthy');
 });
 
 expect(4, 'to be contained by', 8, 10);
@@ -106,14 +122,22 @@ expected point 4 to be contained by interval [8;10]
 ```
 
 ```js
-expect.addAssertion('<number> to be similar to <number> <number?>', function (expect, subject, value, epsilon) {
-    if (typeof epsilon !== 'number') {
-        epsilon = 1e-9;
-    }
-    expect.argsOutput[2] = function (output) {
-        output.text('(epsilon: ').jsNumber(epsilon.toExponential()).text(')')
-    }
-    expect(Math.abs(subject - value), 'to be less than or equal to', epsilon);
+expect.addAssertion('<number> to be similar to <number> <number?>', function(
+  expect,
+  subject,
+  value,
+  epsilon
+) {
+  if (typeof epsilon !== 'number') {
+    epsilon = 1e-9;
+  }
+  expect.argsOutput[2] = function(output) {
+    output
+      .text('(epsilon: ')
+      .jsNumber(epsilon.toExponential())
+      .text(')');
+  };
+  expect(Math.abs(subject - value), 'to be less than or equal to', epsilon);
 });
 
 expect(4, 'to be similar to', 4.0001);
@@ -130,7 +154,7 @@ message for the custom assertion will be used. In the case of our
 _sorted_ assertion fails, the output will be:
 
 ```js
-expect([ 1, 3, 2, 4 ], 'to be sorted');
+expect([1, 3, 2, 4], 'to be sorted');
 ```
 
 ```output
@@ -154,7 +178,7 @@ If we change the error mode to _bubble_, we get the following output:
 
 ```js
 errorMode = 'bubble';
-expect([ 1, 3, 2, 4 ], 'to be sorted');
+expect([1, 3, 2, 4], 'to be sorted');
 ```
 
 ```output
@@ -176,7 +200,7 @@ If we change the error mode to _nested_, we get the following output:
 
 ```js
 errorMode = 'nested';
-expect([ 1, 3, 2, 4 ], 'to be sorted');
+expect([1, 3, 2, 4], 'to be sorted');
 ```
 
 ```output
@@ -199,7 +223,7 @@ If we change the error mode to _defaultOrNested_, we get the following output:
 
 ```js
 errorMode = 'defaultOrNested';
-expect([ 1, 3, 2, 4 ], 'to be sorted');
+expect([1, 3, 2, 4], 'to be sorted');
 ```
 
 ```output
@@ -221,7 +245,7 @@ If we change the error mode to _diff_, we get the following output:
 
 ```js
 errorMode = 'diff';
-expect([ 1, 3, 2, 4 ], 'to be sorted');
+expect([1, 3, 2, 4], 'to be sorted');
 ```
 
 ```output
@@ -233,7 +257,6 @@ expect([ 1, 3, 2, 4 ], 'to be sorted');
     4
 ]
 ```
-
 
 ### Asynchronous assertions
 
@@ -250,9 +273,9 @@ function Timelock(value, delay) {
   this.delay = delay;
 }
 
-Timelock.prototype.getValue = function (cb) {
+Timelock.prototype.getValue = function(cb) {
   var that = this;
-  setTimeout(function () {
+  setTimeout(function() {
     cb(that.value);
   }, this.delay);
 };
@@ -272,21 +295,27 @@ First we need to define a [type](../addType/) for handling the `Timelock`:
 ```js
 expect.addType({
   name: 'Timelock',
-  identify: function (value) {
+  identify: function(value) {
     return value && value instanceof Timelock;
   },
-  inspect: function (value, depth, output) {
+  inspect: function(value, depth, output) {
     output.jsFunctionName('Timelock');
   }
 });
 ```
 
 ```js
-expect.addAssertion('<Timelock> to satisfy <any>', function (expect, subject, spec) {
-  return expect.promise(function (run) {
-    subject.getValue(run(function (value) {
-      return expect(value, 'to satisfy', spec);
-    }));
+expect.addAssertion('<Timelock> to satisfy <any>', function(
+  expect,
+  subject,
+  spec
+) {
+  return expect.promise(function(run) {
+    subject.getValue(
+      run(function(value) {
+        return expect(value, 'to satisfy', spec);
+      })
+    );
   });
 });
 ```

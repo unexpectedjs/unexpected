@@ -1,12 +1,12 @@
 Asserts that an object is empty.
 
-```javascript
+```js
 expect({}, 'to be empty');
 ```
 
 In case of a failing expectation you get the following output:
 
-```javascript
+```js
 expect({ a: 'a', b: 'b' }, 'to be empty');
 ```
 
@@ -21,13 +21,13 @@ expected { a: 'a', b: 'b' } to be empty
 
 This assertion can be negated using the `not` flag:
 
-```javascript
+```js
 expect({ a: 'a', b: 'b' }, 'not to be empty');
 ```
 
 In case of a failing expectation you get the following output:
 
-```javascript
+```js
 expect({}, 'not to be empty');
 ```
 

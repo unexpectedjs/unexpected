@@ -1,11 +1,11 @@
 Asserts that a node.js-style asynchronous function taking a single callback
 will call it.
 
-```javascript#async:true
+```js#async:true
 function mySuccessfulAsyncFunction(cb) {
-    setTimeout(function () {
-        cb();
-    });
+  setTimeout(function() {
+    cb();
+  });
 }
 
 return expect(mySuccessfulAsyncFunction, 'to call the callback');
@@ -15,9 +15,9 @@ If the callback is never called, it will hang until your test framework marks
 it as timed out. So the assertion itself only ever fails if the function
 throws an exception synchronously:
 
-```javascript#async:true
+```js#async:true
 function errorOut(cb) {
-    throw new Error('ugh');
+  throw new Error('ugh');
 }
 return expect(errorOut, 'to call the callback');
 ```
@@ -38,25 +38,25 @@ you might be able to use the
 The parameters passed to the callback are also provided as the value of the returned promise,
 so you can do further assertions like this:
 
-```javascript
+```js
 function asyncFn(cb) {
-    setTimeout(function () {
-        cb(null, 'foo');
-    });
+  setTimeout(function() {
+    cb(null, 'foo');
+  });
 }
 ```
 
-```javascript#async:true
-return expect(asyncFn, 'to call the callback').then(function (args) {
-    // args will be [null, 'foo'];
+```js#async:true
+return expect(asyncFn, 'to call the callback').then(function(args) {
+  // args will be [null, 'foo'];
 });
 ```
 
 Or using the Bluebird-specific `.spread` extension:
 
-```javascript#async:true
-return expect(asyncFn, 'to call the callback').spread(function (err, result) {
-    // err will be null
-    // result will be 'foo'
+```js#async:true
+return expect(asyncFn, 'to call the callback').spread(function(err, result) {
+  // err will be null
+  // result will be 'foo'
 });
 ```

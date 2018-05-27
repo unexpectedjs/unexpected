@@ -15,11 +15,17 @@ This method is usually used in combination with
 Let's make an asynchronous assertion that we can use for the examples:
 
 ```js
-expect.addAssertion('to be a number after a short delay', function (expect, subject) {
-  return expect.promise(function (run) {
-    setTimeout(run(function () {
+expect.addAssertion('to be a number after a short delay', function(
+  expect,
+  subject
+) {
+  return expect.promise(function(run) {
+    setTimeout(
+      run(function() {
         expect(subject, 'to be a number');
-    }), 1);
+      }),
+      1
+    );
   });
 });
 ```

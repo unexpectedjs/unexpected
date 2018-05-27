@@ -9,10 +9,10 @@ Example:
 
 ```js
 expect.installTheme({
-    styles: {
-        ugliness: 'yellow',
-        jsKeyword: 'ugliness'
-    }
+  styles: {
+    ugliness: 'yellow',
+    jsKeyword: 'ugliness'
+  }
 });
 
 expect(function foo() {}, 'to throw', 'bar');

@@ -1,12 +1,12 @@
 Asserts that the string has the specified length.
 
-```javascript
+```js
 expect('Hello world', 'to have length', 11);
 ```
 
 In case of a failing expectation you get the following output:
 
-```javascript
+```js
 expect('Hello world', 'to have length', 12);
 ```
 
@@ -17,13 +17,13 @@ expected 'Hello world' to have length 12
 
 This assertion can be negated using the `not` flag:
 
-```javascript
+```js
 expect('Hello world', 'not to have length', 12);
 ```
 
 In case of a failing expectation you get the following output:
 
-```javascript
+```js
 expect('Hello world', 'not to have length', 11);
 ```
 

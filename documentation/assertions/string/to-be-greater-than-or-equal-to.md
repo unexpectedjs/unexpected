@@ -1,14 +1,13 @@
 Asserts that a string is greater than or equal to another string using
 the `>=` operator.
 
-
-```javascript
+```js
 expect('b', 'to be greater than or equal to', 'b');
 ```
 
 In case of a failing expectation you get the following output:
 
-```javascript
+```js
 expect('a', 'to be greater than or equal to', 'b');
 ```
 
@@ -18,13 +17,13 @@ expected 'a' to be greater than or equal to 'b'
 
 This assertion can be negated using the `not` flag:
 
-```javascript
+```js
 expect('a', 'not to be greater than or equal to', 'b');
 ```
 
 In case of a failing expectation you get the following output:
 
-```javascript
+```js
 expect('a', 'not to be greater than or equal to', 'a');
 ```
 

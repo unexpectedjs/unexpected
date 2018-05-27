@@ -1,26 +1,33 @@
 Asserts that a promise is fulfilled with a specific value:
 
-```javascript#async:true
-var promiseThatWillBeFulfilledWithAValue = new Promise(function (resolve, reject) {
-    setTimeout(function () {
-        resolve('abc');
-    }, 1);
+```js#async:true
+var promiseThatWillBeFulfilledWithAValue = new Promise(function(
+  resolve,
+  reject
+) {
+  setTimeout(function() {
+    resolve('abc');
+  }, 1);
 });
 
-return expect(promiseThatWillBeFulfilledWithAValue, 'to be fulfilled with', 'abc');
+return expect(
+  promiseThatWillBeFulfilledWithAValue,
+  'to be fulfilled with',
+  'abc'
+);
 ```
 
 The expected value will be matched against the value with
 [to satisfy](/assertions/any/to-satisfy/) semantics, so you can pass any of the
 values supported by `to satisfy`:
 
-```javascript#async:true
+```js#async:true
 return expect(Promise.resolve('abc'), 'to be fulfilled with', /b/);
 ```
 
 You get a nice diff if the assertion fails:
 
-```javascript#async:true
+```js#async:true
 return expect(Promise.resolve('abc'), 'to be fulfilled with', 'def');
 ```
 

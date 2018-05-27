@@ -21,14 +21,17 @@ and `addStyle`, respectively, but affect the parent `expect`:
 var childExpect = expect.child();
 
 // Only available in childExpect:
-childExpect.addAssertion('<string> to begin with foo', function (expect, subject) {
-    expect(subject, 'to begin with', 'foo');
+childExpect.addAssertion('<string> to begin with foo', function(
+  expect,
+  subject
+) {
+  expect(subject, 'to begin with', 'foo');
 });
 
 // Available in parentExpect, but has access to "to begin with foo" internally:
-childExpect.exportAssertion('<string> to foobar', function (expect, subject) {
-    expect.errorMode = 'nested';
-    expect(subject, 'to begin with foo').and('to end with', 'bar');
+childExpect.exportAssertion('<string> to foobar', function(expect, subject) {
+  expect.errorMode = 'nested';
+  expect(subject, 'to begin with foo').and('to end with', 'bar');
 });
 
 expect('fo0bar', 'to foobar');
@@ -50,14 +53,17 @@ In other words, this won't work:
 var childExpect = expect.child();
 
 childExpect.addType({
-    name: 'foosomething',
-    identify: function (value) {
-        return /^foo/.test(String(value));
-    }
+  name: 'foosomething',
+  identify: function(value) {
+    return /^foo/.test(String(value));
+  }
 });
 
-childExpect.exportAssertion('<foosomething> to end with bar', function (expect, subject) {
-    expect(subject, 'to end with', 'bar');
+childExpect.exportAssertion('<foosomething> to end with bar', function(
+  expect,
+  subject
+) {
+  expect(subject, 'to end with', 'bar');
 });
 ```
 

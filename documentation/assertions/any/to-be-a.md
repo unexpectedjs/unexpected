@@ -6,12 +6,12 @@ its name (as a string).
 
 For more information abort the type system see: [Types](/api/addType/)
 
-```javascript
+```js
 expect(true, 'to be a', 'boolean');
 expect(5, 'to be a', 'number');
 expect('abc', 'to be a', 'string');
 expect(expect, 'to be a', 'function');
-expect({foo: 123}, 'to be an', 'object');
+expect({ foo: 123 }, 'to be an', 'object');
 expect([123], 'to be an', 'array');
 expect(/regex/, 'to be a', 'regexp');
 expect(/regex/, 'to be a', 'regex');
@@ -22,19 +22,19 @@ expect(new Date(), 'to be a', 'date');
 
 The assertions also respect the inheritance chain:
 
-```javascript
+```js
 expect(/foo/, 'to be an', 'object');
 expect(/foo/, 'to be an', 'any');
 ```
 
 Aliases are provided for common types:
 
-```javascript
+```js
 expect(true, 'to be a boolean');
 expect(5, 'to be a number');
 expect('abc', 'to be a string');
 expect(expect, 'to be a function');
-expect({foo: 123}, 'to be an object');
+expect({ foo: 123 }, 'to be an object');
 expect([123], 'to be an array');
 expect(/regex/, 'to be a regexp');
 expect(/regex/, 'to be a regex');
@@ -44,9 +44,9 @@ expect(new Date(), 'to be a date');
 
 If you provide a constructor as the type the assertion will use `instanceof`.
 
-```javascript
+```js
 function Person(name) {
-    this.name = name;
+  this.name = name;
 }
 expect(new Person('John Doe'), 'to be a', Person);
 expect(new Person('John Doe'), 'to be an', Object);
@@ -54,7 +54,7 @@ expect(new Person('John Doe'), 'to be an', Object);
 
 In case of a failing expectation you get the following output:
 
-```javascript
+```js
 expect({ 0: 'foo', 1: 'bar', 2: 'baz' }, 'to be an array');
 ```
 
@@ -62,10 +62,9 @@ expect({ 0: 'foo', 1: 'bar', 2: 'baz' }, 'to be an array');
 expected { 0: 'foo', 1: 'bar', 2: 'baz' } to be an array
 ```
 
-
 This assertion can be negated using the `not` flag:
 
-```javascript
+```js
 expect(true, 'not to be an object');
 expect('5', 'not to be a', 'number');
 expect('abc', 'not to be an', Object);
@@ -73,8 +72,14 @@ expect('abc', 'not to be an', Object);
 
 In case of a failing expectation you get the following output:
 
-```javascript
-expect(function () { return 'wat'; }, 'not to be an', Object);
+```js
+expect(
+  function() {
+    return 'wat';
+  },
+  'not to be an',
+  Object
+);
 ```
 
 ```output

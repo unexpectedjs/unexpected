@@ -1,12 +1,12 @@
 Asserts that the value is `NaN`.
 
-```javascript
+```js
 expect(NaN, 'to be NaN');
 ```
 
 In case of a failing expectation you get the following output:
 
-```javascript
+```js
 expect(2, 'to be NaN');
 ```
 
@@ -16,13 +16,13 @@ expected 2 to be NaN
 
 This assertion can be negated using the `not` flag:
 
-```javascript
+```js
 expect(2, 'not to be NaN');
 ```
 
 In case of a failing expectation you get the following output:
 
-```javascript
+```js
 expect(NaN, 'not to be NaN');
 ```
 
