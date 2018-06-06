@@ -56,7 +56,7 @@
     "nyc": "^10.3.2",
     "offline-github-changelog": "^1.2.0",
     "prettier": "^1.13.4",
-    "rollup": "^0.59.0",
+    "rollup": "^0.60.0",
     "rollup-plugin-commonjs": "^9.1.0",
     "rollup-plugin-node-globals": "^1.1.0",
     "rollup-plugin-node-resolve": "^3.0.0",
@@ -74,7 +74,8 @@
     "build/lib"
   ],
   "jspm": {
-    "dependencies": {},
+    "dependencies": {
+    },
     "main": "unexpected.js",
     "jspmPackage": true
   },
