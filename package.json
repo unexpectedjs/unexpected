@@ -53,7 +53,7 @@
     "mocha-phantomjs-core": "^2.1.2",
     "mocha-slow-reporter": "^*",
     "node-version-check": "^2.2.0",
-    "nyc": "^10.3.2",
+    "nyc": "^11.8.0",
     "offline-github-changelog": "^1.2.0",
     "prettier": "^1.13.4",
     "rollup": "^0.60.0",
