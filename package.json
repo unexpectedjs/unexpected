@@ -64,7 +64,7 @@
     "rsvp": "^4.7.0",
     "serve": "*",
     "unexpected-documentation-site-generator": "^4.6.1",
-    "unexpected-magicpen": "^0.2.2",
+    "unexpected-magicpen": "^1.0.0",
     "unexpected-markdown": "^1.7.4"
   },
   "files": [
