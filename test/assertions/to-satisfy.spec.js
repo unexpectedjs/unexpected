@@ -2194,7 +2194,8 @@ describe('to satisfy assertion', function() {
               });
             },
             'to throw',
-            "expected {} to exhaustively satisfy { nonEnumerable: 'wrong' }\n" +
+            "expected { nonEnumerable: 'theValue' }\n" +
+              "to exhaustively satisfy { nonEnumerable: 'wrong' }\n" +
               '\n' +
               '{\n' +
               '  nonEnumerable:\n' +
@@ -2208,10 +2209,6 @@ describe('to satisfy assertion', function() {
       });
 
       describe('when not matching the non-enumerable property', function() {
-        it('should succeed', function() {
-          expect(bar, 'to exhaustively satisfy', {});
-        });
-
         it('should fail with a diff', function() {
           expect(
             function() {
@@ -2220,9 +2217,11 @@ describe('to satisfy assertion', function() {
               });
             },
             'to throw',
-            "expected {} to exhaustively satisfy { somethingElse: 'wrong' }\n" +
+            "expected { nonEnumerable: 'theValue' }\n" +
+              "to exhaustively satisfy { somethingElse: 'wrong' }\n" +
               '\n' +
               '{\n' +
+              "  nonEnumerable: 'theValue' // should be removed\n" +
               "  // missing somethingElse: 'wrong'\n" +
               '}'
           );
