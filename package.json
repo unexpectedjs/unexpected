@@ -85,6 +85,7 @@
     "setupTestFrameworkScriptFile": "<rootDir>/test/common.js",
     "testMatch": [
       "<rootDir>/test/**.spec.js"
-    ]
+    ],
+    "testURL": "http://localhost/"
   }
 }
