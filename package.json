@@ -56,7 +56,7 @@
     "nyc": "^10.3.2",
     "offline-github-changelog": "^1.2.0",
     "prettier": "~1.14.0",
-    "rollup": "^0.63.0",
+    "rollup": "^0.65.0",
     "rollup-plugin-commonjs": "^9.1.0",
     "rollup-plugin-node-globals": "^1.1.0",
     "rollup-plugin-node-resolve": "^3.0.0",
