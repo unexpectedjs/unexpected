@@ -76,6 +76,51 @@ describe('to end with assertion', function() {
         );
       });
     });
+
+    it('builds the diff correctly when the string is truncated with no common prefix', function() {
+      expect(
+        function() {
+          expect(
+            'AtSomePointThisStringWillBeTruncated-foobarbaz',
+            'to end with',
+            'barbazquux'
+          );
+        },
+        'to throw exception',
+        "expected ...'ThisStringWillBeTruncated-foobarbaz' to end with 'barbazquux'"
+      );
+    });
+
+    it('builds the diff correctly when the string contains a space and is truncated', function() {
+      expect(
+        function() {
+          expect(
+            'a ThenPleaseTruncateString-foobarbaz',
+            'to end with',
+            'barbazquux'
+          );
+        },
+        'to throw exception',
+        "expected ...'ThenPleaseTruncateString-foobarbaz' to end with 'barbazquux'"
+      );
+    });
+
+    it('builds the diff correctly when the string is truncated after a partial match', function() {
+      expect(
+        function() {
+          expect(
+            'ButAtSomePointThisStringWillBeTruncated-bazbarfoo',
+            'to end with',
+            'quuxbarfoo'
+          );
+        },
+        'to throw exception',
+        "expected ...'ThisStringWillBeTruncated-bazbarfoo' to end with 'quuxbarfoo'\n" +
+          '\n' +
+          '...ThisStringWillBeTruncated-bazbarfoo\n' +
+          '                                ^^^^^^'
+      );
+    });
   });
 
   describe('with the "not" flag', function() {
