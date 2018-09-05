@@ -14,11 +14,9 @@ describe('function type', function() {
     expect(fn, 'to inspect as', 'function foo() {}');
   });
 
-  var isNodeJs3OrBelow =
-    typeof process === 'object' && /^v[0123]\./.test(process.version);
   var isPhantomJs =
     typeof navigator !== 'undefined' && /phantom/i.test(navigator.userAgent);
-  if (!isNodeJs3OrBelow && !isPhantomJs) {
+  if (!isPhantomJs) {
     // Node.js 3 and below and phantom.js don't include "bound " and the
     // old Phantom.js version that's currently available on Travis doesn't
     // even have Function#bind, which we then polyfill via es5-shim, leading
