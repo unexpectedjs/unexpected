@@ -42,21 +42,24 @@ describe('to have property assertion', function() {
           expect(subject, 'to have enumerable property', 'enumFalse');
         },
         'to throw exception',
-        "expected { a: 'b' } to have enumerable property 'enumFalse'"
+        "expected { a: 'b', enumFalse: 't', configFalse: 't', writableFalse: 't' }\n" +
+          "to have enumerable property 'enumFalse'"
       );
       expect(
         function() {
           expect(subject, 'to have configurable property', 'configFalse');
         },
         'to throw exception',
-        "expected { a: 'b' } to have configurable property 'configFalse'"
+        "expected { a: 'b', enumFalse: 't', configFalse: 't', writableFalse: 't' }\n" +
+          "to have configurable property 'configFalse'"
       );
       expect(
         function() {
           expect(subject, 'to have writable property', 'writableFalse');
         },
         'to throw exception',
-        "expected { a: 'b' } to have writable property 'writableFalse'"
+        "expected { a: 'b', enumFalse: 't', configFalse: 't', writableFalse: 't' }\n" +
+          "to have writable property 'writableFalse'"
       );
     });
   });
