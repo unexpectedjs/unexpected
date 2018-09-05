@@ -60,7 +60,7 @@
     "rollup-plugin-commonjs": "^9.1.0",
     "rollup-plugin-node-globals": "^1.1.0",
     "rollup-plugin-node-resolve": "^3.0.0",
-    "rollup-plugin-uglify": "^4.0.0",
+    "rollup-plugin-uglify": "^5.0.2",
     "rsvp": "^4.7.0",
     "serve": "*",
     "unexpected-documentation-site-generator": "^4.6.1",
