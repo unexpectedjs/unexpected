@@ -24,19 +24,15 @@ You can assert the error message is a given string if you provide a
 string as the second parameter.
 
 ```js
-expect(
-  function() {
-    throw new Error('The error message');
-  },
-  'to throw',
-  'The error message'
-);
+expect(() => {
+  throw new Error('The error message');
+}, 'to throw', 'The error message');
 ```
 
 In case of a failing expectation you get the following output:
 
 ```js
-expect(function () {
+expect(() => {
   throw new Error('The error message!');
 }, 'to throw', 'The error message');
 ```
@@ -57,19 +53,14 @@ By providing a regular expression as the second parameter you can
 assert the error message matches the given regular expression.
 
 ```js
-expect(
-  function() {
-    throw new Error('The error message');
-  },
-  'to throw',
-  /error message/
-);
+expect(() => {
+  throw new Error('The error message');
+}, 'to throw', /error message/);
 ```
 
 In case of a failing expectation you get the following output:
 
-```js
-expect(function () {
+expect(() => {
   throw new Error('The error message!');
 }, 'to throw', /catastrophic failure/);
 ```
@@ -86,13 +77,9 @@ to throw /catastrophic failure/
 That can also just supply an error object to validate against:
 
 ```js
-expect(
-  function() {
-    throw new TypeError('Invalid syntax');
-  },
-  'to throw',
-  new TypeError('Invalid syntax')
-);
+expect(() => {
+  throw new TypeError('Invalid syntax');
+}, 'to throw', new TypeError('Invalid syntax'));
 ```
 
 In case of a failing expectation you get the following output:
@@ -113,7 +100,7 @@ to throw TypeError('Invalid syntax')
 ```
 
 ```js
-expect(function() {
+expect(() => {
   // Do some work that should not throw
 }, 'not to throw');
 ```
@@ -142,11 +129,8 @@ function willThrow(input) {
   if (input) throw new SyntaxError('The error message');
   return input;
 }
-expect(
-  function() {
-    willThrow('input.here');
-  },
-  'to throw',
-  new SyntaxError('The error message')
-);
+
+expect(() => {
+  willThrow('input.here');
+}, 'to throw', new SyntaxError('The error message'));
 ```
