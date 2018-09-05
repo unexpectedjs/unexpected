@@ -65,7 +65,7 @@ test-jest:
 ifeq ($(MODERN_NODE), true)
 	./node_modules/.bin/jest
 else
-	./node_modules/.bin/jest -c test/jest.es5.config.json
+	./node_modules/.bin/jest --rootDir . -c test/jest.es5.config.json
 endif
 
 .PHONY: test
