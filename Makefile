@@ -68,9 +68,6 @@ else
 	./node_modules/.bin/jest -c test/jest.es5.config.json
 endif
 
-test-jest-if-supported-node-version:
-	@node-version-gte-6 && make test-jest || echo Skipping, jest is unsupported with node $(shell node --version)
-
 .PHONY: test
 test: test-sources
 	@./node_modules/.bin/mocha --opts $(MOCHA_OPTS) $(TEST_SOURCES) $(TEST_SOURCE_MARKDOWN)
@@ -93,7 +90,7 @@ test-browser: create-html-runners ${TARGETS}
 	@./node_modules/.bin/serve .
 
 .PHONY: travis-secondary
-travis-secondary: clean test test-jest-if-supported-node-version coverage
+travis-secondary: clean test test-jest coverage
 
 .PHONY: travis-main
 travis-main: clean lint test test-jasmine test-jest coverage
@@ -134,7 +131,7 @@ changelog: git-dirty-check
 	fi
 
 .PHONY: release-%
-release-%: git-dirty-check lint ${TARGETS} test-phantomjs test-jasmine test-jest-if-supported-node-version commit-unexpected deploy-site
+release-%: git-dirty-check lint ${TARGETS} test-phantomjs test-jasmine test-jest commit-unexpected deploy-site
 	IS_MAKE_RELEASE=yes npm version $*
 	make changelog
 	@echo $* release ready to be publised to NPM
