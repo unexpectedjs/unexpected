@@ -116,7 +116,7 @@ endif
 
 .PHONY: deploy-site
 deploy-site: site-build
-	gh-pages -d site-build -r git@github.com:unexpectedjs/unexpectedjs.github.io.git -b master
+	./node_modules/.bin/gh-pages -d site-build -r git@github.com:unexpectedjs/unexpectedjs.github.io.git -b master
 
 .PHONY: commit-unexpected
 commit-unexpected: ${TARGETS}
