@@ -19,7 +19,7 @@ Here's a partial list of plugins for Unexpected:
 * [unexpected-couchdb](https://github.com/alexjeffburke/unexpected-couchdb/):
   Run your tests against a mock CouchDB server initialized to a given state.
 * [unexpected-date](http://sushantdhiman.com/projects/unexpected-date/): Date/time assertions on Date object.
-* [unexpected-dom](https://munter.github.io/unexpected-dom/): Assertions for
+* [unexpected-dom](http://unexpected.js.org/unexpected-dom/): Assertions for
   XML/HTML DOM and HTML/XML strings. Works in the browser and in node.js via
   [jsdom](https://github.com/tmpvar/jsdom).
 * [unexpected-exif](http://unexpected.js.org/unexpected-exif/): Assertions for
