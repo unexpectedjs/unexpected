@@ -13,7 +13,7 @@ repository: https://github.com/unexpectedjs/unexpected
 const library = {
   name: 'un3xp3c73d',
   created: 2013,
-  site: 'http://unexpected.js.org'
+  site: 'https://unexpected.js.org'
 };
 
 expect(library, 'to satisfy', {
@@ -23,7 +23,7 @@ expect(library, 'to satisfy', {
 ```
 
 ```output
-expected { name: 'un3xp3c73d', created: 2013, site: 'http://unexpected.js.org' }
+expected { name: 'un3xp3c73d', created: 2013, site: 'https://unexpected.js.org' }
 to satisfy { name: 'Unexpected', created: 2013 }
 
 {
@@ -32,7 +32,7 @@ to satisfy { name: 'Unexpected', created: 2013 }
                       // -un3xp3c73d
                       // +Unexpected
   created: 2013,
-  site: 'http://unexpected.js.org'
+  site: 'https://unexpected.js.org'
 }
 ```
 
