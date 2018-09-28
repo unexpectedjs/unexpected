@@ -233,7 +233,7 @@ See [changelog](https://github.com/unexpectedjs/unexpected/blob/master/CHANGELOG
 
 ### 6.0.0
 
-* New documentation and [corresponding site](https://unexpectedjs.github.io/).
+* New documentation and [corresponding site](https://unexpected.js.org/).
 * Use `Object.is`/the [SameValue algorithm](http://ecma-international.org/ecma-262/5.1/#sec-9.12) when checking equality of primitive values (the `to be` and `to equal` assertions).
 * Tweaked the output of numerous assertions.
 * Constrained `to be empty` and `to have length` to only work with strings and array-like objects.
