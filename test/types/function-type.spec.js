@@ -219,6 +219,25 @@ describe('function type', function() {
   }
 
   // We can't complete this test if the runtime doesn't support arrow functions:
+  var arrowFunctionWithLeadingNewline;
+  try {
+    // eslint-disable-next-line no-new-func
+    arrowFunctionWithLeadingNewline = new Function(
+      'return () =>\n        foo(\n          1\n        )'
+    )();
+  } catch (e) {}
+
+  if (arrowFunctionWithLeadingNewline) {
+    it('should reindent an implicit return multiline arrow function', function() {
+      expect(
+        arrowFunctionWithLeadingNewline,
+        'to inspect as',
+        '() =>\n  foo(\n    1\n  )'
+      );
+    });
+  }
+
+  // We can't complete this test if the runtime doesn't support arrow functions:
   var multiParamArrowFunction;
   try {
     // eslint-disable-next-line no-new-func
