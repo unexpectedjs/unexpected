@@ -219,18 +219,56 @@ describe('function type', function() {
   }
 
   // We can't complete this test if the runtime doesn't support arrow functions:
-  var arrowFunctionWithLeadingNewline;
+  var arrowFunctionWith1SpaceIndentAndLeadingNewline;
   try {
     // eslint-disable-next-line no-new-func
-    arrowFunctionWithLeadingNewline = new Function(
+    arrowFunctionWith1SpaceIndentAndLeadingNewline = new Function(
+      'return () =>\n foo(\n  1\n )'
+    )();
+  } catch (e) {}
+
+  if (arrowFunctionWith1SpaceIndentAndLeadingNewline) {
+    it('should reindent an implicit return multiline arrow function', function() {
+      expect(
+        arrowFunctionWith1SpaceIndentAndLeadingNewline,
+        'to inspect as',
+        '() =>\n  foo(\n    1\n  )'
+      );
+    });
+  }
+
+  // We can't complete this test if the runtime doesn't support arrow functions:
+  var arrowFunctionWith2SpaceIndentAndLeadingNewline;
+  try {
+    // eslint-disable-next-line no-new-func
+    arrowFunctionWith2SpaceIndentAndLeadingNewline = new Function(
       'return () =>\n        foo(\n          1\n        )'
     )();
   } catch (e) {}
 
-  if (arrowFunctionWithLeadingNewline) {
+  if (arrowFunctionWith2SpaceIndentAndLeadingNewline) {
     it('should reindent an implicit return multiline arrow function', function() {
       expect(
-        arrowFunctionWithLeadingNewline,
+        arrowFunctionWith2SpaceIndentAndLeadingNewline,
+        'to inspect as',
+        '() =>\n  foo(\n    1\n  )'
+      );
+    });
+  }
+
+  // We can't complete this test if the runtime doesn't support arrow functions:
+  var arrowFunctionWith3SpaceIndentAndLeadingNewline;
+  try {
+    // eslint-disable-next-line no-new-func
+    arrowFunctionWith3SpaceIndentAndLeadingNewline = new Function(
+      'return () =>\n      foo(\n         1\n      )'
+    )();
+  } catch (e) {}
+
+  if (arrowFunctionWith3SpaceIndentAndLeadingNewline) {
+    it('should reindent an implicit return multiline arrow function with 4 space indent', function() {
+      expect(
+        arrowFunctionWith3SpaceIndentAndLeadingNewline,
         'to inspect as',
         '() =>\n  foo(\n    1\n  )'
       );
