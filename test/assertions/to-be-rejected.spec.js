@@ -1,6 +1,6 @@
 /*global expect*/
-describe('to be rejected assertion', function() {
-  it('should succeed if the response is rejected for any reason', function() {
+describe('to be rejected assertion', () => {
+  it('should succeed if the response is rejected for any reason', () => {
     return expect(
       new Promise(function(resolve, reject) {
         setTimeout(function() {
@@ -12,7 +12,7 @@ describe('to be rejected assertion', function() {
     );
   });
 
-  it('should provide the rejection reason as the fulfillment value', function() {
+  it('should provide the rejection reason as the fulfillment value', () => {
     return expect(
       expect.promise.reject(new Error('foo')),
       'to be rejected'
@@ -21,7 +21,7 @@ describe('to be rejected assertion', function() {
     });
   });
 
-  it('should succeed if the promise is rejected without a reason', function() {
+  it('should succeed if the promise is rejected without a reason', () => {
     return expect(
       expect(
         new Promise(function(resolve, reject) {
@@ -37,7 +37,7 @@ describe('to be rejected assertion', function() {
     );
   });
 
-  it('should fail if the promise is fulfilled', function() {
+  it('should fail if the promise is fulfilled', () => {
     return expect(
       expect(
         new Promise(function(resolve, reject) {
@@ -50,7 +50,7 @@ describe('to be rejected assertion', function() {
     );
   });
 
-  it('should fail if the promise is fulfilled with a value', function() {
+  it('should fail if the promise is fulfilled with a value', () => {
     return expect(
       expect(
         new Promise(function(resolve, reject) {
@@ -66,14 +66,14 @@ describe('to be rejected assertion', function() {
     );
   });
 
-  describe('when passed a function', function() {
-    it('should succeed if the function returns a promise that is rejected', function() {
+  describe('when passed a function', () => {
+    it('should succeed if the function returns a promise that is rejected', () => {
       return expect(function() {
         return expect.promise.reject(new Error('foo'));
       }, 'to be rejected');
     });
 
-    it('should forward the rejection reason', function() {
+    it('should forward the rejection reason', () => {
       return expect(function() {
         return expect.promise(function() {
           return expect.promise.reject(new Error('foo'));
@@ -83,7 +83,7 @@ describe('to be rejected assertion', function() {
       });
     });
 
-    it('should fail if the function returns a promise that is fulfilled', function() {
+    it('should fail if the function returns a promise that is fulfilled', () => {
       expect(
         function() {
           return expect(function() {
@@ -101,7 +101,7 @@ describe('to be rejected assertion', function() {
       );
     });
 
-    it('should succeed if the function throws synchronously', function() {
+    it('should succeed if the function throws synchronously', () => {
       return expect(function() {
         throw new Error('foo');
       }, 'to be rejected');

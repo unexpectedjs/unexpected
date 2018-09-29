@@ -1,5 +1,5 @@
 /*global expect*/
-describe('use', function() {
+describe('use', () => {
   var clonedExpect;
   beforeEach(function() {
     clonedExpect = expect.clone();
@@ -26,7 +26,7 @@ describe('use', function() {
     });
   });
 
-  it('throws if the given arguments does not adhere to the plugin interface', function() {
+  it('throws if the given arguments does not adhere to the plugin interface', () => {
     clonedExpect(
       function() {
         clonedExpect.use({});
@@ -41,7 +41,7 @@ describe('use', function() {
     );
   });
 
-  it('allows the installation of a plugin given as an anonymous function', function() {
+  it('allows the installation of a plugin given as an anonymous function', () => {
     var callCount = 0;
     var plugin = function() {
       callCount += 1;
@@ -52,7 +52,7 @@ describe('use', function() {
     expect(callCount, 'to equal', 1);
   });
 
-  it('allows the installation of a plugin given as a named function', function() {
+  it('allows the installation of a plugin given as a named function', () => {
     var callCount = 0;
     var plugin = function myPlugin() {
       callCount += 1;
@@ -63,7 +63,7 @@ describe('use', function() {
     expect(callCount, 'to equal', 1);
   });
 
-  it('fails if identically named, but different functions are installed', function() {
+  it('fails if identically named, but different functions are installed', () => {
     clonedExpect.use(function myPlugin() {});
     expect(
       function() {
@@ -106,7 +106,7 @@ describe('use', function() {
     clonedExpect.clone().use(pluginB);
   });
 
-  it('installing a plugin more than once is a no-op', function() {
+  it('installing a plugin more than once is a no-op', () => {
     var callCount = 0;
     var plugin = {
       name: 'plugin',
@@ -120,7 +120,7 @@ describe('use', function() {
     expect(callCount, 'to be', 1);
   });
 
-  it('installing two different plugins that are identically named and have the same version (but not ===) will only install the first one', function() {
+  it('installing two different plugins that are identically named and have the same version (but not ===) will only install the first one', () => {
     var callCount1 = 0;
     var plugin1 = {
       name: 'plugin',
@@ -142,7 +142,7 @@ describe('use', function() {
     expect(callCount2, 'to be', 0);
   });
 
-  it('should throw an error when installing two different plugins that are identically named and have different versions', function() {
+  it('should throw an error when installing two different plugins that are identically named and have different versions', () => {
     clonedExpect.use({
       name: 'plugin',
       version: '1.2.3',
@@ -161,7 +161,7 @@ describe('use', function() {
     );
   });
 
-  it('should throw an error when two identically named plugins where the first one has a version number', function() {
+  it('should throw an error when two identically named plugins where the first one has a version number', () => {
     clonedExpect.use({
       name: 'plugin',
       version: '1.2.3',
@@ -179,7 +179,7 @@ describe('use', function() {
     );
   });
 
-  it('installing a version-less plugin with the same name as another plugin (but not ===) throws an error', function() {
+  it('installing a version-less plugin with the same name as another plugin (but not ===) throws an error', () => {
     clonedExpect.use({
       name: 'test',
       installInto() {}
@@ -196,7 +196,7 @@ describe('use', function() {
     );
   });
 
-  it('should refuse to install a plugin named unexpected-promise', function() {
+  it('should refuse to install a plugin named unexpected-promise', () => {
     expect(
       function() {
         expect.use({

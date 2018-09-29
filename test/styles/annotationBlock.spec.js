@@ -1,6 +1,6 @@
 /*global expect*/
-describe('annotationBlock', function() {
-  it('should render an empty block', function() {
+describe('annotationBlock', () => {
+  it('should render an empty block', () => {
     expect(
       expect
         .createOutput('text')

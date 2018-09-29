@@ -1,30 +1,30 @@
 /*global expect*/
-describe('Error type', function() {
-  it('should inspect the constructor name correctly', function() {
+describe('Error type', () => {
+  it('should inspect the constructor name correctly', () => {
     expect(new TypeError('foo'), 'to inspect as', "TypeError('foo')");
   });
 
-  it('should inspect correctly when the message is not set and there are no other properties', function() {
+  it('should inspect correctly when the message is not set and there are no other properties', () => {
     expect(new Error(), 'to inspect as', 'Error()');
   });
 
-  it('should inspect correctly when the message is set and there are no other properties', function() {
+  it('should inspect correctly when the message is set and there are no other properties', () => {
     expect(new Error('foo'), 'to inspect as', "Error('foo')");
   });
 
-  it('should inspect correctly when the message is set and there are other properties', function() {
+  it('should inspect correctly when the message is set and there are other properties', () => {
     var err = new Error('foo');
     err.bar = 123;
     expect(err, 'to inspect as', "Error({ message: 'foo', bar: 123 })");
   });
 
-  it('should inspect correctly when the message is not set and there are other properties', function() {
+  it('should inspect correctly when the message is not set and there are other properties', () => {
     var err = new Error();
     err.bar = 123;
     expect(err, 'to inspect as', "Error({ message: '', bar: 123 })");
   });
 
-  it('should diff instances with unwrapped values that do not produce a diff', function() {
+  it('should diff instances with unwrapped values that do not produce a diff', () => {
     var clonedExpect = expect.clone().addType({
       name: 'numericalError',
       base: 'Error',
@@ -47,7 +47,7 @@ describe('Error type', function() {
     );
   });
 
-  describe('with a custom Error class inheriting from Error', function() {
+  describe('with a custom Error class inheriting from Error', () => {
     function inherits(ctor, superCtor) {
       ctor.super_ = superCtor;
       ctor.prototype = Object.create(superCtor.prototype, {
@@ -67,11 +67,11 @@ describe('Error type', function() {
 
     inherits(MyError, Error);
 
-    it('should consider identical instances to be identical', function() {
+    it('should consider identical instances to be identical', () => {
       expect(new MyError('foo'), 'to equal', new MyError('foo'));
     });
 
-    it('should consider an instance of the custom error different from an otherwise identical Error instance', function() {
+    it('should consider an instance of the custom error different from an otherwise identical Error instance', () => {
       expect(
         function() {
           expect(new MyError('foo'), 'to equal', new Error('foo'));
@@ -83,7 +83,7 @@ describe('Error type', function() {
       );
     });
 
-    it('should instances of the custom error different to be different when they have different messages', function() {
+    it('should instances of the custom error different to be different when they have different messages', () => {
       expect(
         function() {
           expect(new MyError('foo'), 'to equal', new MyError('bar'));
@@ -100,15 +100,15 @@ describe('Error type', function() {
       );
     });
 
-    describe('when the custom error has a "name" property', function() {
+    describe('when the custom error has a "name" property', () => {
       var myError = new MyError('foo');
       myError.name = 'SomethingElse';
 
-      it('should use the "name" property when inspecting instances', function() {
+      it('should use the "name" property when inspecting instances', () => {
         expect(myError, 'to inspect as', "SomethingElse('foo')");
       });
 
-      it('should use the "name" property when reporting mismatching constructors', function() {
+      it('should use the "name" property when reporting mismatching constructors', () => {
         expect(
           function() {
             expect(myError, 'to equal', new Error('foo'));
@@ -120,7 +120,7 @@ describe('Error type', function() {
         );
       });
 
-      it('should use the "name" property when diffing', function() {
+      it('should use the "name" property when diffing', () => {
         expect(
           function() {
             var otherMyError = new MyError('bar');

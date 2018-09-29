@@ -1,6 +1,6 @@
 /*global expect*/
-describe('expect.promise', function() {
-  it('should forward non-unexpected errors', function() {
+describe('expect.promise', () => {
+  it('should forward non-unexpected errors', () => {
     var clonedExpect = expect
       .clone()
       .addAssertion('to foo', function(expect, subject, value) {
@@ -31,7 +31,7 @@ describe('expect.promise', function() {
     );
   });
 
-  it('should return the fulfilled promise even if it is oathbreakable', function() {
+  it('should return the fulfilled promise even if it is oathbreakable', () => {
     var clonedExpect = expect
       .clone()
       .addAssertion('to foo', function(expect, subject, value) {
@@ -60,7 +60,7 @@ describe('expect.promise', function() {
     });
   });
 
-  it('should return a promise fulfilled with the return value when an assertion returns a non-promise value', function() {
+  it('should return a promise fulfilled with the return value when an assertion returns a non-promise value', () => {
     var clonedExpect = expect
       .clone()
       .addAssertion('to foo', function(expect, subject, value) {
@@ -72,23 +72,23 @@ describe('expect.promise', function() {
     });
   });
 
-  describe('#and', function() {
-    describe('with a synchronous assertion', function() {
-      it('should succeed', function() {
+  describe('#and', () => {
+    describe('with a synchronous assertion', () => {
+      it('should succeed', () => {
         return expect('foo', 'to equal', 'foo').and('to be a string');
       });
 
-      it('should succeed when another clause is added', function() {
+      it('should succeed when another clause is added', () => {
         return expect('foo', 'to equal', 'foo')
           .and('to be a string')
           .and('to match', /^f/);
       });
 
-      it('should work without returning the promise', function() {
+      it('should work without returning the promise', () => {
         expect('foo', 'to equal', 'foo').and('to be a string');
       });
 
-      it('should fail with a diff', function() {
+      it('should fail with a diff', () => {
         return expect(
           function() {
             return expect('foo', 'to equal', 'foo').and('to be a number');
@@ -98,7 +98,7 @@ describe('expect.promise', function() {
         );
       });
 
-      it('should fail with a diff even when the promise is not returned', function() {
+      it('should fail with a diff even when the promise is not returned', () => {
         return expect(
           function() {
             expect('foo', 'to equal', 'foo').and('to be a number');
@@ -108,14 +108,14 @@ describe('expect.promise', function() {
         );
       });
 
-      describe('with an expect.it as the second clause', function() {
-        it('should succeed', function() {
+      describe('with an expect.it as the second clause', () => {
+        it('should succeed', () => {
           return expect('foo', 'to equal', 'foo').and(
             expect.it('to be a string')
           );
         });
 
-        it('should fail with a diff', function() {
+        it('should fail with a diff', () => {
           return expect(
             function() {
               return expect('foo', 'to equal', 'foo').and(
@@ -129,20 +129,20 @@ describe('expect.promise', function() {
       });
     });
 
-    describe('with an asynchronous assertion anded with a synchronous one', function() {
-      it('should succeed', function() {
+    describe('with an asynchronous assertion anded with a synchronous one', () => {
+      it('should succeed', () => {
         return expect('foo', 'when delayed', 5, 'to equal', 'foo').and(
           'to be a string'
         );
       });
 
-      it('should succeed when another clause is added', function() {
+      it('should succeed when another clause is added', () => {
         return expect('foo', 'when delayed', 5, 'to equal', 'foo')
           .and('when delayed', 5, 'to be a string')
           .and('when delayed', 2, 'to be a string');
       });
 
-      it('should fail with a diff when the asynchronous assertion fails', function() {
+      it('should fail with a diff when the asynchronous assertion fails', () => {
         return expect(
           function() {
             return expect('foo', 'when delayed', 5, 'to equal', 'bar').and(
@@ -157,7 +157,7 @@ describe('expect.promise', function() {
         );
       });
 
-      it('should fail with a diff when the synchronous assertion fails', function() {
+      it('should fail with a diff when the synchronous assertion fails', () => {
         return expect(
           function() {
             return expect('foo', 'when delayed', 5, 'to equal', 'foo').and(
@@ -169,7 +169,7 @@ describe('expect.promise', function() {
         );
       });
 
-      it('should fail with a diff when both assertions fail', function() {
+      it('should fail with a diff when both assertions fail', () => {
         return expect(
           function() {
             return expect('foo', 'when delayed', 5, 'to equal', 'bar').and(
@@ -184,21 +184,21 @@ describe('expect.promise', function() {
         );
       });
 
-      describe('with an expect.it as the second clause', function() {
-        it('should succeed', function() {
+      describe('with an expect.it as the second clause', () => {
+        it('should succeed', () => {
           return expect('foo', 'when delayed', 5, 'to equal', 'foo').and(
             expect.it('to be a string')
           );
         });
 
-        it('should succeed when more clauses are added', function() {
+        it('should succeed when more clauses are added', () => {
           return expect('foo', 'when delayed', 5, 'to equal', 'foo')
             .and(expect.it('to be a string'))
             .and('to be a string')
             .and('to be a string');
         });
 
-        it('should fail with a diff', function() {
+        it('should fail with a diff', () => {
           return expect(
             function() {
               return expect('foo', 'when delayed', 5, 'to equal', 'foo').and(
@@ -212,8 +212,8 @@ describe('expect.promise', function() {
       });
     });
 
-    describe('with a nested asynchronous assertion', function() {
-      it('should mount the and method on a promise returned from a nested assertion', function() {
+    describe('with a nested asynchronous assertion', () => {
+      it('should mount the and method on a promise returned from a nested assertion', () => {
         var clonedExpect = expect
           .clone()
           .addAssertion('to foo', function(expect, subject) {
@@ -234,7 +234,7 @@ describe('expect.promise', function() {
     });
   });
 
-  it('should throw an exception if the argument was not a function', function() {
+  it('should throw an exception if the argument was not a function', () => {
     var expectedError = new TypeError(
       'expect.promise(...) requires a function argument to be supplied.\n' +
         'See http://unexpected.js.org/api/promise/ for more details.'
@@ -258,7 +258,7 @@ describe('expect.promise', function() {
     });
   });
 
-  describe('#inspect', function() {
+  describe('#inspect', () => {
     var originalDefaultFormat = expect.output.constructor.defaultFormat;
     beforeEach(function() {
       expect.output.constructor.defaultFormat = 'text';
@@ -267,7 +267,7 @@ describe('expect.promise', function() {
       expect.output.constructor.defaultFormat = originalDefaultFormat;
     });
 
-    it('should inspect a fulfilled promise without a value', function() {
+    it('should inspect a fulfilled promise without a value', () => {
       expect(
         expect
           .promise(function() {
@@ -279,7 +279,7 @@ describe('expect.promise', function() {
       );
     });
 
-    it('should inspect a fulfilled promise with a value', function() {
+    it('should inspect a fulfilled promise with a value', () => {
       expect(
         expect
           .promise(function() {
@@ -291,7 +291,7 @@ describe('expect.promise', function() {
       );
     });
 
-    it('should inspect a pending promise', function() {
+    it('should inspect a pending promise', () => {
       var asyncPromise = expect(
         'foo',
         'when delayed a little bit',
@@ -302,7 +302,7 @@ describe('expect.promise', function() {
       return asyncPromise;
     });
 
-    it('should inspect a rejected promise without a reason', function() {
+    it('should inspect a rejected promise without a reason', () => {
       var promise = expect.promise(function(resolve, reject) {
         reject();
       });
@@ -312,7 +312,7 @@ describe('expect.promise', function() {
       });
     });
 
-    it('should inspect a rejected promise with a reason', function() {
+    it('should inspect a rejected promise with a reason', () => {
       var promise = expect.promise(function(resolve, reject) {
         setTimeout(function() {
           reject(new Error('argh'));
@@ -329,8 +329,8 @@ describe('expect.promise', function() {
     });
   });
 
-  describe('#settle', function() {
-    it('should support non-Promise leaves', function() {
+  describe('#settle', () => {
+    it('should support non-Promise leaves', () => {
       return expect.promise
         .settle({
           a: 123
@@ -341,14 +341,14 @@ describe('expect.promise', function() {
     });
   });
 
-  describe('called with a function that takes a single ("run") parameter', function() {
-    it('should allow providing an empty function', function() {
+  describe('called with a function that takes a single ("run") parameter', () => {
+    it('should allow providing an empty function', () => {
       return expect.promise(function(run) {
         setImmediate(run());
       });
     });
 
-    it('should not fulfill the promise until the outer function has returned', function() {
+    it('should not fulfill the promise until the outer function has returned', () => {
       return expect(
         expect.promise(function(run) {
           run()();
@@ -359,7 +359,7 @@ describe('expect.promise', function() {
       );
     });
 
-    it('should provide a run function that preserves the return value of the supplied function', function() {
+    it('should provide a run function that preserves the return value of the supplied function', () => {
       return expect.promise(function(run) {
         var runner = run(function() {
           return 123;

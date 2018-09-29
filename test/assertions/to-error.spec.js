@@ -1,8 +1,8 @@
 /*global expect*/
-describe('to error assertion', function() {
-  describe('with a function that throws', function() {
-    describe('with the "not" flag', function() {
-      it('should indicate that the function threw', function() {
+describe('to error assertion', () => {
+  describe('with a function that throws', () => {
+    describe('with the "not" flag', () => {
+      it('should indicate that the function threw', () => {
         expect(
           function() {
             expect(function() {
@@ -17,9 +17,9 @@ describe('to error assertion', function() {
     });
   });
 
-  describe('with a function that returns a promise that is rejected', function() {
-    describe('with the "not" flag', function() {
-      it('should indicate that the function returned a rejected promise', function() {
+  describe('with a function that returns a promise that is rejected', () => {
+    describe('with the "not" flag', () => {
+      it('should indicate that the function returned a rejected promise', () => {
         return expect(
           // prettier-ignore
           expect(function() {
@@ -45,7 +45,7 @@ describe('to error assertion', function() {
     });
   });
 
-  it('should fail if the function returns a fulfilled promise', function() {
+  it('should fail if the function returns a fulfilled promise', () => {
     expect(
       function() {
         expect(function() {
@@ -61,7 +61,7 @@ describe('to error assertion', function() {
     );
   });
 
-  it('should fail if the function does not throw and does not return a promise', function() {
+  it('should fail if the function does not throw and does not return a promise', () => {
     expect(
       function() {
         expect(function() {}, 'to error');
@@ -71,7 +71,7 @@ describe('to error assertion', function() {
     );
   });
 
-  it('should allow matching the message of an UnexpectedError against a regexp', function() {
+  it('should allow matching the message of an UnexpectedError against a regexp', () => {
     expect(
       function() {
         expect(123, 'to equal', 456);
@@ -81,8 +81,8 @@ describe('to error assertion', function() {
     );
   });
 
-  describe('without the not flag', function() {
-    it('should use the stack of the rejection reason when failing', function() {
+  describe('without the not flag', () => {
+    it('should use the stack of the rejection reason when failing', () => {
       return expect(
         function() {
           return expect(
@@ -104,8 +104,8 @@ describe('to error assertion', function() {
       );
     });
 
-    describe('with another promise library', function() {
-      it('should use the stack of the rejection reason when failing', function() {
+    describe('with another promise library', () => {
+      it('should use the stack of the rejection reason when failing', () => {
         return expect(
           function() {
             return expect(
@@ -129,8 +129,8 @@ describe('to error assertion', function() {
     });
   });
 
-  describe('with the not flag', function() {
-    it('should use the stack of the rejection reason when failing', function() {
+  describe('with the not flag', () => {
+    it('should use the stack of the rejection reason when failing', () => {
       return expect(
         function() {
           return expect(function() {
@@ -148,8 +148,8 @@ describe('to error assertion', function() {
       );
     });
 
-    describe('with another promise library', function() {
-      it('should use the stack of the rejection reason when failing', function() {
+    describe('with another promise library', () => {
+      it('should use the stack of the rejection reason when failing', () => {
         return expect(
           function() {
             return expect(function() {

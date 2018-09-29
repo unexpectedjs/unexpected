@@ -9,6 +9,6 @@ expect.addAssertion('<any> to foo', function(expect) {
   expect('bar', 'to bar');
 });
 
-it('should call the callback', function() {
+it('should call the callback', () => {
   expect('foo', 'to foo');
 });

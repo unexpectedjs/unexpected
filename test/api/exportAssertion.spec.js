@@ -1,5 +1,5 @@
 /*global expect*/
-describe('exportAssertion', function() {
+describe('exportAssertion', () => {
   var parentExpect;
   var childExpect;
   beforeEach(function() {
@@ -7,7 +7,7 @@ describe('exportAssertion', function() {
     childExpect = parentExpect.child();
   });
 
-  it('is chainable', function() {
+  it('is chainable', () => {
     childExpect
       .exportAssertion('foo', function() {})
       .exportAssertion('bar', function() {});
@@ -15,7 +15,7 @@ describe('exportAssertion', function() {
     expect(parentExpect.assertions, 'to have keys', 'foo', 'bar');
   });
 
-  it('makes the assertion available to the parent expect', function() {
+  it('makes the assertion available to the parent expect', () => {
     childExpect.exportAssertion('<string> to foo', function(expect, subject) {
       expect(subject, 'to equal', 'foo');
     });
@@ -23,7 +23,7 @@ describe('exportAssertion', function() {
     parentExpect('foo', 'to foo');
   });
 
-  it('does not make the assertion available to a parent parent expect', function() {
+  it('does not make the assertion available to a parent parent expect', () => {
     childExpect
       .child()
       .exportAssertion('<string> to foo', function(expect, subject) {
@@ -38,7 +38,7 @@ describe('exportAssertion', function() {
     );
   });
 
-  it('binds the assertion to the child expect so custom types are available', function() {
+  it('binds the assertion to the child expect so custom types are available', () => {
     childExpect.addType({
       name: 'yadda',
       identify(obj) {
@@ -71,7 +71,7 @@ describe('exportAssertion', function() {
     );
   });
 
-  it('picks up type definitions from the parent expect when setting expect.subjectType and expect.argTypes', function() {
+  it('picks up type definitions from the parent expect when setting expect.subjectType and expect.argTypes', () => {
     childExpect.exportAssertion('<any> to foo <any>', function(
       expect,
       subject,
@@ -84,7 +84,7 @@ describe('exportAssertion', function() {
     parentExpect(123, 'to foo', 'bar');
   });
 
-  it('should make custom styles available to the output generation code called by expect.fail', function() {
+  it('should make custom styles available to the output generation code called by expect.fail', () => {
     childExpect.addStyle('fancyQuotes', function(text) {
       this.text('>>')
         .text(text)
@@ -127,7 +127,7 @@ describe('exportAssertion', function() {
     );
   });
 
-  it('should make custom styles available when a parent expect appends an error associated with a child expect', function() {
+  it('should make custom styles available when a parent expect appends an error associated with a child expect', () => {
     childExpect.addStyle('fancyQuotes', function(text) {
       this.text('>>')
         .text(text)
@@ -177,7 +177,7 @@ describe('exportAssertion', function() {
     );
   });
 
-  describe('when shifting from an exported middle-of-the-rocket assertion in an inherited expect to an assertion defined in the parent expect', function() {
+  describe('when shifting from an exported middle-of-the-rocket assertion in an inherited expect to an assertion defined in the parent expect', () => {
     beforeEach(function() {
       childExpect.exportAssertion(
         '<string> when prepended with foo <assertion?>',
@@ -191,11 +191,11 @@ describe('exportAssertion', function() {
       });
     });
 
-    it('should succeed', function() {
+    it('should succeed', () => {
       parentExpect('', 'when prepended with foo', 'to foo');
     });
 
-    it('should fail with a diff', function() {
+    it('should fail with a diff', () => {
       expect(
         function() {
           parentExpect('bar', 'when prepended with foo', 'to foo');
@@ -209,7 +209,7 @@ describe('exportAssertion', function() {
     });
   });
 
-  describe('when shifting from an exported middle-of-the-rocket assertion in an inherited expect to an assertion exported from another inherit', function() {
+  describe('when shifting from an exported middle-of-the-rocket assertion in an inherited expect to an assertion exported from another inherit', () => {
     beforeEach(function() {
       childExpect.exportAssertion(
         '<string> when prepended with foo <assertion?>',
@@ -225,11 +225,11 @@ describe('exportAssertion', function() {
         });
     });
 
-    it('should succeed', function() {
+    it('should succeed', () => {
       parentExpect('', 'when prepended with foo', 'to foo');
     });
 
-    it('should fail with a diff', function() {
+    it('should fail with a diff', () => {
       expect(
         function() {
           parentExpect('bar', 'when prepended with foo', 'to foo');
@@ -243,7 +243,7 @@ describe('exportAssertion', function() {
     });
   });
 
-  describe('when delegating to an exported assertion from the parent', function() {
+  describe('when delegating to an exported assertion from the parent', () => {
     beforeEach(function() {
       childExpect.exportAssertion(
         '<string> when prepended with foo <assertion?>',
@@ -266,11 +266,11 @@ describe('exportAssertion', function() {
         });
     });
 
-    it('should succeed', function() {
+    it('should succeed', () => {
       parentExpect('', 'when prepended with foo when trimmed', 'to foo');
     });
 
-    it('should fail with a diff', function() {
+    it('should fail with a diff', () => {
       expect(
         function() {
           parentExpect(

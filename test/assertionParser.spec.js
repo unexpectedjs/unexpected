@@ -1,8 +1,8 @@
 /*global unexpected*/
-describe('parseAssertion', function() {
+describe('parseAssertion', () => {
   var expect = unexpected.clone();
 
-  it('converts an assertion string to an object representation', function() {
+  it('converts an assertion string to an object representation', () => {
     var assertion = expect.parseAssertion(
       '<string|function> [not] to be <string> <string*|object>'
     );
@@ -42,7 +42,7 @@ describe('parseAssertion', function() {
     ]);
   });
 
-  it('accepts assertions without alternations', function() {
+  it('accepts assertions without alternations', () => {
     var assertion = expect.parseAssertion(
       '<any> [not] to [exhaustively] satisfy [assertion] <any*>'
     );
@@ -55,7 +55,7 @@ describe('parseAssertion', function() {
     ]);
   });
 
-  it('accepts assertions with alternations on the subject', function() {
+  it('accepts assertions with alternations on the subject', () => {
     var assertion = expect.parseAssertion(
       '<string|array-like> [not] to be empty <any*>'
     );
@@ -73,7 +73,7 @@ describe('parseAssertion', function() {
     ]);
   });
 
-  it('accepts legacy assertions', function() {
+  it('accepts legacy assertions', () => {
     var assertion = expect.parseAssertion('[not] to be');
     expect(assertion, 'to satisfy', [
       {
@@ -84,7 +84,7 @@ describe('parseAssertion', function() {
     ]);
   });
 
-  it('accepts assertions with no arguments', function() {
+  it('accepts assertions with no arguments', () => {
     var assertion = expect.parseAssertion('<any> [not] to be truthy');
     expect(assertion, 'to satisfy', [
       {
@@ -95,7 +95,7 @@ describe('parseAssertion', function() {
     ]);
   });
 
-  it('throws a type cannot be detected', function() {
+  it('throws a type cannot be detected', () => {
     expect(
       function() {
         expect.parseAssertion(
@@ -107,7 +107,7 @@ describe('parseAssertion', function() {
     );
   });
 
-  it('throws if the subject type is not specified', function() {
+  it('throws if the subject type is not specified', () => {
     expect(
       function() {
         expect.parseAssertion('[not] to be <string> <string*|object>');
@@ -117,7 +117,7 @@ describe('parseAssertion', function() {
     );
   });
 
-  it('throws if the assertion cannot be detected', function() {
+  it('throws if the assertion cannot be detected', () => {
     expect(
       function() {
         expect.parseAssertion('<string> <string*|object>');
@@ -127,7 +127,7 @@ describe('parseAssertion', function() {
     );
   });
 
-  it('throws if varargs is used for the subject', function() {
+  it('throws if varargs is used for the subject', () => {
     expect(
       function() {
         expect.parseAssertion('<any*> [not] to be <any*>');
@@ -137,7 +137,7 @@ describe('parseAssertion', function() {
     );
   });
 
-  it('throws if varargs is used before the last argument', function() {
+  it('throws if varargs is used before the last argument', () => {
     expect(
       function() {
         expect.parseAssertion('<any> [not] to be <any*> <string>');
@@ -148,7 +148,7 @@ describe('parseAssertion', function() {
   });
 
   // Under consideration here: https://github.com/unexpectedjs/unexpected/issues/225
-  it('throws if the argument list contains multiple assertion strings', function() {
+  it('throws if the argument list contains multiple assertion strings', () => {
     expect(
       function() {
         expect.parseAssertion(
@@ -160,7 +160,7 @@ describe('parseAssertion', function() {
     );
   });
 
-  it('handles types with upper case characters', function() {
+  it('handles types with upper case characters', () => {
     var assertion = expect.parseAssertion('<number|NaN> [not] to be NaN');
     expect(assertion, 'to satisfy', [
       {
@@ -176,8 +176,8 @@ describe('parseAssertion', function() {
     ]);
   });
 
-  describe('with an assertion that has <assertion>', function() {
-    it('should accept it as the last argument', function() {
+  describe('with an assertion that has <assertion>', () => {
+    it('should accept it as the last argument', () => {
       var assertion = expect.parseAssertion(
         '<Buffer> when decoded as <string> <assertion>'
       );
@@ -202,7 +202,7 @@ describe('parseAssertion', function() {
       ]);
     });
 
-    it('should not accept it as the subject type', function() {
+    it('should not accept it as the subject type', () => {
       expect(
         function() {
           expect.parseAssertion('<assertion> to foo');
@@ -212,7 +212,7 @@ describe('parseAssertion', function() {
       );
     });
 
-    it('should not accept it as the non-last argument', function() {
+    it('should not accept it as the non-last argument', () => {
       expect(
         function() {
           expect.parseAssertion(
@@ -224,7 +224,7 @@ describe('parseAssertion', function() {
       );
     });
 
-    it('should not accept it with a varargs operator', function() {
+    it('should not accept it with a varargs operator', () => {
       expect(
         function() {
           expect.parseAssertion(
@@ -236,7 +236,7 @@ describe('parseAssertion', function() {
       );
     });
 
-    it('should not accept it alternated with other types', function() {
+    it('should not accept it alternated with other types', () => {
       expect(
         function() {
           expect.parseAssertion(
@@ -248,7 +248,7 @@ describe('parseAssertion', function() {
       );
     });
 
-    it('should not parse an assertion with invalid chars', function() {
+    it('should not parse an assertion with invalid chars', () => {
       expect(
         function() {
           expect.parseAssertion('<Buffer> wh!!en foo<>');

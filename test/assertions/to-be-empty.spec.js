@@ -1,6 +1,6 @@
 /*global expect*/
-describe('empty assertion', function() {
-  it('asserts the array-like objects have a non-zero length', function() {
+describe('empty assertion', () => {
+  it('asserts the array-like objects have a non-zero length', () => {
     expect([], 'to be empty');
     expect('', 'to be empty');
     expect([1, 2, 3], 'not to be empty');
@@ -8,12 +8,12 @@ describe('empty assertion', function() {
     expect([1, 2, 3], 'to be non-empty');
   });
 
-  it('asserts that objects (i.e. {}) are empty', function() {
+  it('asserts that objects (i.e. {}) are empty', () => {
     expect({}, 'to be empty');
     expect({ a: 'b' }, 'not to be empty');
   });
 
-  it('throws when the assertion fails', function() {
+  it('throws when the assertion fails', () => {
     expect(
       function() {
         expect([1, 2, 3], 'to be empty');

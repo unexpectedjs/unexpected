@@ -1,5 +1,5 @@
 /*global expect*/
-describe('#child', function() {
+describe('#child', () => {
   var parentExpect;
   var childExpect;
   beforeEach(function() {
@@ -7,7 +7,7 @@ describe('#child', function() {
     childExpect = parentExpect.child();
   });
 
-  it('should not leak a "private" assertion into the parent', function() {
+  it('should not leak a "private" assertion into the parent', () => {
     childExpect.addAssertion('<string> to foo', function(expect, subject) {
       expect(subject, 'to equal', 'foo');
     });
@@ -20,12 +20,12 @@ describe('#child', function() {
     );
   });
 
-  it('should not leak a "private" style into the parent', function() {
+  it('should not leak a "private" style into the parent', () => {
     childExpect.addStyle('foo', function() {});
     expect(parentExpect.createOutput().foo, 'to be undefined');
   });
 
-  it('should not leak a "private" type into the parent', function() {
+  it('should not leak a "private" type into the parent', () => {
     childExpect.addType({
       name: 'abc',
       identify(obj) {
@@ -35,14 +35,14 @@ describe('#child', function() {
     expect(parentExpect.findTypeOf('abc'), 'to satisfy', { name: 'string' });
   });
 
-  it('should have access to assertions defined in the parent after the child was created', function() {
+  it('should have access to assertions defined in the parent after the child was created', () => {
     parentExpect.addAssertion('<string> to foo', function(expect, subject) {
       expect(subject, 'to equal', 'foo');
     });
     childExpect('foo', 'to foo');
   });
 
-  it('should prefer an assertion defined in the child, even if it was added before an identically named one in the parent', function() {
+  it('should prefer an assertion defined in the child, even if it was added before an identically named one in the parent', () => {
     childExpect.addAssertion('<string> to foo', function(expect, subject) {
       expect(subject, 'to equal', 'foo');
     });
@@ -52,7 +52,7 @@ describe('#child', function() {
     childExpect('foo', 'to foo');
   });
 
-  it('should have access to identically named assertions with different type signatures in child and parent', function() {
+  it('should have access to identically named assertions with different type signatures in child and parent', () => {
     childExpect.addAssertion('<string> to foo', function(expect, subject) {
       expect.errorMode = 'nested';
       expect(subject, 'to equal', 'foo');
@@ -64,7 +64,7 @@ describe('#child', function() {
     childExpect('foo', 'to foo');
   });
 
-  it('should have access to styles defined in the parent after the child was created', function() {
+  it('should have access to styles defined in the parent after the child was created', () => {
     parentExpect.addStyle('yadda', function() {
       this.text('yaddafoo');
     });
@@ -78,7 +78,7 @@ describe('#child', function() {
     );
   });
 
-  it('should prefer a style defined in the child, even if it was added before an identically named one in the parent', function() {
+  it('should prefer a style defined in the child, even if it was added before an identically named one in the parent', () => {
     childExpect.addStyle('yadda', function() {
       this.text('yaddagood');
     });
@@ -95,7 +95,7 @@ describe('#child', function() {
     );
   });
 
-  it('should have access to types defined in the parent after the child was created', function() {
+  it('should have access to types defined in the parent after the child was created', () => {
     parentExpect.addType({
       name: 'yadda',
       identify(obj) {
@@ -108,7 +108,7 @@ describe('#child', function() {
     childExpect('yaddafoo', 'to foo');
   });
 
-  it('should have access to types defined in the parent after the child was created, also in the wrapped expect', function() {
+  it('should have access to types defined in the parent after the child was created, also in the wrapped expect', () => {
     parentExpect.addType({
       name: 'yadda',
       identify(obj) {
@@ -125,7 +125,7 @@ describe('#child', function() {
     childExpect('yaddafoobar', 'to foobar');
   });
 
-  it('should prefer a style defined in the child, even if it was added before an identically named one in the parent', function() {
+  it('should prefer a style defined in the child, even if it was added before an identically named one in the parent', () => {
     childExpect.addStyle('yadda', function() {
       this.text('yaddagood');
     });
@@ -142,7 +142,7 @@ describe('#child', function() {
     );
   });
 
-  it('should allow installing an identically named plugin', function() {
+  it('should allow installing an identically named plugin', () => {
     parentExpect.use({
       name: 'foo',
       version: '1.2.3',
@@ -155,7 +155,7 @@ describe('#child', function() {
     });
   });
 
-  it('should allow a plugin dependency to be satisfied by a plugin installed in the parent', function() {
+  it('should allow a plugin dependency to be satisfied by a plugin installed in the parent', () => {
     parentExpect.use({
       name: 'foo',
       installInto() {}
@@ -167,7 +167,7 @@ describe('#child', function() {
     });
   });
 
-  describe('with identically named types added to the parent and the child', function() {
+  describe('with identically named types added to the parent and the child', () => {
     beforeEach(function() {
       parentExpect.addType({
         name: 'foo',
@@ -185,21 +185,21 @@ describe('#child', function() {
       });
     });
 
-    describe('#findTypeOf', function() {
-      describe('in the child', function() {
-        it('should find the type defined in the child', function() {
+    describe('#findTypeOf', () => {
+      describe('in the child', () => {
+        it('should find the type defined in the child', () => {
           expect(childExpect.findTypeOf('foo'), 'to satisfy', { child: true });
         });
 
-        it('should find the type defined in the parent when the object is not identified by the type added to the child', function() {
+        it('should find the type defined in the parent when the object is not identified by the type added to the child', () => {
           expect(childExpect.findTypeOf('foobar'), 'to satisfy', {
             parent: true
           });
         });
       });
 
-      describe('in the parent', function() {
-        it('should find the type defined in the parent', function() {
+      describe('in the parent', () => {
+        it('should find the type defined in the parent', () => {
           expect(parentExpect.findTypeOf('foo'), 'to satisfy', {
             parent: true
           });
@@ -207,22 +207,22 @@ describe('#child', function() {
       });
     });
 
-    describe('#getType', function() {
-      describe('in the child', function() {
-        it('should find the type defined in the child', function() {
+    describe('#getType', () => {
+      describe('in the child', () => {
+        it('should find the type defined in the child', () => {
           expect(childExpect.getType('foo'), 'to satisfy', { child: true });
         });
       });
 
-      describe('in the parent', function() {
-        it('should find the type defined in the parent', function() {
+      describe('in the parent', () => {
+        it('should find the type defined in the parent', () => {
           expect(parentExpect.getType('foo'), 'to satisfy', { parent: true });
         });
       });
     });
   });
 
-  describe('with identically named styles added to the parent, then the child', function() {
+  describe('with identically named styles added to the parent, then the child', () => {
     beforeEach(function() {
       parentExpect.addStyle('foo', function() {
         this.text('parentfoo');
@@ -232,7 +232,7 @@ describe('#child', function() {
       });
     });
 
-    it('should use the style defined in the parent when an output is created by the parent', function() {
+    it('should use the style defined in the parent when an output is created by the parent', () => {
       expect(
         parentExpect
           .createOutput('text')
@@ -243,7 +243,7 @@ describe('#child', function() {
       );
     });
 
-    it('should find the type defined in the parent when parentExpect.findTypeOf is used', function() {
+    it('should find the type defined in the parent when parentExpect.findTypeOf is used', () => {
       expect(
         childExpect
           .createOutput('text')
@@ -255,7 +255,7 @@ describe('#child', function() {
     });
   });
 
-  describe('with identically named styles added to the child, then the parent', function() {
+  describe('with identically named styles added to the child, then the parent', () => {
     beforeEach(function() {
       childExpect.addStyle('foo', function() {
         this.text('childfoo');
@@ -265,7 +265,7 @@ describe('#child', function() {
       });
     });
 
-    it('should use the style defined in the parent when an output is created by the parent', function() {
+    it('should use the style defined in the parent when an output is created by the parent', () => {
       expect(
         parentExpect
           .createOutput('text')
@@ -276,7 +276,7 @@ describe('#child', function() {
       );
     });
 
-    it('should find the type defined in the parent when parentExpect.findTypeOf is used', function() {
+    it('should find the type defined in the parent when parentExpect.findTypeOf is used', () => {
       expect(
         childExpect
           .createOutput('text')
@@ -288,7 +288,7 @@ describe('#child', function() {
     });
   });
 
-  it('should allow adding an assertion referencing the assertion and any types to the child expect', function() {
+  it('should allow adding an assertion referencing the assertion and any types to the child expect', () => {
     childExpect.addAssertion('<any> foo <assertion>', function(
       expect,
       subject
@@ -304,7 +304,7 @@ describe('#child', function() {
     childExpect('abc', 'foo', 'to equal', 'abcfoo');
   });
 
-  it('#inspect should be able to delegate to another private type', function() {
+  it('#inspect should be able to delegate to another private type', () => {
     childExpect.addType({
       name: 'yadda',
       identify(obj) {

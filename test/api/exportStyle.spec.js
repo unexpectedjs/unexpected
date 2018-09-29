@@ -1,5 +1,5 @@
 /*global expect*/
-describe('styleType', function() {
+describe('styleType', () => {
   var parentExpect;
   var childExpect;
   beforeEach(function() {
@@ -7,7 +7,7 @@ describe('styleType', function() {
     childExpect = parentExpect.child();
   });
 
-  it('is chainable', function() {
+  it('is chainable', () => {
     childExpect
       .exportStyle('firstStyle', function() {})
       .exportStyle('secondStyle', function() {});
@@ -16,7 +16,7 @@ describe('styleType', function() {
     expect(parentExpect.output.secondStyle, 'to be a function');
   });
 
-  it('makes the style available to the parent expect', function() {
+  it('makes the style available to the parent expect', () => {
     childExpect.exportStyle('fancyQuotes', function(text) {
       this.text('>>')
         .text(text)
@@ -33,7 +33,7 @@ describe('styleType', function() {
     );
   });
 
-  it('does not make the style available to a parent parent expect', function() {
+  it('does not make the style available to a parent parent expect', () => {
     childExpect.child().exportStyle('fancyQuotes', function(text) {
       this.text('>>')
         .text(text)
@@ -44,7 +44,7 @@ describe('styleType', function() {
     });
   });
 
-  it('binds the style handler to a child expect output so custom types are available inside the exported style', function() {
+  it('binds the style handler to a child expect output so custom types are available inside the exported style', () => {
     childExpect.addStyle('fancyQuotes', function(text) {
       this.text('>>')
         .text(text)

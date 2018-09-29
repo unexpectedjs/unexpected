@@ -1,23 +1,23 @@
 /*global expect*/
-describe('to be a canonical object assertion', function() {
-  it('asserts that an object is canonical', function() {
+describe('to be a canonical object assertion', () => {
+  it('asserts that an object is canonical', () => {
     expect({ a: 123, b: 456 }, 'to be canonical');
   });
 
-  it('asserts that a deep object is canonical', function() {
+  it('asserts that a deep object is canonical', () => {
     expect(
       { a: 123, b: 456, c: [1, 3, 4, { a: 123, b: 456 }] },
       'to be canonical'
     );
   });
 
-  it('works with a circular object', function() {
+  it('works with a circular object', () => {
     var obj = { a: 123, b: {} };
     obj.b.a = obj;
     expect(obj, 'to be canonical');
   });
 
-  it('fails when the assertion fails', function() {
+  it('fails when the assertion fails', () => {
     expect(
       function() {
         expect({ b: 456, a: 123 }, 'to be canonical');

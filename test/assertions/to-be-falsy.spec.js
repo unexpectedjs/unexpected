@@ -1,13 +1,13 @@
 /*global expect*/
-describe('to be falsy assertion', function() {
-  it('assert that the value is falsy', function() {
+describe('to be falsy assertion', () => {
+  it('assert that the value is falsy', () => {
     expect(true, 'not to be falsy');
     expect(0, 'to be falsy');
     expect(null, 'to be falsy');
     expect(undefined, 'to be falsy');
   });
 
-  it('throws when the assertion fails', function() {
+  it('throws when the assertion fails', () => {
     expect(
       function() {
         expect(1, 'to be falsy');
@@ -17,7 +17,7 @@ describe('to be falsy assertion', function() {
     );
   });
 
-  it('throws with message when the assertion fails', function() {
+  it('throws with message when the assertion fails', () => {
     expect(
       function() {
         expect(2 + 2 === 4, 'to be falsy', '2 + 2 === 4');

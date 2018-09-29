@@ -4,31 +4,31 @@ if (
   typeof Symbol === 'function' &&
   Symbol('foo').toString() === 'Symbol(foo)'
 ) {
-  describe('Symbol type', function() {
+  describe('Symbol type', () => {
     var symbolA = Symbol('a');
     var anotherSymbolA = Symbol('a');
     var symbolB = Symbol('b');
 
-    it('inspects correctly', function() {
+    it('inspects correctly', () => {
       expect(symbolA, 'to inspect as', "Symbol('a')");
     });
 
-    it('inspects correctly when used as a key in an object', function() {
+    it('inspects correctly when used as a key in an object', () => {
       var obj = {};
       obj[symbolA] = 123;
       expect(obj, 'to inspect as', "{ [Symbol('a')]: 123 }");
     });
 
-    describe('when compared for equality', function() {
-      it('considers a symbol equal to itself', function() {
+    describe('when compared for equality', () => {
+      it('considers a symbol equal to itself', () => {
         expect(symbolA, 'to equal', symbolA);
       });
 
-      it('considers two symbols with the same name different', function() {
+      it('considers two symbols with the same name different', () => {
         expect(symbolA, 'not to equal', anotherSymbolA);
       });
 
-      it('does not render a diff', function() {
+      it('does not render a diff', () => {
         expect(
           function() {
             expect(symbolA, 'to equal', symbolB);
@@ -38,7 +38,7 @@ if (
         );
       });
 
-      it('should include Symbol properties in the "to equal" diff of objects', function() {
+      it('should include Symbol properties in the "to equal" diff of objects', () => {
         var a = { foo: 123 };
         a[symbolA] = 'foo';
         a[symbolB] = 123;
@@ -65,16 +65,16 @@ if (
       });
     });
 
-    describe('with to satisfy', function() {
-      it('satisfies itself', function() {
+    describe('with to satisfy', () => {
+      it('satisfies itself', () => {
         expect(symbolA, 'to satisfy', symbolA);
       });
 
-      it('does not satisfy another symbol, even with the same name', function() {
+      it('does not satisfy another symbol, even with the same name', () => {
         expect(symbolA, 'not to satisfy', anotherSymbolA);
       });
 
-      it('does not render a diff', function() {
+      it('does not render a diff', () => {
         expect(
           function() {
             expect({ foo: symbolA }, 'to satisfy', { foo: anotherSymbolA });
@@ -88,7 +88,7 @@ if (
         );
       });
 
-      it('should include the Symbol properties in the diff', function() {
+      it('should include the Symbol properties in the diff', () => {
         var a = { foo: 123 };
         a[symbolA] = 'foo';
         a[symbolB] = 123;

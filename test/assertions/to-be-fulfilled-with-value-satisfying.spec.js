@@ -1,6 +1,6 @@
 /*global expect*/
-describe('to be fulfilled with value satisfying assertion', function() {
-  it('should succeed if the response is resolved with a value satisfying the argument', function() {
+describe('to be fulfilled with value satisfying assertion', () => {
+  it('should succeed if the response is resolved with a value satisfying the argument', () => {
     return expect(
       new Promise(function(resolve, reject) {
         setTimeout(function() {
@@ -12,7 +12,7 @@ describe('to be fulfilled with value satisfying assertion', function() {
     );
   });
 
-  it('should forward the fulfillment value', function() {
+  it('should forward the fulfillment value', () => {
     return expect(
       expect.promise.resolve(123),
       'to be fulfilled with value satisfying',
@@ -22,7 +22,7 @@ describe('to be fulfilled with value satisfying assertion', function() {
     });
   });
 
-  it('should fail if the promise is resolved with a value that does not satisfy the argument', function() {
+  it('should fail if the promise is resolved with a value that does not satisfy the argument', () => {
     return expect(
       expect(
         new Promise(function(resolve, reject) {
@@ -47,8 +47,8 @@ describe('to be fulfilled with value satisfying assertion', function() {
     );
   });
 
-  describe('with the "exhaustively" flag', function() {
-    it("errors if the expected value doesn't contain all the values in the subject", function() {
+  describe('with the "exhaustively" flag', () => {
+    it("errors if the expected value doesn't contain all the values in the subject", () => {
       return expect(
         expect(
           Promise.resolve({
@@ -66,7 +66,7 @@ describe('to be fulfilled with value satisfying assertion', function() {
       );
     });
 
-    it('errors with the correct error', function() {
+    it('errors with the correct error', () => {
       return expect(
         expect(
           Promise.resolve({
@@ -95,8 +95,8 @@ describe('to be fulfilled with value satisfying assertion', function() {
     });
   });
 
-  describe('without the "exhaustively" flag', function() {
-    it("doesn't error if the expected value doesn't contain all the values in the subject", function() {
+  describe('without the "exhaustively" flag', () => {
+    it("doesn't error if the expected value doesn't contain all the values in the subject", () => {
       return expect(
         expect.promise.resolve({
           foo: 'foo',
@@ -112,8 +112,8 @@ describe('to be fulfilled with value satisfying assertion', function() {
     });
   });
 
-  describe('when passed a function as the subject', function() {
-    it('should fail if the function returns a promise that is fulfilled with the wrong value', function() {
+  describe('when passed a function as the subject', () => {
+    it('should fail if the function returns a promise that is fulfilled with the wrong value', () => {
       expect(
         function() {
           return expect(
@@ -135,8 +135,8 @@ describe('to be fulfilled with value satisfying assertion', function() {
       );
     });
 
-    describe('with the "exhaustively" flag', function() {
-      it("errors if the expected value doesn't contain all the values in the subject", function() {
+    describe('with the "exhaustively" flag', () => {
+      it("errors if the expected value doesn't contain all the values in the subject", () => {
         return expect(function() {
           return expect(
             function() {
@@ -155,7 +155,7 @@ describe('to be fulfilled with value satisfying assertion', function() {
         }, 'to be rejected');
       });
 
-      it('errors with the correct error', function() {
+      it('errors with the correct error', () => {
         return expect(
           function() {
             return expect(
@@ -197,8 +197,8 @@ describe('to be fulfilled with value satisfying assertion', function() {
       });
     });
 
-    describe('without the "exhaustively" flag', function() {
-      it("doesn't error if the expected value doesn't contain all the values in the subject", function() {
+    describe('without the "exhaustively" flag', () => {
+      it("doesn't error if the expected value doesn't contain all the values in the subject", () => {
         return expect(
           function() {
             return expect.promise.resolve({

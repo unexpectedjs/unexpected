@@ -1,13 +1,13 @@
 /*global expect*/
-describe('to be infinite assertion', function() {
-  it('asserts a infinite number', function() {
+describe('to be infinite assertion', () => {
+  it('asserts a infinite number', () => {
     expect(123, 'not to be infinite');
     expect(0, 'not to be infinite');
     expect(Infinity, 'to be infinite');
     expect(-Infinity, 'to be infinite');
   });
 
-  it('refuses to work on NaN', function() {
+  it('refuses to work on NaN', () => {
     expect(
       function() {
         expect(NaN, 'not to be infinite');
@@ -21,7 +21,7 @@ describe('to be infinite assertion', function() {
     );
   });
 
-  it('throws when the assertion fails', function() {
+  it('throws when the assertion fails', () => {
     expect(
       function() {
         expect(123, 'to be infinite');

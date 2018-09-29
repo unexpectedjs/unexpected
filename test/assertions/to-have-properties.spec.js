@@ -1,10 +1,10 @@
 /*global expect*/
-describe('to have properties assertion', function() {
-  it('asserts presence of a list of properties', function() {
+describe('to have properties assertion', () => {
+  it('asserts presence of a list of properties', () => {
     expect({ a: 'foo', b: 'bar' }, 'to have properties', ['a', 'b']);
   });
 
-  it('asserts presence of a list of own properties', function() {
+  it('asserts presence of a list of own properties', () => {
     expect({ a: 'foo', b: 'bar' }, 'to have own properties', ['a', 'b']);
     expect(
       function() {
@@ -17,11 +17,11 @@ describe('to have properties assertion', function() {
     );
   });
 
-  it('asserts the absence of a property when the RHS object has an undefined value', function() {
+  it('asserts the absence of a property when the RHS object has an undefined value', () => {
     expect({}, 'to have properties', { a: undefined });
   });
 
-  it('asserts absence of a list of properties', function() {
+  it('asserts absence of a list of properties', () => {
     expect({ a: 'foo', b: 'bar' }, 'not to have properties', ['c', 'd']);
     expect(
       function() {
@@ -32,7 +32,7 @@ describe('to have properties assertion', function() {
     );
   });
 
-  it('asserts absence of a list of own properties', function() {
+  it('asserts absence of a list of own properties', () => {
     var obj = Object.create({ a: 'foo', b: 'bar' });
     expect(obj, 'to have properties', ['a', 'b']);
     expect(obj, 'not to have own properties', ['a', 'b']);
@@ -48,7 +48,7 @@ describe('to have properties assertion', function() {
     );
   });
 
-  it('asserts presence and values of an object of properties', function() {
+  it('asserts presence and values of an object of properties', () => {
     expect(
       { a: 'foo', b: 'bar', c: 'baz', d: { qux: 'qux', quux: 'quux' } },
       'to have properties',
@@ -88,7 +88,7 @@ describe('to have properties assertion', function() {
     );
   });
 
-  it('asserts presence and values of an object of own properties', function() {
+  it('asserts presence and values of an object of own properties', () => {
     expect({ a: 'foo', b: 'bar' }, 'to have own properties', {
       a: 'foo',
       b: 'bar'
@@ -128,7 +128,7 @@ describe('to have properties assertion', function() {
     );
   });
 
-  it('asserts absence and values of an object of own properties', function() {
+  it('asserts absence and values of an object of own properties', () => {
     var obj = Object.create({ a: 'foo', b: 'bar' });
     expect(obj, 'to have properties', { a: 'foo', b: 'bar' });
     expect(obj, 'not to have own properties', ['a', 'b']);
@@ -144,7 +144,7 @@ describe('to have properties assertion', function() {
     );
   });
 
-  it('includes prototype properties in the actual property (#48)', function() {
+  it('includes prototype properties in the actual property (#48)', () => {
     function Foo() {}
 
     Foo.prototype.doSomething = function() {};
@@ -163,7 +163,7 @@ describe('to have properties assertion', function() {
     );
   });
 
-  it('throws when the assertion fails', function() {
+  it('throws when the assertion fails', () => {
     expect(
       function() {
         expect({ a: 'foo', b: 'bar' }, 'to have properties', ['c', 'd']);
@@ -185,7 +185,7 @@ describe('to have properties assertion', function() {
     );
   });
 
-  it('throws when given invalid input', function() {
+  it('throws when given invalid input', () => {
     expect(
       function() {
         expect({ a: 'foo', b: 'bar' }, 'to have properties', 'a', 'b');
@@ -215,7 +215,7 @@ describe('to have properties assertion', function() {
     );
   });
 
-  it('works with function objects as well', function() {
+  it('works with function objects as well', () => {
     var subject = function() {};
     subject.foo = 'foo';
     subject.bar = 'bar';
@@ -228,12 +228,12 @@ describe('to have properties assertion', function() {
     });
   });
 
-  describe('with expected numerical property names listed as numbers', function() {
-    it('should succeed', function() {
+  describe('with expected numerical property names listed as numbers', () => {
+    it('should succeed', () => {
       expect({ 1: 'foo', 2: 'bar' }, 'to have properties', [1, 2]);
     });
 
-    it('should fail with a diff', function() {
+    it('should fail with a diff', () => {
       expect(
         function() {
           expect({ 1: 123, 2: 456 }, 'to have properties', [1, 3]);
@@ -244,8 +244,8 @@ describe('to have properties assertion', function() {
     });
   });
 
-  describe('with expected property names listed as neither strings nor numbers', function() {
-    it('should fail when a boolean is passed, even if there is a corresponding string property', function() {
+  describe('with expected property names listed as neither strings nor numbers', () => {
+    it('should fail when a boolean is passed, even if there is a corresponding string property', () => {
       expect(
         function() {
           expect({ true: 123 }, 'to have properties', [true]);
@@ -257,7 +257,7 @@ describe('to have properties assertion', function() {
       );
     });
 
-    it('should fail when an object is passed, even if there is a corresponding string property', function() {
+    it('should fail when an object is passed, even if there is a corresponding string property', () => {
       expect(
         function() {
           expect({ foo: 123 }, 'to have properties', [
@@ -276,7 +276,7 @@ describe('to have properties assertion', function() {
       );
     });
 
-    it('should should mention all the non-string, non-number property names in a list after the error message', function() {
+    it('should should mention all the non-string, non-number property names in a list after the error message', () => {
       expect(
         function() {
           expect({ foo: 123 }, 'to have properties', [true, false]);

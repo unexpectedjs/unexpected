@@ -1,6 +1,6 @@
 /*global expect*/
-describe('freeze', function() {
-  it('is chainable', function() {
+describe('freeze', () => {
+  it('is chainable', () => {
     const clonedExpect = expect.clone();
 
     clonedExpect.freeze()('foo', 'to equal', 'foo');
@@ -8,14 +8,14 @@ describe('freeze', function() {
 
   // Debatable? Seems nice for forwards compatibility if we freeze
   // the default instance in Unexpected 11.
-  it('does not throw if the instance is already frozen', function() {
+  it('does not throw if the instance is already frozen', () => {
     expect
       .clone()
       .freeze()
       .freeze();
   });
 
-  it('makes .use(...) throw', function() {
+  it('makes .use(...) throw', () => {
     expect(
       function() {
         expect
@@ -28,7 +28,7 @@ describe('freeze', function() {
     );
   });
 
-  it('should allow cloning, and the clone should not be frozen', function() {
+  it('should allow cloning, and the clone should not be frozen', () => {
     expect
       .clone()
       .freeze()
@@ -36,7 +36,7 @@ describe('freeze', function() {
       .use(function() {});
   });
 
-  it('makes .addAssertion(...) throw', function() {
+  it('makes .addAssertion(...) throw', () => {
     expect(
       function() {
         expect
@@ -51,7 +51,7 @@ describe('freeze', function() {
     );
   });
 
-  it('makes .addType(...) throw', function() {
+  it('makes .addType(...) throw', () => {
     expect(
       function() {
         expect
@@ -64,7 +64,7 @@ describe('freeze', function() {
     );
   });
 
-  it('makes .addStyle(...) throw', function() {
+  it('makes .addStyle(...) throw', () => {
     expect(
       function() {
         expect
@@ -79,7 +79,7 @@ describe('freeze', function() {
     );
   });
 
-  it('makes .installTheme(...) throw', function() {
+  it('makes .installTheme(...) throw', () => {
     expect(
       function() {
         expect
@@ -92,15 +92,15 @@ describe('freeze', function() {
     );
   });
 
-  describe('with .child()', function() {
-    it('does not throw', function() {
+  describe('with .child()', () => {
+    it('does not throw', () => {
       expect
         .clone()
         .freeze()
         .child();
     });
 
-    it('allows addAssertion', function() {
+    it('allows addAssertion', () => {
       expect
         .clone()
         .freeze()
@@ -110,7 +110,7 @@ describe('freeze', function() {
         });
     });
 
-    it('throws on exportAssertion', function() {
+    it('throws on exportAssertion', () => {
       expect(
         function() {
           expect
@@ -126,7 +126,7 @@ describe('freeze', function() {
       );
     });
 
-    it('throws on exportType', function() {
+    it('throws on exportType', () => {
       expect(
         function() {
           expect
@@ -140,7 +140,7 @@ describe('freeze', function() {
       );
     });
 
-    it('allows .addStyle(...)', function() {
+    it('allows .addStyle(...)', () => {
       expect
         .clone()
         .freeze()
@@ -150,7 +150,7 @@ describe('freeze', function() {
         });
     });
 
-    it('throws on exportStyle', function() {
+    it('throws on exportStyle', () => {
       expect(
         function() {
           expect

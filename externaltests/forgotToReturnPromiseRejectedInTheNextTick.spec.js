@@ -1,6 +1,6 @@
 var expect = require('../lib');
 
-it('should fail', function() {
+it('should fail', () => {
   expect.addAssertion('<any> to foo', function(expect, subject) {
     return expect.promise(function(resolve, reject) {
       setImmediate(function() {

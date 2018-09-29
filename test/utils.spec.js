@@ -1,9 +1,9 @@
 /*global expect*/
-describe('utils', function() {
+describe('utils', () => {
   if (typeof process === 'object') {
     var utils = require('../lib/utils');
-    describe('#objectIs', function() {
-      describe('without Object.is available', function() {
+    describe('#objectIs', () => {
+      describe('without Object.is available', () => {
         var objectIs = Object.is;
         beforeEach(function() {
           Object.is = undefined;
@@ -20,48 +20,48 @@ describe('utils', function() {
           utilsWithoutObjectIsAvailable = require('../lib/utils');
         });
 
-        it('should say that the number 123 is itself', function() {
+        it('should say that the number 123 is itself', () => {
           expect(
             utilsWithoutObjectIsAvailable.objectIs(123, 123),
             'to be true'
           );
         });
 
-        it('should say that the NaN is itself', function() {
+        it('should say that the NaN is itself', () => {
           expect(
             utilsWithoutObjectIsAvailable.objectIs(NaN, NaN),
             'to be true'
           );
         });
 
-        it('should say that -0 is not 0', function() {
+        it('should say that -0 is not 0', () => {
           expect(utilsWithoutObjectIsAvailable.objectIs(-0, 0), 'to be false');
         });
 
-        it('should say that 0 is not -0', function() {
+        it('should say that 0 is not -0', () => {
           expect(utilsWithoutObjectIsAvailable.objectIs(0, -0), 'to be false');
         });
 
-        it('should say that 0 is 0', function() {
+        it('should say that 0 is 0', () => {
           expect(utilsWithoutObjectIsAvailable.objectIs(0, 0), 'to be true');
         });
 
-        it('should say that -0 is -0', function() {
+        it('should say that -0 is -0', () => {
           expect(utilsWithoutObjectIsAvailable.objectIs(-0, -0), 'to be true');
         });
       });
     });
 
-    describe('#getFunctionName', function() {
-      it('should return the name of a named function', function() {
+    describe('#getFunctionName', () => {
+      it('should return the name of a named function', () => {
         expect(utils.getFunctionName(function foo() {}), 'to equal', 'foo');
       });
 
-      it('should return the empty string for an anonymous function', function() {
+      it('should return the empty string for an anonymous function', () => {
         expect(utils.getFunctionName(function() {}), 'to equal', '');
       });
 
-      describe('with Function.prototype.toString mocked out', function() {
+      describe('with Function.prototype.toString mocked out', () => {
         var orig;
         beforeEach(function() {
           orig = Function.prototype.toString;
@@ -76,7 +76,7 @@ describe('utils', function() {
           Function.prototype.toString = orig;
         });
 
-        it('should return what Function.prototype.toString says for an object without a name property', function() {
+        it('should return what Function.prototype.toString says for an object without a name property', () => {
           expect(utils.getFunctionName({}), 'to equal', 'whatever');
         });
       });

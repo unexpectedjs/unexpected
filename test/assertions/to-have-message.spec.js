@@ -1,8 +1,8 @@
 /*global expectWithUnexpectedMagicPen*/
-describe('to have message/diff assertion', function() {
+describe('to have message/diff assertion', () => {
   var expect = expectWithUnexpectedMagicPen;
 
-  describe('with an Unexpected error', function() {
+  describe('with an Unexpected error', () => {
     var err;
     beforeEach(function() {
       try {
@@ -12,11 +12,11 @@ describe('to have message/diff assertion', function() {
       }
     });
 
-    it('should succeed', function() {
+    it('should succeed', () => {
       expect(err, 'to have message', 'expected 1 to equal 2');
     });
 
-    it('should fail with a diff', function() {
+    it('should fail with a diff', () => {
       expect(
         function() {
           expect(err, 'to have message', 'expected 3 to equal 2');
@@ -40,7 +40,7 @@ describe('to have message/diff assertion', function() {
       );
     });
 
-    it('should support the ansi flag', function() {
+    it('should support the ansi flag', () => {
       expect(
         function() {
           expect(err, 'to have message', 'expected 3 to equal 2');
@@ -56,7 +56,7 @@ describe('to have message/diff assertion', function() {
       );
     });
 
-    it('should support the html flag', function() {
+    it('should support the html flag', () => {
       expect(
         function() {
           expect(err, 'to have message', 'expected 3 to equal 2');
@@ -72,7 +72,7 @@ describe('to have message/diff assertion', function() {
       );
     });
 
-    it('should support matching the diff instead of the message', function() {
+    it('should support matching the diff instead of the message', () => {
       expect(
         function() {
           expect('abc', 'to equal', 'def');
@@ -86,7 +86,7 @@ describe('to have message/diff assertion', function() {
       );
     });
 
-    it('should fail to get the diff from an Unexpected error that does not have one', function() {
+    it('should fail to get the diff from an Unexpected error that does not have one', () => {
       expect(
         function() {
           expect(
@@ -106,7 +106,7 @@ describe('to have message/diff assertion', function() {
       );
     });
 
-    it('should fail to get the diff from a non-Unexpected error', function() {
+    it('should fail to get the diff from a non-Unexpected error', () => {
       expect(
         function() {
           expect(
@@ -125,8 +125,8 @@ describe('to have message/diff assertion', function() {
       );
     });
 
-    describe('when comparing against a magicpen instance', function() {
-      it('should succeed', function() {
+    describe('when comparing against a magicpen instance', () => {
+      it('should succeed', () => {
         var expectedDiff = expect
           .createOutput('ansi')
           .text('abc', ['bgRed', 'black'])
@@ -142,7 +142,7 @@ describe('to have message/diff assertion', function() {
         );
       });
 
-      it('should fail with a diff', function() {
+      it('should fail with a diff', () => {
         var expectedDiff = expect
           .createOutput('ansi')
           .red('-')
@@ -199,8 +199,8 @@ describe('to have message/diff assertion', function() {
       });
     });
 
-    describe('when building the expected output via a function', function() {
-      it('should succeed', function() {
+    describe('when building the expected output via a function', () => {
+      it('should succeed', () => {
         expect(
           function() {
             expect('abc', 'to equal', 'def');
@@ -214,7 +214,7 @@ describe('to have message/diff assertion', function() {
         );
       });
 
-      it('should fail with a diff', function() {
+      it('should fail with a diff', () => {
         expect(
           function() {
             expect(
@@ -262,7 +262,7 @@ describe('to have message/diff assertion', function() {
       });
     });
 
-    it('should assume that a function that does not produce any output has run assertions on the stringified diff/message, and thus should not fail', function() {
+    it('should assume that a function that does not produce any output has run assertions on the stringified diff/message, and thus should not fail', () => {
       expect(
         function() {
           expect('abc', 'to equal', 'def');
@@ -274,7 +274,7 @@ describe('to have message/diff assertion', function() {
       );
     });
 
-    it('should handle the case where the function returns a promise', function() {
+    it('should handle the case where the function returns a promise', () => {
       return expect(
         expect(
           function() {
@@ -298,7 +298,7 @@ describe('to have message/diff assertion', function() {
       );
     });
 
-    it('should throw an error when asked for a non-text representation of a non-Unexpected error', function() {
+    it('should throw an error when asked for a non-text representation of a non-Unexpected error', () => {
       try {
         throw new Error('foo');
       } catch (err) {
@@ -314,13 +314,13 @@ describe('to have message/diff assertion', function() {
     });
   });
 
-  describe('with a non-Unexpected error', function() {
+  describe('with a non-Unexpected error', () => {
     var err = new Error('Bummer!');
-    it('should succeed', function() {
+    it('should succeed', () => {
       expect(err, 'to have message', 'Bummer!');
     });
 
-    it('should fail with a diff', function() {
+    it('should fail with a diff', () => {
       expect(
         function() {
           expect(err, 'to have message', 'Dammit!');
