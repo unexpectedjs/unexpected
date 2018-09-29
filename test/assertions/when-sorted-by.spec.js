@@ -1,6 +1,6 @@
 /*global expect*/
-describe('when sorted by assertion', function() {
-  it('should sort an array using the provided compare function', function() {
+describe('when sorted by assertion', () => {
+  it('should sort an array using the provided compare function', () => {
     expect(
       ['c', 'b', 'a'],
       'when sorted by',
@@ -18,7 +18,7 @@ describe('when sorted by assertion', function() {
     );
   });
 
-  it('should provide the result as the fulfillment value if no assertion is provided', function() {
+  it('should provide the result as the fulfillment value if no assertion is provided', () => {
     return expect([3, 1, 2], 'when sorted by', function(a, b) {
       return a - b;
     }).then(function(sortedArray) {
@@ -26,7 +26,7 @@ describe('when sorted by assertion', function() {
     });
   });
 
-  it("should also work without the 'when'", function() {
+  it("should also work without the 'when'", () => {
     expect(
       [4, 10, 5],
       'sorted by',
@@ -38,7 +38,7 @@ describe('when sorted by assertion', function() {
     );
   });
 
-  it('should work with an array-like that is not a proper array', function() {
+  it('should work with an array-like that is not a proper array', () => {
     function toArguments() {
       return arguments;
     }

@@ -1,7 +1,7 @@
 /*global expect*/
-describe('outputFormat', function() {
-  describe('when given a format', function() {
-    it('decides the output that will be used for serializing errors', function() {
+describe('outputFormat', () => {
+  describe('when given a format', () => {
+    it('decides the output that will be used for serializing errors', () => {
       expect(
         function() {
           var clonedExpect = expect.clone().outputFormat('html');

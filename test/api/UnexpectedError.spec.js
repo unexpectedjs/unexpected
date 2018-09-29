@@ -1,7 +1,7 @@
 /*global expect*/
-describe('UnexpectedError', function() {
-  describe('with a single line message', function() {
-    it('should be inspected correctly', function() {
+describe('UnexpectedError', () => {
+  describe('with a single line message', () => {
+    it('should be inspected correctly', () => {
       expect(
         function() {
           expect(2, 'to equal', 4);
@@ -18,8 +18,8 @@ describe('UnexpectedError', function() {
     });
   });
 
-  describe('with a multiline message', function() {
-    it('should be inspected correctly', function() {
+  describe('with a multiline message', () => {
+    it('should be inspected correctly', () => {
       expect(
         function() {
           expect('foo', 'to equal', 'bar');
@@ -41,7 +41,7 @@ describe('UnexpectedError', function() {
     });
   });
 
-  it('#getKeys should return a trimmed-down list', function() {
+  it('#getKeys should return a trimmed-down list', () => {
     expect(
       function() {
         expect('foo', 'to equal', 'bar');
@@ -57,8 +57,8 @@ describe('UnexpectedError', function() {
     );
   });
 
-  describe('when full stack traces is disabled', function() {
-    it('trims the stack for node_module/unexpected/ and node_module/unexpected-<plugin-name>/', function() {
+  describe('when full stack traces is disabled', () => {
+    it('trims the stack for node_module/unexpected/ and node_module/unexpected-<plugin-name>/', () => {
       expect(
         function() {
           expect.fail('wat');
@@ -89,7 +89,7 @@ describe('UnexpectedError', function() {
       );
     });
 
-    it('trims the stack for node_module\\unexpected\\ and node_module\\unexpected-<plugin-name>\\ (windows paths)', function() {
+    it('trims the stack for node_module\\unexpected\\ and node_module\\unexpected-<plugin-name>\\ (windows paths)', () => {
       expect(
         function() {
           expect.fail('wat');
@@ -154,8 +154,8 @@ describe('UnexpectedError', function() {
       );
     });
 
-    describe('and the output format is set to html', function() {
-      it('shows a helping message about how to turn of stack trace trimming', function() {
+    describe('and the output format is set to html', () => {
+      it('shows a helping message about how to turn of stack trace trimming', () => {
         expect(
           function() {
             expect.fail('wat');
@@ -188,8 +188,8 @@ describe('UnexpectedError', function() {
     });
   });
 
-  describe('when full stack traces is enabled', function() {
-    it('the initial stack is preserved', function() {
+  describe('when full stack traces is enabled', () => {
+    it('the initial stack is preserved', () => {
       expect(
         function() {
           expect.fail('wat');
@@ -226,12 +226,12 @@ describe('UnexpectedError', function() {
     });
   });
 
-  describe('when an originalError instance is passed', function() {
+  describe('when an originalError instance is passed', () => {
     if (
       typeof navigator === 'undefined' ||
       !/phantom/i.test(navigator.userAgent)
     ) {
-      it('should give up', function() {
+      it('should give up', () => {
         return expect(
           function() {
             return expect(function() {
@@ -252,12 +252,12 @@ describe('UnexpectedError', function() {
     }
   });
 
-  describe('#stack', function() {
+  describe('#stack', () => {
     if (
       typeof navigator === 'undefined' ||
       !/phantom/i.test(navigator.userAgent)
     ) {
-      it('should not mess up when the error message contains $&', function() {
+      it('should not mess up when the error message contains $&', () => {
         return expect(() => expect('$&', 'to equal', 'foo'), 'to error').then(
           err => {
             expect(err.stack, 'to contain', '$&');

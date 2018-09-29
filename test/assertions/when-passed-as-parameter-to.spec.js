@@ -1,20 +1,20 @@
 /*global expect*/
-describe('when passed as parameters to assertion', function() {
+describe('when passed as parameters to assertion', () => {
   function add(a, b) {
     return a + b;
   }
 
-  it('should assert that the function invocation produces the correct output', function() {
+  it('should assert that the function invocation produces the correct output', () => {
     expect([3, 4], 'when passed as parameters to', add, 'to equal', 7);
   });
 
-  it('should should provide the result as the fulfillment value if no assertion is provided', function() {
+  it('should should provide the result as the fulfillment value if no assertion is provided', () => {
     return expect([3, 4], 'passed as parameters to', add).then(function(sum) {
       expect(sum, 'to equal', 7);
     });
   });
 
-  it('works with an array-like object', function() {
+  it('works with an array-like object', () => {
     var args;
     (function() {
       args = arguments;
@@ -22,7 +22,7 @@ describe('when passed as parameters to assertion', function() {
     expect(args, 'when passed as parameters to', add, 'to equal', 7);
   });
 
-  it('should produce a nested error message when the assertion fails', function() {
+  it('should produce a nested error message when the assertion fails', () => {
     expect(
       function() {
         expect([3, 4], 'when passed as parameters to', add, 'to equal', 8);
@@ -34,7 +34,7 @@ describe('when passed as parameters to assertion', function() {
     );
   });
 
-  it('should combine with other assertions (showcase)', function() {
+  it('should combine with other assertions (showcase)', () => {
     expect(
       [[1, 2], [3, 4]],
       'to have items satisfying',
@@ -44,8 +44,8 @@ describe('when passed as parameters to assertion', function() {
     );
   });
 
-  describe('when invoked as "when passed as parameter to"', function() {
-    it('should pass the subject as a single parameter', function() {
+  describe('when invoked as "when passed as parameter to"', () => {
+    it('should pass the subject as a single parameter', () => {
       expect(
         1,
         'when passed as parameter to',
@@ -55,7 +55,7 @@ describe('when passed as parameters to assertion', function() {
       );
     });
 
-    it('should should provide the result as the fulfillment value if no assertion is provided', function() {
+    it('should should provide the result as the fulfillment value if no assertion is provided', () => {
       return expect(2, 'passed as parameter to', add.bind(null, 1)).then(
         function(sum) {
           expect(sum, 'to equal', 3);
@@ -63,7 +63,7 @@ describe('when passed as parameters to assertion', function() {
       );
     });
 
-    it('should fail with the correct error message and diff', function() {
+    it('should fail with the correct error message and diff', () => {
       function increment(n) {
         return n + 1;
       }
@@ -79,14 +79,14 @@ describe('when passed as parameters to assertion', function() {
     });
   });
 
-  describe('with the constructor flag', function() {
+  describe('with the constructor flag', () => {
     function Foo(a, b) {
       this.a = a;
       this.b = b;
       this.numParams = arguments.length;
     }
 
-    it('should create a new instance', function() {
+    it('should create a new instance', () => {
       expect(
         [1, 2],
         'when passed as parameters to constructor',
@@ -102,7 +102,7 @@ describe('when passed as parameters to assertion', function() {
     });
   });
 
-  describe('with the async flag', function() {
+  describe('with the async flag', () => {
     // prettier-ignore
     function delayedIncrement(num, cb) {
       setTimeout(function () {
@@ -114,7 +114,7 @@ describe('when passed as parameters to assertion', function() {
       }, 1);
     }
 
-    it('should succeed', function() {
+    it('should succeed', () => {
       return expect(
         [123],
         'when passed as parameters to async',
@@ -124,7 +124,7 @@ describe('when passed as parameters to assertion', function() {
       );
     });
 
-    it('should fail if the result of the async function does not meet the criteria', function() {
+    it('should fail if the result of the async function does not meet the criteria', () => {
       return expect(
         expect(
           [123],
@@ -148,7 +148,7 @@ describe('when passed as parameters to assertion', function() {
       );
     });
 
-    it('should fail if the async function calls the callback with an error', function() {
+    it('should fail if the async function calls the callback with an error', () => {
       return expect(
         expect(
           [false],

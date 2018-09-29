@@ -1,6 +1,6 @@
 /*global expect*/
-describe('expect.it', function() {
-  it('returns an expectation function that when applyed runs the assertion on the given subject', function() {
+describe('expect.it', () => {
+  it('returns an expectation function that when applyed runs the assertion on the given subject', () => {
     var expectation = expect.it('to be greater than', 14);
     expectation(20);
     expect(
@@ -12,7 +12,7 @@ describe('expect.it', function() {
     );
   });
 
-  it('is inspected as it is written', function() {
+  it('is inspected as it is written', () => {
     var expectation = expect
       .it('to be a number')
       .and('to be less than', 14)
@@ -30,7 +30,7 @@ describe('expect.it', function() {
     );
   });
 
-  it('does not catch errors that are not thrown by unexpected', function() {
+  it('does not catch errors that are not thrown by unexpected', () => {
     var clonedExpect = expect
       .clone()
       .addAssertion('explode', function(expect, subject) {
@@ -40,8 +40,8 @@ describe('expect.it', function() {
     expect(clonedExpect.it('explode'), 'to throw', 'Explosion');
   });
 
-  describe('with chained and', function() {
-    it('all assertions has to be satisfied', function() {
+  describe('with chained and', () => {
+    it('all assertions has to be satisfied', () => {
       var expectation = expect
         .it('to be a number')
         .and('to be less than', 14)
@@ -57,7 +57,7 @@ describe('expect.it', function() {
       );
     });
 
-    it('returns a new function', function() {
+    it('returns a new function', () => {
       var expectation = expect.it('to be a number');
       var compositeExpectation = expectation.and('to be less than', 14);
       expect(compositeExpectation, 'not to be', expectation);
@@ -73,7 +73,7 @@ describe('expect.it', function() {
       );
     });
 
-    it('outputs one failing assertion correctly', function() {
+    it('outputs one failing assertion correctly', () => {
       var expectation = expect
         .it('to be a number')
         .and('to be less than', 14)
@@ -90,8 +90,8 @@ describe('expect.it', function() {
     });
   });
 
-  describe('with chained or', function() {
-    it('succeeds if any expectations succeeds', function() {
+  describe('with chained or', () => {
+    it('succeeds if any expectations succeeds', () => {
       var expectation = expect
         .it('to be a number')
         .or('to be a string')
@@ -101,7 +101,7 @@ describe('expect.it', function() {
       }, 'not to throw');
     });
 
-    it('fails if all the expectations fails', function() {
+    it('fails if all the expectations fails', () => {
       var expectation = expect
         .it('to be a number')
         .and('to be greater than', 6)
@@ -124,7 +124,7 @@ describe('expect.it', function() {
       );
     });
 
-    it('if there are no and-clauses it writes the failure output more compactly', function() {
+    it('if there are no and-clauses it writes the failure output more compactly', () => {
       var expectation = expect
         .it('to be a number')
         .or('to be a string')
@@ -140,7 +140,7 @@ describe('expect.it', function() {
       );
     });
 
-    it('returns a new function', function() {
+    it('returns a new function', () => {
       var expectation = expect.it('to be a number');
       var compositeExpectation = expectation.or('to be a string');
       expect(compositeExpectation, 'not to be', expectation);
@@ -157,7 +157,7 @@ describe('expect.it', function() {
     });
   });
 
-  describe('with async assertions', function() {
+  describe('with async assertions', () => {
     var clonedExpect = expect
       .clone()
       .addAssertion('to be a number after a short delay', function(
@@ -206,11 +206,11 @@ describe('expect.it', function() {
         });
       });
 
-    it('should succeed', function() {
+    it('should succeed', () => {
       return clonedExpect.it('to be a number after a short delay')(123);
     });
 
-    it('should fail with a diff', function() {
+    it('should fail with a diff', () => {
       return expect(
         clonedExpect.it('to be a number after a short delay')(false),
         'to be rejected with',
@@ -219,14 +219,14 @@ describe('expect.it', function() {
       );
     });
 
-    describe('with a chained "and" construct', function() {
-      it('should succeed', function() {
+    describe('with a chained "and" construct', () => {
+      it('should succeed', () => {
         return clonedExpect
           .it('to be a number after a short delay')
           .and('to be finite after a short delay')(123);
       });
 
-      it('should fail with a diff', function() {
+      it('should fail with a diff', () => {
         return expect(
           clonedExpect
             .it('to be a number after a short delay')
@@ -239,15 +239,15 @@ describe('expect.it', function() {
       });
     });
 
-    describe('with a chained "or" construct', function() {
-      it('should succeed', function() {
+    describe('with a chained "or" construct', () => {
+      it('should succeed', () => {
         return clonedExpect
           .it('to be a number after a short delay')
           .and('to be finite after a short delay')
           .or('to be a string after a short delay')('abc');
       });
 
-      it('should fail with a diff', function() {
+      it('should fail with a diff', () => {
         return expect(
           clonedExpect
             .it('to be a number after a short delay')
@@ -265,7 +265,7 @@ describe('expect.it', function() {
     });
   });
 
-  it('should not swallow a "missing assertion" error when using an expect.it(...).or(...) construct', function() {
+  it('should not swallow a "missing assertion" error when using an expect.it(...).or(...) construct', () => {
     expect(
       function() {
         expect(
@@ -283,7 +283,7 @@ describe('expect.it', function() {
     );
   });
 
-  it('should fail with a "missing assertion" error even when it is not the first failing one in an "and" group', function() {
+  it('should fail with a "missing assertion" error even when it is not the first failing one in an "and" group', () => {
     expect(
       function() {
         expect(
@@ -305,7 +305,7 @@ describe('expect.it', function() {
     );
   });
 
-  it('should not fail when the first clause in an or group specifies an assertion that is not defined for the given arguments', function() {
+  it('should not fail when the first clause in an or group specifies an assertion that is not defined for the given arguments', () => {
     expect(
       [false, 'foo', 'bar'],
       'to have items satisfying',
@@ -313,7 +313,7 @@ describe('expect.it', function() {
     );
   });
 
-  describe('with forwarding of flags', function() {
+  describe('with forwarding of flags', () => {
     var clonedExpect = expect
       .clone()
       .addAssertion('<object> [not] to have a foo property of bar', function(
@@ -325,11 +325,11 @@ describe('expect.it', function() {
         });
       });
 
-    it('should succeed', function() {
+    it('should succeed', () => {
       clonedExpect({ quux: 123 }, 'not to have a foo property of bar');
     });
 
-    it('should fail with a diff', function() {
+    it('should fail with a diff', () => {
       return expect(
         function() {
           clonedExpect({ foo: 'bar' }, 'not to have a foo property of bar');
@@ -344,14 +344,14 @@ describe('expect.it', function() {
     });
   });
 
-  describe('when passed a function', function() {
-    it('should succeed', function() {
+  describe('when passed a function', () => {
+    it('should succeed', () => {
       expect.it(function(value) {
         expect(value, 'to equal', 'foo');
       })('foo');
     });
 
-    it('should fail with a diff', function() {
+    it('should fail with a diff', () => {
       expect(
         function() {
           expect.it(function(value) {
@@ -363,7 +363,7 @@ describe('expect.it', function() {
       );
     });
 
-    it('should fail when passed more than two arguments', function() {
+    it('should fail when passed more than two arguments', () => {
       expect(
         function() {
           expect.it(function(value) {

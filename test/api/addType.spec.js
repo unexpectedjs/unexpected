@@ -1,11 +1,11 @@
 /*global expect*/
-describe('addType', function() {
+describe('addType', () => {
   var clonedExpect;
-  beforeEach(function() {
+  beforeEach(() => {
     clonedExpect = expect.clone();
   });
 
-  it('throws an expection if the type has an empty or undefined name', function() {
+  it('throws an expection if the type has an empty or undefined name', () => {
     expect(
       function() {
         clonedExpect.addType({});
@@ -15,7 +15,7 @@ describe('addType', function() {
     );
   });
 
-  it('throws an expection if the base type does not exist', function() {
+  it('throws an expection if the base type does not exist', () => {
     expect(
       function() {
         clonedExpect.addType({
@@ -31,7 +31,7 @@ describe('addType', function() {
     );
   });
 
-  it('throws an expection if the type has a name of "assertion"', function() {
+  it('throws an expection if the type has a name of "assertion"', () => {
     expect(
       function() {
         clonedExpect.addType({ name: 'assertion', identify: false });
@@ -41,7 +41,7 @@ describe('addType', function() {
     );
   });
 
-  it('throw an expection if the type does not specify a correct identify field', function() {
+  it('throw an expection if the type does not specify a correct identify field', () => {
     expect(
       function() {
         clonedExpect.addType({ name: 'wat' });
@@ -67,7 +67,7 @@ describe('addType', function() {
     );
   });
 
-  it('throws an expection if a type of that name already exists', function() {
+  it('throws an expection if a type of that name already exists', () => {
     expect(
       function() {
         clonedExpect.addType({ name: 'Promise', identify: false });
@@ -77,7 +77,7 @@ describe('addType', function() {
     );
   });
 
-  it('throws an expection if the type starts with .', function() {
+  it('throws an expection if the type starts with .', () => {
     expect(
       function() {
         clonedExpect.addType({ name: '.foo' });
@@ -87,7 +87,7 @@ describe('addType', function() {
     );
   });
 
-  it('throws an expection if the type ends with .', function() {
+  it('throws an expection if the type ends with .', () => {
     expect(
       function() {
         clonedExpect.addType({ name: 'foo.' });
@@ -97,7 +97,7 @@ describe('addType', function() {
     );
   });
 
-  it('throws an expection if the type contains non-alphanumeric chars', function() {
+  it('throws an expection if the type contains non-alphanumeric chars', () => {
     expect(
       function() {
         clonedExpect.addType({ name: 'ø' });
@@ -107,7 +107,7 @@ describe('addType', function() {
     );
   });
 
-  describe('with a custom box type', function() {
+  describe('with a custom box type', () => {
     function box(value) {
       return {
         isBox: true,
@@ -115,8 +115,8 @@ describe('addType', function() {
       };
     }
 
-    describe('added with a base type of any', function() {
-      beforeEach(function() {
+    describe('added with a base type of any', () => {
+      beforeEach(() => {
         clonedExpect.addType({
           name: 'box',
           identify(obj) {
@@ -142,12 +142,12 @@ describe('addType', function() {
         });
       });
 
-      it('should use the equal defined by the type', function() {
+      it('should use the equal defined by the type', () => {
         clonedExpect(box(123), 'to equal', box(123));
         clonedExpect(box(123), 'not to equal', box(321));
       });
 
-      it('shows a diff in case of a mismatch', function() {
+      it('shows a diff in case of a mismatch', () => {
         expect(
           function() {
             clonedExpect(box(box(123)), 'to equal', box(box(456)));
@@ -164,8 +164,8 @@ describe('addType', function() {
       });
     });
 
-    describe('added with a base type of wrapperObject', function() {
-      beforeEach(function() {
+    describe('added with a base type of wrapperObject', () => {
+      beforeEach(() => {
         clonedExpect.addType({
           name: 'box',
           base: 'wrapperObject',
@@ -184,12 +184,12 @@ describe('addType', function() {
         });
       });
 
-      it('should use the equal defined by the type', function() {
+      it('should use the equal defined by the type', () => {
         clonedExpect(box(123), 'to equal', box(123));
         clonedExpect(box(123), 'not to equal', box(321));
       });
 
-      it('shows a diff in case of a mismatch', function() {
+      it('shows a diff in case of a mismatch', () => {
         expect(
           function() {
             clonedExpect(box(box(123)), 'to equal', box(box(456)));
@@ -203,7 +203,7 @@ describe('addType', function() {
         );
       });
 
-      it('should include the diff when one is available', function() {
+      it('should include the diff when one is available', () => {
         expect(
           function() {
             clonedExpect(box('abc'), 'to equal', box('abe'));
@@ -221,7 +221,7 @@ describe('addType', function() {
       });
     });
 
-    it('allows adding a type whose diff method returns an old-style { inline: <boolean>, diff: <magicpen> } object', function() {
+    it('allows adding a type whose diff method returns an old-style { inline: <boolean>, diff: <magicpen> } object', () => {
       clonedExpect.addType({
         name: 'box',
         identify(obj) {
@@ -264,8 +264,8 @@ describe('addType', function() {
     });
   });
 
-  describe('#inspect', function() {
-    it('renders the name of the type if passed too few parameters, for compatibility with util.inspect', function() {
+  describe('#inspect', () => {
+    it('renders the name of the type if passed too few parameters, for compatibility with util.inspect', () => {
       expect(
         clonedExpect.getType('number').inspect(),
         'to equal',
@@ -274,9 +274,9 @@ describe('addType', function() {
     });
   });
 
-  describe('base type', function() {
-    describe('#inspect', function() {
-      it('bails out if passed the wrong parameters', function() {
+  describe('base type', () => {
+    describe('#inspect', () => {
+      it('bails out if passed the wrong parameters', () => {
         expect(
           function() {
             clonedExpect.getType('number').baseType.inspect();
@@ -286,7 +286,7 @@ describe('addType', function() {
         );
       });
 
-      it('inspects a value', function() {
+      it('inspects a value', () => {
         expect(
           clonedExpect
             .getType('number')
@@ -297,7 +297,7 @@ describe('addType', function() {
         );
       });
 
-      it('provides an inspect function as the 4th parameter', function() {
+      it('provides an inspect function as the 4th parameter', () => {
         clonedExpect.addType({
           name: 'foo',
           identify() {
@@ -333,8 +333,8 @@ describe('addType', function() {
       });
     });
 
-    describe('#diff', function() {
-      it('bails out if passed the wrong parameters', function() {
+    describe('#diff', () => {
+      it('bails out if passed the wrong parameters', () => {
         expect(
           function() {
             clonedExpect.getType('number').baseType.diff();

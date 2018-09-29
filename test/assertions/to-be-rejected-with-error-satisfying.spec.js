@@ -1,6 +1,6 @@
 /*global expect*/
-describe('to be rejected with error satisfying assertion', function() {
-  it('should succeed if the response is rejected with a reason satisfying the argument', function() {
+describe('to be rejected with error satisfying assertion', () => {
+  it('should succeed if the response is rejected with a reason satisfying the argument', () => {
     return expect(
       new Promise(function(resolve, reject) {
         setTimeout(function() {
@@ -12,7 +12,7 @@ describe('to be rejected with error satisfying assertion', function() {
     );
   });
 
-  it('should provide the rejection reason as the fulfillment value', function() {
+  it('should provide the rejection reason as the fulfillment value', () => {
     return expect(
       expect.promise.reject(new Error('foo')),
       'to be rejected with error satisfying',
@@ -22,7 +22,7 @@ describe('to be rejected with error satisfying assertion', function() {
     });
   });
 
-  it('should support matching the error message against a regular expression', function() {
+  it('should support matching the error message against a regular expression', () => {
     return expect(
       new Promise(function(resolve, reject) {
         setTimeout(function() {
@@ -34,7 +34,7 @@ describe('to be rejected with error satisfying assertion', function() {
     );
   });
 
-  it('should support matching the error message of an UnexpectedError against a regular expression', function() {
+  it('should support matching the error message of an UnexpectedError against a regular expression', () => {
     return expect(
       new Promise(function(resolve, reject) {
         setTimeout(function() {
@@ -50,7 +50,7 @@ describe('to be rejected with error satisfying assertion', function() {
     );
   });
 
-  it('should fail if the promise is rejected with a reason that does not satisfy the argument', function() {
+  it('should fail if the promise is rejected with a reason that does not satisfy the argument', () => {
     return expect(
       expect(
         new Promise(function(resolve, reject) {
@@ -74,8 +74,8 @@ describe('to be rejected with error satisfying assertion', function() {
     );
   });
 
-  describe('with the "exhaustively" flag', function() {
-    it("errors if the rejection reason doesn't have all the same properties as the value", function() {
+  describe('with the "exhaustively" flag', () => {
+    it("errors if the rejection reason doesn't have all the same properties as the value", () => {
       return expect(function() {
         var error = new Error('foobar');
         error.data = { foo: 'bar' };
@@ -87,7 +87,7 @@ describe('to be rejected with error satisfying assertion', function() {
       }, 'to error');
     });
 
-    it('errors with the correct error', function() {
+    it('errors with the correct error', () => {
       return expect(
         function() {
           var error = new Error('foobar');
@@ -112,8 +112,8 @@ describe('to be rejected with error satisfying assertion', function() {
     });
   });
 
-  describe('without the "exhaustively" flag', function() {
-    it("does not error if the rejection reason doesn't have all the same properties as the value", function() {
+  describe('without the "exhaustively" flag', () => {
+    it("does not error if the rejection reason doesn't have all the same properties as the value", () => {
       return expect(function() {
         var error = new Error('foobar');
         error.data = { foo: 'bar' };
@@ -126,8 +126,8 @@ describe('to be rejected with error satisfying assertion', function() {
     });
   });
 
-  describe('when passed a function as the subject', function() {
-    it('should fail if the function returns a promise that is rejected with the wrong reason', function() {
+  describe('when passed a function as the subject', () => {
+    it('should fail if the function returns a promise that is rejected with the wrong reason', () => {
       expect(
         function() {
           return expect(
@@ -157,7 +157,7 @@ describe('to be rejected with error satisfying assertion', function() {
       );
     });
 
-    it('should use the stack of the rejection reason when failing', function() {
+    it('should use the stack of the rejection reason when failing', () => {
       return expect(
         function() {
           return expect(
@@ -179,8 +179,8 @@ describe('to be rejected with error satisfying assertion', function() {
       );
     });
 
-    describe('with the "exhaustively" flag', function() {
-      it("errors if the rejection reason doesn't have all the same properties as the value", function() {
+    describe('with the "exhaustively" flag', () => {
+      it("errors if the rejection reason doesn't have all the same properties as the value", () => {
         return expect(function() {
           return expect(
             function() {
@@ -196,7 +196,7 @@ describe('to be rejected with error satisfying assertion', function() {
         }, 'to error');
       });
 
-      it('errors with the correct error', function() {
+      it('errors with the correct error', () => {
         return expect(
           // prettier-ignore
           function () {
@@ -235,8 +235,8 @@ describe('to be rejected with error satisfying assertion', function() {
       });
     });
 
-    describe('without the "exhaustively" flag', function() {
-      it("does not error if the rejection reason doesn't have all the same properties as the value", function() {
+    describe('without the "exhaustively" flag', () => {
+      it("does not error if the rejection reason doesn't have all the same properties as the value", () => {
         return expect(function() {
           return expect(
             function() {
@@ -254,8 +254,8 @@ describe('to be rejected with error satisfying assertion', function() {
     });
   });
 
-  describe('with another promise library', function() {
-    it('should use the stack of the rejection reason when failing', function() {
+  describe('with another promise library', () => {
+    it('should use the stack of the rejection reason when failing', () => {
       return expect(
         function() {
           return expect(

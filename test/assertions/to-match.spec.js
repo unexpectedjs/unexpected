@@ -1,11 +1,11 @@
 /*global expect*/
-describe('to match assertion', function() {
-  it('tests that the subject matches the given regular expression', function() {
+describe('to match assertion', () => {
+  it('tests that the subject matches the given regular expression', () => {
     expect('test', 'to match', /.*st/);
     expect('test', 'not to match', /foo/);
   });
 
-  it('does not keep state between invocations', function() {
+  it('does not keep state between invocations', () => {
     // This tests that the assertion does not depend on the lastIndex
     // property of the regexp:
     const regExp = /a/g;
@@ -15,7 +15,7 @@ describe('to match assertion', function() {
     expect(str, 'to match', regExp);
   });
 
-  it('throws when the assertion fails', function() {
+  it('throws when the assertion fails', () => {
     expect(
       function() {
         expect('test', 'to match', /foo/);
@@ -25,7 +25,7 @@ describe('to match assertion', function() {
     );
   });
 
-  it('should provide the return value of String.prototype.match as the fulfillment value', function() {
+  it('should provide the return value of String.prototype.match as the fulfillment value', () => {
     return expect('foo', 'to match', /(f)(o)/).then(function(captures) {
       expect(captures, 'to satisfy', {
         0: 'fo',
@@ -37,7 +37,7 @@ describe('to match assertion', function() {
     });
   });
 
-  it('should provide the captured values and the index as the fulfillment value so that the captures are spreadable', function() {
+  it('should provide the captured values and the index as the fulfillment value so that the captures are spreadable', () => {
     return expect('foo', 'to match', /(f)(o)/).spread(function($0, $1, $2) {
       expect($0, 'to equal', 'fo');
       expect($1, 'to equal', 'f');
@@ -45,14 +45,14 @@ describe('to match assertion', function() {
     });
   });
 
-  describe('with a regular expression that has the global flag', function() {
-    it('should provide the return value of String.prototype.match as the fulfillment value', function() {
+  describe('with a regular expression that has the global flag', () => {
+    it('should provide the return value of String.prototype.match as the fulfillment value', () => {
       return expect('abc abc', 'to match', /a(b)c/g).then(function(captures) {
         expect(captures, 'to equal', ['abc', 'abc']);
       });
     });
 
-    it('should provide the captured values and the index as the fulfillment value so that the matched values are spreadable', function() {
+    it('should provide the captured values and the index as the fulfillment value so that the matched values are spreadable', () => {
       return expect('abc abc', 'to match', /a(b)c/g).spread(function(
         firstMatch,
         secondMatch
@@ -63,8 +63,8 @@ describe('to match assertion', function() {
     });
   });
 
-  describe('with the not flag', function() {
-    it('provides a diff when the assertion fails', function() {
+  describe('with the not flag', () => {
+    it('provides a diff when the assertion fails', () => {
       expect(
         function() {
           expect('barfooquuxfoobaz', 'not to match', /foo/);
@@ -77,7 +77,7 @@ describe('to match assertion', function() {
       );
     });
 
-    it('handles newlines in the matched text', function() {
+    it('handles newlines in the matched text', () => {
       expect(
         function() {
           expect('barfo\noquuxfoobaz', 'not to match', /fo\no/);

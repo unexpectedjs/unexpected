@@ -1,12 +1,12 @@
 /*global expect*/
-describe('greater than assertion', function() {
-  it('assert >', function() {
+describe('greater than assertion', () => {
+  it('assert >', () => {
     expect(3, 'to be greater than', 2);
     expect(1, 'to be above', 0);
     expect('b', 'to be greater than', 'a');
   });
 
-  it('throws when the assertion fails', function() {
+  it('throws when the assertion fails', () => {
     expect(
       function() {
         expect(0, 'to be greater than', 0);
@@ -16,7 +16,7 @@ describe('greater than assertion', function() {
     );
   });
 
-  it('refuses to compare NaN to a number', function() {
+  it('refuses to compare NaN to a number', () => {
     expect(
       function() {
         expect(NaN, 'not to be greater than', 1);

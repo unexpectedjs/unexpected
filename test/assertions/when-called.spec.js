@@ -1,13 +1,13 @@
 /*global expect*/
-describe('when called assertion', function() {
-  it('should call the function without arguments and shift the result', function() {
+describe('when called assertion', () => {
+  it('should call the function without arguments and shift the result', () => {
     function hey() {
       return 123;
     }
     expect(hey, 'when called', 'to equal', 123);
   });
 
-  it('should fail when the assertion being delegated to fails', function() {
+  it('should fail when the assertion being delegated to fails', () => {
     function hey() {
       return 123;
     }
@@ -21,7 +21,7 @@ describe('when called assertion', function() {
     );
   });
 
-  it('should produce the return value as the promise fulfillment value when no assertion is given', function() {
+  it('should produce the return value as the promise fulfillment value when no assertion is given', () => {
     function hey() {
       return 123;
     }
@@ -30,16 +30,16 @@ describe('when called assertion', function() {
     });
   });
 
-  describe('with the next assertion provided as an expect.it', function() {
+  describe('with the next assertion provided as an expect.it', () => {
     function hey() {
       return 123;
     }
 
-    it('should succeed', function() {
+    it('should succeed', () => {
       expect(hey, 'when called', expect.it('to equal', 123));
     });
 
-    it('should fail with a diff', function() {
+    it('should fail with a diff', () => {
       expect(
         function() {
           expect(hey, 'when called', expect.it('to equal', 456));
@@ -51,8 +51,8 @@ describe('when called assertion', function() {
     });
   });
 
-  describe('when assertion is executed in context of another object', function() {
-    it('should call the function in the context of that object', function() {
+  describe('when assertion is executed in context of another object', () => {
+    it('should call the function in the context of that object', () => {
       function Person(name) {
         this.name = name;
       }

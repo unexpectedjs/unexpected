@@ -1,6 +1,6 @@
 /*global expect*/
-describe('string type', function() {
-  it('should suppress a diff when the actual value has a length greater than 1 KB', function() {
+describe('string type', () => {
+  it('should suppress a diff when the actual value has a length greater than 1 KB', () => {
     var longString = new Array(4098).join('A');
     expect(
       function() {
@@ -11,7 +11,7 @@ describe('string type', function() {
     );
   });
 
-  it('should suppress a diff when the expected value has a length greater than 4 KB', function() {
+  it('should suppress a diff when the expected value has a length greater than 4 KB', () => {
     var longString = new Array(4098).join('A');
     expect(
       function() {

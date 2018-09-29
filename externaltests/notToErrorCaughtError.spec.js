@@ -1,6 +1,6 @@
 var expect = require('../lib');
 
-it('should foo', function() {
+it('should foo', () => {
   return expect(function() {
     return expect.promise(function() {
       (function thisIsImportant() {

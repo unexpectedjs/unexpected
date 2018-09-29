@@ -1,6 +1,6 @@
 /*global expect*/
-describe('to have items satisfying assertion', function() {
-  it('requires a third argument', function() {
+describe('to have items satisfying assertion', () => {
+  it('requires a third argument', () => {
     expect(
       function() {
         expect([1, 2, 3], 'to have items satisfying');
@@ -15,7 +15,7 @@ describe('to have items satisfying assertion', function() {
     );
   });
 
-  it('does not accept a fourth argument', function() {
+  it('does not accept a fourth argument', () => {
     expect(
       function() {
         expect([1], 'to have items satisfying', 1, 2);
@@ -30,7 +30,7 @@ describe('to have items satisfying assertion', function() {
     );
   });
 
-  it('only accepts arrays as the target object', function() {
+  it('only accepts arrays as the target object', () => {
     expect(
       function() {
         expect(42, 'to have items satisfying', function(item) {});
@@ -45,7 +45,7 @@ describe('to have items satisfying assertion', function() {
     );
   });
 
-  it('fails if the given array is empty', function() {
+  it('fails if the given array is empty', () => {
     expect(
       function() {
         expect([], 'to have items satisfying', function(item) {
@@ -61,7 +61,7 @@ describe('to have items satisfying assertion', function() {
     );
   });
 
-  it('asserts that the given callback does not throw for any items in the array', function() {
+  it('asserts that the given callback does not throw for any items in the array', () => {
     expect([0, 1, 2, 3], 'to have items satisfying', function(item, index) {
       expect(item, 'to be a number');
       expect(index, 'to be a number');
@@ -91,7 +91,7 @@ describe('to have items satisfying assertion', function() {
     );
   });
 
-  it('formats non-Unexpected errors correctly', function() {
+  it('formats non-Unexpected errors correctly', () => {
     expect(
       function() {
         expect(
@@ -143,7 +143,7 @@ describe('to have items satisfying assertion', function() {
     );
   });
 
-  it('supports legacy "to be an array whose items satisfy"', function() {
+  it('supports legacy "to be an array whose items satisfy"', () => {
     expect(
       ['0', '1', '2', '3'],
       'to be an array whose items satisfy',
@@ -151,7 +151,7 @@ describe('to have items satisfying assertion', function() {
     );
   });
 
-  it('provides the item index to the callback function', function() {
+  it('provides the item index to the callback function', () => {
     var arr = ['0', '1', '2', '3'];
     expect(arr, 'to have items satisfying', function(item, index) {
       expect(index, 'to be a number');
@@ -159,7 +159,7 @@ describe('to have items satisfying assertion', function() {
     });
   });
 
-  it('fails when the assertion fails', function() {
+  it('fails when the assertion fails', () => {
     expect(
       function() {
         expect(['0', 1, '2', '3'], 'to have items satisfying', function(item) {
@@ -183,7 +183,7 @@ describe('to have items satisfying assertion', function() {
     );
   });
 
-  it('provides a detailed report of where failures occur', function() {
+  it('provides a detailed report of where failures occur', () => {
     expect(
       function() {
         expect([0, 1, '2', 3, 4], 'to have items satisfying', function(item) {
@@ -208,7 +208,7 @@ describe('to have items satisfying assertion', function() {
     );
   });
 
-  it('indents failure reports of nested assertions correctly', function() {
+  it('indents failure reports of nested assertions correctly', () => {
     expect(
       function() {
         expect(
@@ -246,7 +246,7 @@ describe('to have items satisfying assertion', function() {
     );
   });
 
-  describe('delegating to an async assertion', function() {
+  describe('delegating to an async assertion', () => {
     var clonedExpect = expect
       .clone()
       .addAssertion('to be a number after a short delay', function(
@@ -266,7 +266,7 @@ describe('to have items satisfying assertion', function() {
         });
       });
 
-    it('should succeed', function() {
+    it('should succeed', () => {
       return clonedExpect(
         [1, 2, 3],
         'to have items satisfying',
@@ -274,7 +274,7 @@ describe('to have items satisfying assertion', function() {
       );
     });
 
-    it('should fail with a diff', function() {
+    it('should fail with a diff', () => {
       return expect(
         clonedExpect(
           [0, false, 'abc'],
@@ -296,8 +296,8 @@ describe('to have items satisfying assertion', function() {
     });
   });
 
-  describe('with the exhaustively flag', function() {
-    it('should succeed', function() {
+  describe('with the exhaustively flag', () => {
+    it('should succeed', () => {
       expect(
         [{ foo: 'bar', quux: 'baz' }],
         'to have items exhaustively satisfying',
@@ -305,7 +305,7 @@ describe('to have items satisfying assertion', function() {
       );
     });
 
-    it('should fail when the spec is not met only because of the "exhaustively" semantics', function() {
+    it('should fail when the spec is not met only because of the "exhaustively" semantics', () => {
       expect(
         function() {
           expect(
@@ -329,7 +329,7 @@ describe('to have items satisfying assertion', function() {
   });
 
   // Regression test for #285
-  it('should not render a "not to match" diff inline', function() {
+  it('should not render a "not to match" diff inline', () => {
     expect(
       function() {
         expect([']1V3ZRFOmgiE*'], 'to have items satisfying', function(item) {

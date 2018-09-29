@@ -1,6 +1,6 @@
 /*global expect*/
-describe('to start with assertion', function() {
-  it('should throw an error when the expected prefix is the empty string', function() {
+describe('to start with assertion', () => {
+  it('should throw an error when the expected prefix is the empty string', () => {
     expect(
       function() {
         expect('foo', 'to start with', '');
@@ -10,15 +10,15 @@ describe('to start with assertion', function() {
     );
   });
 
-  describe('without the "not" flag', function() {
-    it('asserts equality with a string', function() {
+  describe('without the "not" flag', () => {
+    it('asserts equality with a string', () => {
       expect('hello', 'to start with', 'hello');
       expect('hello world', 'to start with', 'hello');
     });
   });
 
-  describe('when the assertion fails', function() {
-    it('does not include a diff when there is no common prefix', function() {
+  describe('when the assertion fails', () => {
+    it('does not include a diff when there is no common prefix', () => {
       expect(
         function() {
           expect('hello world', 'to start with', 'foo');
@@ -28,7 +28,7 @@ describe('to start with assertion', function() {
       );
     });
 
-    it('includes a diff when there is a common prefix', function() {
+    it('includes a diff when there is a common prefix', () => {
       expect(
         function() {
           expect('hello world', 'to start with', 'hell yeah');

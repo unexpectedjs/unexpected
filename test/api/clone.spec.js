@@ -1,7 +1,7 @@
 /*global expect*/
-describe('clone', function() {
+describe('clone', () => {
   var clonedExpect;
-  beforeEach(function() {
+  beforeEach(() => {
     clonedExpect = expect.clone();
     clonedExpect.addAssertion(
       '<any> [not] to be the answer to the Ultimate Question of Life, the Universe, and Everything',
@@ -11,7 +11,7 @@ describe('clone', function() {
     );
   });
 
-  it('changes to the clone does not affect the original instance', function() {
+  it('changes to the clone does not affect the original instance', () => {
     expect(
       expect.assertions,
       'not to have keys',
@@ -20,7 +20,7 @@ describe('clone', function() {
     );
   });
 
-  it('assertions can be added to the clone', function() {
+  it('assertions can be added to the clone', () => {
     clonedExpect(
       42,
       'to be the answer to the Ultimate Question of Life, the Universe, and Everything'
@@ -38,8 +38,8 @@ describe('clone', function() {
     }, 'to throw');
   });
 
-  describe('when the assertion does not exist', function() {
-    it('it suggests a similarly named assertion', function() {
+  describe('when the assertion does not exist', () => {
+    it('it suggests a similarly named assertion', () => {
       expect(
         function() {
           clonedExpect(null, 'to bee', null);
@@ -60,8 +60,8 @@ describe('clone', function() {
       );
     });
 
-    describe('but exists for another type', function() {
-      it('explains that in the error message', function() {
+    describe('but exists for another type', () => {
+      it('explains that in the error message', () => {
         clonedExpect.addAssertion('<array> to foobarquux', function(
           expect,
           subject
@@ -82,7 +82,7 @@ describe('clone', function() {
         );
       });
 
-      it('prefers to suggest a similarly named assertion defined for the correct type over an exact match defined for other types', function() {
+      it('prefers to suggest a similarly named assertion defined for the correct type over an exact match defined for other types', () => {
         clonedExpect
           .addAssertion('<array> to foo', function(expect, subject) {
             expect(subject, 'to equal', ['foo']);
@@ -119,7 +119,7 @@ describe('clone', function() {
         );
       });
 
-      it('prefers to suggest a similarly named assertion for a more specific type', function() {
+      it('prefers to suggest a similarly named assertion for a more specific type', () => {
         clonedExpect
           .addType({
             name: 'myType',
@@ -181,8 +181,8 @@ describe('clone', function() {
     });
   });
 
-  describe('toString on a cloned expect', function() {
-    it('returns a string containing all the expanded assertions', function() {
+  describe('toString on a cloned expect', () => {
+    it('returns a string containing all the expanded assertions', () => {
       expect(clonedExpect.toString(), 'to contain', 'to be');
       expect(clonedExpect.toString(), 'to contain', '[not] to be');
       expect(

@@ -14,6 +14,6 @@ expect.addAssertion('<any> when delayed a little bit <assertion?>', function(
   });
 });
 
-it('should magically change', function() {
+it('should magically change', () => {
   return expect('abc', 'when delayed a little bit', 'to equal', 'def');
 });
