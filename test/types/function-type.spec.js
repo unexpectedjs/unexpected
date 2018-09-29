@@ -228,7 +228,7 @@ describe('function type', function() {
   } catch (e) {}
 
   if (arrowFunctionWith1SpaceIndentAndLeadingNewline) {
-    it('should reindent an implicit return multiline arrow function', function() {
+    it('should reindent an implicit return multiline arrow function with 1 space indent', function() {
       expect(
         arrowFunctionWith1SpaceIndentAndLeadingNewline,
         'to inspect as',
@@ -247,7 +247,7 @@ describe('function type', function() {
   } catch (e) {}
 
   if (arrowFunctionWith2SpaceIndentAndLeadingNewline) {
-    it('should reindent an implicit return multiline arrow function', function() {
+    it('should reindent an implicit return multiline arrow function with 2 space indent', function() {
       expect(
         arrowFunctionWith2SpaceIndentAndLeadingNewline,
         'to inspect as',
@@ -285,7 +285,7 @@ describe('function type', function() {
   } catch (e) {}
 
   if (arrowFunctionWith4SpaceIndentAndLeadingNewline) {
-    it('should reindent an implicit return multiline arrow function with 4 space indent', function() {
+    it('should reindent an implicit return multiline arrow function with long leading indent', function() {
       expect(
         arrowFunctionWith4SpaceIndentAndLeadingNewline,
         'to inspect as',

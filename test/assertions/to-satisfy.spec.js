@@ -77,18 +77,20 @@ describe('to satisfy assertion', function() {
       );
     });
 
-    it('should fail', function() {
-      expect(
-        function() {
-          expect({ foo: {} }, 'to satisfy', { foo: [] });
-        },
-        'to throw',
-        'expected { foo: {} } to satisfy { foo: [] }\n' +
-          '\n' +
-          '{\n' +
-          '  foo: {} // should satisfy []\n' +
-          '}'
-      );
+    describe('when the array is nested inside an object', function() {
+      it('should fail', function() {
+        expect(
+          function() {
+            expect({ foo: {} }, 'to satisfy', { foo: [] });
+          },
+          'to throw',
+          'expected { foo: {} } to satisfy { foo: [] }\n' +
+            '\n' +
+            '{\n' +
+            '  foo: {} // should satisfy []\n' +
+            '}'
+        );
+      });
     });
   });
 

@@ -1,6 +1,6 @@
 const config = {
   extends: ['pretty-standard'],
-  plugins: ['import'],
+  plugins: ['import', 'mocha'],
   rules: {
     'import/no-extraneous-dependencies': [
       'error',
@@ -12,7 +12,10 @@ const config = {
         optionalDependencies: false,
         peerDependencies: false
       }
-    ]
+    ],
+    'mocha/no-exclusive-tests': 'error',
+    'mocha/no-nested-tests': 'error',
+    'mocha/no-identical-title': 'error'
   }
 };
 
