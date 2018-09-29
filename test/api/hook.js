@@ -1,6 +1,6 @@
 /*global expect*/
-describe('hook', function() {
-  it('should hook into the expect function itself', function() {
+describe('hook', () => {
+  it('should hook into the expect function itself', () => {
     var clonedExpect = expect.clone();
     var called = false;
     clonedExpect.hook(function(next) {
@@ -14,8 +14,8 @@ describe('hook', function() {
     expect(called, 'to be true');
   });
 
-  describe('with expect.clone', function() {
-    it('should not affect clones made before hooking in', function() {
+  describe('with expect.clone', () => {
+    it('should not affect clones made before hooking in', () => {
       var clonedExpect = expect.clone();
       var clonedClonedExpect = clonedExpect.clone();
 
@@ -30,7 +30,7 @@ describe('hook', function() {
       expect(called, 'to be false');
     });
 
-    it('should affect clones made after hooking in', function() {
+    it('should affect clones made after hooking in', () => {
       var clonedExpect = expect.clone();
       var called = false;
       clonedExpect.hook(function(next) {
@@ -45,8 +45,8 @@ describe('hook', function() {
     });
   });
 
-  describe('with expect.child', function() {
-    it('should not affect child instances made before installing the hook', function() {
+  describe('with expect.child', () => {
+    it('should not affect child instances made before installing the hook', () => {
       var parentExpect = expect.clone();
       var childExpect = parentExpect.child();
 
@@ -62,7 +62,7 @@ describe('hook', function() {
       expect(called, 'to be false');
     });
 
-    it('should not affect child instances made after installing the hook', function() {
+    it('should not affect child instances made after installing the hook', () => {
       var parentExpect = expect.clone();
 
       var called = false;
@@ -80,7 +80,7 @@ describe('hook', function() {
     });
   });
 
-  it('should allow rewriting the assertion string', function() {
+  it('should allow rewriting the assertion string', () => {
     var clonedExpect = expect.clone();
     clonedExpect.hook(function(next) {
       return function(context, args) {
@@ -91,7 +91,7 @@ describe('hook', function() {
     clonedExpect(123, 'to foobarquux', 123);
   });
 
-  it('should allow suppressing the return value of the "next" expect', function() {
+  it('should allow suppressing the return value of the "next" expect', () => {
     var clonedExpect = expect.clone();
     clonedExpect.hook(function(next) {
       return function(context, args) {
@@ -105,7 +105,7 @@ describe('hook', function() {
     clonedExpect(123, 'to equal', 456);
   });
 
-  it('should allow installing multiple hooks', function() {
+  it('should allow installing multiple hooks', () => {
     var firstCalled = false;
     var secondCalled = false;
     var clonedExpect = expect.clone();

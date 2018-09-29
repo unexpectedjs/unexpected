@@ -1,9 +1,9 @@
 /*global expect*/
-describe('to be a/an assertion', function() {
+describe('to be a/an assertion', () => {
   var circular = {};
   circular.self = circular;
 
-  it('asserts typeof with support for array type and instanceof', function() {
+  it('asserts typeof with support for array type and instanceof', () => {
     expect(5, 'to be a', 'number');
     expect(5, 'to be a number');
     expect('abc', 'to be a', 'string');
@@ -38,16 +38,16 @@ describe('to be a/an assertion', function() {
     expect(new Date().toISOString(), 'not to be a date');
   });
 
-  it('should support type objects', function() {
+  it('should support type objects', () => {
     expect('foo', 'to be a', expect.getType('string'));
   });
 
-  describe('with a type name', function() {
-    it('should succeed when the subject is recognized as having the type', function() {
+  describe('with a type name', () => {
+    it('should succeed when the subject is recognized as having the type', () => {
       expect(new Error('foo'), 'to be an', 'Error');
     });
 
-    it('should fail when the subject is not recognized as having the type', function() {
+    it('should fail when the subject is not recognized as having the type', () => {
       expect(
         function() {
           expect(123, 'to be an', 'Error');
@@ -58,7 +58,7 @@ describe('to be a/an assertion', function() {
     });
 
     // Maybe better: throw a non-Unexpected error
-    it('should fail when the type is not defined', function() {
+    it('should fail when the type is not defined', () => {
       expect(
         function() {
           expect(123, 'to be a', 'FoopQuuxDoop');
@@ -68,7 +68,7 @@ describe('to be a/an assertion', function() {
       );
     });
 
-    it('should fail when the type is not defined in the "not" case', function() {
+    it('should fail when the type is not defined in the "not" case', () => {
       expect(
         function() {
           expect(123, 'not to be a', 'FoopQuuxDoop');
@@ -80,7 +80,7 @@ describe('to be a/an assertion', function() {
     });
   });
 
-  it('formats Error instances correctly when an assertion fails', function() {
+  it('formats Error instances correctly when an assertion fails', () => {
     expect(
       function() {
         var error = new Error('error message');
@@ -92,7 +92,7 @@ describe('to be a/an assertion', function() {
     );
   });
 
-  it('should fail with the correct error message if the type is given as an anonymous function', function() {
+  it('should fail with the correct error message if the type is given as an anonymous function', () => {
     expect(
       function() {
         expect('foo', 'to be a', function() {});
@@ -102,7 +102,7 @@ describe('to be a/an assertion', function() {
     );
   });
 
-  it('should throw when the type is specified as undefined', function() {
+  it('should throw when the type is specified as undefined', () => {
     expect(
       function() {
         expect('foo', 'to be an', undefined);
@@ -118,7 +118,7 @@ describe('to be a/an assertion', function() {
     );
   });
 
-  it('should throw when the type is specified as null', function() {
+  it('should throw when the type is specified as null', () => {
     expect(
       function() {
         expect('foo', 'to be a', null);
@@ -134,7 +134,7 @@ describe('to be a/an assertion', function() {
     );
   });
 
-  it('should not consider a string a to be an instance of an object without a name property', function() {
+  it('should not consider a string a to be an instance of an object without a name property', () => {
     expect(
       function() {
         expect('foo', 'to be a', {});
@@ -150,7 +150,7 @@ describe('to be a/an assertion', function() {
     );
   });
 
-  it('should throw when the type is specified as an object without an identify function', function() {
+  it('should throw when the type is specified as an object without an identify function', () => {
     expect(
       function() {
         expect('foo', 'to be a', { name: 'bar' });
@@ -166,7 +166,7 @@ describe('to be a/an assertion', function() {
     );
   });
 
-  it('should throw when the type is specified as an object with an identify function, but without a name property', function() {
+  it('should throw when the type is specified as an object with an identify function, but without a name property', () => {
     expect(
       function() {
         expect('foo', 'to be a', {
@@ -198,7 +198,7 @@ describe('to be a/an assertion', function() {
     );
   });
 
-  it('throws when the assertion fails', function() {
+  it('throws when the assertion fails', () => {
     expect(
       function() {
         expect(5, 'to be an', Array);
@@ -224,7 +224,7 @@ describe('to be a/an assertion', function() {
     );
   });
 
-  it('throws an error a diff when comparing string and not negated', function() {
+  it('throws an error a diff when comparing string and not negated', () => {
     expect(
       function() {
         expect('foo', 'to be', 'bar');
@@ -234,7 +234,7 @@ describe('to be a/an assertion', function() {
     );
   });
 
-  it('throws an error without actual and expected when comparing string and negated', function() {
+  it('throws an error without actual and expected when comparing string and negated', () => {
     expect(
       function() {
         expect('foo', 'not to be', 'foo');
@@ -247,7 +247,7 @@ describe('to be a/an assertion', function() {
     );
   });
 
-  it('throws an error without actual and expected when not comparing string and not negated', function() {
+  it('throws an error without actual and expected when not comparing string and not negated', () => {
     expect(
       function() {
         expect('foo', 'to be', {});

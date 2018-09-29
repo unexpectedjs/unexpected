@@ -1,6 +1,6 @@
 /*global expect*/
 if (Object.defineProperty) {
-  describe('equal', function() {
+  describe('equal', () => {
     function Field(val, options) {
       var value = val;
       var propertyDescription = {
@@ -20,7 +20,7 @@ if (Object.defineProperty) {
       Object.defineProperty(this, 'value', propertyDescription);
     }
 
-    it('handles getters and setters correctly', function() {
+    it('handles getters and setters correctly', () => {
       expect(
         new Field('VALUE', 'getter'),
         'to equal',

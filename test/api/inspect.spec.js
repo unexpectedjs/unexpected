@@ -1,5 +1,5 @@
 /*global expect*/
-describe('inspect', function() {
+describe('inspect', () => {
   function Field(val, options) {
     var value = val;
     var propertyDescription = {
@@ -23,7 +23,7 @@ describe('inspect', function() {
   circular.self = circular;
 
   if (Object.defineProperty) {
-    it('handles getters and setters correctly', function() {
+    it('handles getters and setters correctly', () => {
       expect(
         new Field('VALUE', 'getter'),
         'to inspect as',
@@ -42,7 +42,7 @@ describe('inspect', function() {
     });
   }
 
-  it('should render strings with control chars and backslashes correctly', function() {
+  it('should render strings with control chars and backslashes correctly', () => {
     var stringWithControlCharsAndStuff = '\\';
     for (var i = 0; i < 32; i += 1) {
       stringWithControlCharsAndStuff += String.fromCharCode(i);
@@ -55,47 +55,47 @@ describe('inspect', function() {
     );
   });
 
-  describe('with various special values', function() {
-    it('renders null correctly', function() {
+  describe('with various special values', () => {
+    it('renders null correctly', () => {
       expect(null, 'to inspect as', 'null');
     });
 
-    it('renders undefined correctly', function() {
+    it('renders undefined correctly', () => {
       expect(undefined, 'to inspect as', 'undefined');
     });
 
-    it('renders NaN correctly', function() {
+    it('renders NaN correctly', () => {
       expect(NaN, 'to inspect as', 'NaN');
     });
 
-    it('renders zero correctly', function() {
+    it('renders zero correctly', () => {
       expect(0, 'to inspect as', '0');
     });
 
-    it('renders negative zero correctly', function() {
+    it('renders negative zero correctly', () => {
       expect(-0, 'to inspect as', '-0');
     });
 
-    it('renders Infinity correctly', function() {
+    it('renders Infinity correctly', () => {
       expect(Infinity, 'to inspect as', 'Infinity');
     });
 
-    it('renders -Infinity correctly', function() {
+    it('renders -Infinity correctly', () => {
       expect(-Infinity, 'to inspect as', '-Infinity');
     });
-    it('sparse array', function() {
+    it('sparse array', () => {
       var sparse = [];
       sparse[1] = 'foo';
       expect(sparse, 'to inspect as', "[ , 'foo' ]");
     });
-    it('sparse array with explicit undefined', function() {
+    it('sparse array with explicit undefined', () => {
       var sparse = [];
       sparse[1] = undefined;
       expect(sparse, 'to inspect as', '[ , undefined ]');
     });
   });
 
-  describe('block items as inspected correctly in', function() {
+  describe('block items as inspected correctly in', () => {
     var clonedExpect = expect.clone().addType({
       name: 'multiline',
       base: 'string',
@@ -113,7 +113,7 @@ describe('inspect', function() {
       }
     });
 
-    it('arrays', function() {
+    it('arrays', () => {
       clonedExpect(
         ['foo\nfoo', 'bar'],
         'to inspect as',
@@ -121,7 +121,7 @@ describe('inspect', function() {
       );
     });
 
-    it('objects', function() {
+    it('objects', () => {
       clonedExpect(
         { foo: 'foo\nfoo', bar: 'bar' },
         'to inspect as',
@@ -130,7 +130,7 @@ describe('inspect', function() {
     });
   });
 
-  it('indents correctly', function() {
+  it('indents correctly', () => {
     var data = [
       {
         guid: 'db550c87-1680-462a-bacc-655cecdd8907',
@@ -327,7 +327,7 @@ describe('inspect', function() {
     );
   });
 
-  it('should inspect an arguments object differently from an array', function() {
+  it('should inspect an arguments object differently from an array', () => {
     var args;
     (function() {
       args = arguments;
@@ -335,7 +335,7 @@ describe('inspect', function() {
     expect(args, 'to inspect as', "arguments( 'a', 123 )");
   });
 
-  it('should output the body of a function', function() {
+  it('should output the body of a function', () => {
     expect(
       function() {
         var foo = 'bar';
@@ -358,7 +358,7 @@ describe('inspect', function() {
   });
 
   if (typeof Uint8Array !== 'undefined') {
-    it('should render a hex dump for an Uint8Array instance', function() {
+    it('should render a hex dump for an Uint8Array instance', () => {
       expect(
         new Uint8Array([
           0x00,
@@ -418,7 +418,7 @@ describe('inspect', function() {
   }
   /*eslint-enable no-multi-str*/
 
-  it('should bail out of removing the indentation of functions that use multiline string literals', function() {
+  it('should bail out of removing the indentation of functions that use multiline string literals', () => {
     expect(
       multilineStringLiteral,
       'to inspect as',
@@ -432,7 +432,7 @@ describe('inspect', function() {
     );
   });
 
-  it('should bail out of removing the indentation of one-liner functions', function() {
+  it('should bail out of removing the indentation of one-liner functions', () => {
     expect(
       // prettier-ignore
       function() { var foo = 123;return foo; },
@@ -441,7 +441,7 @@ describe('inspect', function() {
     );
   });
 
-  it('should not show the body of a function with native code', function() {
+  it('should not show the body of a function with native code', () => {
     expect(
       Array.prototype.slice,
       'to inspect as',
@@ -449,7 +449,7 @@ describe('inspect', function() {
     );
   });
 
-  it('should not inspect a recurring object as [Circular]', function() {
+  it('should not inspect a recurring object as [Circular]', () => {
     var a = { foo: 'bar' };
     var b = { c: a, d: a };
     expect(b, 'to inspect as', "{ c: { foo: 'bar' }, d: { foo: 'bar' } }");

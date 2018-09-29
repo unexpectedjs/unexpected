@@ -1,6 +1,6 @@
 /*global expect*/
-describe('to throw a/an assertion', function() {
-  it('fails if no exception is thrown', function() {
+describe('to throw a/an assertion', () => {
+  it('fails if no exception is thrown', () => {
     expect(
       function() {
         expect(
@@ -31,7 +31,7 @@ describe('to throw a/an assertion', function() {
     );
   });
 
-  it('succeeds if the function throws an instance of the supplied constructor function', function() {
+  it('succeeds if the function throws an instance of the supplied constructor function', () => {
     expect(
       function() {
         throw new SyntaxError();
@@ -41,7 +41,7 @@ describe('to throw a/an assertion', function() {
     );
   });
 
-  it('fails if the function throws an instance of a different constructor', function() {
+  it('fails if the function throws an instance of a different constructor', () => {
     expect(
       function() {
         expect(
@@ -58,7 +58,7 @@ describe('to throw a/an assertion', function() {
     );
   });
 
-  it('fails with a proper error if the function throws null', function() {
+  it('fails with a proper error if the function throws null', () => {
     expect(
       function() {
         expect(
@@ -75,7 +75,7 @@ describe('to throw a/an assertion', function() {
     );
   });
 
-  it('fails with a proper error if the function throws an empty string', function() {
+  it('fails with a proper error if the function throws an empty string', () => {
     expect(
       function() {
         expect(

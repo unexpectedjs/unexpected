@@ -1,6 +1,6 @@
 /*global expect*/
-describe('fail assertion', function() {
-  it('throws an error', function() {
+describe('fail assertion', () => {
+  it('throws an error', () => {
     expect(
       function() {
         expect.fail();
@@ -10,7 +10,7 @@ describe('fail assertion', function() {
     );
   });
 
-  it('sets the error message', function() {
+  it('sets the error message', () => {
     var wasCaught = false;
     try {
       expect.fail('fail with error message');
@@ -21,7 +21,7 @@ describe('fail assertion', function() {
     expect(wasCaught, 'to be true');
   });
 
-  it('throws an error with a given message', function() {
+  it('throws an error with a given message', () => {
     expect(
       function() {
         expect.fail('fail with error message');
@@ -31,7 +31,7 @@ describe('fail assertion', function() {
     );
   });
 
-  it('supports placeholders', function() {
+  it('supports placeholders', () => {
     expect(
       function() {
         expect.fail('{0} was expected to be {1}', 0, 'zero');
@@ -58,8 +58,8 @@ describe('fail assertion', function() {
     );
   });
 
-  describe('with an object', function() {
-    it('should support specifying a message', function() {
+  describe('with an object', () => {
+    it('should support specifying a message', () => {
       expect(
         function() {
           expect.fail({
@@ -74,7 +74,7 @@ describe('fail assertion', function() {
       );
     });
 
-    it('should support specifying a label', function() {
+    it('should support specifying a label', () => {
       expect(
         function() {
           expect.fail({
@@ -89,7 +89,7 @@ describe('fail assertion', function() {
       );
     });
 
-    it('should set additional properties on the thrown error', function() {
+    it('should set additional properties on the thrown error', () => {
       expect(
         function() {
           expect.fail({
@@ -103,7 +103,7 @@ describe('fail assertion', function() {
       );
     });
 
-    it('should support message passed as a string', function() {
+    it('should support message passed as a string', () => {
       expect(
         function() {
           expect.fail({
@@ -117,7 +117,7 @@ describe('fail assertion', function() {
       );
     });
 
-    it('should support message passed as a MagicPen instance', function() {
+    it('should support message passed as a MagicPen instance', () => {
       expect(
         function() {
           expect.fail({
@@ -132,8 +132,8 @@ describe('fail assertion', function() {
     });
   });
 
-  describe('with a diff function', function() {
-    it('should generate the diff', function() {
+  describe('with a diff function', () => {
+    it('should generate the diff', () => {
       var clonedExpect = expect.clone();
       clonedExpect.addAssertion('<any> to foo', function(expect, subject) {
         expect.fail({
@@ -151,7 +151,7 @@ describe('fail assertion', function() {
       );
     });
 
-    it('should support a diff function that uses the old API', function() {
+    it('should support a diff function that uses the old API', () => {
       var clonedExpect = expect.clone();
       clonedExpect.addAssertion('<any> to foo', function(expect, subject) {
         expect.fail({

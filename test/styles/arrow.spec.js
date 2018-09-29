@@ -1,6 +1,6 @@
 /*global expect*/
-describe('arrow', function() {
-  it('should render an arrow with the given dimensions', function() {
+describe('arrow', () => {
+  it('should render an arrow with the given dimensions', () => {
     expect(
       expect
         .createOutput('text')
@@ -11,7 +11,7 @@ describe('arrow', function() {
     );
   });
 
-  it('should support top and left coordinates', function() {
+  it('should support top and left coordinates', () => {
     expect(
       expect
         .createOutput('text')
@@ -22,7 +22,7 @@ describe('arrow', function() {
     );
   });
 
-  it('should render an arrow that points upwards when direction:up is given', function() {
+  it('should render an arrow that points upwards when direction:up is given', () => {
     expect(
       expect
         .createOutput('text')

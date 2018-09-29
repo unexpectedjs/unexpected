@@ -1,8 +1,8 @@
 /*global expectWithUnexpectedMagicPen*/
-describe('to begin with assertion', function() {
+describe('to begin with assertion', () => {
   var expect = expectWithUnexpectedMagicPen;
 
-  it('should throw an error when the expected prefix is the empty string', function() {
+  it('should throw an error when the expected prefix is the empty string', () => {
     expect(
       function() {
         expect('foo', 'to begin with', '');
@@ -12,14 +12,14 @@ describe('to begin with assertion', function() {
     );
   });
 
-  describe('without the "not" flag', function() {
-    it('asserts equality with a string', function() {
+  describe('without the "not" flag', () => {
+    it('asserts equality with a string', () => {
       expect('hello', 'to begin with', 'hello');
       expect('hello world', 'to begin with', 'hello');
     });
 
-    describe('when the assertion fails', function() {
-      it('does not include a diff when there is no common prefix', function() {
+    describe('when the assertion fails', () => {
+      it('does not include a diff when there is no common prefix', () => {
         expect(
           function() {
             expect('hello world', 'to begin with', 'foo');
@@ -29,7 +29,7 @@ describe('to begin with assertion', function() {
         );
       });
 
-      it('includes a diff when there is a common prefix', function() {
+      it('includes a diff when there is a common prefix', () => {
         expect(
           function() {
             expect('hello world', 'to begin with', 'hell yeah');
@@ -49,7 +49,7 @@ describe('to begin with assertion', function() {
         );
       });
 
-      it('builds the diff correctly when the partial match spans more than one line', function() {
+      it('builds the diff correctly when the partial match spans more than one line', () => {
         expect(
           function() {
             expect('f\no\nobar', 'to begin with', 'f\no\nop');
@@ -66,7 +66,7 @@ describe('to begin with assertion', function() {
         );
       });
 
-      it('builds the diff correctly when the substring is longer than the subject', function() {
+      it('builds the diff correctly when the substring is longer than the subject', () => {
         expect(
           function() {
             expect('foo', 'to begin with', 'foobar');
@@ -77,7 +77,7 @@ describe('to begin with assertion', function() {
       });
     });
 
-    it('builds the diff correctly when the string is truncated with no common prefix', function() {
+    it('builds the diff correctly when the string is truncated with no common prefix', () => {
       expect(
         function() {
           expect(
@@ -91,7 +91,7 @@ describe('to begin with assertion', function() {
       );
     });
 
-    it('builds the diff correctly when the string contains a space and is truncated', function() {
+    it('builds the diff correctly when the string contains a space and is truncated', () => {
       expect(
         function() {
           expect(
@@ -105,7 +105,7 @@ describe('to begin with assertion', function() {
       );
     });
 
-    it('builds the diff correctly when the string is truncated after a partial match', function() {
+    it('builds the diff correctly when the string is truncated after a partial match', () => {
       expect(
         function() {
           expect(
@@ -123,14 +123,14 @@ describe('to begin with assertion', function() {
     });
   });
 
-  describe('with the "not" flag', function() {
-    it('asserts inequality', function() {
+  describe('with the "not" flag', () => {
+    it('asserts inequality', () => {
       expect('hello', 'not to begin with', 'world');
       expect('hello world', 'not to begin with', 'world');
     });
 
-    describe('when the assertion fails', function() {
-      it('produces a diff', function() {
+    describe('when the assertion fails', () => {
+      it('produces a diff', () => {
         expect(
           function() {
             expect('foobarquuxfoo', 'not to begin with', 'foo');
@@ -150,7 +150,7 @@ describe('to begin with assertion', function() {
         );
       });
 
-      it('builds the diff correctly when the prefix contains newlines', function() {
+      it('builds the diff correctly when the prefix contains newlines', () => {
         expect(
           function() {
             expect('f\no\nobarquuxfoo', 'not to begin with', 'f\no\no');

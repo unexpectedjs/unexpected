@@ -1,14 +1,14 @@
 /*global expect*/
-describe('function type', function() {
-  it('should inspect an empty anonymous function correctly', function() {
+describe('function type', () => {
+  it('should inspect an empty anonymous function correctly', () => {
     expect(function() {}, 'to inspect as', 'function () {}');
   });
 
-  it('should inspect an empty named function correctly', function() {
+  it('should inspect an empty named function correctly', () => {
     expect(function foo() {}, 'to inspect as', 'function foo() {}');
   });
 
-  it('should inspect a function with a custom toString correctly', function() {
+  it('should inspect a function with a custom toString correctly', () => {
     var fn = function foo() {};
     fn.toString = 'breakage';
     expect(fn, 'to inspect as', 'function foo() {}');
@@ -25,7 +25,7 @@ describe('function type', function() {
     // to even more different output.
     // For now let's just disable these tests in those environments
 
-    it('should inspect an anonymous bound function correctly', function() {
+    it('should inspect an anonymous bound function correctly', () => {
       expect(
         // eslint-disable-next-line no-extra-bind
         function() {}.bind({}),
@@ -34,7 +34,7 @@ describe('function type', function() {
       );
     });
 
-    it('should inspect a named bound function correctly', function() {
+    it('should inspect a named bound function correctly', () => {
       expect(
         // eslint-disable-next-line no-extra-bind
         function foo() {}.bind({}),
@@ -44,11 +44,11 @@ describe('function type', function() {
     });
   }
 
-  it('should inspect an function with just a newline correctly', function() {
+  it('should inspect an function with just a newline correctly', () => {
     expect(function() {}, 'to inspect as', 'function () {}');
   });
 
-  it('should inspect a one-line function correctly', function() {
+  it('should inspect a one-line function correctly', () => {
     /* eslint-disable no-unused-vars */
     expect(
       // prettier-ignore
@@ -59,7 +59,7 @@ describe('function type', function() {
     /* eslint-enable no-unused-vars */
   });
 
-  it('should inspect a short one-line function with leading and trailing newline correctly', function() {
+  it('should inspect a short one-line function with leading and trailing newline correctly', () => {
     /* eslint-disable no-unused-vars */
     expect(
       // prettier-ignore
@@ -70,7 +70,7 @@ describe('function type', function() {
     /* eslint-enable no-unused-vars */
   });
 
-  it('should inspect a long one-line function with leading and trailing newline correctly', function() {
+  it('should inspect a long one-line function with leading and trailing newline correctly', () => {
     /* eslint-disable no-unused-vars */
     expect(
       // prettier-ignore
@@ -95,7 +95,7 @@ describe('function type', function() {
   var phantomJsBug = singleLineWithComment.toString().indexOf('// foo;') !== -1;
 
   if (!phantomJsBug) {
-    it('should inspect a short one-line function with leading and trailing newline correctly and a C++-style comment correctly', function() {
+    it('should inspect a short one-line function with leading and trailing newline correctly and a C++-style comment correctly', () => {
       /* eslint-disable no-unused-vars */
       expect(
         // prettier-ignore
@@ -109,7 +109,7 @@ describe('function type', function() {
     });
   }
 
-  it('should reindent a function with an indentation size of 4', function() {
+  it('should reindent a function with an indentation size of 4', () => {
     expect(
       function() {
         var a = 4;
@@ -127,7 +127,7 @@ describe('function type', function() {
     );
   });
 
-  it('should reindent a function with an indentation size of 3', function() {
+  it('should reindent a function with an indentation size of 3', () => {
     // jscs:disable
     expect(
       function() {
@@ -147,7 +147,7 @@ describe('function type', function() {
     // jscs:enable
   });
 
-  it('should reindent a function with an indentation size of 1', function() {
+  it('should reindent a function with an indentation size of 1', () => {
     // jscs:disable
     expect(
       function() {
@@ -175,7 +175,7 @@ describe('function type', function() {
   } catch (e) {}
 
   if (singleParamArrowFunction) {
-    it('should render a single param arrow function', function() {
+    it('should render a single param arrow function', () => {
       expect(singleParamArrowFunction, 'to inspect as', 'a => a + 1');
     });
   }
@@ -190,7 +190,7 @@ describe('function type', function() {
   } catch (e) {}
 
   if (implicitReturnMultilineArrowFunction) {
-    it('should render an implicit return multiline arrow function', function() {
+    it('should render an implicit return multiline arrow function', () => {
       expect(
         implicitReturnMultilineArrowFunction,
         'to inspect as',
@@ -209,7 +209,7 @@ describe('function type', function() {
   } catch (e) {}
 
   if (evilImplicitReturnMultilineArrowFunction) {
-    it('should render an implicit return multiline arrow function with an evil alternation', function() {
+    it('should render an implicit return multiline arrow function with an evil alternation', () => {
       expect(
         evilImplicitReturnMultilineArrowFunction,
         'to inspect as',
@@ -228,7 +228,7 @@ describe('function type', function() {
   } catch (e) {}
 
   if (arrowFunctionWith1SpaceIndentAndLeadingNewline) {
-    it('should reindent an implicit return multiline arrow function with 1 space indent', function() {
+    it('should reindent an implicit return multiline arrow function with 1 space indent', () => {
       expect(
         arrowFunctionWith1SpaceIndentAndLeadingNewline,
         'to inspect as',
@@ -247,7 +247,7 @@ describe('function type', function() {
   } catch (e) {}
 
   if (arrowFunctionWith2SpaceIndentAndLeadingNewline) {
-    it('should reindent an implicit return multiline arrow function with 2 space indent', function() {
+    it('should reindent an implicit return multiline arrow function with 2 space indent', () => {
       expect(
         arrowFunctionWith2SpaceIndentAndLeadingNewline,
         'to inspect as',
@@ -266,7 +266,7 @@ describe('function type', function() {
   } catch (e) {}
 
   if (arrowFunctionWith3SpaceIndentAndLeadingNewline) {
-    it('should reindent an implicit return multiline arrow function with 4 space indent', function() {
+    it('should reindent an implicit return multiline arrow function with 4 space indent', () => {
       expect(
         arrowFunctionWith3SpaceIndentAndLeadingNewline,
         'to inspect as',
@@ -285,7 +285,7 @@ describe('function type', function() {
   } catch (e) {}
 
   if (arrowFunctionWith4SpaceIndentAndLeadingNewline) {
-    it('should reindent an implicit return multiline arrow function with long leading indent', function() {
+    it('should reindent an implicit return multiline arrow function with long leading indent', () => {
       expect(
         arrowFunctionWith4SpaceIndentAndLeadingNewline,
         'to inspect as',
@@ -302,7 +302,7 @@ describe('function type', function() {
   } catch (e) {}
 
   if (multiParamArrowFunction) {
-    it('should render a multi param arrow function', function() {
+    it('should render a multi param arrow function', () => {
       expect(multiParamArrowFunction, 'to inspect as', '(a, b) => a + b');
     });
   }
@@ -317,7 +317,7 @@ describe('function type', function() {
   } catch (e) {}
 
   if (asyncFunction) {
-    it('should render "async" before an AsyncFunction instance', function() {
+    it('should render "async" before an AsyncFunction instance', () => {
       expect(
         asyncFunction,
         'to inspect as',

@@ -1,14 +1,14 @@
 /*global expect*/
-describe('when called with assertion', function() {
+describe('when called with assertion', () => {
   function add(a, b) {
     return a + b;
   }
 
-  it('should assert that the function invocation produces the correct output', function() {
+  it('should assert that the function invocation produces the correct output', () => {
     expect(add, 'when called with', [3, 4], 'to equal', 7);
   });
 
-  it('should combine with other assertions (showcase)', function() {
+  it('should combine with other assertions (showcase)', () => {
     expect(
       function() {
         expect(add, 'when called with', [3, 4], 'to equal', 9);
@@ -19,14 +19,14 @@ describe('when called with assertion', function() {
     );
   });
 
-  it('should should provide the result as the fulfillment value if no assertion is provided', function() {
+  it('should should provide the result as the fulfillment value if no assertion is provided', () => {
     return expect(add, 'when called with', [3, 4]).then(function(sum) {
       expect(sum, 'to equal', 7);
     });
   });
 
-  describe('when assertion is executed in context of another object', function() {
-    it('should call the function in the context of that object', function() {
+  describe('when assertion is executed in context of another object', () => {
+    it('should call the function in the context of that object', () => {
       function Greeter(prefix) {
         this.prefix = prefix;
       }

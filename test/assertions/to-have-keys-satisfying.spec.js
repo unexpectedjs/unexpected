@@ -1,6 +1,6 @@
 /*global expect*/
-describe('to have keys satisfying assertion', function() {
-  it('requires a third argument', function() {
+describe('to have keys satisfying assertion', () => {
+  it('requires a third argument', () => {
     expect(
       function() {
         expect([1, 2, 3], 'to have keys satisfying');
@@ -15,7 +15,7 @@ describe('to have keys satisfying assertion', function() {
     );
   });
 
-  it('does not accept a fourth argument', function() {
+  it('does not accept a fourth argument', () => {
     expect(
       function() {
         expect([1], 'to have keys satisfying', 0, 1);
@@ -30,7 +30,7 @@ describe('to have keys satisfying assertion', function() {
     );
   });
 
-  it('only accepts objects as the target', function() {
+  it('only accepts objects as the target', () => {
     expect(
       function() {
         expect(42, 'to have keys satisfying', function(key) {});
@@ -45,7 +45,7 @@ describe('to have keys satisfying assertion', function() {
     );
   });
 
-  it('asserts that the given callback does not throw for any keys in the map', function() {
+  it('asserts that the given callback does not throw for any keys in the map', () => {
     expect(
       { foo: 0, bar: 1, baz: 2, qux: 3 },
       'to have keys satisfying',
@@ -76,13 +76,13 @@ describe('to have keys satisfying assertion', function() {
     );
   });
 
-  it('receives the key and the value when the third argument is a function', function() {
+  it('receives the key and the value when the third argument is a function', () => {
     expect({ foo: 123 }, 'to have keys satisfying', function(key) {
       expect(key, 'to equal', 'foo');
     });
   });
 
-  it('fails if the given object is empty', function() {
+  it('fails if the given object is empty', () => {
     expect(
       function() {
         expect({}, 'to have keys satisfying', function(key) {
@@ -98,7 +98,7 @@ describe('to have keys satisfying assertion', function() {
     );
   });
 
-  it('fails for an empty array', function() {
+  it('fails for an empty array', () => {
     expect(
       function() {
         expect([], 'to have keys satisfying', 123);
@@ -109,7 +109,7 @@ describe('to have keys satisfying assertion', function() {
     );
   });
 
-  it('should work with non-enumerable keys returned by the getKeys function of the subject type', function() {
+  it('should work with non-enumerable keys returned by the getKeys function of the subject type', () => {
     expect(
       function() {
         expect(new Error('foo'), 'to have keys satisfying', /bar/);
@@ -123,7 +123,7 @@ describe('to have keys satisfying assertion', function() {
     );
   });
 
-  it('supports legacy aliases', function() {
+  it('supports legacy aliases', () => {
     expect({ foo: '0' }, 'to be a map whose keys satisfy', function(key) {
       expect(key, 'to match', /^[a-z]{3}$/);
     });
@@ -137,7 +137,7 @@ describe('to have keys satisfying assertion', function() {
     });
   });
 
-  it('fails when the assertion fails', function() {
+  it('fails when the assertion fails', () => {
     expect(
       function() {
         expect(
@@ -153,7 +153,7 @@ describe('to have keys satisfying assertion', function() {
     );
   });
 
-  it('provides a detailed report of where failures occur', function() {
+  it('provides a detailed report of where failures occur', () => {
     expect(
       function() {
         expect(
@@ -181,7 +181,7 @@ describe('to have keys satisfying assertion', function() {
     );
   });
 
-  describe('delegating to an async assertion', function() {
+  describe('delegating to an async assertion', () => {
     var clonedExpect = expect
       .clone()
       .addAssertion('to be a sequence of as after a short delay', function(
@@ -201,7 +201,7 @@ describe('to have keys satisfying assertion', function() {
         });
       });
 
-    it('should succeed', function() {
+    it('should succeed', () => {
       return clonedExpect(
         { a: 1, aa: 2 },
         'to have keys satisfying',
@@ -209,7 +209,7 @@ describe('to have keys satisfying assertion', function() {
       );
     });
 
-    it('should fail with a diff', function() {
+    it('should fail with a diff', () => {
       return expect(
         clonedExpect(
           { a: 1, foo: 2, bar: 3 },

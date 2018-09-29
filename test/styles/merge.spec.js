@@ -1,6 +1,6 @@
 /*global expect*/
-describe('merge', function() {
-  it('should overlay a pen on top of another', function() {
+describe('merge', () => {
+  it('should overlay a pen on top of another', () => {
     var pen = expect.createOutput('text');
     pen
       .text('abc')
@@ -21,7 +21,7 @@ describe('merge', function() {
     );
   });
 
-  it('should result in a wider pen when merging a wide pen on top of a slim one', function() {
+  it('should result in a wider pen when merging a wide pen on top of a slim one', () => {
     var pen = expect.createOutput('text');
     pen
       .text('a')

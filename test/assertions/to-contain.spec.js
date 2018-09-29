@@ -1,8 +1,8 @@
 /*global expectWithUnexpectedMagicPen*/
-describe('to contain assertion', function() {
+describe('to contain assertion', () => {
   var expect = expectWithUnexpectedMagicPen;
 
-  it('should throw an error when one of the arguments is the empty string', function() {
+  it('should throw an error when one of the arguments is the empty string', () => {
     expect(
       function() {
         expect('foo', 'to contain', 'bar', '');
@@ -12,17 +12,17 @@ describe('to contain assertion', function() {
     );
   });
 
-  it('asserts indexOf for a string', function() {
+  it('asserts indexOf for a string', () => {
     expect('hello world', 'to contain', 'world');
   });
 
-  it('asserts item equality for an array', function() {
+  it('asserts item equality for an array', () => {
     expect([1, 2], 'to contain', 1);
     expect([1, 2], 'to contain', 2, 1);
     expect([{ foo: 123 }], 'to contain', { foo: 123 });
   });
 
-  it('throws when the assertion fails', function() {
+  it('throws when the assertion fails', () => {
     expect(
       function() {
         expect(null, 'not to contain', 'world');
@@ -85,7 +85,7 @@ describe('to contain assertion', function() {
     );
   });
 
-  it('produces a diff showing full and partial matches for each needle when the assertion fails', function() {
+  it('produces a diff showing full and partial matches for each needle when the assertion fails', () => {
     expect(
       function() {
         expect('foo\nbarquux', 'to contain', 'foo\nb', 'quuux');
@@ -112,8 +112,8 @@ describe('to contain assertion', function() {
     );
   });
 
-  describe('with the not flag', function() {
-    it('produces a useful diff in text mode when a match spans multiple lines', function() {
+  describe('with the not flag', () => {
+    it('produces a useful diff in text mode when a match spans multiple lines', () => {
       expect(
         function() {
           expect('blahfoo\nbar\nquux', 'not to contain', 'foo\nbar\nq');
@@ -136,7 +136,7 @@ describe('to contain assertion', function() {
       );
     });
 
-    it('produces a diff when the array case fails', function() {
+    it('produces a diff when the array case fails', () => {
       expect(
         function() {
           expect([1, 2, 3], 'not to contain', 2);
@@ -152,7 +152,7 @@ describe('to contain assertion', function() {
       );
     });
 
-    it('produces a diff when the string case fails', function() {
+    it('produces a diff when the string case fails', () => {
       expect(
         function() {
           expect('foobarquuxfoo', 'not to contain', 'foo');
@@ -166,7 +166,7 @@ describe('to contain assertion', function() {
     });
   });
 
-  it('should not highlight overlapping partial matches', function() {
+  it('should not highlight overlapping partial matches', () => {
     expect(
       function() {
         expect('foobarquux', 'not to contain', 'foob', 'barq');
@@ -179,7 +179,7 @@ describe('to contain assertion', function() {
     );
   });
 
-  it('should highlight all occurrences of the longest partial match', function() {
+  it('should highlight all occurrences of the longest partial match', () => {
     expect(
       function() {
         expect('foobarquuxfoob', 'to contain', 'ooaaq', 'foobr');

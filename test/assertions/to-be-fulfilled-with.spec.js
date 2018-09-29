@@ -1,6 +1,6 @@
 /*global expect*/
-describe('to be fulfilled with assertion', function() {
-  it('should succeed if the response is resolved with a reason satisfying the argument', function() {
+describe('to be fulfilled with assertion', () => {
+  it('should succeed if the response is resolved with a reason satisfying the argument', () => {
     return expect(
       new Promise(function(resolve, reject) {
         setTimeout(function() {
@@ -12,7 +12,7 @@ describe('to be fulfilled with assertion', function() {
     );
   });
 
-  it('should forward the fulfillment value', function() {
+  it('should forward the fulfillment value', () => {
     return expect(
       expect.promise.resolve(123),
       'to be fulfilled with',
@@ -22,7 +22,7 @@ describe('to be fulfilled with assertion', function() {
     });
   });
 
-  it('should fail if the promise is resolved with a value that does not satisfy the argument', function() {
+  it('should fail if the promise is resolved with a value that does not satisfy the argument', () => {
     return expect(
       expect(
         new Promise(function(resolve, reject) {
@@ -47,8 +47,8 @@ describe('to be fulfilled with assertion', function() {
     );
   });
 
-  describe('when passed a function', function() {
-    it('should fail if the function returns a promise that is fulfilled with the wrong value', function() {
+  describe('when passed a function', () => {
+    it('should fail if the function returns a promise that is fulfilled with the wrong value', () => {
       expect(
         function() {
           return expect(
