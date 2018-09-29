@@ -41,7 +41,7 @@ describe('unexpected', function() {
       );
     });
 
-    it('fails if the given assertion can not be found', () => {
+    it('fails if the given assertion can not be found', function() {
       expect(
         () => {
           expect(
@@ -55,7 +55,7 @@ describe('unexpected', function() {
       );
     });
 
-    it('fails if the given assertion is not defined for the provided parameters', () => {
+    it('fails if the given assertion is not defined for the provided parameters', function() {
       expect(
         () => {
           expect(

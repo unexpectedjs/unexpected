@@ -373,7 +373,7 @@ describe('array-like type', function() {
       );
     });
 
-    it('should honour the precise list of keys returned by getKeys in "to satisfy"', () => {
+    it('should honour the precise list of keys returned by getKeys in "to satisfy"', function() {
       var clonedExpect = expect.clone();
 
       clonedExpect.addType({

@@ -120,7 +120,7 @@ describe('UnexpectedError', function() {
       );
     });
 
-    it('trims the stack for custom assertions in the consuming code', () => {
+    it('trims the stack for custom assertions in the consuming code', function() {
       expect(
         function() {
           expect.fail('wat');

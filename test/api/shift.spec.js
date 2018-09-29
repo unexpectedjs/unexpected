@@ -353,7 +353,7 @@ describe('expect.shift', function() {
     });
   });
 
-  it('fails when the given assertion does not accept the shifted subject type', () => {
+  it('fails when the given assertion does not accept the shifted subject type', function() {
     var clonedExpect = expect
       .clone()
       .addAssertion('<number> when stringified <assertion>', function(
@@ -378,8 +378,8 @@ describe('expect.shift', function() {
     );
   });
 
-  describe('when you shift to an assertion in the parent expect', () => {
-    it('fails when the given assertion does not accept the shifted subject type', () => {
+  describe('when you shift to an assertion in the parent expect', function() {
+    it('fails when the given assertion does not accept the shifted subject type', function() {
       var clonedExpect = expect
         .clone()
         .child()
