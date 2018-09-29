@@ -125,23 +125,6 @@ describe('#child', function() {
     childExpect('yaddafoobar', 'to foobar');
   });
 
-  it('should prefer a style defined in the child, even if it was added before an identically named one in the parent', function() {
-    childExpect.addStyle('yadda', function() {
-      this.text('yaddagood');
-    });
-    parentExpect.addStyle('yadda', function() {
-      this.text('yaddabad');
-    });
-    expect(
-      childExpect
-        .createOutput('text')
-        .yadda()
-        .toString(),
-      'to equal',
-      'yaddagood'
-    );
-  });
-
   it('should allow installing an identically named plugin', function() {
     parentExpect.use({
       name: 'foo',

@@ -59,21 +59,6 @@ describe('when fulfilled adverbial assertion', function() {
     );
   });
 
-  it('should fail when the promise is rejected with a value of undefined', function() {
-    return expect(
-      expect(
-        new Promise(function(resolve, reject) {
-          setTimeout(reject, 0);
-        }),
-        'when fulfilled',
-        'to be truthy'
-      ),
-      'to be rejected with',
-      'expected Promise when fulfilled to be truthy\n' +
-        '  Promise unexpectedly rejected'
-    );
-  });
-
   it('should fail when the next assertion fails', function() {
     return expect(
       expect(
