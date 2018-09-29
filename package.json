@@ -86,6 +86,9 @@
     "testMatch": [
       "<rootDir>/test/**.spec.js"
     ],
-    "testURL": "http://localhost/"
+    "testURL": "http://localhost/",
+    "transformIgnorePatterns": [
+      "(?:)"
+    ]
   }
 }
