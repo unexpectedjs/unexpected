@@ -145,8 +145,8 @@ describe('to have an item satisfying assertion', () => {
           ],
           'to have an item satisfying',
           // prettier-ignore
-          (item) => {
-            expect.fail((output) => {
+          item => {
+            expect.fail(output => {
               output.text('foo').nl().text('bar');
             });
           }
@@ -158,8 +158,8 @@ describe('to have an item satisfying assertion', () => {
         '  [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 ]\n' +
         ']\n' +
         'to have an item satisfying\n' +
-        'function (item) {\n' +
-        '  expect.fail(function (output) {\n' +
+        'item => {\n' +
+        '  expect.fail(output => {\n' +
         "    output.text('foo').nl().text('bar');\n" +
         '  });\n' +
         '}'

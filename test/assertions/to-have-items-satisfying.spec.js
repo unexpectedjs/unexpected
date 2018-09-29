@@ -36,7 +36,7 @@ describe('to have items satisfying assertion', () => {
         expect(42, 'to have items satisfying', item => {});
       },
       'to throw',
-      'expected 42 to have items satisfying function (item) {}\n' +
+      'expected 42 to have items satisfying item => {}\n' +
         '  The assertion does not have a matching signature for:\n' +
         '    <number> to have items satisfying <function>\n' +
         '  did you mean:\n' +
@@ -54,7 +54,7 @@ describe('to have items satisfying assertion', () => {
       },
       'to throw',
       'expected [] to have items satisfying\n' +
-        'function (item) {\n' +
+        'item => {\n' +
         "  expect(item, 'to be a number');\n" +
         '}\n' +
         '  expected [] not to be empty'
@@ -118,8 +118,8 @@ describe('to have items satisfying assertion', () => {
           ],
           'to have items satisfying',
           // prettier-ignore
-          (item) => {
-            expect.fail((output) => {
+          item => {
+            expect.fail(output => {
               output.text('foo').nl().text('bar');
             });
           }
@@ -127,8 +127,8 @@ describe('to have items satisfying assertion', () => {
       },
       'to throw',
       'expected array to have items satisfying\n' +
-        'function (item) {\n' +
-        '  expect.fail(function (output) {\n' +
+        'item => {\n' +
+        '  expect.fail(output => {\n' +
         "    output.text('foo').nl().text('bar');\n" +
         '  });\n' +
         '}\n' +
@@ -190,7 +190,7 @@ describe('to have items satisfying assertion', () => {
       },
       'to throw',
       "expected [ 0, 1, '2', 3, 4 ] to have items satisfying\n" +
-        'function (item) {\n' +
+        'item => {\n' +
         "  expect(item, 'to be a number');\n" +
         "  expect(item, 'to be less than', 4);\n" +
         '}\n' +
@@ -212,8 +212,8 @@ describe('to have items satisfying assertion', () => {
           [[0, 1, 2], [4, '5', 6], [7, 8, '9']],
           'to have items satisfying',
           // prettier-ignore
-          (arr) => {
-            expect(arr, 'to have items satisfying', (item) => {
+          arr => {
+            expect(arr, 'to have items satisfying', item => {
               expect(item, 'to be a number');
             });
           }
@@ -221,8 +221,8 @@ describe('to have items satisfying assertion', () => {
       },
       'to throw',
       'expected array to have items satisfying\n' +
-        'function (arr) {\n' +
-        "  expect(arr, 'to have items satisfying', function (item) {\n" +
+        'arr => {\n' +
+        "  expect(arr, 'to have items satisfying', item => {\n" +
         "    expect(item, 'to be a number');\n" +
         '  });\n' +
         '}\n' +
@@ -334,7 +334,7 @@ describe('to have items satisfying assertion', () => {
       },
       'to throw',
       "expected [ ']1V3ZRFOmgiE*' ] to have items satisfying\n" +
-        'function (item) {\n' +
+        'item => {\n' +
         "  expect(item, 'not to match', /[!@#$%^&*()_+]/);\n" +
         '}\n' +
         '\n' +

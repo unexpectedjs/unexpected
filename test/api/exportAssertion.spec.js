@@ -154,7 +154,7 @@ describe('exportAssertion', () => {
         );
       },
       'to error',
-      "expected function () { parentExpect('bar', 'to foo'); }\n" +
+      "expected () => { parentExpect('bar', 'to foo'); }\n" +
         "to error 'expected \\'barf\\' to foo\\n\\ngot >>bar<< but expected >>foo<<'\n" +
         '  expected\n' +
         '  UnexpectedError(\n' +

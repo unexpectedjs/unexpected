@@ -36,7 +36,7 @@ describe('to have keys satisfying assertion', () => {
         expect(42, 'to have keys satisfying', key => {});
       },
       'to throw',
-      'expected 42 to have keys satisfying function (key) {}\n' +
+      'expected 42 to have keys satisfying key => {}\n' +
         '  The assertion does not have a matching signature for:\n' +
         '    <number> to have keys satisfying <function>\n' +
         '  did you mean:\n' +
@@ -91,7 +91,7 @@ describe('to have keys satisfying assertion', () => {
       },
       'to throw',
       'expected {} to have keys satisfying\n' +
-        'function (key) {\n' +
+        'key => {\n' +
         "  expect(key, 'to match', /^[a-z]{3}$/);\n" +
         '}\n' +
         '  expected {} not to be empty'
@@ -166,7 +166,7 @@ describe('to have keys satisfying assertion', () => {
       },
       'to throw',
       'expected { foo: 0, bar: 1, baz: 2, qux: 3, quux: 4 } to have keys satisfying\n' +
-        'function (key) {\n' +
+        'key => {\n' +
         "  expect(key, 'to have length', 3);\n" +
         '}\n' +
         '\n' +

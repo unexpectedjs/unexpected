@@ -64,10 +64,12 @@ describe('use', () => {
   });
 
   it('fails if identically named, but different functions are installed', () => {
-    clonedExpect.use(() => {});
+    // eslint-disable-next-line prefer-arrow-callback
+    clonedExpect.use(function myPlugin() {});
     expect(
       () => {
-        clonedExpect.use(() => {});
+        // eslint-disable-next-line prefer-arrow-callback
+        clonedExpect.use(function myPlugin() {});
       },
       'to throw',
       "Another instance of the plugin 'myPlugin' is already installed. Please check your node_modules folder for unmet peerDependencies."

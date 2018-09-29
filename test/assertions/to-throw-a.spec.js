@@ -20,7 +20,7 @@ describe('to throw a/an assertion', () => {
           message,
           'to equal',
           'expected\n' +
-            'function () {\n' +
+            '() => {\n' +
             "  // Don't throw\n" +
             '}\n' +
             'to throw an Error\n' +
@@ -53,7 +53,7 @@ describe('to throw a/an assertion', () => {
         );
       },
       'to throw',
-      "expected function () { throw new SyntaxError('foo'); } to throw a RangeError\n" +
+      "expected () => { throw new SyntaxError('foo'); } to throw a RangeError\n" +
         "  expected SyntaxError('foo') to be a RangeError"
     );
   });
@@ -70,7 +70,7 @@ describe('to throw a/an assertion', () => {
         );
       },
       'to throw',
-      'expected function () { throw null; } to throw a RangeError\n' +
+      'expected () => { throw null; } to throw a RangeError\n' +
         '  expected null to be a RangeError'
     );
   });
@@ -87,7 +87,7 @@ describe('to throw a/an assertion', () => {
         );
       },
       'to throw',
-      "expected function () { throw ''; } to throw a RangeError\n" +
+      "expected () => { throw ''; } to throw a RangeError\n" +
         "  expected '' to be a RangeError"
     );
   });

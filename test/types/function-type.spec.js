@@ -1,11 +1,13 @@
 /*global expect*/
 describe('function type', () => {
   it('should inspect an empty anonymous function correctly', () => {
-    expect(() => {}, 'to inspect as', 'function () {}');
+    // eslint-disable-next-line prefer-arrow-callback
+    expect(function() {}, 'to inspect as', 'function () {}');
   });
 
   it('should inspect an empty named function correctly', () => {
-    expect(() => {}, 'to inspect as', 'function foo() {}');
+    // eslint-disable-next-line prefer-arrow-callback
+    expect(function foo() {}, 'to inspect as', 'function foo() {}');
   });
 
   it('should inspect a function with a custom toString correctly', () => {
@@ -27,8 +29,8 @@ describe('function type', () => {
 
     it('should inspect an anonymous bound function correctly', () => {
       expect(
-        // eslint-disable-next-line no-extra-bind
-        (() => {}).bind({}),
+        // eslint-disable-next-line no-extra-bind, prefer-arrow-callback
+        function() {}.bind({}),
         'to inspect as',
         'function bound () { /* native code */ }'
       );
@@ -36,8 +38,8 @@ describe('function type', () => {
 
     it('should inspect a named bound function correctly', () => {
       expect(
-        // eslint-disable-next-line no-extra-bind
-        (() => {}).bind({}),
+        // eslint-disable-next-line no-extra-bind, prefer-arrow-callback
+        function foo() {}.bind({}),
         'to inspect as',
         'function bound foo() { /* native code */ }'
       );
@@ -45,14 +47,16 @@ describe('function type', () => {
   }
 
   it('should inspect an function with just a newline correctly', () => {
-    expect(() => {}, 'to inspect as', 'function () {}');
+    // eslint-disable-next-line prefer-arrow-callback
+    expect(function() {}, 'to inspect as', 'function () {}');
   });
 
   it('should inspect a one-line function correctly', () => {
     /* eslint-disable no-unused-vars */
     expect(
       // prettier-ignore
-      () => { var a = 123;a = 456; },
+      // eslint-disable-next-line prefer-arrow-callback
+      function () { var a = 123;a = 456; },
       'to inspect as',
       'function () { var a = 123;a = 456; }'
     );
@@ -63,7 +67,8 @@ describe('function type', () => {
     /* eslint-disable no-unused-vars */
     expect(
       // prettier-ignore
-      () => { var a = 123;a = 456; },
+      // eslint-disable-next-line prefer-arrow-callback
+      function () { var a = 123;a = 456; },
       'to inspect as',
       'function () { var a = 123;a = 456; }'
     );
@@ -74,7 +79,8 @@ describe('function type', () => {
     /* eslint-disable no-unused-vars */
     expect(
       // prettier-ignore
-      () => {
+      // eslint-disable-next-line prefer-arrow-callback
+      function () {
         var a = 123 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2;a = 456;
       },
       'to inspect as',
@@ -99,7 +105,8 @@ describe('function type', () => {
       /* eslint-disable no-unused-vars */
       expect(
         // prettier-ignore
-        () => {
+        // eslint-disable-next-line prefer-arrow-callback
+        function () {
           var a = 123;a = 456; // foo
         },
         'to inspect as',
@@ -111,7 +118,8 @@ describe('function type', () => {
 
   it('should reindent a function with an indentation size of 4', () => {
     expect(
-      () => {
+      // eslint-disable-next-line prefer-arrow-callback
+      function() {
         var a = 4;
         if (a === 1) {
           a();
@@ -130,7 +138,8 @@ describe('function type', () => {
   it('should reindent a function with an indentation size of 3', () => {
     // jscs:disable
     expect(
-      () => {
+      // eslint-disable-next-line prefer-arrow-callback
+      function() {
         var a = 4;
         if (a === 1) {
           a();
@@ -150,7 +159,8 @@ describe('function type', () => {
   it('should reindent a function with an indentation size of 1', () => {
     // jscs:disable
     expect(
-      () => {
+      // eslint-disable-next-line prefer-arrow-callback
+      function() {
         var a = 4;
         if (a === 1) {
           a();

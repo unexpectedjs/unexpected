@@ -54,7 +54,8 @@ describe('utils', () => {
 
     describe('#getFunctionName', () => {
       it('should return the name of a named function', () => {
-        expect(utils.getFunctionName(() => {}), 'to equal', 'foo');
+        // eslint-disable-next-line prefer-arrow-callback
+        expect(utils.getFunctionName(function foo() {}), 'to equal', 'foo');
       });
 
       it('should return the empty string for an anonymous function', () => {

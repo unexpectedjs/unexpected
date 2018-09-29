@@ -92,7 +92,7 @@ describe('to be rejected assertion', () => {
         },
         'to throw',
         'expected\n' +
-          'function () {\n' +
+          '() => {\n' +
           '  return expect.promise.resolve(123);\n' +
           '}\n' +
           'to be rejected\n' +

@@ -201,7 +201,7 @@ describe('expect.shift', () => {
         clonedExpect('foo', 'when prepended with foo', () => {});
       },
       'to throw',
-      "expected 'foo' when prepended with foo function () {}\n" +
+      "expected 'foo' when prepended with foo () => {}\n" +
         '  The assertion does not have a matching signature for:\n' +
         '    <string> when prepended with foo <function>\n' +
         '  did you mean:\n' +

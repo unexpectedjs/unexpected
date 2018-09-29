@@ -69,7 +69,7 @@ describe('to be fulfilled assertion', () => {
         },
         'to throw',
         'expected\n' +
-          'function () {\n' +
+          '() => {\n' +
           "  return expect.promise.reject(new Error('foo'));\n" +
           '}\n' +
           'to be fulfilled\n' +
@@ -86,7 +86,7 @@ describe('to be fulfilled assertion', () => {
           }, 'to be fulfilled');
         },
         'to throw',
-        "expected function () { throw new Error('foo'); } to be fulfilled\n" +
+        "expected () => { throw new Error('foo'); } to be fulfilled\n" +
           "  expected Promise (rejected) => Error('foo') to be fulfilled\n" +
           "    Promise (rejected) => Error('foo') unexpectedly rejected with Error('foo')"
       );

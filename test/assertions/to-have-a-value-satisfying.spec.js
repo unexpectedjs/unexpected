@@ -33,7 +33,7 @@ describe('to have a value satisfying assertion', () => {
         expect(42, 'to have a value satisfying', value => {});
       },
       'to throw',
-      'expected 42 to have a value satisfying function (value) {}\n' +
+      'expected 42 to have a value satisfying value => {}\n' +
         '  The assertion does not have a matching signature for:\n' +
         '    <number> to have a value satisfying <function>\n' +
         '  did you mean:\n' +

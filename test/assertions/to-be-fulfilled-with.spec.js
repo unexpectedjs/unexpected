@@ -61,7 +61,7 @@ describe('to be fulfilled with assertion', () => {
         },
         'to throw',
         'expected\n' +
-          'function () {\n' +
+          '() => {\n' +
           '  return expect.promise.resolve(123);\n' +
           '}\n' +
           'to be fulfilled with 456\n' +

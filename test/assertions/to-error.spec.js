@@ -10,7 +10,7 @@ describe('to error assertion', () => {
             }, 'not to error');
           },
           'to throw',
-          "expected function () { throw new Error('yikes'); } not to error\n" +
+          "expected () => { throw new Error('yikes'); } not to error\n" +
             "  threw: Error('yikes')"
         );
       });
@@ -31,9 +31,9 @@ describe('to error assertion', () => {
           }, 'not to error'),
           'to be rejected with',
           'expected\n' +
-            'function () {\n' +
-            '  return expect.promise(function (resolve, reject) {\n' +
-            '    setTimeout(function () {\n' +
+            '() => {\n' +
+            '  return expect.promise((resolve, reject) => {\n' +
+            '    setTimeout(() => {\n' +
             "      reject(new Error('wat'));\n" +
             '    }, 1);\n' +
             '  });\n' +
@@ -54,7 +54,7 @@ describe('to error assertion', () => {
       },
       'to throw',
       'expected\n' +
-        'function () {\n' +
+        '() => {\n' +
         '  return expect.promise.resolve(123);\n' +
         '}\n' +
         'to error'
@@ -67,7 +67,7 @@ describe('to error assertion', () => {
         expect(() => {}, 'to error');
       },
       'to throw',
-      'expected function () {} to error'
+      'expected () => {} to error'
     );
   });
 

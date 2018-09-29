@@ -88,7 +88,7 @@ describe('to be rejected with assertion', () => {
         },
         'to throw',
         'expected\n' +
-          'function () {\n' +
+          '() => {\n' +
           "  return expect.promise.reject(new Error('foo'));\n" +
           '}\n' +
           "to be rejected with Error('bar')\n" +

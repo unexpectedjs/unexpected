@@ -137,7 +137,7 @@ describe('when fulfilled adverbial assertion', () => {
         },
         'to throw',
         'expected\n' +
-          'function () {\n' +
+          '() => {\n' +
           "  return expect.promise.reject(new Error('foo'));\n" +
           '}\n' +
           'when fulfilled to be a number\n' +
@@ -154,7 +154,7 @@ describe('when fulfilled adverbial assertion', () => {
           }, 'when fulfilled to be a number');
         },
         'to throw',
-        "expected function () { throw new Error('foo'); } when fulfilled to be a number\n" +
+        "expected () => { throw new Error('foo'); } when fulfilled to be a number\n" +
           "  expected Promise (rejected) => Error('foo') when fulfilled to be a number\n" +
           "    Promise (rejected) => Error('foo') unexpectedly rejected with Error('foo')"
       );

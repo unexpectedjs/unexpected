@@ -98,7 +98,7 @@ describe('to be a/an assertion', () => {
         expect('foo', 'to be a', () => {});
       },
       'to throw',
-      "expected 'foo' to be a function () {}"
+      "expected 'foo' to be a () => {}"
     );
   });
 

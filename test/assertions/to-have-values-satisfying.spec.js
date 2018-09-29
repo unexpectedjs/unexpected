@@ -36,7 +36,7 @@ describe('to have values satisfying assertion', () => {
         expect(42, 'to have values satisfying', value => {});
       },
       'to throw',
-      'expected 42 to have values satisfying function (value) {}\n' +
+      'expected 42 to have values satisfying value => {}\n' +
         '  The assertion does not have a matching signature for:\n' +
         '    <number> to have values satisfying <function>\n' +
         '  did you mean:\n' +
@@ -84,7 +84,7 @@ describe('to have values satisfying assertion', () => {
       },
       'to throw',
       'expected {} to have values satisfying\n' +
-        'function (value) {\n' +
+        'value => {\n' +
         "  expect(value, 'to equal', '0');\n" +
         '}\n' +
         '  expected {} not to be empty'
@@ -111,7 +111,7 @@ describe('to have values satisfying assertion', () => {
       },
       'to throw',
       'expected [] to have items satisfying\n' +
-        'function (item) {\n' +
+        'item => {\n' +
         "  expect(item, 'to be a number');\n" +
         '}\n' +
         '  expected [] not to be empty'
@@ -162,7 +162,7 @@ describe('to have values satisfying assertion', () => {
       },
       'to throw',
       'expected object to have values satisfying\n' +
-        'function (value) {\n' +
+        'value => {\n' +
         "  expect(value, 'to be a number');\n" +
         "  expect(value, 'to be less than', 4);\n" +
         '}\n' +
@@ -184,8 +184,8 @@ describe('to have values satisfying assertion', () => {
           { foo: [0, 1, 2], bar: [4, '5', 6], baz: [7, 8, '9'] },
           'to have values satisfying',
           // prettier-ignore
-          (arr) => {
-            expect(arr, 'to have items satisfying', (item) => {
+          arr => {
+            expect(arr, 'to have items satisfying', item => {
               expect(item, 'to be a number');
             });
           }
@@ -193,8 +193,8 @@ describe('to have values satisfying assertion', () => {
       },
       'to throw',
       'expected object to have values satisfying\n' +
-        'function (arr) {\n' +
-        "  expect(arr, 'to have items satisfying', function (item) {\n" +
+        'arr => {\n' +
+        "  expect(arr, 'to have items satisfying', item => {\n" +
         "    expect(item, 'to be a number');\n" +
         '  });\n' +
         '}\n' +

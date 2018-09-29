@@ -126,7 +126,7 @@ describe('to be fulfilled with value satisfying assertion', () => {
         },
         'to throw',
         'expected\n' +
-          'function () {\n' +
+          '() => {\n' +
           '  return expect.promise.resolve(123);\n' +
           '}\n' +
           'to be fulfilled with value satisfying 456\n' +
@@ -175,7 +175,7 @@ describe('to be fulfilled with value satisfying assertion', () => {
           },
           'to be rejected with',
           'expected\n' +
-            'function () {\n' +
+            '() => {\n' +
             '  return Promise.resolve({\n' +
             "    foo: 'foo',\n" +
             "    bar: 'bar',\n" +

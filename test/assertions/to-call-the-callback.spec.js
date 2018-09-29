@@ -16,7 +16,7 @@ describe('to call the callback assertion', () => {
       },
       'to error',
       'expected\n' +
-        'function (cb) {\n' +
+        'cb => {\n' +
         '  cb();\n' +
         '  cb();\n' +
         '}\n' +
@@ -29,7 +29,7 @@ describe('to call the callback assertion', () => {
     return expect(
       () => {
         // prettier-ignore
-        return expect((cb) => {
+        return expect(cb => {
           setTimeout(() => {
             cb();
             cb();
@@ -38,8 +38,8 @@ describe('to call the callback assertion', () => {
       },
       'to error',
       'expected\n' +
-        'function (cb) {\n' +
-        '  setTimeout(function () {\n' +
+        'cb => {\n' +
+        '  setTimeout(() => {\n' +
         '    cb();\n' +
         '    cb();\n' +
         '  }, 0);\n' +
@@ -159,7 +159,7 @@ describe('to call the callback assertion', () => {
             () => {
               return expect(
                 // prettier-ignore
-                (cb) => {
+                cb => {
                   setTimeout(() => {
                     cb(new Error('bla'));
                   }, 0);
@@ -170,8 +170,8 @@ describe('to call the callback assertion', () => {
             },
             'to error',
             'expected\n' +
-              'function (cb) {\n' +
-              '  setTimeout(function () {\n' +
+              'cb => {\n' +
+              '  setTimeout(() => {\n' +
               "    cb(new Error('bla'));\n" +
               '  }, 0);\n' +
               '}\n' +
@@ -202,7 +202,7 @@ describe('to call the callback assertion', () => {
             () => {
               return expect(
                 // prettier-ignore
-                (cb) => {
+                cb => {
                   setTimeout(() => {
                     cb(new Error('bla'));
                   }, 0);
@@ -213,8 +213,8 @@ describe('to call the callback assertion', () => {
             },
             'to error',
             'expected\n' +
-              'function (cb) {\n' +
-              '  setTimeout(function () {\n' +
+              'cb => {\n' +
+              '  setTimeout(() => {\n' +
               "    cb(new Error('bla'));\n" +
               '  }, 0);\n' +
               '}\n' +
@@ -228,7 +228,7 @@ describe('to call the callback assertion', () => {
             () => {
               return expect(
                 // prettier-ignore
-                (cb) => {
+                cb => {
                   setTimeout(() => {
                     try {
                       expect(false, 'to be truthy');
@@ -243,8 +243,8 @@ describe('to call the callback assertion', () => {
             },
             'to error',
             'expected\n' +
-              'function (cb) {\n' +
-              '  setTimeout(function () {\n' +
+              'cb => {\n' +
+              '  setTimeout(() => {\n' +
               '    try {\n' +
               "      expect(false, 'to be truthy');\n" +
               '    } catch (err) {\n' +
@@ -264,7 +264,7 @@ describe('to call the callback assertion', () => {
           () => {
             return expect(
               // prettier-ignore
-              (cb) => {
+              cb => {
                 setTimeout(() => {
                   cb(new Error('foo'));
                 }, 0);
@@ -275,8 +275,8 @@ describe('to call the callback assertion', () => {
           },
           'to error',
           'expected\n' +
-            'function (cb) {\n' +
-            '  setTimeout(function () {\n' +
+            'cb => {\n' +
+            '  setTimeout(() => {\n' +
             "    cb(new Error('foo'));\n" +
             '  }, 0);\n' +
             '}\n' +
@@ -304,8 +304,7 @@ describe('to call the callback assertion', () => {
             );
           },
           'to error',
-          'expected function (cb) { setTimeout(cb, 0); }\n' +
-            "to call the callback with error Error('bla')"
+          "expected cb => { setTimeout(cb, 0); } to call the callback with error Error('bla')"
         );
       });
     });
@@ -327,7 +326,7 @@ describe('to call the callback assertion', () => {
             }, 'to call the callback with error');
           },
           'to error',
-          'expected function (cb) { setTimeout(cb, 0); } to call the callback with error'
+          'expected cb => { setTimeout(cb, 0); } to call the callback with error'
         );
       });
     });
@@ -339,7 +338,7 @@ describe('to call the callback assertion', () => {
         () => {
           return expect(
             // prettier-ignore
-            (cb) => {
+            cb => {
               setTimeout(() => {
                 cb(new Error('bla'));
               }, 0);
@@ -350,8 +349,8 @@ describe('to call the callback assertion', () => {
         },
         'to throw',
         'expected\n' +
-          'function (cb) {\n' +
-          '  setTimeout(function () {\n' +
+          'cb => {\n' +
+          '  setTimeout(() => {\n' +
           "    cb(new Error('bla'));\n" +
           '  }, 0);\n' +
           '}\n' +
@@ -373,7 +372,7 @@ describe('to call the callback assertion', () => {
       return expect(
         () => {
           // prettier-ignore
-          return expect((cb) => {
+          return expect(cb => {
             return setTimeout(() => {
               cb(new Error('wat'));
             }, 0);
@@ -381,8 +380,8 @@ describe('to call the callback assertion', () => {
         },
         'to error',
         'expected\n' +
-          'function (cb) {\n' +
-          '  return setTimeout(function () {\n' +
+          'cb => {\n' +
+          '  return setTimeout(() => {\n' +
           "    cb(new Error('wat'));\n" +
           '  }, 0);\n' +
           '}\n' +
@@ -403,7 +402,7 @@ describe('to call the callback assertion', () => {
       return expect(
         () => {
           // prettier-ignore
-          return expect((cb) => {
+          return expect(cb => {
             setTimeout(() => {
               try {
                 expect(false, 'to be truthy');
@@ -415,8 +414,8 @@ describe('to call the callback assertion', () => {
         },
         'to error',
         'expected\n' +
-          'function (cb) {\n' +
-          '  setTimeout(function () {\n' +
+          'cb => {\n' +
+          '  setTimeout(() => {\n' +
           '    try {\n' +
           "      expect(false, 'to be truthy');\n" +
           '    } catch (err) {\n' +

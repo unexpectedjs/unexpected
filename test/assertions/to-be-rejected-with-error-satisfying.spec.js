@@ -140,7 +140,7 @@ describe('to be rejected with error satisfying assertion', () => {
         },
         'to throw',
         'expected\n' +
-          'function () {\n' +
+          '() => {\n' +
           "  return expect.promise.reject(new Error('foo'));\n" +
           '}\n' +
           "to be rejected with error satisfying Error('bar')\n" +
@@ -214,8 +214,8 @@ describe('to be rejected with error satisfying assertion', () => {
           },
           'to error with',
           'expected\n' +
-            'function () {\n' +
-            '  return expect.promise(function () {\n' +
+            '() => {\n' +
+            '  return expect.promise(() => {\n' +
             "    var error = new Error('foobar');\n" +
             "    error.data = { foo: 'bar' };\n" +
             '    throw error;\n' +

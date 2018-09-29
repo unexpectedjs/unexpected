@@ -92,7 +92,7 @@ describe('when rejected adverbial assertion', () => {
         },
         'to throw',
         'expected\n' +
-          'function () {\n' +
+          '() => {\n' +
           '  return expect.promise.resolve(123);\n' +
           '}\n' +
           'when rejected to be an object\n' +

@@ -337,7 +337,8 @@ describe('inspect', () => {
 
   it('should output the body of a function', () => {
     expect(
-      () => {
+      // eslint-disable-next-line prefer-arrow-callback
+      function() {
         var foo = 'bar';
         var quux = 'baz';
         while (foo) {
@@ -435,7 +436,8 @@ describe('inspect', () => {
   it('should bail out of removing the indentation of one-liner functions', () => {
     expect(
       // prettier-ignore
-      () => { var foo = 123;return foo; },
+      // eslint-disable-next-line prefer-arrow-callback
+      function () { var foo = 123;return foo; },
       'to inspect as',
       'function () { var foo = 123;return foo; }'
     );

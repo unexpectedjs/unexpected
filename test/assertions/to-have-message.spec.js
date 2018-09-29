@@ -98,10 +98,9 @@ describe('to have message/diff assertion', () => {
           );
         },
         'to throw',
-        "expected function () { expect(123, 'to equal', 456); }\n" +
-          "to throw expect.it('to have ansi diff', function () {})\n" +
-          '  expected UnexpectedError(expected 123 to equal 456)\n' +
-          '  to have ansi diff function () {}\n' +
+        "expected () => { expect(123, 'to equal', 456); }\n" +
+          "to throw expect.it('to have ansi diff', () => {})\n" +
+          '  expected UnexpectedError(expected 123 to equal 456) to have ansi diff () => {}\n' +
           '    The UnexpectedError instance does not have a diff'
       );
     });
@@ -118,9 +117,9 @@ describe('to have message/diff assertion', () => {
           );
         },
         'to throw',
-        "expected function () { throw new Error('foo'); }\n" +
-          "to throw expect.it('to have ansi diff', function () {})\n" +
-          "  expected Error('foo') to have ansi diff function () {}\n" +
+        "expected () => { throw new Error('foo'); }\n" +
+          "to throw expect.it('to have ansi diff', () => {})\n" +
+          "  expected Error('foo') to have ansi diff () => {}\n" +
           '    Cannot get the diff from a non-Unexpected error'
       );
     });
@@ -163,7 +162,7 @@ describe('to have message/diff assertion', () => {
           },
           'to throw',
           'expected\n' +
-            'function () {\n' +
+            '() => {\n' +
             "  expect('abc', 'to equal', 'def');\n" +
             '}\n' +
             'to throw\n' +
@@ -230,7 +229,7 @@ describe('to have message/diff assertion', () => {
           },
           'to throw',
           'expected\n' +
-            'function () {\n' +
+            '() => {\n' +
             "  expect('abc', 'to equal', 'def');\n" +
             '}\n' +
             'to throw\n' +
@@ -287,11 +286,11 @@ describe('to have message/diff assertion', () => {
         ),
         'to be rejected with',
         'expected\n' +
-          'function () {\n' +
+          '() => {\n' +
           "  expect('abc', 'to equal', 'def');\n" +
           '}\n' +
           'to throw\n' +
-          "expect.it('to have ansi diff', function (ansiStr) {\n" +
+          "expect.it('to have ansi diff', ansiStr => {\n" +
           "  return expect(123, 'when delayed a little bit', 'to equal', 456);\n" +
           '})\n' +
           '  expected 123 when delayed a little bit to equal 456'

@@ -1162,7 +1162,7 @@ describe('unexpected', () => {
           expect(() => {}, 'when called with', 'M1', 'to throw a', SyntaxError);
         },
         'to throw',
-        'expected function () {}\n' +
+        'expected () => {}\n' +
           "when called with 'M1', 'to throw a', function SyntaxError() { /* native code */ }\n" +
           '  The assertion does not have a matching signature for:\n' +
           '    <function> when called with <string> <string> <function>\n' +
@@ -1235,7 +1235,7 @@ describe('unexpected', () => {
         );
       },
       'to throw',
-      "expected function () { return 123; } when called when called with 'abc', /123/\n" +
+      "expected () => { return 123; } when called when called with 'abc', /123/\n" +
         "  expected 123 when called with 'abc', /123/\n" +
         '    The assertion does not have a matching signature for:\n' +
         '      <number> when called with <string> <regexp>\n' +

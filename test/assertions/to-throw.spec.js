@@ -16,7 +16,7 @@ describe('to throw assertion', () => {
           message,
           'to equal',
           'expected\n' +
-            'function () {\n' +
+            '() => {\n' +
             "  // Don't throw\n" +
             '}\n' +
             'to throw exception\n' +
@@ -34,7 +34,7 @@ describe('to throw assertion', () => {
         }, 'not to throw');
       },
       'to throw',
-      "expected function testFunction() { throw new Error('The Error'); } not to throw\n" +
+      "expected () => { throw new Error('The Error'); } not to throw\n" +
         "  threw: Error('The Error')"
     );
   });
@@ -44,7 +44,7 @@ describe('to throw assertion', () => {
       // prettier-ignore
       () => {
         expect(() => {
-          expect.fail((output) => {
+          expect.fail(output => {
             output.text('foo').block(function () {
               this.text('bar').nl().text('baz');
             }).text('quux');
@@ -53,8 +53,8 @@ describe('to throw assertion', () => {
       },
       'to throw',
       'expected\n' +
-        'function testFunction() {\n' +
-        '  expect.fail(function (output) {\n' +
+        '() => {\n' +
+        '  expect.fail(output => {\n' +
         "    output.text('foo').block(function () {\n" +
         "      this.text('bar').nl().text('baz');\n" +
         "    }).text('quux');\n" +
@@ -116,7 +116,7 @@ describe('to throw assertion', () => {
       },
       'to throw',
       'expected\n' +
-        'function () {\n' +
+        '() => {\n' +
         "  throw new Error('matches the exception message');\n" +
         '}\n' +
         'not to throw /matches the exception message/\n' +
@@ -139,7 +139,7 @@ describe('to throw assertion', () => {
         );
       },
       'to throw exception',
-      "expected function testFunction() { throw new Error('bar'); } to throw 'foo'\n" +
+      "expected () => { throw new Error('bar'); } to throw 'foo'\n" +
         "  expected Error('bar') to satisfy 'foo'\n" +
         '\n' +
         '  -bar\n' +
@@ -170,7 +170,7 @@ describe('to throw assertion', () => {
       },
       'to throw',
       'expected\n' +
-        'function testFunction() {\n' +
+        '() => {\n' +
         "  throw new Error('Custom error');\n" +
         '}\n' +
         "to throw exception Error('My error')\n" +
@@ -203,7 +203,7 @@ describe('to throw assertion', () => {
         expect(() => { throw null; }, 'not to throw');
       },
       'to throw',
-      'expected function () { throw null; } not to throw\n' + '  threw: null'
+      'expected () => { throw null; } not to throw\n' + '  threw: null'
     );
   });
 
