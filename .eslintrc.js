@@ -15,8 +15,7 @@ const config = {
     ],
     'mocha/no-exclusive-tests': 'error',
     'mocha/no-nested-tests': 'error',
-    'mocha/no-identical-title': 'error',
-    'mocha/no-mocha-arrows': 'error'
+    'mocha/no-identical-title': 'error'
   }
 };
 
