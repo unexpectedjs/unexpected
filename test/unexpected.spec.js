@@ -1,4 +1,4 @@
-/*global unexpected*/
+/*global unexpected, weknowhow*/
 
 it.skipIf = function(condition) {
   (condition ? it.skip : it).apply(
@@ -9,6 +9,19 @@ it.skipIf = function(condition) {
 
 describe('unexpected', function() {
   var expect = unexpected.clone();
+
+  it('should freeze the top-level unexpected instance', function() {
+    const topLevelExpect =
+      typeof weknowhow === 'undefined' ? require('../lib/') : weknowhow.expect;
+
+    expect(
+      function() {
+        topLevelExpect.addAssertion('<any> to foo', function() {});
+      },
+      'to throw',
+      'Cannot add an assertion to a frozen instance, please run .clone() first'
+    );
+  });
 
   describe('argument validation', function() {
     it('fails when given no parameters', function() {
