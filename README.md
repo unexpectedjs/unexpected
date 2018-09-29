@@ -8,4 +8,4 @@ Extensible BDD assertion toolkit
 [![Dependency Status](https://david-dm.org/unexpectedjs/unexpected.svg)](https://david-dm.org/unexpectedjs/unexpected)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/unexpectedjs/unexpected?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-Read [the documentation](http://unexpected.js.org/).
+Read [the documentation](https://unexpected.js.org/).
