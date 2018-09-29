@@ -2210,8 +2210,8 @@ describe('to satisfy assertion', () => {
         });
       });
 
-      describe('when not matching the non-enumerable property', function() {
-        it('should fail with a diff', function() {
+      describe('when not matching the non-enumerable property', () => {
+        it('should fail with a diff', () => {
           expect(
             function() {
               expect(bar, 'to exhaustively satisfy', {

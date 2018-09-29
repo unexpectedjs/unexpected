@@ -245,7 +245,7 @@ if (typeof process === 'object') {
       });
     });
 
-    describe('executed through jest', function() {
+    describe('executed through jest', () => {
       expect.addAssertion(
         '<array|string> executed through jest <object?>',
         function(expect, subject, env) {
@@ -278,7 +278,7 @@ if (typeof process === 'object') {
         }
       );
 
-      it('should report that a promise was created, but not returned by the it block', function() {
+      it('should report that a promise was created, but not returned by the it block', () => {
         return expect(
           'forgotToReturnPendingPromiseFromSuccessfulItBlock',
           'executed through jest'
@@ -292,7 +292,7 @@ if (typeof process === 'object') {
         });
       });
 
-      it('should not report that a promise was created if the test already failed synchronously', function() {
+      it('should not report that a promise was created if the test already failed synchronously', () => {
         return expect(
           'forgotToReturnPendingPromiseFromFailingItBlock',
           'executed through jest'
@@ -306,7 +306,7 @@ if (typeof process === 'object') {
         });
       });
 
-      it('should trim unexpected plugins from the stack trace when the UNEXPECTED_FULL_TRACE environment variable is not set', function() {
+      it('should trim unexpected plugins from the stack trace when the UNEXPECTED_FULL_TRACE environment variable is not set', () => {
         return expect('fullTrace', 'executed through jest', {
           UNEXPECTED_FULL_TRACE: ''
         }).spread(function(err, stdout, stderr) {
@@ -315,7 +315,7 @@ if (typeof process === 'object') {
         });
       });
 
-      it('should not trim unexpected plugins from the stack trace when the UNEXPECTED_FULL_TRACE environment variable is set', function() {
+      it('should not trim unexpected plugins from the stack trace when the UNEXPECTED_FULL_TRACE environment variable is set', () => {
         return expect('fullTrace', 'executed through jest', {
           UNEXPECTED_FULL_TRACE: 'yes'
         }).spread(function(err, stdout, stderr) {
@@ -324,7 +324,7 @@ if (typeof process === 'object') {
         });
       });
 
-      it('should accept an UNEXPECTED_DEPTH environment variable', function() {
+      it('should accept an UNEXPECTED_DEPTH environment variable', () => {
         return expect('deepObject', 'executed through jest', {
           UNEXPECTED_DEPTH: 6
         }).spread(function(err, stdout, stderr) {
@@ -332,7 +332,7 @@ if (typeof process === 'object') {
         });
       });
 
-      it('should render a long stack trace for an async test', function() {
+      it('should render a long stack trace for an async test', () => {
         return expect('failingAsync', 'executed through jest').spread(function(
           err,
           stdout,
@@ -343,7 +343,7 @@ if (typeof process === 'object') {
         });
       });
 
-      it('should fail when a promise failing in the next tick is created but not returned', function() {
+      it('should fail when a promise failing in the next tick is created but not returned', () => {
         return expect(
           'forgotToReturnPromiseRejectedInTheNextTick',
           'executed through jest'
@@ -357,8 +357,8 @@ if (typeof process === 'object') {
         });
       });
 
-      describe('with a test suite spanning multiple files', function() {
-        it('should report that a promise was created, but not returned by the it block in the first test', function() {
+      describe('with a test suite spanning multiple files', () => {
+        it('should report that a promise was created, but not returned by the it block in the first test', () => {
           return expect(
             ['forgotToReturnPendingPromiseFromSuccessfulItBlock', 'successful'],
             'executed through jest'
@@ -372,7 +372,7 @@ if (typeof process === 'object') {
           });
         });
 
-        it('should report that a promise was created, but not returned by the it block in the second test', function() {
+        it('should report that a promise was created, but not returned by the it block in the second test', () => {
           return expect(
             ['successful', 'forgotToReturnPendingPromiseFromSuccessfulItBlock'],
             'executed through jest'
@@ -387,8 +387,8 @@ if (typeof process === 'object') {
         });
       });
 
-      describe('with an assertion that succeeds, but creates a promise that remains pending', function() {
-        it('should pass', function() {
+      describe('with an assertion that succeeds, but creates a promise that remains pending', () => {
+        it('should pass', () => {
           return expect(
             'assertionSucceedsWhilePromiseIsPending',
             'executed through jest'
@@ -403,7 +403,7 @@ if (typeof process === 'object') {
         });
       });
 
-      it('should render the stack trace of the thrown error without any artifacts when "not to error" encounters an error', function() {
+      it('should render the stack trace of the thrown error without any artifacts when "not to error" encounters an error', () => {
         return expect('notToErrorCaughtError', 'executed through jest').spread(
           function(err, stdout, stderr) {
             expect(err, 'to satisfy', { code: 1 });

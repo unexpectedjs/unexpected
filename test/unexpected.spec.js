@@ -10,7 +10,7 @@ it.skipIf = function(condition) {
 describe('unexpected', () => {
   var expect = unexpected.clone();
 
-  it('should freeze the top-level unexpected instance', function() {
+  it('should freeze the top-level unexpected instance', () => {
     const topLevelExpect =
       typeof weknowhow === 'undefined' ? require('../lib/') : weknowhow.expect;
 
@@ -23,8 +23,8 @@ describe('unexpected', () => {
     );
   });
 
-  describe('argument validation', function() {
-    it('fails when given no parameters', function() {
+  describe('argument validation', () => {
+    it('fails when given no parameters', () => {
       expect(
         function() {
           expect();
