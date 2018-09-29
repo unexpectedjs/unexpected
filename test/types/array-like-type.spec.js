@@ -1,6 +1,6 @@
 /*global expect*/
-describe('array-like type', function() {
-  describe('equal()', function() {
+describe('array-like type', () => {
+  describe('equal()', () => {
     var simpleArrayLikeType = {
       name: 'simpleArrayLike',
       base: 'array-like',
@@ -9,7 +9,7 @@ describe('array-like type', function() {
     };
     var clonedExpect = expect.clone().addType(simpleArrayLikeType);
 
-    it('should treat properties with a value of undefined as equivalent to missing properties', function() {
+    it('should treat properties with a value of undefined as equivalent to missing properties', () => {
       var a = [];
       a.ignoreMe = undefined;
       var b = [];
@@ -20,7 +20,7 @@ describe('array-like type', function() {
       clonedExpect(b, 'to satisfy', a);
     });
 
-    it('should error when a LHS key is undefined on the RHS', function() {
+    it('should error when a LHS key is undefined on the RHS', () => {
       var a = ['a'];
       a.foobar = true;
       var b = ['a'];
@@ -39,7 +39,7 @@ describe('array-like type', function() {
       );
     });
 
-    it('should error when a LHS key is explicitly undefined on the RHS', function() {
+    it('should error when a LHS key is explicitly undefined on the RHS', () => {
       var a = ['a'];
       a.foobar = true;
       var b = ['a'];
@@ -59,7 +59,7 @@ describe('array-like type', function() {
       );
     });
 
-    it('should error when a LHS key is undefined on the RHS in "to satisfy"', function() {
+    it('should error when a LHS key is undefined on the RHS in "to satisfy"', () => {
       var a = ['a'];
       a.foobar = true;
       var b = ['a'];
@@ -80,7 +80,7 @@ describe('array-like type', function() {
     });
 
     if (typeof Symbol === 'function') {
-      it('should error when a LHS key is a Symbol but undefined on the RHS', function() {
+      it('should error when a LHS key is a Symbol but undefined on the RHS', () => {
         var a = ['a'];
         var s = Symbol('foo');
         a[s] = true;
@@ -143,7 +143,7 @@ describe('array-like type', function() {
     }
   });
 
-  describe('with a subtype that disables indentation', function() {
+  describe('with a subtype that disables indentation', () => {
     var clonedExpect = expect.clone();
 
     clonedExpect.addType({
@@ -153,7 +153,7 @@ describe('array-like type', function() {
       indent: false
     });
 
-    it('should not render the indentation when an instance is inspected in a multi-line context', function() {
+    it('should not render the indentation when an instance is inspected in a multi-line context', () => {
       expect(
         clonedExpect
           .inspect([
@@ -169,7 +169,7 @@ describe('array-like type', function() {
       );
     });
 
-    it('should not render the indentation when an instance is diffed', function() {
+    it('should not render the indentation when an instance is diffed', () => {
       expect(
         clonedExpect.diff(['a', 'b'], ['aa', 'bb']).toString(),
         'to equal',
@@ -186,7 +186,7 @@ describe('array-like type', function() {
       );
     });
 
-    it('should not render the indentation when an instance participates in a "to satisfy" diff', function() {
+    it('should not render the indentation when an instance participates in a "to satisfy" diff', () => {
       expect(
         function() {
           clonedExpect(['aaa', 'bbb'], 'to satisfy', { 0: 'foo' });
@@ -205,7 +205,7 @@ describe('array-like type', function() {
     });
   });
 
-  describe('with a subtype that renders an empty prefix and an empty suffix', function() {
+  describe('with a subtype that renders an empty prefix and an empty suffix', () => {
     var clonedExpect = expect.clone();
 
     clonedExpect.addType({
@@ -220,7 +220,7 @@ describe('array-like type', function() {
       }
     });
 
-    it('should not render the prefix, suffix, and the newlines when an instance is inspected in a multi-line context', function() {
+    it('should not render the prefix, suffix, and the newlines when an instance is inspected in a multi-line context', () => {
       expect(
         clonedExpect
           .inspect([
@@ -234,7 +234,7 @@ describe('array-like type', function() {
       );
     });
 
-    it('should not render the prefix, suffix, and the newlines when an instance is diffed', function() {
+    it('should not render the prefix, suffix, and the newlines when an instance is diffed', () => {
       expect(
         clonedExpect.diff(['a', 'b'], ['aa', 'bb']).toString(),
         'to equal',
@@ -249,7 +249,7 @@ describe('array-like type', function() {
       );
     });
 
-    it('should not render the prefix, suffix, and the newlines when an instance participates in a "to satisfy" diff', function() {
+    it('should not render the prefix, suffix, and the newlines when an instance participates in a "to satisfy" diff', () => {
       expect(
         function() {
           clonedExpect(['aaa', 'bbb'], 'to satisfy', { 0: 'foo' });
@@ -266,7 +266,7 @@ describe('array-like type', function() {
     });
   });
 
-  describe('with a subtype that forces forceMultipleLines mode', function() {
+  describe('with a subtype that forces forceMultipleLines mode', () => {
     var clonedExpect = expect.clone();
 
     clonedExpect.addType({
@@ -276,7 +276,7 @@ describe('array-like type', function() {
       forceMultipleLines: true
     });
 
-    it('should inspect in forceMultipleLines mode despite being able to render on one line', function() {
+    it('should inspect in forceMultipleLines mode despite being able to render on one line', () => {
       expect(
         clonedExpect.inspect(['a', 'b']).toString(),
         'to equal',
@@ -289,23 +289,23 @@ describe('array-like type', function() {
     return arguments;
   }
 
-  describe('when both types have numericalPropertiesOnly set', function() {
-    it('should only compare numerical properties for equality', function() {
+  describe('when both types have numericalPropertiesOnly set', () => {
+    it('should only compare numerical properties for equality', () => {
       var a = toArguments(1, 2);
       var b = toArguments(1, 2);
       b.foo = 123;
       expect(a, 'to equal', b);
     });
 
-    it('should fail when a numerical property has different values', function() {
+    it('should fail when a numerical property has different values', () => {
       var a = toArguments(1, 3);
       var b = toArguments(1, 2);
       expect(a, 'not to equal', b);
     });
   });
 
-  describe('with a custom subtype that comes with its own getKeys', function() {
-    it('should process the elements in both inspection and diff in "to equal"', function() {
+  describe('with a custom subtype that comes with its own getKeys', () => {
+    it('should process the elements in both inspection and diff in "to equal"', () => {
       var a = ['a'];
       var b = ['a'];
       b.foobar = true;
@@ -339,7 +339,7 @@ describe('array-like type', function() {
       );
     });
 
-    it('should process the elements in both inspection and diff in "to satisfy"', function() {
+    it('should process the elements in both inspection and diff in "to satisfy"', () => {
       var a = ['a'];
       var b = ['a'];
       b.foobar = true;
@@ -423,8 +423,8 @@ describe('array-like type', function() {
     });
   });
 
-  describe('with a custom subtype that comes with its own hasKey', function() {
-    it('should honour the presence of a key within inspection', function() {
+  describe('with a custom subtype that comes with its own hasKey', () => {
+    it('should honour the presence of a key within inspection', () => {
       var clonedExpect = expect.clone().addType({
         name: 'allExceptFoo',
         base: 'array-like',
@@ -445,8 +445,8 @@ describe('array-like type', function() {
     });
   });
 
-  describe('with a subtype that overrides property()', function() {
-    it('should render correctly in both inspection and diff in "to equal"', function() {
+  describe('with a subtype that overrides property()', () => {
+    it('should render correctly in both inspection and diff in "to equal"', () => {
       var clonedExpect = expect.clone();
 
       clonedExpect.addStyle('xuuqProperty', function(key, inspectedValue) {
@@ -515,8 +515,8 @@ describe('array-like type', function() {
     });
   });
 
-  describe('with a custom subtype that comes with its own valueForKeys', function() {
-    it('should process the elements in both inspection and diff in "to equal"', function() {
+  describe('with a custom subtype that comes with its own valueForKeys', () => {
+    it('should process the elements in both inspection and diff in "to equal"', () => {
       var clonedExpect = expect.clone().addType({
         name: 'firstElemUpper',
         base: 'array-like',
@@ -547,7 +547,7 @@ describe('array-like type', function() {
     });
   });
 
-  it('should inspect as [...] at depth 2+', function() {
+  it('should inspect as [...] at depth 2+', () => {
     expect(
       [[[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]]],
       'to inspect as',
@@ -555,7 +555,7 @@ describe('array-like type', function() {
     );
   });
 
-  it('should render a moved item with an arrow', function() {
+  it('should render a moved item with an arrow', () => {
     expect(
       function() {
         expect(['a', 'b', 'c'], 'to equal', ['c', 'a', 'b']);
@@ -572,7 +572,7 @@ describe('array-like type', function() {
     );
   });
 
-  it('should stop rendering more arrows when there would be more than 3 lanes', function() {
+  it('should stop rendering more arrows when there would be more than 3 lanes', () => {
     expect(
       function() {
         expect(['a', 'b', 'c', 'd', 'e', 'f'], 'to equal', [
@@ -602,7 +602,7 @@ describe('array-like type', function() {
     );
   });
 
-  it('should render multiple moved items with arrows', function() {
+  it('should render multiple moved items with arrows', () => {
     expect(
       function() {
         expect(['a', 'b', 'c', 'd'], 'to equal', ['d', 'b', 'a', 'c']);
@@ -621,7 +621,7 @@ describe('array-like type', function() {
     );
   });
 
-  it('should render 3 moved neighbor items', function() {
+  it('should render 3 moved neighbor items', () => {
     expect(
       function() {
         expect(['a', 'b', 'c', 'd', 'e'], 'to equal', [

@@ -1,11 +1,11 @@
 /*global expect*/
-describe('to be NaN assertion', function() {
-  it('assert that the value is NaN or not', function() {
+describe('to be NaN assertion', () => {
+  it('assert that the value is NaN or not', () => {
     expect(NaN, 'to be NaN');
     expect(2, 'not to be NaN');
   });
 
-  it('fails when the assertion fails', function() {
+  it('fails when the assertion fails', () => {
     expect(
       function() {
         expect(0, 'to be NaN');

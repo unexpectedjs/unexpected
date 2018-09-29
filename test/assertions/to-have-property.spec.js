@@ -1,6 +1,6 @@
 /*global expect*/
-describe('to have property assertion', function() {
-  it('asserts presence of an own property (and value optionally)', function() {
+describe('to have property assertion', () => {
+  it('asserts presence of an own property (and value optionally)', () => {
     expect([1, 2], 'to have property', 'length');
     expect([1, 2], 'to have property', 'length', 2);
     expect({ a: 'b' }, 'to have property', 'a');
@@ -12,7 +12,7 @@ describe('to have property assertion', function() {
     expect(function() {}, 'to have property', 'toString');
   });
 
-  describe('property descriptor', function() {
+  describe('property descriptor', () => {
     var subject = { a: 'b' };
     Object.defineProperty(subject, 'enumFalse', {
       enumerable: false,
@@ -27,7 +27,7 @@ describe('to have property assertion', function() {
       value: 't'
     });
 
-    it('asserts validity of property descriptor', function() {
+    it('asserts validity of property descriptor', () => {
       expect(subject, 'to have enumerable property', 'a');
       expect(subject, 'not to have enumerable property', 'enumFalse');
       expect(subject, 'to have configurable property', 'a');
@@ -36,7 +36,7 @@ describe('to have property assertion', function() {
       expect(subject, 'not to have writable property', 'writableFalse');
     });
 
-    it('throws when assertion fails', function() {
+    it('throws when assertion fails', () => {
       expect(
         function() {
           expect(subject, 'to have enumerable property', 'enumFalse');
@@ -64,7 +64,7 @@ describe('to have property assertion', function() {
     });
   });
 
-  it('throws when the assertion fails', function() {
+  it('throws when the assertion fails', () => {
     expect(
       function() {
         expect({ a: 'b' }, 'to have property', 'b');
@@ -135,7 +135,7 @@ describe('to have property assertion', function() {
     );
   });
 
-  it('does not support the not-flag in combination with a value argument', function() {
+  it('does not support the not-flag in combination with a value argument', () => {
     expect(
       function() {
         expect({ a: 'a' }, 'not to have property', 'a', 'a');
@@ -161,7 +161,7 @@ describe('to have property assertion', function() {
     );
   });
 
-  describe('with a subtype that overrides valueForKey()', function() {
+  describe('with a subtype that overrides valueForKey()', () => {
     var clonedExpect = expect.clone();
 
     clonedExpect.addType({
@@ -178,7 +178,7 @@ describe('to have property assertion', function() {
       }
     });
 
-    it('should process the value in "to have property"', function() {
+    it('should process the value in "to have property"', () => {
       expect(
         clonedExpect({ foo: 'bAr' }, 'to have property', 'foo'),
         'to be fulfilled with',

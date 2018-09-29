@@ -1,18 +1,18 @@
 /*global expect*/
-describe('array type', function() {
-  it('should find an array instance identical to itself', function() {
+describe('array type', () => {
+  it('should find an array instance identical to itself', () => {
     var arr = [1, 2, 3];
     expect(arr, 'to equal', arr);
   });
 
-  it('should inspect non-numerical properties at the end', function() {
+  it('should inspect non-numerical properties at the end', () => {
     var arr = [1, 2, 3];
     arr.foo = 'bar';
     arr.push(4);
     expect(arr, 'to inspect as', "[ 1, 2, 3, 4, foo: 'bar' ]");
   });
 
-  it('should diff non-numerical properties', function() {
+  it('should diff non-numerical properties', () => {
     var arr1 = [1, 2, 3];
     arr1.foo = 123;
     arr1.bar = 456;

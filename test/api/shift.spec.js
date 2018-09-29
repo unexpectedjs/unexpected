@@ -1,7 +1,7 @@
 /*global expect*/
-describe('expect.shift', function() {
-  describe('when preserving the subject by passing no arguments', function() {
-    it('should succeed', function() {
+describe('expect.shift', () => {
+  describe('when preserving the subject by passing no arguments', () => {
+    it('should succeed', () => {
       var clonedExpect = expect
         .clone()
         .addAssertion('<string> blabla <assertion>', function(expect, subject) {
@@ -10,7 +10,7 @@ describe('expect.shift', function() {
       clonedExpect('foo', 'blabla', 'to equal', 'foo');
     });
 
-    it('should fail with a diff', function() {
+    it('should fail with a diff', () => {
       var clonedExpect = expect
         .clone()
         .addAssertion('<string> blabla <assertion>', function(expect, subject) {
@@ -29,7 +29,7 @@ describe('expect.shift', function() {
     });
   });
 
-  it('should support calling shift multiple times', function() {
+  it('should support calling shift multiple times', () => {
     var clonedExpect = expect
       .clone()
       .addAssertion(
@@ -64,8 +64,8 @@ describe('expect.shift', function() {
     );
   });
 
-  describe('when substituting a different subject by passing a single argument', function() {
-    it('should succeed', function() {
+  describe('when substituting a different subject by passing a single argument', () => {
+    it('should succeed', () => {
       var clonedExpect = expect
         .clone()
         .addAssertion('<string> when appended with bar <assertion>', function(
@@ -77,7 +77,7 @@ describe('expect.shift', function() {
       clonedExpect('foo', 'when appended with bar', 'to equal', 'foobar');
     });
 
-    it('should fail with a diff', function() {
+    it('should fail with a diff', () => {
       var clonedExpect = expect
         .clone()
         .addAssertion('<string> when appended with bar <assertion>', function(
@@ -99,7 +99,7 @@ describe('expect.shift', function() {
     });
   });
 
-  it('should identify the assertions even when the next assertion fails before shifting', function() {
+  it('should identify the assertions even when the next assertion fails before shifting', () => {
     var clonedExpect = expect
       .clone()
       .addAssertion('<string> when appended with bar <assertion>', function(
@@ -126,7 +126,7 @@ describe('expect.shift', function() {
     );
   });
 
-  it('supports the legacy 3 argument version', function() {
+  it('supports the legacy 3 argument version', () => {
     var clonedExpect = expect
       .clone()
       .addAssertion('<string> when prepended with foo <assertion>', function(
@@ -142,8 +142,8 @@ describe('expect.shift', function() {
     );
   });
 
-  describe('with the legacy 2 argument version', function() {
-    it('inspects multiple arguments correctly', function() {
+  describe('with the legacy 2 argument version', () => {
+    it('inspects multiple arguments correctly', () => {
       var clonedExpect = expect
         .clone()
         .addAssertion(
@@ -169,8 +169,8 @@ describe('expect.shift', function() {
     });
   });
 
-  describe('with an expect.it function as the next argument', function() {
-    it('should succeed', function() {
+  describe('with an expect.it function as the next argument', () => {
+    it('should succeed', () => {
       var clonedExpect = expect
         .clone()
         .addAssertion('<string> when prepended with foo <assertion>', function(
@@ -187,7 +187,7 @@ describe('expect.shift', function() {
     });
   });
 
-  it('should fail when the next argument is a non-expect.it function', function() {
+  it('should fail when the next argument is a non-expect.it function', () => {
     var clonedExpect = expect
       .clone()
       .addAssertion('<string> when prepended with foo <assertion>', function(
@@ -209,12 +209,12 @@ describe('expect.shift', function() {
     );
   });
 
-  describe('with an async assertion', function() {
-    it('should succeed', function() {
+  describe('with an async assertion', () => {
+    it('should succeed', () => {
       return expect(42, 'when delayed a little bit', 'to be a number');
     });
 
-    it('should fail with a diff', function() {
+    it('should fail with a diff', () => {
       return expect(
         expect(false, 'when delayed a little bit', 'to be a number'),
         'to be rejected with',
@@ -223,8 +223,8 @@ describe('expect.shift', function() {
     });
   });
 
-  describe('in legacy mode where the assertion index is passed as the second parameter', function() {
-    it('should get the assertion string from that index', function() {
+  describe('in legacy mode where the assertion index is passed as the second parameter', () => {
+    it('should get the assertion string from that index', () => {
       var clonedExpect = expect
         .clone()
         .addAssertion(
@@ -252,7 +252,7 @@ describe('expect.shift', function() {
       );
     });
 
-    it('should render the correct error message when there is several non-string parameters following the assertion index', function() {
+    it('should render the correct error message when there is several non-string parameters following the assertion index', () => {
       var clonedExpect = expect
         .clone()
         .addAssertion(
@@ -272,7 +272,7 @@ describe('expect.shift', function() {
       );
     });
 
-    it('should render the correct error message when the assertion being shifted to is not a string', function() {
+    it('should render the correct error message when the assertion being shifted to is not a string', () => {
       var clonedExpect = expect
         .clone()
         .addAssertion('<string> when prepended with foo <number+>', function(
@@ -295,7 +295,7 @@ describe('expect.shift', function() {
       );
     });
 
-    it('should render the correct error message when there are no parameters following the assertion index', function() {
+    it('should render the correct error message when there are no parameters following the assertion index', () => {
       var clonedExpect = expect
         .clone()
         .addAssertion('<string> when prepended with foo', function(
@@ -316,8 +316,8 @@ describe('expect.shift', function() {
     });
   });
 
-  describe('when a non-Unexpected promise is passed to shift', function() {
-    it('should allow a subsequent .and()', function() {
+  describe('when a non-Unexpected promise is passed to shift', () => {
+    it('should allow a subsequent .and()', () => {
       var clonedExpect = expect
         .clone()
         .addAssertion('promisified', function(expect, subject) {
@@ -330,7 +330,7 @@ describe('expect.shift', function() {
       }, 'promisified').and('to be truthy');
     });
 
-    it('should allow a subsequent .and() within a nested context', function() {
+    it('should allow a subsequent .and() within a nested context', () => {
       var clonedExpect = expect
         .clone()
         .addAssertion('promisified', function(expect, subject) {

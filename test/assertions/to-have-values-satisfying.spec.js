@@ -1,6 +1,6 @@
 /*global expect*/
-describe('to have values satisfying assertion', function() {
-  it('requires a third argument', function() {
+describe('to have values satisfying assertion', () => {
+  it('requires a third argument', () => {
     expect(
       function() {
         expect([1, 2, 3], 'to have values satisfying');
@@ -15,7 +15,7 @@ describe('to have values satisfying assertion', function() {
     );
   });
 
-  it('does not accept a fourth argument', function() {
+  it('does not accept a fourth argument', () => {
     expect(
       function() {
         expect([1], 'to have values satisfying', 1, 2);
@@ -30,7 +30,7 @@ describe('to have values satisfying assertion', function() {
     );
   });
 
-  it('only accepts objects and arrays as the target', function() {
+  it('only accepts objects and arrays as the target', () => {
     expect(
       function() {
         expect(42, 'to have values satisfying', function(value) {});
@@ -45,7 +45,7 @@ describe('to have values satisfying assertion', function() {
     );
   });
 
-  it('asserts that the given callback does not throw for any values in the map', function() {
+  it('asserts that the given callback does not throw for any values in the map', () => {
     expect(
       { foo: 0, bar: 1, baz: 2, qux: 3 },
       'to have values satisfying',
@@ -75,7 +75,7 @@ describe('to have values satisfying assertion', function() {
     );
   });
 
-  it('fails if the given object is empty', function() {
+  it('fails if the given object is empty', () => {
     expect(
       function() {
         expect({}, 'to have values satisfying', function(value) {
@@ -91,7 +91,7 @@ describe('to have values satisfying assertion', function() {
     );
   });
 
-  it('fails for an empty array', function() {
+  it('fails for an empty array', () => {
     expect(
       function() {
         expect([], 'to have values satisfying', 123);
@@ -102,7 +102,7 @@ describe('to have values satisfying assertion', function() {
     );
   });
 
-  it('fails if the given array is empty', function() {
+  it('fails if the given array is empty', () => {
     expect(
       function() {
         expect([], 'to have items satisfying', function(item) {
@@ -118,7 +118,7 @@ describe('to have values satisfying assertion', function() {
     );
   });
 
-  it('supports legacy aliases', function() {
+  it('supports legacy aliases', () => {
     expect({ foo: '0' }, 'to be a map whose values satisfy', function(value) {
       expect(value, 'not to be a number');
     });
@@ -134,7 +134,7 @@ describe('to have values satisfying assertion', function() {
     });
   });
 
-  it('fails when the assertion fails', function() {
+  it('fails when the assertion fails', () => {
     expect(
       function() {
         expect(
@@ -150,7 +150,7 @@ describe('to have values satisfying assertion', function() {
     );
   });
 
-  it('provides a detailed report of where failures occur', function() {
+  it('provides a detailed report of where failures occur', () => {
     expect(
       function() {
         expect(
@@ -179,7 +179,7 @@ describe('to have values satisfying assertion', function() {
     );
   });
 
-  it('indents failure reports of nested assertions correctly', function() {
+  it('indents failure reports of nested assertions correctly', () => {
     expect(
       function() {
         expect(
@@ -217,7 +217,7 @@ describe('to have values satisfying assertion', function() {
     );
   });
 
-  describe('delegating to an async assertion', function() {
+  describe('delegating to an async assertion', () => {
     var clonedExpect = expect
       .clone()
       .addAssertion('to be a number after a short delay', function(
@@ -237,7 +237,7 @@ describe('to have values satisfying assertion', function() {
         });
       });
 
-    it('should succeed', function() {
+    it('should succeed', () => {
       return clonedExpect(
         { 0: 1, 1: 2, 2: 3 },
         'to have values satisfying',
@@ -245,7 +245,7 @@ describe('to have values satisfying assertion', function() {
       );
     });
 
-    it('should fail with a diff', function() {
+    it('should fail with a diff', () => {
       return expect(
         clonedExpect(
           { 0: 0, 1: false, 2: 'abc' },
@@ -267,8 +267,8 @@ describe('to have values satisfying assertion', function() {
     });
   });
 
-  describe('with the exhaustively flag', function() {
-    it('should succeed', function() {
+  describe('with the exhaustively flag', () => {
+    it('should succeed', () => {
       expect(
         [{ foo: 'bar', quux: 'baz' }],
         'to have values exhaustively satisfying',
@@ -276,7 +276,7 @@ describe('to have values satisfying assertion', function() {
       );
     });
 
-    it('should fail when the spec is not met only because of the "exhaustively" semantics', function() {
+    it('should fail when the spec is not met only because of the "exhaustively" semantics', () => {
       expect(
         function() {
           expect(

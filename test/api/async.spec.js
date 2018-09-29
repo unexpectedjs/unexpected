@@ -1,5 +1,5 @@
 /*global expect*/
-describe('async', function() {
+describe('async', () => {
   var workQueue =
     typeof weknowhow === 'undefined' ? require('../../lib/workQueue') : null;
   var clonedExpect = expect
@@ -29,7 +29,7 @@ describe('async', function() {
       });
     });
 
-  it('fails if it is called without a callback', function() {
+  it('fails if it is called without a callback', () => {
     expect(
       function() {
         expect.async();
@@ -47,7 +47,7 @@ describe('async', function() {
     );
   });
 
-  it('fails if the returned function is not called with a done callback', function() {
+  it('fails if the returned function is not called with a done callback', () => {
     expect(
       function() {
         expect.async(function() {})();
@@ -65,7 +65,7 @@ describe('async', function() {
     );
   });
 
-  it('fails if is called within a asynchronous context', function() {
+  it('fails if is called within a asynchronous context', () => {
     expect(
       function() {
         function done() {}
@@ -78,7 +78,7 @@ describe('async', function() {
     );
   });
 
-  it('fails if the callback does not return a promise or throws', function() {
+  it('fails if the callback does not return a promise or throws', () => {
     expect(
       function() {
         function done() {}
@@ -139,7 +139,7 @@ describe('async', function() {
     })
   );
 
-  it('tests that assertions that returns promises are converted to exceptions if they are sync', function() {
+  it('tests that assertions that returns promises are converted to exceptions if they are sync', () => {
     expect(
       function() {
         clonedExpect(42, 'im sync');

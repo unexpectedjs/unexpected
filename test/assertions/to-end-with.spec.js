@@ -1,8 +1,8 @@
 /*global expectWithUnexpectedMagicPen*/
-describe('to end with assertion', function() {
+describe('to end with assertion', () => {
   var expect = expectWithUnexpectedMagicPen;
 
-  it('should throw an error when the expected suffix is the empty string', function() {
+  it('should throw an error when the expected suffix is the empty string', () => {
     expect(
       function() {
         expect('foo', 'to end with', '');
@@ -12,14 +12,14 @@ describe('to end with assertion', function() {
     );
   });
 
-  describe('without the "not" flag', function() {
-    it('asserts equality with a string', function() {
+  describe('without the "not" flag', () => {
+    it('asserts equality with a string', () => {
       expect('hello', 'to end with', 'hello');
       expect('hello world', 'to end with', 'world');
     });
 
-    describe('when the assertion fails', function() {
-      it('does not include a diff when there is no common suffix', function() {
+    describe('when the assertion fails', () => {
+      it('does not include a diff when there is no common suffix', () => {
         expect(
           function() {
             expect('hello world', 'to end with', 'foo');
@@ -29,7 +29,7 @@ describe('to end with assertion', function() {
         );
       });
 
-      it('includes a diff when there is a common suffix', function() {
+      it('includes a diff when there is a common suffix', () => {
         expect(
           function() {
             expect('hello world', 'to end with', 'wonderful world');
@@ -49,7 +49,7 @@ describe('to end with assertion', function() {
         );
       });
 
-      it('builds the diff correctly when the partial match spans more than one line', function() {
+      it('builds the diff correctly when the partial match spans more than one line', () => {
         expect(
           function() {
             expect('foob\na\nr', 'to end with', 'quuxb\na\nr');
@@ -66,7 +66,7 @@ describe('to end with assertion', function() {
         );
       });
 
-      it('builds the diff correctly when the substring is longer than the subject', function() {
+      it('builds the diff correctly when the substring is longer than the subject', () => {
         expect(
           function() {
             expect('foo', 'to end with', 'doublefoo');
@@ -77,7 +77,7 @@ describe('to end with assertion', function() {
       });
     });
 
-    it('builds the diff correctly when the string is truncated with no common prefix', function() {
+    it('builds the diff correctly when the string is truncated with no common prefix', () => {
       expect(
         function() {
           expect(
@@ -91,7 +91,7 @@ describe('to end with assertion', function() {
       );
     });
 
-    it('builds the diff correctly when the string contains a space and is truncated', function() {
+    it('builds the diff correctly when the string contains a space and is truncated', () => {
       expect(
         function() {
           expect(
@@ -105,7 +105,7 @@ describe('to end with assertion', function() {
       );
     });
 
-    it('builds the diff correctly when the string is truncated after a partial match', function() {
+    it('builds the diff correctly when the string is truncated after a partial match', () => {
       expect(
         function() {
           expect(
@@ -123,13 +123,13 @@ describe('to end with assertion', function() {
     });
   });
 
-  describe('with the "not" flag', function() {
-    it('asserts inequality', function() {
+  describe('with the "not" flag', () => {
+    it('asserts inequality', () => {
       expect('hello', 'not to end with', 'world');
       expect('hello worldly', 'not to end with', 'world');
     });
 
-    it('produces a diff when the string case fails', function() {
+    it('produces a diff when the string case fails', () => {
       expect(
         function() {
           expect('foobarquuxfoo', 'not to end with', 'foo');
@@ -149,7 +149,7 @@ describe('to end with assertion', function() {
       );
     });
 
-    it('builds the diff correctly when the suffix contains newlines', function() {
+    it('builds the diff correctly when the suffix contains newlines', () => {
       expect(
         function() {
           expect('foobarquuxf\no\no', 'not to end with', 'f\no\no');

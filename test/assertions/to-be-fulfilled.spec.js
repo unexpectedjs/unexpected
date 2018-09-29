@@ -1,6 +1,6 @@
 /*global expect*/
-describe('to be fulfilled assertion', function() {
-  it('should succeed if the response is resolved with any value', function() {
+describe('to be fulfilled assertion', () => {
+  it('should succeed if the response is resolved with any value', () => {
     return expect(
       new Promise(function(resolve, reject) {
         setTimeout(function() {
@@ -11,7 +11,7 @@ describe('to be fulfilled assertion', function() {
     );
   });
 
-  it('should fail if the promise is rejected', function() {
+  it('should fail if the promise is rejected', () => {
     return expect(
       expect(
         new Promise(function(resolve, reject) {
@@ -28,7 +28,7 @@ describe('to be fulfilled assertion', function() {
     );
   });
 
-  it('should fail with the correct message if the promise is rejected without a reason', function() {
+  it('should fail with the correct message if the promise is rejected without a reason', () => {
     return expect(
       expect(
         new Promise(function(resolve, reject) {
@@ -41,8 +41,8 @@ describe('to be fulfilled assertion', function() {
     );
   });
 
-  describe('when passed a function', function() {
-    it('should succeed if the function returns a promise that succeeds', function() {
+  describe('when passed a function', () => {
+    it('should succeed if the function returns a promise that succeeds', () => {
       return expect(function() {
         return expect.promise(function() {
           return 123;
@@ -50,7 +50,7 @@ describe('to be fulfilled assertion', function() {
       }, 'to be fulfilled');
     });
 
-    it('should forward the fulfillment value', function() {
+    it('should forward the fulfillment value', () => {
       return expect(function() {
         return expect.promise(function() {
           return 123;
@@ -60,7 +60,7 @@ describe('to be fulfilled assertion', function() {
       });
     });
 
-    it('should fail if the function returns a promise that fails', function() {
+    it('should fail if the function returns a promise that fails', () => {
       expect(
         function() {
           return expect(function() {
@@ -78,7 +78,7 @@ describe('to be fulfilled assertion', function() {
       );
     });
 
-    it('should fail if the function throws synchronously', function() {
+    it('should fail if the function throws synchronously', () => {
       expect(
         function() {
           return expect(function() {
@@ -93,7 +93,7 @@ describe('to be fulfilled assertion', function() {
     });
   });
 
-  it('should use the stack of the thrown error when failing', function() {
+  it('should use the stack of the thrown error when failing', () => {
     return expect(
       function() {
         return expect(function() {
@@ -111,8 +111,8 @@ describe('to be fulfilled assertion', function() {
     );
   });
 
-  describe('with another promise library', function() {
-    it('should use the stack of the thrown error when failing', function() {
+  describe('with another promise library', () => {
+    it('should use the stack of the thrown error when failing', () => {
       return expect(
         function() {
           return expect(function() {

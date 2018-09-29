@@ -1,6 +1,6 @@
 /*global expect*/
-describe('to have an item satisfying assertion', function() {
-  it('requires a third argument', function() {
+describe('to have an item satisfying assertion', () => {
+  it('requires a third argument', () => {
     expect(
       function() {
         expect([1, 2, 3], 'to have an item satisfying');
@@ -15,7 +15,7 @@ describe('to have an item satisfying assertion', function() {
     );
   });
 
-  it('only accepts arrays as the subject', function() {
+  it('only accepts arrays as the subject', () => {
     expect(
       function() {
         expect(42, 'to have an item satisfying', 'to be a number');
@@ -30,7 +30,7 @@ describe('to have an item satisfying assertion', function() {
     );
   });
 
-  it('fails if the given array is empty', function() {
+  it('fails if the given array is empty', () => {
     expect(
       function() {
         expect([], 'to have an item satisfying', 'to be a number');
@@ -41,7 +41,7 @@ describe('to have an item satisfying assertion', function() {
     );
   });
 
-  it('asserts that at least one item in the array satisfies the RHS expectation', function() {
+  it('asserts that at least one item in the array satisfies the RHS expectation', () => {
     expect(['foo', 1], 'to have an item satisfying', 'to be a number');
 
     expect(['foo', 1], 'to have an item satisfying', function(item) {
@@ -62,7 +62,7 @@ describe('to have an item satisfying assertion', function() {
     );
   });
 
-  it('asserts that no items in the array satisfies the RHS expectation', function() {
+  it('asserts that no items in the array satisfies the RHS expectation', () => {
     expect(['foo', 'bar'], 'not to have an item satisfying', 'to be a number');
 
     expect(['foo', 'bar'], 'not to have an item satisfying', function(item) {
@@ -83,7 +83,7 @@ describe('to have an item satisfying assertion', function() {
     );
   });
 
-  it("throws the correct error if none of the subject's values match the RHS expectation", function() {
+  it("throws the correct error if none of the subject's values match the RHS expectation", () => {
     expect(
       function() {
         expect(
@@ -97,7 +97,7 @@ describe('to have an item satisfying assertion', function() {
     );
   });
 
-  it("throws the correct error, when negated, if any of the subject's values match the RHS expectation", function() {
+  it("throws the correct error, when negated, if any of the subject's values match the RHS expectation", () => {
     expect(
       function() {
         expect(
@@ -115,7 +115,7 @@ describe('to have an item satisfying assertion', function() {
     );
   });
 
-  it('formats non-Unexpected errors correctly', function() {
+  it('formats non-Unexpected errors correctly', () => {
     expect(
       function() {
         expect(
@@ -166,7 +166,7 @@ describe('to have an item satisfying assertion', function() {
     );
   });
 
-  it('provides the item index to the callback function', function() {
+  it('provides the item index to the callback function', () => {
     var arr = ['0', '1', '2', '3'];
     expect(arr, 'to have an item satisfying', function(item, index) {
       expect(index, 'to be a number');
@@ -174,7 +174,7 @@ describe('to have an item satisfying assertion', function() {
     });
   });
 
-  describe('delegating to an async assertion', function() {
+  describe('delegating to an async assertion', () => {
     var clonedExpect = expect
       .clone()
       .addAssertion('to be a number after a short delay', function(
@@ -194,7 +194,7 @@ describe('to have an item satisfying assertion', function() {
         });
       });
 
-    it('should succeed', function() {
+    it('should succeed', () => {
       return clonedExpect(
         [1, 2, 3],
         'to have an item satisfying',
@@ -203,8 +203,8 @@ describe('to have an item satisfying assertion', function() {
     });
   });
 
-  describe('with the exhaustively flag', function() {
-    it('should succeed', function() {
+  describe('with the exhaustively flag', () => {
+    it('should succeed', () => {
       expect(
         [{ foo: 'bar', quux: 'baz' }],
         'to have an item exhaustively satisfying',
@@ -212,7 +212,7 @@ describe('to have an item satisfying assertion', function() {
       );
     });
 
-    it('should fail when the spec is not met only because of the "exhaustively" semantics', function() {
+    it('should fail when the spec is not met only because of the "exhaustively" semantics', () => {
       expect(
         function() {
           expect(

@@ -1,7 +1,7 @@
 /*global expect*/
-describe('object type', function() {
-  describe('#diff', function() {
-    it('should show identical multiline values correctly in diffs', function() {
+describe('object type', () => {
+  describe('#diff', () => {
+    it('should show identical multiline values correctly in diffs', () => {
       var clonedExpect = expect.clone().addType({
         name: 'numberNine',
         identify(obj) {
@@ -42,20 +42,20 @@ describe('object type', function() {
     });
   });
 
-  describe('#equal', function() {
-    it('should ignore undefined properties on the LHS', function() {
+  describe('#equal', () => {
+    it('should ignore undefined properties on the LHS', () => {
       expect(function() {
         expect({ lhs: undefined }, 'to equal', {});
       }, 'not to throw');
     });
 
-    it('should ignore undefined properties on the RHS', function() {
+    it('should ignore undefined properties on the RHS', () => {
       expect(function() {
         expect({}, 'to equal', { rhs: undefined });
       }, 'not to throw');
     });
 
-    describe('with a subtype that overrides valueForKey()', function() {
+    describe('with a subtype that overrides valueForKey()', () => {
       var clonedExpect = expect.clone();
 
       clonedExpect.addType({
@@ -72,13 +72,13 @@ describe('object type', function() {
         }
       });
 
-      it('should ignore undefined properties on the LHS', function() {
+      it('should ignore undefined properties on the LHS', () => {
         expect(function() {
           expect({ xuuq: true, lhs: undefined }, 'to equal', { xuuq: true });
         }, 'not to throw');
       });
 
-      it('should ignore undefined properties on the RHS', function() {
+      it('should ignore undefined properties on the RHS', () => {
         expect(function() {
           expect({ xuuq: true }, 'to equal', { xuuq: true, rhs: undefined });
         }, 'not to throw');
@@ -86,7 +86,7 @@ describe('object type', function() {
     });
   });
 
-  describe('#getKeys', function() {
+  describe('#getKeys', () => {
     var clonedExpect = expect.clone();
 
     clonedExpect.addType({
@@ -102,7 +102,7 @@ describe('object type', function() {
       }
     });
 
-    it('should restrict the compared properties', function() {
+    it('should restrict the compared properties', () => {
       expect(function() {
         clonedExpect({ foo: true, _bar: true }, 'to equal', {
           foo: true,
@@ -112,7 +112,7 @@ describe('object type', function() {
     });
   });
 
-  describe('#similar', function() {
+  describe('#similar', () => {
     var clonedExpect = expect.clone();
 
     clonedExpect.addType({
@@ -129,7 +129,7 @@ describe('object type', function() {
       }
     });
 
-    it('should pass with values overriding valueForKey()', function() {
+    it('should pass with values overriding valueForKey()', () => {
       expect(function() {
         clonedExpect(
           [{ xuuq: true, quux: 'foo', _bob: true }, 'foobar'],
@@ -139,7 +139,7 @@ describe('object type', function() {
       }, 'not to throw');
     });
 
-    it('should fail with values overriding valueForKey()', function() {
+    it('should fail with values overriding valueForKey()', () => {
       expect(
         function() {
           clonedExpect(
@@ -168,7 +168,7 @@ describe('object type', function() {
     });
   });
 
-  describe('with a subtype that disables indentation', function() {
+  describe('with a subtype that disables indentation', () => {
     var clonedExpect = expect.clone();
 
     clonedExpect.addType({
@@ -180,7 +180,7 @@ describe('object type', function() {
       indent: false
     });
 
-    it('should not render the indentation when an instance is inspected in a multi-line context', function() {
+    it('should not render the indentation when an instance is inspected in a multi-line context', () => {
       expect(
         clonedExpect
           .inspect({
@@ -198,7 +198,7 @@ describe('object type', function() {
       );
     });
 
-    it('should not render the indentation when an instance is diffed', function() {
+    it('should not render the indentation when an instance is diffed', () => {
       expect(
         clonedExpect.diff({ a: 'a', b: 'b' }, { a: 'aa', b: 'bb' }).toString(),
         'to equal',
@@ -215,7 +215,7 @@ describe('object type', function() {
       );
     });
 
-    it('should not render the indentation when an instance participates in a "to satisfy" diff', function() {
+    it('should not render the indentation when an instance participates in a "to satisfy" diff', () => {
       expect(
         function() {
           clonedExpect({ a: 'aaa', b: 'bbb' }, 'to satisfy', { a: 'foo' });
@@ -234,7 +234,7 @@ describe('object type', function() {
     });
   });
 
-  describe('with a subtype that renders an empty prefix and an empty suffix', function() {
+  describe('with a subtype that renders an empty prefix and an empty suffix', () => {
     var clonedExpect = expect.clone();
 
     clonedExpect.addType({
@@ -251,7 +251,7 @@ describe('object type', function() {
       }
     });
 
-    it('should not render the prefix, suffix, and the newlines when an instance is inspected in a multi-line context', function() {
+    it('should not render the prefix, suffix, and the newlines when an instance is inspected in a multi-line context', () => {
       expect(
         clonedExpect
           .inspect({
@@ -267,7 +267,7 @@ describe('object type', function() {
       );
     });
 
-    it('should not render the prefix, suffix, and the newlines when an instance is diffed', function() {
+    it('should not render the prefix, suffix, and the newlines when an instance is diffed', () => {
       expect(
         clonedExpect.diff({ a: 'a', b: 'b' }, { a: 'aa', b: 'bb' }).toString(),
         'to equal',
@@ -282,7 +282,7 @@ describe('object type', function() {
       );
     });
 
-    it('should not render the prefix, suffix, and the newlines when an instance participates in a "to satisfy" diff', function() {
+    it('should not render the prefix, suffix, and the newlines when an instance participates in a "to satisfy" diff', () => {
       expect(
         function() {
           clonedExpect({ a: 'aaa', b: 'bbb' }, 'to satisfy', { a: 'foo' });
@@ -299,7 +299,7 @@ describe('object type', function() {
     });
   });
 
-  describe('with a subtype that forces forceMultipleLines mode', function() {
+  describe('with a subtype that forces forceMultipleLines mode', () => {
     var clonedExpect = expect.clone();
 
     clonedExpect.addType({
@@ -311,7 +311,7 @@ describe('object type', function() {
       forceMultipleLines: true
     });
 
-    it('should inspect in forceMultipleLines mode despite being able to render on one line', function() {
+    it('should inspect in forceMultipleLines mode despite being able to render on one line', () => {
       expect(
         clonedExpect.inspect({ a: 'a', b: 'b' }).toString(),
         'to equal',
@@ -322,8 +322,8 @@ describe('object type', function() {
     });
   });
 
-  describe('with a subtype that overrides property()', function() {
-    it('should render correctly in both inspection and diff', function() {
+  describe('with a subtype that overrides property()', () => {
+    it('should render correctly in both inspection and diff', () => {
       var clonedExpect = expect.clone();
 
       clonedExpect.addStyle('xuuqProperty', function(key, inspectedValue) {
@@ -366,7 +366,7 @@ describe('object type', function() {
     });
   });
 
-  describe('with a subtype that overrides valueForKey()', function() {
+  describe('with a subtype that overrides valueForKey()', () => {
     var clonedExpect = expect.clone();
 
     clonedExpect.addType({
@@ -386,7 +386,7 @@ describe('object type', function() {
       }
     });
 
-    it('should process propeties in both inspection and diff in "to equal"', function() {
+    it('should process propeties in both inspection and diff in "to equal"', () => {
       expect(
         function() {
           clonedExpect({ nine: 9, zero: 1, foo: 'bAr' }, 'to equal', {
@@ -406,7 +406,7 @@ describe('object type', function() {
       );
     });
 
-    it('should process propeties in both inspection and diff in "to satsify"', function() {
+    it('should process propeties in both inspection and diff in "to satsify"', () => {
       expect(
         function() {
           clonedExpect(
@@ -463,7 +463,7 @@ describe('object type', function() {
     );
   });
 
-  describe('with a subtype that key presence and retrieval', function() {
+  describe('with a subtype that key presence and retrieval', () => {
     function NestedObject(contentObject) {
       this.contentObject = contentObject;
     }
@@ -487,7 +487,7 @@ describe('object type', function() {
       }
     });
 
-    it('should mark keys missing', function() {
+    it('should mark keys missing', () => {
       expect(
         function() {
           clonedExpect(
@@ -505,7 +505,7 @@ describe('object type', function() {
       );
     });
 
-    it('should mark keys unecessary', function() {
+    it('should mark keys unecessary', () => {
       expect(
         function() {
           clonedExpect(

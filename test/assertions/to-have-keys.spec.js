@@ -1,13 +1,13 @@
 /*global expect*/
-describe('to have keys assertion', function() {
-  it('asserts the presence of a list of keys', function() {
+describe('to have keys assertion', () => {
+  it('asserts the presence of a list of keys', () => {
     expect({ a: 'b' }, 'not to have keys', []);
     expect({ a: 'b', c: 'd' }, 'to only have keys', 'a', 'c');
     expect({ a: 'b', c: 'd' }, 'to only have keys', ['a', 'c']);
     expect({ a: 'b', c: 'd', e: 'f' }, 'to not only have keys', ['a', 'c']);
   });
 
-  it('throws when the assertion fails', function() {
+  it('throws when the assertion fails', () => {
     expect(
       function() {
         expect({ a: 'b', c: 'd' }, 'to not only have keys', ['a', 'c']);
@@ -33,7 +33,7 @@ describe('to have keys assertion', function() {
     );
   });
 
-  it('should fail with a diff when the only flag is used', function() {
+  it('should fail with a diff when the only flag is used', () => {
     expect(
       function() {
         expect({ foo: 123, bar: 'quux' }, 'to only have keys', ['foo']);
@@ -48,11 +48,11 @@ describe('to have keys assertion', function() {
     );
   });
 
-  it('should work with non-enumerable keys returned by the getKeys function of the subject type', function() {
+  it('should work with non-enumerable keys returned by the getKeys function of the subject type', () => {
     expect(new Error('foo'), 'to only have key', 'message');
   });
 
-  describe('with a subtype that overrides valueForKey()', function() {
+  describe('with a subtype that overrides valueForKey()', () => {
     var clonedExpect = expect.clone();
 
     clonedExpect.addType({
@@ -69,7 +69,7 @@ describe('to have keys assertion', function() {
       }
     });
 
-    it('should process the value in "to only have keys"', function() {
+    it('should process the value in "to only have keys"', () => {
       expect(
         function() {
           clonedExpect({ oof: undefined, foo: '' }, 'to only have keys', [

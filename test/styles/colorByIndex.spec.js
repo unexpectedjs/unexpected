@@ -1,9 +1,9 @@
 /*global expectWithUnexpectedMagicPen*/
-describe('colorByIndex', function() {
+describe('colorByIndex', () => {
   var expect = expectWithUnexpectedMagicPen;
 
-  describe('in a mode that has a palette', function() {
-    it('should output colored text', function() {
+  describe('in a mode that has a palette', () => {
+    it('should output colored text', () => {
       expect(
         expect.createOutput('ansi').colorByIndex('foo', 0),
         'to equal',
@@ -12,8 +12,8 @@ describe('colorByIndex', function() {
     });
   });
 
-  describe('in a mode without a palette', function() {
-    it('should output uncolored text', function() {
+  describe('in a mode without a palette', () => {
+    it('should output uncolored text', () => {
       var output = expect.createOutput('text').colorByIndex('foo', 0);
       expect(output, 'to equal', expect.createOutput('text').text('foo'));
       expect(output.output, 'to satisfy', {

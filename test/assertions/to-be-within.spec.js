@@ -1,6 +1,6 @@
 /*global expect*/
-describe('within assertion', function() {
-  it('asserts a number within a range', function() {
+describe('within assertion', () => {
+  it('asserts a number within a range', () => {
     expect(0, 'to be within', 0, 4);
     expect(1, 'to be within', 0, 4);
     expect(4, 'to be within', 0, 4);
@@ -10,7 +10,7 @@ describe('within assertion', function() {
     expect('z', 'not to be within', 'a', 'c');
   });
 
-  it('throws when the assertion fails', function() {
+  it('throws when the assertion fails', () => {
     expect(
       function() {
         expect(4, 'not to be within', 0, 4);
@@ -32,7 +32,7 @@ describe('within assertion', function() {
     );
   });
 
-  it('throws with the correct error message when the end points are strings', function() {
+  it('throws with the correct error message when the end points are strings', () => {
     expect(
       function() {
         expect('a', 'to be within', 'c', 'd');

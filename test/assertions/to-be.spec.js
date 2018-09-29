@@ -1,6 +1,6 @@
 /*global expect*/
-describe('to be assertion', function() {
-  it('assert === equality', function() {
+describe('to be assertion', () => {
+  it('assert === equality', () => {
     var obj = {};
     expect(obj, 'to be', obj);
     expect(obj, 'not to be', {});
@@ -21,38 +21,38 @@ describe('to be assertion', function() {
     expect('', 'to be defined');
   });
 
-  it('NaN as equal to NaN', function() {
+  it('NaN as equal to NaN', () => {
     expect(NaN, 'to be', NaN);
   });
 
-  it('considers negative zero not to be zero', function() {
+  it('considers negative zero not to be zero', () => {
     expect(-0, 'not to be', 0);
   });
 
-  it('considers negative zero to be itself', function() {
+  it('considers negative zero to be itself', () => {
     expect(-0, 'to be', -0);
   });
 
-  it('considers zero to be itself', function() {
+  it('considers zero to be itself', () => {
     expect(0, 'to be', 0);
   });
 
   if (typeof Buffer !== 'undefined') {
-    it('asserts === equality for Buffers', function() {
+    it('asserts === equality for Buffers', () => {
       var buffer = new Buffer([0x45, 0x59]);
       expect(buffer, 'to be', buffer);
     });
   }
 
   if (typeof Uint8Array !== 'undefined') {
-    it('asserts === equality for Uint8Array', function() {
+    it('asserts === equality for Uint8Array', () => {
       var uint8Array = new Uint8Array([0x45, 0x59]);
       expect(uint8Array, 'to be', uint8Array);
     });
   }
 
-  describe('on strings', function() {
-    it('throws when the assertion fails', function() {
+  describe('on strings', () => {
+    it('throws when the assertion fails', () => {
       expect(
         function() {
           expect('foo', 'to be', 'bar');
@@ -78,7 +78,7 @@ describe('to be assertion', function() {
       );
     });
 
-    it('does not provide a diff when comparing against undefined', function() {
+    it('does not provide a diff when comparing against undefined', () => {
       expect(
         function() {
           expect('blabla', 'to be undefined');

@@ -1,10 +1,10 @@
 /*global expect*/
-describe('negative assertion', function() {
-  it('assert that a number is negative', function() {
+describe('negative assertion', () => {
+  it('assert that a number is negative', () => {
     expect(-1, 'to be negative');
   });
 
-  it('throws when the assertion fails', function() {
+  it('throws when the assertion fails', () => {
     expect(
       function() {
         expect(0, 'to be negative');
