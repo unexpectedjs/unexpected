@@ -12,7 +12,8 @@ const config = {
         optionalDependencies: false,
         peerDependencies: false
       }
-    ]
+    ],
+    'prefer-arrow-callback': 'error'
   }
 };
 
