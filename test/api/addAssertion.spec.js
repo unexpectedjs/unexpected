@@ -396,7 +396,7 @@ describe('addAssertion', () => {
     var clonedExpect;
 
     describe('for synchronous custom assertions', () => {
-      beforeEach(function() {
+      beforeEach(() => {
         clonedExpect = expect
           .clone()
           .addAssertion('[not] to be sorted', function(expect, subject) {
@@ -527,7 +527,7 @@ describe('addAssertion', () => {
     });
 
     describe('for asynchronous custom assertions', () => {
-      beforeEach(function() {
+      beforeEach(() => {
         clonedExpect = expect
           .clone()
           .addAssertion('to be sorted after delay', function(
@@ -642,7 +642,7 @@ describe('addAssertion', () => {
     });
 
     describe('for custom assertions that return promises', () => {
-      beforeEach(function() {
+      beforeEach(() => {
         clonedExpect = expect
           .clone()
           .addAssertion('to be sorted after delay', function(

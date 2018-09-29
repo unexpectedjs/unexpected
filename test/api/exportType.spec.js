@@ -2,7 +2,7 @@
 describe('exportType', () => {
   var parentExpect;
   var childExpect;
-  beforeEach(function() {
+  beforeEach(() => {
     parentExpect = expect.clone();
     childExpect = parentExpect.child();
   });

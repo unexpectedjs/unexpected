@@ -2,7 +2,7 @@
 describe('styleType', () => {
   var parentExpect;
   var childExpect;
-  beforeEach(function() {
+  beforeEach(() => {
     parentExpect = expect.clone();
     childExpect = parentExpect.child();
   });

@@ -1654,7 +1654,7 @@ describe('to satisfy assertion', () => {
     }
     var clonedExpect;
 
-    beforeEach(function() {
+    beforeEach(() => {
       clonedExpect = expect.clone().addType({
         base: 'wrapperObject',
         name: 'mysteryBox',

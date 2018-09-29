@@ -2,7 +2,7 @@
 describe('exportAssertion', () => {
   var parentExpect;
   var childExpect;
-  beforeEach(function() {
+  beforeEach(() => {
     parentExpect = expect.clone();
     childExpect = parentExpect.child();
   });
@@ -178,7 +178,7 @@ describe('exportAssertion', () => {
   });
 
   describe('when shifting from an exported middle-of-the-rocket assertion in an inherited expect to an assertion defined in the parent expect', () => {
-    beforeEach(function() {
+    beforeEach(() => {
       childExpect.exportAssertion(
         '<string> when prepended with foo <assertion?>',
         function(expect, subject) {
@@ -210,7 +210,7 @@ describe('exportAssertion', () => {
   });
 
   describe('when shifting from an exported middle-of-the-rocket assertion in an inherited expect to an assertion exported from another inherit', () => {
-    beforeEach(function() {
+    beforeEach(() => {
       childExpect.exportAssertion(
         '<string> when prepended with foo <assertion?>',
         function(expect, subject) {
@@ -244,7 +244,7 @@ describe('exportAssertion', () => {
   });
 
   describe('when delegating to an exported assertion from the parent', () => {
-    beforeEach(function() {
+    beforeEach(() => {
       childExpect.exportAssertion(
         '<string> when prepended with foo <assertion?>',
         function(expect, subject) {

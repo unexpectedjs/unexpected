@@ -1,7 +1,7 @@
 /*global expect*/
 describe('addType', () => {
   var clonedExpect;
-  beforeEach(function() {
+  beforeEach(() => {
     clonedExpect = expect.clone();
   });
 
@@ -116,7 +116,7 @@ describe('addType', () => {
     }
 
     describe('added with a base type of any', () => {
-      beforeEach(function() {
+      beforeEach(() => {
         clonedExpect.addType({
           name: 'box',
           identify(obj) {
@@ -165,7 +165,7 @@ describe('addType', () => {
     });
 
     describe('added with a base type of wrapperObject', () => {
-      beforeEach(function() {
+      beforeEach(() => {
         clonedExpect.addType({
           name: 'box',
           base: 'wrapperObject',

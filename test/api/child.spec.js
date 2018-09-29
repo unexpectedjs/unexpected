@@ -2,7 +2,7 @@
 describe('#child', () => {
   var parentExpect;
   var childExpect;
-  beforeEach(function() {
+  beforeEach(() => {
     parentExpect = expect.clone();
     childExpect = parentExpect.child();
   });
@@ -168,7 +168,7 @@ describe('#child', () => {
   });
 
   describe('with identically named types added to the parent and the child', () => {
-    beforeEach(function() {
+    beforeEach(() => {
       parentExpect.addType({
         name: 'foo',
         identify(obj) {
@@ -223,7 +223,7 @@ describe('#child', () => {
   });
 
   describe('with identically named styles added to the parent, then the child', () => {
-    beforeEach(function() {
+    beforeEach(() => {
       parentExpect.addStyle('foo', function() {
         this.text('parentfoo');
       });
@@ -256,7 +256,7 @@ describe('#child', () => {
   });
 
   describe('with identically named styles added to the child, then the parent', () => {
-    beforeEach(function() {
+    beforeEach(() => {
       childExpect.addStyle('foo', function() {
         this.text('childfoo');
       });

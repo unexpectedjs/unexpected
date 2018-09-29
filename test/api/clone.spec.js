@@ -1,7 +1,7 @@
 /*global expect*/
 describe('clone', () => {
   var clonedExpect;
-  beforeEach(function() {
+  beforeEach(() => {
     clonedExpect = expect.clone();
     clonedExpect.addAssertion(
       '<any> [not] to be the answer to the Ultimate Question of Life, the Universe, and Everything',

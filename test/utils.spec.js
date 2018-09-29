@@ -5,16 +5,16 @@ describe('utils', () => {
     describe('#objectIs', () => {
       describe('without Object.is available', () => {
         var objectIs = Object.is;
-        beforeEach(function() {
+        beforeEach(() => {
           Object.is = undefined;
         });
 
-        afterEach(function() {
+        afterEach(() => {
           Object.is = objectIs;
         });
 
         var utilsWithoutObjectIsAvailable;
-        beforeEach(function() {
+        beforeEach(() => {
           // Avoid require's cache:
           delete require.cache[require.resolve('../lib/utils.js')];
           utilsWithoutObjectIsAvailable = require('../lib/utils');
@@ -63,7 +63,7 @@ describe('utils', () => {
 
       describe('with Function.prototype.toString mocked out', () => {
         var orig;
-        beforeEach(function() {
+        beforeEach(() => {
           orig = Function.prototype.toString;
           // eslint-disable-next-line no-extend-native
           Function.prototype.toString = function() {
@@ -71,7 +71,7 @@ describe('utils', () => {
           };
         });
 
-        afterEach(function() {
+        afterEach(() => {
           // eslint-disable-next-line no-extend-native
           Function.prototype.toString = orig;
         });

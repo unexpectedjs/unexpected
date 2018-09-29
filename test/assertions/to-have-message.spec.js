@@ -4,7 +4,7 @@ describe('to have message/diff assertion', () => {
 
   describe('with an Unexpected error', () => {
     var err;
-    beforeEach(function() {
+    beforeEach(() => {
       try {
         expect(1, 'to equal', 2);
       } catch (e) {

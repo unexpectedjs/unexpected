@@ -1,7 +1,7 @@
 /*global expect*/
 describe('use', () => {
   var clonedExpect;
-  beforeEach(function() {
+  beforeEach(() => {
     clonedExpect = expect.clone();
   });
 

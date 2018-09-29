@@ -260,10 +260,10 @@ describe('expect.promise', () => {
 
   describe('#inspect', () => {
     var originalDefaultFormat = expect.output.constructor.defaultFormat;
-    beforeEach(function() {
+    beforeEach(() => {
       expect.output.constructor.defaultFormat = 'text';
     });
-    afterEach(function() {
+    afterEach(() => {
       expect.output.constructor.defaultFormat = originalDefaultFormat;
     });
 
