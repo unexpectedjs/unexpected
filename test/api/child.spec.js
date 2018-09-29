@@ -325,7 +325,7 @@ describe('#child', function() {
     );
   });
 
-  it('#inspect should use the exported types when inspecting failed assertions', function() {
+  it('#inspect should use the exported types when inspecting failed assertions', () => {
     childExpect.addStyle('fancyQuotes', function(text) {
       this.text('>>')
         .text(text)
