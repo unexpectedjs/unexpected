@@ -9,7 +9,7 @@ describe('to have keys assertion', () => {
 
   it('throws when the assertion fails', () => {
     expect(
-      function() {
+      () => {
         expect({ a: 'b', c: 'd' }, 'to not only have keys', ['a', 'c']);
       },
       'to throw exception',
@@ -17,7 +17,7 @@ describe('to have keys assertion', () => {
     );
 
     expect(
-      function() {
+      () => {
         expect({ a: 'b', c: 'd' }, 'to only have keys', 'a', 'd');
       },
       'to throw exception',
@@ -25,7 +25,7 @@ describe('to have keys assertion', () => {
     );
 
     expect(
-      function() {
+      () => {
         expect({ a: 'b', c: 'd' }, 'to not only have keys', 'a', 'c');
       },
       'to throw exception',
@@ -35,7 +35,7 @@ describe('to have keys assertion', () => {
 
   it('should fail with a diff when the only flag is used', () => {
     expect(
-      function() {
+      () => {
         expect({ foo: 123, bar: 'quux' }, 'to only have keys', ['foo']);
       },
       'to throw',
@@ -71,7 +71,7 @@ describe('to have keys assertion', () => {
 
     it('should process the value in "to only have keys"', () => {
       expect(
-        function() {
+        () => {
           clonedExpect({ oof: undefined, foo: '' }, 'to only have keys', [
             'oof'
           ]);

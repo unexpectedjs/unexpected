@@ -18,11 +18,11 @@ describe('to have message/diff assertion', () => {
 
     it('should fail with a diff', () => {
       expect(
-        function() {
+        () => {
           expect(err, 'to have message', 'expected 3 to equal 2');
         },
         'to throw',
-        function(err) {
+        err => {
           var message = err
             .getErrorMessage({ format: 'text' })
             .toString('text');
@@ -42,11 +42,11 @@ describe('to have message/diff assertion', () => {
 
     it('should support the ansi flag', () => {
       expect(
-        function() {
+        () => {
           expect(err, 'to have message', 'expected 3 to equal 2');
         },
         'to throw',
-        function(err) {
+        err => {
           expect(
             err,
             'to have ansi message',
@@ -58,11 +58,11 @@ describe('to have message/diff assertion', () => {
 
     it('should support the html flag', () => {
       expect(
-        function() {
+        () => {
           expect(err, 'to have message', 'expected 3 to equal 2');
         },
         'to throw',
-        function(err) {
+        err => {
           expect(
             err,
             'to have html message',
@@ -74,7 +74,7 @@ describe('to have message/diff assertion', () => {
 
     it('should support matching the diff instead of the message', () => {
       expect(
-        function() {
+        () => {
           expect('abc', 'to equal', 'def');
         },
         'to throw',
@@ -88,13 +88,13 @@ describe('to have message/diff assertion', () => {
 
     it('should fail to get the diff from an Unexpected error that does not have one', () => {
       expect(
-        function() {
+        () => {
           expect(
-            function() {
+            () => {
               expect(123, 'to equal', 456);
             },
             'to throw',
-            expect.it('to have ansi diff', function() {})
+            expect.it('to have ansi diff', () => {})
           );
         },
         'to throw',
@@ -108,13 +108,13 @@ describe('to have message/diff assertion', () => {
 
     it('should fail to get the diff from a non-Unexpected error', () => {
       expect(
-        function() {
+        () => {
           expect(
-            function() {
+            () => {
               throw new Error('foo');
             },
             'to throw',
-            expect.it('to have ansi diff', function() {})
+            expect.it('to have ansi diff', () => {})
           );
         },
         'to throw',
@@ -134,7 +134,7 @@ describe('to have message/diff assertion', () => {
           .text('def', ['bgGreen', 'black']);
 
         expect(
-          function() {
+          () => {
             expect('abc', 'to equal', 'def');
           },
           'to throw',
@@ -152,9 +152,9 @@ describe('to have message/diff assertion', () => {
           .text('def', ['bgGreen', 'black']);
 
         expect(
-          function() {
+          () => {
             expect(
-              function() {
+              () => {
                 expect('abc', 'to equal', 'def');
               },
               'to throw',
@@ -202,7 +202,7 @@ describe('to have message/diff assertion', () => {
     describe('when building the expected output via a function', () => {
       it('should succeed', () => {
         expect(
-          function() {
+          () => {
             expect('abc', 'to equal', 'def');
           },
           'to throw',
@@ -216,9 +216,9 @@ describe('to have message/diff assertion', () => {
 
       it('should fail with a diff', () => {
         expect(
-          function() {
+          () => {
             expect(
-              function() {
+              () => {
                 expect('abc', 'to equal', 'def');
               },
               'to throw',
@@ -264,11 +264,11 @@ describe('to have message/diff assertion', () => {
 
     it('should assume that a function that does not produce any output has run assertions on the stringified diff/message, and thus should not fail', () => {
       expect(
-        function() {
+        () => {
           expect('abc', 'to equal', 'def');
         },
         'to throw',
-        expect.it('to have ansi diff', function(ansiStr) {
+        expect.it('to have ansi diff', ansiStr => {
           expect(ansiStr, 'to contain', 'abc');
         })
       );
@@ -277,11 +277,11 @@ describe('to have message/diff assertion', () => {
     it('should handle the case where the function returns a promise', () => {
       return expect(
         expect(
-          function() {
+          () => {
             expect('abc', 'to equal', 'def');
           },
           'to throw',
-          expect.it('to have ansi diff', function(ansiStr) {
+          expect.it('to have ansi diff', ansiStr => {
             return expect(123, 'when delayed a little bit', 'to equal', 456);
           })
         ),
@@ -303,7 +303,7 @@ describe('to have message/diff assertion', () => {
         throw new Error('foo');
       } catch (err) {
         expect(
-          function() {
+          () => {
             expect(err, 'to have html message', 'foo');
           },
           'to throw',
@@ -322,7 +322,7 @@ describe('to have message/diff assertion', () => {
 
     it('should fail with a diff', () => {
       expect(
-        function() {
+        () => {
           expect(err, 'to have message', 'Dammit!');
         },
         'to throw',

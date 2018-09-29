@@ -26,7 +26,7 @@ describe('array-like type', () => {
       var b = ['a'];
 
       expect(
-        function() {
+        () => {
           clonedExpect(a, 'to equal', b);
         },
         'to throw',
@@ -46,7 +46,7 @@ describe('array-like type', () => {
       b.foobar = undefined;
 
       expect(
-        function() {
+        () => {
           clonedExpect(a, 'to equal', b);
         },
         'to throw',
@@ -66,7 +66,7 @@ describe('array-like type', () => {
       b.foobar = undefined;
 
       expect(
-        function() {
+        () => {
           clonedExpect(a, 'to satisfy', b);
         },
         'to throw',
@@ -87,7 +87,7 @@ describe('array-like type', () => {
         var b = ['a'];
 
         expect(
-          function() {
+          () => {
             clonedExpect(a, 'to equal', b);
           },
           'to throw',
@@ -102,7 +102,7 @@ describe('array-like type', () => {
 
       (typeof weknowhow === 'undefined' ? it : it.skip)(
         'should correctly fetch keys in the absence of symbol support',
-        function() {
+        () => {
           // stash away then clobber object symbol support
           var getOwnPropertySymbols = Object.getOwnPropertySymbols;
           delete Object.getOwnPropertySymbols;
@@ -127,7 +127,7 @@ describe('array-like type', () => {
           b.foobar = undefined;
 
           localExpect(
-            function() {
+            () => {
               localExpect(a, 'to equal', b);
             },
             'to throw',
@@ -188,7 +188,7 @@ describe('array-like type', () => {
 
     it('should not render the indentation when an instance participates in a "to satisfy" diff', () => {
       expect(
-        function() {
+        () => {
           clonedExpect(['aaa', 'bbb'], 'to satisfy', { 0: 'foo' });
         },
         'to throw',
@@ -251,7 +251,7 @@ describe('array-like type', () => {
 
     it('should not render the prefix, suffix, and the newlines when an instance participates in a "to satisfy" diff', () => {
       expect(
-        function() {
+        () => {
           clonedExpect(['aaa', 'bbb'], 'to satisfy', { 0: 'foo' });
         },
         'to throw',
@@ -326,7 +326,7 @@ describe('array-like type', () => {
       });
 
       expect(
-        function() {
+        () => {
           clonedExpect(a, 'to equal', b);
         },
         'to throw',
@@ -360,7 +360,7 @@ describe('array-like type', () => {
       });
 
       expect(
-        function() {
+        () => {
           clonedExpect(a, 'to satisfy', b);
         },
         'to throw',
@@ -408,7 +408,7 @@ describe('array-like type', () => {
       });
 
       expect(
-        function() {
+        () => {
           clonedExpect(foo1, 'to satisfy', foo2);
         },
         'to throw',
@@ -485,7 +485,7 @@ describe('array-like type', () => {
       rhs.foobar = 'baz';
 
       expect(
-        function() {
+        () => {
           clonedExpect(lhs, 'to equal', rhs);
         },
         'to throw',
@@ -530,7 +530,7 @@ describe('array-like type', () => {
         }
       });
       expect(
-        function() {
+        () => {
           clonedExpect(['foobar', 'barbar'], 'to equal', ['foobar', 'barbaz']);
         },
         'to throw',
@@ -557,7 +557,7 @@ describe('array-like type', () => {
 
   it('should render a moved item with an arrow', () => {
     expect(
-      function() {
+      () => {
         expect(['a', 'b', 'c'], 'to equal', ['c', 'a', 'b']);
       },
       'to error with',
@@ -574,7 +574,7 @@ describe('array-like type', () => {
 
   it('should stop rendering more arrows when there would be more than 3 lanes', () => {
     expect(
-      function() {
+      () => {
         expect(['a', 'b', 'c', 'd', 'e', 'f'], 'to equal', [
           'f',
           'c',
@@ -604,7 +604,7 @@ describe('array-like type', () => {
 
   it('should render multiple moved items with arrows', () => {
     expect(
-      function() {
+      () => {
         expect(['a', 'b', 'c', 'd'], 'to equal', ['d', 'b', 'a', 'c']);
       },
       'to error with',
@@ -623,7 +623,7 @@ describe('array-like type', () => {
 
   it('should render 3 moved neighbor items', () => {
     expect(
-      function() {
+      () => {
         expect(['a', 'b', 'c', 'd', 'e'], 'to equal', [
           'c',
           'd',

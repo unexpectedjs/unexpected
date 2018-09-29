@@ -4,7 +4,7 @@ describe('to end with assertion', () => {
 
   it('should throw an error when the expected suffix is the empty string', () => {
     expect(
-      function() {
+      () => {
         expect('foo', 'to end with', '');
       },
       'to throw',
@@ -21,7 +21,7 @@ describe('to end with assertion', () => {
     describe('when the assertion fails', () => {
       it('does not include a diff when there is no common suffix', () => {
         expect(
-          function() {
+          () => {
             expect('hello world', 'to end with', 'foo');
           },
           'to throw exception',
@@ -31,7 +31,7 @@ describe('to end with assertion', () => {
 
       it('includes a diff when there is a common suffix', () => {
         expect(
-          function() {
+          () => {
             expect('hello world', 'to end with', 'wonderful world');
           },
           'to throw exception',
@@ -51,7 +51,7 @@ describe('to end with assertion', () => {
 
       it('builds the diff correctly when the partial match spans more than one line', () => {
         expect(
-          function() {
+          () => {
             expect('foob\na\nr', 'to end with', 'quuxb\na\nr');
           },
           'to throw exception',
@@ -68,7 +68,7 @@ describe('to end with assertion', () => {
 
       it('builds the diff correctly when the substring is longer than the subject', () => {
         expect(
-          function() {
+          () => {
             expect('foo', 'to end with', 'doublefoo');
           },
           'to throw exception',
@@ -79,7 +79,7 @@ describe('to end with assertion', () => {
 
     it('builds the diff correctly when the string is truncated with no common prefix', () => {
       expect(
-        function() {
+        () => {
           expect(
             'AtSomePointThisStringWillBeTruncated-foobarbaz',
             'to end with',
@@ -93,7 +93,7 @@ describe('to end with assertion', () => {
 
     it('builds the diff correctly when the string contains a space and is truncated', () => {
       expect(
-        function() {
+        () => {
           expect(
             'a ThenPleaseTruncateString-foobarbaz',
             'to end with',
@@ -107,7 +107,7 @@ describe('to end with assertion', () => {
 
     it('builds the diff correctly when the string is truncated after a partial match', () => {
       expect(
-        function() {
+        () => {
           expect(
             'ButAtSomePointThisStringWillBeTruncated-bazbarfoo',
             'to end with',
@@ -131,7 +131,7 @@ describe('to end with assertion', () => {
 
     it('produces a diff when the string case fails', () => {
       expect(
-        function() {
+        () => {
           expect('foobarquuxfoo', 'not to end with', 'foo');
         },
         'to throw',
@@ -151,7 +151,7 @@ describe('to end with assertion', () => {
 
     it('builds the diff correctly when the suffix contains newlines', () => {
       expect(
-        function() {
+        () => {
           expect('foobarquuxf\no\no', 'not to end with', 'f\no\no');
         },
         'to throw',

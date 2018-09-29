@@ -9,7 +9,7 @@ describe('less than or equal assertion', () => {
 
   it('throws when the assertion fails', () => {
     expect(
-      function() {
+      () => {
         expect(0, 'to be less than or equal to', -1);
       },
       'to throw exception',

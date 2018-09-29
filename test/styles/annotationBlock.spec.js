@@ -4,7 +4,7 @@ describe('annotationBlock', () => {
     expect(
       expect
         .createOutput('text')
-        .annotationBlock(function() {})
+        .annotationBlock(() => {})
         .toString(),
       'to equal',
       '// '

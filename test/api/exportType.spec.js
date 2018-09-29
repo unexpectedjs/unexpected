@@ -24,7 +24,7 @@ describe('exportType', () => {
       }
     });
 
-    parentExpect.addAssertion('<fooString> to foo', function(expect, subject) {
+    parentExpect.addAssertion('<fooString> to foo', (expect, subject) => {
       expect(subject, 'to equal', 'foo');
     });
   });
@@ -141,7 +141,7 @@ describe('exportType', () => {
       }
     });
     expect(
-      function() {
+      () => {
         expect(parentExpect.findTypeOf('abc'), 'to satisfy', {
           name: 'string'
         });

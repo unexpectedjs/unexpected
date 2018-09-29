@@ -3,7 +3,7 @@ describe('outputFormat', () => {
   describe('when given a format', () => {
     it('decides the output that will be used for serializing errors', () => {
       expect(
-        function() {
+        () => {
           var clonedExpect = expect.clone().outputFormat('html');
           clonedExpect(42, 'to equal', 24);
         },
@@ -17,7 +17,7 @@ describe('outputFormat', () => {
       );
 
       expect(
-        function() {
+        () => {
           var clonedExpect = expect.clone().outputFormat('ansi');
           clonedExpect(42, 'to equal', 24);
         },

@@ -8,11 +8,11 @@ describe('#child', () => {
   });
 
   it('should not leak a "private" assertion into the parent', () => {
-    childExpect.addAssertion('<string> to foo', function(expect, subject) {
+    childExpect.addAssertion('<string> to foo', (expect, subject) => {
       expect(subject, 'to equal', 'foo');
     });
     expect(
-      function() {
+      () => {
         parentExpect('foo', 'to foo');
       },
       'to throw',
@@ -21,7 +21,7 @@ describe('#child', () => {
   });
 
   it('should not leak a "private" style into the parent', () => {
-    childExpect.addStyle('foo', function() {});
+    childExpect.addStyle('foo', () => {});
     expect(parentExpect.createOutput().foo, 'to be undefined');
   });
 
@@ -36,29 +36,29 @@ describe('#child', () => {
   });
 
   it('should have access to assertions defined in the parent after the child was created', () => {
-    parentExpect.addAssertion('<string> to foo', function(expect, subject) {
+    parentExpect.addAssertion('<string> to foo', (expect, subject) => {
       expect(subject, 'to equal', 'foo');
     });
     childExpect('foo', 'to foo');
   });
 
   it('should prefer an assertion defined in the child, even if it was added before an identically named one in the parent', () => {
-    childExpect.addAssertion('<string> to foo', function(expect, subject) {
+    childExpect.addAssertion('<string> to foo', (expect, subject) => {
       expect(subject, 'to equal', 'foo');
     });
-    parentExpect.addAssertion('<string> to foo', function(expect, subject) {
+    parentExpect.addAssertion('<string> to foo', (expect, subject) => {
       expect.fail('Wrong one!');
     });
     childExpect('foo', 'to foo');
   });
 
   it('should have access to identically named assertions with different type signatures in child and parent', () => {
-    childExpect.addAssertion('<string> to foo', function(expect, subject) {
+    childExpect.addAssertion('<string> to foo', (expect, subject) => {
       expect.errorMode = 'nested';
       expect(subject, 'to equal', 'foo');
       expect(subject.length, 'to foo');
     });
-    parentExpect.addAssertion('<number> to foo', function(expect, subject) {
+    parentExpect.addAssertion('<number> to foo', (expect, subject) => {
       expect(subject, 'to equal', 3);
     });
     childExpect('foo', 'to foo');
@@ -102,7 +102,7 @@ describe('#child', () => {
         return /^yadda/.test(obj);
       }
     });
-    childExpect.addAssertion('<yadda> to foo', function(expect, subject) {
+    childExpect.addAssertion('<yadda> to foo', (expect, subject) => {
       expect(subject, 'to contain', 'foo');
     });
     childExpect('yaddafoo', 'to foo');
@@ -115,10 +115,10 @@ describe('#child', () => {
         return /^yadda/.test(obj);
       }
     });
-    childExpect.addAssertion('<yadda> to bar', function(expect, subject) {
+    childExpect.addAssertion('<yadda> to bar', (expect, subject) => {
       expect(subject, 'to contain', 'bar');
     });
-    childExpect.addAssertion('<yadda> to foobar', function(expect, subject) {
+    childExpect.addAssertion('<yadda> to foobar', (expect, subject) => {
       expect(subject, 'to bar');
       expect(subject, 'to contain', 'foo');
     });
@@ -289,10 +289,7 @@ describe('#child', () => {
   });
 
   it('should allow adding an assertion referencing the assertion and any types to the child expect', () => {
-    childExpect.addAssertion('<any> foo <assertion>', function(
-      expect,
-      subject
-    ) {
+    childExpect.addAssertion('<any> foo <assertion>', (expect, subject) => {
       return expect.shift(`${String(subject)}foo`);
     });
     expect(childExpect.assertions.foo, 'to satisfy', {

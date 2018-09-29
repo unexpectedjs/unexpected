@@ -24,7 +24,7 @@ describe('array type', () => {
     arr2.quux = false;
 
     expect(
-      function() {
+      () => {
         expect(arr1, 'to equal', arr2);
       },
       'to throw',

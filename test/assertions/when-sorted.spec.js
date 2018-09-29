@@ -14,7 +14,7 @@ describe('when sorted assertion', () => {
   });
 
   it('should provide the result as the fulfillment value if no assertion is provided', () => {
-    return expect(['c', 'b', 'a'], 'when sorted').then(function(sortedArray) {
+    return expect(['c', 'b', 'a'], 'when sorted').then(sortedArray => {
       expect(sortedArray, 'to equal', ['a', 'b', 'c']);
     });
   });

@@ -10,7 +10,7 @@ describe('when called with assertion', () => {
 
   it('should combine with other assertions (showcase)', () => {
     expect(
-      function() {
+      () => {
         expect(add, 'when called with', [3, 4], 'to equal', 9);
       },
       'to throw',
@@ -20,7 +20,7 @@ describe('when called with assertion', () => {
   });
 
   it('should should provide the result as the fulfillment value if no assertion is provided', () => {
-    return expect(add, 'when called with', [3, 4]).then(function(sum) {
+    return expect(add, 'when called with', [3, 4]).then(sum => {
       expect(sum, 'to equal', 7);
     });
   });

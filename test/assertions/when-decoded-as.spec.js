@@ -13,7 +13,7 @@ if (typeof Buffer !== 'undefined') {
 
     it('should should provide the result as the fulfillment value if no assertion is provided', () => {
       return expect(new Buffer('æøå', 'utf-8'), 'decoded as', 'utf-8').then(
-        function(result) {
+        result => {
           expect(result, 'to equal', 'æøå');
         }
       );

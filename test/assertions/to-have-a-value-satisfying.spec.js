@@ -2,7 +2,7 @@
 describe('to have a value satisfying assertion', () => {
   it('requires a third argument', () => {
     expect(
-      function() {
+      () => {
         expect([1, 2, 3], 'to have a value satisfying');
       },
       'to throw',
@@ -16,21 +16,21 @@ describe('to have a value satisfying assertion', () => {
   });
 
   it('accepts objects as the subject', () => {
-    expect(function() {
+    expect(() => {
       expect({ foo: 1 }, 'to have a value satisfying', 'to be a number');
     }, 'not to throw');
   });
 
   it('accepts arrays as the subject', () => {
-    expect(function() {
+    expect(() => {
       expect([1], 'to have a value satisfying', 'to be a number');
     }, 'not to throw');
   });
 
   it('only accepts objects and arrays as the subject', () => {
     expect(
-      function() {
-        expect(42, 'to have a value satisfying', function(value) {});
+      () => {
+        expect(42, 'to have a value satisfying', value => {});
       },
       'to throw',
       'expected 42 to have a value satisfying function (value) {}\n' +
@@ -44,7 +44,7 @@ describe('to have a value satisfying assertion', () => {
 
   it('fails if the given object is empty', () => {
     expect(
-      function() {
+      () => {
         expect({}, 'to have a value satisfying', 'to be a number');
       },
       'to throw',
@@ -55,7 +55,7 @@ describe('to have a value satisfying assertion', () => {
 
   it('fails if the given array is empty', () => {
     expect(
-      function() {
+      () => {
         expect([], 'to have a value satisfying', 'to be a number');
       },
       'to throw',
@@ -71,7 +71,7 @@ describe('to have a value satisfying assertion', () => {
       'to be a number'
     );
 
-    expect({ foo: '0', bar: 1 }, 'to have a value satisfying', function(value) {
+    expect({ foo: '0', bar: 1 }, 'to have a value satisfying', value => {
       expect(value, 'to be a number');
     });
 
@@ -96,9 +96,7 @@ describe('to have a value satisfying assertion', () => {
       'to be a string'
     );
 
-    expect({ foo: '0', bar: '1' }, 'not to have a value satisfying', function(
-      value
-    ) {
+    expect({ foo: '0', bar: '1' }, 'not to have a value satisfying', value => {
       expect(value, 'to be a number');
     });
 
@@ -118,7 +116,7 @@ describe('to have a value satisfying assertion', () => {
 
   it("throws the correct error if none of the subject's values match the RHS expectation", () => {
     expect(
-      function() {
+      () => {
         expect(
           { foo: 'foo', bar: 'bar' },
           'to have a value satisfying',
@@ -133,7 +131,7 @@ describe('to have a value satisfying assertion', () => {
 
   it("throws the correct error, when negated, if any of the subject's values match the RHS expectation", () => {
     expect(
-      function() {
+      () => {
         expect(
           { foo: 'foo', bar: 1 },
           'not to have a value satisfying',
@@ -153,22 +151,21 @@ describe('to have a value satisfying assertion', () => {
   describe('delegating to an async assertion', () => {
     var clonedExpect = expect
       .clone()
-      .addAssertion('to be a number after a short delay', function(
-        expect,
-        subject,
-        delay
-      ) {
-        expect.errorMode = 'nested';
+      .addAssertion(
+        'to be a number after a short delay',
+        (expect, subject, delay) => {
+          expect.errorMode = 'nested';
 
-        return expect.promise(function(run) {
-          setTimeout(
-            run(function() {
-              expect(subject, 'to be a number');
-            }),
-            1
-          );
-        });
-      });
+          return expect.promise(run => {
+            setTimeout(
+              run(() => {
+                expect(subject, 'to be a number');
+              }),
+              1
+            );
+          });
+        }
+      );
 
     it('should succeed', () => {
       return clonedExpect(
@@ -190,7 +187,7 @@ describe('to have a value satisfying assertion', () => {
 
     it('should fail when the spec is not met only because of the "exhaustively" semantics', () => {
       expect(
-        function() {
+        () => {
           expect(
             [{ foo: 'bar', quux: 'baz' }],
             'to have a value exhaustively satisfying',

@@ -54,7 +54,7 @@ describe('to be assertion', () => {
   describe('on strings', () => {
     it('throws when the assertion fails', () => {
       expect(
-        function() {
+        () => {
           expect('foo', 'to be', 'bar');
         },
         'to throw exception',
@@ -62,7 +62,7 @@ describe('to be assertion', () => {
       );
 
       expect(
-        function() {
+        () => {
           expect(true, 'not to be', true);
         },
         'to throw exception',
@@ -70,7 +70,7 @@ describe('to be assertion', () => {
       );
 
       expect(
-        function() {
+        () => {
           expect(undefined, 'to be defined');
         },
         'to throw exception',
@@ -80,7 +80,7 @@ describe('to be assertion', () => {
 
     it('does not provide a diff when comparing against undefined', () => {
       expect(
-        function() {
+        () => {
           expect('blabla', 'to be undefined');
         },
         'to throw',

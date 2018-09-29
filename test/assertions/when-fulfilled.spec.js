@@ -2,8 +2,8 @@
 describe('when fulfilled adverbial assertion', () => {
   it('should delegate to the next assertion with the resolved value', () => {
     return expect(
-      new Promise(function(resolve, reject) {
-        setTimeout(function() {
+      new Promise((resolve, reject) => {
+        setTimeout(() => {
           resolve({ foo: 'bar' });
         }, 0);
       }),
@@ -15,8 +15,8 @@ describe('when fulfilled adverbial assertion', () => {
 
   it('should support expect.it', () => {
     return expect(
-      new Promise(function(resolve, reject) {
-        setTimeout(function() {
+      new Promise((resolve, reject) => {
+        setTimeout(() => {
           resolve({ foo: 'bar' });
         }, 0);
       }),
@@ -28,8 +28,8 @@ describe('when fulfilled adverbial assertion', () => {
   it('should fail when the promise is rejected', () => {
     return expect(
       expect(
-        new Promise(function(resolve, reject) {
-          setTimeout(function() {
+        new Promise((resolve, reject) => {
+          setTimeout(() => {
             reject(new Error('ugh'));
           }, 0);
         }),
@@ -46,7 +46,7 @@ describe('when fulfilled adverbial assertion', () => {
   it('should fail when the promise is rejected with a value of undefined', () => {
     return expect(
       expect(
-        new Promise(function(resolve, reject) {
+        new Promise((resolve, reject) => {
           setTimeout(reject, 0);
         }),
         'when fulfilled',
@@ -62,7 +62,7 @@ describe('when fulfilled adverbial assertion', () => {
   it('should fail when the promise is rejected with a value of undefined', () => {
     return expect(
       expect(
-        new Promise(function(resolve, reject) {
+        new Promise((resolve, reject) => {
           setTimeout(reject, 0);
         }),
         'when fulfilled',
@@ -77,8 +77,8 @@ describe('when fulfilled adverbial assertion', () => {
   it('should fail when the next assertion fails', () => {
     return expect(
       expect(
-        new Promise(function(resolve, reject) {
-          setTimeout(function() {
+        new Promise((resolve, reject) => {
+          setTimeout(() => {
             resolve({ foo: 'bar' });
           }, 0);
         }),
@@ -102,8 +102,8 @@ describe('when fulfilled adverbial assertion', () => {
   it('should fail with the right error message when the next assertion is an expect.it that fails', () => {
     return expect(
       expect(
-        new Promise(function(resolve, reject) {
-          setTimeout(function() {
+        new Promise((resolve, reject) => {
+          setTimeout(() => {
             resolve({ foo: 'bar' });
           }, 0);
         }),
@@ -121,8 +121,8 @@ describe('when fulfilled adverbial assertion', () => {
 
   describe('when passed a function', () => {
     it('should succeed if the function returns a promise that succeeds', () => {
-      return expect(function() {
-        return expect.promise(function() {
+      return expect(() => {
+        return expect.promise(() => {
           return 123;
         });
       }, 'when fulfilled to be a number');
@@ -130,8 +130,8 @@ describe('when fulfilled adverbial assertion', () => {
 
     it('should fail if the function returns a promise that fails', () => {
       expect(
-        function() {
-          return expect(function() {
+        () => {
+          return expect(() => {
             return expect.promise.reject(new Error('foo'));
           }, 'when fulfilled to be a number');
         },
@@ -148,8 +148,8 @@ describe('when fulfilled adverbial assertion', () => {
 
     it('should fail if the function throws synchronously', () => {
       expect(
-        function() {
-          return expect(function() {
+        () => {
+          return expect(() => {
             throw new Error('foo');
           }, 'when fulfilled to be a number');
         },
@@ -163,10 +163,10 @@ describe('when fulfilled adverbial assertion', () => {
 
   it('should use the stack of the thrown error when failing', () => {
     return expect(
-      function() {
+      () => {
         return expect(
-          function() {
-            return expect.promise(function() {
+          () => {
+            return expect.promise(() => {
               (function thisIsImportant() {
                 throw new Error('argh');
               })();
@@ -177,7 +177,7 @@ describe('when fulfilled adverbial assertion', () => {
         );
       },
       'to error',
-      function(err) {
+      err => {
         expect(err.stack, 'to match', /thisIsImportant/);
       }
     );

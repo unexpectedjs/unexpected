@@ -17,11 +17,11 @@ describe('freeze', () => {
 
   it('makes .use(...) throw', () => {
     expect(
-      function() {
+      () => {
         expect
           .clone()
           .freeze()
-          .use(function() {});
+          .use(() => {});
       },
       'to throw',
       'Cannot install a plugin into a frozen instance, please run .clone() first'
@@ -33,16 +33,16 @@ describe('freeze', () => {
       .clone()
       .freeze()
       .clone()
-      .use(function() {});
+      .use(() => {});
   });
 
   it('makes .addAssertion(...) throw', () => {
     expect(
-      function() {
+      () => {
         expect
           .clone()
           .freeze()
-          .addAssertion('<string> to foo', function(expect, subject) {
+          .addAssertion('<string> to foo', (expect, subject) => {
             expect(subject, 'to equal', 'foo');
           });
       },
@@ -53,7 +53,7 @@ describe('freeze', () => {
 
   it('makes .addType(...) throw', () => {
     expect(
-      function() {
+      () => {
         expect
           .clone()
           .freeze()
@@ -66,7 +66,7 @@ describe('freeze', () => {
 
   it('makes .addStyle(...) throw', () => {
     expect(
-      function() {
+      () => {
         expect
           .clone()
           .freeze()
@@ -81,7 +81,7 @@ describe('freeze', () => {
 
   it('makes .installTheme(...) throw', () => {
     expect(
-      function() {
+      () => {
         expect
           .clone()
           .freeze()
@@ -105,19 +105,19 @@ describe('freeze', () => {
         .clone()
         .freeze()
         .child()
-        .addAssertion('<string> to foo', function(expect, subject) {
+        .addAssertion('<string> to foo', (expect, subject) => {
           expect(subject, 'to equal', 'foo');
         });
     });
 
     it('throws on exportAssertion', () => {
       expect(
-        function() {
+        () => {
           expect
             .clone()
             .freeze()
             .child()
-            .exportAssertion('<string> to foo', function(expect, subject) {
+            .exportAssertion('<string> to foo', (expect, subject) => {
               expect(subject, 'to equal', 'foo');
             });
         },
@@ -128,7 +128,7 @@ describe('freeze', () => {
 
     it('throws on exportType', () => {
       expect(
-        function() {
+        () => {
           expect
             .clone()
             .freeze()
@@ -152,7 +152,7 @@ describe('freeze', () => {
 
     it('throws on exportStyle', () => {
       expect(
-        function() {
+        () => {
           expect
             .clone()
             .freeze()

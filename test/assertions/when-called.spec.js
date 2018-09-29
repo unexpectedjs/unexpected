@@ -12,7 +12,7 @@ describe('when called assertion', () => {
       return 123;
     }
     expect(
-      function() {
+      () => {
         expect(hey, 'when called', 'to equal', 124);
       },
       'to throw',
@@ -25,7 +25,7 @@ describe('when called assertion', () => {
     function hey() {
       return 123;
     }
-    return expect(hey, 'called').then(function(value) {
+    return expect(hey, 'called').then(value => {
       expect(value, 'to equal', 123);
     });
   });
@@ -41,7 +41,7 @@ describe('when called assertion', () => {
 
     it('should fail with a diff', () => {
       expect(
-        function() {
+        () => {
           expect(hey, 'when called', expect.it('to equal', 456));
         },
         'to throw',

@@ -2,7 +2,7 @@
 describe('fail assertion', () => {
   it('throws an error', () => {
     expect(
-      function() {
+      () => {
         expect.fail();
       },
       'to throw exception',
@@ -23,7 +23,7 @@ describe('fail assertion', () => {
 
   it('throws an error with a given message', () => {
     expect(
-      function() {
+      () => {
         expect.fail('fail with error message');
       },
       'to throw exception',
@@ -33,7 +33,7 @@ describe('fail assertion', () => {
 
   it('supports placeholders', () => {
     expect(
-      function() {
+      () => {
         expect.fail('{0} was expected to be {1}', 0, 'zero');
       },
       'to throw exception',
@@ -41,7 +41,7 @@ describe('fail assertion', () => {
     );
 
     expect(
-      function() {
+      () => {
         var output = expect.output.clone().text('zero');
         expect.fail('{0} was expected to be {1}', 0, output);
       },
@@ -50,7 +50,7 @@ describe('fail assertion', () => {
     );
 
     expect(
-      function() {
+      () => {
         expect.fail('{0} was expected to be {1}', 0);
       },
       'to throw exception',
@@ -61,7 +61,7 @@ describe('fail assertion', () => {
   describe('with an object', () => {
     it('should support specifying a message', () => {
       expect(
-        function() {
+        () => {
           expect.fail({
             message: 'yadda'
           });
@@ -76,7 +76,7 @@ describe('fail assertion', () => {
 
     it('should support specifying a label', () => {
       expect(
-        function() {
+        () => {
           expect.fail({
             label: 'to yadda'
           });
@@ -91,7 +91,7 @@ describe('fail assertion', () => {
 
     it('should set additional properties on the thrown error', () => {
       expect(
-        function() {
+        () => {
           expect.fail({
             foobarquux: 123
           });
@@ -105,7 +105,7 @@ describe('fail assertion', () => {
 
     it('should support message passed as a string', () => {
       expect(
-        function() {
+        () => {
           expect.fail({
             message: 'hey'
           });
@@ -119,7 +119,7 @@ describe('fail assertion', () => {
 
     it('should support message passed as a MagicPen instance', () => {
       expect(
-        function() {
+        () => {
           expect.fail({
             message: expect.output.clone().text('hey')
           });
@@ -135,7 +135,7 @@ describe('fail assertion', () => {
   describe('with a diff function', () => {
     it('should generate the diff', () => {
       var clonedExpect = expect.clone();
-      clonedExpect.addAssertion('<any> to foo', function(expect, subject) {
+      clonedExpect.addAssertion('<any> to foo', (expect, subject) => {
         expect.fail({
           diff(output, diff, inspect, equal) {
             return output.text('custom');
@@ -143,7 +143,7 @@ describe('fail assertion', () => {
         });
       });
       expect(
-        function() {
+        () => {
           clonedExpect('bar', 'to foo');
         },
         'to throw',
@@ -153,7 +153,7 @@ describe('fail assertion', () => {
 
     it('should support a diff function that uses the old API', () => {
       var clonedExpect = expect.clone();
-      clonedExpect.addAssertion('<any> to foo', function(expect, subject) {
+      clonedExpect.addAssertion('<any> to foo', (expect, subject) => {
         expect.fail({
           diff(output, diff, inspect, equal) {
             return {
@@ -164,7 +164,7 @@ describe('fail assertion', () => {
         });
       });
       expect(
-        function() {
+        () => {
           clonedExpect('bar', 'to foo');
         },
         'to throw',

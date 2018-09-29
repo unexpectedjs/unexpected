@@ -16,7 +16,7 @@ describe('object type', () => {
         }
       });
       expect(
-        function() {
+        () => {
           clonedExpect({ a: 123, b: 9 }, 'to equal', { a: 456, b: 9 });
         },
         'to throw',
@@ -44,13 +44,13 @@ describe('object type', () => {
 
   describe('#equal', () => {
     it('should ignore undefined properties on the LHS', () => {
-      expect(function() {
+      expect(() => {
         expect({ lhs: undefined }, 'to equal', {});
       }, 'not to throw');
     });
 
     it('should ignore undefined properties on the RHS', () => {
-      expect(function() {
+      expect(() => {
         expect({}, 'to equal', { rhs: undefined });
       }, 'not to throw');
     });
@@ -73,13 +73,13 @@ describe('object type', () => {
       });
 
       it('should ignore undefined properties on the LHS', () => {
-        expect(function() {
+        expect(() => {
           expect({ xuuq: true, lhs: undefined }, 'to equal', { xuuq: true });
         }, 'not to throw');
       });
 
       it('should ignore undefined properties on the RHS', () => {
-        expect(function() {
+        expect(() => {
           expect({ xuuq: true }, 'to equal', { xuuq: true, rhs: undefined });
         }, 'not to throw');
       });
@@ -96,14 +96,14 @@ describe('object type', () => {
         return obj && typeof 'object' && obj.foo;
       },
       getKeys: function(obj) {
-        return Object.keys(obj).filter(function(key) {
+        return Object.keys(obj).filter(key => {
           return key[0] !== '_';
         });
       }
     });
 
     it('should restrict the compared properties', () => {
-      expect(function() {
+      expect(() => {
         clonedExpect({ foo: true, _bar: true }, 'to equal', {
           foo: true,
           _bar: false
@@ -130,7 +130,7 @@ describe('object type', () => {
     });
 
     it('should pass with values overriding valueForKey()', () => {
-      expect(function() {
+      expect(() => {
         clonedExpect(
           [{ xuuq: true, quux: 'foo', _bob: true }, 'foobar'],
           'to equal',
@@ -141,7 +141,7 @@ describe('object type', () => {
 
     it('should fail with values overriding valueForKey()', () => {
       expect(
-        function() {
+        () => {
           clonedExpect(
             [{ xuuq: true, quux: 'bar', _bob: true }, 'foobar'],
             'to equal',
@@ -217,7 +217,7 @@ describe('object type', () => {
 
     it('should not render the indentation when an instance participates in a "to satisfy" diff', () => {
       expect(
-        function() {
+        () => {
           clonedExpect({ a: 'aaa', b: 'bbb' }, 'to satisfy', { a: 'foo' });
         },
         'to throw',
@@ -284,7 +284,7 @@ describe('object type', () => {
 
     it('should not render the prefix, suffix, and the newlines when an instance participates in a "to satisfy" diff', () => {
       expect(
-        function() {
+        () => {
           clonedExpect({ a: 'aaa', b: 'bbb' }, 'to satisfy', { a: 'foo' });
         },
         'to throw',
@@ -345,7 +345,7 @@ describe('object type', () => {
       });
 
       expect(
-        function() {
+        () => {
           clonedExpect({ quux: 'xuuq', foobar: 'faz' }, 'to equal', {
             quux: 'xuuq',
             foobar: 'baz'
@@ -388,7 +388,7 @@ describe('object type', () => {
 
     it('should process propeties in both inspection and diff in "to equal"', () => {
       expect(
-        function() {
+        () => {
           clonedExpect({ nine: 9, zero: 1, foo: 'bAr' }, 'to equal', {
             nine: 9,
             zero: 0,
@@ -408,7 +408,7 @@ describe('object type', () => {
 
     it('should process propeties in both inspection and diff in "to satsify"', () => {
       expect(
-        function() {
+        () => {
           clonedExpect(
             { nine: 9, zero: 1, foo: 'bAr', baz: undefined },
             'to satisfy',
@@ -430,7 +430,7 @@ describe('object type', () => {
 
     (Object.setPrototypeOf ? it : it.skip)(
       'should process keys from the prototype chain in "to exhaustively satisfy"',
-      function() {
+      () => {
         var fooObject = {
           foo: 'bAr',
           oof: 'should not appear'
@@ -439,7 +439,7 @@ describe('object type', () => {
         Object.setPrototypeOf(chainedObject, fooObject);
 
         expect(
-          function() {
+          () => {
             clonedExpect(chainedObject, 'to exhaustively satisfy', {
               nine: 9,
               foo: 'BaZ',
@@ -489,7 +489,7 @@ describe('object type', () => {
 
     it('should mark keys missing', () => {
       expect(
-        function() {
+        () => {
           clonedExpect(
             new NestedObject({}),
             'to equal',
@@ -507,7 +507,7 @@ describe('object type', () => {
 
     it('should mark keys unecessary', () => {
       expect(
-        function() {
+        () => {
           clonedExpect(
             new NestedObject({ foo: 'bar' }),
             'to equal',

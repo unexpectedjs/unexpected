@@ -4,7 +4,7 @@ describe('to begin with assertion', () => {
 
   it('should throw an error when the expected prefix is the empty string', () => {
     expect(
-      function() {
+      () => {
         expect('foo', 'to begin with', '');
       },
       'to throw',
@@ -21,7 +21,7 @@ describe('to begin with assertion', () => {
     describe('when the assertion fails', () => {
       it('does not include a diff when there is no common prefix', () => {
         expect(
-          function() {
+          () => {
             expect('hello world', 'to begin with', 'foo');
           },
           'to throw exception',
@@ -31,7 +31,7 @@ describe('to begin with assertion', () => {
 
       it('includes a diff when there is a common prefix', () => {
         expect(
-          function() {
+          () => {
             expect('hello world', 'to begin with', 'hell yeah');
           },
           'to throw exception',
@@ -51,7 +51,7 @@ describe('to begin with assertion', () => {
 
       it('builds the diff correctly when the partial match spans more than one line', () => {
         expect(
-          function() {
+          () => {
             expect('f\no\nobar', 'to begin with', 'f\no\nop');
           },
           'to throw exception',
@@ -68,7 +68,7 @@ describe('to begin with assertion', () => {
 
       it('builds the diff correctly when the substring is longer than the subject', () => {
         expect(
-          function() {
+          () => {
             expect('foo', 'to begin with', 'foobar');
           },
           'to throw exception',
@@ -79,7 +79,7 @@ describe('to begin with assertion', () => {
 
     it('builds the diff correctly when the string is truncated with no common prefix', () => {
       expect(
-        function() {
+        () => {
           expect(
             'foobarbaz-AtSomePointThisStringWillBeTruncated',
             'to begin with',
@@ -93,7 +93,7 @@ describe('to begin with assertion', () => {
 
     it('builds the diff correctly when the string contains a space and is truncated', () => {
       expect(
-        function() {
+        () => {
           expect(
             'foobarbaz-StringTruncates AtTheSpace',
             'to begin with',
@@ -107,7 +107,7 @@ describe('to begin with assertion', () => {
 
     it('builds the diff correctly when the string is truncated after a partial match', () => {
       expect(
-        function() {
+        () => {
           expect(
             'foobarbaz-ButAtSomePointThisStringWillBeTruncated',
             'to begin with',
@@ -132,7 +132,7 @@ describe('to begin with assertion', () => {
     describe('when the assertion fails', () => {
       it('produces a diff', () => {
         expect(
-          function() {
+          () => {
             expect('foobarquuxfoo', 'not to begin with', 'foo');
           },
           'to throw',
@@ -152,7 +152,7 @@ describe('to begin with assertion', () => {
 
       it('builds the diff correctly when the prefix contains newlines', () => {
         expect(
-          function() {
+          () => {
             expect('f\no\nobarquuxfoo', 'not to begin with', 'f\no\no');
           },
           'to throw',

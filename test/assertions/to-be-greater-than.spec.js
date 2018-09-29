@@ -8,7 +8,7 @@ describe('greater than assertion', () => {
 
   it('throws when the assertion fails', () => {
     expect(
-      function() {
+      () => {
         expect(0, 'to be greater than', 0);
       },
       'to throw exception',
@@ -18,7 +18,7 @@ describe('greater than assertion', () => {
 
   it('refuses to compare NaN to a number', () => {
     expect(
-      function() {
+      () => {
         expect(NaN, 'not to be greater than', 1);
       },
       'to throw',

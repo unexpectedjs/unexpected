@@ -1,7 +1,7 @@
 var expect = require('../lib');
 it('should not dot out the object in the diff', () => {
   expect(
-    function() {
+    () => {
       expect({ 0: { 0: { 0: { 0: { 0: { 0: {} } } } } } }, 'to equal', {});
     },
     'to throw',

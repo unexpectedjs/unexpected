@@ -2,7 +2,7 @@
 describe('to have values satisfying assertion', () => {
   it('requires a third argument', () => {
     expect(
-      function() {
+      () => {
         expect([1, 2, 3], 'to have values satisfying');
       },
       'to throw',
@@ -17,7 +17,7 @@ describe('to have values satisfying assertion', () => {
 
   it('does not accept a fourth argument', () => {
     expect(
-      function() {
+      () => {
         expect([1], 'to have values satisfying', 1, 2);
       },
       'to throw',
@@ -32,8 +32,8 @@ describe('to have values satisfying assertion', () => {
 
   it('only accepts objects and arrays as the target', () => {
     expect(
-      function() {
-        expect(42, 'to have values satisfying', function(value) {});
+      () => {
+        expect(42, 'to have values satisfying', value => {});
       },
       'to throw',
       'expected 42 to have values satisfying function (value) {}\n' +
@@ -49,7 +49,7 @@ describe('to have values satisfying assertion', () => {
     expect(
       { foo: 0, bar: 1, baz: 2, qux: 3 },
       'to have values satisfying',
-      function(value) {
+      value => {
         expect(value, 'to be a number');
       }
     );
@@ -57,7 +57,7 @@ describe('to have values satisfying assertion', () => {
     expect(
       { foo: '0', bar: '1', baz: '2', qux: '3' },
       'to have values satisfying',
-      function(value) {
+      value => {
         expect(value, 'not to be a number');
       }
     );
@@ -77,8 +77,8 @@ describe('to have values satisfying assertion', () => {
 
   it('fails if the given object is empty', () => {
     expect(
-      function() {
-        expect({}, 'to have values satisfying', function(value) {
+      () => {
+        expect({}, 'to have values satisfying', value => {
           expect(value, 'to equal', '0');
         });
       },
@@ -93,7 +93,7 @@ describe('to have values satisfying assertion', () => {
 
   it('fails for an empty array', () => {
     expect(
-      function() {
+      () => {
         expect([], 'to have values satisfying', 123);
       },
       'to throw',
@@ -104,8 +104,8 @@ describe('to have values satisfying assertion', () => {
 
   it('fails if the given array is empty', () => {
     expect(
-      function() {
-        expect([], 'to have items satisfying', function(item) {
+      () => {
+        expect([], 'to have items satisfying', item => {
           expect(item, 'to be a number');
         });
       },
@@ -119,28 +119,26 @@ describe('to have values satisfying assertion', () => {
   });
 
   it('supports legacy aliases', () => {
-    expect({ foo: '0' }, 'to be a map whose values satisfy', function(value) {
+    expect({ foo: '0' }, 'to be a map whose values satisfy', value => {
       expect(value, 'not to be a number');
     });
 
-    expect({ foo: '0' }, 'to be an object whose values satisfy', function(
-      value
-    ) {
+    expect({ foo: '0' }, 'to be an object whose values satisfy', value => {
       expect(value, 'not to be a number');
     });
 
-    expect({ foo: '0' }, 'to be a hash whose values satisfy', function(value) {
+    expect({ foo: '0' }, 'to be a hash whose values satisfy', value => {
       expect(value, 'not to be a number');
     });
   });
 
   it('fails when the assertion fails', () => {
     expect(
-      function() {
+      () => {
         expect(
           { foo: '0', bar: 1, baz: '2', qux: '3' },
           'to have values satisfying',
-          function(value) {
+          value => {
             expect(value, 'not to be a number');
           }
         );
@@ -152,11 +150,11 @@ describe('to have values satisfying assertion', () => {
 
   it('provides a detailed report of where failures occur', () => {
     expect(
-      function() {
+      () => {
         expect(
           { foo: 0, bar: 1, baz: '2', qux: 3, quux: 4 },
           'to have values satisfying',
-          function(value) {
+          value => {
             expect(value, 'to be a number');
             expect(value, 'to be less than', 4);
           }
@@ -181,13 +179,13 @@ describe('to have values satisfying assertion', () => {
 
   it('indents failure reports of nested assertions correctly', () => {
     expect(
-      function() {
+      () => {
         expect(
           { foo: [0, 1, 2], bar: [4, '5', 6], baz: [7, 8, '9'] },
           'to have values satisfying',
           // prettier-ignore
-          function (arr) {
-            expect(arr, 'to have items satisfying', function (item) {
+          (arr) => {
+            expect(arr, 'to have items satisfying', (item) => {
               expect(item, 'to be a number');
             });
           }
@@ -220,22 +218,21 @@ describe('to have values satisfying assertion', () => {
   describe('delegating to an async assertion', () => {
     var clonedExpect = expect
       .clone()
-      .addAssertion('to be a number after a short delay', function(
-        expect,
-        subject,
-        delay
-      ) {
-        expect.errorMode = 'nested';
+      .addAssertion(
+        'to be a number after a short delay',
+        (expect, subject, delay) => {
+          expect.errorMode = 'nested';
 
-        return expect.promise(function(run) {
-          setTimeout(
-            run(function() {
-              expect(subject, 'to be a number');
-            }),
-            1
-          );
-        });
-      });
+          return expect.promise(run => {
+            setTimeout(
+              run(() => {
+                expect(subject, 'to be a number');
+              }),
+              1
+            );
+          });
+        }
+      );
 
     it('should succeed', () => {
       return clonedExpect(
@@ -278,7 +275,7 @@ describe('to have values satisfying assertion', () => {
 
     it('should fail when the spec is not met only because of the "exhaustively" semantics', () => {
       expect(
-        function() {
+        () => {
           expect(
             [{ foo: 'bar', quux: 'baz' }],
             'to have values exhaustively satisfying',

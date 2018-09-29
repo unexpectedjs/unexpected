@@ -3,11 +3,11 @@ describe('UnexpectedError', () => {
   describe('with a single line message', () => {
     it('should be inspected correctly', () => {
       expect(
-        function() {
+        () => {
           expect(2, 'to equal', 4);
         },
         'to throw',
-        function(err) {
+        err => {
           expect(
             err,
             'to inspect as',
@@ -21,11 +21,11 @@ describe('UnexpectedError', () => {
   describe('with a multiline message', () => {
     it('should be inspected correctly', () => {
       expect(
-        function() {
+        () => {
           expect('foo', 'to equal', 'bar');
         },
         'to throw',
-        function(err) {
+        err => {
           expect(
             err,
             'to inspect as',
@@ -43,11 +43,11 @@ describe('UnexpectedError', () => {
 
   it('#getKeys should return a trimmed-down list', () => {
     expect(
-      function() {
+      () => {
         expect('foo', 'to equal', 'bar');
       },
       'to throw',
-      function(err) {
+      err => {
         expect(expect.findTypeOf(err).getKeys(err), 'to equal', [
           'message',
           'errorMode',
@@ -60,11 +60,11 @@ describe('UnexpectedError', () => {
   describe('when full stack traces is disabled', () => {
     it('trims the stack for node_module/unexpected/ and node_module/unexpected-<plugin-name>/', () => {
       expect(
-        function() {
+        () => {
           expect.fail('wat');
         },
         'to throw',
-        function(err) {
+        err => {
           err.useFullStackTrace = false;
           err._hasSerializedErrorMessage = false;
           err.stack =
@@ -91,11 +91,11 @@ describe('UnexpectedError', () => {
 
     it('trims the stack for node_module\\unexpected\\ and node_module\\unexpected-<plugin-name>\\ (windows paths)', () => {
       expect(
-        function() {
+        () => {
           expect.fail('wat');
         },
         'to throw',
-        function(err) {
+        err => {
           err.useFullStackTrace = false;
           err._hasSerializedErrorMessage = false;
           err.stack =
@@ -122,11 +122,11 @@ describe('UnexpectedError', () => {
 
     it('trims the stack for custom assertions in the consuming code', () => {
       expect(
-        function() {
+        () => {
           expect.fail('wat');
         },
         'to throw',
-        function(err) {
+        err => {
           err.useFullStackTrace = false;
           err._hasSerializedErrorMessage = false;
           err.stack =
@@ -157,11 +157,11 @@ describe('UnexpectedError', () => {
     describe('and the output format is set to html', () => {
       it('shows a helping message about how to turn of stack trace trimming', () => {
         expect(
-          function() {
+          () => {
             expect.fail('wat');
           },
           'to throw',
-          function(err) {
+          err => {
             err.useFullStackTrace = false;
             err._hasSerializedErrorMessage = false;
             err.stack =
@@ -191,11 +191,11 @@ describe('UnexpectedError', () => {
   describe('when full stack traces is enabled', () => {
     it('the initial stack is preserved', () => {
       expect(
-        function() {
+        () => {
           expect.fail('wat');
         },
         'to throw',
-        function(err) {
+        err => {
           err.useFullStackTrace = true;
           err._hasSerializedErrorMessage = false;
           err.stack =
@@ -233,8 +233,8 @@ describe('UnexpectedError', () => {
     ) {
       it('should give up', () => {
         return expect(
-          function() {
-            return expect(function() {
+          () => {
+            return expect(() => {
               try {
                 throw new Error('argh');
               } catch (err) {
@@ -244,7 +244,7 @@ describe('UnexpectedError', () => {
             }, 'not to error');
           },
           'to error',
-          function(err) {
+          err => {
             expect(err.stack, 'to contain', 'foobarquux\n   at yaddayadda');
           }
         );

@@ -30,7 +30,7 @@ if (typeof it === 'function' && shouldApplyPatch) {
       var result;
       try {
         if (async) {
-          fn.call(this, function(err) {
+          fn.call(this, err => {
             if (err) {
               jasmineFail(err);
               done(err);
@@ -51,11 +51,11 @@ if (typeof it === 'function' && shouldApplyPatch) {
 
         if (isPromise) {
           result.then(
-            function() {
+            () => {
               jasmineSuccess();
               done();
             },
-            function(err) {
+            err => {
               jasmineFail(err);
               done(err);
             }
@@ -74,7 +74,7 @@ if (typeof it === 'function' && shouldApplyPatch) {
     };
     return originalIt(title, wrapper);
   };
-  Object.keys(originalIt).forEach(function(methodName) {
+  Object.keys(originalIt).forEach(methodName => {
     it[methodName] = originalIt[methodName];
   });
   it.patchApplied = true;

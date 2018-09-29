@@ -1,9 +1,7 @@
 /*global expect*/
 describe('addAssertion', () => {
   it('is chainable', () => {
-    expect
-      .addAssertion('foo', function() {})
-      .addAssertion('bar', function() {});
+    expect.addAssertion('foo', () => {}).addAssertion('bar', () => {});
 
     expect(expect.assertions, 'to have keys', 'foo', 'bar');
   });
@@ -11,7 +9,7 @@ describe('addAssertion', () => {
   it('supports transfering flags from the custom assertion to nested expect', () => {
     var clonedExpect = expect
       .clone()
-      .addAssertion('[not] to be sorted', function(expect, subject) {
+      .addAssertion('[not] to be sorted', (expect, subject) => {
         expect(subject, 'to be an array');
         expect(subject, '[not] to equal', [].concat(subject).sort());
       });
@@ -19,7 +17,7 @@ describe('addAssertion', () => {
     clonedExpect([1, 2, 3], 'to be sorted');
     clonedExpect([1, 3, 2], 'not to be sorted');
     expect(
-      function() {
+      () => {
         clonedExpect([1, 2, 3], 'not to be sorted');
       },
       'to throw',
@@ -29,13 +27,11 @@ describe('addAssertion', () => {
 
   it('throws when a handler takes more parameters than are specified in the type signature', () => {
     expect(
-      function() {
-        expect.addAssertion('<string> to foobar <number>', function(
-          expect,
-          subject,
-          one,
-          toomany
-        ) {});
+      () => {
+        expect.addAssertion(
+          '<string> to foobar <number>',
+          (expect, subject, one, toomany) => {}
+        );
       },
       'to throw',
       'The provided assertion handler takes 2 parameters, but the type signature specifies a maximum of 1:\n\n    ["<string> to foobar <number>"]'
@@ -45,30 +41,27 @@ describe('addAssertion', () => {
   it('allows a handler with many parameters when the type signature contains varargs', () => {
     expect
       .clone()
-      .addAssertion('<string> to foobar <number+>', function(
-        expect,
-        subject,
-        quite,
-        a,
-        lot
-      ) {});
+      .addAssertion(
+        '<string> to foobar <number+>',
+        (expect, subject, quite, a, lot) => {}
+      );
   });
 
   describe('when overriding an assertion', () => {
     it('uses the most specific version', () => {
       var clonedExpect = expect
         .clone()
-        .addAssertion('<string> to foo', function(expect, subject) {
+        .addAssertion('<string> to foo', (expect, subject) => {
           expect.errorMode = 'bubble';
           expect.fail('old');
         })
-        .addAssertion('<any> to foo', function(expect, subject) {
+        .addAssertion('<any> to foo', (expect, subject) => {
           expect.errorMode = 'bubble';
           expect.fail('new');
         });
 
       expect(
-        function() {
+        () => {
           clonedExpect('bar', 'to foo');
         },
         'to throw',
@@ -80,17 +73,17 @@ describe('addAssertion', () => {
       it('uses the most recently added version', () => {
         var clonedExpect = expect
           .clone()
-          .addAssertion('to foo', function(expect, subject) {
+          .addAssertion('to foo', (expect, subject) => {
             expect.errorMode = 'bubble';
             expect.fail('old');
           })
-          .addAssertion('to foo', function(expect, subject) {
+          .addAssertion('to foo', (expect, subject) => {
             expect.errorMode = 'bubble';
             expect.fail('new');
           });
 
         expect(
-          function() {
+          () => {
             clonedExpect('bar', 'to foo');
           },
           'to throw',
@@ -101,8 +94,8 @@ describe('addAssertion', () => {
   });
 
   it('allows overlapping patterns within a single addAssertion call', () => {
-    expect(function() {
-      expect.clone().addAssertion(['to foo', 'to [really] foo'], function() {});
+    expect(() => {
+      expect.clone().addAssertion(['to foo', 'to [really] foo'], () => {});
     }, 'not to throw');
   });
 
@@ -111,7 +104,7 @@ describe('addAssertion', () => {
       .clone()
       .addAssertion(
         ['[not] to be foo', 'to be foo aliased without the not flag'],
-        function(expect, subject) {
+        (expect, subject) => {
           expect(subject, '[not] to equal', 'foo');
         }
       );
@@ -121,7 +114,7 @@ describe('addAssertion', () => {
 
     clonedExpect('bar', 'not to be foo');
     clonedExpect(
-      function() {
+      () => {
         clonedExpect('bar', 'to be foo aliased without the not flag');
       },
       'to throw',
@@ -135,8 +128,8 @@ describe('addAssertion', () => {
   describe('pattern', () => {
     it('must be a non-empty string', () => {
       expect(
-        function() {
-          expect.addAssertion('', function() {});
+        () => {
+          expect.addAssertion('', () => {});
         },
         'to throw',
         'Assertion patterns must be a non-empty string'
@@ -145,8 +138,8 @@ describe('addAssertion', () => {
 
     it("can't start or end with whitespace", () => {
       expect(
-        function() {
-          expect.addAssertion('   ', function() {});
+        () => {
+          expect.addAssertion('   ', () => {});
         },
         'to throw',
         'Assertion patterns can\'t start or end with whitespace:\n\n    "   "'
@@ -155,8 +148,8 @@ describe('addAssertion', () => {
 
     it("can't start with whitespace", () => {
       expect(
-        function() {
-          expect.addAssertion(' foo', function() {});
+        () => {
+          expect.addAssertion(' foo', () => {});
         },
         'to throw',
         'Assertion patterns can\'t start or end with whitespace:\n\n    " foo"'
@@ -165,8 +158,8 @@ describe('addAssertion', () => {
 
     it("can't end with whitespace", () => {
       expect(
-        function() {
-          expect.addAssertion('foo   ', function() {});
+        () => {
+          expect.addAssertion('foo   ', () => {});
         },
         'to throw',
         'Assertion patterns can\'t start or end with whitespace:\n\n    "foo   "'
@@ -175,16 +168,16 @@ describe('addAssertion', () => {
 
     it('must not contain unbalanced brackets', () => {
       expect(
-        function() {
-          expect.addAssertion('foo [', function() {});
+        () => {
+          expect.addAssertion('foo [', () => {});
         },
         'to throw',
         "Assertion patterns must not contain unbalanced brackets: 'foo ['"
       );
 
       expect(
-        function() {
-          expect.addAssertion('foo ]', function() {});
+        () => {
+          expect.addAssertion('foo ]', () => {});
         },
         'to throw',
         "Assertion patterns must not contain unbalanced brackets: 'foo ]'"
@@ -193,16 +186,16 @@ describe('addAssertion', () => {
 
     it('must not contain unbalanced parentheses', () => {
       expect(
-        function() {
-          expect.addAssertion('foo (', function() {});
+        () => {
+          expect.addAssertion('foo (', () => {});
         },
         'to throw',
         "Assertion patterns must not contain unbalanced parentheses: 'foo ('"
       );
 
       expect(
-        function() {
-          expect.addAssertion('foo )', function() {});
+        () => {
+          expect.addAssertion('foo )', () => {});
         },
         'to throw',
         "Assertion patterns must not contain unbalanced parentheses: 'foo )'"
@@ -211,8 +204,8 @@ describe('addAssertion', () => {
 
     it('must not only contain flags', () => {
       expect(
-        function() {
-          expect.addAssertion('[foo] [bar]', function() {});
+        () => {
+          expect.addAssertion('[foo] [bar]', () => {});
         },
         'to throw',
         'Assertion patterns must not only contain flags'
@@ -222,8 +215,8 @@ describe('addAssertion', () => {
     describe('flags', () => {
       it('must not be empty', () => {
         expect(
-          function() {
-            expect.addAssertion('foo []', function() {});
+          () => {
+            expect.addAssertion('foo []', () => {});
           },
           'to throw',
           "Assertion patterns must not contain empty flags: 'foo []'"
@@ -232,16 +225,16 @@ describe('addAssertion', () => {
 
       it('must not contain brackets', () => {
         expect(
-          function() {
-            expect.addAssertion('foo [[bar]', function() {});
+          () => {
+            expect.addAssertion('foo [[bar]', () => {});
           },
           'to throw',
           "Assertion patterns must not contain flags with brackets: 'foo [[bar]'"
         );
 
         expect(
-          function() {
-            expect.addAssertion('foo [[bar]]', function() {});
+          () => {
+            expect.addAssertion('foo [[bar]]', () => {});
           },
           'to throw',
           "Assertion patterns must not contain flags with brackets: 'foo [[bar]]'"
@@ -250,16 +243,16 @@ describe('addAssertion', () => {
 
       it('must not contain parentheses', () => {
         expect(
-          function() {
-            expect.addAssertion('foo [(bar]', function() {});
+          () => {
+            expect.addAssertion('foo [(bar]', () => {});
           },
           'to throw',
           "Assertion patterns must not contain flags with parentheses: 'foo [(bar]'"
         );
 
         expect(
-          function() {
-            expect.addAssertion('foo [bar)]', function() {});
+          () => {
+            expect.addAssertion('foo [bar)]', () => {});
           },
           'to throw',
           "Assertion patterns must not contain flags with parentheses: 'foo [bar)]'"
@@ -271,7 +264,7 @@ describe('addAssertion', () => {
       it('can be empty', () => {
         var clonedExpect = expect
           .clone()
-          .addAssertion('to foo (|bar)', function(expect, subject) {
+          .addAssertion('to foo (|bar)', (expect, subject) => {
             expect(subject, 'to equal', 'foo');
           });
         clonedExpect('foo', 'to foo');
@@ -280,16 +273,16 @@ describe('addAssertion', () => {
 
       it('must not contain brackets', () => {
         expect(
-          function() {
-            expect.addAssertion('foo ([bar)', function() {});
+          () => {
+            expect.addAssertion('foo ([bar)', () => {});
           },
           'to throw',
           "Assertion patterns must not contain alternations with brackets: 'foo ([bar)'"
         );
 
         expect(
-          function() {
-            expect.addAssertion('foo (bar])', function() {});
+          () => {
+            expect.addAssertion('foo (bar])', () => {});
           },
           'to throw',
           "Assertion patterns must not contain alternations with brackets: 'foo (bar])'"
@@ -298,16 +291,16 @@ describe('addAssertion', () => {
 
       it('must not contain parentheses', () => {
         expect(
-          function() {
-            expect.addAssertion('foo ((bar)', function() {});
+          () => {
+            expect.addAssertion('foo ((bar)', () => {});
           },
           'to throw',
           "Assertion patterns must not contain alternations with parentheses: 'foo ((bar)'"
         );
 
         expect(
-          function() {
-            expect.addAssertion('foo ((bar))', function() {});
+          () => {
+            expect.addAssertion('foo ((bar))', () => {});
           },
           'to throw',
           "Assertion patterns must not contain alternations with parentheses: 'foo ((bar))'"
@@ -338,26 +331,26 @@ describe('addAssertion', () => {
             return output;
           }
         })
-        .addAssertion('<box> to be foo', function(expect, subject) {
+        .addAssertion('<box> to be foo', (expect, subject) => {
           expect(subject.value, 'to be', 'foo');
         })
-        .addAssertion('<string> to be foo', function(expect, subject) {
+        .addAssertion('<string> to be foo', (expect, subject) => {
           expect(subject, 'to be', 'foo');
         })
-        .addAssertion('<any> to be foo', function(expect, subject) {
+        .addAssertion('<any> to be foo', (expect, subject) => {
           expect(String(subject), 'to equal', 'foo');
         });
       clonedExpect('foo', 'to be foo');
       clonedExpect(new Box('foo'), 'to be foo');
       expect(
-        function() {
+        () => {
           clonedExpect('bar', 'to be foo');
         },
         'to throw',
         "expected 'bar' to be foo\n" + '\n' + '-bar\n' + '+foo'
       );
       expect(
-        function() {
+        () => {
           clonedExpect(new Box('bar'), 'to be foo');
         },
         'to throw',
@@ -399,7 +392,7 @@ describe('addAssertion', () => {
       beforeEach(() => {
         clonedExpect = expect
           .clone()
-          .addAssertion('[not] to be sorted', function(expect, subject) {
+          .addAssertion('[not] to be sorted', (expect, subject) => {
             expect.errorMode = errorMode;
             expect(subject, 'to be an array');
             expect(subject, '[not] to equal', [].concat(subject).sort());
@@ -409,7 +402,7 @@ describe('addAssertion', () => {
       it('errorMode=nested nest the error message of expect failures in the assertion under the assertion standard message', () => {
         errorMode = 'nested';
         expect(
-          function() {
+          () => {
             clonedExpect(42, 'to be sorted');
           },
           'to throw',
@@ -420,11 +413,11 @@ describe('addAssertion', () => {
       it('errorMode=nested does not hoist the label of the leaf assertion', () => {
         errorMode = 'nested';
         expect(
-          function() {
+          () => {
             clonedExpect([3, 2, 1], 'to be sorted');
           },
           'to throw',
-          function(err) {
+          err => {
             expect(err.label, 'to be undefined');
           }
         );
@@ -433,7 +426,7 @@ describe('addAssertion', () => {
       it('errorMode=bubble bubbles uses the error message of expect failures in the assertion', () => {
         errorMode = 'bubble';
         expect(
-          function() {
+          () => {
             clonedExpect(42, 'to be sorted');
           },
           'to throw',
@@ -444,7 +437,7 @@ describe('addAssertion', () => {
       it('errorMode=bubble only includes the diff once', () => {
         errorMode = 'bubble';
         expect(
-          function() {
+          () => {
             clonedExpect([3, 2, 1], 'to be sorted');
           },
           'to throw',
@@ -463,7 +456,7 @@ describe('addAssertion', () => {
       it('errorMode=diff only includes the diff', () => {
         errorMode = 'diff';
         expect(
-          function() {
+          () => {
             clonedExpect([3, 2, 1], 'to be sorted');
           },
           'to throw',
@@ -480,7 +473,7 @@ describe('addAssertion', () => {
       it('errorMode=default uses the standard error message of the assertion', () => {
         errorMode = 'default';
         expect(
-          function() {
+          () => {
             clonedExpect(42, 'to be sorted');
           },
           'to throw',
@@ -491,13 +484,13 @@ describe('addAssertion', () => {
       it('avoids repeating large subjects', () => {
         var clonedExpect = expect
           .clone()
-          .addAssertion('to foobarbaz', function(expect, subject) {
+          .addAssertion('to foobarbaz', (expect, subject) => {
             expect.errorMode = 'nested';
             expect(subject, 'to satisfy', { foo: 123 });
           });
 
         expect(
-          function() {
+          () => {
             clonedExpect(
               {
                 a:
@@ -530,35 +523,32 @@ describe('addAssertion', () => {
       beforeEach(() => {
         clonedExpect = expect
           .clone()
-          .addAssertion('to be sorted after delay', function(
-            expect,
-            subject,
-            delay,
-            done
-          ) {
-            expect.errorMode = errorMode;
-            expect.argsOutput.pop(); // Don't let the function be inspected in case of failure
-            setTimeout(function() {
-              try {
-                expect(subject, 'to be an array');
-                expect(subject, 'to equal', [].concat(subject).sort());
-              } catch (e) {
-                done(e);
-              }
-            }, delay);
-          })
-          .addAssertion('to be sorted after a while', function(
-            expect,
-            subject,
-            done
-          ) {
-            expect(subject, 'to be sorted after delay', 10, done);
-          });
+          .addAssertion(
+            'to be sorted after delay',
+            (expect, subject, delay, done) => {
+              expect.errorMode = errorMode;
+              expect.argsOutput.pop(); // Don't let the function be inspected in case of failure
+              setTimeout(() => {
+                try {
+                  expect(subject, 'to be an array');
+                  expect(subject, 'to equal', [].concat(subject).sort());
+                } catch (e) {
+                  done(e);
+                }
+              }, delay);
+            }
+          )
+          .addAssertion(
+            'to be sorted after a while',
+            (expect, subject, done) => {
+              expect(subject, 'to be sorted after delay', 10, done);
+            }
+          );
       });
 
-      it('errorMode=nested nest the error message of expect failures in the assertion under the assertion standard message', function(done) {
+      it('errorMode=nested nest the error message of expect failures in the assertion under the assertion standard message', done => {
         errorMode = 'nested';
-        clonedExpect(42, 'to be sorted after delay', 1, function(err) {
+        clonedExpect(42, 'to be sorted after delay', 1, err => {
           expect(
             err,
             'to have message',
@@ -568,17 +558,17 @@ describe('addAssertion', () => {
         });
       });
 
-      it('errorMode=bubble bubbles uses the error message of expect failures in the assertion', function(done) {
+      it('errorMode=bubble bubbles uses the error message of expect failures in the assertion', done => {
         errorMode = 'bubble';
-        clonedExpect(42, 'to be sorted after delay', 1, function(err) {
+        clonedExpect(42, 'to be sorted after delay', 1, err => {
           expect(err, 'to have message', 'expected 42 to be an array');
           done();
         });
       });
 
-      it('errorMode=diff only includes the diff', function(done) {
+      it('errorMode=diff only includes the diff', done => {
         errorMode = 'diff';
-        clonedExpect([3, 2, 1], 'to be sorted after delay', 1, function(err) {
+        clonedExpect([3, 2, 1], 'to be sorted after delay', 1, err => {
           expect(
             err,
             'to have message',
@@ -594,9 +584,9 @@ describe('addAssertion', () => {
         });
       });
 
-      it('errorMode=default uses the standard error message of the assertion', function(done) {
+      it('errorMode=default uses the standard error message of the assertion', done => {
         errorMode = 'default';
-        clonedExpect(42, 'to be sorted after delay', 1, function(err) {
+        clonedExpect(42, 'to be sorted after delay', 1, err => {
           expect(
             err,
             'to have message',
@@ -607,9 +597,9 @@ describe('addAssertion', () => {
       });
 
       describe('nested inside another custom assertion', () => {
-        it('errorMode=nested nest the error message of expect failures in the assertion under the assertion standard message', function(done) {
+        it('errorMode=nested nest the error message of expect failures in the assertion under the assertion standard message', done => {
           errorMode = 'nested';
-          clonedExpect(42, 'to be sorted after delay', 1, function(err) {
+          clonedExpect(42, 'to be sorted after delay', 1, err => {
             expect(
               err,
               'to have message',
@@ -619,17 +609,17 @@ describe('addAssertion', () => {
           });
         });
 
-        it('errorMode=bubble bubbles uses the error message of expect failures in the assertion', function(done) {
+        it('errorMode=bubble bubbles uses the error message of expect failures in the assertion', done => {
           errorMode = 'bubble';
-          clonedExpect(42, 'to be sorted after delay', 1, function(err) {
+          clonedExpect(42, 'to be sorted after delay', 1, err => {
             expect(err, 'to have message', 'expected 42 to be an array');
             done();
           });
         });
 
-        it('errorMode=default uses the standard error message of the assertion', function(done) {
+        it('errorMode=default uses the standard error message of the assertion', done => {
           errorMode = 'default';
-          clonedExpect(42, 'to be sorted after delay', 1, function(err) {
+          clonedExpect(42, 'to be sorted after delay', 1, err => {
             expect(
               err,
               'to have message',
@@ -645,23 +635,21 @@ describe('addAssertion', () => {
       beforeEach(() => {
         clonedExpect = expect
           .clone()
-          .addAssertion('to be sorted after delay', function(
-            expect,
-            subject,
-            delay,
-            done
-          ) {
-            expect.errorMode = errorMode;
-            return expect.promise(function(run) {
-              setTimeout(
-                run(function() {
-                  expect(subject, 'to be an array');
-                  expect(subject, 'to equal', [].concat(subject).sort());
-                }),
-                delay
-              );
-            });
-          });
+          .addAssertion(
+            'to be sorted after delay',
+            (expect, subject, delay, done) => {
+              expect.errorMode = errorMode;
+              return expect.promise(run => {
+                setTimeout(
+                  run(() => {
+                    expect(subject, 'to be an array');
+                    expect(subject, 'to equal', [].concat(subject).sort());
+                  }),
+                  delay
+                );
+              });
+            }
+          );
       });
 
       it('errorMode=nested nest the error message of expect failures in the assertion under the assertion standard message', () => {
@@ -740,7 +728,7 @@ describe('addAssertion', () => {
       it('serializes the error with the error mode that was in effect at the time of its creation', () => {
         var clonedExpect = expect
           .clone()
-          .addAssertion('to be equal to foo', function(expect, subject) {
+          .addAssertion('to be equal to foo', (expect, subject) => {
             expect.errorMode = 'nested';
             try {
               expect(subject, 'to equal', 'foo');
@@ -751,7 +739,7 @@ describe('addAssertion', () => {
           });
 
         expect(
-          function() {
+          () => {
             clonedExpect('bar', 'to be equal to foo');
           },
           'to throw',
@@ -768,11 +756,11 @@ describe('addAssertion', () => {
   it('nested expects throws if the assertion does not exists', () => {
     var clonedExpect = expect
       .clone()
-      .addAssertion('to be foo', function theCustomAssertion(expect, subject) {
+      .addAssertion('to be foo', (expect, subject) => {
         expect(subject, 'to bee', 'foo');
       });
     expect(
-      function() {
+      () => {
         clonedExpect('foo', 'to be foo');
       },
       'to throw exception',
@@ -782,8 +770,8 @@ describe('addAssertion', () => {
 
   it('throws if the first parameter is not a string or an array', () => {
     expect(
-      function() {
-        expect.addAssertion(123, function(expect, subject) {});
+      () => {
+        expect.addAssertion(123, (expect, subject) => {});
       },
       'to throw',
       'Syntax: expect.addAssertion(<string|array[string]>, function (expect, subject, ...) { ... });'
@@ -792,7 +780,7 @@ describe('addAssertion', () => {
 
   it('throws if the second parameter is not a function', () => {
     expect(
-      function() {
+      () => {
         expect.addAssertion('<string> to be foo', 123);
       },
       'to throw',
@@ -802,11 +790,12 @@ describe('addAssertion', () => {
 
   it('throws with an extended error message if the pre-Unexpected 10 string type syntax is used', () => {
     expect(
-      function() {
-        expect.addAssertion('string', '[not] to be foo', function(
-          expect,
-          subject
-        ) {});
+      () => {
+        expect.addAssertion(
+          'string',
+          '[not] to be foo',
+          (expect, subject) => {}
+        );
       },
       'to throw',
       'Syntax: expect.addAssertion(<string|array[string]>, function (expect, subject, ...) { ... });\n' +
@@ -817,11 +806,12 @@ describe('addAssertion', () => {
 
   it('throws with an extended error message if the pre-Unexpected 10 array type syntax is used', () => {
     expect(
-      function() {
-        expect.addAssertion(['string', 'number'], '[not] to be foo', function(
-          expect,
-          subject
-        ) {});
+      () => {
+        expect.addAssertion(
+          ['string', 'number'],
+          '[not] to be foo',
+          (expect, subject) => {}
+        );
       },
       'to throw',
       'Syntax: expect.addAssertion(<string|array[string]>, function (expect, subject, ...) { ... });\n' +
@@ -832,12 +822,12 @@ describe('addAssertion', () => {
 
   it('makes expect.it available inside a custom assertion', () => {
     var clonedExpect = expect.clone();
-    clonedExpect.addAssertion('to foo', function(expect, subject) {
+    clonedExpect.addAssertion('to foo', (expect, subject) => {
       expect.it('to equal', 'foo')(subject);
     });
     clonedExpect('foo', 'to foo');
     expect(
-      function() {
+      () => {
         clonedExpect('bar', 'to foo');
       },
       'to throw',

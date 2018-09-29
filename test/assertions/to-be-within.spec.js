@@ -12,14 +12,14 @@ describe('within assertion', () => {
 
   it('throws when the assertion fails', () => {
     expect(
-      function() {
+      () => {
         expect(4, 'not to be within', 0, 4);
       },
       'to throw exception',
       'expected 4 not to be within 0..4'
     );
     expect(
-      function() {
+      () => {
         expect(null, 'not to be within', 0, 4);
       },
       'to throw exception',
@@ -34,7 +34,7 @@ describe('within assertion', () => {
 
   it('throws with the correct error message when the end points are strings', () => {
     expect(
-      function() {
+      () => {
         expect('a', 'to be within', 'c', 'd');
       },
       'to throw exception',

@@ -9,7 +9,7 @@ describe('to have property assertion', () => {
     expect({ a: 'b' }, 'not to have property', 'b');
     expect({ '"a"': 'b' }, 'to have own property', '"a"');
     expect(Object.create({ a: 'b' }), 'not to have own property', 'a');
-    expect(function() {}, 'to have property', 'toString');
+    expect(() => {}, 'to have property', 'toString');
   });
 
   describe('property descriptor', () => {
@@ -38,21 +38,21 @@ describe('to have property assertion', () => {
 
     it('throws when assertion fails', () => {
       expect(
-        function() {
+        () => {
           expect(subject, 'to have enumerable property', 'enumFalse');
         },
         'to throw exception',
         "expected { a: 'b' } to have enumerable property 'enumFalse'"
       );
       expect(
-        function() {
+        () => {
           expect(subject, 'to have configurable property', 'configFalse');
         },
         'to throw exception',
         "expected { a: 'b' } to have configurable property 'configFalse'"
       );
       expect(
-        function() {
+        () => {
           expect(subject, 'to have writable property', 'writableFalse');
         },
         'to throw exception',
@@ -63,7 +63,7 @@ describe('to have property assertion', () => {
 
   it('throws when the assertion fails', () => {
     expect(
-      function() {
+      () => {
         expect({ a: 'b' }, 'to have property', 'b');
       },
       'to throw exception',
@@ -71,7 +71,7 @@ describe('to have property assertion', () => {
     );
 
     expect(
-      function() {
+      () => {
         expect(null, 'to have property', 'b');
       },
       'to throw exception',
@@ -84,7 +84,7 @@ describe('to have property assertion', () => {
     );
 
     expect(
-      function() {
+      () => {
         expect({ a: 'b' }, 'to have property', 'a', 'c');
       },
       'to throw exception',
@@ -95,7 +95,7 @@ describe('to have property assertion', () => {
     );
 
     expect(
-      function() {
+      () => {
         expect({ a: 'b' }, 'to have own property', 'a', 'c');
       },
       'to throw exception',
@@ -106,7 +106,7 @@ describe('to have property assertion', () => {
     );
 
     expect(
-      function() {
+      () => {
         // property expectations ignores value if property
         expect(null, 'not to have property', 'a', 'b');
       },
@@ -119,7 +119,7 @@ describe('to have property assertion', () => {
     );
 
     expect(
-      function() {
+      () => {
         // property expectations on value expects the property to be present
         expect(null, 'not to have own property', 'a', 'b');
       },
@@ -134,7 +134,7 @@ describe('to have property assertion', () => {
 
   it('does not support the not-flag in combination with a value argument', () => {
     expect(
-      function() {
+      () => {
         expect({ a: 'a' }, 'not to have property', 'a', 'a');
       },
       'to throw',
@@ -146,7 +146,7 @@ describe('to have property assertion', () => {
     );
 
     expect(
-      function() {
+      () => {
         expect({ a: 'a' }, 'not to have own property', 'a', 'a');
       },
       'to throw',

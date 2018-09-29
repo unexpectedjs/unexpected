@@ -11,7 +11,7 @@ describe('to be one of', () => {
 
   it('throws when assertions fail', () => {
     expect(
-      function() {
+      () => {
         expect(1, 'to be one of', [0, 2]);
       },
       'to throw exception',
@@ -19,7 +19,7 @@ describe('to be one of', () => {
     );
 
     expect(
-      function() {
+      () => {
         expect(1, 'not to be one of', [0, 1]);
       },
       'to throw exception',

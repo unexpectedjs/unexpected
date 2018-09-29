@@ -4,7 +4,7 @@ describe('expect.it', () => {
     var expectation = expect.it('to be greater than', 14);
     expectation(20);
     expect(
-      function() {
+      () => {
         expectation(10);
       },
       'to throw',
@@ -33,7 +33,7 @@ describe('expect.it', () => {
   it('does not catch errors that are not thrown by unexpected', () => {
     var clonedExpect = expect
       .clone()
-      .addAssertion('explode', function(expect, subject) {
+      .addAssertion('explode', (expect, subject) => {
         throw new Error('Explosion');
       });
 
@@ -47,7 +47,7 @@ describe('expect.it', () => {
         .and('to be less than', 14)
         .and('to be negative');
       expect(
-        function() {
+        () => {
           expectation(20);
         },
         'to throw',
@@ -64,7 +64,7 @@ describe('expect.it', () => {
 
       expectation(20);
       expect(
-        function() {
+        () => {
           compositeExpectation(20);
         },
         'to throw',
@@ -79,7 +79,7 @@ describe('expect.it', () => {
         .and('to be less than', 14)
         .and('to be negative');
       expect(
-        function() {
+        () => {
           expectation(8);
         },
         'to throw',
@@ -96,7 +96,7 @@ describe('expect.it', () => {
         .it('to be a number')
         .or('to be a string')
         .or('to be an array');
-      expect(function() {
+      expect(() => {
         expectation('success');
       }, 'not to throw');
     });
@@ -109,7 +109,7 @@ describe('expect.it', () => {
         .and('to have length', 6)
         .or('to be an array');
       expect(
-        function() {
+        () => {
           expectation('foobarbaz');
         },
         'to throw',
@@ -130,7 +130,7 @@ describe('expect.it', () => {
         .or('to be a string')
         .or('to be an array');
       expect(
-        function() {
+        () => {
           expectation(true);
         },
         'to throw',
@@ -147,7 +147,7 @@ describe('expect.it', () => {
 
       expectation(20);
       expect(
-        function() {
+        () => {
           compositeExpectation(20);
           compositeExpectation(true);
         },
@@ -160,45 +160,36 @@ describe('expect.it', () => {
   describe('with async assertions', () => {
     var clonedExpect = expect
       .clone()
-      .addAssertion('to be a number after a short delay', function(
-        expect,
-        subject
-      ) {
+      .addAssertion('to be a number after a short delay', (expect, subject) => {
         expect.errorMode = 'nested';
 
-        return expect.promise(function(run) {
+        return expect.promise(run => {
           setTimeout(
-            run(function() {
+            run(() => {
               expect(subject, 'to be a number');
             }),
             1
           );
         });
       })
-      .addAssertion('to be finite after a short delay', function(
-        expect,
-        subject
-      ) {
+      .addAssertion('to be finite after a short delay', (expect, subject) => {
         expect.errorMode = 'nested';
 
-        return expect.promise(function(run) {
+        return expect.promise(run => {
           setTimeout(
-            run(function() {
+            run(() => {
               expect(subject, 'to be finite');
             }),
             1
           );
         });
       })
-      .addAssertion('to be a string after a short delay', function(
-        expect,
-        subject
-      ) {
+      .addAssertion('to be a string after a short delay', (expect, subject) => {
         expect.errorMode = 'nested';
 
-        return expect.promise(function(run) {
+        return expect.promise(run => {
           setTimeout(
-            run(function() {
+            run(() => {
               expect(subject, 'to be a string');
             }),
             1
@@ -267,7 +258,7 @@ describe('expect.it', () => {
 
   it('should not swallow a "missing assertion" error when using an expect.it(...).or(...) construct', () => {
     expect(
-      function() {
+      () => {
         expect(
           'foo',
           'to satisfy',
@@ -285,7 +276,7 @@ describe('expect.it', () => {
 
   it('should fail with a "missing assertion" error even when it is not the first failing one in an "and" group', () => {
     expect(
-      function() {
+      () => {
         expect(
           'foo',
           'to satisfy',
@@ -316,14 +307,14 @@ describe('expect.it', () => {
   describe('with forwarding of flags', () => {
     var clonedExpect = expect
       .clone()
-      .addAssertion('<object> [not] to have a foo property of bar', function(
-        expect,
-        subject
-      ) {
-        return expect(subject, 'to satisfy', {
-          foo: expect.it('[not] to equal', 'bar')
-        });
-      });
+      .addAssertion(
+        '<object> [not] to have a foo property of bar',
+        (expect, subject) => {
+          return expect(subject, 'to satisfy', {
+            foo: expect.it('[not] to equal', 'bar')
+          });
+        }
+      );
 
     it('should succeed', () => {
       clonedExpect({ quux: 123 }, 'not to have a foo property of bar');
@@ -331,7 +322,7 @@ describe('expect.it', () => {
 
     it('should fail with a diff', () => {
       return expect(
-        function() {
+        () => {
           clonedExpect({ foo: 'bar' }, 'not to have a foo property of bar');
         },
         'to throw',
@@ -346,15 +337,15 @@ describe('expect.it', () => {
 
   describe('when passed a function', () => {
     it('should succeed', () => {
-      expect.it(function(value) {
+      expect.it(value => {
         expect(value, 'to equal', 'foo');
       })('foo');
     });
 
     it('should fail with a diff', () => {
       expect(
-        function() {
-          expect.it(function(value) {
+        () => {
+          expect.it(value => {
             expect(value, 'to equal', 'bar');
           })('foo');
         },
@@ -365,8 +356,8 @@ describe('expect.it', () => {
 
     it('should fail when passed more than two arguments', () => {
       expect(
-        function() {
-          expect.it(function(value) {
+        () => {
+          expect.it(value => {
             expect(value, 'to equal', 'bar');
           }, 'yadda')('foo');
         },

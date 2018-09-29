@@ -7,7 +7,7 @@ describe('addType', () => {
 
   it('throws an expection if the type has an empty or undefined name', () => {
     expect(
-      function() {
+      () => {
         clonedExpect.addType({});
       },
       'to throw',
@@ -17,7 +17,7 @@ describe('addType', () => {
 
   it('throws an expection if the base type does not exist', () => {
     expect(
-      function() {
+      () => {
         clonedExpect.addType({
           name: 'foo',
           base: 'barquux',
@@ -33,7 +33,7 @@ describe('addType', () => {
 
   it('throws an expection if the type has a name of "assertion"', () => {
     expect(
-      function() {
+      () => {
         clonedExpect.addType({ name: 'assertion', identify: false });
       },
       'to throw',
@@ -43,7 +43,7 @@ describe('addType', () => {
 
   it('throw an expection if the type does not specify a correct identify field', () => {
     expect(
-      function() {
+      () => {
         clonedExpect.addType({ name: 'wat' });
       },
       'to throw',
@@ -51,7 +51,7 @@ describe('addType', () => {
     );
 
     expect(
-      function() {
+      () => {
         clonedExpect.addType({ name: 'wat', identify: true });
       },
       'to throw',
@@ -59,7 +59,7 @@ describe('addType', () => {
     );
 
     expect(
-      function() {
+      () => {
         clonedExpect.addType({ name: 'wat', identify: 'wat' });
       },
       'to throw',
@@ -69,7 +69,7 @@ describe('addType', () => {
 
   it('throws an expection if a type of that name already exists', () => {
     expect(
-      function() {
+      () => {
         clonedExpect.addType({ name: 'Promise', identify: false });
       },
       'to throw',
@@ -79,7 +79,7 @@ describe('addType', () => {
 
   it('throws an expection if the type starts with .', () => {
     expect(
-      function() {
+      () => {
         clonedExpect.addType({ name: '.foo' });
       },
       'to throw',
@@ -89,7 +89,7 @@ describe('addType', () => {
 
   it('throws an expection if the type ends with .', () => {
     expect(
-      function() {
+      () => {
         clonedExpect.addType({ name: 'foo.' });
       },
       'to throw',
@@ -99,7 +99,7 @@ describe('addType', () => {
 
   it('throws an expection if the type contains non-alphanumeric chars', () => {
     expect(
-      function() {
+      () => {
         clonedExpect.addType({ name: 'ø' });
       },
       'to throw',
@@ -149,7 +149,7 @@ describe('addType', () => {
 
       it('shows a diff in case of a mismatch', () => {
         expect(
-          function() {
+          () => {
             clonedExpect(box(box(123)), 'to equal', box(box(456)));
           },
           'to throw',
@@ -191,7 +191,7 @@ describe('addType', () => {
 
       it('shows a diff in case of a mismatch', () => {
         expect(
-          function() {
+          () => {
             clonedExpect(box(box(123)), 'to equal', box(box(456)));
           },
           'to throw',
@@ -205,7 +205,7 @@ describe('addType', () => {
 
       it('should include the diff when one is available', () => {
         expect(
-          function() {
+          () => {
             clonedExpect(box('abc'), 'to equal', box('abe'));
           },
           'to throw',
@@ -248,7 +248,7 @@ describe('addType', () => {
       });
 
       expect(
-        function() {
+        () => {
           clonedExpect(box('abc'), 'to equal', box('abe'));
         },
         'to throw',
@@ -278,7 +278,7 @@ describe('addType', () => {
     describe('#inspect', () => {
       it('bails out if passed the wrong parameters', () => {
         expect(
-          function() {
+          () => {
             clonedExpect.getType('number').baseType.inspect();
           },
           'to throw',
@@ -321,9 +321,7 @@ describe('addType', () => {
         expect(
           clonedExpect
             .getType('bar')
-            .baseType.inspect(null, 3, clonedExpect.createOutput(), function(
-              value
-            ) {
+            .baseType.inspect(null, 3, clonedExpect.createOutput(), value => {
               return expect.createOutput().appendInspected(value);
             })
             .toString('text'),
@@ -336,7 +334,7 @@ describe('addType', () => {
     describe('#diff', () => {
       it('bails out if passed the wrong parameters', () => {
         expect(
-          function() {
+          () => {
             clonedExpect.getType('number').baseType.diff();
           },
           'to throw',

@@ -17,7 +17,7 @@ describe('to match assertion', () => {
 
   it('throws when the assertion fails', () => {
     expect(
-      function() {
+      () => {
         expect('test', 'to match', /foo/);
       },
       'to throw exception',
@@ -26,7 +26,7 @@ describe('to match assertion', () => {
   });
 
   it('should provide the return value of String.prototype.match as the fulfillment value', () => {
-    return expect('foo', 'to match', /(f)(o)/).then(function(captures) {
+    return expect('foo', 'to match', /(f)(o)/).then(captures => {
       expect(captures, 'to satisfy', {
         0: 'fo',
         1: 'f',
@@ -38,7 +38,7 @@ describe('to match assertion', () => {
   });
 
   it('should provide the captured values and the index as the fulfillment value so that the captures are spreadable', () => {
-    return expect('foo', 'to match', /(f)(o)/).spread(function($0, $1, $2) {
+    return expect('foo', 'to match', /(f)(o)/).spread(($0, $1, $2) => {
       expect($0, 'to equal', 'fo');
       expect($1, 'to equal', 'f');
       expect($2, 'to equal', 'o');
@@ -47,26 +47,25 @@ describe('to match assertion', () => {
 
   describe('with a regular expression that has the global flag', () => {
     it('should provide the return value of String.prototype.match as the fulfillment value', () => {
-      return expect('abc abc', 'to match', /a(b)c/g).then(function(captures) {
+      return expect('abc abc', 'to match', /a(b)c/g).then(captures => {
         expect(captures, 'to equal', ['abc', 'abc']);
       });
     });
 
     it('should provide the captured values and the index as the fulfillment value so that the matched values are spreadable', () => {
-      return expect('abc abc', 'to match', /a(b)c/g).spread(function(
-        firstMatch,
-        secondMatch
-      ) {
-        expect(firstMatch, 'to equal', 'abc');
-        expect(secondMatch, 'to equal', 'abc');
-      });
+      return expect('abc abc', 'to match', /a(b)c/g).spread(
+        (firstMatch, secondMatch) => {
+          expect(firstMatch, 'to equal', 'abc');
+          expect(secondMatch, 'to equal', 'abc');
+        }
+      );
     });
   });
 
   describe('with the not flag', () => {
     it('provides a diff when the assertion fails', () => {
       expect(
-        function() {
+        () => {
           expect('barfooquuxfoobaz', 'not to match', /foo/);
         },
         'to throw',
@@ -79,7 +78,7 @@ describe('to match assertion', () => {
 
     it('handles newlines in the matched text', () => {
       expect(
-        function() {
+        () => {
           expect('barfo\noquuxfoobaz', 'not to match', /fo\no/);
         },
         'to throw',

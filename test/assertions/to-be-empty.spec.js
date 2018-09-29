@@ -15,7 +15,7 @@ describe('empty assertion', () => {
 
   it('throws when the assertion fails', () => {
     expect(
-      function() {
+      () => {
         expect([1, 2, 3], 'to be empty');
       },
       'to throw exception',
@@ -23,7 +23,7 @@ describe('empty assertion', () => {
     );
 
     expect(
-      function() {
+      () => {
         expect('', 'to be non-empty');
       },
       'to throw exception',
@@ -31,7 +31,7 @@ describe('empty assertion', () => {
     );
 
     expect(
-      function() {
+      () => {
         expect(null, 'to be empty');
       },
       'to throw exception',
@@ -44,7 +44,7 @@ describe('empty assertion', () => {
     );
 
     expect(
-      function() {
+      () => {
         expect({ a: 'b' }, 'to be empty');
       },
       'to throw exception',
@@ -57,7 +57,7 @@ describe('empty assertion', () => {
     );
 
     expect(
-      function() {
+      () => {
         expect({}, 'not to be empty');
       },
       'to throw exception',

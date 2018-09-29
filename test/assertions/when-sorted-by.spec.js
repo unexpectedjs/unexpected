@@ -4,7 +4,7 @@ describe('when sorted by assertion', () => {
     expect(
       ['c', 'b', 'a'],
       'when sorted by',
-      function(a, b) {
+      (a, b) => {
         if (a < b) {
           return 1;
         }
@@ -19,9 +19,9 @@ describe('when sorted by assertion', () => {
   });
 
   it('should provide the result as the fulfillment value if no assertion is provided', () => {
-    return expect([3, 1, 2], 'when sorted by', function(a, b) {
+    return expect([3, 1, 2], 'when sorted by', (a, b) => {
       return a - b;
-    }).then(function(sortedArray) {
+    }).then(sortedArray => {
       expect(sortedArray, 'to equal', [1, 2, 3]);
     });
   });
@@ -30,7 +30,7 @@ describe('when sorted by assertion', () => {
     expect(
       [4, 10, 5],
       'sorted by',
-      function(a, b) {
+      (a, b) => {
         return a - b;
       },
       'to equal',

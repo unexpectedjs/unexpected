@@ -2,9 +2,9 @@
 describe('to throw a/an assertion', () => {
   it('fails if no exception is thrown', () => {
     expect(
-      function() {
+      () => {
         expect(
-          function() {
+          () => {
             // Don't throw
           },
           'to throw an',
@@ -12,7 +12,7 @@ describe('to throw a/an assertion', () => {
         );
       },
       'to throw',
-      function(err) {
+      err => {
         var message = err.getErrorMessage({ format: 'text' }).toString();
         // PhantomJS adds a semicolon after the comment
         message = message.replace(';', '');
@@ -33,7 +33,7 @@ describe('to throw a/an assertion', () => {
 
   it('succeeds if the function throws an instance of the supplied constructor function', () => {
     expect(
-      function() {
+      () => {
         throw new SyntaxError();
       },
       'to throw a',
@@ -43,9 +43,9 @@ describe('to throw a/an assertion', () => {
 
   it('fails if the function throws an instance of a different constructor', () => {
     expect(
-      function() {
+      () => {
         expect(
-          function() {
+          () => {
             throw new SyntaxError('foo');
           },
           'to throw a',
@@ -60,11 +60,11 @@ describe('to throw a/an assertion', () => {
 
   it('fails with a proper error if the function throws null', () => {
     expect(
-      function() {
+      () => {
         expect(
           // prettier-ignore
           // eslint-disable-next-line no-throw-literal
-          function() { throw null; },
+          () => { throw null; },
           'to throw a',
           RangeError
         );
@@ -77,11 +77,11 @@ describe('to throw a/an assertion', () => {
 
   it('fails with a proper error if the function throws an empty string', () => {
     expect(
-      function() {
+      () => {
         expect(
           // prettier-ignore
           // eslint-disable-next-line no-throw-literal
-          function() { throw ''; },
+          () => { throw ''; },
           'to throw a',
           RangeError
         );

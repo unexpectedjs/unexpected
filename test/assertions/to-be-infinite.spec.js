@@ -9,7 +9,7 @@ describe('to be infinite assertion', () => {
 
   it('refuses to work on NaN', () => {
     expect(
-      function() {
+      () => {
         expect(NaN, 'not to be infinite');
       },
       'to throw',
@@ -23,7 +23,7 @@ describe('to be infinite assertion', () => {
 
   it('throws when the assertion fails', () => {
     expect(
-      function() {
+      () => {
         expect(123, 'to be infinite');
       },
       'to throw exception',

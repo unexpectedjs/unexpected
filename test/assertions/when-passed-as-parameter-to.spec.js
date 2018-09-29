@@ -9,7 +9,7 @@ describe('when passed as parameters to assertion', () => {
   });
 
   it('should should provide the result as the fulfillment value if no assertion is provided', () => {
-    return expect([3, 4], 'passed as parameters to', add).then(function(sum) {
+    return expect([3, 4], 'passed as parameters to', add).then(sum => {
       expect(sum, 'to equal', 7);
     });
   });
@@ -24,7 +24,7 @@ describe('when passed as parameters to assertion', () => {
 
   it('should produce a nested error message when the assertion fails', () => {
     expect(
-      function() {
+      () => {
         expect([3, 4], 'when passed as parameters to', add, 'to equal', 8);
       },
       'to throw',
@@ -57,7 +57,7 @@ describe('when passed as parameters to assertion', () => {
 
     it('should should provide the result as the fulfillment value if no assertion is provided', () => {
       return expect(2, 'passed as parameter to', add.bind(null, 1)).then(
-        function(sum) {
+        sum => {
           expect(sum, 'to equal', 3);
         }
       );
@@ -68,7 +68,7 @@ describe('when passed as parameters to assertion', () => {
         return n + 1;
       }
       expect(
-        function() {
+        () => {
           expect(1, 'when passed as parameter to', increment, 'to equal', 3);
         },
         'to throw',
@@ -92,7 +92,7 @@ describe('when passed as parameters to assertion', () => {
         'when passed as parameters to constructor',
         Foo,
         'to satisfy',
-        function(obj) {
+        obj => {
           expect(obj, 'to be a', Foo);
           expect(obj.a, 'to equal', 1);
           expect(obj.b, 'to equal', 2);
@@ -105,7 +105,7 @@ describe('when passed as parameters to assertion', () => {
   describe('with the async flag', () => {
     // prettier-ignore
     function delayedIncrement(num, cb) {
-      setTimeout(function () {
+      setTimeout(() => {
         if (typeof num === 'number') {
           cb(null, num + 1);
         } else {

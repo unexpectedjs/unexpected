@@ -8,19 +8,16 @@ describe('createStandardErrorMessage', () => {
   it('should not pick up the subject compaction code from a MagicPen instance in the prototype chain', () => {
     var clonedExpect = expect
       .clone()
-      .addAssertion('<any> shifted <assertion>', function(expect, subject) {
+      .addAssertion('<any> shifted <assertion>', (expect, subject) => {
         expect.errorMode = 'nested';
         return expect.shift();
       })
-      .addAssertion('<array> to be an array of one foo', function(
-        expect,
-        subject
-      ) {
+      .addAssertion('<array> to be an array of one foo', (expect, subject) => {
         expect.errorMode = 'nested';
         expect(subject[0], 'to equal', 'foo');
       });
     expect(
-      function() {
+      () => {
         clonedExpect(
           ['foooooooooooooooooooooooooooooooooooo'],
           'shifted to be an array of one foo'

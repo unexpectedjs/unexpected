@@ -9,8 +9,8 @@ describe('styleType', () => {
 
   it('is chainable', () => {
     childExpect
-      .exportStyle('firstStyle', function() {})
-      .exportStyle('secondStyle', function() {});
+      .exportStyle('firstStyle', () => {})
+      .exportStyle('secondStyle', () => {});
 
     expect(parentExpect.output.firstStyle, 'to be a function');
     expect(parentExpect.output.secondStyle, 'to be a function');

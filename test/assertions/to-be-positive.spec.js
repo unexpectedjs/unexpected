@@ -6,7 +6,7 @@ describe('positive assertion', () => {
 
   it('throws when the assertion fails', () => {
     expect(
-      function() {
+      () => {
         expect(0, 'to be positive');
       },
       'to throw exception',

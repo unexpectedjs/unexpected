@@ -9,7 +9,7 @@ describe('to be falsy assertion', () => {
 
   it('throws when the assertion fails', () => {
     expect(
-      function() {
+      () => {
         expect(1, 'to be falsy');
       },
       'to throw exception',
@@ -19,7 +19,7 @@ describe('to be falsy assertion', () => {
 
   it('throws with message when the assertion fails', () => {
     expect(
-      function() {
+      () => {
         expect(2 + 2 === 4, 'to be falsy', '2 + 2 === 4');
       },
       'to throw exception',

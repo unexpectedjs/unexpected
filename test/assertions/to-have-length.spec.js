@@ -19,14 +19,14 @@ describe('to have length assertion', () => {
   it('assert sparse array length', () => {
     var sparse = [];
     sparse[1] = 'foo';
-    expect(function() {
+    expect(() => {
       expect(sparse, 'to have length', 2);
     }, 'not to throw');
   });
 
   it('throws when the assertion fails', () => {
     expect(
-      function() {
+      () => {
         expect([1, 2], 'to have length', 3);
       },
       'to throw exception',
@@ -34,7 +34,7 @@ describe('to have length assertion', () => {
     );
 
     expect(
-      function() {
+      () => {
         expect(null, 'to have length', 4);
       },
       'to throw exception',
@@ -46,7 +46,7 @@ describe('to have length assertion', () => {
     );
 
     expect(
-      function() {
+      () => {
         expect({ length: 4 }, 'to have length', 4);
       },
       'to throw exception',

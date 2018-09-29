@@ -8,7 +8,7 @@ describe('less than assertion', () => {
 
   it('throws when the assertion fails', () => {
     expect(
-      function() {
+      () => {
         expect(0, 'to be less than', 0);
       },
       'to throw exception',

@@ -1,11 +1,11 @@
 /*global expect*/
 describe('function type', () => {
   it('should inspect an empty anonymous function correctly', () => {
-    expect(function() {}, 'to inspect as', 'function () {}');
+    expect(() => {}, 'to inspect as', 'function () {}');
   });
 
   it('should inspect an empty named function correctly', () => {
-    expect(function foo() {}, 'to inspect as', 'function foo() {}');
+    expect(() => {}, 'to inspect as', 'function foo() {}');
   });
 
   it('should inspect a function with a custom toString correctly', () => {
@@ -28,7 +28,7 @@ describe('function type', () => {
     it('should inspect an anonymous bound function correctly', () => {
       expect(
         // eslint-disable-next-line no-extra-bind
-        function() {}.bind({}),
+        (() => {}).bind({}),
         'to inspect as',
         'function bound () { /* native code */ }'
       );
@@ -37,7 +37,7 @@ describe('function type', () => {
     it('should inspect a named bound function correctly', () => {
       expect(
         // eslint-disable-next-line no-extra-bind
-        function foo() {}.bind({}),
+        (() => {}).bind({}),
         'to inspect as',
         'function bound foo() { /* native code */ }'
       );
@@ -45,14 +45,14 @@ describe('function type', () => {
   }
 
   it('should inspect an function with just a newline correctly', () => {
-    expect(function() {}, 'to inspect as', 'function () {}');
+    expect(() => {}, 'to inspect as', 'function () {}');
   });
 
   it('should inspect a one-line function correctly', () => {
     /* eslint-disable no-unused-vars */
     expect(
       // prettier-ignore
-      function() { var a = 123;a = 456; },
+      () => { var a = 123;a = 456; },
       'to inspect as',
       'function () { var a = 123;a = 456; }'
     );
@@ -63,7 +63,7 @@ describe('function type', () => {
     /* eslint-disable no-unused-vars */
     expect(
       // prettier-ignore
-      function() { var a = 123;a = 456; },
+      () => { var a = 123;a = 456; },
       'to inspect as',
       'function () { var a = 123;a = 456; }'
     );
@@ -74,7 +74,7 @@ describe('function type', () => {
     /* eslint-disable no-unused-vars */
     expect(
       // prettier-ignore
-      function() {
+      () => {
         var a = 123 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2;a = 456;
       },
       'to inspect as',
@@ -99,7 +99,7 @@ describe('function type', () => {
       /* eslint-disable no-unused-vars */
       expect(
         // prettier-ignore
-        function() {
+        () => {
           var a = 123;a = 456; // foo
         },
         'to inspect as',
@@ -111,7 +111,7 @@ describe('function type', () => {
 
   it('should reindent a function with an indentation size of 4', () => {
     expect(
-      function() {
+      () => {
         var a = 4;
         if (a === 1) {
           a();
@@ -130,7 +130,7 @@ describe('function type', () => {
   it('should reindent a function with an indentation size of 3', () => {
     // jscs:disable
     expect(
-      function() {
+      () => {
         var a = 4;
         if (a === 1) {
           a();
@@ -150,7 +150,7 @@ describe('function type', () => {
   it('should reindent a function with an indentation size of 1', () => {
     // jscs:disable
     expect(
-      function() {
+      () => {
         var a = 4;
         if (a === 1) {
           a();
