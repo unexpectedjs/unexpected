@@ -680,6 +680,30 @@ describe('to satisfy assertion', () => {
     });
   });
 
+  describe('with a expect.it function wrapper', () => {
+    it("succeeds if the function doesn't throw", () => {
+      expect({ foo: 'bar' }, 'to satisfy', {
+        foo: expect.it(v => expect(v, 'to be a string'))
+      });
+    });
+
+    it('should fail with an diff if the function fails', () => {
+      expect(
+        function() {
+          expect({ foo: 3 }, 'to satisfy', {
+            foo: expect.it(v => expect(v, 'to equal', 2))
+          });
+        },
+        'to throw',
+        "expected { foo: 3 } to satisfy { foo: expect.it(v => expect(v, 'to equal', 2)) }\n" +
+          '\n' +
+          '{\n' +
+          '  foo: 3 // should equal 2\n' +
+          '}'
+      );
+    });
+  });
+
   describe('with a synchronous expect.it in the RHS object', () => {
     it('should support an object with a property value of expect.it', () => {
       expect({ foo: 'bar' }, 'to satisfy', {
