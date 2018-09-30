@@ -691,11 +691,14 @@ describe('to satisfy assertion', () => {
       expect(
         function() {
           expect({ foo: 3 }, 'to satisfy', {
-            foo: expect.it(v => expect(v, 'to equal', 2))
+            foo: expect.it(function(v) {
+              expect(v, 'to equal', 2);
+            })
           });
         },
         'to throw',
-        "expected { foo: 3 } to satisfy { foo: expect.it(v => expect(v, 'to equal', 2)) }\n" +
+        'expected { foo: 3 }\n' +
+          "to satisfy { foo: expect.it(function (v) { expect(v, 'to equal', 2); }) }\n" +
           '\n' +
           '{\n' +
           '  foo: 3 // should equal 2\n' +
@@ -2316,7 +2319,7 @@ describe('to satisfy assertion', () => {
       function() {
         expect({}, 'to satisfy', {
           bar: 123,
-          foo: expect.it(v => {
+          foo: expect.it(function(v) {
             expect(v, 'to be undefined');
           })
         });
@@ -2331,12 +2334,15 @@ describe('to satisfy assertion', () => {
             .toString()
             .replace(/function foo/g, 'function '),
           'to satisfy',
-          'expected {}\n' +
-            "to satisfy { bar: 123, foo: expect.it(v => { expect(v, 'to be undefined'); }) }\n" +
+          'expected {} to satisfy\n' +
+            '{\n' +
+            '  bar: 123,\n' +
+            "  foo: expect.it(function (v) { expect(v, 'to be undefined'); })\n" +
+            '}\n' +
             '\n' +
             '{\n' +
             '  // missing bar: 123\n' +
-            "  // missing foo: should satisfy expect.it(v => { expect(v, 'to be undefined'); })\n" +
+            "  // missing foo: should satisfy expect.it(function (v) { expect(v, 'to be undefined'); })\n" +
             '}'
         );
       }
