@@ -1,6 +1,6 @@
 {
   "name": "unexpected",
-  "version": "10.39.0",
+  "version": "10.39.1",
   "author": "Sune Sloth Simonsen <sune@we-knowhow.dk>",
   "keywords": [
     "assertion",
@@ -42,7 +42,7 @@
     "eslint-config-pretty-standard": "^2.0.0",
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-mocha": "^5.2.0",
-    "eslint-plugin-prettier": "^2.6.0",
+    "eslint-plugin-prettier": "^3.0.0",
     "find-node-modules": "^1.0.4",
     "gh-pages": "^2.0.0",
     "istanbul": "^0.4.5",
