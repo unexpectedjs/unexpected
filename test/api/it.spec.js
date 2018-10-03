@@ -346,14 +346,14 @@ describe('expect.it', () => {
 
   describe('when passed a function', () => {
     it('should succeed', () => {
-      expect.it(function(value) {
+      expect.it(value => {
         expect(value, 'to equal', 'foo');
       })('foo');
     });
 
     it('should fail with a diff', () => {
       expect(
-        function() {
+        () => {
           expect.it(function(value) {
             expect(value, 'to equal', 'bar');
           })('foo');
@@ -378,7 +378,7 @@ describe('expect.it', () => {
 
     it('should fail when passed more than two arguments', () => {
       expect(
-        function() {
+        () => {
           expect.it(function(value) {
             expect(value, 'to equal', 'bar');
           }, 'yadda')('foo');
@@ -392,7 +392,7 @@ describe('expect.it', () => {
       describe('and the first expression is a function', () => {
         it('fails with a diff including all items in the chain', () => {
           expect(
-            function() {
+            () => {
               expect
                 .it(function(value) {
                   expect(value, 'to equal', 'bar');
@@ -412,7 +412,7 @@ describe('expect.it', () => {
       describe('and the second expression is a function', () => {
         it('fails with a diff including all items in the chain', () => {
           expect(
-            function() {
+            () => {
               expect.it('to be a string').and(function(value) {
                 expect(value, 'to equal', 'bar');
               })('foo');

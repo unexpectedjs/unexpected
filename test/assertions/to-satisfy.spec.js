@@ -689,7 +689,7 @@ describe('to satisfy assertion', () => {
 
     it('should fail with an diff if the function fails', () => {
       expect(
-        function() {
+        () => {
           expect({ foo: 3 }, 'to satisfy', {
             foo: expect.it(function(v) {
               expect(v, 'to equal', 2);
@@ -2316,7 +2316,7 @@ describe('to satisfy assertion', () => {
 
   it('should not break when the assertion fails and there is a fulfilled function in the RHS', () => {
     expect(
-      function() {
+      () => {
         expect({}, 'to satisfy', {
           bar: 123,
           foo: expect.it(function(v) {
@@ -2325,7 +2325,7 @@ describe('to satisfy assertion', () => {
         });
       },
       'to throw',
-      function(err) {
+      err => {
         // Compensate for V8 5.1+ setting { foo: function () {} }.foo.name === 'foo'
         // http://v8project.blogspot.dk/2016/04/v8-release-51.html
         expect(
