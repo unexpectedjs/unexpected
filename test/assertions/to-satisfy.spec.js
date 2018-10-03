@@ -680,6 +680,33 @@ describe('to satisfy assertion', () => {
     });
   });
 
+  describe('with a expect.it function wrapper', () => {
+    it("succeeds if the function doesn't throw", () => {
+      expect({ foo: 'bar' }, 'to satisfy', {
+        foo: expect.it(v => expect(v, 'to be a string'))
+      });
+    });
+
+    it('should fail with an diff if the function fails', () => {
+      expect(
+        () => {
+          expect({ foo: 3 }, 'to satisfy', {
+            foo: expect.it(function(v) {
+              expect(v, 'to equal', 2);
+            })
+          });
+        },
+        'to throw',
+        'expected { foo: 3 }\n' +
+          "to satisfy { foo: expect.it(function (v) { expect(v, 'to equal', 2); }) }\n" +
+          '\n' +
+          '{\n' +
+          '  foo: 3 // should equal 2\n' +
+          '}'
+      );
+    });
+  });
+
   describe('with a synchronous expect.it in the RHS object', () => {
     it('should support an object with a property value of expect.it', () => {
       expect({ foo: 'bar' }, 'to satisfy', {
@@ -2232,23 +2259,26 @@ describe('to satisfy assertion', () => {
     });
   });
 
-  // Debatable:
-  describe('when an unpresent value to is satisfied against a function', () => {
-    it('should allow an unpresent value to be satisfied against a non-expect.it function', () => {
-      expect({}, 'to satisfy', { foo: function() {} });
+  describe('when an unpresent value to is satisfied against an expect.it function wrapper', () => {
+    it('should allow an unpresent value to be satisfied against the function', () => {
+      expect({}, 'to satisfy', {
+        foo: expect.it(v => {
+          expect(v, 'to be undefined');
+        })
+      });
     });
 
     it('should fail when the function throws', () => {
       expect(
-        function() {
+        () => {
           expect({}, 'to satisfy', {
-            foo(value) {
+            foo: expect.it(value => {
               expect(value, 'to be a string');
-            }
+            })
           });
         },
         'to throw',
-        function(err) {
+        err => {
           // Compensate for V8 5.1+ setting { foo: function () {} }.foo.name === 'foo'
           // http://v8project.blogspot.dk/2016/04/v8-release-51.html
           expect(
@@ -2271,7 +2301,7 @@ describe('to satisfy assertion', () => {
 
     it('should fail with a diff', () => {
       expect(
-        function() {
+        () => {
           expect({}, 'to satisfy', { foo: expect.it('to be a string') });
         },
         'to throw',
@@ -2286,11 +2316,16 @@ describe('to satisfy assertion', () => {
 
   it('should not break when the assertion fails and there is a fulfilled function in the RHS', () => {
     expect(
-      function() {
-        expect({}, 'to satisfy', { bar: 123, foo: function() {} });
+      () => {
+        expect({}, 'to satisfy', {
+          bar: 123,
+          foo: expect.it(function(v) {
+            expect(v, 'to be undefined');
+          })
+        });
       },
       'to throw',
-      function(err) {
+      err => {
         // Compensate for V8 5.1+ setting { foo: function () {} }.foo.name === 'foo'
         // http://v8project.blogspot.dk/2016/04/v8-release-51.html
         expect(
@@ -2299,14 +2334,37 @@ describe('to satisfy assertion', () => {
             .toString()
             .replace(/function foo/g, 'function '),
           'to satisfy',
-          'expected {} to satisfy { bar: 123, foo: function () {} }\n' +
+          'expected {} to satisfy\n' +
+            '{\n' +
+            '  bar: 123,\n' +
+            "  foo: expect.it(function (v) { expect(v, 'to be undefined'); })\n" +
+            '}\n' +
             '\n' +
             '{\n' +
             '  // missing bar: 123\n' +
-            '  // missing foo: should satisfy function () {}\n' +
+            "  // missing foo: should satisfy expect.it(function (v) { expect(v, 'to be undefined'); })\n" +
             '}'
         );
       }
+    );
+  });
+
+  it('should render a diff when the function differs', () => {
+    function myFunction() {}
+    function myOtherFunction() {}
+
+    expect(
+      () => {
+        expect({ foo: myFunction }, 'to satisfy', { foo: myOtherFunction });
+      },
+      'to throw',
+      'expected { foo: function myFunction() {} }\n' +
+        'to satisfy { foo: function myOtherFunction() {} }\n' +
+        '\n' +
+        '{\n' +
+        '  foo: function myFunction() {} // expected { foo: function myFunction() {} }\n' +
+        '                                // to satisfy { foo: function myOtherFunction() {} }\n' +
+        '}'
     );
   });
 

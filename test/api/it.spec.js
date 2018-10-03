@@ -346,14 +346,14 @@ describe('expect.it', () => {
 
   describe('when passed a function', () => {
     it('should succeed', () => {
-      expect.it(function(value) {
+      expect.it(value => {
         expect(value, 'to equal', 'foo');
       })('foo');
     });
 
     it('should fail with a diff', () => {
       expect(
-        function() {
+        () => {
           expect.it(function(value) {
             expect(value, 'to equal', 'bar');
           })('foo');
@@ -363,9 +363,22 @@ describe('expect.it', () => {
       );
     });
 
+    it('supports returning a promise from the function', () => {
+      return expect(
+        () =>
+          expect.it(value =>
+            expect.promise(run => {
+              setTimeout(run(() => expect(value, 'to equal', 'bar')));
+            })
+          )('foo'),
+        'to be rejected with',
+        "expected 'foo' to equal 'bar'\n" + '\n' + '-foo\n' + '+bar'
+      );
+    });
+
     it('should fail when passed more than two arguments', () => {
       expect(
-        function() {
+        () => {
           expect.it(function(value) {
             expect(value, 'to equal', 'bar');
           }, 'yadda')('foo');
@@ -373,6 +386,46 @@ describe('expect.it', () => {
         'to throw',
         'expect.it(<function>) does not accept additional arguments'
       );
+    });
+
+    describe('and chained the expression is chained', () => {
+      describe('and the first expression is a function', () => {
+        it('fails with a diff including all items in the chain', () => {
+          expect(
+            () => {
+              expect
+                .it(function(value) {
+                  expect(value, 'to equal', 'bar');
+                })
+                .and('to be a string')('foo');
+            },
+            'to throw',
+            "⨯ expected 'foo' to equal 'bar' and\n" +
+              '\n' +
+              '  -foo\n' +
+              '  +bar\n' +
+              "✓ expected 'foo' to be a string"
+          );
+        });
+      });
+
+      describe('and the second expression is a function', () => {
+        it('fails with a diff including all items in the chain', () => {
+          expect(
+            () => {
+              expect.it('to be a string').and(function(value) {
+                expect(value, 'to equal', 'bar');
+              })('foo');
+            },
+            'to throw',
+            "✓ expected 'foo' to be a string and\n" +
+              "⨯ expected 'foo' to equal 'bar'\n" +
+              '\n' +
+              '  -foo\n' +
+              '  +bar'
+          );
+        });
+      });
     });
   });
 });
