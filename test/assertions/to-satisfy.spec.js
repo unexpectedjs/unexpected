@@ -1346,6 +1346,89 @@ describe('to satisfy assertion', () => {
           ']'
       );
     });
+
+    it('handles multi-line items correctly', () => {
+      class Box {
+        constructor(value) {
+          this.value = value;
+        }
+      }
+
+      const clonedExpect = expect.clone().addType({
+        name: 'box',
+        identify: value => value && value instanceof Box,
+        inspect: (box, depth, output, inspect) =>
+          output.block(output => {
+            output.text('╔═══╗').nl();
+            output.text(`║ ${box.value} ║`).nl();
+            output.text('╚═══╝');
+          }),
+        equal: (a, b, equal) => a.value === b.value
+      });
+
+      expect(
+        () => {
+          clonedExpect(
+            [new Box(0), new Box(1), new Box(2), new Box(4), new Box(3)],
+            'to satisfy',
+            [new Box(1), new Box(0), new Box(2), new Box(3)]
+          );
+        },
+        'to throw',
+        `\
+        expected
+        [
+          ╔═══╗
+          ║ 0 ║
+          ╚═══╝,
+          ╔═══╗
+          ║ 1 ║
+          ╚═══╝,
+          ╔═══╗
+          ║ 2 ║
+          ╚═══╝,
+          ╔═══╗
+          ║ 4 ║
+          ╚═══╝,
+          ╔═══╗
+          ║ 3 ║
+          ╚═══╝
+        ]
+        to satisfy
+        [
+          ╔═══╗
+          ║ 1 ║
+          ╚═══╝,
+          ╔═══╗
+          ║ 0 ║
+          ╚═══╝,
+          ╔═══╗
+          ║ 2 ║
+          ╚═══╝,
+          ╔═══╗
+          ║ 3 ║
+          ╚═══╝
+        ]
+
+        [
+          ╔═══╗  // should equal ╔═══╗
+          ║ 0 ║  //              ║ 1 ║
+          ╚═══╝, //              ╚═══╝
+          ╔═══╗  // should equal ╔═══╗
+          ║ 1 ║  //              ║ 0 ║
+          ╚═══╝, //              ╚═══╝
+          ╔═══╗
+          ║ 2 ║
+          ╚═══╝,
+          ╔═══╗  // should equal ╔═══╗
+          ║ 4 ║  //              ║ 3 ║
+          ╚═══╝, //              ╚═══╝
+          ╔═══╗ // should be removed
+          ║ 3 ║
+          ╚═══╝
+        ]`.replace(/^        /gm, '')
+      );
+    });
   });
 
   it('should render a missing item expected to satisfy an expect.it', () => {
