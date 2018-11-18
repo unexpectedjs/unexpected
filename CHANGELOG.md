@@ -1,3 +1,8 @@
+### v10.39.2 (2018-11-18)
+
+- [#534](https://github.com/unexpectedjs/unexpected/pull/534) Fix the output to make the unexpected-dom test suite pass ([Sune Simonsen](mailto:sune@we-knowhow.dk))
+- [#527](https://github.com/unexpectedjs/unexpected/pull/527) Upgrade gh-pages to version 2.0.1 ([depfu[bot]](mailto:depfu[bot]@users.noreply.github.com))
+
 ### v10.39.1 (2018-09-30)
 
 - [#522](https://github.com/unexpectedjs/unexpected/pull/522) Use arrow functions when possible ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
