@@ -15,7 +15,7 @@ module.exports = function(config) {
       'build/test/**/*.spec.js'
     ],
 
-    browsers: ['ChromeHeadlessNoSandbox'],
+    browsers: ['ChromeHeadlessNoSandbox', 'ie11'],
 
     client: {
       mocha: {
@@ -23,13 +23,25 @@ module.exports = function(config) {
       }
     },
 
+    browserStack: {
+      video: false,
+      project: 'unexpected'
+    },
+
     customLaunchers: {
       ChromeHeadlessNoSandbox: {
         base: 'ChromeHeadless',
         flags: ['--no-sandbox']
+      },
+      ie11: {
+        base: 'BrowserStack',
+        browser: 'IE',
+        browser_version: '11',
+        os: 'Windows',
+        os_version: '7'
       }
     },
 
-    reporters: ['progress']
+    reporters: ['progress', 'BrowserStack']
   });
 };

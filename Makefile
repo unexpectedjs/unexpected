@@ -80,6 +80,10 @@ test-browser: ${TARGETS}
 test-chrome-headless: ${TARGETS}
 	@./node_modules/.bin/karma start --single-run
 
+.PHONY: test-browserstack
+test-browserstack: ${TARGETS}
+	@./node_modules/.bin/karma start --browsers=ie11 --single-run
+
 .PHONY: travis-secondary
 travis-secondary: clean test test-jest-if-supported-node-version coverage
 
@@ -87,6 +91,7 @@ travis-secondary: clean test test-jest-if-supported-node-version coverage
 travis-main: clean lint test test-jasmine test-jest coverage
 	make site-build
 	make test-chrome-headless
+	make test-browserstack
 	-<coverage/lcov.info ./node_modules/coveralls/bin/coveralls.js
 
 travis:
