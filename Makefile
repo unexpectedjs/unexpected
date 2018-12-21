@@ -78,7 +78,7 @@ test-browser: ${TARGETS}
 
 .PHONY: test-chrome-headless
 test-chrome-headless: ${TARGETS}
-	@./node_modules/.bin/karma start --single-run
+	@./node_modules/.bin/karma start --browsers=ChromeHeadlessNoSandbox --single-run
 
 .PHONY: test-browserstack
 test-browserstack-%: ${TARGETS}

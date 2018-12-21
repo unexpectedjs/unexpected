@@ -42,6 +42,6 @@ module.exports = function(config) {
       }
     },
 
-    reporters: ['progress', 'BrowserStack']
+    reporters: ['dots', 'BrowserStack']
   });
 };
