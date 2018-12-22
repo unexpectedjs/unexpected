@@ -24,9 +24,13 @@ describe('to satisfy assertion', () => {
     it('should fail when a non-Unexpected error occurs', () => {
       expect(
         function() {
-          expect({ foo: 123 }, 'not to satisfy', function() {
-            throw new Error('foo');
-          });
+          expect(
+            { foo: 123 },
+            'not to satisfy',
+            expect.it(function() {
+              throw new Error('foo');
+            })
+          );
         },
         'to throw',
         'foo'
