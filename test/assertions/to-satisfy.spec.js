@@ -995,9 +995,13 @@ describe('to satisfy assertion', () => {
 
   describe('with a regular function in the RHS object', () => {
     it('should throw an exception if the condition is not met', () => {
-      expect({ foo: 123 }, 'to satisfy', function(obj) {
-        expect(obj.foo, 'to equal', 123);
-      });
+      expect(
+        { foo: 123 },
+        'to satisfy',
+        expect.it(function(obj) {
+          expect(obj.foo, 'to equal', 123);
+        })
+      );
     });
 
     it('should only consider functions that are identified as functions by the type system', () => {
