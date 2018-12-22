@@ -612,9 +612,9 @@ describe('to satisfy assertion', () => {
             foo: 'foo'
           },
           'to satisfy',
-          function(value) {
+          expect.it(function(value) {
             throw new Error('Custom error');
-          }
+          })
         );
       },
       'to throw',
