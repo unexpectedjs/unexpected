@@ -1131,17 +1131,25 @@ describe('to satisfy assertion', () => {
 
     describe('when satisfying against a function', () => {
       it('should succeed if the function does not throw', () => {
-        expect(new Error('foo'), 'to satisfy', function(err) {
-          expect(err, 'to be an', Error);
-        });
+        expect(
+          new Error('foo'),
+          'to satisfy',
+          expect.it(function(err) {
+            expect(err, 'to be an', Error);
+          })
+        );
       });
 
       it('fails when the function throws', () => {
         expect(
           function() {
-            expect(new Error('Custom message'), 'to satisfy', function(err) {
-              expect(err, 'to be a', TypeError);
-            });
+            expect(
+              new Error('Custom message'),
+              'to satisfy',
+              expect.it(function(err) {
+                expect(err, 'to be a', TypeError);
+              })
+            );
           },
           'to throw',
           "expected Error('Custom message') to be a TypeError"

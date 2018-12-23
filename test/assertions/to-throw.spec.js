@@ -87,9 +87,9 @@ describe('to throw assertion', () => {
         throw new SyntaxError();
       },
       'to throw exception',
-      function(e) {
+      expect.it(function(e) {
         expect(e, 'to be a', SyntaxError);
-      }
+      })
     );
   });
 

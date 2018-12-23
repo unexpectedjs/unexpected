@@ -92,12 +92,12 @@ describe('when passed as parameters to assertion', () => {
         'when passed as parameters to constructor',
         Foo,
         'to satisfy',
-        function(obj) {
+        expect.it(function(obj) {
           expect(obj, 'to be a', Foo);
           expect(obj.a, 'to equal', 1);
           expect(obj.b, 'to equal', 2);
           expect(obj.numParams, 'to equal', 2);
-        }
+        })
       );
     });
   });
