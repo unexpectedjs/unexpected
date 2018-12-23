@@ -1200,9 +1200,13 @@ describe('to satisfy assertion', () => {
       });
 
       it('should satisfy a function', () => {
-        expect(new Buffer('bar'), 'to satisfy', function(buffer) {
-          expect(buffer, 'to have length', 3);
-        });
+        expect(
+          new Buffer('bar'),
+          'to satisfy',
+          expect.it(function(buffer) {
+            expect(buffer, 'to have length', 3);
+          })
+        );
       });
 
       describe('in an async setting', () => {
