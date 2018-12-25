@@ -8,7 +8,7 @@ describe('to throw assertion', () => {
         }, 'to throw exception');
       },
       'to throw',
-      function(err) {
+      expect.it(function(err) {
         var message = err.getErrorMessage({ format: 'text' }).toString();
         // PhantomJS adds a semicolon after the comment
         message = message.replace(';', '');
@@ -22,7 +22,7 @@ describe('to throw assertion', () => {
             'to throw exception\n' +
             '  did not throw'
         );
-      }
+      })
     );
   });
 
@@ -218,9 +218,9 @@ describe('to throw assertion', () => {
           }, 'not to throw');
         },
         'to throw',
-        function(err) {
+        expect.it(function(err) {
           expect(err.stack, 'to match', /thisIsImportant/);
-        }
+        })
       );
     });
   });
@@ -240,9 +240,9 @@ describe('to throw assertion', () => {
           );
         },
         'to throw',
-        function(err) {
+        expect.it(function(err) {
           expect(err.stack, 'to match', /thisIsImportant/);
-        }
+        })
       );
     });
   });
