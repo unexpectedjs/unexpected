@@ -2365,7 +2365,7 @@ describe('to satisfy assertion', () => {
           });
         },
         'to throw',
-        err => {
+        expect.it(err => {
           // Compensate for V8 5.1+ setting { foo: function () {} }.foo.name === 'foo'
           // http://v8project.blogspot.dk/2016/04/v8-release-51.html
           expect(
@@ -2376,7 +2376,7 @@ describe('to satisfy assertion', () => {
             'to contain',
             '{\n' + '  // missing: foo: should be a string\n' + '}'
           );
-        }
+        })
       );
     });
   });
@@ -2412,7 +2412,7 @@ describe('to satisfy assertion', () => {
         });
       },
       'to throw',
-      err => {
+      expect.it(err => {
         // Compensate for V8 5.1+ setting { foo: function () {} }.foo.name === 'foo'
         // http://v8project.blogspot.dk/2016/04/v8-release-51.html
         expect(
@@ -2432,7 +2432,7 @@ describe('to satisfy assertion', () => {
             "  // missing foo: should satisfy expect.it(function (v) { expect(v, 'to be undefined'); })\n" +
             '}'
         );
-      }
+      })
     );
   });
 

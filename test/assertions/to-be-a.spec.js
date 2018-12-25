@@ -177,7 +177,7 @@ describe('to be a/an assertion', () => {
         });
       },
       'to throw',
-      function(err) {
+      expect.it(function(err) {
         // Compensate for V8 5.1+ setting { identify: function () {} }.identify.name === 'identify'
         // http://v8project.blogspot.dk/2016/04/v8-release-51.html
         expect(
@@ -194,7 +194,7 @@ describe('to be a/an assertion', () => {
             '    <any> [not] to be (a|an) <string>\n' +
             '    <any> [not] to be (a|an) <type>'
         );
-      }
+      })
     );
   });
 
@@ -240,10 +240,10 @@ describe('to be a/an assertion', () => {
         expect('foo', 'not to be', 'foo');
       },
       'to throw exception',
-      function(e) {
+      expect.it(function(e) {
         expect(e, 'not to have property', 'actual');
         expect(e, 'not to have property', 'expected');
-      }
+      })
     );
   });
 
@@ -253,10 +253,10 @@ describe('to be a/an assertion', () => {
         expect('foo', 'to be', {});
       },
       'to throw exception',
-      function(e) {
+      expect.it(function(e) {
         expect(e, 'not to have property', 'actual');
         expect(e, 'not to have property', 'expected');
-      }
+      })
     );
   });
 });

@@ -162,9 +162,9 @@ describe('when fulfilled adverbial assertion', () => {
         );
       },
       'to error',
-      function(err) {
+      expect.it(function(err) {
         expect(err.stack, 'to match', /thisIsImportant/);
-      }
+      })
     );
   });
 });

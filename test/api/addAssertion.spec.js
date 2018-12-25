@@ -424,9 +424,9 @@ describe('addAssertion', () => {
             clonedExpect([3, 2, 1], 'to be sorted');
           },
           'to throw',
-          function(err) {
+          expect.it(function(err) {
             expect(err.label, 'to be undefined');
-          }
+          })
         );
       });
 
