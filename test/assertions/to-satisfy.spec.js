@@ -2535,4 +2535,16 @@ describe('to satisfy assertion', () => {
       });
     });
   });
+
+  describe('with an object subject', function() {
+    describe('satisfied against a function not wrapped in expect.it', function() {
+      it('should fail', () => {
+        expect(
+          () => expect({}, 'to satisfy', function() {}),
+          'to throw',
+          'expected {} to satisfy function () {}'
+        );
+      });
+    });
+  });
 });
