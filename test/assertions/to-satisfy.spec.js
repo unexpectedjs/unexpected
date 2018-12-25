@@ -2492,4 +2492,47 @@ describe('to satisfy assertion', () => {
         '}'
     );
   });
+
+  describe('with a function subject', function() {
+    function foo() {}
+    function bar() {}
+    foo.baz = 123;
+
+    describe('against a function', function() {
+      it('should succeed', function() {
+        expect(foo, 'to satisfy', foo);
+        expect({ foo }, 'to satisfy', { foo });
+      });
+
+      it('should fail without a diff', function() {
+        expect(
+          function() {
+            expect(foo, 'to satisfy', bar);
+          },
+          'to throw',
+          'expected function foo() {} to equal function bar() {}'
+        );
+      });
+    });
+
+    describe('against an object', function() {
+      it('should succeed', function() {
+        expect(foo, 'to satisfy', { baz: 123 });
+      });
+
+      it('should fail with an object diff', function() {
+        expect(
+          function() {
+            expect(foo, 'to satisfy', { baz: 456 });
+          },
+          'to throw',
+          'expected function foo() {} to satisfy { baz: 456 }\n' +
+            '\n' +
+            'Function({\n' +
+            '  baz: 123 // should equal 456\n' +
+            '})'
+        );
+      });
+    });
+  });
 });
