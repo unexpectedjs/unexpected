@@ -993,7 +993,7 @@ describe('to satisfy assertion', () => {
     );
   });
 
-  describe('with a regular function in the RHS object', () => {
+  describe('with an expect.it in the RHS object', () => {
     it('should throw an exception if the condition is not met', () => {
       expect(
         { foo: 123 },
@@ -1129,7 +1129,7 @@ describe('to satisfy assertion', () => {
       expect(new Error('foo'), 'to satisfy', /foo/);
     });
 
-    describe('when satisfying against a function', () => {
+    describe('when satisfying against an expect.it-wrapped function', () => {
       it('should succeed if the function does not throw', () => {
         expect(
           new Error('foo'),
@@ -2417,7 +2417,7 @@ describe('to satisfy assertion', () => {
     });
   });
 
-  it('should not break when the assertion fails and there is a fulfilled function in the RHS', () => {
+  it('should not break when the assertion fails and there is a fulfilled, expect.it-wrapped function in the RHS', () => {
     expect(
       () => {
         expect({}, 'to satisfy', {
