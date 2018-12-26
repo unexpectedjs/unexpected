@@ -7,13 +7,13 @@ describe('UnexpectedError', () => {
           expect(2, 'to equal', 4);
         },
         'to throw',
-        function(err) {
+        expect.it(function(err) {
           expect(
             err,
             'to inspect as',
             'UnexpectedError(expected 2 to equal 4)'
           );
-        }
+        })
       );
     });
   });
@@ -25,7 +25,7 @@ describe('UnexpectedError', () => {
           expect('foo', 'to equal', 'bar');
         },
         'to throw',
-        function(err) {
+        expect.it(function(err) {
           expect(
             err,
             'to inspect as',
@@ -36,7 +36,7 @@ describe('UnexpectedError', () => {
               '  +bar\n' +
               ')'
           );
-        }
+        })
       );
     });
   });
@@ -47,13 +47,13 @@ describe('UnexpectedError', () => {
         expect('foo', 'to equal', 'bar');
       },
       'to throw',
-      function(err) {
+      expect.it(function(err) {
         expect(expect.findTypeOf(err).getKeys(err), 'to equal', [
           'message',
           'errorMode',
           'parent'
         ]);
-      }
+      })
     );
   });
 
@@ -64,7 +64,7 @@ describe('UnexpectedError', () => {
           expect.fail('wat');
         },
         'to throw',
-        function(err) {
+        expect.it(function(err) {
           err.useFullStackTrace = false;
           err._hasSerializedErrorMessage = false;
           err.stack =
@@ -85,7 +85,7 @@ describe('UnexpectedError', () => {
               '      at Context.<anonymous> (test/Insection.spec.js:48:17)\n' +
               '      set UNEXPECTED_FULL_TRACE=true to see the full stack trace'
           });
-        }
+        })
       );
     });
 
@@ -95,7 +95,7 @@ describe('UnexpectedError', () => {
           expect.fail('wat');
         },
         'to throw',
-        function(err) {
+        expect.it(function(err) {
           err.useFullStackTrace = false;
           err._hasSerializedErrorMessage = false;
           err.stack =
@@ -116,7 +116,7 @@ describe('UnexpectedError', () => {
               '      at Context.<anonymous> (test\\Insection.spec.js:48:17)\n' +
               '      set UNEXPECTED_FULL_TRACE=true to see the full stack trace'
           });
-        }
+        })
       );
     });
 
@@ -126,7 +126,7 @@ describe('UnexpectedError', () => {
           expect.fail('wat');
         },
         'to throw',
-        function(err) {
+        expect.it(function(err) {
           err.useFullStackTrace = false;
           err._hasSerializedErrorMessage = false;
           err.stack =
@@ -150,7 +150,7 @@ describe('UnexpectedError', () => {
               '      at Context.<anonymous> (test/my.spec.js:48:17)\n' +
               '      set UNEXPECTED_FULL_TRACE=true to see the full stack trace'
           });
-        }
+        })
       );
     });
 
@@ -161,7 +161,7 @@ describe('UnexpectedError', () => {
             expect.fail('wat');
           },
           'to throw',
-          function(err) {
+          expect.it(function(err) {
             err.useFullStackTrace = false;
             err._hasSerializedErrorMessage = false;
             err.stack =
@@ -182,7 +182,7 @@ describe('UnexpectedError', () => {
                 '      at Context.<anonymous> (test/Insection.spec.js:48:17)\n' +
                 '      set the query parameter full-trace=true to see the full stack trace'
             });
-          }
+          })
         );
       });
     });
@@ -195,7 +195,7 @@ describe('UnexpectedError', () => {
           expect.fail('wat');
         },
         'to throw',
-        function(err) {
+        expect.it(function(err) {
           err.useFullStackTrace = true;
           err._hasSerializedErrorMessage = false;
           err.stack =
@@ -221,7 +221,7 @@ describe('UnexpectedError', () => {
               '      at Unexpected.expect (node_modules/unexpected/lib/Unexpected.js:1111:22)\n' +
               '      at Context.<anonymous> (test/Insection.spec.js:48:17)'
           });
-        }
+        })
       );
     });
   });
@@ -240,9 +240,9 @@ describe('UnexpectedError', () => {
           }, 'not to error');
         },
         'to error',
-        function(err) {
+        expect.it(function(err) {
           expect(err.stack, 'to contain', 'foobarquux\n   at yaddayadda');
-        }
+        })
       );
     });
   });

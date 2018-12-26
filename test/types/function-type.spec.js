@@ -1,4 +1,4 @@
-/*global expect*/
+/*global expect, expectWithUnexpectedMagicPen*/
 describe('function type', () => {
   it('should inspect an empty anonymous function correctly', () => {
     expect(function() {}, 'to inspect as', 'function () {}');
@@ -317,4 +317,39 @@ describe('function type', () => {
       );
     });
   }
+
+  describe('diff()', function() {
+    function foo() {}
+    function bar() {}
+
+    foo.baz = 123;
+
+    describe('against another function', function() {
+      it('should not produce a diff', function() {
+        const functionType = expect.getType('function');
+        expect(
+          functionType.diff(foo, bar, expect.createOutput()),
+          'to be undefined'
+        );
+      });
+    });
+
+    describe('against an object', function() {
+      it('should delegate to the object diff', function() {
+        const functionType = expect.getType('function');
+        const diff = functionType.diff(
+          foo,
+          { baz: 456 },
+          expect.createOutput()
+        );
+        expectWithUnexpectedMagicPen(
+          diff,
+          'to equal',
+          expect
+            .createOutput()
+            .text('Mismatching constructors Function should be Object')
+        );
+      });
+    });
+  });
 });

@@ -24,9 +24,13 @@ describe('to satisfy assertion', () => {
     it('should fail when a non-Unexpected error occurs', () => {
       expect(
         function() {
-          expect({ foo: 123 }, 'not to satisfy', function() {
-            throw new Error('foo');
-          });
+          expect(
+            { foo: 123 },
+            'not to satisfy',
+            expect.it(function() {
+              throw new Error('foo');
+            })
+          );
         },
         'to throw',
         'foo'
@@ -608,9 +612,9 @@ describe('to satisfy assertion', () => {
             foo: 'foo'
           },
           'to satisfy',
-          function(value) {
+          expect.it(function(value) {
             throw new Error('Custom error');
-          }
+          })
         );
       },
       'to throw',
@@ -989,11 +993,15 @@ describe('to satisfy assertion', () => {
     );
   });
 
-  describe('with a regular function in the RHS object', () => {
+  describe('with an expect.it in the RHS object', () => {
     it('should throw an exception if the condition is not met', () => {
-      expect({ foo: 123 }, 'to satisfy', function(obj) {
-        expect(obj.foo, 'to equal', 123);
-      });
+      expect(
+        { foo: 123 },
+        'to satisfy',
+        expect.it(function(obj) {
+          expect(obj.foo, 'to equal', 123);
+        })
+      );
     });
 
     it('should only consider functions that are identified as functions by the type system', () => {
@@ -1123,19 +1131,27 @@ describe('to satisfy assertion', () => {
       expect(new Error('foo'), 'to satisfy', /foo/);
     });
 
-    describe('when satisfying against a function', () => {
+    describe('when satisfying against an expect.it-wrapped function', () => {
       it('should succeed if the function does not throw', () => {
-        expect(new Error('foo'), 'to satisfy', function(err) {
-          expect(err, 'to be an', Error);
-        });
+        expect(
+          new Error('foo'),
+          'to satisfy',
+          expect.it(function(err) {
+            expect(err, 'to be an', Error);
+          })
+        );
       });
 
       it('fails when the function throws', () => {
         expect(
           function() {
-            expect(new Error('Custom message'), 'to satisfy', function(err) {
-              expect(err, 'to be a', TypeError);
-            });
+            expect(
+              new Error('Custom message'),
+              'to satisfy',
+              expect.it(function(err) {
+                expect(err, 'to be a', TypeError);
+              })
+            );
           },
           'to throw',
           "expected Error('Custom message') to be a TypeError"
@@ -1194,9 +1210,13 @@ describe('to satisfy assertion', () => {
       });
 
       it('should satisfy a function', () => {
-        expect(new Buffer('bar'), 'to satisfy', function(buffer) {
-          expect(buffer, 'to have length', 3);
-        });
+        expect(
+          new Buffer('bar'),
+          'to satisfy',
+          expect.it(function(buffer) {
+            expect(buffer, 'to have length', 3);
+          })
+        );
       });
 
       describe('in an async setting', () => {
@@ -2363,7 +2383,7 @@ describe('to satisfy assertion', () => {
           });
         },
         'to throw',
-        err => {
+        expect.it(err => {
           // Compensate for V8 5.1+ setting { foo: function () {} }.foo.name === 'foo'
           // http://v8project.blogspot.dk/2016/04/v8-release-51.html
           expect(
@@ -2374,7 +2394,7 @@ describe('to satisfy assertion', () => {
             'to contain',
             '{\n' + '  // missing: foo: should be a string\n' + '}'
           );
-        }
+        })
       );
     });
   });
@@ -2399,7 +2419,7 @@ describe('to satisfy assertion', () => {
     });
   });
 
-  it('should not break when the assertion fails and there is a fulfilled function in the RHS', () => {
+  it('should not break when the assertion fails and there is a fulfilled, expect.it-wrapped function in the RHS', () => {
     expect(
       () => {
         expect({}, 'to satisfy', {
@@ -2410,7 +2430,7 @@ describe('to satisfy assertion', () => {
         });
       },
       'to throw',
-      err => {
+      expect.it(err => {
         // Compensate for V8 5.1+ setting { foo: function () {} }.foo.name === 'foo'
         // http://v8project.blogspot.dk/2016/04/v8-release-51.html
         expect(
@@ -2430,7 +2450,7 @@ describe('to satisfy assertion', () => {
             "  // missing foo: should satisfy expect.it(function (v) { expect(v, 'to be undefined'); })\n" +
             '}'
         );
-      }
+      })
     );
   });
 
@@ -2447,8 +2467,7 @@ describe('to satisfy assertion', () => {
         'to satisfy { foo: function myOtherFunction() {} }\n' +
         '\n' +
         '{\n' +
-        '  foo: function myFunction() {} // expected { foo: function myFunction() {} }\n' +
-        '                                // to satisfy { foo: function myOtherFunction() {} }\n' +
+        '  foo: function myFunction() {} // should be function myOtherFunction() {}\n' +
         '}'
     );
   });
@@ -2489,5 +2508,60 @@ describe('to satisfy assertion', () => {
         '  // missing foo: 456\n' +
         '}'
     );
+  });
+
+  describe('with a function subject', function() {
+    function foo() {}
+    function bar() {}
+    foo.baz = 123;
+
+    describe('against a function', function() {
+      it('should succeed', function() {
+        expect(foo, 'to satisfy', foo);
+        expect({ foo }, 'to satisfy', { foo });
+      });
+
+      it('should fail without a diff', function() {
+        expect(
+          function() {
+            expect(foo, 'to satisfy', bar);
+          },
+          'to throw',
+          'expected function foo() {} to be function bar() {}'
+        );
+      });
+    });
+
+    describe('against an object', function() {
+      it('should succeed', function() {
+        expect(foo, 'to satisfy', { baz: 123 });
+      });
+
+      it('should fail with an object diff', function() {
+        expect(
+          function() {
+            expect(foo, 'to satisfy', { baz: 456 });
+          },
+          'to throw',
+          'expected function foo() {} to satisfy { baz: 456 }\n' +
+            '\n' +
+            'Function({\n' +
+            '  baz: 123 // should equal 456\n' +
+            '})'
+        );
+      });
+    });
+  });
+
+  describe('with an object subject', function() {
+    describe('satisfied against a function not wrapped in expect.it', function() {
+      it('should fail', () => {
+        expect(
+          () => expect({}, 'to satisfy', function() {}),
+          'to throw',
+          'expected {} to satisfy function () {}'
+        );
+      });
+    });
   });
 });

@@ -22,7 +22,7 @@ describe('to have message/diff assertion', () => {
           expect(err, 'to have message', 'expected 3 to equal 2');
         },
         'to throw',
-        function(err) {
+        expect.it(function(err) {
           var message = err
             .getErrorMessage({ format: 'text' })
             .toString('text');
@@ -36,7 +36,7 @@ describe('to have message/diff assertion', () => {
               '  +expected 3 to equal 2'
           );
           expect(message, 'to match', /^expected\sUnexpectedError\([\s\S]*\)/);
-        }
+        })
       );
     });
 
@@ -46,13 +46,13 @@ describe('to have message/diff assertion', () => {
           expect(err, 'to have message', 'expected 3 to equal 2');
         },
         'to throw',
-        function(err) {
+        expect.it(function(err) {
           expect(
             err,
             'to have ansi message',
             expect.it('to contain', "\x1B[36m'expected 1 to equal 2'\x1B[39m")
           );
-        }
+        })
       );
     });
 
@@ -62,13 +62,13 @@ describe('to have message/diff assertion', () => {
           expect(err, 'to have message', 'expected 3 to equal 2');
         },
         'to throw',
-        function(err) {
+        expect.it(function(err) {
           expect(
             err,
             'to have html message',
             expect.it('to contain', 'to&nbsp;have&nbsp;message')
           );
-        }
+        })
       );
     });
 

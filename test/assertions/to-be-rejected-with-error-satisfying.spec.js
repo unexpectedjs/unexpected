@@ -173,9 +173,9 @@ describe('to be rejected with error satisfying assertion', () => {
           );
         },
         'to error',
-        function(err) {
+        expect.it(function(err) {
           expect(err.stack, 'to match', /thisIsImportant/);
-        }
+        })
       );
     });
 
@@ -271,9 +271,9 @@ describe('to be rejected with error satisfying assertion', () => {
           );
         },
         'to error',
-        function(err) {
+        expect.it(function(err) {
           expect(err.stack, 'to match', /thisIsImportant/);
-        }
+        })
       );
     });
   });

@@ -12,7 +12,7 @@ describe('to throw a/an assertion', () => {
         );
       },
       'to throw',
-      function(err) {
+      expect.it(function(err) {
         var message = err.getErrorMessage({ format: 'text' }).toString();
 
         expect(
@@ -26,7 +26,7 @@ describe('to throw a/an assertion', () => {
             '  expected function to throw\n' +
             '    did not throw'
         );
-      }
+      })
     );
   });
 

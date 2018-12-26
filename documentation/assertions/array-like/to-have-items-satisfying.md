@@ -5,9 +5,9 @@ Alias: `to be an array whose items satisfy`.
 Notice this assertion fails when given an empty array.
 
 ```js
-expect([0, 1, 2, 3, 4], 'to have items satisfying', function(item, index) {
+expect([0, 1, 2, 3, 4], 'to have items satisfying', expect.it(function(item) {
   expect(item, 'to be a number');
-});
+}));
 
 expect([0, 1, 2, 3, 4], 'to have items satisfying', 'to be a number');
 
