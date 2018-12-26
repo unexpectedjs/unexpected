@@ -2449,7 +2449,7 @@ describe('to satisfy assertion', () => {
         'to satisfy { foo: function myOtherFunction() {} }\n' +
         '\n' +
         '{\n' +
-        '  foo: function myFunction() {} // should equal function myOtherFunction() {}\n' +
+        '  foo: function myFunction() {} // should be function myOtherFunction() {}\n' +
         '}'
     );
   });
@@ -2509,7 +2509,7 @@ describe('to satisfy assertion', () => {
             expect(foo, 'to satisfy', bar);
           },
           'to throw',
-          'expected function foo() {} to equal function bar() {}'
+          'expected function foo() {} to be function bar() {}'
         );
       });
     });
