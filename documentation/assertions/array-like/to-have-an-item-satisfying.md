@@ -8,9 +8,9 @@ expect([{ a: 1 }, { b: 2 }], 'to have an item satisfying', { a: 1 });
 
 expect([0, 1, 2, 3, 4], 'to have an item satisfying', 'to be a number');
 
-expect([0, 1, 2, 3, 4], 'to have an item satisfying', function(item, index) {
+expect([0, 1, 2, 3, 4], 'to have an item satisfying', expect.it(function(item) {
   expect(item, 'to be a number');
-});
+}));
 
 expect(
   [[1], ['foo']],
