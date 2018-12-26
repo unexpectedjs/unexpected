@@ -81,8 +81,8 @@ test-chrome-headless: ${TARGETS}
 test-browserstack-%: ${TARGETS}
 	@./node_modules/.bin/karma start --browsers=$* --single-run
 
-.PHONY: travis-main
-travis-main: clean lint test test-jasmine test-jest coverage
+.PHONY: travis-coverage
+travis-coverage: clean coverage
 	-<coverage/lcov.info ./node_modules/coveralls/bin/coveralls.js
 
 .PHONY: travis
