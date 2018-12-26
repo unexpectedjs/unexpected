@@ -74,7 +74,9 @@ describe('to have a value satisfying assertion', () => {
     expect(
       { foo: '0', bar: 1 },
       'to have a value satisfying',
-      'to be a number'
+      expect.it(function(value) {
+        expect(value, 'to be a number');
+      })
     );
 
     expect(
