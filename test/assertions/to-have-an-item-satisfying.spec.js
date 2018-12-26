@@ -44,9 +44,7 @@ describe('to have an item satisfying assertion', () => {
   it('asserts that at least one item in the array satisfies the RHS expectation', () => {
     expect(['foo', 1], 'to have an item satisfying', 'to be a number');
 
-    expect(['foo', 1], 'to have an item satisfying', function(item) {
-      expect(item, 'to be a number');
-    });
+    expect(['foo', 1], 'to have an item satisfying', 'to be a number');
 
     expect(
       [0, 1, 'foo', 2],
@@ -65,9 +63,13 @@ describe('to have an item satisfying assertion', () => {
   it('asserts that no items in the array satisfies the RHS expectation', () => {
     expect(['foo', 'bar'], 'not to have an item satisfying', 'to be a number');
 
-    expect(['foo', 'bar'], 'not to have an item satisfying', function(item) {
-      expect(item, 'to be a number');
-    });
+    expect(
+      ['foo', 'bar'],
+      'not to have an item satisfying',
+      expect.it(function(item) {
+        expect(item, 'to be a number');
+      })
+    );
 
     expect(
       [0, 1, 42, 2],
@@ -164,14 +166,6 @@ describe('to have an item satisfying assertion', () => {
         '  });\n' +
         '}'
     );
-  });
-
-  it('provides the item index to the callback function', () => {
-    var arr = ['0', '1', '2', '3'];
-    expect(arr, 'to have an item satisfying', function(item, index) {
-      expect(index, 'to be a number');
-      expect(index, 'to be', parseInt(item, 10));
-    });
   });
 
   describe('delegating to an async assertion', () => {

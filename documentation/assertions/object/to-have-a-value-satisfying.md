@@ -1,5 +1,5 @@
 Asserts that an object contains at least one value that satisfies a given
-value, function or other assertion.
+value, function (wrapped in `expect.it`) or other assertion.
 
 Note that this assertion fails if passed an empty object as the subject.
 
@@ -13,9 +13,9 @@ expect(
 expect(
   { foo: 0, bar: 1, baz: 2, qux: 3 },
   'to have a value satisfying',
-  function(value, index) {
+  expect.it(function(value) {
     expect(value, 'to be a number');
-  }
+  })
 );
 
 expect(
