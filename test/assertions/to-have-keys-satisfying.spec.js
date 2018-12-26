@@ -33,33 +33,33 @@ describe('to have keys satisfying assertion', () => {
   it('only accepts objects as the target', () => {
     expect(
       function() {
-        expect(42, 'to have keys satisfying', function(key) {});
+        expect(42, 'to have keys satisfying', true);
       },
       'to throw',
-      'expected 42 to have keys satisfying function (key) {}\n' +
+      'expected 42 to have keys satisfying true\n' +
         '  The assertion does not have a matching signature for:\n' +
-        '    <number> to have keys satisfying <function>\n' +
+        '    <number> to have keys satisfying <boolean>\n' +
         '  did you mean:\n' +
         '    <object> to have keys satisfying <any>\n' +
         '    <object> to have keys satisfying <assertion>'
     );
   });
 
-  it('asserts that the given callback does not throw for any keys in the map', () => {
+  it('asserts that the given expect.it-wrapped callback does not throw for any keys in the map', () => {
     expect(
       { foo: 0, bar: 1, baz: 2, qux: 3 },
       'to have keys satisfying',
-      function(key) {
+      expect.it(function(key) {
         expect(key, 'not to be empty');
-      }
+      })
     );
 
     expect(
       { foo: 0, bar: 1, baz: 2, qux: 3 },
       'to have keys satisfying',
-      function(key) {
+      expect.it(function(key) {
         expect(key, 'to match', /^[a-z]{3}$/);
-      }
+      })
     );
 
     expect(
@@ -76,10 +76,14 @@ describe('to have keys satisfying assertion', () => {
     );
   });
 
-  it('receives the key and the value when the third argument is a function', () => {
-    expect({ foo: 123 }, 'to have keys satisfying', function(key) {
-      expect(key, 'to equal', 'foo');
-    });
+  it('receives the key when the third argument is an expect.it-wrapped function', () => {
+    expect(
+      { foo: 123 },
+      'to have keys satisfying',
+      expect.it(function(key) {
+        expect(key, 'to equal', 'foo');
+      })
+    );
   });
 
   it('fails if the given object is empty', () => {
@@ -124,17 +128,26 @@ describe('to have keys satisfying assertion', () => {
   });
 
   it('supports legacy aliases', () => {
-    expect({ foo: '0' }, 'to be a map whose keys satisfy', function(key) {
-      expect(key, 'to match', /^[a-z]{3}$/);
-    });
+    expect(
+      { foo: '0' },
+      'to be a map whose keys satisfy',
+      'to match',
+      /^[a-z]{3}$/
+    );
 
-    expect({ foo: '0' }, 'to be an object whose keys satisfy', function(key) {
-      expect(key, 'to match', /^[a-z]{3}$/);
-    });
+    expect(
+      { foo: '0' },
+      'to be an object whose keys satisfy',
+      'to match',
+      /^[a-z]{3}$/
+    );
 
-    expect({ foo: '0' }, 'to be a hash whose keys satisfy', function(key) {
-      expect(key, 'to match', /^[a-z]{3}$/);
-    });
+    expect(
+      { foo: '0' },
+      'to be a hash whose keys satisfy',
+      'to match',
+      /^[a-z]{3}$/
+    );
   });
 
   it('fails when the assertion fails', () => {
@@ -143,9 +156,8 @@ describe('to have keys satisfying assertion', () => {
         expect(
           { foo: 0, bar: 1, Baz: 2, qux: 3 },
           'to have keys satisfying',
-          function(key) {
-            expect(key, 'to match', /^[a-z]{3}$/);
-          }
+          'to match',
+          /^[a-z]{3}$/
         );
       },
       'to throw',
@@ -159,16 +171,16 @@ describe('to have keys satisfying assertion', () => {
         expect(
           { foo: 0, bar: 1, baz: 2, qux: 3, quux: 4 },
           'to have keys satisfying',
-          function(key) {
+          expect.it(function(key) {
             expect(key, 'to have length', 3);
-          }
+          })
         );
       },
       'to throw',
       'expected { foo: 0, bar: 1, baz: 2, qux: 3, quux: 4 } to have keys satisfying\n' +
-        'function (key) {\n' +
+        'expect.it(function (key) {\n' +
         "  expect(key, 'to have length', 3);\n" +
-        '}\n' +
+        '})\n' +
         '\n' +
         '[\n' +
         "  'foo',\n" +

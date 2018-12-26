@@ -61,19 +61,22 @@ describe('to have items satisfying assertion', () => {
     );
   });
 
-  it('asserts that the given callback does not throw for any items in the array', () => {
-    expect([0, 1, 2, 3], 'to have items satisfying', function(item, index) {
-      expect(item, 'to be a number');
-      expect(index, 'to be a number');
-    });
+  it('asserts that the given expect.it-wrapped callback does not throw for any items in the array', () => {
+    expect(
+      [0, 1, 2, 3],
+      'to have items satisfying',
+      expect.it(function(item) {
+        expect(item, 'to be a number');
+      })
+    );
 
-    expect(['0', '1', '2', '3'], 'to have items satisfying', function(
-      item,
-      index
-    ) {
-      expect(item, 'not to be a number');
-      expect(index, 'to be a number');
-    });
+    expect(
+      ['0', '1', '2', '3'],
+      'to have items satisfying',
+      expect.it(function(item) {
+        expect(item, 'not to be a number');
+      })
+    );
 
     expect([0, 1, 2, 3], 'to have items satisfying', 'to be a number');
 
@@ -121,20 +124,20 @@ describe('to have items satisfying assertion', () => {
           ],
           'to have items satisfying',
           // prettier-ignore
-          function (item) {
+          expect.it(function (item) {
             expect.fail(function (output) {
               output.text('foo').nl().text('bar');
             });
-          }
+          })
         );
       },
       'to throw',
       'expected array to have items satisfying\n' +
-        'function (item) {\n' +
+        'expect.it(function (item) {\n' +
         '  expect.fail(function (output) {\n' +
         "    output.text('foo').nl().text('bar');\n" +
         '  });\n' +
-        '}\n' +
+        '})\n' +
         '\n' +
         '[\n' +
         '  [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 ] // foo\n' +
@@ -154,9 +157,13 @@ describe('to have items satisfying assertion', () => {
   it('fails when the assertion fails', () => {
     expect(
       function() {
-        expect(['0', 1, '2', '3'], 'to have items satisfying', function(item) {
-          expect(item, 'not to be a number');
-        });
+        expect(
+          ['0', 1, '2', '3'],
+          'to have items satisfying',
+          expect.it(function(item) {
+            expect(item, 'not to be a number');
+          })
+        );
       },
       'to throw',
       /1, \/\/ should not be a number/
@@ -178,17 +185,21 @@ describe('to have items satisfying assertion', () => {
   it('provides a detailed report of where failures occur', () => {
     expect(
       function() {
-        expect([0, 1, '2', 3, 4], 'to have items satisfying', function(item) {
-          expect(item, 'to be a number');
-          expect(item, 'to be less than', 4);
-        });
+        expect(
+          [0, 1, '2', 3, 4],
+          'to have items satisfying',
+          expect.it(function(item) {
+            expect(item, 'to be a number');
+            expect(item, 'to be less than', 4);
+          })
+        );
       },
       'to throw',
       "expected [ 0, 1, '2', 3, 4 ] to have items satisfying\n" +
-        'function (item) {\n' +
+        'expect.it(function (item) {\n' +
         "  expect(item, 'to be a number');\n" +
         "  expect(item, 'to be less than', 4);\n" +
-        '}\n' +
+        '})\n' +
         '\n' +
         '[\n' +
         '  0,\n' +
@@ -207,20 +218,20 @@ describe('to have items satisfying assertion', () => {
           [[0, 1, 2], [4, '5', 6], [7, 8, '9']],
           'to have items satisfying',
           // prettier-ignore
-          function(arr) {
-            expect(arr, 'to have items satisfying', function (item) {
+          expect.it(function(arr) {
+            expect(arr, 'to have items satisfying', expect.it(function (item) {
               expect(item, 'to be a number');
-            });
-          }
+            }));
+          })
         );
       },
       'to throw',
       'expected array to have items satisfying\n' +
-        'function (arr) {\n' +
-        "  expect(arr, 'to have items satisfying', function (item) {\n" +
+        'expect.it(function (arr) {\n' +
+        "  expect(arr, 'to have items satisfying', expect.it(function (item) {\n" +
         "    expect(item, 'to be a number');\n" +
-        '  });\n' +
-        '}\n' +
+        '  }));\n' +
+        '})\n' +
         '\n' +
         '[\n' +
         '  [ 0, 1, 2 ],\n' +
@@ -324,15 +335,19 @@ describe('to have items satisfying assertion', () => {
   it('should not render a "not to match" diff inline', () => {
     expect(
       function() {
-        expect([']1V3ZRFOmgiE*'], 'to have items satisfying', function(item) {
-          expect(item, 'not to match', /[!@#$%^&*()_+]/);
-        });
+        expect(
+          [']1V3ZRFOmgiE*'],
+          'to have items satisfying',
+          expect.it(function(item) {
+            expect(item, 'not to match', /[!@#$%^&*()_+]/);
+          })
+        );
       },
       'to throw',
       "expected [ ']1V3ZRFOmgiE*' ] to have items satisfying\n" +
-        'function (item) {\n' +
+        'expect.it(function (item) {\n' +
         "  expect(item, 'not to match', /[!@#$%^&*()_+]/);\n" +
-        '}\n' +
+        '})\n' +
         '\n' +
         '[\n' +
         "  ']1V3ZRFOmgiE*' // should not match /[!@#$%^&*()_+]/\n" +
@@ -341,5 +356,28 @@ describe('to have items satisfying assertion', () => {
         '                  //             ^\n' +
         ']'
     );
+  });
+
+  describe('when passed a function', function() {
+    function foo() {}
+
+    it('succeeds when the subject is an array with only that function as items', function() {
+      expect([foo, foo], 'to have items satisfying', foo);
+    });
+
+    it('fails when the array contains other items', function() {
+      expect(
+        function() {
+          expect([123, 456], 'to have items satisfying', foo);
+        },
+        'to throw',
+        'expected [ 123, 456 ] to have items satisfying function foo() {}\n' +
+          '\n' +
+          '[\n' +
+          '  123, // should equal function foo() {}\n' +
+          '  456 // should equal function foo() {}\n' +
+          ']'
+      );
+    });
   });
 });

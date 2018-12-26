@@ -71,9 +71,11 @@ describe('to have a value satisfying assertion', () => {
       'to be a number'
     );
 
-    expect({ foo: '0', bar: 1 }, 'to have a value satisfying', function(value) {
-      expect(value, 'to be a number');
-    });
+    expect(
+      { foo: '0', bar: 1 },
+      'to have a value satisfying',
+      'to be a number'
+    );
 
     expect(
       { foo: 0, bar: 'bar' },
@@ -96,11 +98,13 @@ describe('to have a value satisfying assertion', () => {
       'to be a string'
     );
 
-    expect({ foo: '0', bar: '1' }, 'not to have a value satisfying', function(
-      value
-    ) {
-      expect(value, 'to be a number');
-    });
+    expect(
+      { foo: '0', bar: '1' },
+      'not to have a value satisfying',
+      expect.it(function(value) {
+        expect(value, 'to be a number');
+      })
+    );
 
     expect(
       { foo: 0, bar: 1 },
@@ -229,6 +233,24 @@ describe('to have a value satisfying assertion', () => {
           expect.it('to be a number')
         ),
         'to be fulfilled'
+      );
+    });
+  });
+
+  describe('when passed a function', function() {
+    function foo() {}
+
+    it('succeeds when object has that function as a value', function() {
+      expect({ abc: foo }, 'to have a value satisfying', foo);
+    });
+
+    it('fails when the array does not have that function as a value', function() {
+      expect(
+        function() {
+          expect({ abc: 123 }, 'to have a value satisfying', foo);
+        },
+        'to throw',
+        'expected { abc: 123 } to have a value satisfying function foo() {}'
       );
     });
   });
