@@ -1,7 +1,7 @@
 {
   "name": "unexpected",
   "tag": "beta",
-  "version": "11.0.0-0",
+  "version": "11.0.0-1",
   "author": "Sune Sloth Simonsen <sune@we-knowhow.dk>",
   "keywords": [
     "assertion",
