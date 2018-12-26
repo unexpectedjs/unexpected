@@ -14,13 +14,11 @@ describe('function type', () => {
     expect(fn, 'to inspect as', 'function foo() {}');
   });
 
-  var isPhantomJs =
-    typeof navigator !== 'undefined' && /phantom/i.test(navigator.userAgent);
-  if (!isPhantomJs) {
-    // Node.js 3 and below and phantom.js don't include "bound " and the
-    // old Phantom.js version that's currently available on Travis doesn't
-    // even have Function#bind, which we then polyfill via es5-shim, leading
-    // to even more different output.
+  var isIE =
+    typeof navigator !== 'undefined' &&
+    navigator.userAgent.indexOf('Trident') !== -1;
+
+  if (!isIE) {
     // For now let's just disable these tests in those environments
 
     it('should inspect an anonymous bound function correctly', () => {
@@ -90,22 +88,18 @@ describe('function type', () => {
   }
   /* eslint-enable no-unused-vars */
 
-  var phantomJsBug = singleLineWithComment.toString().indexOf('// foo;') !== -1;
-
-  if (!phantomJsBug) {
-    it('should inspect a short one-line function with leading and trailing newline correctly and a C++-style comment correctly', () => {
-      /* eslint-disable no-unused-vars */
-      expect(
-        // prettier-ignore
-        function() {
+  it('should inspect a short one-line function with leading and trailing newline correctly and a C++-style comment correctly', () => {
+    /* eslint-disable no-unused-vars */
+    expect(
+      // prettier-ignore
+      function() {
           var a = 123;a = 456; // foo
         },
-        'to inspect as',
-        'function () {\n' + '  var a = 123;a = 456; // foo\n' + '}'
-      );
-      /* eslint-enable no-unused-vars */
-    });
-  }
+      'to inspect as',
+      'function () {\n' + '  var a = 123;a = 456; // foo\n' + '}'
+    );
+    /* eslint-enable no-unused-vars */
+  });
 
   it('should reindent a function with an indentation size of 4', () => {
     expect(

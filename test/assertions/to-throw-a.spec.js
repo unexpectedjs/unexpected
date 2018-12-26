@@ -14,8 +14,7 @@ describe('to throw a/an assertion', () => {
       'to throw',
       expect.it(function(err) {
         var message = err.getErrorMessage({ format: 'text' }).toString();
-        // PhantomJS adds a semicolon after the comment
-        message = message.replace(';', '');
+
         expect(
           message,
           'to equal',

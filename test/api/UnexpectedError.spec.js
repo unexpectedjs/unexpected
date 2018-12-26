@@ -227,43 +227,33 @@ describe('UnexpectedError', () => {
   });
 
   describe('when an originalError instance is passed', () => {
-    if (
-      typeof navigator === 'undefined' ||
-      !/phantom/i.test(navigator.userAgent)
-    ) {
-      it('should give up', () => {
-        return expect(
-          function() {
-            return expect(function() {
-              try {
-                throw new Error('argh');
-              } catch (err) {
-                err.stack = 'foobarquux\n   at yaddayadda';
-                throw err;
-              }
-            }, 'not to error');
-          },
-          'to error',
-          expect.it(function(err) {
-            expect(err.stack, 'to contain', 'foobarquux\n   at yaddayadda');
-          })
-        );
-      });
-    }
+    it('should give up', () => {
+      return expect(
+        function() {
+          return expect(function() {
+            try {
+              throw new Error('argh');
+            } catch (err) {
+              err.stack = 'foobarquux\n   at yaddayadda';
+              throw err;
+            }
+          }, 'not to error');
+        },
+        'to error',
+        expect.it(function(err) {
+          expect(err.stack, 'to contain', 'foobarquux\n   at yaddayadda');
+        })
+      );
+    });
   });
 
   describe('#stack', () => {
-    if (
-      typeof navigator === 'undefined' ||
-      !/phantom/i.test(navigator.userAgent)
-    ) {
-      it('should not mess up when the error message contains $&', () => {
-        return expect(() => expect('$&', 'to equal', 'foo'), 'to error').then(
-          err => {
-            expect(err.stack, 'to contain', '$&');
-          }
-        );
-      });
-    }
+    it('should not mess up when the error message contains $&', () => {
+      return expect(() => expect('$&', 'to equal', 'foo'), 'to error').then(
+        err => {
+          expect(err.stack, 'to contain', '$&');
+        }
+      );
+    });
   });
 });

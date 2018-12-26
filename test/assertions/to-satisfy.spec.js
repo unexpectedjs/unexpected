@@ -1003,6 +1003,24 @@ describe('to satisfy assertion', () => {
         })
       );
     });
+
+    it('should only consider functions that are identified as functions by the type system', () => {
+      var clonedExpect = expect.clone().addType({
+        name: 'functionStartingWithF',
+        identify(obj) {
+          return (
+            typeof obj === 'function' && obj.toString().match(/^function\s*f/)
+          );
+        }
+      });
+
+      function foo() {
+        throw new Error('argh, do not call me');
+      }
+
+      clonedExpect(foo, 'to satisfy', foo);
+      clonedExpect({ foo }, 'to satisfy', { foo });
+    });
   });
 
   describe('on Error instances', () => {
