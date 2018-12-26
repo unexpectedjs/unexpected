@@ -2564,4 +2564,17 @@ describe('to satisfy assertion', () => {
       });
     });
   });
+
+  it('should not dereference properties that are not being asserted on', function() {
+    expect(
+      {
+        get ohNo() {
+          throw new Error('argh');
+        },
+        foo: 123
+      },
+      'to satisfy',
+      { foo: 123 }
+    );
+  });
 });
