@@ -9,9 +9,9 @@ Aliases: `to be a map whose values satisfy`,
 expect(
   { foo: 0, bar: 1, baz: 2, qux: 3 },
   'to have values satisfying',
-  function(value, index) {
+  expect.it(function(value) {
     expect(value, 'to be a number');
-  }
+  })
 );
 
 expect(
