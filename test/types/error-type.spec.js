@@ -47,6 +47,10 @@ describe('Error type', () => {
     );
   });
 
+  var isIE =
+    typeof navigator !== 'undefined' &&
+    navigator.userAgent.indexOf('Trident') !== -1;
+
   describe('with a custom Error class inheriting from Error', () => {
     function inherits(ctor, superCtor) {
       ctor.super_ = superCtor;
@@ -67,6 +71,9 @@ describe('Error type', () => {
         Object.setPrototypeOf(instance, proto);
       } else {
         instance.__proto__ = proto; // eslint-disable-line no-proto
+      }
+      if (isIE) {
+        instance.name = 'MyError';
       }
       return instance;
     }

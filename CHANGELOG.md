@@ -1,3 +1,9 @@
+### v10.40.0 (2018-12-26)
+
+- [#540](https://github.com/unexpectedjs/unexpected/pull/540) Added karma, mocha, chrome headless setup ([Sune Simonsen](mailto:sune@we-knowhow.dk))
+- [#539](https://github.com/unexpectedjs/unexpected/pull/539) Upgrade rollup-plugin-node-resolve to version 4.0.0 ([depfu[bot]](mailto:depfu[bot]@users.noreply.github.com))
+- [#538](https://github.com/unexpectedjs/unexpected/pull/538) Fix special casing of UnexpectedError in <function> to error/throw ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+
 ### v10.39.2 (2018-11-18)
 
 - [#534](https://github.com/unexpectedjs/unexpected/pull/534) Fix the output to make the unexpected-dom test suite pass ([Sune Simonsen](mailto:sune@we-knowhow.dk))
