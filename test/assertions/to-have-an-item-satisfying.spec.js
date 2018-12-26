@@ -166,14 +166,6 @@ describe('to have an item satisfying assertion', () => {
     );
   });
 
-  it('provides the item index to the callback function', () => {
-    var arr = ['0', '1', '2', '3'];
-    expect(arr, 'to have an item satisfying', function(item, index) {
-      expect(index, 'to be a number');
-      expect(index, 'to be', parseInt(item, 10));
-    });
-  });
-
   describe('delegating to an async assertion', () => {
     var clonedExpect = expect
       .clone()
