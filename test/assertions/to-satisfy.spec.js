@@ -709,6 +709,36 @@ describe('to satisfy assertion', () => {
           '}'
       );
     });
+
+    it('should handle nested diffs', () => {
+      expect(
+        () => {
+          expect({ foo: { bar: 'baz' } }, 'to satisfy', {
+            foo: expect.it(function(v) {
+              expect(v, 'to equal', { bar: 'qux' });
+            })
+          });
+        },
+        'to throw',
+        "expected { foo: { bar: 'baz' } } to satisfy\n" +
+          '{\n' +
+          '  foo: expect.it(function (v) {\n' +
+          "         expect(v, 'to equal', { bar: 'qux' });\n" +
+          '       })\n' +
+          '}\n' +
+          '\n' +
+          '{\n' +
+          "  foo: { bar: 'baz' } // should equal { bar: 'qux' }\n" +
+          '                      //\n' +
+          '                      // {\n' +
+          "                      //   bar: 'baz' // should equal 'qux'\n" +
+          '                      //              //\n' +
+          '                      //              // -baz\n' +
+          '                      //              // +qux\n' +
+          '                      // }\n' +
+          '}'
+      );
+    });
   });
 
   describe('with a synchronous expect.it in the RHS object', () => {
