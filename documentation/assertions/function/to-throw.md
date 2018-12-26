@@ -35,7 +35,7 @@ expect(
 
 In case of a failing expectation you get the following output:
 
-```js#skipPhantom:true
+```js
 expect(function () {
   throw new Error('The error message!');
 }, 'to throw', 'The error message');
@@ -68,7 +68,7 @@ expect(
 
 In case of a failing expectation you get the following output:
 
-```js#skipPhantom:true
+```js
 expect(function () {
   throw new Error('The error message!');
 }, 'to throw', /catastrophic failure/);
@@ -100,7 +100,7 @@ expect(
 
 In case of a failing expectation you get the following output:
 
-```js#skipPhantom:true
+```js
 expect(function () {
   throw new Error('Another error');
 }, 'to throw', function (e) {
@@ -137,7 +137,7 @@ expect(
 
 In case of a failing expectation you get the following output:
 
-```js#skipPhantom:true
+```js
 expect(function () {
   throw new Error('Another error');
 }, 'to throw', new TypeError('Invalid syntax'));
@@ -160,7 +160,7 @@ expect(function() {
 
 In case of a failing expectation you get the following output:
 
-```js#skipPhantom:true
+```js
 expect(function () {
   throw new Error('threw anyway');
 }, 'not to throw');

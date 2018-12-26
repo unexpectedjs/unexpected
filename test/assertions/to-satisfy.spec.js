@@ -973,7 +973,9 @@ describe('to satisfy assertion', () => {
       var clonedExpect = expect.clone().addType({
         name: 'functionStartingWithF',
         identify(obj) {
-          return typeof obj === 'function' && /^f/i.test(obj.name);
+          return (
+            typeof obj === 'function' && obj.toString().match(/^function\s*f/)
+          );
         }
       });
 

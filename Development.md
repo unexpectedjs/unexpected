@@ -36,8 +36,16 @@ make test-phantomjs
 ## Running tests in the browser
 
 ```
+make test-chrome-headless
+```
+
+or you can run them interactively through [Karma](http://karma-runner.github.io/):
+
+```
 make test-browser
 ```
+
+click the debug button to open the HTML runner.
 
 ## Coverage report
 
