@@ -728,14 +728,12 @@ describe('to satisfy assertion', () => {
           '}\n' +
           '\n' +
           '{\n' +
-          "  foo: { bar: 'baz' } // should equal { bar: 'qux' }\n" +
-          '                      //\n' +
-          '                      // {\n' +
-          "                      //   bar: 'baz' // should equal 'qux'\n" +
-          '                      //              //\n' +
-          '                      //              // -baz\n' +
-          '                      //              // +qux\n' +
-          '                      // }\n' +
+          '  foo: {\n' +
+          "    bar: 'baz' // should equal 'qux'\n" +
+          '               //\n' +
+          '               // -baz\n' +
+          '               // +qux\n' +
+          '  }\n' +
           '}'
       );
     });
