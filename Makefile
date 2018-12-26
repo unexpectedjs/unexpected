@@ -86,7 +86,7 @@ travis-main: clean lint test test-jasmine test-jest coverage
 	-<coverage/lcov.info ./node_modules/coveralls/bin/coveralls.js
 
 .PHONY: travis
-travis: test test-jest-if-supported-node-version
+travis: test
 
 .PHONY: git-dirty-check
 git-dirty-check:
