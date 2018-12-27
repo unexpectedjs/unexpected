@@ -737,6 +737,40 @@ describe('to satisfy assertion', () => {
           '}'
       );
     });
+
+    it('should handle nested diffs with async parts', () =>
+      expect(
+        () =>
+          expect(
+            { foo: { bar: 'baz' }, number: 123 },
+            'when delayed a little bit',
+            'to satisfy',
+            {
+              foo: expect.it(function(v) {
+                expect(v, 'to equal', { bar: 'qux' });
+              }),
+              number: expect.it('when delayed a little bit', 'to equal', 987)
+            }
+          ),
+        'to error',
+        "expected { foo: { bar: 'baz' }, number: 123 } when delayed a little bit\n" +
+          'to satisfy {\n' +
+          '  foo: expect.it(function (v) {\n' +
+          "         expect(v, 'to equal', { bar: 'qux' });\n" +
+          '       }),\n' +
+          "  number: expect.it('when delayed a little bit', 'to equal', 987)\n" +
+          '}\n' +
+          '\n' +
+          '{\n' +
+          '  foo: {\n' +
+          "    bar: 'baz' // should equal 'qux'\n" +
+          '               //\n' +
+          '               // -baz\n' +
+          '               // +qux\n' +
+          '  },\n' +
+          '  number: 123 // expected: when delayed a little bit to equal 987\n' +
+          '}'
+      ));
   });
 
   describe('with a synchronous expect.it in the RHS object', () => {
