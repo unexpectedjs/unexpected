@@ -979,20 +979,14 @@ describe('to satisfy assertion', () => {
       clonedExpect.addAssertion(
         '<Foo> to satisfy <object>',
         (expect, subject, value) => {
-          let thingPromise;
-          return expect
-            .promise(() => {
-              thingPromise = expect(subject.thing, 'to satisfy', value.thing);
-              return thingPromise;
-            })
-            .catch(() => {
+          return expect.withError(
+            () => expect(subject.thing, 'to satisfy', value.thing),
+            err => {
               expect.fail({
                 diff: (output, diff, inspect, equal) => {
                   output.text('-- custom diff --', 'yellow').nl(2);
 
-                  const thingError =
-                    thingPromise.isRejected() && thingPromise.reason();
-                  const thingDiff = thingError && thingError.getDiff(output);
+                  const thingDiff = err.getDiff(output);
                   if (thingDiff) {
                     output.append(thingDiff);
                   }
@@ -1000,7 +994,8 @@ describe('to satisfy assertion', () => {
                   return output;
                 }
               });
-            });
+            }
+          );
         }
       );
 
