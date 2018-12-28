@@ -999,6 +999,22 @@ describe('to satisfy assertion', () => {
         }
       );
 
+      it('@minimal', () =>
+        expect.withError(
+          () =>
+            expect(
+              { foo: 123 },
+              'to satisfy',
+              expect.it('to equal', {
+                foo: 787
+              })
+            ),
+          err => {
+            console.log(err.hasDiff());
+            throw err;
+          }
+        ));
+
       it('should handle async diffs with nested parts', () =>
         expect(
           () =>
