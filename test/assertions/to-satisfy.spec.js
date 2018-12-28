@@ -961,6 +961,74 @@ describe('to satisfy assertion', () => {
     });
   });
 
+  describe('with an expect.it and customised types', () => {
+    describe('should handle nested diffs with async parts', () => {
+      function Foo(thing) {
+        this.thing = thing;
+      }
+      const clonedExpect = expect.clone();
+      clonedExpect.addType({
+        name: 'Foo',
+        identify(obj) {
+          return obj instanceof Foo;
+        },
+        inspect(obj, depth, output) {
+          output.text('Foo', 'green');
+        }
+      });
+      clonedExpect.addAssertion(
+        '<Foo> to satisfy <object>',
+        (expect, subject, value) => {
+          const promiseByKey = {
+            thing: expect.promise(() => {
+              return expect(subject.thing, 'to satisfy', value.thing);
+            })
+          };
+          return expect.promise.all(promiseByKey).caught(() => {
+            return expect.promise.settle(promiseByKey).then(() => {
+              expect.fail({
+                diff: (output, diff, inspect, equal) => {
+                  output.text('-- custom diff --', 'yellow').nl(2);
+
+                  const thingError =
+                    promiseByKey.thing.isRejected() &&
+                    promiseByKey.thing.reason();
+                  const thingDiff = thingError && thingError.getDiff(output);
+                  if (thingDiff) {
+                    output.append(thingDiff);
+                  }
+
+                  return output;
+                }
+              });
+            });
+          });
+        }
+      );
+
+      it('should handle async diffs with nested parts', () =>
+        expect(
+          () =>
+            clonedExpect(new Foo({ foo: 123 }), 'to satisfy', {
+              thing: expect.it('when delayed a little bit', 'to equal', {
+                foo: 787
+              })
+            }),
+          'to error',
+          'expected Foo\n' +
+            "to satisfy { thing: expect.it('when delayed a little bit', 'to equal', { foo: 787 }) }\n" +
+            '\n' +
+            '-- custom diff --\n' +
+            '\n' +
+            'expected { foo: 123 } when delayed a little bit to equal { foo: 787 }\n' +
+            '\n' +
+            '{\n' +
+            '  foo: 123 // should equal 787\n' +
+            '}'
+        ));
+    });
+  });
+
   it('should support diffs in the error report', () => {
     expect(
       function() {
