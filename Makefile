@@ -1,6 +1,6 @@
 REPORTER = dot
 
-TARGETS ?= unexpected.js unexpected.js.map
+TARGETS ?= unexpected.js
 
 CHEWBACCA_THRESHOLD ?= 25
 
