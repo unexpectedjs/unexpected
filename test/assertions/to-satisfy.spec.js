@@ -1451,6 +1451,65 @@ describe('to satisfy assertion', () => {
           ')'
       );
     });
+
+    it('should support context correctly with expect.it (numerical)', () => {
+      function Greeter(folks) {
+        this.push(...(folks || []));
+
+        this.greet = function(prefix) {
+          return prefix + this.join(' & ');
+        };
+      }
+
+      Greeter.prototype = [];
+
+      const clonedExpect = expect.clone();
+      clonedExpect.addType({
+        name: 'Greeter',
+        base: 'array-like',
+        identify: obj => obj instanceof Greeter
+      });
+
+      const expected = ['Alice', 'Bob'];
+      expected.greet = expect.it(
+        'when called with',
+        ['Hello, '],
+        'to equal',
+        'Hello, Alice & Bob'
+      );
+
+      clonedExpect(new Greeter(['Alice', 'Bob']), 'to satisfy', expected);
+    });
+
+    it('should support context correctly with expect.it (non-numerical)', () => {
+      function Greeter(folks) {
+        this.push(...(folks || []));
+
+        this.greet = function(prefix) {
+          return prefix + this.join(' & ');
+        };
+      }
+
+      Greeter.prototype = [];
+
+      const clonedExpect = expect.clone();
+      clonedExpect.addType({
+        name: 'Greeter',
+        base: 'array-like',
+        identify: obj => obj instanceof Greeter,
+        numericalPropertiesOnly: false
+      });
+
+      const expected = ['Alice', 'Bob'];
+      expected.greet = expect.it(
+        'when called with',
+        ['Hello, '],
+        'to equal',
+        'Hello, Alice & Bob'
+      );
+
+      clonedExpect(new Greeter(['Alice', 'Bob']), 'to satisfy', expected);
+    });
   });
 
   describe('on arrays', () => {
