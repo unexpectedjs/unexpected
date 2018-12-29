@@ -42,7 +42,7 @@
     "eslint-config-pretty-standard": "^1.2.0",
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-mocha": "^5.2.0",
-    "eslint-plugin-prettier": "^2.6.0",
+    "eslint-plugin-prettier": "^3.0.1",
     "find-node-modules": "^1.0.4",
     "gh-pages": "^2.0.1",
     "istanbul": "^0.4.5",
