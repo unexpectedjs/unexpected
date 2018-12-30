@@ -36,9 +36,26 @@ version of the library and the changes are forwards compatible.
 
 #### Functions are always compared by value
 
-Previously when using "to satisfy" a property defined as a function
-on the right-hand side would be given the value from the subject and
-further assertions could be made.
+All function comparisons are now made using the identity of the function:
+
+```js
+function myCallback() {}
+
+const options = {
+  data: null,
+  callback: myCallback
+};
+
+expect(options, 'to satisfy', {
+  callback: myCallback
+});
+```
+
+#### Use `expect.it()` for assertions on property values
+
+Previously when used in conjunction with "to satisfy" a property
+defined as a function on the right-hand side would be passed the
+value to allow further assertions:
 
 ```js#evaluate:false
 const obj = {
@@ -54,8 +71,11 @@ expect(obj, 'to satisfy', {
 });
 ```
 
-This feature was not widely known and instead you can now write
-the same using `expect.it()`:
+> Note: this is no longer supported by Unexpected v11
+
+For cases where the value of a property must conform to a more
+rigorous set of contraints, we replaced the earlier syntax with
+the `expect.it()`:
 
 ```js
 const obj = {
@@ -65,7 +85,9 @@ const obj = {
 
 expect(obj, 'to satisfy', {
   version: 11,
-  greeting: expect.it('to start with', 'hello')
+  greeting: expect.it(function(theValue) {
+    expect(theValue, 'to start with', 'hello');
+  })
 });
 ```
 
