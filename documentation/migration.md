@@ -101,7 +101,7 @@ expect(obj, 'to satisfy', {
 });
 ```
 
-#### Use of extensions via the API requires calling .clone()
+#### Using extensions via the API requires calling .clone()
 
 Previously once imported the entirety of the Unexpected API was
 immediately available to users which could lead to surprising
