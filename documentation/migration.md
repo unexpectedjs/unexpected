@@ -10,29 +10,29 @@ repository: https://github.com/unexpectedjs/unexpected
 Unexpected has from its inception taken backwards compatibiity very
 seriously. We think this is particularly important for a library
 intended for use in testing - we recognise that comprehensive test
-suites are often a large investment and as a central role in ongoing
+suites are often a large investment and play a central role in ongoing
 development of software. This sets a very high bar for any changes.
 
 The project strictly adheres to semver. As such anything that carries
-a risk of breakage is carefully considered and must demonstrate
-significant benefit to be considered and would mean a new major version.
+a risk of breakage is carefully considered, must demonstrate significant
+benefit to be chosen for inclusion and would mean a new major version.
 
 ## Major revisions
 
 ### Unexpected 11
 
 Version 11 is the first major release that makes some carefully
-calculated changes in the user facing API that may require test
+calculated changes in the user facing API which may require test
 changes. We have made every effort to minimise the effects on end
-users and this extends to the plugin ecosystem in which the most
-commonly used have been made compatible.
+users and this extends to the plugin ecosystem which has seen the
+most commonly used being made compatible.
 
 The changes are all focused on simplifying the mental model for users.
 A handful of constructs which proved themselves to be sources of
-confusion and to the best of our knowledge have not
-seen wide use have been replaced with **existing** alternatives. This
-means tests can be updated against the current version of the library
-and thus the changes are forwards compatible.
+confusion and to the best of our knowledge have not seen wide use
+have been replaced with **existing** alternatives. This means a safe
+upgrade path is available: tests can be updated against the current
+version of the library and the changes are forwards compatible.
 
 #### Functions are always compared by value
 
