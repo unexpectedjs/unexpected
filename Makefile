@@ -55,7 +55,7 @@ endif
 
 .PHONY: test
 test: test-sources
-	@./node_modules/.bin/mocha --opts $(MOCHA_OPTS) $(TEST_SOURCES) $(TEST_SOURCE_MARKDOWN)
+	@./node_modules/.bin/mocha --opts $(MOCHA_OPTS) $(TEST_SOURCES) $(TEST_SOURCES_MARKDOWN)
 
 nyc-includes:
 ifeq ($(MODERN_NODE), true)
