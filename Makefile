@@ -1,6 +1,8 @@
 REPORTER = dot
 
-TARGETS ?= unexpected.js
+TARGETS ?= unexpected.js unexpected.js.map
+.PHONY: unexpected.js
+.SECONDARY: unexpected.js.map
 
 CHEWBACCA_THRESHOLD ?= 25
 
@@ -25,7 +27,6 @@ build/externaltests: externaltests/*
 
 build: build/lib build/test build/externaltests
 
-.PHONY: ${TARGETS}
 ${TARGETS}: build
 	./node_modules/.bin/rollup --config rollup.config.js --sourcemap --format umd --name weknowhow.expect -o unexpected.js build/lib/index.js
 
