@@ -195,6 +195,19 @@ describe('function type', () => {
     });
   }
 
+  var implicitReturnArrowFunction;
+  try {
+    // eslint-disable-next-line no-new-func
+    implicitReturnArrowFunction = new Function('return a =>\n  a')();
+  } catch (e) {}
+
+  if (implicitReturnArrowFunction) {
+    it('should render an implicit return arrow function a single line break after the arrow', () => {
+      // eslint-disable-next-line no-eval
+      expect(eval(`a =>\n  a`), 'to inspect as', `a =>\n  a`);
+    });
+  }
+
   // We can't complete this test if the runtime doesn't support arrow functions:
   var evilImplicitReturnMultilineArrowFunction;
   try {
