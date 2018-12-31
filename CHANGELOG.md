@@ -1,3 +1,7 @@
+### v10.40.1 (2018-12-31)
+
+- [#553](https://github.com/unexpectedjs/unexpected/pull/553) Fix inspection of single line arrow functions that have a linebreak right after the arrow ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+
 ### v10.40.0 (2018-12-26)
 
 - [#540](https://github.com/unexpectedjs/unexpected/pull/540) Added karma, mocha, chrome headless setup ([Sune Simonsen](mailto:sune@we-knowhow.dk))
