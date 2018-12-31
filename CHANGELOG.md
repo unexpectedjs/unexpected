@@ -1,3 +1,7 @@
+### v10.40.1 (2018-12-31)
+
+- [#553](https://github.com/unexpectedjs/unexpected/pull/553) Fix inspection of single line arrow functions that have a linebreak right after the arrow ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+
 ### v10.40.0 (2018-12-26)
 
 - [#540](https://github.com/unexpectedjs/unexpected/pull/540) Added karma, mocha, chrome headless setup ([Sune Simonsen](mailto:sune@we-knowhow.dk))
@@ -196,9 +200,6 @@
 
 - [#338](https://github.com/unexpectedjs/unexpected/pull/338) Add <object|array-like> to have (a value|an item) satisfying <any|assertion> ([Andreas Lind](mailto:andreas@one.com), [Joel Mukuthu](mailto:jmu@one.com))
 - [#355](https://github.com/unexpectedjs/unexpected/pull/355) Inspect async functions ([Andreas Lind](mailto:andreas@one.com))
-
-### v10.20.0 (2016-11-27)
-
 - [#340](https://github.com/unexpectedjs/unexpected/pull/340) Add 'to be fulfilled with a value satisfying' and 'to be rejected with error satisfying' ([Joel Mukuthu](mailto:jmu@one.com))
 - [#348](https://github.com/unexpectedjs/unexpected/pull/348) to have (items|values|keys) satisfying: Only allow one <any> as the value, not <any+> ([Andreas Lind](mailto:andreas@one.com))
 - [#349](https://github.com/unexpectedjs/unexpected/pull/349) to have keys satisfying, to have values satisfying: Disallow an empty array ([Andreas Lind](mailto:andreas@one.com))
