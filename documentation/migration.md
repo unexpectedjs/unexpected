@@ -7,7 +7,7 @@ repository: https://github.com/unexpectedjs/unexpected
 
 # Migration
 
-Unexpected has from its inception taken backwards compatibiity very
+Unexpected has from its inception taken backwards compatibility very
 seriously. We think this is particularly important for a library
 intended for use in testing - we recognise that comprehensive test
 suites are often a large investment and play a central role in ongoing
@@ -48,7 +48,7 @@ immediately available to users which could lead to surprising
 results if types or assertions were added to it directly.
 
 In version 11 the top-level of the library has been frozen and
-extending the functionality requires an explcit `.clone()` call
+extending the functionality requires an expilcit `.clone()` call
 to be made:
 
 ```js#evaluate:false
@@ -82,7 +82,7 @@ expect(obj, 'to satisfy', {
 > Note: this is no longer supported by Unexpected v11
 
 For cases where the value of a property must conform to a more
-rigorous set of contraints, we replaced the earlier syntax with
+rigorous set of constraints, we replaced the earlier syntax with
 the `expect.it()`:
 
 ```js
