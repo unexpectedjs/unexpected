@@ -406,7 +406,7 @@ describe('object type', () => {
       );
     });
 
-    it('should process propeties in both inspection and diff in "to satsify"', () => {
+    it('should process propeties in both inspection and diff in "to satisfy"', () => {
       expect(
         function() {
           clonedExpect(
