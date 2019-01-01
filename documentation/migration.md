@@ -36,7 +36,14 @@ version of the library and the changes are forwards compatible.
 
 #### Functions are always compared by value
 
-All function comparisons are now made using the identity of the function:
+All function comparisons are now made using the identity of the function.
+
+When interacting with object types this affects:
+
+- `"to satisfy"`
+- `"to have keys satisfying"`
+- `"to have a value satisfying"`
+- `"to have values satisfying"`
 
 ```js
 function myCallback() {}
@@ -49,6 +56,20 @@ const options = {
 expect(options, 'to satisfy', {
   callback: myCallback
 });
+
+expect(options, 'to have a value satisfying', myCallback);
+```
+
+With array-like types it affects:
+
+- `"to satisfy"`
+- `"to have an item satisfying"`
+- `"to have items satisfying"`
+
+```js
+const args = [myCallback];
+
+expect(args, 'to have an item satisfying', myCallback);
 ```
 
 #### Use `expect.it()` for assertions on property values
