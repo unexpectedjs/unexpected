@@ -386,7 +386,7 @@ describe('object type', () => {
       }
     });
 
-    it('should process propeties in both inspection and diff in "to equal"', () => {
+    it('should process properties in both inspection and diff in "to equal"', () => {
       expect(
         function() {
           clonedExpect({ nine: 9, zero: 1, foo: 'bAr' }, 'to equal', {
@@ -406,7 +406,7 @@ describe('object type', () => {
       );
     });
 
-    it('should process propeties in both inspection and diff in "to satsify"', () => {
+    it('should process properties in both inspection and diff in "to satisfy"', () => {
       expect(
         function() {
           clonedExpect(

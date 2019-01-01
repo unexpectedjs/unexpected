@@ -70,7 +70,7 @@
     "serve": "*",
     "unexpected-documentation-site-generator": "^5.0.0",
     "unexpected-magicpen": "^1.0.0",
-    "unexpected-markdown": "^1.7.4"
+    "unexpected-markdown": "^2.0.0"
   },
   "files": [
     "unexpected.js",

@@ -4,4 +4,4 @@
 --timeout 20000
 --require ./test/common
 --require ./test/promisePolyfill
---compilers md:unexpected-markdown
+--require unexpected-markdown
