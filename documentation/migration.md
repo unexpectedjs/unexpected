@@ -34,42 +34,29 @@ have been replaced with **existing** alternatives. This means a safe
 upgrade path is available: tests can be updated against the current
 version of the library and the changes are forwards compatible.
 
-#### Functions are always compared by value
+#### Raise minimum node version to 6+
 
-All function comparisons are now made using the identity of the function.
+In our work to continue moving forward we have upgraded many of our
+dependencies. Many of these tools have themselves dropped node 4
+support and we have decided to do the same. This does not affect our
+browser compatibility which remains at the ES5 level and IE11.
 
-When interacting with object types this affects:
+#### Using extensions via the API requires calling .clone()
 
-- `"to satisfy"`
-- `"to have keys satisfying"`
-- `"to have a value satisfying"`
-- `"to have values satisfying"`
+Previously once imported the entirety of the Unexpected API was
+immediately available to users which could lead to surprising
+results if types or assertions were added to it directly.
 
-```js
-function myCallback() {}
+In version 11 the top-level of the library has been frozen and
+extending the functionality requires an explcit `.clone()` call
+to be made:
 
-const options = {
-  data: null,
-  callback: myCallback
-};
+```js#evaluate:false
+const unexpected = require('unexpected');
 
-expect(options, 'to satisfy', {
-  callback: myCallback
-});
+const expect = unexpected.clone();
 
-expect(options, 'to have a value satisfying', myCallback);
-```
-
-With array-like types it affects:
-
-- `"to satisfy"`
-- `"to have an item satisfying"`
-- `"to have items satisfying"`
-
-```js
-const args = [myCallback];
-
-expect(args, 'to have an item satisfying', myCallback);
+expect.addAssertion(...);
 ```
 
 #### Use `expect.it()` for assertions on property values
@@ -122,27 +109,42 @@ expect(obj, 'to satisfy', {
 });
 ```
 
-#### Using extensions via the API requires calling .clone()
+#### Functions are always compared by value
 
-Previously once imported the entirety of the Unexpected API was
-immediately available to users which could lead to surprising
-results if types or assertions were added to it directly.
+Building upon the `expect.it()` changes, all function comparisons
+will now be made using the identity of the function. This allows
+the behaviour to be consistent across all assertions.
 
-In version 11 the top-level of the library has been frozen and
-extending the functionality requires an explcit `.clone()` call
-to be made:
+When interacting with object types this affects:
 
-```js#evaluate:false
-const unexpected = require('unexpected');
+- `"to satisfy"`
+- `"to have keys satisfying"`
+- `"to have a value satisfying"`
+- `"to have values satisfying"`
 
-const expect = unexpected.clone();
+```js
+function myCallback() {}
 
-expect.addAssertion(...);
+const options = {
+  data: null,
+  callback: myCallback
+};
+
+expect(options, 'to satisfy', {
+  callback: myCallback
+});
+
+expect(options, 'to have a value satisfying', myCallback);
 ```
 
-#### Raise minimum node version to 6+
+With array-like types it affects:
 
-In our work to continue moving forward we have upgraded many of our
-dependencies. Many of these tools have themselves dropped node 4
-support and we have decided to do the same. This does not affect our
-browser compatibility which remains at the ES5 level and IE11.
+- `"to satisfy"`
+- `"to have an item satisfying"`
+- `"to have items satisfying"`
+
+```js
+const args = [myCallback];
+
+expect(args, 'to have an item satisfying', myCallback);
+```
