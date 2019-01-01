@@ -34,6 +34,48 @@ describe('to be rejected with assertion', () => {
     );
   });
 
+  describe('when matching the error message against an expect.it', () => {
+    it('should succeed', () => {
+      return expect(
+        new Promise(function(resolve, reject) {
+          setTimeout(function() {
+            reject(new Error('OMG!'));
+          }, 0);
+        }),
+        'to be rejected with',
+        expect.it(err => {
+          expect(err, 'to have message', 'OMG!');
+        })
+      );
+    });
+
+    it('should fail with a diff', () => {
+      return expect(
+        expect(
+          new Promise(function(resolve, reject) {
+            setTimeout(function() {
+              reject(new Error('OMG!'));
+            }, 0);
+          }),
+          'to be rejected with',
+          expect.it(err => {
+            expect(err, 'to have message', 'OMGOSH!');
+          })
+        ),
+        'to be rejected with',
+        'expected Promise to be rejected with\n' +
+          'expect.it(err => {\n' +
+          "  expect(err, 'to have message', 'OMGOSH!');\n" +
+          '})\n' +
+          "  expected Error('OMG!') to have message 'OMGOSH!'\n" +
+          "    expected 'OMG!' to equal 'OMGOSH!'\n" +
+          '\n' +
+          '    -OMG!\n' +
+          '    +OMGOSH!'
+      );
+    });
+  });
+
   it('should support matching the error message of an UnexpectedError against a regular expression', () => {
     return expect(
       new Promise(function(resolve, reject) {
