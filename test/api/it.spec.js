@@ -1,6 +1,6 @@
 /*global expect*/
 describe('expect.it', () => {
-  it('returns an expectation function that when applyed runs the assertion on the given subject', () => {
+  it('returns an expectation function that when applied runs the assertion on the given subject', () => {
     var expectation = expect.it('to be greater than', 14);
     expectation(20);
     expect(
