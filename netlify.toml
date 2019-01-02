@@ -16,3 +16,4 @@
   from = "/versions/:majorversion/*"
   to = "https://:majorversion--clever-morse-e60990.netlify.com/:splat"
   status = 200
+
