@@ -199,8 +199,25 @@ describe('function type', () => {
 
   if (implicitReturnArrowFunction) {
     it('should render an implicit return arrow function a single line break after the arrow', () => {
-      // eslint-disable-next-line no-eval
-      expect(eval(`a =>\n  a`), 'to inspect as', `a =>\n  a`);
+      expect(implicitReturnArrowFunction, 'to inspect as', `a =>\n  a`);
+    });
+  }
+
+  var implicitReturnArrowFunctionWith4SpaceIndent;
+  try {
+    // eslint-disable-next-line no-new-func
+    implicitReturnArrowFunctionWith4SpaceIndent = new Function(
+      'return a =>\n    a'
+    )();
+  } catch (e) {}
+
+  if (implicitReturnArrowFunctionWith4SpaceIndent) {
+    it('should reindent an implicit return arrow function with a single line break after the arrow', () => {
+      expect(
+        implicitReturnArrowFunctionWith4SpaceIndent,
+        'to inspect as',
+        `a =>\n  a`
+      );
     });
   }
 
