@@ -11,3 +11,4 @@
 [build]
   publish = "site-build"
   command = "npm run generate-site"
+
