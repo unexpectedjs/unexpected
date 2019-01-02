@@ -61,7 +61,8 @@ expect.addAssertion(...);
 
 #### Use `expect.it()` for assertions on property values
 
-Previously when used in conjunction with "to satisfy" a property
+Previously when used in conjunction with [to satisfy](../assertions/any/to-satisfy/)
+a property
 defined as a function on the right-hand side would be passed the
 value to allow further assertions:
 
@@ -117,10 +118,10 @@ the behaviour to be consistent across all assertions.
 
 When interacting with object types this affects:
 
-- `"to satisfy"`
-- `"to have keys satisfying"`
-- `"to have a value satisfying"`
-- `"to have values satisfying"`
+- [to satisfy](../assertions/any/to-satisfy/)
+- [to have keys satisfying](../assertions/object/to-have-keys-satisfying/)
+- [to have a value satisfying](../assertions/object/to-have-a-value-satisfying/)
+- [to have values satisfying](../assertions/object/to-have-values-satisfying/)
 
 ```js
 function myCallback() {}
@@ -139,9 +140,9 @@ expect(options, 'to have a value satisfying', myCallback);
 
 With array-like types it affects:
 
-- `"to satisfy"`
-- `"to have an item satisfying"`
-- `"to have items satisfying"`
+- [to satisfy](../assertions/any/to-satisfy/)
+- [to have an item satisfying](../assertions/array-like/to-have-an-item-satisfying/)
+- [to have items satisfying](../assertions/array-like/to-have-items-satisfying/)
 
 ```js
 const args = [myCallback];
