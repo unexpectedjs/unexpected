@@ -17,3 +17,7 @@
   to = "https://:majorversion--clever-morse-e60990.netlify.com/:splat"
   status = 200
 
+[[redirects]]
+  from = "/unexpected-*"
+  to = "https://unexpectedjs.github.io/unexpected-:splat"
+  status = 200
