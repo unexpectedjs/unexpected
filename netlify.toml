@@ -11,3 +11,8 @@
 [build]
   publish = "site-build"
   command = "npm run generate-site"
+
+[[redirects]]
+  from = "/versions/:majorversion/*"
+  to = "https://:majorversion--clever-morse-e60990/blog/:splat"
+  status = 200
