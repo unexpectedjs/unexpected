@@ -9,7 +9,7 @@ repository: https://github.com/unexpectedjs/unexpected
 
 Unexpected has from its inception taken backwards compatibility very
 seriously. We think this is particularly important for a library
-intended for use in testing - we recognise that comprehensive test
+intended for use in testing &ndash; we recognise that comprehensive test
 suites are often a large investment and play a central role in ongoing
 development of software. This sets a very high bar for any changes.
 
