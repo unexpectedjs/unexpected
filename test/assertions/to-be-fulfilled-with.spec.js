@@ -67,17 +67,17 @@ describe('to be fulfilled with assertion', () => {
             resolve(123);
           }),
           'to be fulfilled with',
-          expect.it(value => {
+          expect.it(function(value) {
             expect(value, 'to equal', 456);
           })
         ),
         'to be rejected with',
         'expected Promise to be fulfilled with\n' +
-          'expect.it(value => {\n' +
+          'expect.it(function (value) {\n' +
           "  expect(value, 'to equal', 456);\n" +
           '})\n' +
           '  expected 123 to satisfy\n' +
-          '  expect.it(value => {\n' +
+          '  expect.it(function (value) {\n' +
           "    expect(value, 'to equal', 456);\n" +
           '  })\n' +
           '\n' +

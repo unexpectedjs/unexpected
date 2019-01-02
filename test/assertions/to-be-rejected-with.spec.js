@@ -43,7 +43,7 @@ describe('to be rejected with assertion', () => {
           }, 0);
         }),
         'to be rejected with',
-        expect.it(err => {
+        expect.it(function(err) {
           expect(err, 'to have message', 'OMG!');
         })
       );
@@ -58,13 +58,13 @@ describe('to be rejected with assertion', () => {
             }, 0);
           }),
           'to be rejected with',
-          expect.it(err => {
+          expect.it(function(err) {
             expect(err, 'to have message', 'OMGOSH!');
           })
         ),
         'to be rejected with',
         'expected Promise to be rejected with\n' +
-          'expect.it(err => {\n' +
+          'expect.it(function (err) {\n' +
           "  expect(err, 'to have message', 'OMGOSH!');\n" +
           '})\n' +
           "  expected Error('OMG!') to have message 'OMGOSH!'\n" +
