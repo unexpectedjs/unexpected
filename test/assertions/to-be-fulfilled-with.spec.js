@@ -54,7 +54,7 @@ describe('to be fulfilled with assertion', () => {
           resolve(123);
         }),
         'to be fulfilled with',
-        expect.it(value => {
+        expect.it(function(value) {
           expect(value, 'to equal', 123);
         })
       );
