@@ -106,7 +106,10 @@ chaining support provided by `expect.it()`:
 ```js
 expect(obj, 'to satisfy', {
   version: 11,
-  greeting: expect.it('to be a string').and('to end with', 'major')
+  greeting: expect
+    .it('to be a string')
+    .and('to end with', 'major')
+    .and(theValue => expect(theValue.split(' '), 'to have length', 3))
 });
 ```
 
