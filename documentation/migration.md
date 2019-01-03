@@ -113,8 +113,41 @@ expect(obj, 'to satisfy', {
 #### Functions are always compared by value
 
 Building upon the `expect.it()` changes, all function comparisons
-will now be made using the identity of the function. This allows
-the behaviour to be consistent across all assertions.
+will now be made using the identity of the function. This is unlike
+previous versions where they were treated specially and could lead
+to surprising results:
+
+```js
+function createErrorIfRequired(message) {
+  if (typeof message !== 'string') {
+    return null;
+  }
+  return new Error(message);
+}
+
+function somethingThatThorws() {
+  throw new createErrorIfRequired('failure');
+}
+```
+
+```js#evaluate:false
+expect(somethingThatThorws, 'to throw error', createErrorIfRequired);
+```
+
+> Note: this is no longer supported by Unexpected v11
+
+Thje code above is intended to check the error type, but passing a
+function directly on the right-hand side would cause it to succeed.
+In version 11 it immediately leads to an error and the assertion
+must be written more explicitly allowing the issue to be caught:
+
+```js
+expect(
+  somethingThatThorws,
+  'to throw error',
+  expect.it('to equal', createErrorIfRequired('failure'))
+);
+```
 
 When interacting with object types this affects:
 
