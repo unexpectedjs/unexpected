@@ -1,6 +1,7 @@
 ---
 title: Migration
 template: default.ejs
+menuPage: false
 theme: light
 repository: https://github.com/unexpectedjs/unexpected
 ---
