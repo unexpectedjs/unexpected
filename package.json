@@ -15,7 +15,7 @@
     "url": "https://github.com/unexpectedjs/unexpected"
   },
   "scripts": {
-    "test": "make test && make test-phantomjs",
+    "test": "make test && make test-chrome-headless",
     "lint": "eslint .",
     "generate-site": "generate-site --require ./bootstrap-unexpected-markdown.js",
     "update-examples": "generate-site --require ./bootstrap-unexpected-markdown.js --update-examples",
