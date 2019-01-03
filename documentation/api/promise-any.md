@@ -27,7 +27,7 @@ expect.addAssertion('to be a number after a short delay', function(
 });
 ```
 
-See the [promise](/api/promise) documentation for more details on how
+See the [promise](../promise/) documentation for more details on how
 expect.promise works.
 
 The following code snippet creates a promise that will be fulfilled when any

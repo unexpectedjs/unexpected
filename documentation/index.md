@@ -54,7 +54,7 @@ to satisfy { name: 'Unexpected', created: 2013 }
 * Helps if you misspell assertions
 * Compatible with all test frameworks
 * Node.JS ready (`require('unexpected')`)
-* Supports [asynchronous assertions using promises](/api/addAssertion/#asynchronous-assertions)
+* Supports [asynchronous assertions using promises](./api/addAssertion/#asynchronous-assertions)
 * Single global with no prototype extensions or shims
 * Cross-browser: works on Chrome, Firefox, Safari, Opera, IE11, Edge
 
@@ -190,7 +190,7 @@ See [changelog](https://github.com/unexpectedjs/unexpected/blob/master/CHANGELOG
 ### 8.0.0
 
 * All errors originating from assertions are now instances of
-  [`UnexpectedError`](/api/UnexpectedError/), which can be manipulated before being
+  [`UnexpectedError`](./api/UnexpectedError/), which can be manipulated before being
   serialized.
 * Error messages and diffs are now built lazily, improving
   performance.
@@ -209,13 +209,13 @@ See [changelog](https://github.com/unexpectedjs/unexpected/blob/master/CHANGELOG
   multiple lines and is identical to the parent subject.
 * Added a new `bubbleThrough` error mode that will make the error
   bubble all the way to the top, mainly useful internally.
-* Added [`to error`](/assertions/function/to-error/) assertion.
+* Added [`to error`](./assertions/function/to-error/) assertion.
 * Minor bugfixes and output tweaks.
 
 ### 7.0.0
 
 * Support for
-  [asynchronous assertions using promises](/api/addAssertion/#asynchronous-assertions).
+  [asynchronous assertions using promises](./api/addAssertion/#asynchronous-assertions).
   All built-in assertions that delegate to other assertions (such as `to satisfy`)
   have been rewritten to support this. The change is fully backwards compatible.
 * Removed support for the `to be an array of` and
