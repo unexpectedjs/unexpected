@@ -4,7 +4,7 @@ This assertion makes use of the type system in Unexpected. That means
 you can assert that a value is an instance of a type specified by
 its name (as a string).
 
-For more information abort the type system see: [Types](/api/addType/)
+For more information abort the type system see: [Types](../../../api/addType/)
 
 ```js
 expect(true, 'to be a', 'boolean');

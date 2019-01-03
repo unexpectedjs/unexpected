@@ -25,7 +25,7 @@ return expect(
 ```
 
 A regular expression, Error instance, or an object will also work, as the
-matching uses [to satisfy](/assertions/any/to-satisfy/) semantics:
+matching uses [to satisfy](../../any/to-satisfy/) semantics:
 
 ```js#async:true
 return expect(

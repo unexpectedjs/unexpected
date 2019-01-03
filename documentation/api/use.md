@@ -37,7 +37,7 @@ to extend the instance.
 expect.use(require('unexpected-sinon'));
 ```
 
-Notice that it is usually a good idea to [clone](../clone) the instance before
+Notice that it is usually a good idea to [clone](../clone/) the instance before
 extending it with plugins.
 
 ## Example
@@ -101,4 +101,4 @@ expected [7,13] to contain 27
 ```
 
 For more inspiration you can look at the source for existing plugins.
-See [the plugin page](/plugins/) for a list.
+See [the plugin page](../../plugins/) for a list.

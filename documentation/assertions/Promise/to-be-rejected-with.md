@@ -18,7 +18,7 @@ return expect(
 ```
 
 The expected reason will be matched against the rejection reason with
-[to satisfy](/assertions/any/to-satisfy/) semantics, so you can pass any of the
+[to satisfy](../../any/to-satisfy/) semantics, so you can pass any of the
 values supported by `to satisfy`:
 
 ```js#async:true
