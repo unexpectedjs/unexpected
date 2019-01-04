@@ -38,9 +38,9 @@ to satisfy { name: 'Unexpected', created: 2013 }
 
 ## Badges
 
-[![NPM version](https://badge.fury.io/js/unexpected.svg)](http://badge.fury.io/js/unexpected)
-[![Build Status](https://travis-ci.org/unexpectedjs/unexpected.svg?branch=master)](https://travis-ci.org/unexpectedjs/unexpected)
-[![Coverage Status](https://coveralls.io/repos/unexpectedjs/unexpected/badge.svg)](https://coveralls.io/r/unexpectedjs/unexpected)
+[![NPM version](https://badge.fury.io/js/unexpected.svg)](https://www.npmjs.com/package/unexpected)
+[![Build Status](https://api.travis-ci.org/unexpectedjs/unexpected.svg?branch=master)](https://travis-ci.org/unexpectedjs/unexpected)
+[![Coverage Status](https://coveralls.io/repos/unexpectedjs/unexpected/badge.svg)](https://coveralls.io/github/unexpectedjs/unexpected)
 [![Dependency Status](https://david-dm.org/unexpectedjs/unexpected.svg)](https://david-dm.org/unexpectedjs/unexpected)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/unexpectedjs/unexpected?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![Github](https://img.shields.io/github/stars/unexpectedjs/unexpected.svg?label=Star&maxAge=2592000&style=flat)](https://github.com/unexpectedjs/unexpected)
@@ -105,7 +105,7 @@ define(['unexpected'], function (expect) {
 ## Using Unexpected with a test framework
 
 For example, if you create a test suite with
-[mocha](http://github.com/visionmedia/mocha).
+[mocha](https://github.com/mochajs/mocha).
 
 Let's say we wanted to test the following program:
 
@@ -197,7 +197,7 @@ See [changelog](https://github.com/unexpectedjs/unexpected/blob/master/CHANGELOG
 * Unexpected now detects created promises that were never returned and
   fails synchronously. This will uncover some extremely nasty bugs
   where the test suite succeeds when it should actually fail. This
-  feature only works in [Mocha](http://mochajs.org/) and [Jasmine](http://jasmine.github.io/).
+  feature only works in [Mocha](https://mochajs.org/) and [Jasmine](https://jasmine.github.io/).
 * Deprecated error.output, please use error.getErrorMessage() instead.
 * Deprecated error.label, please use error.getLabel() instead.
 * `when decoded as`, `when called with`, `when passed as parameter to`, `when passed as parameters to`: Require the 4th argument to be
