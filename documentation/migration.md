@@ -129,25 +129,25 @@ function createErrorIfRequired(message) {
   return new Error(message);
 }
 
-function somethingThatThorws() {
+function somethingThatThrows() {
   throw new createErrorIfRequired('failure');
 }
 ```
 
 ```js#evaluate:false
-expect(somethingThatThorws, 'to throw error', createErrorIfRequired);
+expect(somethingThatThrows, 'to throw error', createErrorIfRequired);
 ```
 
 > Note: this is no longer supported by Unexpected v11
 
-Thje code above is intended to check the error type, but passing a
+The code above is intended to check the error type, but passing a
 function directly on the right-hand side would cause it to succeed.
 In version 11 it immediately leads to an error and the assertion
 must be written more explicitly allowing the issue to be caught:
 
 ```js
 expect(
-  somethingThatThorws,
+  somethingThatThrows,
   'to throw error',
   expect.it('to equal', createErrorIfRequired('failure'))
 );
