@@ -115,7 +115,7 @@ changelog: git-dirty-check
 	fi
 
 .PHONY: release-%
-release-%: git-dirty-check lint ${TARGETS} test-chrome-headless test-jasmine test-jest commit-unexpected
+release-%: git-dirty-check lint ${TARGETS} test-chrome-headless test-jasmine test-jest commit-unexpected deploy-site
 	IS_MAKE_RELEASE=yes npm version $*
 	make changelog
 	@echo $* release ready to be publised to NPM
