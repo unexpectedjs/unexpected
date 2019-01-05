@@ -20,7 +20,7 @@ benefit to be chosen for inclusion and would mean a new major version.
 
 ## Major revisions
 
-### Unexpected 11
+### Migration to Unexpected 11
 
 Version 11 is the first major release that makes some carefully
 calculated changes in the user facing API which may require test
