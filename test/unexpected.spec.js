@@ -175,19 +175,6 @@ describe('unexpected', () => {
         new Error('foo')
       );
     });
-
-    it('should make the wrapped expect available as the context (legacy)', () => {
-      var clonedExpect = expect
-        .clone()
-        .addAssertion('to foo', function(expect, subject) {
-          this.errorMode = 'nested';
-          expect(this, 'to be', expect);
-        });
-
-      return expect(function() {
-        return clonedExpect(undefined, 'to foo');
-      }, 'not to error');
-    });
   });
 
   describe('when given an expect.it as the 2nd argument', () => {
