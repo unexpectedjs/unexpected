@@ -17,6 +17,7 @@ for more details.
 This release includes backwards-incompatible changes. There's a [migration
 guide](../migration/) to help you upgrade.
 
+* Drop support for node.js < 6
 * The main export is now a frozen `expect` function. To add assertions and
   install plugins, you must now [`clone()`](../api/clone/) it first 
   ([#517](https://github.com/unexpectedjs/unexpected/pull/517))
