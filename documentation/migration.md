@@ -186,3 +186,33 @@ const args = [myCallback];
 
 expect(args, 'to have an item satisfying', myCallback);
 ```
+
+#### Support for `expect.async` has been removed
+
+`expect.async` was a helper for asynchronous tests. It predates Unexpected's
+promise support and we expect that it's very unlikely to be used by anyone.
+
+If you're using it, we recommend that you rewrite the given tests to a
+promise-driven flow as part of upgrading to Unexpected 11.
+
+#### `this.errorMode` etc. no longer available in assertion handlers
+
+This syntax has been deprecated since Unexpected 3:
+
+```js#evaluate:false
+expect.addAssertion('<string> to be foo', (expect, subject) => {
+  this.errorMode = 'nested';
+  expect(subject, 'to equal', 'foo');
+});
+```
+
+> Note: this is no longer supported by Unexpected v11
+
+To fix code like this, access the property on `expect` instead:
+
+```js
+expect.addAssertion('<string> to be foo', (expect, subject) => {
+  expect.errorMode = 'nested';
+  expect(subject, 'to equal', 'foo');
+});
+```

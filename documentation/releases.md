@@ -31,6 +31,11 @@ guide](../migration/) to help you upgrade.
   functions now ([#448](https://github.com/unexpectedjs/unexpected/pull/448))
 * Drop compatibility with pre-10.10.0 diff objects. This will mainly affect
   older plugins ([#407](https://github.com/unexpectedjs/unexpected/pull/407))
+* Remove support for `expect.async`
+  ([#566](https://github.com/unexpectedjs/unexpected/pull/566))
+* Remove long-deprecated support for `this.subject` etc. in assertion handlers
+  ([#567](https://github.com/unexpectedjs/unexpected/pull/567))
+
 
 ### 10.0.0
 
