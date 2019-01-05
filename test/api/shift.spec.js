@@ -133,7 +133,7 @@ describe('expect.shift', () => {
         expect,
         subject
       ) {
-        return this.shift(expect, `foo${subject}`, 0);
+        return expect.shift(expect, `foo${subject}`, 0);
       });
     clonedExpect(
       'foo',

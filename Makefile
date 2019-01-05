@@ -1,6 +1,8 @@
 REPORTER = dot
 
 TARGETS ?= unexpected.js unexpected.js.map
+.PHONY: unexpected.js
+.SECONDARY: unexpected.js.map
 
 CHEWBACCA_THRESHOLD ?= 25
 
@@ -25,7 +27,6 @@ build/externaltests: externaltests/*
 
 build: build/lib build/test build/externaltests
 
-.PHONY: ${TARGETS}
 ${TARGETS}: build
 	./node_modules/.bin/rollup --config rollup.config.js --sourcemap --format umd --name weknowhow.expect -o unexpected.js build/lib/index.js
 
@@ -50,15 +51,12 @@ test-jest:
 ifeq ($(MODERN_NODE), true)
 	./node_modules/.bin/jest
 else
-	./node_modules/.bin/jest -c test/jest.es5.config.json
+	./node_modules/.bin/jest --rootDir . -c test/jest.es5.config.json
 endif
-
-test-jest-if-supported-node-version:
-	@node-version-gte-6 && make test-jest || echo Skipping, jest is unsupported with node $(shell node --version)
 
 .PHONY: test
 test: test-sources
-	@./node_modules/.bin/mocha --opts $(MOCHA_OPTS) $(TEST_SOURCES) $(TEST_SOURCE_MARKDOWN)
+	@./node_modules/.bin/mocha --opts $(MOCHA_OPTS) $(TEST_SOURCES) $(TEST_SOURCES_MARKDOWN)
 
 nyc-includes:
 ifeq ($(MODERN_NODE), true)
@@ -84,12 +82,12 @@ test-chrome-headless: ${TARGETS}
 test-browserstack-%: ${TARGETS}
 	@./node_modules/.bin/karma start --browsers=$* --single-run
 
-.PHONY: travis-main
-travis-main: clean lint test test-jasmine test-jest coverage
+.PHONY: travis-coverage
+travis-coverage: clean coverage
 	-<coverage/lcov.info ./node_modules/coveralls/bin/coveralls.js
 
 .PHONY: travis
-travis: test test-jest-if-supported-node-version
+travis: test
 
 .PHONY: git-dirty-check
 git-dirty-check:
@@ -117,7 +115,7 @@ changelog: git-dirty-check
 	fi
 
 .PHONY: release-%
-release-%: git-dirty-check lint ${TARGETS} test-chrome-headless test-jasmine test-jest-if-supported-node-version commit-unexpected deploy-site
+release-%: git-dirty-check lint ${TARGETS} test-chrome-headless test-jasmine test-jest commit-unexpected
 	IS_MAKE_RELEASE=yes npm version $*
 	make changelog
 	@echo $* release ready to be publised to NPM

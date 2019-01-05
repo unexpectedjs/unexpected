@@ -10,7 +10,7 @@ fulfilled. If any of the promises is rejected, the resulting promise will be
 rejected with the same error.
 
 This method is usually used in combination with
-[expect.promise.settle](/api/promise-settle).
+[expect.promise.settle](../promise-settle/).
 
 Let's make an asynchronous assertion that we can use for the examples:
 
@@ -30,7 +30,7 @@ expect.addAssertion('to be a number after a short delay', function(
 });
 ```
 
-See the [promise](/api/promise) documentation for more details on how
+See the [promise](../promise/) documentation for more details on how
 expect.promise works.
 
 The following code snippet creates a promise that is fulfilled when all the

@@ -4,7 +4,7 @@ In some situations you want to modify an error thrown from
 unexpected. This method handles all the details for you.
 
 Notice that this method is only available inside
-[expect.addAssertion](/api/addAssertion).
+[expect.addAssertion](../addAssertion/).
 
 The standard case is to attach a diff or change the error message of
 an error being thrown.

@@ -207,9 +207,9 @@ describe('inspect', () => {
             deeply: {
               nested: { object: 'This should not be shown' },
               string: 'should be shown',
-              'a list': [1, 2, 3]
+              list: [1, 2, 3]
             },
-            'a list': [1, 2, 3]
+            list: [1, 2, 3]
           }
         }
       }
@@ -269,8 +269,8 @@ describe('inspect', () => {
         '    circular: { self: [Circular] },\n' +
         '    this: {\n' +
         '      is: {\n' +
-        "        deeply: { nested: ..., string: 'should be shown', 'a list': ... },\n" +
-        "        'a list': [ 1, 2, 3 ]\n" +
+        "        deeply: { nested: ..., string: 'should be shown', list: ... },\n" +
+        '        list: [ 1, 2, 3 ]\n' +
         '      }\n' +
         '    }\n' +
         '  }\n' +
@@ -321,7 +321,7 @@ describe('inspect', () => {
         "      { id: 4, name: 'Barbara Lynn' },\n" +
         "      { id: 5, name: 'Sharpe Downs' }\n" +
         '    ],\n' +
-        "    circular: { self: [Circular] }, this: { is: { deeply: { nested: ..., string: 'should be shown', 'a list': ... }, 'a list': [ 1, 2, 3 ] } }\n" +
+        "    circular: { self: [Circular] }, this: { is: { deeply: { nested: ..., string: 'should be shown', list: ... }, list: [ 1, 2, 3 ] } }\n" +
         '  }\n' +
         ']'
     );

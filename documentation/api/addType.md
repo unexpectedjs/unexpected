@@ -299,13 +299,13 @@ block. The outputs below shows the contrast between setting the
 inlineDiff = true;
 expect(
   {
-    'John Doe': new Person('John Doe', 42),
-    'Jane Doe': new Person('Janie Doe', 24)
+    JohnDoe: new Person('John Doe', 42),
+    JaneDoe: new Person('Janie Doe', 24)
   },
   'to equal',
   {
-    'John Doe': new Person('John Doe', 42),
-    'Jane Doe': new Person('Jane Doe', 24)
+    JohnDoe: new Person('John Doe', 42),
+    JaneDoe: new Person('Jane Doe', 24)
   }
 );
 ```
@@ -313,18 +313,18 @@ expect(
 ```output
 expected
 {
-  'John Doe': new Person('John Doe', 42),
-  'Jane Doe': new Person('Janie Doe', 24)
+  JohnDoe: new Person('John Doe', 42),
+  JaneDoe: new Person('Janie Doe', 24)
 }
 to equal
 {
-  'John Doe': new Person('John Doe', 42),
-  'Jane Doe': new Person('Jane Doe', 24)
+  JohnDoe: new Person('John Doe', 42),
+  JaneDoe: new Person('Jane Doe', 24)
 }
 
 {
-  'John Doe': new Person('John Doe', 42),
-  'Jane Doe': new Person(
+  JohnDoe: new Person('John Doe', 42),
+  JaneDoe: new Person(
     'Janie Doe', // should be 'Jane Doe'
                  // -Janie Doe
                  // +Jane Doe
@@ -337,13 +337,13 @@ to equal
 inlineDiff = false;
 expect(
   {
-    'John Doe': new Person('John Doe', 42),
-    'Jane Doe': new Person('Janie Doe', 24)
+    JohnDoe: new Person('John Doe', 42),
+    JaneDoe: new Person('Janie Doe', 24)
   },
   'to equal',
   {
-    'John Doe': new Person('John Doe', 42),
-    'Jane Doe': new Person('Jane Doe', 24)
+    JohnDoe: new Person('John Doe', 42),
+    JaneDoe: new Person('Jane Doe', 24)
   }
 );
 ```
@@ -351,25 +351,25 @@ expect(
 ```output
 expected
 {
-  'John Doe': new Person('John Doe', 42),
-  'Jane Doe': new Person('Janie Doe', 24)
+  JohnDoe: new Person('John Doe', 42),
+  JaneDoe: new Person('Janie Doe', 24)
 }
 to equal
 {
-  'John Doe': new Person('John Doe', 42),
-  'Jane Doe': new Person('Jane Doe', 24)
+  JohnDoe: new Person('John Doe', 42),
+  JaneDoe: new Person('Jane Doe', 24)
 }
 
 {
-  'John Doe': new Person('John Doe', 42),
-  'Jane Doe': new Person('Janie Doe', 24) // should equal new Person('Jane Doe', 24)
-                                          //
-                                          // new Person(
-                                          //   'Janie Doe', // should be 'Jane Doe'
-                                          //                // -Janie Doe
-                                          //                // +Jane Doe
-                                          //   24
-                                          // )
+  JohnDoe: new Person('John Doe', 42),
+  JaneDoe: new Person('Janie Doe', 24) // should equal new Person('Jane Doe', 24)
+                                       //
+                                       // new Person(
+                                       //   'Janie Doe', // should be 'Jane Doe'
+                                       //                // -Janie Doe
+                                       //                // +Jane Doe
+                                       //   24
+                                       // )
 }
 ```
 

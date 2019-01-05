@@ -105,9 +105,9 @@ describe('to be fulfilled assertion', () => {
         }, 'to be fulfilled');
       },
       'to error',
-      function(err) {
+      expect.it(function(err) {
         expect(err.stack, 'to match', /thisIsImportant/);
-      }
+      })
     );
   });
 
@@ -124,9 +124,9 @@ describe('to be fulfilled assertion', () => {
           }, 'to be fulfilled');
         },
         'to error',
-        function(err) {
+        expect.it(function(err) {
           expect(err.stack, 'to match', /thisIsImportant/);
-        }
+        })
       );
     });
   });

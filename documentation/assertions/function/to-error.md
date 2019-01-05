@@ -120,9 +120,9 @@ function willBeRejectedAsync() {
   });
 }
 
-return expect(willBeRejectedAsync, 'to error', function(e) {
+return expect(willBeRejectedAsync, 'to error', expect.it(function(e) {
   return expect(e.message, 'to equal', 'async error');
-});
+}));
 ```
 
 You can even do async assertions in the function that you pass in.
@@ -140,9 +140,9 @@ function willBeRejectedAsync() {
   });
 }
 
-return expect(willBeRejectedAsync, 'to error', function(e) {
-  return expect(willBeRejectedAsync, 'to error', function(e2) {
+return expect(willBeRejectedAsync, 'to error', expect.it(function(e) {
+  return expect(willBeRejectedAsync, 'to error', expect.it(function(e2) {
     return expect(e2.errorCount, 'to be greater than', e.errorCount);
-  });
-});
+  }));
+}));
 ```

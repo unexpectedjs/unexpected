@@ -285,10 +285,10 @@ describe('to equal assertion', () => {
         expect('foo', 'not to equal', 'foo');
       },
       'to throw exception',
-      function(e) {
+      expect.it(function(e) {
         expect(e, 'not to have property', 'actual');
         expect(e, 'not to have property', 'expected');
-      }
+      })
     );
   });
 
@@ -298,9 +298,9 @@ describe('to equal assertion', () => {
         expect({ foo: 1 }, 'to equal', []);
       },
       'to throw exception',
-      function(e) {
+      expect.it(function(e) {
         expect(e.showDiff, 'not to be ok');
-      }
+      })
     );
   });
 
@@ -310,9 +310,9 @@ describe('to equal assertion', () => {
         expect({ foo: 1 }, 'not to equal', { foo: 1 });
       },
       'to throw exception',
-      function(e) {
+      expect.it(function(e) {
         expect(e.showDiff, 'not to be ok');
-      }
+      })
     );
   });
 

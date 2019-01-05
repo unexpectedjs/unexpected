@@ -17,6 +17,9 @@ module.exports = function(config) {
 
     browsers: ['ChromeHeadlessNoSandbox', 'ie11'],
 
+    browserDisconnectTimeout: '60000',
+    browserNoActivityTimeout: '60000',
+
     client: {
       mocha: {
         reporter: 'html',

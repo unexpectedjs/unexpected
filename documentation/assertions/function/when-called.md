@@ -28,7 +28,7 @@ return expect(giveMeFive, 'called').then(function (result) {
 });
 ```
 
-When this assertion in used together with [to satisfy](/assertions/any/to-satisfy)
+When this assertion in used together with [to satisfy](../../any/to-satisfy/)
 we make sure that `this` is bound correctly:
 
 ```js

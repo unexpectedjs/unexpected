@@ -1,6 +1,6 @@
 # expect.promise(promiseBody)
 
-This method is used inside [addAssertion](/api/addAssertion) to create
+This method is used inside [addAssertion](../addAssertion/) to create
 a promise from the given body function.
 
 Signature:

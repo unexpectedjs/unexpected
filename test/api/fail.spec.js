@@ -150,26 +150,5 @@ describe('fail assertion', () => {
         "expected 'bar' to foo\n" + '\n' + 'custom'
       );
     });
-
-    it('should support a diff function that uses the old API', () => {
-      var clonedExpect = expect.clone();
-      clonedExpect.addAssertion('<any> to foo', function(expect, subject) {
-        expect.fail({
-          diff(output, diff, inspect, equal) {
-            return {
-              inline: false,
-              diff: output.text('custom')
-            };
-          }
-        });
-      });
-      expect(
-        function() {
-          clonedExpect('bar', 'to foo');
-        },
-        'to throw',
-        "expected 'bar' to foo\n" + '\n' + 'custom'
-      );
-    });
   });
 });

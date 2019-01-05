@@ -1,4 +1,4 @@
-var expect = require('../lib');
+var expect = require('../lib').clone();
 
 expect.addAssertion('<any> to bar', function(expect, subject) {
   expect(subject, 'to equal', 'bar');

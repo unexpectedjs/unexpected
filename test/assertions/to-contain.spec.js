@@ -119,7 +119,7 @@ describe('to contain assertion', () => {
           expect('blahfoo\nbar\nquux', 'not to contain', 'foo\nbar\nq');
         },
         'to throw',
-        function(err) {
+        expect.it(function(err) {
           expect(
             err,
             'to have message',
@@ -132,7 +132,7 @@ describe('to contain assertion', () => {
               'quux\n' +
               '^'
           );
-        }
+        })
       );
     });
 

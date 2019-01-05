@@ -47,6 +47,45 @@ describe('to be fulfilled with assertion', () => {
     );
   });
 
+  describe('when matching the fulfillment value against an expect.it', () => {
+    it('should succeed', () => {
+      return expect(
+        new Promise(function(resolve) {
+          resolve(123);
+        }),
+        'to be fulfilled with',
+        expect.it(function(value) {
+          expect(value, 'to equal', 123);
+        })
+      );
+    });
+
+    it('should fail with a diff', () => {
+      return expect(
+        expect(
+          new Promise(function(resolve) {
+            resolve(123);
+          }),
+          'to be fulfilled with',
+          expect.it(function(value) {
+            expect(value, 'to equal', 456);
+          })
+        ),
+        'to be rejected with',
+        'expected Promise to be fulfilled with\n' +
+          'expect.it(function (value) {\n' +
+          "  expect(value, 'to equal', 456);\n" +
+          '})\n' +
+          '  expected 123 to satisfy\n' +
+          '  expect.it(function (value) {\n' +
+          "    expect(value, 'to equal', 456);\n" +
+          '  })\n' +
+          '\n' +
+          '  expected 123 to equal 456'
+      );
+    });
+  });
+
   describe('when passed a function', () => {
     it('should fail if the function returns a promise that is fulfilled with the wrong value', () => {
       expect(

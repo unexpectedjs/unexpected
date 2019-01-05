@@ -65,11 +65,17 @@ describe('Error type', () => {
     }
 
     function MyError(message) {
-      Error.call(this);
-      if (isIE) {
-        this.name = 'MyError';
+      var instance = new Error(message);
+      var proto = Object.getPrototypeOf(this);
+      if (Object.setPrototypeOf) {
+        Object.setPrototypeOf(instance, proto);
+      } else {
+        instance.__proto__ = proto; // eslint-disable-line no-proto
       }
-      this.message = message;
+      if (isIE) {
+        instance.name = 'MyError';
+      }
+      return instance;
     }
 
     inherits(MyError, Error);
@@ -145,6 +151,18 @@ describe('Error type', () => {
             '})'
         );
       });
+    });
+  });
+
+  describe('when comparing Error objects with differing enumerable keys', () => {
+    it('should not break', () => {
+      var e1 = new Error('foo');
+      var e2 = new Error();
+      e2.message = 'foo';
+
+      expect(() => {
+        expect(e1, 'to equal', e2);
+      }, 'not to throw');
     });
   });
 });

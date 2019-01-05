@@ -8,9 +8,9 @@ expect([{ a: 1 }, { b: 2 }], 'to have an item satisfying', { a: 1 });
 
 expect([0, 1, 2, 3, 4], 'to have an item satisfying', 'to be a number');
 
-expect([0, 1, 2, 3, 4], 'to have an item satisfying', function(item, index) {
+expect([0, 1, 2, 3, 4], 'to have an item satisfying', expect.it(function(item) {
   expect(item, 'to be a number');
-});
+}));
 
 expect(
   [[1], ['foo']],
@@ -27,7 +27,7 @@ expect(
 ```
 
 The expected value will be matched against the value with
-[to satisfy](/assertions/any/to-satisfy/) semantics, so you can pass any of the
+[to satisfy](../../any/to-satisfy/) semantics, so you can pass any of the
 values supported by `to satisfy`. To use strict `to satisfy` semantics, you can
 use the "exhaustively" flag:
 

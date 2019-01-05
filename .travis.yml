@@ -4,20 +4,26 @@ env:
   - TARGET=travis
 
 node_js:
-  - "0.10"
-  - "0.12"
-  - "4"
-  - "5"
   - "6"
   - "7"
+  - "8.4.0"
   - "9"
   - "10"
 
 matrix:
   include:
-  - name: Travis main 8.4.0
+  - name: Lint (8.4.0)
     node_js: "8.4.0"
-    env: TARGET=travis-main
+    env: TARGET=lint
+  - name: Jest (8.4.0)
+    node_js: "8.4.0"
+    env: TARGET=test-jest
+  - name: Jasmine (8.4.0)
+    node_js: "8.4.0"
+    env: TARGET=test-jasmine
+  - name: Coverage (8.4.0)
+    node_js: "8.4.0"
+    env: TARGET=travis-coverage
   - name: BrowserStack IE11
     node_js: "8.4.0"
     env: TARGET=test-browserstack-ie11

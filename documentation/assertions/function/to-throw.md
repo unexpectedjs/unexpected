@@ -83,47 +83,7 @@ to throw /catastrophic failure/
   expected Error('The error message!') to satisfy /catastrophic failure/
 ```
 
-You can also provide a function as the second parameter to do
-arbitrary assertions on the error.
-
-```js
-expect(
-  function() {
-    this.foo.bar();
-  },
-  'to throw',
-  function(e) {
-    expect(e, 'to be a', TypeError);
-  }
-);
-```
-
-In case of a failing expectation you get the following output:
-
-```js
-expect(function () {
-  throw new Error('Another error');
-}, 'to throw', function (e) {
-  expect(e, 'to be a', TypeError);
-});
-```
-
-```output
-expected
-function () {
-  throw new Error('Another error');
-}
-to throw
-function (e) {
-  expect(e, 'to be a', TypeError);
-}
-  expected Error('Another error') to be a TypeError
-```
-
-Actually what happens is, that the thrown error is checked
-[to satisfy](/assertions/any/to-satisfy/) against the second
-parameter. That means you could also just supply an error object to
-validate against:
+That can also just supply an error object to validate against:
 
 ```js
 expect(

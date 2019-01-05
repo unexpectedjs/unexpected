@@ -8,7 +8,7 @@ describe('to throw assertion', () => {
         }, 'to throw exception');
       },
       'to throw',
-      function(err) {
+      expect.it(function(err) {
         var message = err.getErrorMessage({ format: 'text' }).toString();
 
         expect(
@@ -21,7 +21,7 @@ describe('to throw assertion', () => {
             'to throw exception\n' +
             '  did not throw'
         );
-      }
+      })
     );
   });
 
@@ -86,9 +86,9 @@ describe('to throw assertion', () => {
         throw new SyntaxError();
       },
       'to throw exception',
-      function(e) {
+      expect.it(function(e) {
         expect(e, 'to be a', SyntaxError);
-      }
+      })
     );
   });
 
@@ -217,9 +217,9 @@ describe('to throw assertion', () => {
           }, 'not to throw');
         },
         'to throw',
-        function(err) {
+        expect.it(function(err) {
           expect(err.stack, 'to match', /thisIsImportant/);
-        }
+        })
       );
     });
   });
@@ -239,9 +239,9 @@ describe('to throw assertion', () => {
           );
         },
         'to throw',
-        function(err) {
+        expect.it(function(err) {
           expect(err.stack, 'to match', /thisIsImportant/);
-        }
+        })
       );
     });
   });

@@ -1,4 +1,4 @@
-/*global expect*/
+/*global expect, expectWithUnexpectedMagicPen*/
 describe('function type', () => {
   it('should inspect an empty anonymous function correctly', () => {
     expect(function() {}, 'to inspect as', 'function () {}');
@@ -14,15 +14,11 @@ describe('function type', () => {
     expect(fn, 'to inspect as', 'function foo() {}');
   });
 
-  var isNodeJs3OrBelow =
-    typeof process === 'object' && /^v[0123]\./.test(process.version);
-
   var isIE =
     typeof navigator !== 'undefined' &&
     navigator.userAgent.indexOf('Trident') !== -1;
 
-  if (!isNodeJs3OrBelow && !isIE) {
-    // Node.js 3 and below and IE11 don't include "bound ".
+  if (!isIE) {
     // For now let's just disable these tests in those environments
 
     it('should inspect an anonymous bound function correctly', () => {
@@ -351,4 +347,39 @@ describe('function type', () => {
       );
     });
   }
+
+  describe('diff()', function() {
+    function foo() {}
+    function bar() {}
+
+    foo.baz = 123;
+
+    describe('against another function', function() {
+      it('should not produce a diff', function() {
+        const functionType = expect.getType('function');
+        expect(
+          functionType.diff(foo, bar, expect.createOutput()),
+          'to be undefined'
+        );
+      });
+    });
+
+    describe('against an object', function() {
+      it('should delegate to the object diff', function() {
+        const functionType = expect.getType('function');
+        const diff = functionType.diff(
+          foo,
+          { baz: 456 },
+          expect.createOutput()
+        );
+        expectWithUnexpectedMagicPen(
+          diff,
+          'to equal',
+          expect
+            .createOutput()
+            .text('Mismatching constructors Function should be Object')
+        );
+      });
+    });
+  });
 });

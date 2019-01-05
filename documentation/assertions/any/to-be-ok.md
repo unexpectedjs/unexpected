@@ -1,6 +1,6 @@
 Asserts that the value is _truthy_.
 
-Alias for [to be truthy](../to-be-truthy).
+Alias for [to be truthy](../../any/to-be-truthy/).
 
 ```js
 expect(1, 'to be ok');
