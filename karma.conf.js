@@ -29,7 +29,8 @@ module.exports = function(config) {
 
     browserStack: {
       video: false,
-      project: 'unexpected'
+      project:
+        process.env.TRAVIS_BRANCH === 'master' ? 'unexpected' : 'unexpected-dev'
     },
 
     customLaunchers: {
