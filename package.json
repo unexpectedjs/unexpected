@@ -30,7 +30,7 @@
     "greedy-interval-packer": "1.2.0",
     "leven": "2.1.0",
     "magicpen": "5.12.0",
-    "unexpected-bluebird": "2.9.34-longstack2"
+    "unexpected-bluebird": "^2.9.34"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
