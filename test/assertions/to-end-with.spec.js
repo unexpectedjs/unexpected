@@ -157,10 +157,10 @@ describe('to end with assertion', () => {
         'to throw',
         "expected 'foobarquuxf\\no\\no' not to end with 'f\\no\\no'\n" +
           '\n' +
-          'foobarquuxf\n' +
-          '          ^\n' +
-          'o\n' +
-          '^\n' +
+          'foobarquuxf\\n\n' +
+          '          ^^\n' +
+          'o\\n\n' +
+          '^^\n' +
           'o\n' +
           '^'
       );
