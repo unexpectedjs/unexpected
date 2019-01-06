@@ -30,7 +30,10 @@ module.exports = function(config) {
     browserStack: {
       video: false,
       project:
-        process.env.TRAVIS_BRANCH === 'master' ? 'unexpected' : 'unexpected-dev'
+        process.env.TRAVIS_BRANCH === 'master' &&
+        !process.env.TRAVIS_PULL_REQUEST_BRANCH // Catch Travis "PR" builds
+          ? 'unexpected'
+          : 'unexpected-dev'
     },
 
     customLaunchers: {
