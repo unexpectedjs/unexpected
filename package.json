@@ -26,7 +26,7 @@
     "array-changes-async": "3.0.1",
     "babel-runtime": "6.26.0",
     "detect-indent": "3.0.1",
-    "diff": "3.5.0",
+    "diff": "4.0.1",
     "greedy-interval-packer": "1.2.0",
     "leven": "2.1.0",
     "magicpen": "5.12.0",
