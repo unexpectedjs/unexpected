@@ -348,6 +348,62 @@ describe('function type', () => {
     });
   }
 
+  // We can't complete this test if the runtime doesn't support generators:
+  var anonymousGenerator;
+  try {
+    // eslint-disable-next-line no-new-func
+    anonymousGenerator = new Function('return function*(){}')();
+  } catch (e) {}
+
+  if (anonymousGenerator) {
+    it('should inspect an anonymous generator', () => {
+      expect(anonymousGenerator, 'to inspect as', 'function *(){}');
+    });
+  }
+
+  // We can't complete this test if the runtime doesn't support generators:
+  var anonymousGeneratorWithSpaces;
+  try {
+    // eslint-disable-next-line no-new-func
+    anonymousGeneratorWithSpaces = new Function('return function * (){}')();
+  } catch (e) {}
+
+  if (anonymousGeneratorWithSpaces) {
+    it('should inspect an anonymous generator with spaces around the *', () => {
+      expect(anonymousGeneratorWithSpaces, 'to inspect as', 'function * (){}');
+    });
+  }
+
+  // We can't complete this test if the runtime doesn't support generators:
+  var namedGenerator;
+  try {
+    // eslint-disable-next-line no-new-func
+    namedGenerator = new Function('return function*foo(){}')();
+  } catch (e) {}
+
+  if (namedGenerator) {
+    it('should inspect a named generator', () => {
+      expect(namedGenerator, 'to inspect as', 'function *foo(){}');
+    });
+  }
+
+  // We can't complete this test if the runtime doesn't support generators:
+  var namedGeneratorWithSpaces;
+  try {
+    // eslint-disable-next-line no-new-func
+    namedGeneratorWithSpaces = new Function('function * foo(){}')();
+  } catch (e) {}
+
+  if (namedGeneratorWithSpaces) {
+    it('should inspect a named generator with spaces around the *', () => {
+      expect(
+        namedGeneratorWithSpaces,
+        'to inspect as',
+        'return function * foo(){}'
+      );
+    });
+  }
+
   // We can't complete this test if the runtime doesn't support the class syntax:
   var anonymousClass;
   try {
