@@ -349,6 +349,19 @@ describe('function type', () => {
   }
 
   // We can't complete this test if the runtime doesn't support the class syntax:
+  var anonymousClass;
+  try {
+    // eslint-disable-next-line no-new-func
+    anonymousClass = new Function('return class {}')();
+  } catch (e) {}
+
+  if (anonymousClass) {
+    it('should inspect an anonymous class', () => {
+      expect(anonymousClass, 'to inspect as', 'class {}');
+    });
+  }
+
+  // We can't complete this test if the runtime doesn't support the class syntax:
   var emptyClass;
   try {
     // eslint-disable-next-line no-new-func
