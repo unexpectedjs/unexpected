@@ -348,6 +348,42 @@ describe('function type', () => {
     });
   }
 
+  // We can't complete this test if the runtime doesn't support the class syntax:
+  var emptyClass;
+  try {
+    // eslint-disable-next-line no-new-func
+    emptyClass = new Function('return class Foo {}')();
+  } catch (e) {}
+
+  if (emptyClass) {
+    it('should inspect a class', () => {
+      expect(emptyClass, 'to inspect as', 'class Foo {}');
+    });
+  }
+
+  // We can't complete this test if the runtime doesn't support the class syntax:
+  var classWithOneSpaceIndent;
+  try {
+    // eslint-disable-next-line no-new-func
+    classWithOneSpaceIndent = new Function(
+      'return class Foo {\n constructor(bar) {\n  this.bar = bar;\n }\n}'
+    )();
+  } catch (e) {}
+
+  if (classWithOneSpaceIndent) {
+    it('should inspect and reindent a non-empty class', () => {
+      expect(
+        classWithOneSpaceIndent,
+        'to inspect as',
+        'class Foo {\n' +
+          '  constructor(bar) {\n' +
+          '    this.bar = bar;\n' +
+          '  }\n' +
+          '}'
+      );
+    });
+  }
+
   describe('diff()', function() {
     function foo() {}
     function bar() {}
