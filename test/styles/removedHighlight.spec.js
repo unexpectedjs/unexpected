@@ -41,7 +41,8 @@ describe('removedHighlight', () => {
         'to equal',
         expect
           .createOutput('ansi')
-          .diffRemovedHighlight('foo\\n')
+          .diffRemovedHighlight('foo')
+          .diffRemovedSpecialChar('\\n')
           .nl()
           .diffRemovedHighlight('bar')
       );
