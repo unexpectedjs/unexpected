@@ -125,10 +125,10 @@ describe('to contain assertion', () => {
             'to have message',
             "expected 'blahfoo\\nbar\\nquux' not to contain 'foo\\nbar\\nq'\n" +
               '\n' +
-              'blahfoo\n' +
-              '    ^^^\n' +
-              'bar\n' +
-              '^^^\n' +
+              'blahfoo\\n\n' +
+              '    ^^^^\n' +
+              'bar\\n\n' +
+              '^^^^\n' +
               'quux\n' +
               '^'
           );

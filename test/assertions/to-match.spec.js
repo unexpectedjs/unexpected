@@ -85,10 +85,24 @@ describe('to match assertion', () => {
         'to throw',
         "expected 'barfo\\noquuxfoobaz' not to match /fo\\no/\n" +
           '\n' +
-          'barfo\n' +
-          '   ^^\n' +
+          'barfo\\n\n' +
+          '   ^^^\n' +
           'oquuxfoobaz\n' +
           '^'
+      );
+    });
+
+    it('highlights a newline at the end of the match', function() {
+      expect(
+        function() {
+          expect('foobar\n', 'not to match', /\s+/);
+        },
+        'to throw',
+        "expected 'foobar\\n' not to match /\\s+/\n" +
+          '\n' +
+          'foobar\\n\n' +
+          '      ^\n' +
+          '\n'
       );
     });
   });
