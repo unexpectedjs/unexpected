@@ -1,27 +1,46 @@
 Asserts that the function throws an error when called.
 
 ```js
-function willThrow() {
+function somethingThatThrows() {
   throw new Error('The error message');
 }
-expect(willThrow, 'to throw');
-expect(willThrow, 'to throw error');
-expect(willThrow, 'to throw exception');
+
+expect(function () {
+  somethingThatThrows();
+}, 'to throw');
 ```
 
 In case of a failing expectation you get the following output:
 
 ```js
-expect(function willNotThrow() {}, 'to throw');
+function willNotThrow() {
+  // ...
+}
+
+expect(function () {
+  willNotThrow();
+}, 'to throw');
 ```
 
 ```output
-expected function willNotThrow() {} to throw
+expected function () { willNotThrow(); } to throw
   did not throw
 ```
 
-You can assert the error message is a given string if you provide a
-string as the second parameter.
+Used with arrow functions this assertion is very elegant, and there
+are a couple of functionally equaivalent aliases provided to allow
+test suites using it be more explicit.
+
+```js
+expect(() => somethingThatThrows(), 'to throw');
+
+// aliases
+expect(() => somethingThatThrows(), 'to throw error');
+expect(() => somethingThatThrows(), 'to throw exception');
+```
+
+If you provide a string as the second parameter, it will be used to
+assert the thrown error has that message.
 
 ```js
 expect(
