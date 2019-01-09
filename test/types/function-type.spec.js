@@ -274,7 +274,7 @@ describe('function type', () => {
     expect(
       'function * (){}',
       'if supported by the runtime to inspect as',
-      'function * (){}'
+      'function *(){}'
     );
   });
 
@@ -290,7 +290,7 @@ describe('function type', () => {
     expect(
       'function * foo(){}',
       'if supported by the runtime to inspect as',
-      'function * foo(){}'
+      'function *foo(){}'
     );
   });
 
