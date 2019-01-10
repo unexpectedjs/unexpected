@@ -322,7 +322,8 @@ expect.addAssertion('<Timelock> to satisfy <any>', function(
 
 Let's see how it works:
 
-```js#async:true
+<!-- async:true -->
+```js
 return expect(new Timelock('Hello world!', 5), 'to satisfy', expect.it('not to match', /!/));
 ```
 
