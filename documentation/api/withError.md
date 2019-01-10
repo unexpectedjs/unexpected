@@ -62,16 +62,24 @@ The method also supports asynchronous assertion the following way:
 
 <!-- evaluate:false -->
 ```js
-expect.addAssertion('delegating to an asynchronous assertion', function (expect, subject) {
-  return expect.withError(function () {
-    return expect(subject, 'asynchronous expectation');
-  }, function (e) {
-    expect.fail({
-      diff: function (output) {
-        output.inline = true;
-        return output.text('Cool a diff attached to an asynchronous failure!');
-      }
-    });
-  });
+expect.addAssertion('delegating to an asynchronous assertion', function(
+  expect,
+  subject
+) {
+  return expect.withError(
+    function() {
+      return expect(subject, 'asynchronous expectation');
+    },
+    function(e) {
+      expect.fail({
+        diff: function(output) {
+          output.inline = true;
+          return output.text(
+            'Cool a diff attached to an asynchronous failure!'
+          );
+        }
+      });
+    }
+  );
 });
 ```

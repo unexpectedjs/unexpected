@@ -71,8 +71,9 @@ And then in your test suite:
 
 <!-- evaluate:false -->
 ```js
-var expect = require('unexpected').clone()
-    .use(require('unexpected-dom'));
+var expect = require('unexpected')
+  .clone()
+  .use(require('unexpected-dom'));
 ```
 
 For plugins that work in the browser, you'll either need to add an extra `<script>`, or

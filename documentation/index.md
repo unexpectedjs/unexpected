@@ -95,13 +95,13 @@ Include the library with RequireJS the following way:
 <!-- evaluate:false -->
 ```js
 require.config({
-    paths: {
-        unexpected: 'path/to/unexpected'
-    }
+  paths: {
+    unexpected: 'path/to/unexpected'
+  }
 });
 
-define(['unexpected'], function (expect) {
-   // Your code
+define(['unexpected'], function(expect) {
+  // Your code
 });
 ```
 
@@ -116,20 +116,22 @@ Let's say we wanted to test the following program:
 
 <!-- evaluate:false -->
 ```js
-function add (a, b) { return a + b; };
+function add(a, b) {
+  return a + b;
+}
 ```
 
 Our test file would look like this:
 
 <!-- evaluate:false -->
 ```js
-describe('math.js', function () {
-  describe('add', function () {
-    it('is a function', function () {
+describe('math.js', function() {
+  describe('add', function() {
+    it('is a function', function() {
       expect(add, 'to be a', 'function');
     });
 
-    it('adds numbers', function () {
+    it('adds numbers', function() {
       expect(add(1, 3), 'to be', 4);
     });
   });

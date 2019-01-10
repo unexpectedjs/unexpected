@@ -76,9 +76,9 @@ A diff between two buffers.
 <!-- skipBrowser:true -->
 ```js
 expect(
-    new Buffer('\x00\x01\x02Here is the thing I was talking about', 'utf-8'),
-    'to equal',
-    new Buffer('\x00\x01\x02Here is the thing I was quuxing about', 'utf-8')
+  new Buffer('\x00\x01\x02Here is the thing I was talking about', 'utf-8'),
+  'to equal',
+  new Buffer('\x00\x01\x02Here is the thing I was quuxing about', 'utf-8')
 );
 ```
 

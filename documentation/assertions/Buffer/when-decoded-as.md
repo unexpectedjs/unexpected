@@ -3,14 +3,26 @@ Decode a Buffer, then delegate the return value to another assertion. Supports
 
 <!-- skipBrowser:true -->
 ```js
-expect(new Buffer([0xe2, 0x98, 0xba]), 'when decoded as', 'utf-8', 'to equal', '☺');
+expect(
+  new Buffer([0xe2, 0x98, 0xba]),
+  'when decoded as',
+  'utf-8',
+  'to equal',
+  '☺'
+);
 ```
 
 In case of a failing expectation you get the following output:
 
 <!-- skipBrowser:true -->
 ```js
-expect(new Buffer([0xe2, 0x98, 0xba]), 'when decoded as', 'utf-8', 'to equal', 'happy face');
+expect(
+  new Buffer([0xe2, 0x98, 0xba]),
+  'when decoded as',
+  'utf-8',
+  'to equal',
+  'happy face'
+);
 ```
 
 ```output

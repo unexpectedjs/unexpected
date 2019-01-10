@@ -28,8 +28,8 @@ to the `it` block:
 
 <!-- evaluate:false -->
 ```js
-it('should call the callback', function () {
-    return expect(setImmediate, 'to call the callback');
+it('should call the callback', function() {
+  return expect(setImmediate, 'to call the callback');
 });
 ```
 
@@ -55,7 +55,7 @@ block if any of the assertions are asynchronous:
 
 <!-- evaluate: false -->
 ```js
-it('should do the right thing', function () {
-    return expect(setImmediate, 'to be a function').and('to call the callback');
+it('should do the right thing', function() {
+  return expect(setImmediate, 'to be a function').and('to call the callback');
 });
 ```

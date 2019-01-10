@@ -66,7 +66,7 @@ So in this case, when `expect` is called the following way:
 
 <!-- evaluate:false -->
 ```js
-expect([3,2,1], 'to be sorted', reverse);
+expect([3, 2, 1], 'to be sorted', reverse);
 ```
 
 The handler to our assertion will be called with the values the
