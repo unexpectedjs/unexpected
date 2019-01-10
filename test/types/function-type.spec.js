@@ -159,194 +159,168 @@ describe('function type', () => {
     // jscs:enable
   });
 
-  // We can't complete this test if the runtime doesn't support arrow functions:
-  var singleParamArrowFunction;
-  try {
-    // eslint-disable-next-line no-new-func
-    singleParamArrowFunction = new Function('return a => a + 1;')();
-  } catch (e) {}
+  expect.addAssertion(
+    '<string> if supported by the runtime <assertion>',
+    (expect, subject) => {
+      let value;
+      try {
+        // eslint-disable-next-line no-new-func
+        value = new Function(`return ${subject};`)();
+      } catch (err) {
+        // Not supported, don't do anything
+        return;
+      }
+      return expect.shift(value);
+    }
+  );
 
-  if (singleParamArrowFunction) {
-    it('should render a single param arrow function', () => {
-      expect(singleParamArrowFunction, 'to inspect as', 'a => a + 1');
-    });
-  }
+  it('should render a single param arrow function', () => {
+    expect(
+      'a => a + 1',
+      'if supported by the runtime to inspect as',
+      'a => a + 1'
+    );
+  });
 
-  // We can't complete this test if the runtime doesn't support arrow functions:
-  var implicitReturnMultilineArrowFunction;
-  try {
-    // eslint-disable-next-line no-new-func
-    implicitReturnMultilineArrowFunction = new Function(
-      'return a => \n    a + 1;'
-    )();
-  } catch (e) {}
+  it('should render an implicit return multiline arrow function', () => {
+    expect(
+      'a => \n    a + 1',
+      'if supported by the runtime to inspect as',
+      'a => \n    a + 1'
+    );
+  });
 
-  if (implicitReturnMultilineArrowFunction) {
-    it('should render an implicit return multiline arrow function', () => {
-      expect(
-        implicitReturnMultilineArrowFunction,
-        'to inspect as',
-        'a => \n    a + 1'
-      );
-    });
-  }
+  it('should render an implicit return arrow function a single line break after the arrow', () => {
+    expect(
+      'a =>\n  a',
+      'if supported by the runtime to inspect as',
+      `a =>\n  a`
+    );
+  });
 
-  var implicitReturnArrowFunction;
-  try {
-    // eslint-disable-next-line no-new-func
-    implicitReturnArrowFunction = new Function('return a =>\n  a')();
-  } catch (e) {}
+  it('should reindent an implicit return arrow function with a single line break after the arrow', () => {
+    expect(
+      'a =>\n    a',
+      'if supported by the runtime to inspect as',
+      `a =>\n  a`
+    );
+  });
 
-  if (implicitReturnArrowFunction) {
-    it('should render an implicit return arrow function a single line break after the arrow', () => {
-      expect(implicitReturnArrowFunction, 'to inspect as', `a =>\n  a`);
-    });
-  }
+  it('should render an implicit return multiline arrow function with an evil alternation', () => {
+    expect(
+      'a => \n    a || {}',
+      'if supported by the runtime to inspect as',
+      'a => \n    a || {}'
+    );
+  });
 
-  var implicitReturnArrowFunctionWith4SpaceIndent;
-  try {
-    // eslint-disable-next-line no-new-func
-    implicitReturnArrowFunctionWith4SpaceIndent = new Function(
-      'return a =>\n    a'
-    )();
-  } catch (e) {}
+  it('should reindent an implicit return multiline arrow function with 1 space indent', () => {
+    expect(
+      '() =>\n foo(\n  1\n )',
+      'if supported by the runtime to inspect as',
+      '() =>\n  foo(\n    1\n  )'
+    );
+  });
 
-  if (implicitReturnArrowFunctionWith4SpaceIndent) {
-    it('should reindent an implicit return arrow function with a single line break after the arrow', () => {
-      expect(
-        implicitReturnArrowFunctionWith4SpaceIndent,
-        'to inspect as',
-        `a =>\n  a`
-      );
-    });
-  }
+  it('should reindent an implicit return multiline arrow function with 2 space indent', () => {
+    expect(
+      '() =>\n        foo(\n          1\n        )',
+      'if supported by the runtime to inspect as',
+      '() =>\n  foo(\n    1\n  )'
+    );
+  });
 
-  // We can't complete this test if the runtime doesn't support arrow functions:
-  var evilImplicitReturnMultilineArrowFunction;
-  try {
-    // eslint-disable-next-line no-new-func
-    evilImplicitReturnMultilineArrowFunction = new Function(
-      'return a => \n    a || {};'
-    )();
-  } catch (e) {}
+  it('should reindent an implicit return multiline arrow function with 4 space indent', () => {
+    expect(
+      '() =>\n      foo(\n         1\n      )',
+      'if supported by the runtime to inspect as',
+      '() =>\n  foo(\n    1\n  )'
+    );
+  });
 
-  if (evilImplicitReturnMultilineArrowFunction) {
-    it('should render an implicit return multiline arrow function with an evil alternation', () => {
-      expect(
-        evilImplicitReturnMultilineArrowFunction,
-        'to inspect as',
-        'a => \n    a || {}'
-      );
-    });
-  }
+  it('should reindent an implicit return multiline arrow function with long leading indent', () => {
+    expect(
+      '() =>\n        foo(\n            1\n        )',
+      'if supported by the runtime to inspect as',
+      '() =>\n  foo(\n    1\n  )'
+    );
+  });
 
-  // We can't complete this test if the runtime doesn't support arrow functions:
-  var arrowFunctionWith1SpaceIndentAndLeadingNewline;
-  try {
-    // eslint-disable-next-line no-new-func
-    arrowFunctionWith1SpaceIndentAndLeadingNewline = new Function(
-      'return () =>\n foo(\n  1\n )'
-    )();
-  } catch (e) {}
+  it('should render a multi param arrow function', () => {
+    expect(
+      '(a, b) => a + b;',
+      'if supported by the runtime to inspect as',
+      '(a, b) => a + b'
+    );
+  });
 
-  if (arrowFunctionWith1SpaceIndentAndLeadingNewline) {
-    it('should reindent an implicit return multiline arrow function with 1 space indent', () => {
-      expect(
-        arrowFunctionWith1SpaceIndentAndLeadingNewline,
-        'to inspect as',
-        '() =>\n  foo(\n    1\n  )'
-      );
-    });
-  }
+  it('should render "async" before an AsyncFunction instance', () => {
+    expect(
+      'async function foo(a) { return a + 1; }',
+      'if supported by the runtime to inspect as',
+      'async function foo(a) { return a + 1; }'
+    );
+  });
 
-  // We can't complete this test if the runtime doesn't support arrow functions:
-  var arrowFunctionWith2SpaceIndentAndLeadingNewline;
-  try {
-    // eslint-disable-next-line no-new-func
-    arrowFunctionWith2SpaceIndentAndLeadingNewline = new Function(
-      'return () =>\n        foo(\n          1\n        )'
-    )();
-  } catch (e) {}
+  it('should inspect an anonymous generator', () => {
+    expect(
+      'function*(){}',
+      'if supported by the runtime to inspect as',
+      'function *(){}'
+    );
+  });
 
-  if (arrowFunctionWith2SpaceIndentAndLeadingNewline) {
-    it('should reindent an implicit return multiline arrow function with 2 space indent', () => {
-      expect(
-        arrowFunctionWith2SpaceIndentAndLeadingNewline,
-        'to inspect as',
-        '() =>\n  foo(\n    1\n  )'
-      );
-    });
-  }
+  it('should inspect an anonymous generator with spaces around the *', () => {
+    expect(
+      'function * (){}',
+      'if supported by the runtime to inspect as',
+      'function *(){}'
+    );
+  });
 
-  // We can't complete this test if the runtime doesn't support arrow functions:
-  var arrowFunctionWith3SpaceIndentAndLeadingNewline;
-  try {
-    // eslint-disable-next-line no-new-func
-    arrowFunctionWith3SpaceIndentAndLeadingNewline = new Function(
-      'return () =>\n      foo(\n         1\n      )'
-    )();
-  } catch (e) {}
+  it('should inspect a named generator', () => {
+    expect(
+      'function*foo(){}',
+      'if supported by the runtime to inspect as',
+      'function *foo(){}'
+    );
+  });
 
-  if (arrowFunctionWith3SpaceIndentAndLeadingNewline) {
-    it('should reindent an implicit return multiline arrow function with 4 space indent', () => {
-      expect(
-        arrowFunctionWith3SpaceIndentAndLeadingNewline,
-        'to inspect as',
-        '() =>\n  foo(\n    1\n  )'
-      );
-    });
-  }
+  it('should inspect a named generator with spaces around the *', () => {
+    expect(
+      'function * foo(){}',
+      'if supported by the runtime to inspect as',
+      'function *foo(){}'
+    );
+  });
 
-  // We can't complete this test if the runtime doesn't support arrow functions:
-  var arrowFunctionWith4SpaceIndentAndLeadingNewline;
-  try {
-    // eslint-disable-next-line no-new-func
-    arrowFunctionWith4SpaceIndentAndLeadingNewline = new Function(
-      'return () =>\n        foo(\n            1\n        )'
-    )();
-  } catch (e) {}
+  it('should inspect an anonymous class', () => {
+    expect('class {}', 'if supported by the runtime to inspect as', 'class {}');
+  });
 
-  if (arrowFunctionWith4SpaceIndentAndLeadingNewline) {
-    it('should reindent an implicit return multiline arrow function with long leading indent', () => {
-      expect(
-        arrowFunctionWith4SpaceIndentAndLeadingNewline,
-        'to inspect as',
-        '() =>\n  foo(\n    1\n  )'
-      );
-    });
-  }
+  it('should inspect a class', () => {
+    expect(
+      'class Foo {}',
+      'if supported by the runtime to inspect as',
+      'class Foo {}'
+    );
+  });
 
-  // We can't complete this test if the runtime doesn't support arrow functions:
-  var multiParamArrowFunction;
-  try {
-    // eslint-disable-next-line no-new-func
-    multiParamArrowFunction = new Function('return (a, b) => a + b;')();
-  } catch (e) {}
-
-  if (multiParamArrowFunction) {
-    it('should render a multi param arrow function', () => {
-      expect(multiParamArrowFunction, 'to inspect as', '(a, b) => a + b');
-    });
-  }
-
-  // We can't complete this test if the runtime doesn't support the async keyword:
-  var asyncFunction;
-  try {
-    // eslint-disable-next-line no-new-func
-    asyncFunction = new Function(
-      'return async function foo(a) {return a + 1;}'
-    )();
-  } catch (e) {}
-
-  if (asyncFunction) {
-    it('should render "async" before an AsyncFunction instance', () => {
-      expect(
-        asyncFunction,
-        'to inspect as',
-        'async function foo(a) { return a + 1; }'
-      );
-    });
-  }
+  it('should inspect and reindent a non-empty class', () => {
+    expect(
+      'class Foo {\n' +
+        ' constructor(bar) {\n' +
+        '  this.bar = bar;\n' +
+        ' }\n' +
+        '}',
+      'if supported by the runtime to inspect as',
+      'class Foo {\n' +
+        '  constructor(bar) {\n' +
+        '    this.bar = bar;\n' +
+        '  }\n' +
+        '}'
+    );
+  });
 
   describe('diff()', function() {
     function foo() {}
