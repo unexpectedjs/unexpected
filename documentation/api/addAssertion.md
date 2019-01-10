@@ -2,7 +2,8 @@
 
 Signature:
 
-```js#evaluate:false
+<!-- evaluate:false -->
+```js
 expect.addAssertion(pattern, handler);
 expect.addAssertion([pattern, ...]], handler);
 ```
@@ -63,7 +64,8 @@ type and pattern of the assertion.
 
 So in this case, when `expect` is called the following way:
 
-```js#evaluate:false
+<!-- evaluate:false -->
+```js
 expect([3,2,1], 'to be sorted', reverse);
 ```
 
@@ -71,7 +73,8 @@ The handler to our assertion will be called with the values the
 following way, where the _not_ flag in the nested expect will be
 removed:
 
-```js#evaluate:false
+<!-- evaluate:false -->
+```js
 expect.addAssertion('<array> [not] to be (sorted|ordered) <function?>', function(expect, [3,2,1], reverse){
     expect([3,2,1], '[not] to equal', [].concat([3,2,1]).sort(reverse));
 });
@@ -286,7 +289,8 @@ It would be pretty nice if we could use
 even if the retrieval is delayed. Then we would be able to do stuff
 like this:
 
-```js#evaluate:false
+<!-- evaluate:false -->
+```js
 return expect(new Timelock('Hello world'), 'to satisfy', expect.it('have length', 11));
 ```
 

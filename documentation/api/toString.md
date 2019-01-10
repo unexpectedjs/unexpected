@@ -2,6 +2,7 @@
 
 Prints all registered assertions to the console.
 
-```js#evaluate:false
+<!-- evaluate:false -->
+```js
 console.log(expect.toString());
 ```

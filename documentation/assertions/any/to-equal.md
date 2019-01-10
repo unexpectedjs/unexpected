@@ -73,7 +73,8 @@ expected [ 0, 2, 1, 4 ] to equal [ 0, 1, 2, 3, 4 ]
 
 A diff between two buffers.
 
-```js#skipBrowser:true
+<!-- skipBrowser:true -->
+```js
 expect(
     new Buffer('\x00\x01\x02Here is the thing I was talking about', 'utf-8'),
     'to equal',

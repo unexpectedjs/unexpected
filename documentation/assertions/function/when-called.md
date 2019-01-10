@@ -22,7 +22,8 @@ expected function giveMeFive() { return 5; } when called to equal 7
 If you don't provide an assertion to delegate to, the return value will be provided
 as the fulfillment value of the promise:
 
-```js#async:true
+<!-- async:true -->
+```js
 return expect(giveMeFive, 'called').then(function (result) {
     expect(result, 'to equal', 5);
 });

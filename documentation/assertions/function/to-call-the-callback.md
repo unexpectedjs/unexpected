@@ -1,7 +1,8 @@
 Asserts that a node.js-style asynchronous function taking a single callback
 will call it.
 
-```js#async:true
+<!-- async:true -->
+```js
 function mySuccessfulAsyncFunction(cb) {
   setTimeout(function() {
     cb();
@@ -15,7 +16,8 @@ If the callback is never called, it will hang until your test framework marks
 it as timed out. So the assertion itself only ever fails if the function
 throws an exception synchronously:
 
-```js#async:true
+<!-- async:true -->
+```js
 function errorOut(cb) {
   throw new Error('ugh');
 }
@@ -46,7 +48,8 @@ function asyncFn(cb) {
 }
 ```
 
-```js#async:true
+<!-- async:true -->
+```js
 return expect(asyncFn, 'to call the callback').then(function(args) {
   // args will be [null, 'foo'];
 });
@@ -54,7 +57,8 @@ return expect(asyncFn, 'to call the callback').then(function(args) {
 
 Or using the Bluebird-specific `.spread` extension:
 
-```js#async:true
+<!-- async:true -->
+```js
 return expect(asyncFn, 'to call the callback').spread(function(err, result) {
   // err will be null
   // result will be 'foo'

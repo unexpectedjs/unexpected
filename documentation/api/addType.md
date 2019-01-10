@@ -94,7 +94,8 @@ That is already quite helpful, but it would be even nicer if the
 stringification of `Person` instances could read as valid calls to the
 constructor. We can fix that by implementing an `inspect` method on the type.
 
-```js#freshExpect:true
+<!-- freshExpect:true -->
+```js
 expect.addType({
     name: 'Person',
     base: 'object',
@@ -147,7 +148,8 @@ same depth to the `inspect` function.
 Let's say we wanted `Person` instances only to be compared by name and not by
 age. Then we need to override the `equal` method:
 
-```js#freshExpect:true
+<!-- freshExpect:true -->
+```js
 expect.addType({
     name: 'Person',
     base: 'object',
@@ -171,7 +173,8 @@ This will produce the same output as above, but that means the diff if
 wrong. It states that the age should be changed. We can fix that the
 following way:
 
-```js#freshExpect:true
+<!-- freshExpect:true -->
+```js
 expect.addType({
     name: 'Person',
     base: 'object',
@@ -218,7 +221,8 @@ on the base directly when you know it is the one you need.
 
 You could also do something really custom as seen below:
 
-```js#freshExpect:true
+<!-- freshExpect:true -->
+```js
 var inlineDiff = true; // used to change inlining in a later example
 
 expect.addType({

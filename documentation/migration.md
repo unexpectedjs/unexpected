@@ -52,7 +52,8 @@ In version 11 the top-level of the library has been frozen and
 extending the functionality requires an expilcit `.clone()` call
 to be made:
 
-```js#evaluate:false
+<!-- evaluate:false -->
+```js
 const unexpected = require('unexpected');
 
 const expect = unexpected.clone();
@@ -67,7 +68,8 @@ a property
 defined as a function on the right-hand side would be passed the
 value to allow further assertions:
 
-```js#evaluate:false
+<!-- evaluate:false -->
+```js
 const obj = {
   version: 11,
   greeting: 'hello new major'
@@ -134,7 +136,8 @@ function somethingThatThrows() {
 }
 ```
 
-```js#evaluate:false
+<!-- evaluate:false -->
+```js
 expect(somethingThatThrows, 'to throw error', createErrorIfRequired);
 ```
 
@@ -199,7 +202,8 @@ promise-driven flow as part of upgrading to Unexpected 11.
 
 This syntax has been deprecated since Unexpected 3:
 
-```js#evaluate:false
+<!-- evaluate:false -->
+```js
 expect.addAssertion('<string> to be foo', (expect, subject) => {
   this.errorMode = 'nested';
   expect(subject, 'to equal', 'foo');

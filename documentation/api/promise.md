@@ -5,7 +5,8 @@ a promise from the given body function.
 
 Signature:
 
-```js#evaluate:false
+<!-- evaluate:false -->
+```js
 expect.promise(function () { ... });
 expect.promise(function (run) { ... });
 expect.promise(function (resolve, reject) { ... });
@@ -17,7 +18,8 @@ If the body returns a promise that will be returned by the method;
 otherwise a resolve promise will be returned. You can use the method
 the following way:
 
-```js#evaluate:false
+<!-- evaluate:false -->
+```js
 var promises = items.map(function (item) {
   return expect.promise(function () {
     expect(item, 'to be a number');
@@ -28,7 +30,8 @@ var promises = items.map(function (item) {
 When the promise body takes one argument it will be executed and given a
 wrapper function that should be used to wrap asynchronous callbacks:
 
-```js#evaluate:false
+<!-- evaluate:false -->
+```js
 expect.promise(function (run) {
   backend.loadData(run(function (err, data) {
     expect(err, 'to be falsy');
@@ -47,6 +50,7 @@ fulfilled.
 
 When the promise body takes two arguments, it is just an alias for:
 
-```js#evaluate:false
+<!-- evaluate:false -->
+```js
 new Promise(function (resolve, reject) { ... })
 ```

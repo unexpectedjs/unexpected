@@ -1,6 +1,7 @@
 Wait for a promise to be fulfilled, then delegate the value to another assertion.
 
-```js#async:true
+<!-- async:true -->
+```js
 var fulfilledPromise = new Promise(function(resolve, reject) {
   setTimeout(function() {
     resolve(123);
@@ -12,7 +13,8 @@ return expect(fulfilledPromise, 'when fulfilled', 'to equal', 123);
 
 It works with any assertion or `expect.it` construct:
 
-```js#async:true
+<!-- async:true -->
+```js
 return expect(
   Promise.resolve(123),
   'when fulfilled',
@@ -22,7 +24,8 @@ return expect(
 
 If the response is rejected, the assertion fails with the following output:
 
-```js#async:true
+<!-- async:true -->
+```js
 var rejectedPromise = new Promise(function(resolve, reject) {
   setTimeout(function() {
     reject(new Error('argh'));

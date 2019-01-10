@@ -24,7 +24,8 @@ To call an node-style async function, use the `async` flag to automatically
 add a callback to the parameter list and do further assertions on the value it
 passes to the callback.
 
-```js#async:true
+<!-- async:true -->
+```js
 function delayedAdd(a, b, cb) {
   setTimeout(function() {
     cb(null, a + b);
@@ -56,7 +57,8 @@ expect([123], 'when passed as parameters to constructor', Foo, 'to be a', Foo);
 If you don't provide an assertion to delegate to, the return value will be provided
 as the fulfillment value of the promise:
 
-```js#async:true
+<!-- async:true -->
+```js
 return expect([1, 3], 'passed as parameters to', add).then(function(result) {
   expect(result, 'to equal', 4);
 });
