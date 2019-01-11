@@ -7,6 +7,12 @@ const constraint = (name, minimum, maximum) => ({
     maximum: typeof maximum === "number" ? maximum : 1
 });
 
+const withTypes = values =>
+    values.map(value => ({
+        type: expect.findTypeOf(value),
+        value
+    }));
+
 const assertionRule = {};
 
 describe("AssertionTree", () => {
@@ -523,12 +529,19 @@ describe("AssertionTree", () => {
         );
 
         it("returns null if the given path can not be found", () => {
-            const result = AssertionTree.find(tree, [42, "to contain", 2]);
+            const result = AssertionTree.find(
+                tree,
+                withTypes([42, "to contain", 2])
+            );
+
             expect(result, "to be null");
         });
 
         it("returns a search result if given path is found", () => {
-            const result = AssertionTree.find(tree, [42, "to be", 24]);
+            const result = AssertionTree.find(
+                tree,
+                withTypes([42, "to be", 24])
+            );
 
             expect(result, "to equal", {
                 node: {
@@ -547,13 +560,16 @@ describe("AssertionTree", () => {
 
         it("can traverse adverbrial assertions", () => {
             const greeting = name => `Hello, ${name}`;
-            const result = AssertionTree.find(tree, [
-                greeting,
-                "when called with",
-                ["Jane"],
-                "to be",
-                "Hello, Jane"
-            ]);
+            const result = AssertionTree.find(
+                tree,
+                withTypes([
+                    greeting,
+                    "when called with",
+                    ["Jane"],
+                    "to be",
+                    "Hello, Jane"
+                ])
+            );
 
             expect(result, "to equal", {
                 node: {
