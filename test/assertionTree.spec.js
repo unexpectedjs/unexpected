@@ -1,7 +1,7 @@
 /*global expect*/
 const AssertionTree = require("../lib/AssertionTree");
 
-const type = (name, minimum, maximum) => ({
+const constraint = (name, minimum, maximum) => ({
     type: expect.getType(name),
     minimum: typeof minimum === "number" ? minimum : 1,
     maximum: typeof maximum === "number" ? maximum : 1
@@ -14,103 +14,127 @@ describe("AssertionTree", () => {
         let tree = AssertionTree.emptyTree;
         tree = AssertionTree.addAssertion(
             tree,
-            [type("string"), "to be", type("string")],
+            [constraint("string"), "to be", constraint("string")],
             assertionRule
         );
         tree = AssertionTree.addAssertion(
             tree,
-            [type("any"), "to be", type("any")],
+            [constraint("any"), "to be", constraint("any")],
             assertionRule
         );
         tree = AssertionTree.addAssertion(
             tree,
-            [type("any"), "to equal", type("any")],
+            [constraint("any"), "to equal", constraint("any")],
             assertionRule
         );
         tree = AssertionTree.addAssertion(
             tree,
-            [type("object"), "to have keys", type("string", 1, Infinity)],
+            [
+                constraint("object"),
+                "to have keys",
+                constraint("string", 1, Infinity)
+            ],
             assertionRule
         );
         tree = AssertionTree.addAssertion(
             tree,
-            [type("object"), "to have keys", type("array")],
+            [constraint("object"), "to have keys", constraint("array")],
             assertionRule
         );
 
         tree = AssertionTree.addAssertion(
             tree,
-            [type("object"), "to be evil"],
+            [constraint("object"), "to be evil"],
             assertionRule
         );
         tree = AssertionTree.addAssertion(
             tree,
-            [type("object"), "to be evil", type("string")],
+            [constraint("object"), "to be evil", constraint("string")],
             assertionRule
         );
         tree = AssertionTree.addAssertion(
             tree,
-            [type("object"), "to be evil", type("string", 0, 1)],
+            [constraint("object"), "to be evil", constraint("string", 0, 1)],
             assertionRule
         );
         tree = AssertionTree.addAssertion(
             tree,
-            [type("object"), "to be evil", type("string", 1, Infinity)],
+            [
+                constraint("object"),
+                "to be evil",
+                constraint("string", 1, Infinity)
+            ],
             assertionRule
         );
         tree = AssertionTree.addAssertion(
             tree,
-            [type("object"), "to be evil", type("string", 0, Infinity)],
+            [
+                constraint("object"),
+                "to be evil",
+                constraint("string", 0, Infinity)
+            ],
             assertionRule
         );
 
         tree = AssertionTree.addAssertion(
             tree,
             [
-                type("function"),
+                constraint("function"),
                 "when called with",
-                type("array-like"),
-                type("assertion", 0, 1)
+                constraint("array-like"),
+                constraint("assertion", 0, 1)
             ],
             assertionRule
         );
         tree = AssertionTree.addAssertion(
             tree,
-            [type("function"), "when called", type("assertion", 0, 1)],
+            [
+                constraint("function"),
+                "when called",
+                constraint("assertion", 0, 1)
+            ],
             assertionRule
         );
 
         tree = AssertionTree.addAssertion(
             tree,
-            [type("object"), "to be evil", type("number")],
+            [constraint("object"), "to be evil", constraint("number")],
             assertionRule
         );
         tree = AssertionTree.addAssertion(
             tree,
-            [type("object"), "to be evil", type("number", 0, Infinity)],
+            [
+                constraint("object"),
+                "to be evil",
+                constraint("number", 0, Infinity)
+            ],
             assertionRule
         );
         tree = AssertionTree.addAssertion(
             tree,
-            [type("object"), "to be evil", type("number", 1, Infinity)],
+            [
+                constraint("object"),
+                "to be evil",
+                constraint("number", 1, Infinity)
+            ],
             assertionRule
         );
         tree = AssertionTree.addAssertion(
             tree,
-            [type("object"), "to be evil", type("number", 0, 1)],
+            [constraint("object"), "to be evil", constraint("number", 0, 1)],
             assertionRule
         );
 
         expect(tree, "to exhaustively satisfy", {
             typeEdges: [
                 {
-                    constraint: type("string"),
+                    constraint: constraint("string"),
                     typeEdges: [],
                     textEdges: {
                         "to be": {
                             typeEdges: [
                                 {
-                                    constraint: type("string"),
+                                    constraint: constraint("string"),
                                     typeEdges: [],
                                     textEdges: {},
                                     value: assertionRule
@@ -122,7 +146,7 @@ describe("AssertionTree", () => {
                 },
 
                 {
-                    constraint: type("function"),
+                    constraint: constraint("function"),
                     splitRange: {
                         minimum: 11,
                         maximum: 11
@@ -132,7 +156,7 @@ describe("AssertionTree", () => {
                         "when called": {
                             typeEdges: [
                                 {
-                                    constraint: type("assertion", 0, 1),
+                                    constraint: constraint("assertion", 0, 1),
                                     typeEdges: [],
                                     textEdges: {},
                                     value: assertionRule
@@ -143,10 +167,14 @@ describe("AssertionTree", () => {
                         "when called with": {
                             typeEdges: [
                                 {
-                                    constraint: type("array-like"),
+                                    constraint: constraint("array-like"),
                                     typeEdges: [
                                         {
-                                            constraint: type("assertion", 0, 1),
+                                            constraint: constraint(
+                                                "assertion",
+                                                0,
+                                                1
+                                            ),
                                             typeEdges: [],
                                             textEdges: {},
                                             value: assertionRule
@@ -161,19 +189,23 @@ describe("AssertionTree", () => {
                 },
 
                 {
-                    constraint: type("object"),
+                    constraint: constraint("object"),
                     typeEdges: [],
                     textEdges: {
                         "to have keys": {
                             typeEdges: [
                                 {
-                                    constraint: type("string", 1, Infinity),
+                                    constraint: constraint(
+                                        "string",
+                                        1,
+                                        Infinity
+                                    ),
                                     typeEdges: [],
                                     textEdges: {},
                                     value: assertionRule
                                 },
                                 {
-                                    constraint: type("array"),
+                                    constraint: constraint("array"),
                                     typeEdges: [],
                                     textEdges: {},
                                     value: assertionRule
@@ -184,37 +216,49 @@ describe("AssertionTree", () => {
                         "to be evil": {
                             typeEdges: [
                                 {
-                                    constraint: type("number"),
+                                    constraint: constraint("number"),
                                     typeEdges: [],
                                     textEdges: {},
                                     value: assertionRule
                                 },
                                 {
-                                    constraint: type("number", 0, 1),
+                                    constraint: constraint("number", 0, 1),
                                     typeEdges: [],
                                     textEdges: {},
                                     value: assertionRule
                                 },
                                 {
-                                    constraint: type("number", 1, Infinity),
+                                    constraint: constraint(
+                                        "number",
+                                        1,
+                                        Infinity
+                                    ),
                                     typeEdges: [],
                                     textEdges: {},
                                     value: assertionRule
                                 },
                                 {
-                                    constraint: type("number", 0, Infinity),
+                                    constraint: constraint(
+                                        "number",
+                                        0,
+                                        Infinity
+                                    ),
                                     typeEdges: [],
                                     textEdges: {},
                                     value: assertionRule
                                 },
                                 {
-                                    constraint: type("string"),
+                                    constraint: constraint("string"),
                                     typeEdges: [],
                                     textEdges: {},
                                     value: assertionRule
                                 },
                                 {
-                                    constraint: type("string", 0, Infinity),
+                                    constraint: constraint(
+                                        "string",
+                                        0,
+                                        Infinity
+                                    ),
                                     typeEdges: [],
                                     textEdges: {},
                                     value: assertionRule
@@ -227,13 +271,13 @@ describe("AssertionTree", () => {
                 },
 
                 {
-                    constraint: type("any"),
+                    constraint: constraint("any"),
                     typeEdges: [],
                     textEdges: {
                         "to be": {
                             typeEdges: [
                                 {
-                                    constraint: type("any"),
+                                    constraint: constraint("any"),
                                     typeEdges: [],
                                     textEdges: {},
                                     value: assertionRule
@@ -244,7 +288,7 @@ describe("AssertionTree", () => {
                         "to equal": {
                             typeEdges: [
                                 {
-                                    constraint: type("any"),
+                                    constraint: constraint("any"),
                                     typeEdges: [],
                                     textEdges: {},
                                     value: assertionRule
@@ -258,14 +302,14 @@ describe("AssertionTree", () => {
             textEdges: {},
             fastTrack: expect.it("to satisfy", {
                 "to be": [
-                    { constraint: type("string") },
-                    { constraint: type("any") }
+                    { constraint: constraint("string") },
+                    { constraint: constraint("any") }
                 ],
-                "to equal": [{ constraint: type("any") }],
-                "to have keys": [{ constraint: type("object") }],
-                "to be evil": [{ constraint: type("object") }],
-                "when called with": [{ constraint: type("function") }],
-                "when called": [{ constraint: type("function") }]
+                "to equal": [{ constraint: constraint("any") }],
+                "to have keys": [{ constraint: constraint("object") }],
+                "to be evil": [{ constraint: constraint("object") }],
+                "when called with": [{ constraint: constraint("function") }],
+                "when called": [{ constraint: constraint("function") }]
             })
         });
     });
@@ -274,10 +318,10 @@ describe("AssertionTree", () => {
         const tree = AssertionTree.addAssertion(
             AssertionTree.emptyTree,
             [
-                type("object"),
-                type("string"),
+                constraint("object"),
+                constraint("string"),
                 "to have multiple subjects",
-                type("number")
+                constraint("number")
             ],
             assertionRule
         );
@@ -285,16 +329,16 @@ describe("AssertionTree", () => {
         expect(tree, "to equal", {
             typeEdges: [
                 {
-                    constraint: type("object"),
+                    constraint: constraint("object"),
                     typeEdges: [
                         {
-                            constraint: type("string"),
+                            constraint: constraint("string"),
                             typeEdges: [],
                             textEdges: {
                                 "to have multiple subjects": {
                                     typeEdges: [
                                         {
-                                            constraint: type("number"),
+                                            constraint: constraint("number"),
                                             typeEdges: [],
                                             textEdges: {},
                                             value: assertionRule
@@ -316,11 +360,11 @@ describe("AssertionTree", () => {
         const tree = AssertionTree.addAssertion(
             AssertionTree.emptyTree,
             [
-                type("number"),
+                constraint("number"),
                 "to be between",
-                type("number"),
+                constraint("number"),
                 "and",
-                type("number")
+                constraint("number")
             ],
             assertionRule
         );
@@ -328,19 +372,21 @@ describe("AssertionTree", () => {
         expect(tree, "to exhaustively satisfy", {
             typeEdges: [
                 {
-                    constraint: type("number"),
+                    constraint: constraint("number"),
                     typeEdges: [],
                     textEdges: {
                         "to be between": {
                             typeEdges: [
                                 {
-                                    constraint: type("number"),
+                                    constraint: constraint("number"),
                                     typeEdges: [],
                                     textEdges: {
                                         and: {
                                             typeEdges: [
                                                 {
-                                                    constraint: type("number"),
+                                                    constraint: constraint(
+                                                        "number"
+                                                    ),
                                                     typeEdges: [],
                                                     textEdges: {},
                                                     value: assertionRule
@@ -365,90 +411,114 @@ describe("AssertionTree", () => {
         let tree = AssertionTree.emptyTree;
         tree = AssertionTree.addAssertion(
             tree,
-            [type("string"), "to be", type("string")],
+            [constraint("string"), "to be", constraint("string")],
             assertionRule
         );
         tree = AssertionTree.addAssertion(
             tree,
-            [type("any"), "to be", type("any")],
+            [constraint("any"), "to be", constraint("any")],
             assertionRule
         );
         tree = AssertionTree.addAssertion(
             tree,
-            [type("any"), "to equal", type("any")],
+            [constraint("any"), "to equal", constraint("any")],
             assertionRule
         );
         tree = AssertionTree.addAssertion(
             tree,
-            [type("object"), "to have keys", type("string", 1, Infinity)],
+            [
+                constraint("object"),
+                "to have keys",
+                constraint("string", 1, Infinity)
+            ],
             assertionRule
         );
         tree = AssertionTree.addAssertion(
             tree,
-            [type("object"), "to have keys", type("array")],
+            [constraint("object"), "to have keys", constraint("array")],
             assertionRule
         );
 
         tree = AssertionTree.addAssertion(
             tree,
-            [type("object"), "to be evil"],
+            [constraint("object"), "to be evil"],
             assertionRule
         );
         tree = AssertionTree.addAssertion(
             tree,
-            [type("object"), "to be evil", type("string")],
+            [constraint("object"), "to be evil", constraint("string")],
             assertionRule
         );
         tree = AssertionTree.addAssertion(
             tree,
-            [type("object"), "to be evil", type("string", 0, 1)],
+            [constraint("object"), "to be evil", constraint("string", 0, 1)],
             assertionRule
         );
         tree = AssertionTree.addAssertion(
             tree,
-            [type("object"), "to be evil", type("string", 1, Infinity)],
+            [
+                constraint("object"),
+                "to be evil",
+                constraint("string", 1, Infinity)
+            ],
             assertionRule
         );
         tree = AssertionTree.addAssertion(
             tree,
-            [type("object"), "to be evil", type("string", 0, Infinity)],
+            [
+                constraint("object"),
+                "to be evil",
+                constraint("string", 0, Infinity)
+            ],
             assertionRule
         );
 
         tree = AssertionTree.addAssertion(
             tree,
             [
-                type("function"),
+                constraint("function"),
                 "when called with",
-                type("array-like"),
-                type("assertion", 0, 1)
+                constraint("array-like"),
+                constraint("assertion", 0, 1)
             ],
             assertionRule
         );
         tree = AssertionTree.addAssertion(
             tree,
-            [type("function"), "when called", type("assertion", 0, 1)],
+            [
+                constraint("function"),
+                "when called",
+                constraint("assertion", 0, 1)
+            ],
             assertionRule
         );
 
         tree = AssertionTree.addAssertion(
             tree,
-            [type("object"), "to be evil", type("number")],
+            [constraint("object"), "to be evil", constraint("number")],
             assertionRule
         );
         tree = AssertionTree.addAssertion(
             tree,
-            [type("object"), "to be evil", type("number", 0, Infinity)],
+            [
+                constraint("object"),
+                "to be evil",
+                constraint("number", 0, Infinity)
+            ],
             assertionRule
         );
         tree = AssertionTree.addAssertion(
             tree,
-            [type("object"), "to be evil", type("number", 1, Infinity)],
+            [
+                constraint("object"),
+                "to be evil",
+                constraint("number", 1, Infinity)
+            ],
             assertionRule
         );
         tree = AssertionTree.addAssertion(
             tree,
-            [type("object"), "to be evil", type("number", 0, 1)],
+            [constraint("object"), "to be evil", constraint("number", 0, 1)],
             assertionRule
         );
 
@@ -464,7 +534,7 @@ describe("AssertionTree", () => {
                 node: {
                     typeEdges: [
                         {
-                            constraint: type("any"),
+                            constraint: constraint("any"),
                             value: assertionRule,
                             typeEdges: [],
                             textEdges: {}
@@ -489,7 +559,7 @@ describe("AssertionTree", () => {
                 node: {
                     typeEdges: [
                         {
-                            constraint: type("any"),
+                            constraint: constraint("any"),
                             value: assertionRule,
                             typeEdges: [],
                             textEdges: {}
