@@ -132,7 +132,7 @@ function createErrorIfRequired(message) {
 }
 
 function somethingThatThrows() {
-  throw new createErrorIfRequired('failure');
+  throw createErrorIfRequired('failure');
 }
 ```
 
