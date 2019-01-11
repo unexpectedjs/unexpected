@@ -52,8 +52,7 @@ In version 11 the top-level of the library has been frozen and
 extending the functionality requires an expilcit `.clone()` call
 to be made:
 
-<!-- evaluate:false -->
-```js
+```js#evaluate:false
 const unexpected = require('unexpected');
 
 const expect = unexpected.clone();

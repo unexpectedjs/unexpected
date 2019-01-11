@@ -5,8 +5,7 @@ a promise from the given body function.
 
 Signature:
 
-<!-- evaluate:false -->
-```js
+```js#evaluate:false
 expect.promise(function () { ... });
 expect.promise(function (run) { ... });
 expect.promise(function (resolve, reject) { ... });
@@ -52,7 +51,6 @@ fulfilled.
 
 When the promise body takes two arguments, it is just an alias for:
 
-<!-- evaluate:false -->
-```js
+```js#evaluate:false
 new Promise(function (resolve, reject) { ... })
 ```

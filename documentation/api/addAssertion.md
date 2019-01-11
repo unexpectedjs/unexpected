@@ -2,8 +2,7 @@
 
 Signature:
 
-<!-- evaluate:false -->
-```js
+```js#evaluate:false
 expect.addAssertion(pattern, handler);
 expect.addAssertion([pattern, ...]], handler);
 ```
@@ -73,8 +72,7 @@ The handler to our assertion will be called with the values the
 following way, where the _not_ flag in the nested expect will be
 removed:
 
-<!-- evaluate:false -->
-```js
+```js#evaluate:false
 expect.addAssertion('<array> [not] to be (sorted|ordered) <function?>', function(expect, [3,2,1], reverse){
     expect([3,2,1], '[not] to equal', [].concat([3,2,1]).sort(reverse));
 });
