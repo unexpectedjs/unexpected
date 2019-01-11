@@ -2,7 +2,7 @@ module.exports = {
   root: false,
   plugins: ['markdown'],
   globals: {
-    expect: false
+    expect: true // One of the snippets overwrites the global
   },
   rules: {
     'no-unused-vars': 0,
