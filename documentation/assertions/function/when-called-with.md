@@ -24,8 +24,8 @@ provided as the fulfillment value of the promise:
 
 <!-- async:true -->
 ```js
-return expect(add, 'called with', [1, 2]).then(function (result) {
-    expect(result, 'to equal', 3);
+return expect(add, 'called with', [1, 2]).then(function(result) {
+  expect(result, 'to equal', 3);
 });
 ```
 

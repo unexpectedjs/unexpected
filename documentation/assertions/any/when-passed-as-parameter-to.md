@@ -29,7 +29,7 @@ as the fulfillment value of the promise:
 
 <!-- async:true -->
 ```js
-return expect(10, 'passed as parameter to', increment).then(function (result) {
-    expect(result, 'to equal', 11);
+return expect(10, 'passed as parameter to', increment).then(function(result) {
+  expect(result, 'to equal', 11);
 });
 ```

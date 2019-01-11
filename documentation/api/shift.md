@@ -83,7 +83,7 @@ the fulfillment value of the promise if invoked without an assertion:
 
 <!-- async:true -->
 ```js
-return expect(10, 'up to', 20).then(function (numbers) {
-    expect(numbers, 'to have length', 10);
+return expect(10, 'up to', 20).then(function(numbers) {
+  expect(numbers, 'to have length', 10);
 });
 ```

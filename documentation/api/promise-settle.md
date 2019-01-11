@@ -39,23 +39,35 @@ is rejected it create an error report with the details.
 ```js
 var promises = {
   foo: expect('42', 'to be a number after a short delay'),
-  bar: expect([0, 1, 2], 'to have items satisfying',
-                         expect.it('to be a number after a short delay')),
-  baz: expect({ a: '1', b: 2 }, 'to have values satisfying',
-                                'to be a number after a short delay')
+  bar: expect(
+    [0, 1, 2],
+    'to have items satisfying',
+    expect.it('to be a number after a short delay')
+  ),
+  baz: expect(
+    { a: '1', b: 2 },
+    'to have values satisfying',
+    'to be a number after a short delay'
+  )
 };
 
-return expect.promise.all(promises).caught(function () {
-  return expect.promise.settle(promises).then(function () {
-    expect.fail(function (output) {
+return expect.promise.all(promises).caught(function() {
+  return expect.promise.settle(promises).then(function() {
+    expect.fail(function(output) {
       output.text('{').nl();
       output.indentLines();
-      Object.keys(promises).forEach(function (key, index) {
-        output.i().jsKey(key).text(':').sp();
+      Object.keys(promises).forEach(function(key, index) {
+        output
+          .i()
+          .jsKey(key)
+          .text(':')
+          .sp();
         if (promises[key].isFulfilled()) {
           output.success('✓');
         } else {
-          output.error('⨯ ').block(promises[key].reason().getErrorMessage({ output: output }));
+          output
+            .error('⨯ ')
+            .block(promises[key].reason().getErrorMessage({ output: output }));
         }
         output.nl();
       });

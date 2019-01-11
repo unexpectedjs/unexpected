@@ -291,7 +291,11 @@ like this:
 
 <!-- evaluate:false -->
 ```js
-return expect(new Timelock('Hello world'), 'to satisfy', expect.it('have length', 11));
+return expect(
+  new Timelock('Hello world'),
+  'to satisfy',
+  expect.it('have length', 11)
+);
 ```
 
 First we need to define a [type](../addType/) for handling the `Timelock`:
@@ -328,7 +332,11 @@ Let's see how it works:
 
 <!-- async:true -->
 ```js
-return expect(new Timelock('Hello world!', 5), 'to satisfy', expect.it('not to match', /!/));
+return expect(
+  new Timelock('Hello world!', 5),
+  'to satisfy',
+  expect.it('not to match', /!/)
+);
 ```
 
 ```output

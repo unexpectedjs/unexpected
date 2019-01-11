@@ -24,8 +24,8 @@ as the fulfillment value of the promise:
 
 <!-- async:true -->
 ```js
-return expect(giveMeFive, 'called').then(function (result) {
-    expect(result, 'to equal', 5);
+return expect(giveMeFive, 'called').then(function(result) {
+  expect(result, 'to equal', 5);
 });
 ```
 
