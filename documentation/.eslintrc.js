@@ -11,8 +11,7 @@ module.exports = {
     'no-unused-vars': 0,
     'no-undef': 0
   },
-  parser: 'esprima',
   parserOptions: {
-    tolerant: true
+    sourceType: 'script' // Otherwise globalReturn won't work, we use that for the async snippets
   }
 };
