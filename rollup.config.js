@@ -16,6 +16,7 @@ module.exports = {
     require('rollup-plugin-commonjs')(),
     require('rollup-plugin-node-resolve')(),
     require('rollup-plugin-node-globals')(),
+    require('rollup-plugin-babel')(),
     require('rollup-plugin-uglify').uglify({
       output: {
         comments: function(node, comment) {
