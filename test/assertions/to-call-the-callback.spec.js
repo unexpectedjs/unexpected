@@ -51,19 +51,19 @@ describe('to call the callback assertion', () => {
 
   it('should return a promise that is fulfilled with the values passed to the callback', () => {
     return expect(function(cb) {
-      cb(1, 2, 3, 4);
+      cb(new Error('foo'), 2, 3, 4);
     }, 'to call the callback').then(function(args) {
-      expect(args, 'to equal', [1, 2, 3, 4]);
+      expect(args, 'to equal', [new Error('foo'), 2, 3, 4]);
     });
   });
 
   it("should return a promise that is compatible with Bluebird's spread feature", () => {
     return expect(function(cb) {
-      cb(1, 2);
+      cb(new Error('foo'), 2);
     }, 'to call the callback').spread(function(arg1, arg2) {
-      expect(arg1, 'to equal', 1);
+      expect(arg1, 'to equal', new Error('foo'));
       expect(arg2, 'to equal', 2);
-      expect(arguments, 'to satisfy', [1, 2]);
+      expect(arguments, 'to satisfy', [new Error('foo'), 2]);
     });
   });
 

@@ -5,7 +5,7 @@ function jasmineFail(err) {
   }
 }
 
-function jasmineSuccess(err) {
+function jasmineSuccess() {
   if (typeof jasmine === 'object') {
     jasmine
       .getEnv()

@@ -641,7 +641,7 @@ describe('to satisfy assertion', () => {
             ]);
           })
         ];
-        return expect.promise.all(promises).caught(function(err) {
+        return expect.promise.all(promises).caught(() => {
           return clonedExpect.promise.settle(promises);
         });
       });
