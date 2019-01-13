@@ -1,5 +1,5 @@
 const config = {
-  extends: ['prettier'],
+  extends: ['standard', 'prettier', 'prettier/standard'],
   plugins: ['import', 'mocha'],
   rules: {
     'import/no-extraneous-dependencies': [
