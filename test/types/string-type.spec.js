@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('string type', () => {
   it('should suppress a diff when the actual value has a length greater than 1 KB', () => {
     var longString = new Array(4098).join('A');

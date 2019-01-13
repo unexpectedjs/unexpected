@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('exportAssertion', () => {
   var parentExpect;
   var childExpect;

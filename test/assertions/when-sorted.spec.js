@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('when sorted assertion', () => {
   it('should sort an array using the default compare function', () => {
     expect(['c', 'a', 'b'], 'when sorted', 'to equal', ['a', 'b', 'c']);

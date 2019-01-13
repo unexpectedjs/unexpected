@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('styleType', () => {
   var parentExpect;
   var childExpect;

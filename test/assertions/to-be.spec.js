@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('to be assertion', () => {
   it('assert === equality', () => {
     var obj = {};

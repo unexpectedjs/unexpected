@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('to have length assertion', () => {
   function toArguments() {
     return arguments;

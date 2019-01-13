@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('freeze', () => {
   it('is chainable', () => {
     const clonedExpect = expect.clone();

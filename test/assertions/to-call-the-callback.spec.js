@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('to call the callback assertion', () => {
   it('should succeed when the callback is called synchronously', () => {
     return expect(function(cb) {

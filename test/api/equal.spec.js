@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 if (Object.defineProperty) {
   describe('equal', () => {
     function Field(val, options) {

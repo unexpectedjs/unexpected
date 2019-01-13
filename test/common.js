@@ -1,4 +1,4 @@
-/*global unexpected:true, expect:true, expectWithUnexpectedMagicPen:true, setImmediate:true, weknowhow, jasmine*/
+/* global unexpected:true, expect:true, expectWithUnexpectedMagicPen:true, setImmediate:true, weknowhow, jasmine */
 /* eslint no-unused-vars: "off" */
 unexpected =
   typeof weknowhow === 'undefined'

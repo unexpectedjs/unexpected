@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('to be a canonical object assertion', () => {
   it('asserts that an object is canonical', () => {
     expect({ a: 123, b: 456 }, 'to be canonical');

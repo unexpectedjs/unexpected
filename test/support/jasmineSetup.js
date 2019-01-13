@@ -1,4 +1,4 @@
-/*global jasmine, it:true, xdescribe, xit, beforeAll, afterAll, before:true, after:true*/
+/* global jasmine, it:true, xdescribe, xit, beforeAll, afterAll, before:true, after:true */
 function jasmineFail(err) {
   if (typeof jasmine === 'object') {
     jasmine.getEnv().fail(err);

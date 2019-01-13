@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('to match assertion', () => {
   it('tests that the subject matches the given regular expression', () => {
     expect('test', 'to match', /.*st/);

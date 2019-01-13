@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('clone', () => {
   var clonedExpect;
   beforeEach(() => {

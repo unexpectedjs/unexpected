@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('annotationBlock', () => {
   it('should render an empty block', () => {
     expect(

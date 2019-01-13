@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 if (typeof Buffer !== 'undefined') {
   describe('when decoded as assertion', () => {
     it('should decode a Buffer instance to utf-8', () => {

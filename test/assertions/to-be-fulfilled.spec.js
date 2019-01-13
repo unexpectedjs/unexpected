@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('to be fulfilled assertion', () => {
   it('should succeed if the response is resolved with any value', () => {
     return expect(

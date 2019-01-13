@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('to start with assertion', () => {
   it('should throw an error when the expected prefix is the empty string', () => {
     expect(

@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('to satisfy assertion', () => {
   function toArguments() {
     return arguments;
@@ -1657,7 +1657,7 @@ describe('to satisfy assertion', () => {
           ╔═══╗ // should be removed
           ║ 3 ║
           ╚═══╝
-        ]`.replace(/^        /gm, '')
+        ]`.replace(/^ {8}/gm, '')
       );
     });
   });

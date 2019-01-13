@@ -1,4 +1,4 @@
-/*global expectWithUnexpectedMagicPen*/
+/* global expectWithUnexpectedMagicPen */
 describe('to equal assertion', () => {
   var expect = expectWithUnexpectedMagicPen;
 
