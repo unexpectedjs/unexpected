@@ -340,19 +340,19 @@ describe('to equal assertion', () => {
 
   if (typeof Buffer !== 'undefined') {
     it('asserts equality for Buffer instances', () => {
-      expect(new Buffer([0x45, 0x59]), 'to equal', new Buffer([0x45, 0x59]));
+      expect(Buffer.from([0x45, 0x59]), 'to equal', Buffer.from([0x45, 0x59]));
     });
 
     it('produces a hex-diff in JSON when Buffers differ', () => {
       expect(
         function() {
           expect(
-            new Buffer(
+            Buffer.from(
               '\x00\x01\x02Here is the thing I was talking about',
               'utf-8'
             ),
             'to equal',
-            new Buffer(
+            Buffer.from(
               '\x00\x01\x02Here is the thing I was quuxing about',
               'utf-8'
             )
@@ -372,7 +372,7 @@ describe('to equal assertion', () => {
     it('regression test for infinite loop in buffer diff code', () => {
       expect(function() {
         expect(
-          new Buffer([
+          Buffer.from([
             0x63,
             0x74,
             0x3d,
@@ -392,9 +392,9 @@ describe('to equal assertion', () => {
           ]),
           'to equal',
           Buffer.concat([
-            new Buffer('ct=T;;'),
-            new Buffer([0xa3, 0x3b]),
-            new Buffer(';foo=bar;')
+            Buffer.from('ct=T;;'),
+            Buffer.from([0xa3, 0x3b]),
+            Buffer.from(';foo=bar;')
           ])
         );
       }, 'to throw');
@@ -403,8 +403,8 @@ describe('to equal assertion', () => {
     it('suppresses Buffer diff for large buffers', () => {
       expect(
         function() {
-          const a = new Buffer(1024);
-          const b = new Buffer(1024);
+          const a = Buffer.from(1024);
+          const b = Buffer.from(1024);
           a[0] = 1;
           b[0] = 2;
           expect(a, 'to equal', b);

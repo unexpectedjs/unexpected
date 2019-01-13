@@ -1286,13 +1286,17 @@ describe('to satisfy assertion', () => {
   if (typeof Buffer !== 'undefined') {
     describe('on Buffer instances', () => {
       it('should assert equality', () => {
-        expect(new Buffer([1, 2, 3]), 'to satisfy', new Buffer([1, 2, 3]));
+        expect(Buffer.from([1, 2, 3]), 'to satisfy', Buffer.from([1, 2, 3]));
       });
 
       it('should fail with a binary diff when the assertion fails', () => {
         expect(
           function() {
-            expect(new Buffer([1, 2, 3]), 'to satisfy', new Buffer([1, 2, 4]));
+            expect(
+              Buffer.from([1, 2, 3]),
+              'to satisfy',
+              Buffer.from([1, 2, 4])
+            );
           },
           'to throw',
           'expected Buffer([0x01, 0x02, 0x03]) to equal Buffer([0x01, 0x02, 0x04])\n' +
@@ -1305,9 +1309,9 @@ describe('to satisfy assertion', () => {
       describe('with expect.it', () => {
         it('should succeed', () => {
           expect(
-            new Buffer('bar'),
+            Buffer.from('bar'),
             'to satisfy',
-            expect.it('to equal', new Buffer('bar'))
+            expect.it('to equal', Buffer.from('bar'))
           );
         });
 
@@ -1315,9 +1319,9 @@ describe('to satisfy assertion', () => {
           expect(
             function() {
               expect(
-                new Buffer('bar'),
+                Buffer.from('bar'),
                 'to satisfy',
-                expect.it('to equal', new Buffer('foo'))
+                expect.it('to equal', Buffer.from('foo'))
               );
             },
             'to throw',
@@ -1334,7 +1338,7 @@ describe('to satisfy assertion', () => {
 
       it('should satisfy a function', () => {
         expect(
-          new Buffer('bar'),
+          Buffer.from('bar'),
           'to satisfy',
           expect.it(function(buffer) {
             expect(buffer, 'to have length', 3);
@@ -1345,12 +1349,12 @@ describe('to satisfy assertion', () => {
       describe('in an async setting', () => {
         it('should succeed', () => {
           return expect(
-            new Buffer([0, 1, 2]),
+            Buffer.from([0, 1, 2]),
             'to satisfy',
             expect.it(
               'when delayed a little bit',
               'to equal',
-              new Buffer([0, 1, 2])
+              Buffer.from([0, 1, 2])
             )
           );
         });
@@ -1358,12 +1362,12 @@ describe('to satisfy assertion', () => {
         it('should fail with a diff', () => {
           return expect(
             expect(
-              new Buffer([0, 1, 2]),
+              Buffer.from([0, 1, 2]),
               'to satisfy',
               expect.it(
                 'when delayed a little bit',
                 'to equal',
-                new Buffer([2, 1, 0])
+                Buffer.from([2, 1, 0])
               )
             ),
             'to be rejected with',
