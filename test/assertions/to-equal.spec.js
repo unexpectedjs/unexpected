@@ -403,8 +403,8 @@ describe('to equal assertion', () => {
     it('suppresses Buffer diff for large buffers', () => {
       expect(
         function() {
-          const a = Buffer.from(1024);
-          const b = Buffer.from(1024);
+          const a = Buffer.alloc(1024);
+          const b = Buffer.alloc(1024);
           a[0] = 1;
           b[0] = 2;
           expect(a, 'to equal', b);
