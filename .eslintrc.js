@@ -1,6 +1,9 @@
 const config = {
   extends: ['standard', 'prettier', 'prettier/standard'],
   plugins: ['import', 'mocha'],
+  env: {
+    mocha: true
+  },
   rules: {
     'import/no-extraneous-dependencies': [
       'error',
