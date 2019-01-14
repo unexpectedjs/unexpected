@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('to have property assertion', () => {
   it('asserts presence of an own property (and value optionally)', () => {
     expect([1, 2], 'to have property', 'length');

@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('addAssertion', () => {
   it('is chainable', () => {
     expect

@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('arrow', () => {
   it('should render an arrow with the given dimensions', () => {
     expect(

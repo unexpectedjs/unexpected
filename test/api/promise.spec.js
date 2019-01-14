@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('expect.promise', () => {
   it('should forward non-unexpected errors', () => {
     var clonedExpect = expect

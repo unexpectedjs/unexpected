@@ -1,4 +1,4 @@
-/*global expectWithUnexpectedMagicPen*/
+/* global expectWithUnexpectedMagicPen */
 describe('colorByIndex', () => {
   var expect = expectWithUnexpectedMagicPen;
 

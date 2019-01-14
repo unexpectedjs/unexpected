@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('to be infinite assertion', () => {
   it('asserts a infinite number', () => {
     expect(123, 'not to be infinite');

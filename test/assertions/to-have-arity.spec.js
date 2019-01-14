@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('to have arity assertion', () => {
   it('tests that the subject function has the given arity', () => {
     expect(function() {}, 'to have arity', 0);

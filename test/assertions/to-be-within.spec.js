@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('within assertion', () => {
   it('asserts a number within a range', () => {
     expect(0, 'to be within', 0, 4);

@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('array type', () => {
   it('should find an array instance identical to itself', () => {
     var arr = [1, 2, 3];

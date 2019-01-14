@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('to be close to assertion', () => {
   it('asserts that two numbers differ by at most 1e-9', () => {
     expect(1.5, 'to be close to', 1.49999999999);

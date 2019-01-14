@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('Promise type', () => {
   it('should inspect a pending promise', () => {
     var promise = new Promise(function(resolve, reject) {

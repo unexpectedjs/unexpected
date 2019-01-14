@@ -1,4 +1,4 @@
-/*global unexpected, weknowhow*/
+/* global unexpected, weknowhow */
 
 it.skipIf = function(condition) {
   (condition ? it.skip : it).apply(

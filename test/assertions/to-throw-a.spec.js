@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('to throw a/an assertion', () => {
   it('fails if no exception is thrown', () => {
     expect(

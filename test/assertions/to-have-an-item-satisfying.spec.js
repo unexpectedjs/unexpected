@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('to have an item satisfying assertion', () => {
   it('requires a third argument', () => {
     expect(

@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('to error assertion', () => {
   describe('with a function that throws', () => {
     describe('with the "not" flag', () => {

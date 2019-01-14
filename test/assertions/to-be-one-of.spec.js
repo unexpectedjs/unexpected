@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('to be one of', () => {
   it('asserts booleans can be true or false', () => {
     expect(true, 'to be one of', [true, false]);

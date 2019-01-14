@@ -1,4 +1,4 @@
-/*global unexpected*/
+/* global unexpected */
 
 var expect = unexpected.clone();
 

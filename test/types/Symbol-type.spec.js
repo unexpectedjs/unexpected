@@ -1,4 +1,4 @@
-/*global expect, Symbol*/
+/* global expect, Symbol */
 // babel-polyfill's implementation of Symbol serializes very wonkily, so skip these tests when it's active:
 if (
   typeof Symbol === 'function' &&

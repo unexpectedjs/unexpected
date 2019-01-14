@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('exportType', () => {
   var parentExpect;
   var childExpect;

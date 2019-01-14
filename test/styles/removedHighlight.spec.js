@@ -1,4 +1,4 @@
-/*global expectWithUnexpectedMagicPen*/
+/* global expectWithUnexpectedMagicPen */
 describe('removedHighlight', () => {
   const expect = expectWithUnexpectedMagicPen;
 
