@@ -282,8 +282,6 @@ describe('expect.promise', () => {
           .promise(function() {
             expect(2, 'to equal', 2);
           })
-          // standard and prettier battle each other on this one
-          // eslint-disable-next-line no-unexpected-multiline
           [inspectMethodName](),
         'to equal',
         'Promise (fulfilled)'
@@ -296,8 +294,6 @@ describe('expect.promise', () => {
           .promise(function() {
             return 123;
           })
-          // standard and prettier battle each other on this one
-          // eslint-disable-next-line no-unexpected-multiline
           [inspectMethodName](),
         'to equal',
         'Promise (fulfilled) => 123'
