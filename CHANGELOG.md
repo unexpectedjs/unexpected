@@ -1,3 +1,16 @@
+### v11.0.1 (2019-01-15)
+
+- [#577](https://github.com/unexpectedjs/unexpected/pull/577) Avoid deprecation warnings in node.js 10 because we have methods called inspect ([Andreas Lind](mailto:andreas.lind@peakon.com), [Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [#578](https://github.com/unexpectedjs/unexpected/pull/578) Replace eslint-config-pretty-standard with eslint-config-{prettier,standard} ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [#576](https://github.com/unexpectedjs/unexpected/pull/576) function type: Support inspection of classes and generators ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [#575](https://github.com/unexpectedjs/unexpected/pull/575) Link to 'to satisfy' from the 'to have property' docs ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [#571](https://github.com/unexpectedjs/unexpected/pull/571) removedHighlight style: Render newlines as \n ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [#493](https://github.com/unexpectedjs/unexpected/pull/493) Clarify the function call in "to throw" documentation. ([Alex J Burke](mailto:alex@alexjeffburke.com))
+- [#573](https://github.com/unexpectedjs/unexpected/pull/573) Upgrade karma-browserstack-launcher to version 1.4.0 ([depfu[bot]](mailto:depfu[bot]@users.noreply.github.com))
+- [#572](https://github.com/unexpectedjs/unexpected/pull/572) Upgrade diff to version 4.0.1 ([depfu[bot]](mailto:depfu[bot]@users.noreply.github.com))
+- [#447](https://github.com/unexpectedjs/unexpected/pull/447) Upgrade diff to version 3.5.0 ([Andreas Lind](mailto:andreaslindpetersen@gmail.com), [depfu[bot]](mailto:depfu[bot]@users.noreply.github.com))
+- [#569](https://github.com/unexpectedjs/unexpected/pull/569) Make a separate BrowserStack project for separate branches ([Sune Simonsen](mailto:sune@we-knowhow.dk))
+
 ### v11.0.0 (2019-01-06)
 
 - [#509](https://github.com/unexpectedjs/unexpected/pull/509) V11 \(Major\) ([Alex J Burke](mailto:alex@alexjeffburke.com), [Andreas Lind](mailto:andreas.lind@peakon.com), [Andreas Lind](mailto:andreas@one.com), [Andreas Lind](mailto:andreaslindpetersen@gmail.com), [Sune Simonsen](mailto:sune@we-knowhow.dk), [depfu[bot]](mailto:depfu[bot]@users.noreply.github.com))
