@@ -4,7 +4,7 @@ Decode a Buffer, then delegate the return value to another assertion. Supports
 <!-- skipBrowser:true -->
 ```js
 expect(
-  new Buffer([0xe2, 0x98, 0xba]),
+  Buffer.from([0xe2, 0x98, 0xba]),
   'when decoded as',
   'utf-8',
   'to equal',
@@ -17,7 +17,7 @@ In case of a failing expectation you get the following output:
 <!-- skipBrowser:true -->
 ```js
 expect(
-  new Buffer([0xe2, 0x98, 0xba]),
+  Buffer.from([0xe2, 0x98, 0xba]),
   'when decoded as',
   'utf-8',
   'to equal',
@@ -37,7 +37,7 @@ as the fulfillment value of the promise:
 
 <!-- async:true -->
 ```js,skipBrowser:true
-return expect(new Buffer([0xe2, 0x98, 0xba]), 'decoded as', 'utf-8').then(function (result) {
+return expect(Buffer.from([0xe2, 0x98, 0xba]), 'decoded as', 'utf-8').then(function (result) {
     expect(result, 'to equal', '☺');
 });
 ```

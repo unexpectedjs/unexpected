@@ -60,7 +60,7 @@ Or using the Bluebird-specific `.spread` extension:
 <!-- async:true -->
 ```js
 return expect(asyncFn, 'to call the callback').spread(function(err, result) {
-  // err will be null
-  // result will be 'foo'
+  expect(err, 'to be null');
+  expect(result, 'to equal', 'foo');
 });
 ```

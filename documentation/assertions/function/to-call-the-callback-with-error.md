@@ -78,5 +78,6 @@ function asyncFn(cb) {
 
 return expect(asyncFn, 'to call the callback with error').then(function(err) {
   // err will be new Error('yikes')
+  expect(err, 'to have message', 'yikes');
 });
 ```
