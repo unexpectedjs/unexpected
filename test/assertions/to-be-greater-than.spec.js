@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('greater than assertion', () => {
   it('assert >', () => {
     expect(3, 'to be greater than', 2);

@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('merge', () => {
   it('should overlay a pen on top of another', () => {
     var pen = expect.createOutput('text');

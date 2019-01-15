@@ -1,4 +1,4 @@
-/*global expectWithUnexpectedMagicPen*/
+/* global expectWithUnexpectedMagicPen */
 describe('to contain assertion', () => {
   var expect = expectWithUnexpectedMagicPen;
 

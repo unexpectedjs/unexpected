@@ -1,4 +1,4 @@
-/*global expect, expectWithUnexpectedMagicPen*/
+/* global expect, expectWithUnexpectedMagicPen */
 describe('function type', () => {
   it('should inspect an empty anonymous function correctly', () => {
     expect(function() {}, 'to inspect as', 'function () {}');

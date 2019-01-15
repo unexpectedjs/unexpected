@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('positive assertion', () => {
   it('assert that a number is positive', () => {
     expect(3, 'to be positive');

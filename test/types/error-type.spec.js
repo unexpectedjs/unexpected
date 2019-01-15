@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('Error type', () => {
   it('should inspect the constructor name correctly', () => {
     expect(new TypeError('foo'), 'to inspect as', "TypeError('foo')");

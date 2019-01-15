@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('when fulfilled adverbial assertion', () => {
   it('should delegate to the next assertion with the resolved value', () => {
     return expect(

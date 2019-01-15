@@ -1,4 +1,4 @@
-/*global expectWithUnexpectedMagicPen*/
+/* global expectWithUnexpectedMagicPen */
 describe('to end with assertion', () => {
   var expect = expectWithUnexpectedMagicPen;
 

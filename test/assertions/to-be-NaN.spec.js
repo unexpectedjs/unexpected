@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('to be NaN assertion', () => {
   it('assert that the value is NaN or not', () => {
     expect(NaN, 'to be NaN');

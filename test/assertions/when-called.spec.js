@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('when called assertion', () => {
   it('should call the function without arguments and shift the result', () => {
     function hey() {

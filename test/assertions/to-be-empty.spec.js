@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('empty assertion', () => {
   it('asserts the array-like objects have a non-zero length', () => {
     expect([], 'to be empty');

@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('to be finite assertion', () => {
   it('asserts a finite number', () => {
     expect(123, 'to be finite');

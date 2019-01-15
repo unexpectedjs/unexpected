@@ -1,4 +1,4 @@
-/*global expectWithUnexpectedMagicPen*/
+/* global expectWithUnexpectedMagicPen */
 describe('to have message/diff assertion', () => {
   var expect = expectWithUnexpectedMagicPen;
 

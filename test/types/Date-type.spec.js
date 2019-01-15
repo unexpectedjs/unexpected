@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('Date type', () => {
   it('inspects without milliseconds when the milliseconds field is zero', () => {
     expect(

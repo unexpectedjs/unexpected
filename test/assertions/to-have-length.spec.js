@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('to have length assertion', () => {
   function toArguments() {
     return arguments;
@@ -60,8 +60,8 @@ describe('to have length assertion', () => {
 
   if (typeof Buffer !== 'undefined') {
     it('asserts Buffer .length', () => {
-      expect(new Buffer('æ', 'utf-8'), 'to have length', 2);
-      expect(new Buffer([]), 'to have length', 0);
+      expect(Buffer.from('æ', 'utf-8'), 'to have length', 2);
+      expect(Buffer.from([]), 'to have length', 0);
     });
   }
 

@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('outputFormat', () => {
   describe('when given a format', () => {
     it('decides the output that will be used for serializing errors', () => {

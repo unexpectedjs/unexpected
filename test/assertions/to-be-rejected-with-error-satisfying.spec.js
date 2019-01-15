@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('to be rejected with error satisfying assertion', () => {
   it('should succeed if the response is rejected with a reason satisfying the argument', () => {
     return expect(

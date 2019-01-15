@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('to be a/an assertion', () => {
   var circular = {};
   circular.self = circular;

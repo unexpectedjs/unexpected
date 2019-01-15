@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('hook', () => {
   it('should hook into the expect function itself', () => {
     var clonedExpect = expect.clone();

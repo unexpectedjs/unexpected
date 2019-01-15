@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('expect.shift', () => {
   describe('when preserving the subject by passing no arguments', () => {
     it('should succeed', () => {

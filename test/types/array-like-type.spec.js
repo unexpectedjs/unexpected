@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('array-like type', () => {
   describe('equal()', () => {
     var simpleArrayLikeType = {
@@ -108,7 +108,7 @@ describe('array-like type', () => {
           delete Object.getOwnPropertySymbols;
           // grab a fresh copy of Unexpected with object symbol support disabled
           if (typeof jest !== 'undefined') {
-            /*global jest*/
+            /* global jest */
             jest.resetModules();
           } else {
             delete require.cache[require.resolve('../../lib/')];

@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('object type', () => {
   describe('#diff', () => {
     it('should show identical multiline values correctly in diffs', () => {

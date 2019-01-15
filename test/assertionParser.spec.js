@@ -1,4 +1,4 @@
-/*global unexpected*/
+/* global unexpected */
 describe('parseAssertion', () => {
   var expect = unexpected.clone();
 
