@@ -258,6 +258,15 @@ describe('expect.promise', () => {
     });
   });
 
+  let inspectMethodName = 'inspect';
+  // In node.js 10+ the custom inspect method name has to be given as a symbol
+  // or we'll get ugly deprecation warnings logged to the console.
+  try {
+    const util = require('util');
+    if (util.inspect.custom) {
+      inspectMethodName = util.inspect.custom;
+    }
+  } catch (err) {}
   describe('#inspect', () => {
     var originalDefaultFormat = expect.output.constructor.defaultFormat;
     beforeEach(() => {
@@ -273,7 +282,7 @@ describe('expect.promise', () => {
           .promise(function() {
             expect(2, 'to equal', 2);
           })
-          .inspect(),
+          [inspectMethodName](),
         'to equal',
         'Promise (fulfilled)'
       );
@@ -285,7 +294,7 @@ describe('expect.promise', () => {
           .promise(function() {
             return 123;
           })
-          .inspect(),
+          [inspectMethodName](),
         'to equal',
         'Promise (fulfilled) => 123'
       );
@@ -298,7 +307,11 @@ describe('expect.promise', () => {
         'to equal',
         'foo'
       );
-      expect(asyncPromise.inspect(), 'to equal', 'Promise (pending)');
+      expect(
+        asyncPromise[inspectMethodName](),
+        'to equal',
+        'Promise (pending)'
+      );
       return asyncPromise;
     });
 
@@ -308,7 +321,7 @@ describe('expect.promise', () => {
       });
 
       return promise.caught(function() {
-        expect(promise.inspect(), 'to equal', 'Promise (rejected)');
+        expect(promise[inspectMethodName](), 'to equal', 'Promise (rejected)');
       });
     });
 
@@ -321,7 +334,7 @@ describe('expect.promise', () => {
 
       return promise.caught(function() {
         expect(
-          promise.inspect(),
+          promise[inspectMethodName](),
           'to equal',
           "Promise (rejected) => Error('argh')"
         );
