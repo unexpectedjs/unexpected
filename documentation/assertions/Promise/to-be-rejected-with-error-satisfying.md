@@ -1,6 +1,6 @@
 Asserts that a promise is rejected with a specific reason (error):
 
-<!-- async:true -->
+<!-- unexpected-markdown async:true -->
 ```js
 var promiseThatWillBeRejectedWithAReason = new Promise(function(
   resolve,
@@ -22,7 +22,7 @@ The expected reason will be matched against the rejection reason with
 [to satisfy](../../any/to-satisfy/) semantics, so you can pass any of the
 values supported by `to satisfy`:
 
-<!-- async:true -->
+<!-- unexpected-markdown async:true -->
 ```js
 var promiseThatWillBeRejectedWithAReason = new Promise(function(
   resolve,
@@ -42,7 +42,7 @@ return expect(
 
 You get a nice diff if the assertion fails:
 
-<!-- async:true -->
+<!-- unexpected-markdown async:true -->
 ```js
 var promiseThatWillBeRejectedWithAReason = new Promise(function(
   resolve,
@@ -75,7 +75,7 @@ expected Promise to be rejected with error satisfying Error('bugger')
 You can use the `exhaustively` flag to use strict
 [to satisfy](../../any/to-satisfy/) semantics:
 
-<!-- async:true -->
+<!-- unexpected-markdown async:true -->
 ```js
 var error = new Error('Oh dear');
 error.data = { foo: 'bar' };

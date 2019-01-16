@@ -17,7 +17,7 @@ If the body returns a promise that will be returned by the method;
 otherwise a resolve promise will be returned. You can use the method
 the following way:
 
-<!-- evaluate:false -->
+<!-- unexpected-markdown evaluate:false -->
 ```js
 var promises = items.map(function(item) {
   return expect.promise(function() {
@@ -29,7 +29,7 @@ var promises = items.map(function(item) {
 When the promise body takes one argument it will be executed and given a
 wrapper function that should be used to wrap asynchronous callbacks:
 
-<!-- evaluate:false -->
+<!-- unexpected-markdown evaluate:false -->
 ```js
 expect.promise(function(run) {
   backend.loadData(

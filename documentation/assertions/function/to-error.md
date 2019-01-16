@@ -9,14 +9,14 @@ function willBeRejected() {
 }
 ```
 
-<!-- async:true -->
+<!-- unexpected-markdown async:true -->
 ```js
 return expect(willBeRejected, 'to error');
 ```
 
 In case of a failing expectation you get the following output:
 
-<!-- async:true -->
+<!-- unexpected-markdown async:true -->
 ```js
 function willNotBeRejected() {
   return new Promise(function(resolve, reject) {
@@ -40,12 +40,12 @@ to error
 You can assert the error message is a given string if you provide a
 string as the second parameter.
 
-<!-- async:true -->
+<!-- unexpected-markdown async:true -->
 ```js
 return expect(willBeRejected, 'to error', 'The reject message');
 ```
 
-<!-- async:true -->
+<!-- unexpected-markdown async:true -->
 ```js
 return expect(willBeRejected, 'to error', 'The error message');
 ```
@@ -67,14 +67,14 @@ to error 'The error message'
 By providing a regular expression as the second parameter you can
 assert the error message matches the given regular expression.
 
-<!-- async:true -->
+<!-- unexpected-markdown async:true -->
 ```js
 return expect(willBeRejected, 'to error', /reject message/);
 ```
 
 In case of a failing expectation you get the following output:
 
-<!-- async:true -->
+<!-- unexpected-markdown async:true -->
 ```js
 return expect(willBeRejected, 'to error', /error message/);
 ```
@@ -93,14 +93,14 @@ to error /error message/
 You can also negate the check, and verify that the function will not
 error out. When negating the assertion, you cannot provide a message.
 
-<!-- async:true -->
+<!-- unexpected-markdown async:true -->
 ```js
 return expect(willNotBeRejected, 'not to error');
 ```
 
 In case of a failing expectation you get the following output:
 
-<!-- async:true -->
+<!-- unexpected-markdown async:true -->
 ```js
 return expect(willBeRejected, 'not to error');
 ```
@@ -119,7 +119,7 @@ not to error
 You can pass in a function instead of the error message, and do more
 assertions on the error.
 
-<!-- async:true -->
+<!-- unexpected-markdown async:true -->
 ```js
 function willBeRejectedAsync() {
   return new Promise(function(resolve, reject) {
@@ -140,7 +140,7 @@ return expect(
 
 You can even do async assertions in the function that you pass in.
 
-<!-- async:true -->
+<!-- unexpected-markdown async:true -->
 ```js
 var errorCount = 0;
 function willBeRejectedAsync() {

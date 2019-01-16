@@ -68,7 +68,7 @@ $ npm install --save-dev unexpected
 
 Then:
 
-<!-- evaluate:false -->
+<!-- unexpected-markdown evaluate:false -->
 ```js
 var expect = require('unexpected');
 ```
@@ -83,7 +83,7 @@ Include `unexpected.js`.
 
 This will expose the `expect` function under the following namespace:
 
-<!-- evaluate:false -->
+<!-- unexpected-markdown evaluate:false -->
 ```js
 var expect = weknowhow.expect;
 ```
@@ -92,7 +92,7 @@ var expect = weknowhow.expect;
 
 Include the library with RequireJS the following way:
 
-<!-- evaluate:false -->
+<!-- unexpected-markdown evaluate:false -->
 ```js
 require.config({
   paths: {
@@ -114,7 +114,7 @@ Let's say we wanted to test the following program:
 
 **math.js**
 
-<!-- evaluate:false -->
+<!-- unexpected-markdown evaluate:false -->
 ```js
 function add(a, b) {
   return a + b;
@@ -123,7 +123,7 @@ function add(a, b) {
 
 Our test file would look like this:
 
-<!-- evaluate:false -->
+<!-- unexpected-markdown evaluate:false -->
 ```js
 describe('math.js', function() {
   describe('add', function() {

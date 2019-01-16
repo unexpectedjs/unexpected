@@ -11,14 +11,14 @@ expect(true, 'to be', !false);
 
 The SameValue/`Object.is` algorithm has some subtle differences compared to the `===` operator, which makes it more suitable for an assertion lib:
 
-<!-- evaluate -->
+<!-- unexpected-markdown evaluate -->
 
 ```js
 expect(NaN, 'to be', NaN);
 expect(-0, 'not to be', 0);
 ```
 
-<!-- /evaluate -->
+<!-- unexpected-markdown /evaluate -->
 
 In case of a failing expectation you get the following output:
 

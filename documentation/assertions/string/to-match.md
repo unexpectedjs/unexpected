@@ -37,7 +37,7 @@ The return value of `String.prototype.match` will be provided as the fulfillment
 value of the returned promise, so the values captured by the regular expression
 are available to the `then` function:
 
-<!-- async:true -->
+<!-- unexpected-markdown async:true -->
 ```js
 return expect('Hello world!', 'to match', /(\w+)!/).then(function(captures) {
   expect(captures[0], 'to equal', 'world!');
@@ -48,7 +48,7 @@ return expect('Hello world!', 'to match', /(\w+)!/).then(function(captures) {
 
 Or using the Bluebird-specific `.spread` extension:
 
-<!-- async:true -->
+<!-- unexpected-markdown async:true -->
 ```js
 return expect('Hello world!', 'to match', /(\w+)!/).spread(function($0, $1) {
   expect($0, 'to equal', 'world!');

@@ -36,7 +36,7 @@ expect.promise works.
 The following code snippet creates a promise that is fulfilled when all the
 promises in the nested structure are fulfilled.
 
-<!-- async:true -->
+<!-- unexpected-markdown async:true -->
 ```js
 return expect.promise.all({
   foo: [expect(42, 'to be a number after a short delay')],
@@ -57,7 +57,7 @@ return expect.promise.all({
 The following code snippet creates a promise that is rejected when one
 of the promises in the nested structure is rejected.
 
-<!-- async:true -->
+<!-- unexpected-markdown async:true -->
 ```js
 return expect.promise.all({
   foo: [expect(42, 'to be a number after a short delay')],

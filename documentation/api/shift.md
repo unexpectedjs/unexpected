@@ -32,7 +32,7 @@ optionally takes one via `<assertion?>` and is invoked without,
 `expect.shift` will propagate its argument as the fulfillment value of the
 promise returned from your assertion:
 
-<!-- async:true -->
+<!-- unexpected-markdown async:true -->
 ```js&freshExpect:true
 expect.addAssertion('<string> [when] parsed as an integer <assertion?>', function (expect, subject) {
     expect(subject, 'to match', /^[1-9][0-9]*$/);
@@ -81,7 +81,7 @@ expect(5, 'up to and including', 100, 'to be greater than', 4);
 Again, this has the nice property that the shifted values will be provided as
 the fulfillment value of the promise if invoked without an assertion:
 
-<!-- async:true -->
+<!-- unexpected-markdown async:true -->
 ```js
 return expect(10, 'up to', 20).then(function(numbers) {
   expect(numbers, 'to have length', 10);

@@ -18,7 +18,7 @@ shortcut you can also just pass the output or format directly.
 An alternative to calling `getErrorMessage(output)` with an output,
 you can append the error message to an output the following way:
 
-<!-- evaluate:false -->
+<!-- unexpected-markdown evaluate:false -->
 ```js
 output.appendErrorMessage(error);
 ```

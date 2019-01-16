@@ -35,7 +35,7 @@ The following code snippet creates a promise that is rejected when any
 promise in the nested structure is rejected. When the returned promise
 is rejected it create an error report with the details.
 
-<!-- async:true -->
+<!-- unexpected-markdown async:true -->
 ```js
 var promises = {
   foo: expect('42', 'to be a number after a short delay'),

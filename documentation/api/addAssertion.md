@@ -63,7 +63,7 @@ type and pattern of the assertion.
 
 So in this case, when `expect` is called the following way:
 
-<!-- evaluate:false -->
+<!-- unexpected-markdown evaluate:false -->
 ```js
 expect([3, 2, 1], 'to be sorted', reverse);
 ```
@@ -287,7 +287,7 @@ It would be pretty nice if we could use
 even if the retrieval is delayed. Then we would be able to do stuff
 like this:
 
-<!-- evaluate:false -->
+<!-- unexpected-markdown evaluate:false -->
 ```js
 return expect(
   new Timelock('Hello world'),
@@ -328,7 +328,7 @@ expect.addAssertion('<Timelock> to satisfy <any>', function(
 
 Let's see how it works:
 
-<!-- async:true -->
+<!-- unexpected-markdown async:true -->
 ```js
 return expect(
   new Timelock('Hello world!', 5),

@@ -1,6 +1,6 @@
 Asserts that a promise is fulfilled with a specific value:
 
-<!-- async:true -->
+<!-- unexpected-markdown async:true -->
 ```js
 var promiseThatWillBeFulfilledWithAValue = new Promise(function(
   resolve,
@@ -24,7 +24,7 @@ The expected value will be matched against the value with
 [to satisfy](../../any/to-satisfy/) semantics, so you can pass any of the
 values supported by `to satisfy`:
 
-<!-- async:true -->
+<!-- unexpected-markdown async:true -->
 ```js
 return expect(
   Promise.resolve('abc'),
@@ -35,7 +35,7 @@ return expect(
 
 You get a nice diff if the assertion fails:
 
-<!-- async:true -->
+<!-- unexpected-markdown async:true -->
 ```js
 return expect(
   Promise.resolve('abc'),
@@ -55,7 +55,7 @@ expected Promise to be fulfilled with value satisfying 'def'
 You can use the `exhaustively` flag to use strict
 [to satisfy](../../any/to-satisfy/) semantics:
 
-<!-- async:true -->
+<!-- unexpected-markdown async:true -->
 ```js
 return expect(
   Promise.resolve({
