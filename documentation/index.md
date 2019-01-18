@@ -69,6 +69,7 @@ $ npm install --save-dev unexpected
 Then:
 
 <!-- unexpected-markdown evaluate:false -->
+<!-- eslint-disable import/no-extraneous-dependencies -->
 ```js
 var expect = require('unexpected');
 ```

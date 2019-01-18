@@ -70,6 +70,7 @@ $ npm install unexpected-dom
 And then in your test suite:
 
 <!-- unexpected-markdown evaluate:false -->
+<!-- eslint-disable import/no-extraneous-dependencies -->
 ```js
 var expect = require('unexpected')
   .clone()
@@ -87,6 +88,7 @@ compose well together. For instance, you can grab a few and assert that an expre
 app serves an HTML response body that contains a yellow `<div>`:
 
 <!-- unexpected-markdown evaluate:false -->
+<!-- eslint-disable import/no-extraneous-dependencies -->
 ```js
 var expect = require('unexpected')
   .clone()
@@ -125,6 +127,7 @@ Or you could assert that a node.js readable stream outputs an image that's at mo
 10% different from a reference image:
 
 <!-- unexpected-markdown evaluate:false -->
+<!-- eslint-disable import/no-extraneous-dependencies -->
 ```js
 var expect = require('unexpected')
   .clone()
