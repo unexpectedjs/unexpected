@@ -1,9 +1,6 @@
 module.exports = {
   root: false,
   plugins: ['markdown'],
-  globals: {
-    expect: true // One of the snippets overwrites the global
-  },
   rules: {
     // Some snippets reference variables from previous ones
     // but eslint-plugin-markdown lints them independently.
