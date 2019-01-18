@@ -52,7 +52,9 @@ In version 11 the top-level of the library has been frozen and
 extending the functionality requires an expilcit `.clone()` call
 to be made:
 
-```js#evaluate:false
+<!-- unexpected-markdown evaluate:false -->
+<!-- eslint-skip -->
+```js
 const unexpected = require('unexpected');
 
 const expect = unexpected.clone();
