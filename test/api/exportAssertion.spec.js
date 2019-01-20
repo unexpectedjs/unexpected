@@ -9,8 +9,8 @@ describe('exportAssertion', () => {
 
   it('is chainable', () => {
     childExpect
-      .exportAssertion('foo', function() {})
-      .exportAssertion('bar', function() {});
+      .exportAssertion('<any> foo', function() {})
+      .exportAssertion('<any> bar', function() {});
 
     expect(parentExpect.assertions, 'to have keys', 'foo', 'bar');
   });
