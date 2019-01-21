@@ -196,22 +196,21 @@ describe('to have keys satisfying assertion', () => {
   describe('delegating to an async assertion', () => {
     var clonedExpect = expect
       .clone()
-      .addAssertion('to be a sequence of as after a short delay', function(
-        expect,
-        subject,
-        delay
-      ) {
-        expect.errorMode = 'nested';
+      .addAssertion(
+        '<any> to be a sequence of as after a short delay',
+        function(expect, subject) {
+          expect.errorMode = 'nested';
 
-        return expect.promise(function(run) {
-          setTimeout(
-            run(function() {
-              expect(subject, 'to match', /^a+$/);
-            }),
-            1
-          );
-        });
-      });
+          return expect.promise(function(run) {
+            setTimeout(
+              run(function() {
+                expect(subject, 'to match', /^a+$/);
+              }),
+              1
+            );
+          });
+        }
+      );
 
     it('should succeed', () => {
       return clonedExpect(
