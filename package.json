@@ -63,7 +63,7 @@
     "node-version-check": "^2.2.0",
     "nyc": "^13.0.1",
     "offline-github-changelog": "^1.2.0",
-    "prettier": "~1.15.1",
+    "prettier": "~1.16.0",
     "rollup": "^1.0.1",
     "rollup-plugin-commonjs": "^9.1.0",
     "rollup-plugin-node-globals": "^1.1.0",
