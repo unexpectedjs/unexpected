@@ -60,17 +60,26 @@ to have same gender as Person({ name: 'Jane Doe', gender: 'female' })
 
 The method also supports asynchronous assertion the following way:
 
-```js#evaluate:false
-expect.addAssertion('delegating to an asynchronous assertion', function (expect, subject) {
-  return expect.withError(function () {
-    return expect(subject, 'asynchronous expectation');
-  }, function (e) {
-    expect.fail({
-      diff: function (output) {
-        output.inline = true;
-        return output.text('Cool a diff attached to an asynchronous failure!');
-      }
-    });
-  });
+<!-- unexpected-markdown evaluate:false -->
+```js
+expect.addAssertion('delegating to an asynchronous assertion', function(
+  expect,
+  subject
+) {
+  return expect.withError(
+    function() {
+      return expect(subject, 'asynchronous expectation');
+    },
+    function(e) {
+      expect.fail({
+        diff: function(output) {
+          output.inline = true;
+          return output.text(
+            'Cool a diff attached to an asynchronous failure!'
+          );
+        }
+      });
+    }
+  );
 });
 ```

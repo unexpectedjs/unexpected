@@ -57,7 +57,7 @@ Instead we recommend using [to satisfy](../../any/to-satisfy/) for this use
 case:
 
 ```js
-const myObj = {foo: 'bar', a: { b: { c: 123, d: true } } };
+const myObj = { foo: 'bar', a: { b: { c: 123, d: true } } };
 
 expect(myObj, 'to satisfy', { a: { b: { c: 123 } } });
 ```

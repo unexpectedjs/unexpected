@@ -1,6 +1,7 @@
 Asserts that a promise is fulfilled.
 
-```js#async:true
+<!-- unexpected-markdown async:true -->
+```js
 var promiseThatWillBeFulfilled = new Promise(function(resolve, reject) {
   setTimeout(resolve, 1);
 });
@@ -10,7 +11,8 @@ return expect(promiseThatWillBeFulfilled, 'to be fulfilled');
 
 If the promise is rejected, the assertion will fail with the following output:
 
-```js#async:true
+<!-- unexpected-markdown async:true -->
+```js
 var rejectedPromise = new Promise(function(resolve, reject) {
   setTimeout(function() {
     reject(new Error('argh'));

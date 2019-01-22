@@ -15,7 +15,7 @@
   },
   "scripts": {
     "test": "make test && make test-chrome-headless",
-    "lint": "eslint .",
+    "lint": "eslint . && eslint --ext md documentation",
     "generate-site": "generate-site --require ./bootstrap-unexpected-markdown.js",
     "update-examples": "generate-site --require ./bootstrap-unexpected-markdown.js --update-examples",
     "preversion": "test -n \"${IS_MAKE_RELEASE}\" || (echo Please run make release instead && exit 1)"
@@ -42,6 +42,7 @@
     "eslint-config-prettier": "^3.3.0",
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-markdown": "^1.0.0",
     "eslint-plugin-mocha": "^5.2.0",
     "eslint-plugin-node": "^8.0.1",
     "eslint-plugin-prettier": "^3.0.1",

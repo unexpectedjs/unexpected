@@ -69,9 +69,12 @@ $ npm install unexpected-dom
 
 And then in your test suite:
 
-```js#evaluate:false
-var expect = require('unexpected').clone()
-    .use(require('unexpected-dom'));
+<!-- unexpected-markdown evaluate:false -->
+<!-- eslint-disable import/no-extraneous-dependencies -->
+```js
+var expect = require('unexpected')
+  .clone()
+  .use(require('unexpected-dom'));
 ```
 
 For plugins that work in the browser, you'll either need to add an extra `<script>`, or
@@ -84,7 +87,9 @@ All of these plugins should be able coexist in the same Unexpected instance and
 compose well together. For instance, you can grab a few and assert that an express
 app serves an HTML response body that contains a yellow `<div>`:
 
-```js#evaluate:false
+<!-- unexpected-markdown evaluate:false -->
+<!-- eslint-disable import/no-extraneous-dependencies -->
+```js
 var expect = require('unexpected')
   .clone()
   .use(require('unexpected-express'))
@@ -121,7 +126,9 @@ it('should deliver something pretty', function() {
 Or you could assert that a node.js readable stream outputs an image that's at most
 10% different from a reference image:
 
-```js#evaluate:false
+<!-- unexpected-markdown evaluate:false -->
+<!-- eslint-disable import/no-extraneous-dependencies -->
+```js
 var expect = require('unexpected')
   .clone()
   .use(require('unexpected-stream'))

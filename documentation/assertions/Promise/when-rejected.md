@@ -1,6 +1,7 @@
 Wait for a promise to be rejected, then delegate the reason to another assertion.
 
-```js#async:true
+<!-- unexpected-markdown async:true -->
+```js
 var rejectedPromise = new Promise(function(resolve, reject) {
   setTimeout(function() {
     reject(new Error('argh'));
@@ -12,7 +13,8 @@ return expect(rejectedPromise, 'when rejected', 'to equal', new Error('argh'));
 
 It works with any assertion or `expect.it` construct:
 
-```js#async:true
+<!-- unexpected-markdown async:true -->
+```js
 return expect(
   Promise.reject(new Error('argh')),
   'when rejected',
@@ -22,7 +24,8 @@ return expect(
 
 If the response is fulfilled, the assertion fails with the following output:
 
-```js#async:true
+<!-- unexpected-markdown async:true -->
+```js
 return expect(Promise.resolve(123), 'when rejected', 'to have message', 'argh');
 ```
 

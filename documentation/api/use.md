@@ -33,7 +33,8 @@ The `installInto` function receives an instance of unexpected and uses
 the `addAssertion`, `addStyle`, `installTheme` and `addType` methods
 to extend the instance.
 
-```js#evaluate:false
+<!-- unexpected-markdown evaluate:false -->
+```js
 expect.use(require('unexpected-sinon'));
 ```
 

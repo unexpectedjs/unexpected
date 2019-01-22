@@ -68,7 +68,9 @@ $ npm install --save-dev unexpected
 
 Then:
 
-```js#evaluate:false
+<!-- unexpected-markdown evaluate:false -->
+<!-- eslint-disable import/no-extraneous-dependencies -->
+```js
 var expect = require('unexpected');
 ```
 
@@ -82,7 +84,8 @@ Include `unexpected.js`.
 
 This will expose the `expect` function under the following namespace:
 
-```js#evaluate:false
+<!-- unexpected-markdown evaluate:false -->
+```js
 var expect = weknowhow.expect;
 ```
 
@@ -90,15 +93,16 @@ var expect = weknowhow.expect;
 
 Include the library with RequireJS the following way:
 
-```js#evaluate:false
+<!-- unexpected-markdown evaluate:false -->
+```js
 require.config({
-    paths: {
-        unexpected: 'path/to/unexpected'
-    }
+  paths: {
+    unexpected: 'path/to/unexpected'
+  }
 });
 
-define(['unexpected'], function (expect) {
-   // Your code
+define(['unexpected'], function(expect) {
+  // Your code
 });
 ```
 
@@ -111,20 +115,24 @@ Let's say we wanted to test the following program:
 
 **math.js**
 
-```js#evaluate:false
-function add (a, b) { return a + b; };
+<!-- unexpected-markdown evaluate:false -->
+```js
+function add(a, b) {
+  return a + b;
+}
 ```
 
 Our test file would look like this:
 
-```js#evaluate:false
-describe('math.js', function () {
-  describe('add', function () {
-    it('is a function', function () {
+<!-- unexpected-markdown evaluate:false -->
+```js
+describe('math.js', function() {
+  describe('add', function() {
+    it('is a function', function() {
       expect(add, 'to be a', 'function');
     });
 
-    it('adds numbers', function () {
+    it('adds numbers', function() {
       expect(add(1, 3), 'to be', 4);
     });
   });

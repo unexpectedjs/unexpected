@@ -2,7 +2,9 @@
 
 Signature:
 
-```js#evaluate:false
+<!-- unexpected-markdown evaluate:false -->
+<!-- eslint-skip -->
+```js
 expect.addAssertion(pattern, handler);
 expect.addAssertion([pattern, ...]], handler);
 ```
@@ -63,15 +65,18 @@ type and pattern of the assertion.
 
 So in this case, when `expect` is called the following way:
 
-```js#evaluate:false
-expect([3,2,1], 'to be sorted', reverse);
+<!-- unexpected-markdown evaluate:false -->
+```js
+expect([3, 2, 1], 'to be sorted', reverse);
 ```
 
 The handler to our assertion will be called with the values the
 following way, where the _not_ flag in the nested expect will be
 removed:
 
-```js#evaluate:false
+<!-- unexpected-markdown evaluate:false -->
+<!-- eslint-skip -->
+```js
 expect.addAssertion('<array> [not] to be (sorted|ordered) <function?>', function(expect, [3,2,1], reverse){
     expect([3,2,1], '[not] to equal', [].concat([3,2,1]).sort(reverse));
 });
@@ -286,8 +291,13 @@ It would be pretty nice if we could use
 even if the retrieval is delayed. Then we would be able to do stuff
 like this:
 
-```js#evaluate:false
-return expect(new Timelock('Hello world'), 'to satisfy', expect.it('have length', 11));
+<!-- unexpected-markdown evaluate:false -->
+```js
+return expect(
+  new Timelock('Hello world'),
+  'to satisfy',
+  expect.it('have length', 11)
+);
 ```
 
 First we need to define a [type](../addType/) for handling the `Timelock`:
@@ -322,8 +332,13 @@ expect.addAssertion('<Timelock> to satisfy <any>', function(
 
 Let's see how it works:
 
-```js#async:true
-return expect(new Timelock('Hello world!', 5), 'to satisfy', expect.it('not to match', /!/));
+<!-- unexpected-markdown async:true -->
+```js
+return expect(
+  new Timelock('Hello world!', 5),
+  'to satisfy',
+  expect.it('not to match', /!/)
+);
 ```
 
 ```output

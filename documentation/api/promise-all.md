@@ -36,32 +36,42 @@ expect.promise works.
 The following code snippet creates a promise that is fulfilled when all the
 promises in the nested structure are fulfilled.
 
-```js#async:true
+<!-- unexpected-markdown async:true -->
+```js
 return expect.promise.all({
-  foo: [
-    expect(42, 'to be a number after a short delay')
-  ],
-  bar: expect([0, 1, 2], 'to have items satisfying',
-                         expect.it('to be a number after a short delay')),
+  foo: [expect(42, 'to be a number after a short delay')],
+  bar: expect(
+    [0, 1, 2],
+    'to have items satisfying',
+    expect.it('to be a number after a short delay')
+  ),
 
-  baz: expect({ a: 1, b: 2 }, 'to have values satisfying',
-                              'to be a number after a short delay')
+  baz: expect(
+    { a: 1, b: 2 },
+    'to have values satisfying',
+    'to be a number after a short delay'
+  )
 });
 ```
 
 The following code snippet creates a promise that is rejected when one
 of the promises in the nested structure is rejected.
 
-```js#async:true
+<!-- unexpected-markdown async:true -->
+```js
 return expect.promise.all({
-  foo: [
-    expect(42, 'to be a number after a short delay')
-  ],
-  bar: expect([0, 1, 2], 'to have items satisfying',
-                         expect.it('to be a number after a short delay')),
+  foo: [expect(42, 'to be a number after a short delay')],
+  bar: expect(
+    [0, 1, 2],
+    'to have items satisfying',
+    expect.it('to be a number after a short delay')
+  ),
 
-  baz: expect({ a: '0', b: 1 }, 'to have values satisfying',
-                                'to be a number after a short delay')
+  baz: expect(
+    { a: '0', b: 1 },
+    'to have values satisfying',
+    'to be a number after a short delay'
+  )
 });
 ```
 

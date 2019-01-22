@@ -5,7 +5,7 @@ function somethingThatThrows() {
   throw new Error('The error message');
 }
 
-expect(function () {
+expect(function() {
   somethingThatThrows();
 }, 'to throw');
 ```
@@ -17,7 +17,7 @@ function willNotThrow() {
   // ...
 }
 
-expect(function () {
+expect(function() {
   willNotThrow();
 }, 'to throw');
 ```
@@ -55,9 +55,13 @@ expect(
 In case of a failing expectation you get the following output:
 
 ```js
-expect(function () {
-  throw new Error('The error message!');
-}, 'to throw', 'The error message');
+expect(
+  function() {
+    throw new Error('The error message!');
+  },
+  'to throw',
+  'The error message'
+);
 ```
 
 ```output
@@ -88,9 +92,13 @@ expect(
 In case of a failing expectation you get the following output:
 
 ```js
-expect(function () {
-  throw new Error('The error message!');
-}, 'to throw', /catastrophic failure/);
+expect(
+  function() {
+    throw new Error('The error message!');
+  },
+  'to throw',
+  /catastrophic failure/
+);
 ```
 
 ```output
@@ -117,9 +125,13 @@ expect(
 In case of a failing expectation you get the following output:
 
 ```js
-expect(function () {
-  throw new Error('Another error');
-}, 'to throw', new TypeError('Invalid syntax'));
+expect(
+  function() {
+    throw new Error('Another error');
+  },
+  'to throw',
+  new TypeError('Invalid syntax')
+);
 ```
 
 ```output
@@ -140,7 +152,7 @@ expect(function() {
 In case of a failing expectation you get the following output:
 
 ```js
-expect(function () {
+expect(function() {
   throw new Error('threw anyway');
 }, 'not to throw');
 ```

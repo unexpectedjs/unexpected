@@ -26,9 +26,10 @@ does some unholy trickery so it also works in Jasmine.
 Note that if the assertion is asynchronous, you'll have to return the promise
 to the `it` block:
 
-```js#eval:false
-it('should call the callback', function () {
-    return expect(setImmediate, 'to call the callback');
+<!-- unexpected-markdown evaluate:false -->
+```js
+it('should call the callback', function() {
+  return expect(setImmediate, 'to call the callback');
 });
 ```
 
@@ -52,8 +53,9 @@ expect('abc', 'to be a string').and('to have length', 3);
 Again, note that you need to return the value returned by `expect` to your `it`
 block if any of the assertions are asynchronous:
 
-```js#eval:false
-it('should do the right thing', function () {
-    return expect(setImmediate, 'to be a function').and('to call the callback');
+<!-- unexpected-markdown evaluate: false -->
+```js
+it('should do the right thing', function() {
+  return expect(setImmediate, 'to be a function').and('to call the callback');
 });
 ```

@@ -33,54 +33,71 @@ expect.promise works.
 The following code snippet creates a promise that will be fulfilled when any
 of the promises in the nested structure has been fulfilled.
 
-```js#async:true
+<!-- unexpected-markdown async:true -->
+```js
 return expect.promise.any({
-  foo: [
-    expect('42', 'to be a number after a short delay')
-  ],
-  bar: expect([0, 1, 2], 'to have items satisfying',
-                         expect.it('to be a number after a short delay')),
+  foo: [expect('42', 'to be a number after a short delay')],
+  bar: expect(
+    [0, 1, 2],
+    'to have items satisfying',
+    expect.it('to be a number after a short delay')
+  ),
 
-  baz: expect({ a: '1', b: 2 }, 'to have values satisfying',
-                                'to be a number after a short delay')
+  baz: expect(
+    { a: '1', b: 2 },
+    'to have values satisfying',
+    'to be a number after a short delay'
+  )
 });
 ```
 
 The following code snippet create a promise that will rejected when all
 of the promises in the nested structure have been rejected:
 
-```js#async:true
-return expect.promise.any({
-  foo: [
-    expect('42', 'to be a number after a short delay')
-  ],
-  bar: expect([0, '1', 2], 'to have items satisfying',
-                           expect.it('to be a number after a short delay')),
+<!-- unexpected-markdown async:true -->
+```js
+return expect.promise
+  .any({
+    foo: [expect('42', 'to be a number after a short delay')],
+    bar: expect(
+      [0, '1', 2],
+      'to have items satisfying',
+      expect.it('to be a number after a short delay')
+    ),
 
-  baz: expect({ a: '0', b: 1 }, 'to have values satisfying',
-                                'to be a number after a short delay')
-}).caught(function (aggregateError) {
-  // Let's reformat the error a bit
-  expect.fail(function (output) {
-    output.error(aggregateError.message);
-    var errors = [];
-    for (var i = 0; i < aggregateError.length; i += 1) {
-      aggregateError[i].serializeMessage(expect.outputFormat())
-      errors.push(aggregateError[i]);
-    }
+    baz: expect(
+      { a: '0', b: 1 },
+      'to have values satisfying',
+      'to be a number after a short delay'
+    )
+  })
+  .caught(function(aggregateError) {
+    // Let's reformat the error a bit
+    expect.fail(function(output) {
+      output.error(aggregateError.message);
+      var errors = [];
+      for (var i = 0; i < aggregateError.length; i += 1) {
+        aggregateError[i].serializeMessage(expect.outputFormat());
+        errors.push(aggregateError[i]);
+      }
 
-    errors.sort(function (a, b) { // Make the output stable
-      if (a.message < b.message) return -1;
-      if (a.message > b.message) return 1;
-      return 0;
-    });
+      errors.sort(function(a, b) {
+        // Make the output stable
+        if (a.message < b.message) return -1;
+        if (a.message > b.message) return 1;
+        return 0;
+      });
 
-    output.indentLines();
-    errors.forEach(function (e, i) {
-      output.nl().i().text(i + ': ').block(e.getErrorMessage({ output: output }));
+      output.indentLines();
+      errors.forEach(function(e, i) {
+        output
+          .nl()
+          .i()
+          .text(i + ': ')
+          .block(e.getErrorMessage({ output: output }));
+      });
     });
   });
-});
 ```
 
 ```output
