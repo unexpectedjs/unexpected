@@ -625,7 +625,7 @@ describe('to satisfy assertion', () => {
   it('forwards normal errors found in promise aggregate errors to the top level', () => {
     var clonedExpect = expect
       .clone()
-      .addAssertion('to foo', function(expect, subject) {
+      .addAssertion('<any> to foo', function(expect, subject) {
         var promises = [
           clonedExpect.promise(function() {
             clonedExpect('foo', 'to equal', 'bar');
@@ -2287,7 +2287,7 @@ describe('to satisfy assertion', () => {
   describe('when delegating to async assertions', () => {
     var clonedExpect = expect
       .clone()
-      .addAssertion('to be a number after a short delay', function(
+      .addAssertion('<any> to be a number after a short delay', function(
         expect,
         subject
       ) {

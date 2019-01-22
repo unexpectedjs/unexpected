@@ -3,7 +3,7 @@ describe('expect.promise', () => {
   it('should forward non-unexpected errors', () => {
     var clonedExpect = expect
       .clone()
-      .addAssertion('to foo', function(expect, subject, value) {
+      .addAssertion('<any> to foo', function(expect, subject) {
         return expect.withError(
           function() {
             return expect.promise(function() {
@@ -34,7 +34,7 @@ describe('expect.promise', () => {
   it('should return the fulfilled promise even if it is oathbreakable', () => {
     var clonedExpect = expect
       .clone()
-      .addAssertion('to foo', function(expect, subject, value) {
+      .addAssertion('<any> to foo', function(expect, subject) {
         return expect.promise(function() {
           expect(subject, 'to equal', 'foo');
           return 'bar';
@@ -46,7 +46,7 @@ describe('expect.promise', () => {
   it('should preserve the resolved value when an assertion contains a non-oathbreakable promise', function(done) {
     var clonedExpect = expect
       .clone()
-      .addAssertion('to foo', function(expect, subject, value) {
+      .addAssertion('<any> to foo', function(expect, subject) {
         return expect.promise(function(resolve, reject) {
           expect(subject, 'to equal', 'foo');
           setTimeout(function() {
@@ -63,7 +63,7 @@ describe('expect.promise', () => {
   it('should return a promise fulfilled with the return value when an assertion returns a non-promise value', () => {
     var clonedExpect = expect
       .clone()
-      .addAssertion('to foo', function(expect, subject, value) {
+      .addAssertion('<any> to foo', function(expect, subject) {
         expect(subject, 'to equal', 'foo');
         return 'bar';
       });
@@ -216,10 +216,10 @@ describe('expect.promise', () => {
       it('should mount the and method on a promise returned from a nested assertion', () => {
         var clonedExpect = expect
           .clone()
-          .addAssertion('to foo', function(expect, subject) {
+          .addAssertion('<any> to foo', function(expect, subject) {
             return expect(subject, 'to bar').and('to equal', 'foo');
           })
-          .addAssertion('to bar', function(expect, subject) {
+          .addAssertion('<any> to bar', function(expect, subject) {
             return expect.promise(function(run) {
               setTimeout(
                 run(function() {
