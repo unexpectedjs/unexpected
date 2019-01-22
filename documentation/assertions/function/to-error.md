@@ -10,6 +10,7 @@ function willBeRejected() {
 ```
 
 <!-- unexpected-markdown async:true -->
+
 ```js
 return expect(willBeRejected, 'to error');
 ```
@@ -17,6 +18,7 @@ return expect(willBeRejected, 'to error');
 In case of a failing expectation you get the following output:
 
 <!-- unexpected-markdown async:true -->
+
 ```js
 function willNotBeRejected() {
   return new Promise(function(resolve, reject) {
@@ -41,11 +43,13 @@ You can assert the error message is a given string if you provide a
 string as the second parameter.
 
 <!-- unexpected-markdown async:true -->
+
 ```js
 return expect(willBeRejected, 'to error', 'The reject message');
 ```
 
 <!-- unexpected-markdown async:true -->
+
 ```js
 return expect(willBeRejected, 'to error', 'The error message');
 ```
@@ -68,6 +72,7 @@ By providing a regular expression as the second parameter you can
 assert the error message matches the given regular expression.
 
 <!-- unexpected-markdown async:true -->
+
 ```js
 return expect(willBeRejected, 'to error', /reject message/);
 ```
@@ -75,6 +80,7 @@ return expect(willBeRejected, 'to error', /reject message/);
 In case of a failing expectation you get the following output:
 
 <!-- unexpected-markdown async:true -->
+
 ```js
 return expect(willBeRejected, 'to error', /error message/);
 ```
@@ -94,6 +100,7 @@ You can also negate the check, and verify that the function will not
 error out. When negating the assertion, you cannot provide a message.
 
 <!-- unexpected-markdown async:true -->
+
 ```js
 return expect(willNotBeRejected, 'not to error');
 ```
@@ -101,6 +108,7 @@ return expect(willNotBeRejected, 'not to error');
 In case of a failing expectation you get the following output:
 
 <!-- unexpected-markdown async:true -->
+
 ```js
 return expect(willBeRejected, 'not to error');
 ```
@@ -120,6 +128,7 @@ You can pass in a function instead of the error message, and do more
 assertions on the error.
 
 <!-- unexpected-markdown async:true -->
+
 ```js
 function willBeRejectedAsync() {
   return new Promise(function(resolve, reject) {
@@ -141,6 +150,7 @@ return expect(
 You can even do async assertions in the function that you pass in.
 
 <!-- unexpected-markdown async:true -->
+
 ```js
 var errorCount = 0;
 function willBeRejectedAsync() {

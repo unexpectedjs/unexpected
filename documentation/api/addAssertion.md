@@ -4,6 +4,7 @@ Signature:
 
 <!-- unexpected-markdown evaluate:false -->
 <!-- eslint-skip -->
+
 ```js
 expect.addAssertion(pattern, handler);
 expect.addAssertion([pattern, ...]], handler);
@@ -66,6 +67,7 @@ type and pattern of the assertion.
 So in this case, when `expect` is called the following way:
 
 <!-- unexpected-markdown evaluate:false -->
+
 ```js
 expect([3, 2, 1], 'to be sorted', reverse);
 ```
@@ -76,6 +78,7 @@ removed:
 
 <!-- unexpected-markdown evaluate:false -->
 <!-- eslint-skip -->
+
 ```js
 expect.addAssertion('<array> [not] to be (sorted|ordered) <function?>', function(expect, [3,2,1], reverse){
     expect([3,2,1], '[not] to equal', [].concat([3,2,1]).sort(reverse));
@@ -292,6 +295,7 @@ even if the retrieval is delayed. Then we would be able to do stuff
 like this:
 
 <!-- unexpected-markdown evaluate:false -->
+
 ```js
 return expect(
   new Timelock('Hello world'),
@@ -333,6 +337,7 @@ expect.addAssertion('<Timelock> to satisfy <any>', function(
 Let's see how it works:
 
 <!-- unexpected-markdown async:true -->
+
 ```js
 return expect(
   new Timelock('Hello world!', 5),

@@ -27,6 +27,7 @@ Note that if the assertion is asynchronous, you'll have to return the promise
 to the `it` block:
 
 <!-- unexpected-markdown evaluate:false -->
+
 ```js
 it('should call the callback', function() {
   return expect(setImmediate, 'to call the callback');
@@ -54,6 +55,7 @@ Again, note that you need to return the value returned by `expect` to your `it`
 block if any of the assertions are asynchronous:
 
 <!-- unexpected-markdown evaluate: false -->
+
 ```js
 it('should do the right thing', function() {
   return expect(setImmediate, 'to be a function').and('to call the callback');

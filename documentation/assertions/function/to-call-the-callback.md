@@ -2,6 +2,7 @@ Asserts that a node.js-style asynchronous function taking a single callback
 will call it.
 
 <!-- unexpected-markdown async:true -->
+
 ```js
 function mySuccessfulAsyncFunction(cb) {
   setTimeout(function() {
@@ -17,6 +18,7 @@ it as timed out. So the assertion itself only ever fails if the function
 throws an exception synchronously:
 
 <!-- unexpected-markdown async:true -->
+
 ```js
 function errorOut(cb) {
   throw new Error('ugh');
@@ -49,6 +51,7 @@ function asyncFn(cb) {
 ```
 
 <!-- unexpected-markdown async:true -->
+
 ```js
 return expect(asyncFn, 'to call the callback').then(function(args) {
   // args will be [null, 'foo'];
@@ -58,6 +61,7 @@ return expect(asyncFn, 'to call the callback').then(function(args) {
 Or using the Bluebird-specific `.spread` extension:
 
 <!-- unexpected-markdown async:true -->
+
 ```js
 return expect(asyncFn, 'to call the callback').spread(function(err, result) {
   expect(err, 'to be null');

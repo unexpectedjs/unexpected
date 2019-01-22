@@ -34,6 +34,7 @@ The following code snippet creates a promise that will be fulfilled when any
 of the promises in the nested structure has been fulfilled.
 
 <!-- unexpected-markdown async:true -->
+
 ```js
 return expect.promise.any({
   foo: [expect('42', 'to be a number after a short delay')],
@@ -55,6 +56,7 @@ The following code snippet create a promise that will rejected when all
 of the promises in the nested structure have been rejected:
 
 <!-- unexpected-markdown async:true -->
+
 ```js
 return expect.promise
   .any({

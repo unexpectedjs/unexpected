@@ -2,6 +2,7 @@ Decode a Buffer, then delegate the return value to another assertion. Supports
 [the standard node.js Buffer encodings](https://nodejs.org/api/buffer.html#buffer_buffer).
 
 <!-- unexpected-markdown skipBrowser:true -->
+
 ```js
 expect(
   Buffer.from([0xe2, 0x98, 0xba]),
@@ -15,6 +16,7 @@ expect(
 In case of a failing expectation you get the following output:
 
 <!-- unexpected-markdown skipBrowser:true -->
+
 ```js
 expect(
   Buffer.from([0xe2, 0x98, 0xba]),
@@ -36,8 +38,11 @@ If you don't provide an assertion to delegate to, the decoded value will be prov
 as the fulfillment value of the promise:
 
 <!-- unexpected-markdown async:true -->
+
 ```js,skipBrowser:true
-return expect(Buffer.from([0xe2, 0x98, 0xba]), 'decoded as', 'utf-8').then(function (result) {
+return expect(Buffer.from([0xe2, 0x98, 0xba]), 'decoded as', 'utf-8').then(
+  function(result) {
     expect(result, 'to equal', '☺');
-});
+  }
+);
 ```
