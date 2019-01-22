@@ -26,7 +26,11 @@ Person.prototype.genderSign = function() {
   }
 };
 
-expect.addAssertion('to have same gender as', function(expect, subject, value) {
+expect.addAssertion('<object> to have same gender as <object>', function(
+  expect,
+  subject,
+  value
+) {
   expect.withError(
     function() {
       expect(subject.gender, 'to be', value.gender);
@@ -63,7 +67,7 @@ The method also supports asynchronous assertion the following way:
 <!-- unexpected-markdown evaluate:false -->
 
 ```js
-expect.addAssertion('delegating to an asynchronous assertion', function(
+expect.addAssertion('<any> delegating to an asynchronous assertion', function(
   expect,
   subject
 ) {

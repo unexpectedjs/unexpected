@@ -12,7 +12,7 @@ rejected with the errors.
 Let's make an asynchronous assertion that we can use for the examples:
 
 ```js
-expect.addAssertion('to be a number after a short delay', function(
+expect.addAssertion('<any> to be a number after a short delay', function(
   expect,
   subject
 ) {

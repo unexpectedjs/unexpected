@@ -78,7 +78,11 @@ expect.use({
       }
     });
 
-    expect.addAssertion('[not] to contain', function(expect, subject, value) {
+    expect.addAssertion('<IntegerInterval> [not] to contain <number>', function(
+      expect,
+      subject,
+      value
+    ) {
       expect(value, '[not] to be within', subject.from, subject.to);
     });
   }
