@@ -1,6 +1,7 @@
 Wait for a promise to be fulfilled, then delegate the value to another assertion.
 
 <!-- unexpected-markdown async:true -->
+
 ```js
 var fulfilledPromise = new Promise(function(resolve, reject) {
   setTimeout(function() {
@@ -14,6 +15,7 @@ return expect(fulfilledPromise, 'when fulfilled', 'to equal', 123);
 It works with any assertion or `expect.it` construct:
 
 <!-- unexpected-markdown async:true -->
+
 ```js
 return expect(
   Promise.resolve(123),
@@ -25,6 +27,7 @@ return expect(
 If the response is rejected, the assertion fails with the following output:
 
 <!-- unexpected-markdown async:true -->
+
 ```js
 var rejectedPromise = new Promise(function(resolve, reject) {
   setTimeout(function() {

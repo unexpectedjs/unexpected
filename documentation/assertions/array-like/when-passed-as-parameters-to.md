@@ -25,6 +25,7 @@ add a callback to the parameter list and do further assertions on the value it
 passes to the callback.
 
 <!-- unexpected-markdown async:true -->
+
 ```js
 function delayedAdd(a, b, cb) {
   setTimeout(function() {
@@ -58,6 +59,7 @@ If you don't provide an assertion to delegate to, the return value will be provi
 as the fulfillment value of the promise:
 
 <!-- unexpected-markdown async:true -->
+
 ```js
 return expect([1, 3], 'passed as parameters to', add).then(function(result) {
   expect(result, 'to equal', 4);

@@ -1,6 +1,7 @@
 Asserts that a promise is rejected with a specific reason (error):
 
 <!-- unexpected-markdown async:true -->
+
 ```js
 var promiseThatWillBeRejectedWithAReason = new Promise(function(
   resolve,
@@ -23,6 +24,7 @@ The expected reason will be matched against the rejection reason with
 values supported by `to satisfy`:
 
 <!-- unexpected-markdown async:true -->
+
 ```js
 var promiseThatWillBeRejectedWithAReason = new Promise(function(
   resolve,
@@ -43,6 +45,7 @@ return expect(
 You get a nice diff if the assertion fails:
 
 <!-- unexpected-markdown async:true -->
+
 ```js
 var promiseThatWillBeRejectedWithAReason = new Promise(function(
   resolve,

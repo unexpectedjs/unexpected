@@ -23,6 +23,7 @@ If you don't provide an assertion to delegate to, the returned value will be
 provided as the fulfillment value of the promise:
 
 <!-- unexpected-markdown async:true -->
+
 ```js
 return expect(add, 'called with', [1, 2]).then(function(result) {
   expect(result, 'to equal', 3);

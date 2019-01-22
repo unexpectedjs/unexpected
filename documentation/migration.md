@@ -54,6 +54,7 @@ to be made:
 
 <!-- unexpected-markdown evaluate:false -->
 <!-- eslint-skip -->
+
 ```js
 const unexpected = require('unexpected');
 
@@ -70,6 +71,7 @@ defined as a function on the right-hand side would be passed the
 value to allow further assertions:
 
 <!-- unexpected-markdown evaluate:false -->
+
 ```js
 const obj = {
   version: 11,
@@ -138,6 +140,7 @@ function somethingThatThrows() {
 ```
 
 <!-- unexpected-markdown evaluate:false -->
+
 ```js
 expect(somethingThatThrows, 'to throw error', createErrorIfRequired);
 ```
@@ -204,6 +207,7 @@ promise-driven flow as part of upgrading to Unexpected 11.
 This syntax has been deprecated since Unexpected 3:
 
 <!-- unexpected-markdown evaluate:false -->
+
 ```js
 expect.addAssertion('<string> to be foo', (expect, subject) => {
   this.errorMode = 'nested';

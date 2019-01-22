@@ -1,6 +1,7 @@
 Asserts that a promise is fulfilled with a specific value:
 
 <!-- unexpected-markdown async:true -->
+
 ```js
 var promiseThatWillBeFulfilledWithAValue = new Promise(function(
   resolve,
@@ -25,6 +26,7 @@ The expected value will be matched against the value with
 values supported by `to satisfy`:
 
 <!-- unexpected-markdown async:true -->
+
 ```js
 return expect(
   Promise.resolve('abc'),
@@ -36,6 +38,7 @@ return expect(
 You get a nice diff if the assertion fails:
 
 <!-- unexpected-markdown async:true -->
+
 ```js
 return expect(
   Promise.resolve('abc'),
@@ -56,6 +59,7 @@ You can use the `exhaustively` flag to use strict
 [to satisfy](../../any/to-satisfy/) semantics:
 
 <!-- unexpected-markdown async:true -->
+
 ```js
 return expect(
   Promise.resolve({

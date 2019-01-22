@@ -7,6 +7,7 @@ Signature:
 
 <!-- unexpected-markdown evaluate:false -->
 <!-- eslint-skip -->
+
 ```js
 expect.promise(function () { ... });
 expect.promise(function (run) { ... });
@@ -20,6 +21,7 @@ otherwise a resolve promise will be returned. You can use the method
 the following way:
 
 <!-- unexpected-markdown evaluate:false -->
+
 ```js
 var promises = items.map(function(item) {
   return expect.promise(function() {
@@ -32,6 +34,7 @@ When the promise body takes one argument it will be executed and given a
 wrapper function that should be used to wrap asynchronous callbacks:
 
 <!-- unexpected-markdown evaluate:false -->
+
 ```js
 expect.promise(function(run) {
   backend.loadData(
@@ -55,6 +58,7 @@ When the promise body takes two arguments, it is just an alias for:
 
 <!-- unexpected-markdown evaluate:false -->
 <!-- eslint-skip -->
+
 ```js
 new Promise(function (resolve, reject) { ... })
 ```

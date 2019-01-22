@@ -48,7 +48,7 @@ expect(Object.create({ a: 'b' }), 'not to have own property', 'a');
 
 ### Nested properties
 
-This assertion does *not* support checking for nested properties using `a.b.c`
+This assertion does _not_ support checking for nested properties using `a.b.c`
 or similar syntax, as [you might expect from other assertion
 libraries](https://github.com/unexpectedjs/unexpected/issues/405). Since `.` is
 a valid character in a property name, that syntax would be ambiguous.

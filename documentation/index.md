@@ -48,15 +48,15 @@ to satisfy { name: 'Unexpected', created: 2013 }
 
 ## Features
 
-* Extensible
-* Fast
-* Provides really nice error messages
-* Helps if you misspell assertions
-* Compatible with all test frameworks
-* Node.JS ready (`require('unexpected')`)
-* Supports [asynchronous assertions using promises](./api/addAssertion/#asynchronous-assertions)
-* Single global with no prototype extensions or shims
-* Cross-browser: works on Chrome, Firefox, Safari, Opera, IE11, Edge
+- Extensible
+- Fast
+- Provides really nice error messages
+- Helps if you misspell assertions
+- Compatible with all test frameworks
+- Node.JS ready (`require('unexpected')`)
+- Supports [asynchronous assertions using promises](./api/addAssertion/#asynchronous-assertions)
+- Single global with no prototype extensions or shims
+- Cross-browser: works on Chrome, Firefox, Safari, Opera, IE11, Edge
 
 ### Node
 
@@ -70,6 +70,7 @@ Then:
 
 <!-- unexpected-markdown evaluate:false -->
 <!-- eslint-disable import/no-extraneous-dependencies -->
+
 ```js
 var expect = require('unexpected');
 ```
@@ -85,6 +86,7 @@ Include `unexpected.js`.
 This will expose the `expect` function under the following namespace:
 
 <!-- unexpected-markdown evaluate:false -->
+
 ```js
 var expect = weknowhow.expect;
 ```
@@ -94,6 +96,7 @@ var expect = weknowhow.expect;
 Include the library with RequireJS the following way:
 
 <!-- unexpected-markdown evaluate:false -->
+
 ```js
 require.config({
   paths: {
@@ -116,6 +119,7 @@ Let's say we wanted to test the following program:
 **math.js**
 
 <!-- unexpected-markdown evaluate:false -->
+
 ```js
 function add(a, b) {
   return a + b;
@@ -125,6 +129,7 @@ function add(a, b) {
 Our test file would look like this:
 
 <!-- unexpected-markdown evaluate:false -->
+
 ```js
 describe('math.js', function() {
   describe('add', function() {
