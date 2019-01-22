@@ -35,8 +35,8 @@ expected Buffer([0xE2, 0x98, 0xBA]) when decoded as 'utf-8' to equal 'happy face
 If you don't provide an assertion to delegate to, the decoded value will be provided
 as the fulfillment value of the promise:
 
-<!-- unexpected-markdown async:true -->
-```js,skipBrowser:true
+<!-- unexpected-markdown async:true,skipBrowser:true -->
+```js
 return expect(Buffer.from([0xe2, 0x98, 0xba]), 'decoded as', 'utf-8').then(function (result) {
     expect(result, 'to equal', '☺');
 });
