@@ -1,4 +1,3 @@
-/documentation/
 /build/
 /vendor/
 /coverage/
@@ -7,3 +6,6 @@
 
 # Don't battle npm i --save
 /package.json
+
+# Don't battle offline-github-changelog
+/CHANGELOG.md
