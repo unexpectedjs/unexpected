@@ -529,21 +529,24 @@ describe("AssertionTree", () => {
         );
 
         it("returns null if the given path can not be found", () => {
-            const result = AssertionTree.find(
+            const result = AssertionTree.findFrom(
                 tree,
-                withTypes([42, "to contain", 2])
+                withTypes([42, "to contain", 2]),
+                0
             );
 
             expect(result, "to be null");
         });
 
         it("returns a search result if given path is found", () => {
-            const result = AssertionTree.find(
+            const result = AssertionTree.findFrom(
                 tree,
-                withTypes([42, "to be", 24])
+                withTypes([42, "to be", 24]),
+                0
             );
 
             expect(result, "to equal", {
+                offset: 2,
                 node: {
                     typeEdges: [
                         {
@@ -558,9 +561,9 @@ describe("AssertionTree", () => {
             });
         });
 
-        it("can traverse adverbrial assertions", () => {
+        it("returns the first adverbial assertion", () => {
             const greeting = name => `Hello, ${name}`;
-            const result = AssertionTree.find(
+            const result = AssertionTree.findFrom(
                 tree,
                 withTypes([
                     greeting,
@@ -568,19 +571,16 @@ describe("AssertionTree", () => {
                     ["Jane"],
                     "to be",
                     "Hello, Jane"
-                ])
+                ]),
+                0
             );
 
             expect(result, "to equal", {
+                offset: 3,
                 node: {
-                    typeEdges: [
-                        {
-                            constraint: constraint("any"),
-                            value: assertionRule,
-                            typeEdges: [],
-                            textEdges: {}
-                        }
-                    ],
+                    constraint: constraint("assertion", 0, 1),
+                    value: assertionRule,
+                    typeEdges: [],
                     textEdges: {}
                 }
             });
