@@ -89,7 +89,7 @@
     "setupFiles": [
       "<rootDir>/test/promisePolyfill"
     ],
-    "setupTestFrameworkScriptFile": "<rootDir>/test/common.js",
+    "setupFilesAfterEnv": ["<rootDir>/test/common.js"],
     "testMatch": [
       "<rootDir>/test/**.spec.js"
     ],
