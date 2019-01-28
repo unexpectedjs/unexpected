@@ -5,7 +5,9 @@
                 "@babel/env"
             ],
             "plugins": [
-                ["@babel/plugin-transform-runtime"]
+                ["@babel/plugin-transform-runtime", {
+                    "modules": false
+                }]
             ]
         },
         "test": {
@@ -14,7 +16,8 @@
             ],
             "plugins": [
                 ["@babel/plugin-transform-runtime", {
-                    "helpers": false
+                    "helpers": false,
+                    "modules": false
                 }]
             ]
         }
