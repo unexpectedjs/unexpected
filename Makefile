@@ -16,14 +16,14 @@ lint:
 .PHONY: lint
 
 build/lib: lib/*
-	./node_modules/.bin/babel --copy-files --out-dir build/lib --quiet lib
+	./node_modules/.bin/babel --copy-files --out-dir build/lib lib
 
 build/test: $(shell find test -type f)
-	BABEL_ENV=test ./node_modules/.bin/babel --copy-files --out-dir build/test --quiet test
+	BABEL_ENV=test ./node_modules/.bin/babel --copy-files --out-dir build/test test
 	sed -i -e 's#--require ./test#--require ./build/test#g' ./build/test/mocha.opts
 
 build/externaltests: externaltests/*
-	./node_modules/.bin/babel --copy-files --out-dir build/externaltests --quiet externaltests
+	./node_modules/.bin/babel --copy-files --out-dir build/externaltests externaltests
 
 build: build/lib build/test build/externaltests
 
