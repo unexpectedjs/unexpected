@@ -71,11 +71,11 @@ describe('function type', () => {
     expect(
       // prettier-ignore
       function() {
-        var a = 123 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2;a = 456;
+        var a = 123 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2;
       },
       'to inspect as',
       'function () {\n' +
-        '  var a = 123 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2;a = 456;\n' +
+        '  var a = 123 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2;\n' +
         '}'
     );
     /* eslint-enable no-unused-vars */
@@ -93,10 +93,10 @@ describe('function type', () => {
     expect(
       // prettier-ignore
       function() {
-          var a = 123;a = 456; // foo
-        },
+        var a = 123; // foo
+      },
       'to inspect as',
-      'function () {\n' + '  var a = 123;a = 456; // foo\n' + '}'
+      'function () {\n' + '  var a = 123; // foo\n' + '}'
     );
     /* eslint-enable no-unused-vars */
   });
