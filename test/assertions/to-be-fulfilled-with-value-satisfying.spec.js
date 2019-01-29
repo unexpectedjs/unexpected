@@ -156,42 +156,35 @@ describe('to be fulfilled with value satisfying assertion', () => {
       });
 
       it('errors with the correct error', () => {
+        // Helper function to prevent function inspection from differing
+        // when the test suite has been through babel:
+        function makePromise() {
+          return Promise.resolve({
+            foo: 'foo',
+            bar: 'bar'
+          });
+        }
         return expect(
           function() {
             return expect(
-              function() {
-                return Promise.resolve({
-                  foo: 'foo',
-                  bar: 'bar',
-                  quux: 'quux'
-                });
-              },
+              // prettier-ignore
+              function() { return makePromise(); },
               'to be fulfilled with value exhaustively satisfying',
               {
-                foo: 'foo',
-                bar: 'bar'
+                foo: 'foo'
               }
             );
           },
           'to be rejected with',
-          'expected\n' +
-            'function () {\n' +
-            '  return Promise.resolve({\n' +
-            "    foo: 'foo',\n" +
-            "    bar: 'bar',\n" +
-            "    quux: 'quux'\n" +
-            '  });\n' +
-            '}\n' +
-            "to be fulfilled with value exhaustively satisfying { foo: 'foo', bar: 'bar' }\n" +
-            "  expected Promise (fulfilled) => { foo: 'foo', bar: 'bar', quux: 'quux' }\n" +
-            "  to be fulfilled with value exhaustively satisfying { foo: 'foo', bar: 'bar' }\n" +
-            "    expected { foo: 'foo', bar: 'bar', quux: 'quux' }\n" +
-            "    to exhaustively satisfy { foo: 'foo', bar: 'bar' }\n" +
+          'expected function () { return makePromise(); }\n' +
+            "to be fulfilled with value exhaustively satisfying { foo: 'foo' }\n" +
+            "  expected Promise (fulfilled) => { foo: 'foo', bar: 'bar' }\n" +
+            "  to be fulfilled with value exhaustively satisfying { foo: 'foo' }\n" +
+            "    expected { foo: 'foo', bar: 'bar' } to exhaustively satisfy { foo: 'foo' }\n" +
             '\n' +
             '    {\n' +
             "      foo: 'foo',\n" +
-            "      bar: 'bar',\n" +
-            "      quux: 'quux' // should be removed\n" +
+            "      bar: 'bar' // should be removed\n" +
             '    }'
         );
       });
