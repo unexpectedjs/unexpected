@@ -1,5 +1,8 @@
 {
     "sourceType": "script",
+    "generatorOpts": {
+        "retainLines": true
+    },
     "env": {
         "development": {
             "presets": [
