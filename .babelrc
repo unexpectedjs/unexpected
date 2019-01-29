@@ -6,7 +6,10 @@
     "env": {
         "development": {
             "presets": [
-                "@babel/env"
+                "@babel/env",
+                {
+                    "useBuiltIns": "usage"
+                }
             ],
             "plugins": [
                 ["@babel/plugin-transform-runtime", {
@@ -16,7 +19,10 @@
         },
         "test": {
             "presets": [
-                "@babel/env"
+                "@babel/env",
+                {
+                    "useBuiltIns": "usage"
+                }
             ],
             "plugins": [
                 ["@babel/plugin-transform-runtime", {
