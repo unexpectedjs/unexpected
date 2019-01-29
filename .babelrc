@@ -1,4 +1,5 @@
 {
+    "sourceType": "script",
     "env": {
         "development": {
             "presets": [
@@ -7,8 +8,7 @@
             "plugins": [
                 ["@babel/plugin-transform-runtime", {
                     "modules": false
-                }],
-                "transform-remove-strict-mode"
+                }]
             ]
         },
         "test": {
@@ -19,8 +19,7 @@
                 ["@babel/plugin-transform-runtime", {
                     "helpers": false,
                     "modules": false
-                }],
-                "transform-remove-strict-mode"
+                }]
             ]
         }
     }
