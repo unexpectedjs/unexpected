@@ -7,22 +7,11 @@
         "development": {
             "presets": [
                 "@babel/env"
-            ],
-            "plugins": [
-                ["@babel/plugin-transform-runtime", {
-                    "modules": false
-                }]
             ]
         },
         "test": {
             "presets": [
                 "@babel/env"
-            ],
-            "plugins": [
-                ["@babel/plugin-transform-runtime", {
-                    "helpers": false,
-                    "modules": false
-                }]
             ]
         }
     }
