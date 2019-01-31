@@ -12,6 +12,11 @@
                       "useBuiltIns": "usage"
                   }
                 ]
+            ],
+            "plugins": [
+                ["@babel/plugin-transform-runtime", {
+                    "modules": false
+                }]
             ]
         },
         "test": {
@@ -22,6 +27,12 @@
                       "useBuiltIns": "usage"
                   }
                 ]
+            ],
+            "plugins": [
+                ["@babel/plugin-transform-runtime", {
+                    "helpers": false,
+                    "modules": false
+                }]
             ]
         }
     }
