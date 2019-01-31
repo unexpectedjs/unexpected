@@ -6,12 +6,22 @@
     "env": {
         "development": {
             "presets": [
-                "@babel/env"
+                [
+                  "@babel/preset-env",
+                  {
+                      "useBuiltIns": "usage"
+                  }
+                ]
             ]
         },
         "test": {
             "presets": [
-                "@babel/env"
+                [
+                  "@babel/preset-env",
+                  {
+                      "useBuiltIns": "usage"
+                  }
+                ]
             ]
         }
     }
