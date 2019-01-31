@@ -30,6 +30,7 @@ build: build/lib build/test build/externaltests
 ${TARGETS}: build
 	./node_modules/.bin/rollup --config rollup.config.js --sourcemap --format umd --name weknowhow.expect -o unexpected.js build/lib/index.js
 	sed -e "s/Symbol.iterator in Object/typeof Symbol === 'function' \&\& Symbol.iterator in Object/;" -i unexpected.js
+	sed -e "s/Array\.from/Array.prototype.slice.call/g;" -i unexpected.js
 
 test-jasmine:
 	./node_modules/.bin/jasmine JASMINE_CONFIG_PATH=test/support/jasmine.json
