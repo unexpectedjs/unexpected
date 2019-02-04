@@ -1,37 +1,16 @@
 {
-    "sourceType": "script",
-    "generatorOpts": {
-        "retainLines": true
-    },
-    "env": {
-        "development": {
-            "presets": [
-                [
-                  "@babel/preset-env",
-                  {
-                  }
-                ]
-            ],
-            "plugins": [
-                ["@babel/plugin-transform-runtime", {
-                    "modules": false
-                }]
-            ]
-        },
-        "test": {
-            "presets": [
-                [
-                  "@babel/preset-env",
-                  {
-                  }
-                ]
-            ],
-            "plugins": [
-                ["@babel/plugin-transform-runtime", {
-                    "helpers": false,
-                    "modules": false
-                }]
-            ]
-        }
-    }
+  "sourceType": "script",
+  "generatorOpts": {
+    "retainLines": true
+  },
+  "presets": ["@babel/preset-env"],
+  "plugins": [
+    [
+      "@babel/plugin-transform-runtime",
+      {
+        "helpers": false,
+        "modules": false
+      }
+    ]
+  ]
 }
