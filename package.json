@@ -52,7 +52,7 @@
     "istanbul": "^0.4.5",
     "jasmine": "~3.3.1",
     "jasmine-core": "^3.1.0",
-    "jest": "^24.0.0",
+    "jest": "^24.1.0",
     "karma": "4.0.0",
     "karma-browserstack-launcher": "1.4.0",
     "karma-chrome-launcher": "2.2.0",
