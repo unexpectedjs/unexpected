@@ -40,6 +40,17 @@ describe('to throw a/an assertion', () => {
     );
   });
 
+  it('fulfills its promise with the error that was thrown', () => {
+    const err = new SyntaxError('foo');
+    expect(
+      function() {
+        throw err;
+      },
+      'to throw a',
+      SyntaxError
+    ).then(fulfilmentValue => expect(fulfilmentValue, 'to be', err));
+  });
+
   it('fails if the function throws an instance of a different constructor', () => {
     expect(
       function() {
