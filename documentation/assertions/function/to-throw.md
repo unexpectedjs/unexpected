@@ -166,6 +166,17 @@ not to throw
   threw: Error('threw anyway')
 ```
 
+The thrown error is provided as the fulfillment value of
+the returned promise, so you can do further assertions like this:
+
+<!-- unexpected-markdown async:true -->
+
+```js
+return expect(somethingThatThrows, 'to throw').then(function(err) {
+  expect(err, 'to have message', /\bmessage/);
+});
+```
+
 To test functions that require input wrap the function invocation in an anonymous function:
 
 ```js
