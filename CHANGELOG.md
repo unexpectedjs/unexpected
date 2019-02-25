@@ -1,3 +1,15 @@
+### v11.1.0 (2019-02-25)
+
+- [#595](https://github.com/unexpectedjs/unexpected/pull/595) to throw an: fulfill the promise with the error ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [#592](https://github.com/unexpectedjs/unexpected/pull/592) Upgrade find-node-modules to version 2.0.0 ([depfu[bot]](mailto:depfu[bot]@users.noreply.github.com))
+- [#588](https://github.com/unexpectedjs/unexpected/pull/588) Upgrade eslint-config-prettier to version 4.0.0 ([depfu[bot]](mailto:depfu[bot]@users.noreply.github.com))
+- [#586](https://github.com/unexpectedjs/unexpected/pull/586) Upgrade karma to version 4.0.0 ([depfu[bot]](mailto:depfu[bot]@users.noreply.github.com))
+- [#480](https://github.com/unexpectedjs/unexpected/pull/480) Lint JavaScript snippets in the documentation ([Andreas Lind](mailto:andreas.lind@peakon.com), [Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [#581](https://github.com/unexpectedjs/unexpected/pull/581) Deprecate legacy typeless addAssertion ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [#583](https://github.com/unexpectedjs/unexpected/pull/583) Upgrade prettier to version 1.16.0 ([depfu[bot]](mailto:depfu[bot]@users.noreply.github.com))
+- [#580](https://github.com/unexpectedjs/unexpected/pull/580) Upgrade unexpected-documentation-site-generator to version 6.0.0 ([depfu[bot]](mailto:depfu[bot]@users.noreply.github.com))
+- [#579](https://github.com/unexpectedjs/unexpected/pull/579) Upgrade unexpected-markdown to version 3.0.0 ([depfu[bot]](mailto:depfu[bot]@users.noreply.github.com))
+
 ### v11.0.1 (2019-01-15)
 
 - [#577](https://github.com/unexpectedjs/unexpected/pull/577) Avoid deprecation warnings in node.js 10 because we have methods called inspect ([Andreas Lind](mailto:andreas.lind@peakon.com), [Andreas Lind](mailto:andreaslindpetersen@gmail.com))
