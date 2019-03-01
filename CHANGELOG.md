@@ -1,3 +1,9 @@
+### v11.1.1 (2019-03-01)
+
+- [#599](https://github.com/unexpectedjs/unexpected/pull/599) Make UnexpectedError\#expect non-enumerable ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [#598](https://github.com/unexpectedjs/unexpected/pull/598) Upgrade karma to version 4.0.1 ([depfu[bot]](mailto:depfu[bot]@users.noreply.github.com))
+- [#597](https://github.com/unexpectedjs/unexpected/pull/597) Split the plugin list into maintained by us and 3rdparty plugins ([Sune Simonsen](mailto:sune@we-knowhow.dk))
+
 ### v11.1.0 (2019-02-25)
 
 - [#595](https://github.com/unexpectedjs/unexpected/pull/595) to throw an: fulfill the promise with the error ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
