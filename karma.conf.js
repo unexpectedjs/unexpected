@@ -5,8 +5,6 @@ module.exports = function(config) {
     exclude: ['build/test/external.spec.js'],
 
     files: [
-      'vendor/es5-shim.js',
-      'vendor/es5-sham.js',
       'vendor/rsvp.js',
       'vendor/unexpected-magicpen.min.js',
       'build/test/promisePolyfill.js',
