@@ -1353,4 +1353,44 @@ describe('unexpected', () => {
       );
     });
   });
+
+  it('throws when calling a function that only works on the expect handed to a function', () => {
+    expect(
+      () => expect.shift(),
+      'to throw',
+      'This method only works on the expect function handed to an assertion'
+    );
+  });
+
+  describe('with a cloned expect', () => {
+    it('throws when calling a function that only works on the expect handed to a function', () => {
+      expect(
+        () => expect.clone().shift(),
+        'to throw',
+        'This method only works on the expect function handed to an assertion'
+      );
+    });
+  });
+
+  describe('with a child expect', () => {
+    it('throws when calling a function that only works on the expect function handed to an assertion', () => {
+      expect(
+        () => expect.child().shift(),
+        'to throw',
+        'This method only works on the expect function handed to an assertion'
+      );
+    });
+  });
+
+  it('throws when calling a function that only works on the top-level expect', () => {
+    const clonedExpect = expect.clone().addAssertion('<any> to foo', expect => {
+      expect.use(() => {});
+    });
+
+    expect(
+      () => clonedExpect(123, 'to foo'),
+      'to throw',
+      'This method only works on the top level expect function'
+    );
+  });
 });
