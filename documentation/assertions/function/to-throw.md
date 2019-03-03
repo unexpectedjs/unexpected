@@ -1,27 +1,46 @@
 Asserts that the function throws an error when called.
 
 ```js
-function willThrow() {
+function somethingThatThrows() {
   throw new Error('The error message');
 }
-expect(willThrow, 'to throw');
-expect(willThrow, 'to throw error');
-expect(willThrow, 'to throw exception');
+
+expect(function() {
+  somethingThatThrows();
+}, 'to throw');
 ```
 
 In case of a failing expectation you get the following output:
 
 ```js
-expect(function willNotThrow() {}, 'to throw');
+function willNotThrow() {
+  // ...
+}
+
+expect(function() {
+  willNotThrow();
+}, 'to throw');
 ```
 
 ```output
-expected function willNotThrow() {} to throw
+expected function () { willNotThrow(); } to throw
   did not throw
 ```
 
-You can assert the error message is a given string if you provide a
-string as the second parameter.
+Used with arrow functions this assertion is very elegant, and there
+are a couple of functionally equaivalent aliases provided to allow
+test suites using it be more explicit.
+
+```js
+expect(() => somethingThatThrows(), 'to throw');
+
+// aliases
+expect(() => somethingThatThrows(), 'to throw error');
+expect(() => somethingThatThrows(), 'to throw exception');
+```
+
+If you provide a string as the second parameter, it will be used to
+assert the thrown error has that message.
 
 ```js
 expect(
@@ -36,9 +55,13 @@ expect(
 In case of a failing expectation you get the following output:
 
 ```js
-expect(function () {
-  throw new Error('The error message!');
-}, 'to throw', 'The error message');
+expect(
+  function() {
+    throw new Error('The error message!');
+  },
+  'to throw',
+  'The error message'
+);
 ```
 
 ```output
@@ -69,9 +92,13 @@ expect(
 In case of a failing expectation you get the following output:
 
 ```js
-expect(function () {
-  throw new Error('The error message!');
-}, 'to throw', /catastrophic failure/);
+expect(
+  function() {
+    throw new Error('The error message!');
+  },
+  'to throw',
+  /catastrophic failure/
+);
 ```
 
 ```output
@@ -98,9 +125,13 @@ expect(
 In case of a failing expectation you get the following output:
 
 ```js
-expect(function () {
-  throw new Error('Another error');
-}, 'to throw', new TypeError('Invalid syntax'));
+expect(
+  function() {
+    throw new Error('Another error');
+  },
+  'to throw',
+  new TypeError('Invalid syntax')
+);
 ```
 
 ```output
@@ -121,7 +152,7 @@ expect(function() {
 In case of a failing expectation you get the following output:
 
 ```js
-expect(function () {
+expect(function() {
   throw new Error('threw anyway');
 }, 'not to throw');
 ```
@@ -133,6 +164,17 @@ function () {
 }
 not to throw
   threw: Error('threw anyway')
+```
+
+The thrown error is provided as the fulfillment value of
+the returned promise, so you can do further assertions like this:
+
+<!-- unexpected-markdown async:true -->
+
+```js
+return expect(somethingThatThrows, 'to throw').then(function(err) {
+  expect(err, 'to have message', /\bmessage/);
+});
 ```
 
 To test functions that require input wrap the function invocation in an anonymous function:

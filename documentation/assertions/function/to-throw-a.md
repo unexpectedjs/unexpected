@@ -36,6 +36,17 @@ expected function willNotThrow() {} to throw a RangeError
     did not throw
 ```
 
+The thrown error is provided as the fulfillment value of
+the returned promise, so you can do further assertions like this:
+
+<!-- unexpected-markdown async:true -->
+
+```js
+return expect(willThrow, 'to throw a', SyntaxError).then(function(err) {
+  expect(err, 'to have message', /\bmessage/);
+});
+```
+
 To test functions that require input wrap the function invocation in an anonymous function:
 
 ```js

@@ -11,19 +11,19 @@ cd unexpected && npm install
 
 ## Source files
 
-* *lib/index.js*:<br>
+- _lib/index.js_:<br>
   The entry point for the library.
-* *lib/Unexpected.js*:<br>
+- _lib/Unexpected.js_:<br>
   The core of the library.
-* *lib/Assertion.js*:<br>
+- _lib/Assertion.js_:<br>
   The class that assertions are instantiated from.
-* *lib/utils.js*:<br>
+- _lib/utils.js_:<br>
   Utility functions
-* *lib/styles.js*:<br>
+- _lib/styles.js_:<br>
   MagicPen styles for controling the output.
-* *lib/types.js*:<br>
+- _lib/types.js_:<br>
   Type definitions for every type Unexpected understands.
-* *lib/assertions.js*:<br>
+- _lib/assertions.js_:<br>
   All assertions that is included in the core library.
 
 ## Running tests in the console
@@ -61,10 +61,13 @@ The following make-targets will build the production version of _unexpected_,
 commit the generated file and tag a new version using NPM.
 
 ### Patch release
+
 make release patch
 
 ### Minor release
+
 make release minor
 
 ### Major release
+
 make release major

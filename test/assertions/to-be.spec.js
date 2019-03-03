@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('to be assertion', () => {
   it('assert === equality', () => {
     var obj = {};
@@ -39,7 +39,7 @@ describe('to be assertion', () => {
 
   if (typeof Buffer !== 'undefined') {
     it('asserts === equality for Buffers', () => {
-      var buffer = new Buffer([0x45, 0x59]);
+      var buffer = Buffer.from([0x45, 0x59]);
       expect(buffer, 'to be', buffer);
     });
   }

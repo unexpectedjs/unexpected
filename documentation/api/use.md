@@ -9,13 +9,13 @@ Unexpected plugins are functions or objects that adhere to the following interfa
 
 Optional properties:
 
-* **name**: `String` - the name of the plugin.
-* **version**: `String` - the semver version of the plugin (string).
-* **dependencies**: `String array` - a list of dependencies.
+- **name**: `String` - the name of the plugin.
+- **version**: `String` - the semver version of the plugin (string).
+- **dependencies**: `String array` - a list of dependencies.
 
 Required:
 
-* **installInto**: `function(expect)` - a function that will update the given expect instance.
+- **installInto**: `function(expect)` - a function that will update the given expect instance.
 
 If you pass a function to `use`, it will be used as the `installInto`
 function, and the name of the function will be used as the name of the plugin,
@@ -33,7 +33,9 @@ The `installInto` function receives an instance of unexpected and uses
 the `addAssertion`, `addStyle`, `installTheme` and `addType` methods
 to extend the instance.
 
-```js#evaluate:false
+<!-- unexpected-markdown evaluate:false -->
+
+```js
 expect.use(require('unexpected-sinon'));
 ```
 
@@ -76,7 +78,11 @@ expect.use({
       }
     });
 
-    expect.addAssertion('[not] to contain', function(expect, subject, value) {
+    expect.addAssertion('<IntegerInterval> [not] to contain <number>', function(
+      expect,
+      subject,
+      value
+    ) {
       expect(value, '[not] to be within', subject.from, subject.to);
     });
   }

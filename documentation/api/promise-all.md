@@ -15,7 +15,7 @@ This method is usually used in combination with
 Let's make an asynchronous assertion that we can use for the examples:
 
 ```js
-expect.addAssertion('to be a number after a short delay', function(
+expect.addAssertion('<any> to be a number after a short delay', function(
   expect,
   subject
 ) {
@@ -36,32 +36,44 @@ expect.promise works.
 The following code snippet creates a promise that is fulfilled when all the
 promises in the nested structure are fulfilled.
 
-```js#async:true
-return expect.promise.all({
-  foo: [
-    expect(42, 'to be a number after a short delay')
-  ],
-  bar: expect([0, 1, 2], 'to have items satisfying',
-                         expect.it('to be a number after a short delay')),
+<!-- unexpected-markdown async:true -->
 
-  baz: expect({ a: 1, b: 2 }, 'to have values satisfying',
-                              'to be a number after a short delay')
+```js
+return expect.promise.all({
+  foo: [expect(42, 'to be a number after a short delay')],
+  bar: expect(
+    [0, 1, 2],
+    'to have items satisfying',
+    expect.it('to be a number after a short delay')
+  ),
+
+  baz: expect(
+    { a: 1, b: 2 },
+    'to have values satisfying',
+    'to be a number after a short delay'
+  )
 });
 ```
 
 The following code snippet creates a promise that is rejected when one
 of the promises in the nested structure is rejected.
 
-```js#async:true
-return expect.promise.all({
-  foo: [
-    expect(42, 'to be a number after a short delay')
-  ],
-  bar: expect([0, 1, 2], 'to have items satisfying',
-                         expect.it('to be a number after a short delay')),
+<!-- unexpected-markdown async:true -->
 
-  baz: expect({ a: '0', b: 1 }, 'to have values satisfying',
-                                'to be a number after a short delay')
+```js
+return expect.promise.all({
+  foo: [expect(42, 'to be a number after a short delay')],
+  bar: expect(
+    [0, 1, 2],
+    'to have items satisfying',
+    expect.it('to be a number after a short delay')
+  ),
+
+  baz: expect(
+    { a: '0', b: 1 },
+    'to have values satisfying',
+    'to be a number after a short delay'
+  )
 });
 ```
 

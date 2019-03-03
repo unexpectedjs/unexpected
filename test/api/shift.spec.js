@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('expect.shift', () => {
   describe('when preserving the subject by passing no arguments', () => {
     it('should succeed', () => {
@@ -320,7 +320,7 @@ describe('expect.shift', () => {
     it('should allow a subsequent .and()', () => {
       var clonedExpect = expect
         .clone()
-        .addAssertion('promisified', function(expect, subject) {
+        .addAssertion('<any> promisified', function(expect, subject) {
           return expect.shift(new Promise(subject));
         });
       return clonedExpect(resolve => {
@@ -333,7 +333,7 @@ describe('expect.shift', () => {
     it('should allow a subsequent .and() within a nested context', () => {
       var clonedExpect = expect
         .clone()
-        .addAssertion('promisified', function(expect, subject) {
+        .addAssertion('<any> promisified', function(expect, subject) {
           return expect.shift(new Promise(subject));
         })
         .addAssertion('<function> executed inside an assertion', function(

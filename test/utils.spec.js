@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('utils', () => {
   if (typeof process === 'object') {
     var utils = require('../lib/utils');

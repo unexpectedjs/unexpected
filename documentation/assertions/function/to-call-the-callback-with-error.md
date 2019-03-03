@@ -9,14 +9,18 @@ function myFailingAsyncFunction(cb) {
 }
 ```
 
-```js#async:true
+<!-- unexpected-markdown async:true -->
+
+```js
 return expect(myFailingAsyncFunction, 'to call the callback with error');
 ```
 
 You can assert the error message is a given string if you provide a
 string as the second parameter.
 
-```js#async:true
+<!-- unexpected-markdown async:true -->
+
+```js
 return expect(
   myFailingAsyncFunction,
   'to call the callback with error',
@@ -27,7 +31,9 @@ return expect(
 A regular expression, Error instance, or an object will also work, as the
 matching uses [to satisfy](../../any/to-satisfy/) semantics:
 
-```js#async:true
+<!-- unexpected-markdown async:true -->
+
+```js
 return expect(
   myFailingAsyncFunction,
   'to call the callback with error',
@@ -37,7 +43,9 @@ return expect(
 
 In case of a failing expectation you get the following output:
 
-```js#async:true
+<!-- unexpected-markdown async:true -->
+
+```js
 return expect(
   myFailingAsyncFunction,
   'to call the callback with error',
@@ -66,12 +74,15 @@ to call the callback with error Error('foo')
 The error passed to the callback is also provided as the fulfillment value of
 the returned promise, so you can do further assertions like this:
 
-```js#async:true
+<!-- unexpected-markdown async:true -->
+
+```js
 function asyncFn(cb) {
   cb(new Error('yikes'));
 }
 
 return expect(asyncFn, 'to call the callback with error').then(function(err) {
   // err will be new Error('yikes')
+  expect(err, 'to have message', 'yikes');
 });
 ```

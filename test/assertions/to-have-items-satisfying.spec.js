@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('to have items satisfying assertion', () => {
   it('requires a third argument', () => {
     expect(
@@ -252,10 +252,9 @@ describe('to have items satisfying assertion', () => {
   describe('delegating to an async assertion', () => {
     var clonedExpect = expect
       .clone()
-      .addAssertion('to be a number after a short delay', function(
+      .addAssertion('<any> to be a number after a short delay', function(
         expect,
-        subject,
-        delay
+        subject
       ) {
         expect.errorMode = 'nested';
 

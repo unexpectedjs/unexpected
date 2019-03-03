@@ -1,4 +1,4 @@
-/*global unexpected*/
+/* global unexpected */
 
 describe('expect.output.preferredWidth', () => {
   var expect = unexpected.clone();

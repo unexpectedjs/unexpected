@@ -18,8 +18,8 @@ implement the required parts of the following interface:
 
 Required members:
 
-* **name**: `String` - the name of the type.
-* **identify**: `boolean function(value)` - a function deciding if the type
+- **name**: `String` - the name of the type.
+- **identify**: `boolean function(value)` - a function deciding if the type
   should be used for the given value.
 
 Note that your type has the option to take precedence over all the built-in
@@ -29,14 +29,14 @@ first, so `identify` functions should take care not to break with `undefined`,
 
 Optional members:
 
-* **base**: `String` - the name of the base type. Defaults to `any`.
-* **equal**: `boolean function(a, b, equal)` -
+- **base**: `String` - the name of the base type. Defaults to `any`.
+- **equal**: `boolean function(a, b, equal)` -
   a function capable of comparing two values of this type for
   equality. If not specified it is inherited from the base type.
-* **inspect**: `function(value, depth, output, inspect)` -
+- **inspect**: `function(value, depth, output, inspect)` -
   a function capable of inspecting a value of this type. If not
   specified it is inherited from the base type.
-* **diff**: `comparison function(actual, expected, output, diff, inspect)` -
+- **diff**: `comparison function(actual, expected, output, diff, inspect)` -
   a function producing a comparison between two values of this
   type. If not specified it is inherited from the base type.
 
@@ -94,20 +94,23 @@ That is already quite helpful, but it would be even nicer if the
 stringification of `Person` instances could read as valid calls to the
 constructor. We can fix that by implementing an `inspect` method on the type.
 
-```js#freshExpect:true
+<!-- unexpected-markdown freshExpect:true -->
+
+```js
 expect.addType({
-    name: 'Person',
-    base: 'object',
-    identify: function (value) {
-        return value instanceof Person;
-    },
-    inspect: function (person, depth, output, inspect) {
-       output.text('new Person(')
-             .append(inspect(person.name, depth))
-             .text(', ')
-             .append(inspect(person.age, depth))
-             .text(')');
-    }
+  name: 'Person',
+  base: 'object',
+  identify: function(value) {
+    return value instanceof Person;
+  },
+  inspect: function(person, depth, output, inspect) {
+    output
+      .text('new Person(')
+      .append(inspect(person.name, depth))
+      .text(', ')
+      .append(inspect(person.age, depth))
+      .text(')');
+  }
 });
 ```
 
@@ -147,23 +150,26 @@ same depth to the `inspect` function.
 Let's say we wanted `Person` instances only to be compared by name and not by
 age. Then we need to override the `equal` method:
 
-```js#freshExpect:true
+<!-- unexpected-markdown freshExpect:true -->
+
+```js
 expect.addType({
-    name: 'Person',
-    base: 'object',
-    identify: function (value) {
-        return value instanceof Person;
-    },
-    inspect: function (person, depth, output, inspect) {
-       output.text('new Person(')
-             .append(inspect(person.name, depth))
-             .text(', ')
-             .append(inspect(person.age, depth))
-             .text(')');
-    },
-    equal: function (a, b, equal) {
-        return a === b || equal(a.name, b.name);
-    }
+  name: 'Person',
+  base: 'object',
+  identify: function(value) {
+    return value instanceof Person;
+  },
+  inspect: function(person, depth, output, inspect) {
+    output
+      .text('new Person(')
+      .append(inspect(person.name, depth))
+      .text(', ')
+      .append(inspect(person.age, depth))
+      .text(')');
+  },
+  equal: function(a, b, equal) {
+    return a === b || equal(a.name, b.name);
+  }
 });
 ```
 
@@ -171,26 +177,33 @@ This will produce the same output as above, but that means the diff if
 wrong. It states that the age should be changed. We can fix that the
 following way:
 
-```js#freshExpect:true
+<!-- unexpected-markdown freshExpect:true -->
+
+```js
 expect.addType({
-    name: 'Person',
-    base: 'object',
-    identify: function (value) {
-        return value instanceof Person;
-    },
-    inspect: function (person, depth, output, inspect) {
-       output.text('new Person(')
-             .append(inspect(person.name, depth))
-             .text(', ')
-             .append(inspect(person.age, depth))
-             .text(')');
-    },
-    equal: function (a, b, equal) {
-        return a === b || equal(a.name, b.name);
-    },
-    diff: function (actual, expected, output, diff, inspect) {
-        return this.baseType.diff({name: actual.name}, {name: expected.name}, output);
-    }
+  name: 'Person',
+  base: 'object',
+  identify: function(value) {
+    return value instanceof Person;
+  },
+  inspect: function(person, depth, output, inspect) {
+    output
+      .text('new Person(')
+      .append(inspect(person.name, depth))
+      .text(', ')
+      .append(inspect(person.age, depth))
+      .text(')');
+  },
+  equal: function(a, b, equal) {
+    return a === b || equal(a.name, b.name);
+  },
+  diff: function(actual, expected, output, diff, inspect) {
+    return this.baseType.diff(
+      { name: actual.name },
+      { name: expected.name },
+      output
+    );
+  }
 });
 ```
 
@@ -218,53 +231,63 @@ on the base directly when you know it is the one you need.
 
 You could also do something really custom as seen below:
 
-```js#freshExpect:true
+<!-- unexpected-markdown freshExpect:true -->
+
+```js
 var inlineDiff = true; // used to change inlining in a later example
 
 expect.addType({
-    name: 'Person',
-    base: 'object',
-    identify: function (value) {
-        return value instanceof Person;
-    },
-    inspect: function (person, depth, output, inspect) {
-       output.text('new Person(')
-             .append(inspect(person.name, depth))
-             .text(', ')
-             .append(inspect(person.age, depth))
-             .text(')');
-    },
-    equal: function (a, b, equal) {
-        return a === b || equal(a.name, b.name);
-    },
-    diff: function (actual, expected, output, diff, inspect) {
-        output.inline = inlineDiff;
-        var nameDiff = diff(actual.name, expected.name);
+  name: 'Person',
+  base: 'object',
+  identify: function(value) {
+    return value instanceof Person;
+  },
+  inspect: function(person, depth, output, inspect) {
+    output
+      .text('new Person(')
+      .append(inspect(person.name, depth))
+      .text(', ')
+      .append(inspect(person.age, depth))
+      .text(')');
+  },
+  equal: function(a, b, equal) {
+    return a === b || equal(a.name, b.name);
+  },
+  diff: function(actual, expected, output, diff, inspect) {
+    output.inline = inlineDiff;
+    var nameDiff = diff(actual.name, expected.name);
 
-        output.text('new Person(')
-              .nl()
-              .indentLines();
+    output
+      .text('new Person(')
+      .nl()
+      .indentLines();
 
-        if (nameDiff && nameDiff.inline) {
-            output.append(nameDiff);
-        } else {
-            output.i().append(inspect(actual.name)).text(',').sp()
-                  .annotationBlock(function () {
-                      this.error('should be ').append(inspect(expected.name));
-                      if (nameDiff) {
-                          this.nl().append(nameDiff);
-                      }
-                  })
-                  .nl();
-        }
-
-        output.i().append(inspect(actual.age))
-              .outdentLines()
-              .nl()
-              .text(')');
-
-        return output;
+    if (nameDiff && nameDiff.inline) {
+      output.append(nameDiff);
+    } else {
+      output
+        .i()
+        .append(inspect(actual.name))
+        .text(',')
+        .sp()
+        .annotationBlock(function() {
+          this.error('should be ').append(inspect(expected.name));
+          if (nameDiff) {
+            this.nl().append(nameDiff);
+          }
+        })
+        .nl();
     }
+
+    output
+      .i()
+      .append(inspect(actual.age))
+      .outdentLines()
+      .nl()
+      .text(')');
+
+    return output;
+  }
 });
 ```
 

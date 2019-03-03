@@ -1,4 +1,4 @@
-/*global unexpected, weknowhow*/
+/* global unexpected, weknowhow */
 
 it.skipIf = function(condition) {
   (condition ? it.skip : it).apply(
@@ -91,7 +91,7 @@ describe('unexpected', () => {
       it('fails when given no parameters', () => {
         var clonedExpect = expect
           .clone()
-          .addAssertion('to foo', function(expect) {
+          .addAssertion('<any> to foo', function(expect) {
             expect();
           });
         expect(
@@ -106,7 +106,7 @@ describe('unexpected', () => {
       it('fails when the second parameter is not a string', () => {
         var clonedExpect = expect
           .clone()
-          .addAssertion('to foo', function(expect) {
+          .addAssertion('<any> to foo', function(expect) {
             expect({}, {});
           });
         expect(
@@ -153,10 +153,10 @@ describe('unexpected', () => {
     it('should catch non-Unexpected error caught from a nested assertion', () => {
       var clonedExpect = expect
         .clone()
-        .addAssertion('to foo', function(expect, subject) {
+        .addAssertion('<any> to foo', function(expect, subject) {
           return expect(subject, 'to bar');
         })
-        .addAssertion('to bar', function(expect, subject) {
+        .addAssertion('<any> to bar', function(expect, subject) {
           return expect.promise(function(run) {
             setTimeout(
               run(function() {
@@ -951,7 +951,7 @@ describe('unexpected', () => {
     it('should render the error message sanely in an annotation block inside a satisfy diff', () => {
       var clonedExpect = expect
         .clone()
-        .addAssertion('foobar', function(expect, subject) {
+        .addAssertion('<any> foobar', function(expect, subject) {
           expect(subject, 'to equal', 'foobar');
         });
       expect(

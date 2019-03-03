@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('expect.it', () => {
   it('returns an expectation function that when applied runs the assertion on the given subject', () => {
     var expectation = expect.it('to be greater than', 14);
@@ -33,7 +33,7 @@ describe('expect.it', () => {
   it('does not catch errors that are not thrown by unexpected', () => {
     var clonedExpect = expect
       .clone()
-      .addAssertion('explode', function(expect, subject) {
+      .addAssertion('<any> explode', function(expect, subject) {
         throw new Error('Explosion');
       });
 
@@ -160,7 +160,7 @@ describe('expect.it', () => {
   describe('with async assertions', () => {
     var clonedExpect = expect
       .clone()
-      .addAssertion('to be a number after a short delay', function(
+      .addAssertion('<any> to be a number after a short delay', function(
         expect,
         subject
       ) {
@@ -175,7 +175,7 @@ describe('expect.it', () => {
           );
         });
       })
-      .addAssertion('to be finite after a short delay', function(
+      .addAssertion('<any> to be finite after a short delay', function(
         expect,
         subject
       ) {
@@ -190,7 +190,7 @@ describe('expect.it', () => {
           );
         });
       })
-      .addAssertion('to be a string after a short delay', function(
+      .addAssertion('<any> to be a string after a short delay', function(
         expect,
         subject
       ) {

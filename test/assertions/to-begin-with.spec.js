@@ -1,4 +1,4 @@
-/*global expectWithUnexpectedMagicPen*/
+/* global expectWithUnexpectedMagicPen */
 describe('to begin with assertion', () => {
   var expect = expectWithUnexpectedMagicPen;
 
@@ -158,10 +158,10 @@ describe('to begin with assertion', () => {
           'to throw',
           "expected 'f\\no\\nobarquuxfoo' not to begin with 'f\\no\\no'\n" +
             '\n' +
-            'f\n' +
-            '^\n' +
-            'o\n' +
-            '^\n' +
+            'f\\n\n' +
+            '^^\n' +
+            'o\\n\n' +
+            '^^\n' +
             'obarquuxfoo\n' +
             '^'
         );

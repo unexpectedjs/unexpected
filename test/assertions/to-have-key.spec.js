@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('to have key assertion', () => {
   it('asserts the presence of a key', () => {
     expect({ a: 'b' }, 'to have key', 'a');

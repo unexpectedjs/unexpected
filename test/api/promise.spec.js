@@ -1,9 +1,9 @@
-/*global expect*/
+/* global expect */
 describe('expect.promise', () => {
   it('should forward non-unexpected errors', () => {
     var clonedExpect = expect
       .clone()
-      .addAssertion('to foo', function(expect, subject, value) {
+      .addAssertion('<any> to foo', function(expect, subject) {
         return expect.withError(
           function() {
             return expect.promise(function() {
@@ -34,7 +34,7 @@ describe('expect.promise', () => {
   it('should return the fulfilled promise even if it is oathbreakable', () => {
     var clonedExpect = expect
       .clone()
-      .addAssertion('to foo', function(expect, subject, value) {
+      .addAssertion('<any> to foo', function(expect, subject) {
         return expect.promise(function() {
           expect(subject, 'to equal', 'foo');
           return 'bar';
@@ -46,7 +46,7 @@ describe('expect.promise', () => {
   it('should preserve the resolved value when an assertion contains a non-oathbreakable promise', function(done) {
     var clonedExpect = expect
       .clone()
-      .addAssertion('to foo', function(expect, subject, value) {
+      .addAssertion('<any> to foo', function(expect, subject) {
         return expect.promise(function(resolve, reject) {
           expect(subject, 'to equal', 'foo');
           setTimeout(function() {
@@ -63,7 +63,7 @@ describe('expect.promise', () => {
   it('should return a promise fulfilled with the return value when an assertion returns a non-promise value', () => {
     var clonedExpect = expect
       .clone()
-      .addAssertion('to foo', function(expect, subject, value) {
+      .addAssertion('<any> to foo', function(expect, subject) {
         expect(subject, 'to equal', 'foo');
         return 'bar';
       });
@@ -216,10 +216,10 @@ describe('expect.promise', () => {
       it('should mount the and method on a promise returned from a nested assertion', () => {
         var clonedExpect = expect
           .clone()
-          .addAssertion('to foo', function(expect, subject) {
+          .addAssertion('<any> to foo', function(expect, subject) {
             return expect(subject, 'to bar').and('to equal', 'foo');
           })
-          .addAssertion('to bar', function(expect, subject) {
+          .addAssertion('<any> to bar', function(expect, subject) {
             return expect.promise(function(run) {
               setTimeout(
                 run(function() {
@@ -258,6 +258,15 @@ describe('expect.promise', () => {
     });
   });
 
+  let inspectMethodName = 'inspect';
+  // In node.js 10+ the custom inspect method name has to be given as a symbol
+  // or we'll get ugly deprecation warnings logged to the console.
+  try {
+    const util = require('util');
+    if (util.inspect.custom) {
+      inspectMethodName = util.inspect.custom;
+    }
+  } catch (err) {}
   describe('#inspect', () => {
     var originalDefaultFormat = expect.output.constructor.defaultFormat;
     beforeEach(() => {
@@ -273,7 +282,7 @@ describe('expect.promise', () => {
           .promise(function() {
             expect(2, 'to equal', 2);
           })
-          .inspect(),
+          [inspectMethodName](),
         'to equal',
         'Promise (fulfilled)'
       );
@@ -285,7 +294,7 @@ describe('expect.promise', () => {
           .promise(function() {
             return 123;
           })
-          .inspect(),
+          [inspectMethodName](),
         'to equal',
         'Promise (fulfilled) => 123'
       );
@@ -298,7 +307,11 @@ describe('expect.promise', () => {
         'to equal',
         'foo'
       );
-      expect(asyncPromise.inspect(), 'to equal', 'Promise (pending)');
+      expect(
+        asyncPromise[inspectMethodName](),
+        'to equal',
+        'Promise (pending)'
+      );
       return asyncPromise;
     });
 
@@ -308,7 +321,7 @@ describe('expect.promise', () => {
       });
 
       return promise.caught(function() {
-        expect(promise.inspect(), 'to equal', 'Promise (rejected)');
+        expect(promise[inspectMethodName](), 'to equal', 'Promise (rejected)');
       });
     });
 
@@ -321,7 +334,7 @@ describe('expect.promise', () => {
 
       return promise.caught(function() {
         expect(
-          promise.inspect(),
+          promise[inspectMethodName](),
           'to equal',
           "Promise (rejected) => Error('argh')"
         );

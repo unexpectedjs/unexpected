@@ -2,6 +2,8 @@
 
 Prints all registered assertions to the console.
 
-```js#evaluate:false
+<!-- unexpected-markdown evaluate:false -->
+
+```js
 console.log(expect.toString());
 ```

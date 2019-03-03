@@ -26,7 +26,11 @@ Person.prototype.genderSign = function() {
   }
 };
 
-expect.addAssertion('to have same gender as', function(expect, subject, value) {
+expect.addAssertion('<object> to have same gender as <object>', function(
+  expect,
+  subject,
+  value
+) {
   expect.withError(
     function() {
       expect(subject.gender, 'to be', value.gender);
@@ -60,17 +64,27 @@ to have same gender as Person({ name: 'Jane Doe', gender: 'female' })
 
 The method also supports asynchronous assertion the following way:
 
-```js#evaluate:false
-expect.addAssertion('delegating to an asynchronous assertion', function (expect, subject) {
-  return expect.withError(function () {
-    return expect(subject, 'asynchronous expectation');
-  }, function (e) {
-    expect.fail({
-      diff: function (output) {
-        output.inline = true;
-        return output.text('Cool a diff attached to an asynchronous failure!');
-      }
-    });
-  });
+<!-- unexpected-markdown evaluate:false -->
+
+```js
+expect.addAssertion('<any> delegating to an asynchronous assertion', function(
+  expect,
+  subject
+) {
+  return expect.withError(
+    function() {
+      return expect(subject, 'asynchronous expectation');
+    },
+    function(e) {
+      expect.fail({
+        diff: function(output) {
+          output.inline = true;
+          return output.text(
+            'Cool a diff attached to an asynchronous failure!'
+          );
+        }
+      });
+    }
+  );
 });
 ```

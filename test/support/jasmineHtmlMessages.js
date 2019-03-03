@@ -1,4 +1,4 @@
-/*global jasmineRequire*/
+/* global jasmineRequire */
 (function() {
   if (typeof jasmineRequire === 'object') {
     var originalBuildExpectationResult = jasmineRequire.buildExpectationResult();

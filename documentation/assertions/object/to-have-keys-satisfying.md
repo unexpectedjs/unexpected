@@ -6,11 +6,13 @@ Aliases: `to be a map whose keys satisfy`,
 `to be an object whose keys satisfy`, `to be a hash whose keys satisfy`.
 
 ```js
-expect({ foo: 0, bar: 1, baz: 2, qux: 3 }, 'to have keys satisfying', expect.it(function(
-  key
-) {
-  expect(key, 'to match', /^[a-z]{3}$/);
-}));
+expect(
+  { foo: 0, bar: 1, baz: 2, qux: 3 },
+  'to have keys satisfying',
+  expect.it(function(key) {
+    expect(key, 'to match', /^[a-z]{3}$/);
+  })
+);
 
 expect(
   { foo: 0, bar: 1, baz: 2, qux: 3 },

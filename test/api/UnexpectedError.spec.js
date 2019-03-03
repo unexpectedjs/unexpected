@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('UnexpectedError', () => {
   describe('with a single line message', () => {
     it('should be inspected correctly', () => {

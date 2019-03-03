@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('when called with assertion', () => {
   function add(a, b) {
     return a + b;

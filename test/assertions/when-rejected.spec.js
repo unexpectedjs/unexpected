@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('when rejected adverbial assertion', () => {
   it('should delegate to the next assertion with the rejection reason', () => {
     return expect(

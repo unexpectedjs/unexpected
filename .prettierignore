@@ -1,1 +1,11 @@
-package.json
+/build/
+/vendor/
+/coverage/
+/site-build/
+/unexpected.js
+
+# Don't battle npm i --save
+/package.json
+
+# Don't battle offline-github-changelog
+/CHANGELOG.md

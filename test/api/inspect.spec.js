@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('inspect', () => {
   function Field(val, options) {
     var value = val;
@@ -408,7 +408,7 @@ describe('inspect', () => {
     });
   }
 
-  /*eslint-disable no-multi-str*/
+  /* eslint-disable no-multi-str */
   function multilineStringLiteral() {
     var foo = 'bar';
     var quux = 'baz\
@@ -416,7 +416,7 @@ describe('inspect', () => {
     foo = foo + quux;
     return foo;
   }
-  /*eslint-enable no-multi-str*/
+  /* eslint-enable no-multi-str */
 
   it('should bail out of removing the indentation of functions that use multiline string literals', () => {
     expect(
