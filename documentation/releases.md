@@ -12,7 +12,7 @@ Here is a very high level overview of the major releases. See the
 [changelog](https://github.com/unexpectedjs/unexpected/blob/master/CHANGELOG.md)
 for more details.
 
-### 11.0.0
+### v11.0.0 (2019-01-06)
 
 This release includes backwards-incompatible changes. There's a [migration
 guide](../migration/) to help you upgrade.
@@ -36,7 +36,7 @@ guide](../migration/) to help you upgrade.
 - Remove long-deprecated support for `this.subject` etc. in assertion handlers
   ([#567](https://github.com/unexpectedjs/unexpected/pull/567))
 
-### 10.0.0
+### v10.0.0 (2015-10-08)
 
 - Assertions are now declared with explicit type requirements for
   the arguments as part of the pattern. This is a breaking change
@@ -62,7 +62,7 @@ guide](../migration/) to help you upgrade.
   In that case they will provide the result as the fulfillment
   value of the promise.
 
-### 9.0.0
+### v9.0.0 (2015-07-03)
 
 - Build all error messages lazily. This is an internal refactoring
   that makes it possible to generate very different output in the
@@ -80,7 +80,7 @@ guide](../migration/) to help you upgrade.
 - The `to contain` assertion defined for strings: When the assertion fails,
   display a "diff" where partial matches are highlighted.
 
-### 8.0.0
+### v8.0.0 (2015-06-10)
 
 - All errors originating from assertions are now instances of
   [`UnexpectedError`](./api/UnexpectedError/), which can be manipulated before being
@@ -105,7 +105,7 @@ guide](../migration/) to help you upgrade.
 - Added [`to error`](./assertions/function/to-error/) assertion.
 - Minor bugfixes and output tweaks.
 
-### 7.0.0
+### v7.0.0 (2015-04-17)
 
 - Support for
   [asynchronous assertions using promises](./api/addAssertion/#asynchronous-assertions).
@@ -125,7 +125,7 @@ guide](../migration/) to help you upgrade.
 - New `to have message` assertion defined for `Error` instances.
 - A lot of output improvements and minor tweaks.
 
-### 6.0.0
+### v6.0.0 (2015-03-03)
 
 - New documentation and [corresponding site](https://unexpected.js.org/).
 - Use `Object.is`/the [SameValue algorithm](http://ecma-international.org/ecma-262/5.1/#sec-9.12) when checking equality of primitive values (the `to be` and `to equal` assertions).
@@ -134,3 +134,30 @@ guide](../migration/) to help you upgrade.
 - Renamed the `arrayLike` type to `array-like`.
 - Changed style names and added theming support (mostly internal).
 - Removed grammatically incorrect assertions.
+
+### v5.0.0 (2014-12-22)
+
+- Add custom diffs for many assertions.
+- Added `to satisfy` and `expect.it`.
+- Removed the word "minimalistic" from the sales pitch in the documention :)
+
+### v4.0.0 (2014-08-13)
+
+- Added type system for assertion subjects.
+- Use [magicpen](https://github.com/sunesimonsen/magicpen) for all generating
+  all output. No longer rely on the tests runner to render diffs.
+
+### v3.0.0 (2014-03-21)
+
+- Hand an expect function to custom assertions.
+- Added the ability for an assertion to control how the error message of nested
+  expect calls are formatted.
+
+### v2.0.0 (2013-12-20)
+
+- `to have properties` gets introduced.
+- Tightened up equality semantics.
+
+### v1.0.0 (2013-09-16)
+
+- First release that's not 0.x!
