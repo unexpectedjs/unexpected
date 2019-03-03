@@ -82,8 +82,8 @@ describe('to have property assertion', () => {
         '  The assertion does not have a matching signature for:\n' +
         '    <null> to have property <string>\n' +
         '  did you mean:\n' +
-        '    <object|function> [not] to have property <string>\n' +
-        '    <object|function> to have [own] property <string> <any>'
+        '    <object> [not] to have property <string>\n' +
+        '    <object> to have [own] property <string> <any>'
     );
 
     expect(
@@ -118,7 +118,7 @@ describe('to have property assertion', () => {
         '  The assertion does not have a matching signature for:\n' +
         '    <null> not to have property <string> <string>\n' +
         '  did you mean:\n' +
-        '    <object|function> [not] to have property <string>'
+        '    <object> [not] to have property <string>'
     );
 
     expect(
@@ -131,7 +131,7 @@ describe('to have property assertion', () => {
         '  The assertion does not have a matching signature for:\n' +
         '    <null> not to have own property <string> <string>\n' +
         '  did you mean:\n' +
-        '    <object|function> [not] to have own property <string>'
+        '    <object> [not] to have own property <string>'
     );
   });
 
@@ -145,7 +145,7 @@ describe('to have property assertion', () => {
         '  The assertion does not have a matching signature for:\n' +
         '    <object> not to have property <string> <string>\n' +
         '  did you mean:\n' +
-        '    <object|function> [not] to have property <string>'
+        '    <object> [not] to have property <string>'
     );
 
     expect(
@@ -157,7 +157,7 @@ describe('to have property assertion', () => {
         '  The assertion does not have a matching signature for:\n' +
         '    <object> not to have own property <string> <string>\n' +
         '  did you mean:\n' +
-        '    <object|function> [not] to have own property <string>'
+        '    <object> [not] to have own property <string>'
     );
   });
 

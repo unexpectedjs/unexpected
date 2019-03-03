@@ -195,8 +195,8 @@ describe('to have properties assertion', () => {
         '  The assertion does not have a matching signature for:\n' +
         '    <object> to have properties <string> <string>\n' +
         '  did you mean:\n' +
-        '    <object|function> [not] to have [own] properties <array>\n' +
-        '    <object|function> to have [own] properties <object>'
+        '    <object> [not] to have [own] properties <array>\n' +
+        '    <object> to have [own] properties <object>'
     );
 
     expect(
@@ -211,7 +211,7 @@ describe('to have properties assertion', () => {
         '  The assertion does not have a matching signature for:\n' +
         '    <object> not to have properties <object>\n' +
         '  did you mean:\n' +
-        '    <object|function> [not] to have [own] properties <array>'
+        '    <object> [not] to have [own] properties <array>'
     );
   });
 
