@@ -5,3 +5,5 @@
 /test/tests.html
 /test/JasmineRunner.html
 /.nyc_output/
+/unexpected.js
+/unexpected.js.map
