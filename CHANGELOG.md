@@ -1,3 +1,14 @@
+### v11.2.0 (2019-03-13)
+
+#### Pull requests
+
+- [#604](https://github.com/unexpectedjs/unexpected/pull/604) Upgrade jest to version 24.4.0 ([depfu[bot]](mailto:depfu[bot]@users.noreply.github.com))
+- [#608](https://github.com/unexpectedjs/unexpected/pull/608) Replace babel with buble ([Sune Simonsen](mailto:sune@we-knowhow.dk))
+
+#### Commits to master
+
+- [Updated the changelog](https://github.com/unexpectedjs/unexpected/commit/a3d1f22c7a5dc108b4bbeb697c4fce9597bc90c8) ([Sune Simonsen](mailto:sune@we-knowhow.dk))
+
 ### v11.1.2 (2019-03-13)
 
 #### Pull requests
