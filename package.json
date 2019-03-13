@@ -29,7 +29,7 @@
     "diff": "4.0.1",
     "greedy-interval-packer": "1.2.0",
     "leven": "2.1.0",
-    "magicpen": "6.0.1",
+    "magicpen": "^6.0.2",
     "unexpected-bluebird": "2.9.34-longstack2"
   },
   "devDependencies": {
