@@ -28,7 +28,7 @@
     "detect-indent": "3.0.1",
     "diff": "4.0.1",
     "greedy-interval-packer": "1.2.0",
-    "leven": "2.1.0",
+    "leven": "3.0.0",
     "magicpen": "^6.0.2",
     "unexpected-bluebird": "2.9.34-longstack2"
   },
