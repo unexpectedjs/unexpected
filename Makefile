@@ -21,7 +21,7 @@ build/lib: lib/*
 
 build/test: $(shell find test -type f)
 	mkdir -p ./build
-	BABEL_ENV=test ./node_modules/.bin/buble -o build/test test
+	./node_modules/.bin/buble -o build/test test
 	cp ./test/mocha.opts ./build/test/mocha.opts
 	sed -i -e 's#--require ./test#--require ./build/test#g' ./build/test/mocha.opts
 
