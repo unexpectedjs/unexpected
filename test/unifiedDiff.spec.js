@@ -126,4 +126,15 @@ describe('unifiedDiff', () => {
 
     expect(output, 'to equal', [['-', '']]);
   });
+
+  it('should not break when the ring buffer is partially filled', () => {
+    const actual = 'foo  \nbar';
+    const expected = 'foo  \nquux';
+
+    const changes = diff.diffLines(actual, expected);
+    const output = [];
+    unifiedDiff(changes, out => output.push(out));
+
+    expect(output, 'to equal', [['=', 'foo  '], ['-', 'bar'], ['+', 'quux']]);
+  });
 });
