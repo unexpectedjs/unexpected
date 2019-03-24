@@ -16,8 +16,8 @@ describe('unifiedDiff', () => {
       ['=', 'foo'],
       ['=', 'bar'],
       ['=', 'baz'],
-      ['-', 'quux'],
-      ['+', 'quuq'],
+      ['<', 'quux'],
+      ['>', 'quuq'],
       ['=', 'xuuq'],
       ['=', 'qxqx']
     ]);
@@ -35,8 +35,8 @@ describe('unifiedDiff', () => {
       ['=', 'foo'],
       ['=', 'bar'],
       ['=', 'baz'],
-      ['-', 'quux'],
-      ['+', 'quuq']
+      ['<', 'quux'],
+      ['>', 'quuq']
     ]);
   });
 
@@ -78,8 +78,8 @@ describe('unifiedDiff', () => {
       ['=', 'foo'],
       ['=', 'bar'],
       ['=', 'baz'],
-      ['-', 'quux'],
-      ['+', 'quuq'],
+      ['<', 'quux'],
+      ['>', 'quuq'],
       ['=', 'xuuq'],
       ['=', 'qxqx'],
       ['=', 'foo'],
@@ -87,8 +87,8 @@ describe('unifiedDiff', () => {
       ['=', 'foo'],
       ['=', 'bar'],
       ['=', 'baz'],
-      ['-', 'quux'],
-      ['+', 'quuq'],
+      ['<', 'quux'],
+      ['>', 'quuq'],
       ['=', 'xuuq'],
       ['=', 'qxqx']
     ]);
@@ -108,11 +108,11 @@ describe('unifiedDiff', () => {
       ['=', 'ghi'],
       ['=', 'jkl'],
       ['~'],
-      ['-', 'mno'],
-      ['+', 'mno'],
-      ['+', 'pqr'],
-      ['+', 'stu'],
-      ['+', 'vwx']
+      ['<', 'mno'],
+      ['>', 'mno'],
+      ['>', 'pqr'],
+      ['>', 'stu'],
+      ['>', 'vwx']
     ]);
   });
 
@@ -135,6 +135,6 @@ describe('unifiedDiff', () => {
     const output = [];
     unifiedDiff(changes, out => output.push(out));
 
-    expect(output, 'to equal', [['=', 'foo  '], ['-', 'bar'], ['+', 'quux']]);
+    expect(output, 'to equal', [['=', 'foo  '], ['<', 'bar'], ['>', 'quux']]);
   });
 });
