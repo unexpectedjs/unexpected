@@ -93,4 +93,26 @@ describe('unifiedDiff', () => {
       ['=', 'qxqx']
     ]);
   });
+
+  it('should support input that immediately begins with a change', () => {
+    var actual = 'abc\ndef\nghi\njkl\nmno';
+    var expected = 'ghi\njkl\nmno\npqr\nstu\nvwx';
+
+    const changes = diff.diffLines(actual, expected);
+    const output = [];
+    unifiedDiff(changes, out => output.push(out));
+
+    expect(output, 'to equal', [
+      ['-', 'abc'],
+      ['-', 'def'],
+      ['=', 'ghi'],
+      ['=', 'jkl'],
+      ['~'],
+      ['-', 'mno'],
+      ['+', 'mno'],
+      ['+', 'pqr'],
+      ['+', 'stu'],
+      ['+', 'vwx']
+    ]);
+  });
 });
