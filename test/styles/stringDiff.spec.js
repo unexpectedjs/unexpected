@@ -15,6 +15,7 @@ describe('stringDiff', () => {
           '-def\n' +
           ' ghi\n' +
           ' jkl\n' +
+          '...\n' +
           '-mno\n' +
           '+mno\n' +
           '+pqr\n' +
@@ -27,46 +28,34 @@ describe('stringDiff', () => {
         'to equal',
         expect
           .createOutput('text')
-          .block(function() {
-            this.diffRemovedLine('-')
-              .nl()
-              .diffRemovedLine('-');
-          })
-          .block(function() {
-            this.diffRemovedLine('abc')
-              .nl()
-              .diffRemovedLine('def');
-          })
+          .raw('-')
+          .diffRemovedLine('abc')
           .nl()
-          .text(' ghi')
+          .raw('-')
+          .diffRemovedLine('def')
           .nl()
-          .text(' jkl')
+          .raw(' ')
+          .text('ghi')
           .nl()
-          .block(function() {
-            this.diffRemovedLine('-');
-          })
-          .block(function() {
-            this.diffRemovedLine('mno');
-          })
+          .raw(' ')
+          .text('jkl')
           .nl()
-          .block(function() {
-            this.diffAddedLine('+')
-              .nl()
-              .diffAddedLine('+')
-              .nl()
-              .diffAddedLine('+')
-              .nl()
-              .diffAddedLine('+');
-          })
-          .block(function() {
-            this.diffAddedLine('mno')
-              .nl()
-              .diffAddedHighlight('pqr')
-              .nl()
-              .diffAddedHighlight('stu')
-              .nl()
-              .diffAddedHighlight('vwx');
-          })
+          .jsComment('...')
+          .nl()
+          .raw('-')
+          .diffRemovedLine('mno')
+          .nl()
+          .raw('+')
+          .diffAddedLine('mno')
+          .nl()
+          .raw('+')
+          .diffAddedHighlight('pqr')
+          .nl()
+          .raw('+')
+          .diffAddedHighlight('stu')
+          .nl()
+          .raw('+')
+          .diffAddedHighlight('vwx')
       );
     });
   });
@@ -86,9 +75,11 @@ describe('stringDiff', () => {
           .nl()
           .text('jkl')
           .nl()
-          .diffRemovedLine('mno')
+          .jsComment('...')
           .nl()
-          .diffAddedLine('mno')
+          .diffRemovedHighlight('mno')
+          .nl()
+          .diffAddedHighlight('mno')
           .nl()
           .diffAddedHighlight('pqr')
           .nl()
