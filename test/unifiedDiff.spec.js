@@ -115,4 +115,15 @@ describe('unifiedDiff', () => {
       ['+', 'vwx']
     ]);
   });
+
+  it('should support a newline being removed', () => {
+    const actual = '\n';
+    const expected = '';
+
+    const changes = diff.diffLines(actual, expected);
+    const output = [];
+    unifiedDiff(changes, out => output.push(out));
+
+    expect(output, 'to equal', [['-', '']]);
+  });
 });
