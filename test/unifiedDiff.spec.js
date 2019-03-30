@@ -127,6 +127,31 @@ describe('unifiedDiff', () => {
     expect(output, 'to equal', [['-', '']]);
   });
 
+  it('should always output context after a marker', () => {
+    const actual =
+      'foo1\nfoo2\nfoo3\nfoo4\nfoo5\nfoo6\nfoo7\nfoo8\nfoo9\nfoo10';
+    const expected =
+      'bar1\nfoo2\nfoo3\nfoo4\nfoo5\nfoo6\nfoo7\nfoo8\nfoo9\nbar10';
+
+    const changes = diff.diffLines(actual, expected);
+    const output = [];
+    unifiedDiff(changes, out => output.push(out));
+
+    expect(output, 'to equal', [
+      ['<', 'foo1'],
+      ['>', 'bar1'],
+      ['=', 'foo2'],
+      ['=', 'foo3'],
+      ['=', 'foo4'],
+      ['~'],
+      ['=', 'foo7'],
+      ['=', 'foo8'],
+      ['=', 'foo9'],
+      ['<', 'foo10'],
+      ['>', 'bar10']
+    ]);
+  });
+
   it('should not break when the ring buffer is partially filled', () => {
     const actual = 'foo  \nbar';
     const expected = 'foo  \nquux';
