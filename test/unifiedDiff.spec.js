@@ -137,4 +137,39 @@ describe('unifiedDiff', () => {
 
     expect(output, 'to equal', [['=', 'foo  '], ['<', 'bar'], ['>', 'quux']]);
   });
+
+  describe('when the diff ends with unchanged lines', () => {
+    it('should include a marker when there are more than context lines', () => {
+      const actual = 'bbbbb\n' + 'aaaaaaa\n'.repeat(10);
+      const expected = 'aaaaaaa\n'.repeat(10);
+
+      const changes = diff.diffLines(actual, expected);
+      const output = [];
+      unifiedDiff(changes, out => output.push(out));
+
+      expect(output, 'to equal', [
+        ['-', 'bbbbb'],
+        ['=', 'aaaaaaa'],
+        ['=', 'aaaaaaa'],
+        ['=', 'aaaaaaa'],
+        ['~']
+      ]);
+    });
+
+    it('should not include a marker when there are more than context lines', () => {
+      const actual = 'bbbbb\n' + 'aaaaaaa\n'.repeat(3);
+      const expected = 'aaaaaaa\n'.repeat(3);
+
+      const changes = diff.diffLines(actual, expected);
+      const output = [];
+      unifiedDiff(changes, out => output.push(out));
+
+      expect(output, 'to equal', [
+        ['-', 'bbbbb'],
+        ['=', 'aaaaaaa'],
+        ['=', 'aaaaaaa'],
+        ['=', 'aaaaaaa']
+      ]);
+    });
+  });
 });
