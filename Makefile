@@ -103,18 +103,9 @@ endif
 deploy-site: site-build
 	./node_modules/.bin/gh-pages -d site-build -r git@github.com:unexpectedjs/unexpectedjs.github.io.git -b master
 
-.PHONY: changelog
-changelog: git-dirty-check
-	@./node_modules/.bin/offline-github-changelog > CHANGELOG.md
-	@git add CHANGELOG.md
-	@if [ "`git status --porcelain`" != "" ]; then \
-		git commit -m "Updated the changelog" ; \
-	fi
-
 .PHONY: release-%
 release-%: git-dirty-check lint ${TARGETS} test-chrome-headless test-jasmine test-jest deploy-site
 	IS_MAKE_RELEASE=yes npm version $*
-	make changelog
 	@echo $* release ready to be publised to NPM
 	@echo Remember to push master and tags
 
