@@ -10,7 +10,7 @@ describe('unifiedDiff', () => {
 
     const changes = diff.diffLines(lhsString, rhsString);
     const output = [];
-    unifiedDiff(changes, out => output.push(out));
+    unifiedDiff(changes, (...args) => output.push(args));
 
     expect(output, 'to equal', [
       ['=', 'foo'],
@@ -29,7 +29,7 @@ describe('unifiedDiff', () => {
 
     const changes = diff.diffLines(lhsString, rhsString);
     const output = [];
-    unifiedDiff(changes, out => output.push(out));
+    unifiedDiff(changes, (...args) => output.push(args));
 
     expect(output, 'to equal', [
       ['=', 'foo'],
@@ -72,7 +72,7 @@ describe('unifiedDiff', () => {
 
     const changes = diff.diffLines(lhsString, rhsString);
     const output = [];
-    unifiedDiff(changes, out => output.push(out));
+    unifiedDiff(changes, (...args) => output.push(args));
 
     expect(output, 'to equal', [
       ['=', 'foo'],
@@ -100,7 +100,7 @@ describe('unifiedDiff', () => {
 
     const changes = diff.diffLines(actual, expected);
     const output = [];
-    unifiedDiff(changes, out => output.push(out));
+    unifiedDiff(changes, (...args) => output.push(args));
 
     expect(output, 'to equal', [
       ['-', 'abc'],
@@ -122,7 +122,7 @@ describe('unifiedDiff', () => {
 
     const changes = diff.diffLines(actual, expected);
     const output = [];
-    unifiedDiff(changes, out => output.push(out));
+    unifiedDiff(changes, (...args) => output.push(args));
 
     expect(output, 'to equal', [['-', '']]);
   });
@@ -135,7 +135,7 @@ describe('unifiedDiff', () => {
 
     const changes = diff.diffLines(actual, expected);
     const output = [];
-    unifiedDiff(changes, out => output.push(out));
+    unifiedDiff(changes, (...args) => output.push(args));
 
     expect(output, 'to equal', [
       ['<', 'foo1'],
@@ -158,7 +158,7 @@ describe('unifiedDiff', () => {
 
     const changes = diff.diffLines(actual, expected);
     const output = [];
-    unifiedDiff(changes, out => output.push(out));
+    unifiedDiff(changes, (...args) => output.push(args));
 
     expect(output, 'to equal', [['=', 'foo  '], ['<', 'bar'], ['>', 'quux']]);
   });
@@ -170,7 +170,7 @@ describe('unifiedDiff', () => {
 
       const changes = diff.diffLines(actual, expected);
       const output = [];
-      unifiedDiff(changes, out => output.push(out));
+      unifiedDiff(changes, (...args) => output.push(args));
 
       expect(output, 'to equal', [
         ['~'],
@@ -187,7 +187,7 @@ describe('unifiedDiff', () => {
 
       const changes = diff.diffLines(actual, expected);
       const output = [];
-      unifiedDiff(changes, out => output.push(out));
+      unifiedDiff(changes, (...args) => output.push(args));
 
       expect(output, 'to equal', [
         ['=', 'aaaaaaa'],
@@ -205,7 +205,7 @@ describe('unifiedDiff', () => {
 
       const changes = diff.diffLines(actual, expected);
       const output = [];
-      unifiedDiff(changes, out => output.push(out));
+      unifiedDiff(changes, (...args) => output.push(args));
 
       expect(output, 'to equal', [
         ['-', 'bbbbb'],
@@ -222,7 +222,7 @@ describe('unifiedDiff', () => {
 
       const changes = diff.diffLines(actual, expected);
       const output = [];
-      unifiedDiff(changes, out => output.push(out));
+      unifiedDiff(changes, (...args) => output.push(args));
 
       expect(output, 'to equal', [
         ['-', 'bbbbb'],
