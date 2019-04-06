@@ -124,7 +124,7 @@ describe('unifiedDiff', () => {
     const output = [];
     unifiedDiff(changes, (...args) => output.push(args));
 
-    expect(output, 'to equal', [['-', '']]);
+    expect(output, 'to equal', [['-', '', { trailingNewline: false }]]);
   });
 
   it('should support a string ending with a newline', () => {
@@ -135,7 +135,15 @@ describe('unifiedDiff', () => {
     const output = [];
     unifiedDiff(changes, (...args) => output.push(args));
 
-    expect(output, 'to equal', [['<', 'foo'], ['<', ''], ['>', 'foo']]);
+    expect(output, 'to equal', [
+      ['<', 'foo'],
+      [
+        '<',
+        '',
+        { forceHighlight: true, leadingNewline: false, trailingNewline: false }
+      ],
+      ['>', 'foo']
+    ]);
   });
 
   it('should support an empty removed line', () => {
@@ -146,7 +154,11 @@ describe('unifiedDiff', () => {
     const output = [];
     unifiedDiff(changes, (...args) => output.push(args));
 
-    expect(output, 'to equal', [['=', 'foo'], ['-', ''], ['=', 'bar']]);
+    expect(output, 'to equal', [
+      ['=', 'foo'],
+      ['-', '', { trailingNewline: false }],
+      ['=', 'bar']
+    ]);
   });
 
   it('should always output context after a marker', () => {

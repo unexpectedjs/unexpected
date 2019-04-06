@@ -58,6 +58,37 @@ describe('stringDiff', () => {
           .diffAddedHighlight('vwx')
       );
     });
+
+    it('should support a string ending with a newline', () => {
+      expect(
+        expect.createOutput('text').stringDiff('foo\n', 'foo'),
+        'to equal',
+        expect
+          .createOutput('text')
+          .raw('-')
+          .diffRemovedHighlight('foo')
+          .diffRemovedLine('\\n')
+          .nl()
+          .raw('+')
+          .diffAddedHighlight('foo')
+      );
+    });
+
+    it('should show an empty removed line', () => {
+      expect(
+        expect.createOutput('text').stringDiff('foo\n\nbar', 'foo\nbar'),
+        'to equal',
+        expect
+          .createOutput('text')
+          .raw(' ')
+          .text('foo')
+          .nl()
+          .raw('-')
+          .nl()
+          .raw(' ')
+          .text('bar')
+      );
+    });
   });
 
   describe('in ansi mode', () => {
@@ -118,6 +149,7 @@ describe('stringDiff', () => {
         expect
           .createOutput('ansi')
           .diffRemovedHighlight('  ')
+          .diffRemovedSpecialChar('\\n')
           .nl()
       );
     });
@@ -129,6 +161,7 @@ describe('stringDiff', () => {
         expect
           .createOutput('ansi')
           .diffAddedHighlight('  ')
+          .diffAddedSpecialChar('\\n')
           .nl()
       );
     });
@@ -153,12 +186,25 @@ describe('stringDiff', () => {
         'to equal',
         expect
           .createOutput('ansi')
-          .diffRemovedHighlight('aa ')
-          .diffRemovedLine(');')
+          .diffRemovedHighlight('aa );')
           .nl()
           .diffAddedSpecialChar('\\n')
+          .nl() // FIXME: should not be rendered
+          .nl() // FIXME: should not be rendered
+          .diffAddedHighlight(');')
+      );
+    });
+
+    it('should support a string ending with a newline', () => {
+      expect(
+        expect.createOutput('ansi').stringDiff('foo\n', 'foo'),
+        'to equal',
+        expect
+          .createOutput('ansi')
+          .diffRemovedHighlight('foo')
+          .diffRemovedSpecialChar('\\n')
           .nl()
-          .diffAddedLine(');')
+          .diffAddedHighlight('foo')
       );
     });
   });
