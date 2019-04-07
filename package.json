@@ -24,7 +24,7 @@
   "dependencies": {
     "array-changes": "3.0.1",
     "array-changes-async": "3.0.1",
-    "detect-indent": "5.0.0",
+    "detect-indent": "3.0.1",
     "diff": "4.0.1",
     "greedy-interval-packer": "1.2.0",
     "leven": "3.1.0",
