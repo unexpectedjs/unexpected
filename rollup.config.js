@@ -17,7 +17,10 @@ module.exports = {
       include: [
         'node_modules/leven/**/*.js',
         'node_modules/detect-indent/**/*.js'
-      ]
+      ],
+      transforms: {
+        dangerousForOf: true
+      }
     }),
     require('rollup-plugin-commonjs')(),
     require('rollup-plugin-node-resolve')(),
