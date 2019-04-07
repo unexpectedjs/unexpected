@@ -14,10 +14,7 @@ module.exports = {
   plugins: [
     /* eslint import/no-extraneous-dependencies: ["error", {"devDependencies": true}] */
     require('rollup-plugin-buble')({
-      include: [
-        'node_modules/leven/**/*.js',
-        'node_modules/detect-indent/**/*.js'
-      ]
+      include: ['node_modules/leven/**/*.js']
     }),
     require('rollup-plugin-commonjs')(),
     require('rollup-plugin-node-resolve')(),
