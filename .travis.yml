@@ -6,29 +6,29 @@ env:
 node_js:
   - '6'
   - '7'
-  - '8.4.0'
+  - '8.7.0'
   - '9'
   - '10'
 
 matrix:
   include:
-    - name: Lint (8.4.0)
-      node_js: '8.4.0'
+    - name: Lint (8.7.0)
+      node_js: '8.7.0'
       env: TARGET=lint
-    - name: Jest (8.4.0)
-      node_js: '8.4.0'
+    - name: Jest (8.7.0)
+      node_js: '8.7.0'
       env: TARGET=test-jest
-    - name: Jasmine (8.4.0)
-      node_js: '8.4.0'
+    - name: Jasmine (8.7.0)
+      node_js: '8.7.0'
       env: TARGET=test-jasmine
-    - name: Coverage (8.4.0)
-      node_js: '8.4.0'
+    - name: Coverage (8.7.0)
+      node_js: '8.7.0'
       env: TARGET=travis-coverage
     - name: BrowserStack IE11
-      node_js: '8.4.0'
+      node_js: '8.7.0'
       env: TARGET=test-browserstack-ie11
     - name: Chrome headless
-      node_js: '8.4.0'
+      node_js: '8.7.0'
       env: TARGET=test-chrome-headless
 
 addons:
