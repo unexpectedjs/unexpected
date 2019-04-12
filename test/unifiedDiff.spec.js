@@ -138,6 +138,17 @@ describe('unifiedDiff', () => {
     expect(output, 'to equal', [['<', 'foo'], ['<', ''], ['>', 'foo']]);
   });
 
+  it('should support an empty removed line', () => {
+    const actual = 'foo\n\nbar';
+    const expected = 'foo\nbar';
+
+    const changes = diff.diffLines(actual, expected);
+    const output = [];
+    unifiedDiff(changes, (...args) => output.push(args));
+
+    expect(output, 'to equal', [['=', 'foo'], ['-', ''], ['=', 'bar']]);
+  });
+
   it('should always output context after a marker', () => {
     const actual =
       'foo1\nfoo2\nfoo3\nfoo4\nfoo5\nfoo6\nfoo7\nfoo8\nfoo9\nfoo10';
