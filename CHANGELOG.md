@@ -1135,8 +1135,14 @@
 - [&lt;object&gt; to satisfy &lt;object&gt;: Pass if an object is satisfied against itself.](https://github.com/unexpectedjs/unexpected/commit/41d93d653ab299ef35493130993b282bada7eab9) ([Andreas Lind](mailto:andreas@one.com))
 - [&lt;Promise&gt; assertions: Offer footgun protection when testing promises created with other Promise libs.](https://github.com/unexpectedjs/unexpected/commit/dd99ffeafff0c29f4190f98c65b97a2ecb229715) ([Andreas Lind](mailto:andreas@one.com))
 - [Avoid Array.prototype.slice.{call,apply}\(arguments, ...\) in hot code.](https://github.com/unexpectedjs/unexpected/commit/a049f9a5a5c792603bbfa70d895998fa0898d436) ([Andreas Lind](mailto:andreas@one.com))
+
+### v10.1.0
 - [Build unexpected.js](https://github.com/unexpectedjs/unexpected/commit/19226c4b894dcec359c641b0f000faf68b64162c) ([Sune Simonsen](mailto:sune@we-knowhow.dk))
-- [+8 more](https://github.com/unexpectedjs/unexpected/compare/v10.0.2...v10.2.0)
+- [Expose withError on the top level expect](https://github.com/unexpectedjs/unexpected/commit/a5d35c88eb57720d75dd781b66e1f7e6441f2c6a) ([Sune Simonsen](mailto:sune@we-knowhow.dk))
+- [Oh, it's not https.](https://github.com/unexpectedjs/unexpected/commit/8c4753741bbca46d3c30c31f03756290dbd1d0cf) ([Andreas Lind](mailto:andreas@one.com))
+- [Plugins page: Update unexpected-moment url.](https://github.com/unexpectedjs/unexpected/commit/7b79bd0f196f111b63fef0ac6babd5d24d4c6509) ([Andreas Lind](mailto:andreas@one.com))
+- [documentation: Add unexpected-moment to the Plugins page.](https://github.com/unexpectedjs/unexpected/commit/b32be36f24e3beec778f1835abf35d9a1dd5bae0) ([Andreas Lind](mailto:andreas@one.com))
+- [+4 more](https://github.com/unexpectedjs/unexpected/compare/v10.0.2...v10.1.0)
 
 ### v10.0.2 (2015-10-23)
 
@@ -1151,7 +1157,13 @@
 - [Makefile: Fix indentation and minor cosmetics.](https://github.com/unexpectedjs/unexpected/commit/6f1be47340a9a8a2455bf8d44a3128c48c8d3ba6) ([Andreas Lind](mailto:andreas@one.com))
 - [Makefile, coverage target: Exclude bootstrap-unexpected-markdown.js instead of generate-site.js](https://github.com/unexpectedjs/unexpected/commit/26bec934faf49935c6e0f18e862f279e90c3c752) ([Andreas Lind](mailto:andreas@one.com))
 - [Also reapply the test framework patch when a parent module of index.js is retrieved from require's cache.](https://github.com/unexpectedjs/unexpected/commit/c86281e7e414729586a733e1cfa154936f5f0c65) ([Andreas Lind](mailto:andreas@one.com))
-- [+8 more](https://github.com/unexpectedjs/unexpected/compare/v10.0.0...v10.0.2)
+- [+4 more](https://github.com/unexpectedjs/unexpected/compare/v10.0.1...v10.0.2)
+
+### v10.0.1
+- [Build unexpected.js](https://github.com/unexpectedjs/unexpected/commit/9d446062213d892527bd77aa49d7c5e828b16dff) ([Andreas Lind](mailto:andreas@one.com))
+- [Fixed relaxed match.](https://github.com/unexpectedjs/unexpected/commit/b71a7b9959b846ebb19e1211ce74e614f1bb828c) ([Andreas Lind](mailto:andreas@one.com))
+- [Upgraded the documentation generator](https://github.com/unexpectedjs/unexpected/commit/983649dc3eefd30ed1b75005f4935da6608c2bf9) ([Sune Simonsen](mailto:sune@we-knowhow.dk))
+- [Updated the documentation generator](https://github.com/unexpectedjs/unexpected/commit/2269b087fbec0dcc2c084870bdde23a76368cfb5) ([Sune Simonsen](mailto:sune@we-knowhow.dk))
 
 ### v10.0.0 (2015-10-08)
 
@@ -2222,11 +2234,18 @@
 ### v1.0.13 (2013-12-05)
 
 - [Simple validation of arguments to expect](https://github.com/unexpectedjs/unexpected/commit/b8d16e93b2780aea7a7c43249c71974cd11ff3bb) ([Sune Simonsen](mailto:sune@we-knowhow.dk))
+
+### v1.0.12
 - [Set the showDiff property of the thrown errors under the same circumstances as expected\/actual, provided that the types are non-primitive and the same.](https://github.com/unexpectedjs/unexpected/commit/4f72a6a0a840734d7986d3217e6edfcc1a559b3f) ([Andreas Lind Petersen](mailto:andreas@one.com))
 - [Updated readme to avoid scrolling in examples](https://github.com/unexpectedjs/unexpected/commit/7bdec58b7fe19df271811284ed47fe0b18d221db) ([Sune Simonsen](mailto:sune@we-knowhow.dk))
+
+### v1.0.11
 - [Implemented the short string version of 'to be a ... whose items|keys|values satisfy'.](https://github.com/unexpectedjs/unexpected/commit/a79505ccc7bb207bbd7d6159c37e291942321280) ([Andreas Lind Petersen](mailto:andreas@one.com))
 - [Implement 'to be an array of &lt;type&gt;s'. Fixes \#18.](https://github.com/unexpectedjs/unexpected/commit/d081225bca2bd5df6556b043ebccb1c542ed1a01) ([Andreas Lind Petersen](mailto:andreas@one.com))
-- [+8 more](https://github.com/unexpectedjs/unexpected/compare/v1.0.10...v1.0.13)
+- [Put \(a|an\) in a consistent order.](https://github.com/unexpectedjs/unexpected/commit/19fcb258d8373e17a1cef5ae2474f0566db50f2e) ([Andreas Lind Petersen](mailto:andreas@one.com))
+- [Changed recurring regexp to require exactly three letters instead of three or more. Makes the intention clearer.](https://github.com/unexpectedjs/unexpected/commit/0e36268c9edd20978e5df6e98ae100ed727f6555) ([Andreas Lind Petersen](mailto:andreas@one.com))
+- [Use the 'to be non-empty' to make the code slightly more readable.](https://github.com/unexpectedjs/unexpected/commit/4a77d5d5210e57b4f315d95113bf1088702c40f6) ([Andreas Lind Petersen](mailto:andreas@one.com))
+- [+5 more](https://github.com/unexpectedjs/unexpected/compare/v1.0.10...v1.0.11)
 
 ### v1.0.10 (2013-11-16)
 
@@ -2243,12 +2262,9 @@
 
 ### v1.0.8 (2013-11-15)
 
-#### Pull requests
-
 - [#17](https://github.com/unexpectedjs/unexpected/pull/17) Added 'to be an array whose items satisfy' assertion ([Sune Simonsen](mailto:sune@we-knowhow.dk))
 
-#### Commits to master
-
+### v1.0.7
 - [Implemented the uncontroversial suggestions from \#15.](https://github.com/unexpectedjs/unexpected/commit/4f01be3731c218c316a34f0871cb91352ab05a90) ([Andreas Lind Petersen](mailto:andreas@one.com))
 - [Fixed typo in test.](https://github.com/unexpectedjs/unexpected/commit/8685442772c85dd4a13f754ea19307ad5d829e44) ([Andreas Lind Petersen](mailto:andreas@one.com))
 - [Use the correct plural form of 'parenthesis'.](https://github.com/unexpectedjs/unexpected/commit/7aa7793d6bc892549e8320f00ba01be6fd08f1fc) ([Andreas Lind Petersen](mailto:andreas@one.com))
