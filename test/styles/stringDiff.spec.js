@@ -124,10 +124,7 @@ describe('stringDiff', () => {
       expect(
         expect.createOutput('ansi').stringDiff('\n', ''),
         'to equal',
-        expect
-          .createOutput('ansi')
-          .diffRemovedSpecialChar('\\n')
-          .nl()
+        expect.createOutput('ansi').diffRemovedSpecialChar('\\n')
       );
     });
 
@@ -135,10 +132,7 @@ describe('stringDiff', () => {
       expect(
         expect.createOutput('ansi').stringDiff('', '\n'),
         'to equal',
-        expect
-          .createOutput('ansi')
-          .diffAddedSpecialChar('\\n')
-          .nl()
+        expect.createOutput('ansi').diffAddedSpecialChar('\\n')
       );
     });
 
@@ -146,10 +140,7 @@ describe('stringDiff', () => {
       expect(
         expect.createOutput('ansi').stringDiff('  \n', ''),
         'to equal',
-        expect
-          .createOutput('ansi')
-          .diffRemovedHighlight('  ')
-          .nl()
+        expect.createOutput('ansi').diffRemovedHighlight('  ')
       );
     });
 
@@ -157,10 +148,7 @@ describe('stringDiff', () => {
       expect(
         expect.createOutput('ansi').stringDiff('', '  \n'),
         'to equal',
-        expect
-          .createOutput('ansi')
-          .diffAddedHighlight('  ')
-          .nl()
+        expect.createOutput('ansi').diffAddedHighlight('  ')
       );
     });
 
