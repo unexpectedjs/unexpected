@@ -173,6 +173,7 @@ describe('exportAssertion', () => {
         "    -expected 'bar' to foo\n" +
         "    +expected 'barf' to foo\n" +
         '     \n' +
+        '\n' +
         '     got >>bar<< but expected >>foo<<'
     );
   });
