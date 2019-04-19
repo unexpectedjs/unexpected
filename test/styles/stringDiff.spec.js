@@ -207,18 +207,6 @@ describe('stringDiff', () => {
           .diffAddedHighlight('foo')
       );
     });
-
-    it('should support rendering regular expressions', () => {
-      expect(
-        expect.createOutput('ansi').stringDiff(String(/foq/i), String(/fob/i)),
-        'to equal',
-        expect
-          .createOutput('ansi')
-          .diffRemovedHighlight('/foq/i')
-          .nl()
-          .diffAddedHighlight('/fob/i')
-      );
-    });
   });
 
   describe('stringDiffFragment', () => {
@@ -234,6 +222,22 @@ describe('stringDiff', () => {
           .createOutput('text')
           .raw(' ')
           .text('\ufffd')
+      );
+    });
+  });
+
+  describe('regexDiff', () => {
+    it('should support rendering regular expressions', () => {
+      expect(
+        expect.createOutput('ansi').regexDiff(String(/foq/i), String(/fob/i)),
+        'to equal',
+        expect
+          .createOutput('ansi')
+          .text('/fo')
+          .diffRemovedHighlight('q')
+          .diffAddedHighlight('b')
+          .text('/i')
+          .nl()
       );
     });
   });
