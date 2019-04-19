@@ -58,6 +58,37 @@ describe('stringDiff', () => {
           .diffAddedHighlight('vwx')
       );
     });
+
+    it('should support a string ending with a newline', () => {
+      expect(
+        expect.createOutput('text').stringDiff('foo\n', 'foo'),
+        'to equal',
+        expect
+          .createOutput('text')
+          .raw('-')
+          .diffRemovedLine('foo')
+          .diffRemovedSpecialChar('\\n')
+          .nl()
+          .raw('+')
+          .diffAddedLine('foo')
+      );
+    });
+
+    it('should show an empty removed line', () => {
+      expect(
+        expect.createOutput('text').stringDiff('foo\n\nbar', 'foo\nbar'),
+        'to equal',
+        expect
+          .createOutput('text')
+          .raw(' ')
+          .text('foo')
+          .nl()
+          .raw('-')
+          .nl()
+          .raw(' ')
+          .text('bar')
+      );
+    });
   });
 
   describe('in ansi mode', () => {
@@ -159,6 +190,45 @@ describe('stringDiff', () => {
           .diffAddedSpecialChar('\\n')
           .nl()
           .diffAddedLine(');')
+      );
+    });
+
+    it('should support a string ending with a newline', () => {
+      expect(
+        expect.createOutput('ansi').stringDiff('foo\n', 'foo'),
+        'to equal',
+        expect
+          .createOutput('ansi')
+          .diffRemovedLine('foo')
+          .diffRemovedSpecialChar('\\n')
+          .nl()
+          .diffAddedLine('foo')
+      );
+    });
+
+    it('should show an empty removed line', () => {
+      expect(
+        expect.createOutput('ansi').stringDiff('foo\n\nbar', 'foo\nbar'),
+        'to equal',
+        expect
+          .createOutput('ansi')
+          .text('foo')
+          .nl()
+          .diffRemovedSpecialChar('\\n')
+          .nl()
+          .text('bar')
+      );
+    });
+
+    it('should show unexpected content when comparing to the empty string', () => {
+      expect(
+        expect.createOutput('ansi').stringDiff('foo\nbar', ''),
+        'to equal',
+        expect
+          .createOutput('ansi')
+          .diffRemovedLine('foo')
+          .nl()
+          .diffRemovedLine('bar')
       );
     });
   });
