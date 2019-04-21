@@ -128,6 +128,15 @@ if (typeof process === 'object') {
         });
       });
 
+      it('should not fail when an unresolved promise was used in a expect.promise.race construct', () => {
+        return expect(
+          'avoidPromiseRaceFootgunFalsePositive',
+          'executed through mocha'
+        ).then(([err]) => {
+          expect(err, 'to be falsy');
+        });
+      });
+
       describe('with a test suite spanning multiple files', () => {
         it('should report that a promise was created, but not returned by the it block in the first test', () => {
           return expect(
@@ -369,6 +378,15 @@ if (typeof process === 'object') {
       it('should not fail when an unresolved promise was used in a expect.promise.any construct', () => {
         return expect(
           'avoidPromiseAnyFootgunFalsePositive',
+          'executed through jest'
+        ).then(([err]) => {
+          expect(err, 'to be falsy');
+        });
+      });
+
+      it('should not fail when an unresolved promise was used in a expect.promise.race construct', () => {
+        return expect(
+          'avoidPromiseRaceFootgunFalsePositive',
           'executed through jest'
         ).then(([err]) => {
           expect(err, 'to be falsy');
