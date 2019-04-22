@@ -28,6 +28,23 @@ describe('freeze', () => {
     );
   });
 
+  it('makes .hook(...) throw', () => {
+    expect(
+      function() {
+        expect
+          .clone()
+          .freeze()
+          .hook(function(next) {
+            return function(context, args) {
+              return next(context, args);
+            };
+          });
+      },
+      'to throw',
+      'Cannot install a hook into a frozen instance, please run .clone() first'
+    );
+  });
+
   it('should allow cloning, and the clone should not be frozen', () => {
     expect
       .clone()
