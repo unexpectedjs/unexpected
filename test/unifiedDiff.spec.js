@@ -16,10 +16,13 @@ describe('unifiedDiff', () => {
       ['=', 'foo'],
       ['=', 'bar'],
       ['=', 'baz'],
-      ['<', 'quux'],
-      ['>', 'quuq'],
-      ['=', 'xuuq'],
-      ['=', 'qxqx']
+      [
+        's',
+        { replaced: true, oldValue: 'quux\n', newValue: 'quuq\n' },
+        { isLastChange: false }
+      ],
+      ['=', 'xuuq', { isLastChange: true }],
+      ['=', 'qxqx', { isLastChange: true }]
     ]);
   });
 
@@ -35,8 +38,11 @@ describe('unifiedDiff', () => {
       ['=', 'foo'],
       ['=', 'bar'],
       ['=', 'baz'],
-      ['<', 'quux'],
-      ['>', 'quuq']
+      [
+        's',
+        { replaced: true, oldValue: 'quux', newValue: 'quuq' },
+        { isLastChange: true }
+      ]
     ]);
   });
 
@@ -78,19 +84,25 @@ describe('unifiedDiff', () => {
       ['=', 'foo'],
       ['=', 'bar'],
       ['=', 'baz'],
-      ['<', 'quux'],
-      ['>', 'quuq'],
-      ['=', 'xuuq'],
-      ['=', 'qxqx'],
-      ['=', 'foo'],
+      [
+        's',
+        { replaced: true, oldValue: 'quux\n', newValue: 'quuq\n' },
+        { isLastChange: false }
+      ],
+      ['=', 'xuuq', { isLastChange: false }],
+      ['=', 'qxqx', { isLastChange: false }],
+      ['=', 'foo', { isLastChange: false }],
       ['~'],
       ['=', 'foo'],
       ['=', 'bar'],
       ['=', 'baz'],
-      ['<', 'quux'],
-      ['>', 'quuq'],
-      ['=', 'xuuq'],
-      ['=', 'qxqx']
+      [
+        's',
+        { replaced: true, oldValue: 'quux\n', newValue: 'quuq\n' },
+        { isLastChange: false }
+      ],
+      ['=', 'xuuq', { isLastChange: true }],
+      ['=', 'qxqx', { isLastChange: true }]
     ]);
   });
 
@@ -103,16 +115,16 @@ describe('unifiedDiff', () => {
     unifiedDiff(changes, (...args) => output.push(args));
 
     expect(output, 'to equal', [
-      ['-', 'abc'],
-      ['-', 'def'],
-      ['=', 'ghi'],
-      ['=', 'jkl'],
+      ['-', 'abc', { isLastChange: false }],
+      ['-', 'def', { isLastChange: false }],
+      ['=', 'ghi', { isLastChange: false }],
+      ['=', 'jkl', { isLastChange: false }],
       ['~'],
-      ['<', 'mno'],
-      ['>', 'mno'],
-      ['>', 'pqr'],
-      ['>', 'stu'],
-      ['>', 'vwx']
+      [
+        's',
+        { replaced: true, oldValue: 'mno', newValue: 'mno\npqr\nstu\nvwx' },
+        { isLastChange: true }
+      ]
     ]);
   });
 
@@ -124,7 +136,7 @@ describe('unifiedDiff', () => {
     const output = [];
     unifiedDiff(changes, (...args) => output.push(args));
 
-    expect(output, 'to equal', [['-', '']]);
+    expect(output, 'to equal', [['-', '\n', { isLastChange: true }]]);
   });
 
   it('should support a string ending with a newline', () => {
@@ -135,7 +147,13 @@ describe('unifiedDiff', () => {
     const output = [];
     unifiedDiff(changes, (...args) => output.push(args));
 
-    expect(output, 'to equal', [['<', 'foo'], ['<', ''], ['>', 'foo']]);
+    expect(output, 'to equal', [
+      [
+        's',
+        { replaced: true, oldValue: 'foo\n', newValue: 'foo' },
+        { isLastChange: true }
+      ]
+    ]);
   });
 
   it('should support an empty removed line', () => {
@@ -146,7 +164,11 @@ describe('unifiedDiff', () => {
     const output = [];
     unifiedDiff(changes, (...args) => output.push(args));
 
-    expect(output, 'to equal', [['=', 'foo'], ['-', ''], ['=', 'bar']]);
+    expect(output, 'to equal', [
+      ['=', 'foo'],
+      ['-', '', { isLastChange: false }],
+      ['=', 'bar', { isLastChange: true }]
+    ]);
   });
 
   it('should always output context after a marker', () => {
@@ -160,17 +182,23 @@ describe('unifiedDiff', () => {
     unifiedDiff(changes, (...args) => output.push(args));
 
     expect(output, 'to equal', [
-      ['<', 'foo1'],
-      ['>', 'bar1'],
-      ['=', 'foo2'],
-      ['=', 'foo3'],
-      ['=', 'foo4'],
+      [
+        's',
+        { replaced: true, oldValue: 'foo1\n', newValue: 'bar1\n' },
+        { isLastChange: false }
+      ],
+      ['=', 'foo2', { isLastChange: false }],
+      ['=', 'foo3', { isLastChange: false }],
+      ['=', 'foo4', { isLastChange: false }],
       ['~'],
       ['=', 'foo7'],
       ['=', 'foo8'],
       ['=', 'foo9'],
-      ['<', 'foo10'],
-      ['>', 'bar10']
+      [
+        's',
+        { replaced: true, oldValue: 'foo10', newValue: 'bar10' },
+        { isLastChange: true }
+      ]
     ]);
   });
 
@@ -182,7 +210,14 @@ describe('unifiedDiff', () => {
     const output = [];
     unifiedDiff(changes, (...args) => output.push(args));
 
-    expect(output, 'to equal', [['=', 'foo  '], ['<', 'bar'], ['>', 'quux']]);
+    expect(output, 'to equal', [
+      ['=', 'foo  '],
+      [
+        's',
+        { replaced: true, oldValue: 'bar', newValue: 'quux' },
+        { isLastChange: true }
+      ]
+    ]);
   });
 
   describe('when the diff starts with unchanged lines', () => {
@@ -199,7 +234,7 @@ describe('unifiedDiff', () => {
         ['=', 'aaaaaaa'],
         ['=', 'aaaaaaa'],
         ['=', 'aaaaaaa'],
-        ['-', 'bbbbb']
+        ['-', 'bbbbb', { isLastChange: true }]
       ]);
     });
 
@@ -215,7 +250,7 @@ describe('unifiedDiff', () => {
         ['=', 'aaaaaaa'],
         ['=', 'aaaaaaa'],
         ['=', 'aaaaaaa'],
-        ['-', 'bbbbb']
+        ['-', 'bbbbb', { isLastChange: true }]
       ]);
     });
   });
@@ -230,10 +265,10 @@ describe('unifiedDiff', () => {
       unifiedDiff(changes, (...args) => output.push(args));
 
       expect(output, 'to equal', [
-        ['-', 'bbbbb'],
-        ['=', 'aaaaaaa'],
-        ['=', 'aaaaaaa'],
-        ['=', 'aaaaaaa'],
+        ['-', 'bbbbb', { isLastChange: false }],
+        ['=', 'aaaaaaa', { isLastChange: true }],
+        ['=', 'aaaaaaa', { isLastChange: true }],
+        ['=', 'aaaaaaa', { isLastChange: true }],
         ['~']
       ]);
     });
@@ -247,10 +282,10 @@ describe('unifiedDiff', () => {
       unifiedDiff(changes, (...args) => output.push(args));
 
       expect(output, 'to equal', [
-        ['-', 'bbbbb'],
-        ['=', 'aaaaaaa'],
-        ['=', 'aaaaaaa'],
-        ['=', 'aaaaaaa']
+        ['-', 'bbbbb', { isLastChange: false }],
+        ['=', 'aaaaaaa', { isLastChange: true }],
+        ['=', 'aaaaaaa', { isLastChange: true }],
+        ['=', 'aaaaaaa', { isLastChange: true }]
       ]);
     });
   });
