@@ -1,5 +1,5 @@
 {
   "setupFiles": ["<rootDir>/build/test/promisePolyfill.js"],
-  "setupTestFrameworkScriptFile": "<rootDir>/build/test/common.js",
+  "setupFilesAfterEnv": ["<rootDir>/build/test/common.js"],
   "testMatch": ["<rootDir>/build/test/**.spec.js"]
 }
