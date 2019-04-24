@@ -1,6 +1,6 @@
 {
   "name": "unexpected",
-  "version": "11.2.0",
+  "version": "11.3.0",
   "author": "Sune Sloth Simonsen <sune@we-knowhow.dk>",
   "keywords": [
     "assertion",
@@ -86,7 +86,9 @@
     "setupFiles": [
       "<rootDir>/test/promisePolyfill"
     ],
-    "setupFilesAfterEnv": ["<rootDir>/test/common.js"],
+    "setupFilesAfterEnv": [
+      "<rootDir>/test/common.js"
+    ],
     "testMatch": [
       "<rootDir>/test/*.spec.js",
       "<rootDir>/test/**/*.spec.js"

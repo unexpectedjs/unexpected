@@ -1,3 +1,27 @@
+### v11.3.0 (2019-04-24)
+
+#### Pull requests
+
+- [#624](https://github.com/unexpectedjs/unexpected/pull/624) Truncate large consecutive blocks of unchanged text in the string diff ([Andreas Lind](mailto:andreaslindpetersen@gmail.com), [Sune Simonsen](mailto:sune@we-knowhow.dk))
+- [#622](https://github.com/unexpectedjs/unexpected/pull/622) Don't trigger the footgun protection when a promise is .then\(\)ed but not fully awaited ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [#621](https://github.com/unexpectedjs/unexpected/pull/621) Disallow .hook\(\) on a frozen expect ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [#620](https://github.com/unexpectedjs/unexpected/pull/620) Upgrade nyc to version 14.0.0 ([depfu[bot]](mailto:depfu[bot]@users.noreply.github.com))
+- [#618](https://github.com/unexpectedjs/unexpected/pull/618) Upgrade prettier to version 1.17.0 ([depfu[bot]](mailto:depfu[bot]@users.noreply.github.com))
+- [#619](https://github.com/unexpectedjs/unexpected/pull/619) Upgrade karma to version 4.1.0 ([depfu[bot]](mailto:depfu[bot]@users.noreply.github.com))
+- [#616](https://github.com/unexpectedjs/unexpected/pull/616) Upgrade mocha to version 6.1.2 ([Andreas Lind](mailto:andreaslindpetersen@gmail.com), [depfu[bot]](mailto:depfu[bot]@users.noreply.github.com))
+- [#614](https://github.com/unexpectedjs/unexpected/pull/614) Upgrade jasmine to version 3.4.0 ([depfu[bot]](mailto:depfu[bot]@users.noreply.github.com))
+- [#613](https://github.com/unexpectedjs/unexpected/pull/613) Update the changelog in the preversion hook, avoiding an extra commit ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [#609](https://github.com/unexpectedjs/unexpected/pull/609) No need for the BABEL\_ENV anymore ([Sune Simonsen](mailto:sune@we-knowhow.dk))
+
+#### Commits to master
+
+- [Only run the external tests through Mocha](https://github.com/unexpectedjs/unexpected/commit/168588c8554b9cb5bc40ddb6fc72407bc0fa1545) ([Sune Simonsen](mailto:sune@we-knowhow.dk))
+- [Fixed jest warning](https://github.com/unexpectedjs/unexpected/commit/fc74f69119f0d36f1f06637efa789a23344ff5c9) ([Sune Simonsen](mailto:sune@we-knowhow.dk))
+- [Update offline-github-changelog to ^1.6.1](https://github.com/unexpectedjs/unexpected/commit/cbf209ac644a41cd20f4083ffc733625610dd054) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [Use the version hook instead of preversion](https://github.com/unexpectedjs/unexpected/commit/d21792db4cd1e34cc890bda360d51afd42df5f88) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [Update karma-browserstack-launcher to 1.5.1](https://github.com/unexpectedjs/unexpected/commit/5cff4cd5af2074c3dc1089dd5cb1b37bd2125904) ([Andreas Lind](mailto:andreas.lind@peakon.com))
+- [+2 more](https://github.com/unexpectedjs/unexpected/compare/v11.2.0...v11.3.0)
+
 ### v11.2.0 (2019-03-13)
 
 #### Pull requests
