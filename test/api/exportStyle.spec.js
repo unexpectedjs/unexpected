@@ -64,4 +64,30 @@ describe('styleType', () => {
       '>>yadda<<'
     );
   });
+
+  it('passes on the allowRedefinition parameter', function() {
+    parentExpect.addStyle('fancyQuotes', function(text) {
+      this.text('"')
+        .text(text)
+        .text('"');
+    });
+    childExpect.exportStyle(
+      'fancyQuotes',
+      function(text) {
+        this.text('>>')
+          .text(text)
+          .text('<<');
+      },
+      true
+    );
+
+    expect(
+      parentExpect
+        .createOutput()
+        .fancyQuotes('yadda')
+        .toString(),
+      'to equal',
+      '>>yadda<<'
+    );
+  });
 });
