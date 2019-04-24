@@ -142,6 +142,24 @@ describe('stringDiff', () => {
       );
     });
 
+    it('does not highlight "trailing" whitespace in removed and added chunks within a line', () => {
+      expect(
+        expect
+          .createOutput('ansi')
+          .stringDiff('foo bar quux baz', 'foo quux bar baz'),
+        'to equal',
+        expect
+          .createOutput('ansi')
+          .diffRemovedLine('foo bar ')
+          .diffRemovedHighlight('quux ')
+          .diffRemovedLine('baz')
+          .nl()
+          .diffAddedLine('foo ')
+          .diffAddedHighlight('quux ')
+          .diffAddedLine('bar baz')
+      );
+    });
+
     it('does not highlight trailing whitespace in an unchanged line', () => {
       expect(
         expect.createOutput('ansi').stringDiff('foo  \nbar', 'foo  \nquux'),
