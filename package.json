@@ -88,7 +88,11 @@
     ],
     "setupFilesAfterEnv": ["<rootDir>/test/common.js"],
     "testMatch": [
-      "<rootDir>/test/**.spec.js"
+      "<rootDir>/test/*.spec.js",
+      "<rootDir>/test/**/*.spec.js"
+    ],
+    "testPathIgnorePatterns": [
+      "<rootDir>/test/external.spec.js"
     ],
     "testURL": "http://localhost/",
     "transformIgnorePatterns": [

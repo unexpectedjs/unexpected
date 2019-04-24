@@ -1,8 +1,6 @@
 {
   "spec_dir": "test",
-  "spec_files": [
-    "**/*.spec.js"
-  ],
+  "spec_files": ["**/*.spec.js", "!external.spec.js"],
   "helpers": [
     "common.js",
     "promisePolyfill.js",
