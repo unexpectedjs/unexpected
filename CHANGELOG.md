@@ -1,3 +1,8 @@
+### v11.4.0 (2019-04-25)
+
+- [#625](https://github.com/unexpectedjs/unexpected/pull/625) Do not highlight "trailing" whitespace in diff chunks that aren't the end of the line ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [#610](https://github.com/unexpectedjs/unexpected/pull/610) exportStyle: Pass on the allowRedefinition parameter to the parent's addStyle ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+
 ### v11.3.0 (2019-04-24)
 
 #### Pull requests
