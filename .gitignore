@@ -1,5 +1,6 @@
 /node_modules/
 /coverage/
+/breakage/
 /build/
 /site-build/
 /test/tests.html

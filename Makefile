@@ -86,6 +86,10 @@ test-chrome-headless: ${TARGETS}
 test-browserstack-%: ${TARGETS}
 	@./node_modules/.bin/karma start --browsers=$* --single-run
 
+.PHONY: test-plugins
+test-plugins: ${TARGETS}
+	./node_modules/.bin/fugl --config .fugl.json --reporter html --ci
+
 .PHONY: travis-coverage
 travis-coverage: clean coverage
 	-<coverage/lcov.info ./node_modules/coveralls/bin/coveralls.js

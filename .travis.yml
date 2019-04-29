@@ -23,6 +23,9 @@ matrix:
     - name: Coverage (8.7.0)
       node_js: '8.7.0'
       env: TARGET=travis-coverage
+    - name: Plugins (8.7.0)
+      node_js: '8.7.0'
+      env: TARGET=test-plugins
     - name: BrowserStack IE11
       node_js: '8.7.0'
       env: TARGET=test-browserstack-ie11
