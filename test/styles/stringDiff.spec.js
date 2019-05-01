@@ -142,6 +142,22 @@ describe('stringDiff', () => {
       );
     });
 
+    it('highlights missing trailing whitespace in the last line without newline after', () => {
+      expect(
+        expect.createOutput('ansi').stringDiff('', ' '),
+        'to equal',
+        expect.createOutput('ansi').diffAddedHighlight(' ')
+      );
+    });
+
+    it('highlights extraneous trailing whitespace in the last line without newline after', () => {
+      expect(
+        expect.createOutput('ansi').stringDiff(' ', ''),
+        'to equal',
+        expect.createOutput('ansi').diffRemovedHighlight(' ')
+      );
+    });
+
     it('does not highlight "trailing" whitespace in removed and added chunks within a line', () => {
       expect(
         expect
