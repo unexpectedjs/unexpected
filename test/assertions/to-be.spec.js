@@ -146,6 +146,39 @@ describe('to be assertion', () => {
       );
     });
 
+    // These would be annoying to look at
+    it('does not produce ... 1 lines omitted ... lines', () => {
+      expect(
+        () =>
+          expect(
+            'a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\nl\nm\nn\no\np\nq\n',
+            'to equal',
+            'a\nb\nc\nd\nf\ng\nh\ni\nj\nk\nl\nn\no\np\nq\n'
+          ),
+        'to throw',
+        "expected 'a\\nb\\nc\\nd\\ne\\nf\\ng\\nh\\ni\\nj\\nk\\nl\\nm\\nn\\no\\np\\nq\\n'\n" +
+          "to equal 'a\\nb\\nc\\nd\\nf\\ng\\nh\\ni\\nj\\nk\\nl\\nn\\no\\np\\nq\\n'\n" +
+          '\n' +
+          ' a\n' +
+          ' b\n' +
+          ' c\n' +
+          ' d\n' +
+          '-e\n' +
+          ' f\n' +
+          ' g\n' +
+          ' h\n' +
+          ' i\n' +
+          ' j\n' +
+          ' k\n' +
+          ' l\n' +
+          '-m\n' +
+          ' n\n' +
+          ' o\n' +
+          ' p\n' +
+          ' q\n'
+      );
+    });
+
     it('truncates lines in large in the start and end', () => {
       const paragraphs = `\
         Bacon ipsum dolor amet tri-tip kielbasa kevin spare ribs. Sirloin chuck jerky
