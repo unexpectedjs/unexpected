@@ -1,3 +1,9 @@
+### v11.4.1 (2019-05-02)
+
+- [#627](https://github.com/unexpectedjs/unexpected/pull/627) Always omit at least two lines in string diffs ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [#628](https://github.com/unexpectedjs/unexpected/pull/628) Fix highlighting of diffing trailing whitespace in the last line ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [#626](https://github.com/unexpectedjs/unexpected/pull/626) Wire a plugins build canary target into the Travis build matrix. ([Alex J Burke](mailto:alex@alexjeffburke.com))
+
 ### v11.4.0 (2019-04-25)
 
 - [#625](https://github.com/unexpectedjs/unexpected/pull/625) Do not highlight "trailing" whitespace in diff chunks that aren't the end of the line ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
