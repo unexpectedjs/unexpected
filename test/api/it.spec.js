@@ -314,55 +314,112 @@ describe('expect.it', () => {
   });
 
   describe('with forwarding of flags', () => {
-    var clonedExpect = expect
-      .clone()
-      .addAssertion('<object> [not] to have a foo property of bar', function(
-        expect,
-        subject
-      ) {
-        return expect(subject, 'to satisfy', {
-          foo: expect.it('[not] to equal', 'bar')
+    describe('directly', () => {
+      var clonedExpect = expect
+        .clone()
+        .addAssertion('<object> [not] to have a foo property of bar', function(
+          expect,
+          subject
+        ) {
+          return expect(subject, 'to satisfy', {
+            foo: expect.it('[not] to equal', 'bar')
+          });
+        });
+
+      describe('when the flag is not being forwarded', () => {
+        it('should succeed', () => {
+          clonedExpect({ foo: 'bar' }, 'to have a foo property of bar');
+        });
+
+        it('should fail with a diff', () => {
+          return expect(
+            function() {
+              clonedExpect({ quux: 123 }, 'to have a foo property of bar');
+            },
+            'to throw',
+            'expected { quux: 123 } to have a foo property of bar\n' +
+              '\n' +
+              '{\n' +
+              '  quux: 123\n' +
+              "  // missing: foo: should equal 'bar'\n" +
+              '}'
+          );
         });
       });
 
-    describe('when the flag is not being forwarded', () => {
-      it('should succeed', () => {
-        clonedExpect({ foo: 'bar' }, 'to have a foo property of bar');
-      });
+      describe('when the flag is being forwarded', () => {
+        it('should succeed', () => {
+          clonedExpect({ quux: 123 }, 'not to have a foo property of bar');
+        });
 
-      it('should fail with a diff', () => {
-        return expect(
-          function() {
-            clonedExpect({ quux: 123 }, 'to have a foo property of bar');
-          },
-          'to throw',
-          'expected { quux: 123 } to have a foo property of bar\n' +
-            '\n' +
-            '{\n' +
-            '  quux: 123\n' +
-            "  // missing: foo: should equal 'bar'\n" +
-            '}'
-        );
+        it('should fail with a diff', () => {
+          return expect(
+            function() {
+              clonedExpect({ foo: 'bar' }, 'not to have a foo property of bar');
+            },
+            'to throw',
+            "expected { foo: 'bar' } not to have a foo property of bar\n" +
+              '\n' +
+              '{\n' +
+              "  foo: 'bar' // should not equal 'bar'\n" +
+              '}'
+          );
+        });
       });
     });
 
-    describe('when the flag is being forwarded', () => {
-      it('should succeed', () => {
-        clonedExpect({ quux: 123 }, 'not to have a foo property of bar');
+    describe('through an <assertion> being shifted to', () => {
+      var clonedExpect = expect
+        .clone()
+        .addAssertion('<object> [not] to have a foo property of bar', function(
+          expect,
+          subject
+        ) {
+          return expect(subject, 'to satisfy', {
+            foo: expect.it('noop', '[not] to equal', 'bar')
+          });
+        })
+        .addAssertion('<any> noop <assertion>', expect => expect.shift());
+
+      describe('when the flag is not being forwarded', () => {
+        it('should succeed', () => {
+          clonedExpect({ foo: 'bar' }, 'to have a foo property of bar');
+        });
+
+        it('should fail with a diff', () => {
+          return expect(
+            function() {
+              clonedExpect({ quux: 123 }, 'to have a foo property of bar');
+            },
+            'to throw',
+            'expected { quux: 123 } to have a foo property of bar\n' +
+              '\n' +
+              '{\n' +
+              '  quux: 123\n' +
+              "  // missing: foo: expected: noop to equal 'bar'\n" +
+              '}'
+          );
+        });
       });
 
-      it('should fail with a diff', () => {
-        return expect(
-          function() {
-            clonedExpect({ foo: 'bar' }, 'not to have a foo property of bar');
-          },
-          'to throw',
-          "expected { foo: 'bar' } not to have a foo property of bar\n" +
-            '\n' +
-            '{\n' +
-            "  foo: 'bar' // should not equal 'bar'\n" +
-            '}'
-        );
+      describe('when the flag is being forwarded', () => {
+        it('should succeed', () => {
+          clonedExpect({ quux: 123 }, 'not to have a foo property of bar');
+        });
+
+        it('should fail with a diff', () => {
+          return expect(
+            function() {
+              clonedExpect({ foo: 'bar' }, 'not to have a foo property of bar');
+            },
+            'to throw',
+            "expected { foo: 'bar' } not to have a foo property of bar\n" +
+              '\n' +
+              '{\n' +
+              "  foo: 'bar' // expected: noop not to equal 'bar'\n" +
+              '}'
+          );
+        });
       });
     });
   });
