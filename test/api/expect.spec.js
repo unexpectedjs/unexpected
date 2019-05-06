@@ -1,4 +1,4 @@
-/*global expect*/
+/* global expect */
 describe('expect', function() {
   it('should forward flags to assertion strings that are processed by the next assertion', function() {
     var clonedExpect = expect.clone();
