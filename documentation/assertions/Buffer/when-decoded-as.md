@@ -28,7 +28,8 @@ expect(
 ```
 
 ```output
-expected Buffer([0xE2, 0x98, 0xBA]) when decoded as 'utf-8' to equal 'happy face'
+expected Buffer.from([0xE2, 0x98, 0xBA])
+when decoded as 'utf-8' to equal 'happy face'
 
 -☺
 +happy face
