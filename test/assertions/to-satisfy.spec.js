@@ -1299,7 +1299,7 @@ describe('to satisfy assertion', () => {
             );
           },
           'to throw',
-          'expected Buffer([0x01, 0x02, 0x03]) to equal Buffer([0x01, 0x02, 0x04])\n' +
+          'expected Buffer.from([0x01, 0x02, 0x03]) to equal Buffer.from([0x01, 0x02, 0x04])\n' +
             '\n' +
             '-01 02 03                                         │...│\n' +
             '+01 02 04                                         │...│'
@@ -1325,10 +1325,10 @@ describe('to satisfy assertion', () => {
               );
             },
             'to throw',
-            'expected Buffer([0x62, 0x61, 0x72])\n' +
-              "to satisfy expect.it('to equal', Buffer([0x66, 0x6F, 0x6F]))\n" +
+            'expected Buffer.from([0x62, 0x61, 0x72])\n' +
+              "to satisfy expect.it('to equal', Buffer.from([0x66, 0x6F, 0x6F]))\n" +
               '\n' +
-              'expected Buffer([0x62, 0x61, 0x72]) to equal Buffer([0x66, 0x6F, 0x6F])\n' +
+              'expected Buffer.from([0x62, 0x61, 0x72]) to equal Buffer.from([0x66, 0x6F, 0x6F])\n' +
               '\n' +
               '-62 61 72                                         │bar│\n' +
               '+66 6F 6F                                         │foo│'
@@ -1371,11 +1371,11 @@ describe('to satisfy assertion', () => {
               )
             ),
             'to be rejected with',
-            'expected Buffer([0x00, 0x01, 0x02])\n' +
-              "to satisfy expect.it('when delayed a little bit', 'to equal', Buffer([0x02, 0x01, 0x00]))\n" +
+            'expected Buffer.from([0x00, 0x01, 0x02])\n' +
+              "to satisfy expect.it('when delayed a little bit', 'to equal', Buffer.from([0x02, 0x01, 0x00]))\n" +
               '\n' +
-              'expected Buffer([0x00, 0x01, 0x02])\n' +
-              'when delayed a little bit to equal Buffer([0x02, 0x01, 0x00])\n' +
+              'expected Buffer.from([0x00, 0x01, 0x02])\n' +
+              'when delayed a little bit to equal Buffer.from([0x02, 0x01, 0x00])\n' +
               '\n' +
               '-00 01 02                                         │...│\n' +
               '+02 01 00                                         │...│'
