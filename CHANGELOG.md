@@ -1,3 +1,8 @@
+### v11.5.0 (2019-05-10)
+
+- [#632](https://github.com/unexpectedjs/unexpected/pull/632) Inspect Buffers with Buffer.from\(\[0x00, ...\]\) instead of Buffer\(\[0x00, ...\]\) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [#630](https://github.com/unexpectedjs/unexpected/pull/630) Upgrade eslint-plugin-node to version 9.0.1 ([depfu[bot]](mailto:depfu[bot]@users.noreply.github.com))
+
 ### v11.4.1 (2019-05-02)
 
 - [#627](https://github.com/unexpectedjs/unexpected/pull/627) Always omit at least two lines in string diffs ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
