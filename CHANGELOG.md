@@ -1,3 +1,7 @@
+### v11.5.1 (2019-05-12)
+
+- [#633](https://github.com/unexpectedjs/unexpected/pull/633) Fix compatibility with the esm module loader ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+
 ### v11.5.0 (2019-05-10)
 
 - [#632](https://github.com/unexpectedjs/unexpected/pull/632) Inspect Buffers with Buffer.from\(\[0x00, ...\]\) instead of Buffer\(\[0x00, ...\]\) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
