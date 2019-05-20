@@ -16,7 +16,7 @@ module.exports = {
     require('rollup-plugin-commonjs')(),
     require('rollup-plugin-node-resolve')(),
     require('rollup-plugin-node-globals')(),
-    require('rollup-plugin-uglify').uglify({
+    require('rollup-plugin-terser').terser({
       output: {
         comments: function(node, comment) {
           return /^!|@preserve|@license|@cc_on/i.test(comment.value);

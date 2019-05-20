@@ -65,10 +65,10 @@
     "rollup-plugin-commonjs": "^10.0.0",
     "rollup-plugin-node-globals": "^1.1.0",
     "rollup-plugin-node-resolve": "^5.0.0",
+    "rollup-plugin-terser": "^4.0.4",
     "rollup-plugin-uglify": "^6.0.0",
     "rsvp": "^4.7.0",
     "serve": "*",
-    "uglify-js": "3.5.12",
     "unexpected-documentation-site-generator": "^6.0.0",
     "unexpected-magicpen": "^1.0.0",
     "unexpected-markdown": "^3.0.0"
