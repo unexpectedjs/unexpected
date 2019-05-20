@@ -1,3 +1,16 @@
+### v11.6.0 (2019-05-20)
+
+#### Pull requests
+
+- [#555](https://github.com/unexpectedjs/unexpected/pull/555) expect.it: Forward flags to assertions further down the parameter list ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [#636](https://github.com/unexpectedjs/unexpected/pull/636) Upgrade rollup-plugin-commonjs to version 10.0.0 ([depfu[bot]](mailto:depfu[bot]@users.noreply.github.com))
+
+#### Commits to master
+
+- [Hardwire uglify-js at 3.5.12 in an attempt to fix the build](https://github.com/unexpectedjs/unexpected/commit/54e492df7625627d80bdca009468dadc7e64e77a) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [Revert "Revert "Merge pull request \#636 from unexpectedjs\/depfu\/update\/npm\/rollup-plugin-commonjs-10.0.0""](https://github.com/unexpectedjs/unexpected/commit/e3894ac4451dc46e67a11411830bae679d4307fe) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [Revert "Merge pull request \#636 from unexpectedjs\/depfu\/update\/npm\/rollup-plugin-commonjs-10.0.0"](https://github.com/unexpectedjs/unexpected/commit/f710d0ade735b2dac8fff425d5b366ca0f6a26dc) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+
 ### v11.5.1 (2019-05-12)
 
 - [#633](https://github.com/unexpectedjs/unexpected/pull/633) Fix compatibility with the esm module loader ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
