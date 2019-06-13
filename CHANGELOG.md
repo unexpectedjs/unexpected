@@ -1,3 +1,16 @@
+### v11.6.1 (2019-06-13)
+
+#### Pull requests
+
+- [#642](https://github.com/unexpectedjs/unexpected/pull/642) Fix context reset for child expect's ([Sune Simonsen](mailto:sune@we-knowhow.dk))
+- [#641](https://github.com/unexpectedjs/unexpected/pull/641) Upgrade prettier to version 1.18.2 ([Andreas Lind](mailto:andreaslindpetersen@gmail.com), [depfu[bot]](mailto:depfu[bot]@users.noreply.github.com))
+- [#639](https://github.com/unexpectedjs/unexpected/pull/639) Upgrade rollup-plugin-terser to version 5.0.0 ([depfu[bot]](mailto:depfu[bot]@users.noreply.github.com))
+- [#638](https://github.com/unexpectedjs/unexpected/pull/638) Replace uglify-js with terser ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+
+#### Commits to master
+
+- [Update rollup-plugin-node-resolve to version 5.0.0](https://github.com/unexpectedjs/unexpected/commit/284a61f20b68e8c6ae761816d4ff198979b4ff42) ([depfu[bot]](mailto:depfu[bot]@users.noreply.github.com))
+
 ### v11.6.0 (2019-05-20)
 
 #### Pull requests
