@@ -287,4 +287,29 @@ describe('exportAssertion', () => {
       );
     });
   });
+
+  it('uses the current context', () => {
+    childExpect.exportAssertion(
+      '<string> to have context value <any>',
+      function(expect, field, value) {
+        expect(expect.context[field], 'to equal', value);
+      }
+    );
+
+    parentExpect.addAssertion(
+      '<any> when set on the context as <string> <assertion>',
+      function(expect, value, field) {
+        expect.context[field] = value;
+        expect.shift(field);
+      }
+    );
+
+    parentExpect(
+      42,
+      'when set on the context as',
+      'magicNumber',
+      'to have context value',
+      42
+    );
+  });
 });
