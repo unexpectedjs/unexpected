@@ -1,5 +1,7 @@
 Asserts that a value matches a given specification.
 
+## object
+
 All properties and nested objects mentioned in the right-hand side object are
 required to be present. Primitive values are compared with `to equal` semantics:
 
@@ -22,7 +24,11 @@ against the corresponding values in the subject:
 expect({ bar: 'quux', baz: true }, 'to satisfy', { bar: /QU*X/i });
 ```
 
-Arrays in the right-hand side will require all the items to be present:
+## array-like
+
+When satisfying against an array-like, length is always taken into account.
+The behaviour is thus to specify the specification of each item that is expected
+in the array:
 
 ```js
 expect([0, 1, 2], 'to satisfy', [0, 1]);
@@ -38,26 +44,46 @@ expected [ 0, 1, 2 ] to satisfy [ 0, 1 ]
 ]
 ```
 
-If you want to make assertions about the individual indexes in an array, you can
-do it the following way:
+In order to make statements about a subset of the available indices, an object
+specification on the right hand side can mention specific indexes as keys which
+are themselves compared using `to satisfy` semantics:
 
 ```js
-expect([0, 1, 2, 3], 'to satisfy', { 1: 2, 2: 1 });
+expect(['foo', 'catch me', 'baz'], 'to satisfy', { 1: 'bar' });
 ```
 
 ```output
-expected [ 0, 1, 2, 3 ] to satisfy { 1: 2, 2: 1 }
+expected [ 'foo', 'catch me', 'baz' ] to satisfy { 1: 'bar' }
 
 [
-  0,
-  1, // should equal 2
-  2, // should equal 1
-  3
+  'foo',
+  'catch me', // should equal 'bar'
+              //
+              // -catch me
+              // +bar
+  'baz'
 ]
 ```
 
-`to satisfy` can be combined with `expect.it` or functions to create complex
-specifications that delegate to existing assertions:
+### arrays with non-numeric properties
+
+In JavaScript, arrays are themselves objects which means they support properties
+being attached. An object on the right-hand side can also be used to check the
+values belonging to such keys:
+
+```js
+const arrayWithNonNumerics = ['foo', 'bar'];
+
+arrayWithNonNumerics.someProperty = 'baz';
+
+expect(arrayWithNonNumerics, 'to satisfy', { someProperty: 'baz' });
+```
+
+## Complex specifications
+
+`to satisfy` specifications allow complex statements to be made about the values
+corresponding to a specific key. When combined with `expect.it` these specifications
+can delegate to other assertions:
 
 ```js
 expect({ foo: 123, bar: 'bar', baz: 'bogus', qux: 42 }, 'to satisfy', {
