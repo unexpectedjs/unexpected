@@ -17,8 +17,8 @@ expect({ hey: { there: true } }, 'to exhaustively satisfy', {
 });
 ```
 
-Regular expressions and functions in the right-hand side object will be run
-against the corresponding values in the subject:
+Regular expressions and `expect.it` expressions in the right-hand side object
+will be run against the corresponding values in the subject:
 
 ```js
 expect({ bar: 'quux', baz: true }, 'to satisfy', { bar: /QU*X/i });
