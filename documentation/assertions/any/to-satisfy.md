@@ -49,6 +49,14 @@ specification on the right hand side can mention specific indexes as keys which
 are themselves compared using `to satisfy` semantics:
 
 ```js
+expect([{ greeting: true }, { hey: { there: true } }], 'to satisfy', {
+  1: { hey: { there: true } }
+});
+```
+
+In the case of a failing expectation, output such as the following is generated:
+
+```js
 expect(['foo', 'catch me', 'baz'], 'to satisfy', { 1: 'bar' });
 ```
 
