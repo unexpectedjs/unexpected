@@ -26,9 +26,9 @@ expect({ bar: 'quux', baz: true }, 'to satisfy', { bar: /QU*X/i });
 
 ## array-like
 
-When satisfying against an array-like, length is always taken into account.
-The behaviour is thus to specify the specification of each item that is expected
-in the array:
+When satisfying against an array-like, length is always taken into account. The
+effect is that the asasertion allows making statements via a specification of
+each element that is expected to be in the array:
 
 ```js
 expect([0, 1, 2], 'to satisfy', [0, 1]);
