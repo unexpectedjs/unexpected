@@ -45,7 +45,7 @@ expected [ 0, 1, 2 ] to satisfy [ 0, 1 ]
 ```
 
 In order to make statements about a subset of the available indices, an object
-specification on the right hand side can mention specific indexes as keys which
+specification on the right-hand side can mention specific indexes as keys which
 are themselves compared using `to satisfy` semantics:
 
 ```js
