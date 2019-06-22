@@ -90,7 +90,7 @@ arrayWithNonNumerics.someProperty = 'baz';
 expect(arrayWithNonNumerics, 'to satisfy', { someProperty: 'baz' });
 ```
 
-## [Complex specifications](#complex-specifications)
+## complex specifications
 
 `to satisfy` specifications allow complex statements to be made about the values
 corresponding to a specific key. Using the `expect.it` function these specifications
