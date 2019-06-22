@@ -17,12 +17,15 @@ expect({ hey: { there: true } }, 'to exhaustively satisfy', {
 });
 ```
 
-Regular expressions and `expect.it` expressions in the right-hand side object
-will be run against the corresponding values in the subject:
+Regular expressions in the right-hand side object will be run against the
+corresponding value in the subject:
 
 ```js
 expect({ bar: 'quux', baz: true }, 'to satisfy', { bar: /QU*X/i });
 ```
+
+Additional support exists for making statements about valid values and this is
+detailed in the [complex specifications](#complex-specifications) section below.
 
 ## array-like
 
@@ -87,10 +90,10 @@ arrayWithNonNumerics.someProperty = 'baz';
 expect(arrayWithNonNumerics, 'to satisfy', { someProperty: 'baz' });
 ```
 
-## Complex specifications
+## [Complex specifications](#complex-specifications)
 
 `to satisfy` specifications allow complex statements to be made about the values
-corresponding to a specific key. When combined with `expect.it` these specifications
+corresponding to a specific key. Using the `expect.it` function these specifications
 can delegate to other assertions:
 
 ```js
