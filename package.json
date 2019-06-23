@@ -34,7 +34,7 @@
   "devDependencies": {
     "buble": "^0.19.7",
     "coveralls": "^3.0.0",
-    "eslint": "^5.11.1",
+    "eslint": "^6.0.0",
     "eslint-config-prettier": "^5.0.0",
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-import": "^2.14.0",
