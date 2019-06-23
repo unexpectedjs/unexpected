@@ -1,4 +1,4 @@
-/* global jasmine, it:true, xdescribe, xit, beforeAll, afterAll, before:true, after:true */
+/* global jasmine, beforeAll, afterAll */
 function jasmineFail(err) {
   if (typeof jasmine === 'object') {
     jasmine.getEnv().fail(err);
@@ -21,6 +21,7 @@ var shouldApplyPatch =
 
 if (typeof it === 'function' && shouldApplyPatch) {
   var originalIt = it;
+  // eslint-disable-next-line no-global-assign
   it = function(title, fn) {
     if (!fn) {
       return originalIt(title);
@@ -92,5 +93,7 @@ if (!describe.skip && xdescribe) {
   };
 }
 
+// eslint-disable-next-line no-global-assign
 before = typeof before === 'function' ? before : beforeAll;
+// eslint-disable-next-line no-global-assign
 after = typeof after === 'function' ? after : afterAll;

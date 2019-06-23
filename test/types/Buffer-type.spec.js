@@ -1,4 +1,4 @@
-/* global expect, Buffer */
+/* global expect */
 if (typeof Buffer === 'function') {
   describe('Buffer type', () => {
     it('should consider an instance equal to itself', () => {

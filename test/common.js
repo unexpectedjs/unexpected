@@ -1,4 +1,4 @@
-/* global unexpected:true, expect:true, expectWithUnexpectedMagicPen:true, setImmediate:true, weknowhow, jasmine */
+/* global unexpected:true, expect:true, expectWithUnexpectedMagicPen:true, weknowhow, jasmine */
 /* eslint no-unused-vars: "off" */
 unexpected =
   typeof weknowhow === 'undefined'
@@ -54,6 +54,7 @@ expectWithUnexpectedMagicPen = unexpected
   );
 
 if (typeof setImmediate !== 'function') {
+  // eslint-disable-next-line no-global-assign
   setImmediate = function(cb) {
     setTimeout(cb, 0);
   };
