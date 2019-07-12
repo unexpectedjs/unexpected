@@ -38,6 +38,7 @@ Here is a list of plugins that is maintained by the unexpected team.
 - [unexpected-generator](https://github.com/gertsonderby/unexpected-generator): Assertions for ES2015 generators and iterators.
 - [unexpected-preact](https://bruderstein.github.io/unexpected-preact/): Assertions for preact.js
 - [unexpected-react](https://bruderstein.github.io/unexpected-react): Assertions for React.js. Assert using JSX.
+- [unexpected-rxjs](https://github.com/IBM/unexpected-rxjs): Assertions for RxJS.
 - [unexpected-webdriver](https://github.com/fgnass/unexpected-webdriver): Assertions for Selenium WebDriver.
 
 ## Installation
