@@ -15,6 +15,7 @@ describe('to be assertion', () => {
     expect(false, 'not to be true');
     expect(false, 'to be false');
     expect(true, 'not to be false');
+    expect(undefined, 'not to be defined');
     expect(undefined, 'to be undefined');
     expect(false, 'to be defined');
     expect({}, 'to be defined');
