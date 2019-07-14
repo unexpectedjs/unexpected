@@ -1,7 +1,15 @@
-### v11.6.1 (2019-06-13)
+### v11.7.0 (2019-07-14)
 
 #### Pull requests
 
+- [#651](https://github.com/unexpectedjs/unexpected/pull/651) Allow "not to be defined" to check for undefined. ([Alex J Burke](mailto:alex@alexjeffburke.com))
+- [#652](https://github.com/unexpectedjs/unexpected/pull/652) Upgrade karma-chrome-launcher to version 3.0.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#650](https://github.com/unexpectedjs/unexpected/pull/650) Upgrade eslint-config-standard to version 13.0.1 ([Andreas Lind](mailto:andreaslindpetersen@gmail.com), [depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#648](https://github.com/unexpectedjs/unexpected/pull/648) Upgrade eslint-config-prettier to version 6.0.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#646](https://github.com/unexpectedjs/unexpected/pull/646) Upgrade unexpected-markdown to version 4.0.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#647](https://github.com/unexpectedjs/unexpected/pull/647) Upgrade unexpected-magicpen to version 2.0.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#644](https://github.com/unexpectedjs/unexpected/pull/644) Rework "to satisfy" documentation to clarify the semantics. ([Alex J Burke](mailto:alex@alexjeffburke.com), [Sune Simonsen](mailto:sune@we-knowhow.dk))
+- [#643](https://github.com/unexpectedjs/unexpected/pull/643) Upgrade eslint-config-prettier to version 5.0.0 ([depfu[bot]](mailto:depfu[bot]@users.noreply.github.com))
 - [#642](https://github.com/unexpectedjs/unexpected/pull/642) Fix context reset for child expect's ([Sune Simonsen](mailto:sune@we-knowhow.dk))
 - [#641](https://github.com/unexpectedjs/unexpected/pull/641) Upgrade prettier to version 1.18.2 ([Andreas Lind](mailto:andreaslindpetersen@gmail.com), [depfu[bot]](mailto:depfu[bot]@users.noreply.github.com))
 - [#639](https://github.com/unexpectedjs/unexpected/pull/639) Upgrade rollup-plugin-terser to version 5.0.0 ([depfu[bot]](mailto:depfu[bot]@users.noreply.github.com))
@@ -9,6 +17,10 @@
 
 #### Commits to master
 
+- [Actually add the new unexpected-rxjs to the plugin docs](https://github.com/unexpectedjs/unexpected/commit/3b08c7db861430796cf59cf24dc46401255aa71b) ([Sune Simonsen](mailto:sune@we-knowhow.dk))
+- [Fix lint](https://github.com/unexpectedjs/unexpected/commit/33209a92a89c1852e8d9e64c6e9b13d963280534) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [Remove no longer used rollup-plugin-uglify](https://github.com/unexpectedjs/unexpected/commit/f9102bc737723bc50c0b07f6fc0f1ad772915991) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [Fix complex specifications link target.](https://github.com/unexpectedjs/unexpected/commit/039e123594f235fb1357ad5f89b98e84c943cb2f) ([Alex J Burke](mailto:alex@alexjeffburke.com))
 - [Update rollup-plugin-node-resolve to version 5.0.0](https://github.com/unexpectedjs/unexpected/commit/284a61f20b68e8c6ae761816d4ff198979b4ff42) ([depfu[bot]](mailto:depfu[bot]@users.noreply.github.com))
 
 ### v11.6.0 (2019-05-20)
