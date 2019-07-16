@@ -53,7 +53,7 @@ to satisfy { name: 'Unexpected', created: 2013 }
 - Provides really nice error messages
 - Helps if you misspell assertions
 - Compatible with all test frameworks
-- Node.JS ready (`require('unexpected')`)
+- Node.js ready (`require('unexpected')`)
 - Supports [asynchronous assertions using promises](./api/addAssertion/#asynchronous-assertions)
 - Single global with no prototype extensions or shims
 - Cross-browser: works on Chrome, Firefox, Safari, Opera, IE11, Edge
