@@ -8,3 +8,5 @@
 /.nyc_output/
 /unexpected.js
 /unexpected.js.map
+/unexpected-deno.js
+/unexpected-deno.js.map
