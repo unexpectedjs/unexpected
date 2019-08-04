@@ -16,15 +16,11 @@ const plugins = [
 ];
 
 if (process.env.DENO_BUILD) {
-  // Add a bogus plugin that gets rid of support-colors' require of the 'os' module:
-  plugins.unshift({
-    renderChunk(code, chunk, outputOptions) {
-      return code.replace(
-        "import os from 'os';",
-        "var os = {release() {return '4.15.0-43-generic';}}"
-      );
-    }
-  });
+  // leave the os require in the tree as that codepath is not
+  // taken when executed in Deno after magicpen porting work
+  plugins[0] = require('rollup-plugin-commonjs')({
+    ignore: ['os']
+  })
 }
 
 module.exports = {
