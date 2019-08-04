@@ -93,6 +93,11 @@ test-browserstack-%: ${TARGETS}
 test-plugins: ${TARGETS}
 	./node_modules/.bin/fugl --config .fugl.json --reporter html --ci
 
+.PHONY: test-deno
+test-deno: ${TARGETS}
+	curl -fsSL https://deno.land/x/install/install.sh | sh
+	~/.deno/bin/deno test-deno.js
+
 .PHONY: travis-coverage
 travis-coverage: clean coverage
 	-<coverage/lcov.info ./node_modules/coveralls/bin/coveralls.js

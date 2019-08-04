@@ -32,6 +32,9 @@ matrix:
     - name: Chrome headless
       node_js: '8.7.0'
       env: TARGET=test-chrome-headless
+    - name: Deno
+      node_js: '8.7.0'
+      env: TARGET=test-deno
 
 addons:
   chrome: stable
