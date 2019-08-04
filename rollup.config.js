@@ -3,7 +3,11 @@ const pathModule = require('path');
 
 const plugins = [
   /* eslint import/no-extraneous-dependencies: ["error", {"devDependencies": true}] */
-  require('rollup-plugin-commonjs')(),
+  require('rollup-plugin-commonjs')({
+    // leave the os require in the tree as that codepath is not
+    // taken when executed in Deno after magicpen porting work
+    ignore: process.env.DENO_BUILD ? ['os'] : undefined
+  }),
   require('rollup-plugin-node-resolve')(),
   require('rollup-plugin-node-globals')(),
   require('rollup-plugin-terser').terser({
@@ -14,14 +18,6 @@ const plugins = [
     }
   })
 ];
-
-if (process.env.DENO_BUILD) {
-  // leave the os require in the tree as that codepath is not
-  // taken when executed in Deno after magicpen porting work
-  plugins[0] = require('rollup-plugin-commonjs')({
-    ignore: ['os']
-  })
-}
 
 module.exports = {
   output: {
