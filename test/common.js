@@ -1,9 +1,9 @@
 /* global unexpected:true, expect:true, expectWithUnexpectedMagicPen:true, weknowhow, jasmine */
 /* eslint no-unused-vars: "off" */
-unexpected =
-  typeof weknowhow === 'undefined'
+var unexpected =
+  typeof window === 'undefined'
     ? require('../lib/').clone()
-    : weknowhow.expect.clone();
+    : window.weknowhow.expect.clone();
 
 unexpected.output.preferredWidth = 80;
 
@@ -43,9 +43,9 @@ unexpected
     });
   });
 
-expect = unexpected.clone();
+var expect = unexpected.clone();
 
-expectWithUnexpectedMagicPen = unexpected
+var expectWithUnexpectedMagicPen = unexpected
   .clone()
   .use(
     typeof weknowhow === 'undefined'
@@ -53,13 +53,20 @@ expectWithUnexpectedMagicPen = unexpected
       : weknowhow.unexpectedMagicPen
   );
 
-if (typeof setImmediate !== 'function') {
-  // eslint-disable-next-line no-global-assign
-  setImmediate = function(cb) {
-    setTimeout(cb, 0);
-  };
-}
+(function (root) {
+  // expose require globals
+  root.unexpected = unexpected;
+  root.expect = expect;
+  root.expectWithUnexpectedMagicPen = expectWithUnexpectedMagicPen;
 
-if (typeof jasmine !== 'undefined') {
-  jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
-}
+  if (!root.setImmediate) {
+    // eslint-disable-next-line no-global-assign
+    root.setImmediate = function(cb) {
+      setTimeout(cb, 0);
+    };
+  }
+
+  if (root.jasmine) {
+    root.jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
+  }
+})(typeof window !== 'undefined' ? window : global);

@@ -1,3 +1,6 @@
-import expect from './unexpected-deno.js';
+/* eslint-disable import/first */
+import './deno-setup.js';
+import "./test/common.js";
+import "./build/tests.esm.js";
 
-expect(123, 'to be a number');
+window.mocha.run();

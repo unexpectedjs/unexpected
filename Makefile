@@ -31,6 +31,9 @@ build/externaltests: externaltests/*
 
 build: build/lib build/test build/externaltests
 
+build/tests.js: build/test
+	./node_modules/.bin/rollup --config rollup.tests.js > build/tests.esm.js
+
 unexpected.js unexpected.js.map: build
 	./node_modules/.bin/rollup --config rollup.config.js --sourcemap --format umd --name weknowhow.expect -o unexpected.js build/lib/index.js
 
@@ -94,7 +97,7 @@ test-plugins: ${TARGETS}
 	./node_modules/.bin/fugl --config .fugl.json --reporter html --ci
 
 .PHONY: test-deno
-test-deno: ${TARGETS}
+test-deno: ${TARGETS} build/tests.js
 	curl -fsSL https://deno.land/x/install/install.sh | sh
 	~/.deno/bin/deno test-deno.js
 
