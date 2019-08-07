@@ -53,7 +53,7 @@ var expectWithUnexpectedMagicPen = unexpected
       : weknowhow.unexpectedMagicPen
   );
 
-(function (root) {
+(function(root) {
   // expose require globals
   root.unexpected = unexpected;
   root.expect = expect;
