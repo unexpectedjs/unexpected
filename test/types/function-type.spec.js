@@ -45,7 +45,7 @@ describe('function type', () => {
   });
 
   const isDeno = typeof Deno !== 'undefined';
-  if (isDeno) {
+  if (!isDeno) {
     it('should inspect a one-line function correctly', () => {
       /* eslint-disable no-unused-vars */
       expect(
