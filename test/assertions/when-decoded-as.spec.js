@@ -11,6 +11,26 @@ if (typeof Buffer !== 'undefined') {
       );
     });
 
+    it('should render a diff when the assertion fails', () => {
+      expect(
+        () => {
+          expect(
+            Buffer.from('abc', 'utf-8'),
+            'when decoded as',
+            'utf-8',
+            expect.it('to equal', 'def')
+          );
+        },
+        'to throw',
+        'expected Buffer.from([0x61, 0x62, 0x63])\n' +
+          "when decoded as 'utf-8', expect.it('to equal', 'def')\n" +
+          "  expected 'abc' to equal 'def'\n" +
+          '\n' +
+          '  -abc\n' +
+          '  +def'
+      );
+    });
+
     it('should should provide the result as the fulfillment value if no assertion is provided', () => {
       return expect(Buffer.from('æøå', 'utf-8'), 'decoded as', 'utf-8').then(
         function(result) {
