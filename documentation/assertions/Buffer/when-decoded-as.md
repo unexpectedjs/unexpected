@@ -30,10 +30,9 @@ expect(
 ```output
 expected Buffer.from([0xE2, 0x98, 0xBA])
 when decoded as 'utf-8' to equal 'happy face'
-  expected '☺' to equal 'happy face'
 
-  -☺
-  +happy face
+-☺
++happy face
 ```
 
 If you don't provide an assertion to delegate to, the decoded value will be provided
