@@ -24,10 +24,9 @@ if (typeof Buffer !== 'undefined') {
         'to throw',
         'expected Buffer.from([0x61, 0x62, 0x63])\n' +
           "when decoded as 'utf-8', expect.it('to equal', 'def')\n" +
-          "  expected 'abc' to equal 'def'\n" +
           '\n' +
-          '  -abc\n' +
-          '  +def'
+          '-abc\n' +
+          '+def'
       );
     });
 
