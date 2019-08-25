@@ -44,123 +44,120 @@ describe('function type', () => {
     expect(function() {}, 'to inspect as', 'function () {}');
   });
 
-  const isDeno = typeof Deno !== 'undefined';
-  if (!isDeno) {
-    it('should inspect a one-line function correctly', () => {
-      /* eslint-disable no-unused-vars */
-      expect(
-        // prettier-ignore
-        function() { var a = 123;a = 456; },
-        'to inspect as',
-        'function () { var a = 123;a = 456; }'
-      );
-      /* eslint-enable no-unused-vars */
-    });
+  it('should inspect a one-line function correctly', () => {
+    /* eslint-disable no-unused-vars */
+    expect(
+      // prettier-ignore
+      function() { var a = 123;a = 456; },
+      'to inspect as',
+      'function () { var a = 123;a = 456; }'
+    );
+    /* eslint-enable no-unused-vars */
+  });
 
-    it('should inspect a short one-line function with leading and trailing newline correctly', () => {
-      /* eslint-disable no-unused-vars */
-      expect(
-        // prettier-ignore
-        function() { var a = 123;a = 456; },
-        'to inspect as',
-        'function () { var a = 123;a = 456; }'
-      );
-      /* eslint-enable no-unused-vars */
-    });
+  it('should inspect a short one-line function with leading and trailing newline correctly', () => {
+    /* eslint-disable no-unused-vars */
+    expect(
+      // prettier-ignore
+      function() { var a = 123;a = 456; },
+      'to inspect as',
+      'function () { var a = 123;a = 456; }'
+    );
+    /* eslint-enable no-unused-vars */
+  });
 
-    it('should inspect a long one-line function with leading and trailing newline correctly', () => {
-      /* eslint-disable no-unused-vars */
-      expect(
-        // prettier-ignore
-        function() {
+  it('should inspect a long one-line function with leading and trailing newline correctly', () => {
+    /* eslint-disable no-unused-vars */
+    expect(
+      // prettier-ignore
+      function() {
         var a = 123 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2;a = 456;
       },
-        'to inspect as',
-        'function () {\n' +
-          '  var a = 123 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2;a = 456;\n' +
-          '}'
-      );
-      /* eslint-enable no-unused-vars */
-    });
-
-    /* eslint-disable no-unused-vars, no-inner-declarations */
-    function singleLineWithComment() {
-      var a = 123;
-      a = 456; // foo
-    }
+      'to inspect as',
+      'function () {\n' +
+        '  var a = 123 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2;a = 456;\n' +
+        '}'
+    );
     /* eslint-enable no-unused-vars */
+  });
 
-    it('should inspect a short one-line function with leading and trailing newline correctly and a C++-style comment correctly', () => {
-      /* eslint-disable no-unused-vars */
-      expect(
-        // prettier-ignore
-        function() {
+  /* eslint-disable no-unused-vars */
+  function singleLineWithComment() {
+    var a = 123;
+    a = 456; // foo
+  }
+  /* eslint-enable no-unused-vars */
+
+  it('should inspect a short one-line function with leading and trailing newline correctly and a C++-style comment correctly', () => {
+    /* eslint-disable no-unused-vars */
+    expect(
+      // prettier-ignore
+      function() {
           var a = 123;a = 456; // foo
         },
-        'to inspect as',
-        'function () {\n' + '  var a = 123;a = 456; // foo\n' + '}'
-      );
-      /* eslint-enable no-unused-vars */
-    });
+      'to inspect as',
+      'function () {\n' + '  var a = 123;a = 456; // foo\n' + '}'
+    );
+    /* eslint-enable no-unused-vars */
+  });
 
-    it('should reindent a function with an indentation size of 4', () => {
-      expect(
-        function() {
-          var a = 4;
-          if (a === 1) {
-            a();
-          }
-        },
-        'to inspect as',
-        'function () {\n' +
-          '  var a = 4;\n' +
-          '  if (a === 1) {\n' +
-          '    a();\n' +
-          '  }\n' +
-          '}'
-      );
-    });
+  it('should reindent a function with an indentation size of 4', () => {
+    expect(
+      function() {
+        var a = 4;
+        if (a === 1) {
+          a();
+        }
+      },
+      'to inspect as',
+      'function () {\n' +
+        '  var a = 4;\n' +
+        '  if (a === 1) {\n' +
+        '    a();\n' +
+        '  }\n' +
+        '}'
+    );
+  });
 
-    it('should reindent a function with an indentation size of 3', () => {
-      // jscs:disable
-      expect(
-        function() {
-          var a = 4;
-          if (a === 1) {
-            a();
-          }
-        },
-        'to inspect as',
-        'function () {\n' +
-          '  var a = 4;\n' +
-          '  if (a === 1) {\n' +
-          '    a();\n' +
-          '  }\n' +
-          '}'
-      );
-      // jscs:enable
-    });
+  it('should reindent a function with an indentation size of 3', () => {
+    // jscs:disable
+    expect(
+      function() {
+        var a = 4;
+        if (a === 1) {
+          a();
+        }
+      },
+      'to inspect as',
+      'function () {\n' +
+        '  var a = 4;\n' +
+        '  if (a === 1) {\n' +
+        '    a();\n' +
+        '  }\n' +
+        '}'
+    );
+    // jscs:enable
+  });
 
-    it('should reindent a function with an indentation size of 1', () => {
-      // jscs:disable
-      expect(
-        function() {
-          var a = 4;
-          if (a === 1) {
-            a();
-          }
-        },
-        'to inspect as',
-        'function () {\n' +
-          '  var a = 4;\n' +
-          '  if (a === 1) {\n' +
-          '    a();\n' +
-          '  }\n' +
-          '}'
-      );
-      // jscs:enable
-    });
-  }
+  it('should reindent a function with an indentation size of 1', () => {
+    // jscs:disable
+    expect(
+      function() {
+        var a = 4;
+        if (a === 1) {
+          a();
+        }
+      },
+      'to inspect as',
+      'function () {\n' +
+        '  var a = 4;\n' +
+        '  if (a === 1) {\n' +
+        '    a();\n' +
+        '  }\n' +
+        '}'
+    );
+    // jscs:enable
+  });
 
   expect.addAssertion(
     '<string> if supported by the runtime <assertion>',
