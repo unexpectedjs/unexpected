@@ -12,7 +12,7 @@ const plugins = [
   require('rollup-plugin-node-globals')(),
   require('rollup-plugin-terser').terser({
     output: {
-      comments: function(node, comment) {
+      comments(node, comment) {
         return /^!|@preserve|@license|@cc_on/i.test(comment.value);
       }
     }
