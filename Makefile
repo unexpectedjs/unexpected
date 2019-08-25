@@ -31,7 +31,7 @@ build/externaltests: externaltests/*
 
 build: build/lib build/test build/externaltests
 
-build/tests.js: build/test
+build/tests.esm.js: build/test
 	./node_modules/.bin/rollup --config rollup.tests.js > build/tests.esm.js
 
 unexpected.js unexpected.js.map: build
@@ -97,7 +97,7 @@ test-plugins: ${TARGETS}
 	./node_modules/.bin/fugl --config .fugl.json --reporter html --ci
 
 .PHONY: test-deno
-test-deno: ${TARGETS} build/tests.js
+test-deno: ${TARGETS} build/tests.esm.js
 	if [ ! -f ~/.deno/bin/deno ]; then \
 		curl -fsSL https://deno.land/x/install/install.sh | sh; \
 	fi;
