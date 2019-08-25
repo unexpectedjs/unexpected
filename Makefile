@@ -98,8 +98,10 @@ test-plugins: ${TARGETS}
 
 .PHONY: test-deno
 test-deno: ${TARGETS} build/tests.js
-	curl -fsSL https://deno.land/x/install/install.sh | sh
-	~/.deno/bin/deno test-deno.js
+	if [ ! -f ~/.deno/bin/deno ]; then \
+		curl -fsSL https://deno.land/x/install/install.sh | sh; \
+	fi;
+	~/.deno/bin/deno test-deno/deno-test.js
 
 .PHONY: travis-coverage
 travis-coverage: clean coverage
