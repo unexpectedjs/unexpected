@@ -8,7 +8,7 @@ const plugins = [
     // taken when executed in Deno after magicpen porting work
     ignore: process.env.ESM_BUILD ? ['os'] : undefined
   }),
-  require('rollup-plugin-node-resolve')(),
+  require('rollup-plugin-node-resolve')({ preferBuiltins: true }),
   require('rollup-plugin-node-globals')(),
   require('rollup-plugin-terser').terser({
     output: {
