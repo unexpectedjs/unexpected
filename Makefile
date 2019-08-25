@@ -2,7 +2,7 @@ REPORTER = dot
 
 TARGETS ?= unexpected.js unexpected.js.map unexpected.esm.js unexpected.esm.js.map
 .PHONY: unexpected.js unexpected.esm.js
-.SECONDARY: unexpected.js.map unexpected-deno.js.map
+.SECONDARY: unexpected.js.map unexpected.esm.js.map
 
 CHEWBACCA_THRESHOLD ?= 25
 
