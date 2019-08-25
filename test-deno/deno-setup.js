@@ -1,5 +1,5 @@
 import '../node_modules/mocha/mocha.js';
-import unexpected from '../unexpected-deno.js';
+import unexpected from '../unexpected.esm.js';
 import unexpectedMagicPen from '../node_modules/unexpected-magicpen/unexpected-magicpen.esm.js';
 
 window.mocha.reporter('spec');

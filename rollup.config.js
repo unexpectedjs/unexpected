@@ -6,7 +6,7 @@ const plugins = [
   require('rollup-plugin-commonjs')({
     // leave the os require in the tree as that codepath is not
     // taken when executed in Deno after magicpen porting work
-    ignore: process.env.DENO_BUILD ? ['os'] : undefined
+    ignore: process.env.ESM_BUILD ? ['os'] : undefined
   }),
   require('rollup-plugin-node-resolve')(),
   require('rollup-plugin-node-globals')(),

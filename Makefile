@@ -1,6 +1,6 @@
 REPORTER = dot
 
-TARGETS ?= unexpected.js unexpected.js.map unexpected-deno.js unexpected-deno.js.map
+TARGETS ?= unexpected.js unexpected.js.map unexpected.esm.js unexpected.esm.js.map
 .PHONY: unexpected.js unexpected-deno.js
 .SECONDARY: unexpected.js.map unexpected-deno.js.map
 
@@ -37,8 +37,8 @@ build/tests.esm.js: build/test
 unexpected.js unexpected.js.map: build
 	./node_modules/.bin/rollup --config rollup.config.js --sourcemap --format umd --name weknowhow.expect -o unexpected.js build/lib/index.js
 
-unexpected-deno.js unexpected-deno.js.map: build
-	DENO_BUILD=yes ./node_modules/.bin/rollup --config rollup.config.js --sourcemap --format esm --name weknowhow.expect -o unexpected-deno.js build/lib/index.js
+unexpected.esm.js unexpected.esm.js.map: build
+	ESM_BUILD=yes ./node_modules/.bin/rollup --config rollup.config.js --sourcemap --format esm --name weknowhow.expect -o unexpected.esm.js build/lib/index.js
 
 test-jasmine:
 	./node_modules/.bin/jasmine JASMINE_CONFIG_PATH=test/support/jasmine.json

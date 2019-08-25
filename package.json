@@ -76,6 +76,8 @@
   "files": [
     "unexpected.js",
     "unexpected.js.map",
+    "unexpected.esm.js",
+    "unexpected.esm.js.map",
     "lib",
     "build/lib"
   ],
