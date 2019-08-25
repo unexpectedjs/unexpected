@@ -7,5 +7,5 @@ window.mocha.setup('bdd');
 
 window.weknowhow = {
   expect: unexpected,
-  unexpectedMagicPen: unexpectedMagicPen
+  unexpectedMagicPen
 };
