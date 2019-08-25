@@ -28,7 +28,7 @@
     "diff": "4.0.1",
     "greedy-interval-packer": "1.2.0",
     "leven": "2.1.0",
-    "magicpen": "git://github.com/alexjeffburke/magicpen.git#feature/deno",
+    "magicpen": "6.1.0",
     "unexpected-bluebird": "2.9.34-longstack2"
   },
   "devDependencies": {
@@ -70,7 +70,7 @@
     "rsvp": "^4.7.0",
     "serve": "*",
     "unexpected-documentation-site-generator": "^6.0.0",
-    "unexpected-magicpen": "git://github.com/unexpectedjs/unexpected-magicpen.git#feature/deno",
+    "unexpected-magicpen": "2.1.0",
     "unexpected-markdown": "^4.0.0"
   },
   "files": [
