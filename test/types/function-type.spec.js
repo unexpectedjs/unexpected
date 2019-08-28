@@ -83,7 +83,7 @@ describe('function type', () => {
   });
 
   /* eslint-disable no-unused-vars */
-  function singleLineWithComment() {
+  function twoLinesWithComment() {
     var a = 123;
     console.log(a); // foo
   }
@@ -93,9 +93,9 @@ describe('function type', () => {
     /* eslint-disable no-unused-vars */
     expect(
       // prettier-ignore
-      singleLineWithComment,
+      twoLinesWithComment,
       'to inspect as',
-      'function singleLineWithComment() {\n' +
+      'function twoLinesWithComment() {\n' +
         '  var a = 123;\n  console.log(a); // foo\n' +
         '}'
     );
