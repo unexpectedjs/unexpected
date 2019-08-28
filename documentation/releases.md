@@ -42,7 +42,7 @@ guide](../migration/) to help you upgrade.
   the arguments as part of the pattern. This is a breaking change
   that removes support for the old `addAssertion` syntax where the
   subject type(s) were passed as the first argument.
-  See [addAssertion](./api/addAssertion/) for more
+  See [addAssertion](../api/addAssertion/) for more
   information.
 - The `to be >`, `to be >=`, `to be <`, and `to be <=` assertions
   have been removed as they clashed with the new type syntax.
@@ -72,7 +72,7 @@ guide](../migration/) to help you upgrade.
   plugins accordingly, so please upgrade those to the latest version
   when you upgrade to Unexpected 9.
 - Made it possible to tweak the default error message when creating
-  assertions. See [addAssertion](./api/addAssertion/) for more
+  assertions. See [addAssertion](../api/addAssertion/) for more
   information.
 - Expanded the `to have message` assertion defined for `Error`
   instances to allow matching a serialization other than plain text:
@@ -83,7 +83,7 @@ guide](../migration/) to help you upgrade.
 ### v8.0.0 (2015-06-10)
 
 - All errors originating from assertions are now instances of
-  [`UnexpectedError`](./api/UnexpectedError/), which can be manipulated before being
+  [`UnexpectedError`](../api/UnexpectedError/), which can be manipulated before being
   serialized.
 - Error messages and diffs are now built lazily, improving
   performance.
@@ -102,13 +102,13 @@ guide](../migration/) to help you upgrade.
   multiple lines and is identical to the parent subject.
 - Added a new `bubbleThrough` error mode that will make the error
   bubble all the way to the top, mainly useful internally.
-- Added [`to error`](./assertions/function/to-error/) assertion.
+- Added [`to error`](../assertions/function/to-error/) assertion.
 - Minor bugfixes and output tweaks.
 
 ### v7.0.0 (2015-04-17)
 
 - Support for
-  [asynchronous assertions using promises](./api/addAssertion/#asynchronous-assertions).
+  [asynchronous assertions using promises](../api/addAssertion/#asynchronous-assertions).
   All built-in assertions that delegate to other assertions (such as `to satisfy`)
   have been rewritten to support this. The change is fully backwards compatible.
 - Removed support for the `to be an array of` and
