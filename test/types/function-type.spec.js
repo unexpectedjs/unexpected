@@ -48,9 +48,9 @@ describe('function type', () => {
     /* eslint-disable no-unused-vars */
     expect(
       // prettier-ignore
-      function() { var a = 123;a = 456; },
+      function() { var a = 123;console.log(a); },
       'to inspect as',
-      'function () { var a = 123;a = 456; }'
+      'function () { var a = 123;console.log(a); }'
     );
     /* eslint-enable no-unused-vars */
   });
@@ -59,9 +59,10 @@ describe('function type', () => {
     /* eslint-disable no-unused-vars */
     expect(
       // prettier-ignore
-      function() { var a = 123;a = 456; },
+      function() {
+        var a = 123;console.log(a); },
       'to inspect as',
-      'function () { var a = 123;a = 456; }'
+      'function () { var a = 123;console.log(a); }'
     );
     /* eslint-enable no-unused-vars */
   });
@@ -71,92 +72,85 @@ describe('function type', () => {
     expect(
       // prettier-ignore
       function() {
-        var a = 123 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2;a = 456;
+        var a = 123 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2;console.log(a);
       },
       'to inspect as',
       'function () {\n' +
-        '  var a = 123 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2;a = 456;\n' +
+        '  var a = 123 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2;console.log(a);\n' +
         '}'
     );
     /* eslint-enable no-unused-vars */
   });
 
   /* eslint-disable no-unused-vars */
-  function singleLineWithComment() {
+  function twoLinesWithComment() {
     var a = 123;
-    a = 456; // foo
+    console.log(a); // foo
   }
   /* eslint-enable no-unused-vars */
 
-  it('should inspect a short one-line function with leading and trailing newline correctly and a C++-style comment correctly', () => {
+  it('should inspect a short two-line function with leading and trailing newline correctly and a C++-style comment correctly', () => {
     /* eslint-disable no-unused-vars */
     expect(
       // prettier-ignore
-      function() {
-          var a = 123;a = 456; // foo
-        },
+      twoLinesWithComment,
       'to inspect as',
-      'function () {\n' + '  var a = 123;a = 456; // foo\n' + '}'
+      'function twoLinesWithComment() {\n' +
+        '  var a = 123;\n  console.log(a); // foo\n' +
+        '}'
     );
     /* eslint-enable no-unused-vars */
   });
 
   it('should reindent a function with an indentation size of 4', () => {
     expect(
-      function() {
-        var a = 4;
-        if (a === 1) {
-          a();
-        }
+      // prettier-ignore
+      function(a) {
+          if (a === 1) {
+              console.log(a);
+          }
       },
       'to inspect as',
-      'function () {\n' +
-        '  var a = 4;\n' +
+      'function (a) {\n' +
         '  if (a === 1) {\n' +
-        '    a();\n' +
+        '    console.log(a);\n' +
         '  }\n' +
         '}'
     );
   });
 
   it('should reindent a function with an indentation size of 3', () => {
-    // jscs:disable
     expect(
-      function() {
-        var a = 4;
-        if (a === 1) {
-          a();
-        }
+      // prettier-ignore
+      function(a) {
+         if (a === 1) {
+            console.log(a);
+         }
       },
       'to inspect as',
-      'function () {\n' +
-        '  var a = 4;\n' +
+      'function (a) {\n' +
         '  if (a === 1) {\n' +
-        '    a();\n' +
+        '    console.log(a);\n' +
         '  }\n' +
         '}'
     );
-    // jscs:enable
   });
 
   it('should reindent a function with an indentation size of 1', () => {
-    // jscs:disable
     expect(
-      function() {
-        var a = 4;
-        if (a === 1) {
-          a();
-        }
+      // prettier-ignore
+      function(a) {
+       if (a === 1) {
+        console.log(a);
+       }
       },
       'to inspect as',
-      'function () {\n' +
-        '  var a = 4;\n' +
+      'function (a) {\n' +
         '  if (a === 1) {\n' +
-        '    a();\n' +
+        '    console.log(a);\n' +
         '  }\n' +
         '}'
     );
-    // jscs:enable
   });
 
   expect.addAssertion(

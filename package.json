@@ -28,7 +28,7 @@
     "diff": "4.0.1",
     "greedy-interval-packer": "1.2.0",
     "leven": "2.1.0",
-    "magicpen": "^6.0.2",
+    "magicpen": "^6.1.0",
     "unexpected-bluebird": "2.9.34-longstack2"
   },
   "devDependencies": {
@@ -63,18 +63,21 @@
     "prettier": "~1.18.2",
     "rollup": "^1.0.1",
     "rollup-plugin-commonjs": "^10.0.0",
+    "rollup-plugin-multi-entry": "^2.1.0",
     "rollup-plugin-node-globals": "^1.1.0",
     "rollup-plugin-node-resolve": "^5.0.0",
     "rollup-plugin-terser": "^5.0.0",
     "rsvp": "^4.7.0",
     "serve": "*",
     "unexpected-documentation-site-generator": "^6.0.0",
-    "unexpected-magicpen": "^2.0.0",
+    "unexpected-magicpen": "^2.1.0",
     "unexpected-markdown": "^4.0.0"
   },
   "files": [
     "unexpected.js",
     "unexpected.js.map",
+    "unexpected.esm.js",
+    "unexpected.esm.js.map",
     "lib",
     "build/lib"
   ],

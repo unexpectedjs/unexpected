@@ -10,7 +10,8 @@
       {
         "devDependencies": [
           "**/test/**/*.js",
-          "**/bootstrap-unexpected-markdown.js"
+          "**/bootstrap-unexpected-markdown.js",
+          "rollup.tests.js"
         ],
         "optionalDependencies": false,
         "peerDependencies": false

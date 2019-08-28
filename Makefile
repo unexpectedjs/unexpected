@@ -1,8 +1,8 @@
 REPORTER = dot
 
-TARGETS ?= unexpected.js unexpected.js.map
-.PHONY: unexpected.js
-.SECONDARY: unexpected.js.map
+TARGETS ?= unexpected.js unexpected.js.map unexpected.esm.js unexpected.esm.js.map
+.PHONY: unexpected.js unexpected.esm.js
+.SECONDARY: unexpected.js.map unexpected.esm.js.map
 
 CHEWBACCA_THRESHOLD ?= 25
 
@@ -31,8 +31,14 @@ build/externaltests: externaltests/*
 
 build: build/lib build/test build/externaltests
 
-${TARGETS}: build
+build/tests.esm.js: build/test
+	./node_modules/.bin/rollup --config rollup.tests.js > build/tests.esm.js
+
+unexpected.js unexpected.js.map: build
 	./node_modules/.bin/rollup --config rollup.config.js --sourcemap --format umd --name weknowhow.expect -o unexpected.js build/lib/index.js
+
+unexpected.esm.js unexpected.esm.js.map: build
+	ESM_BUILD=yes ./node_modules/.bin/rollup --config rollup.config.js --sourcemap --format esm --name weknowhow.expect -o unexpected.esm.js build/lib/index.js
 
 test-jasmine:
 	./node_modules/.bin/jasmine JASMINE_CONFIG_PATH=test/support/jasmine.json
@@ -89,6 +95,13 @@ test-browserstack-%: ${TARGETS}
 .PHONY: test-plugins
 test-plugins: ${TARGETS}
 	./node_modules/.bin/fugl --config .fugl.json --reporter html --ci
+
+.PHONY: test-deno
+test-deno: ${TARGETS} build/tests.esm.js
+	if [ ! -f ~/.deno/bin/deno ]; then \
+		curl -fsSL https://deno.land/x/install/install.sh | sh; \
+	fi;
+	~/.deno/bin/deno test-deno/deno-test.js
 
 .PHONY: travis-coverage
 travis-coverage: clean coverage

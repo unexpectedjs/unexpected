@@ -3,6 +3,7 @@
 /coverage/
 /site-build/
 /unexpected.js
+/unexpected.esm.js
 
 # Don't battle npm i --save
 /package.json
