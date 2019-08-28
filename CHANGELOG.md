@@ -1,3 +1,17 @@
+### v11.8.0 (2019-08-28)
+
+#### Pull requests
+
+- [#657](https://github.com/unexpectedjs/unexpected/pull/657) ESM build with Deno support ([Alex J Burke](mailto:alex@alexjeffburke.com), [Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [#656](https://github.com/unexpectedjs/unexpected/pull/656) Upgrade eslint-plugin-mocha to version 6.0.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#654](https://github.com/unexpectedjs/unexpected/pull/654) docs: use correct writing form for Node.js ([Liran Tal](mailto:liran.tal@gmail.com))
+- [#655](https://github.com/unexpectedjs/unexpected/pull/655) Try to fix the build ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [#653](https://github.com/unexpectedjs/unexpected/pull/653) Upgrade karma to version 4.2.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+
+#### Commits to master
+
+- [Update eslint-config-standard to version 14.0.0 \(\#660\)](https://github.com/unexpectedjs/unexpected/commit/b5b5b78a4013992b4bf0f2c8e1b49c83159f5e7e) ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+
 ### v11.7.0 (2019-07-14)
 
 #### Pull requests
