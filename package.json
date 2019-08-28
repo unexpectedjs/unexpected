@@ -17,7 +17,7 @@
     "test": "make test && make test-chrome-headless",
     "lint": "eslint . && eslint --ext md documentation && prettier --check '**/*.{js,md}'",
     "generate-site": "generate-site --require ./bootstrap-unexpected-markdown.js",
-    "postgenerate-site": "hyperlink -ri --skip content-type-mismatch site-build/index.html | tap-spot",
+    "postgenerate-site": "hyperlink -ri --canonicalroot https://unexpected.js.org --skip content-type-mismatch --skip unexpected.js.org/unexpected- site-build/index.html | tap-spot",
     "update-examples": "generate-site --require ./bootstrap-unexpected-markdown.js --update-examples",
     "postupdate-examples": "npm run postgenerate-site",
     "version": "(test -n \"${IS_MAKE_RELEASE}\" || (echo Please run make release instead && exit 1)) && offline-github-changelog --next=${npm_package_version} > CHANGELOG.md && git add CHANGELOG.md"
