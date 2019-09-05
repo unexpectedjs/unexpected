@@ -17,7 +17,9 @@
     "test": "make test && make test-chrome-headless",
     "lint": "eslint . && eslint --ext md documentation && prettier --check '**/*.{js,md}'",
     "generate-site": "generate-site --require ./bootstrap-unexpected-markdown.js",
+    "postgenerate-site": "hyperlink -ri --canonicalroot https://unexpected.js.org --skip content-type-mismatch --skip unexpected.js.org/unexpected- site-build/index.html | tap-spot",
     "update-examples": "generate-site --require ./bootstrap-unexpected-markdown.js --update-examples",
+    "postupdate-examples": "npm run postgenerate-site",
     "version": "(test -n \"${IS_MAKE_RELEASE}\" || (echo Please run make release instead && exit 1)) && offline-github-changelog --next=${npm_package_version} > CHANGELOG.md && git add CHANGELOG.md"
   },
   "main": "./build/lib/index.js",
@@ -46,6 +48,7 @@
     "find-node-modules": "^2.0.0",
     "fugl": "^1.0.0",
     "gh-pages": "^2.0.0",
+    "hyperlink": "^4.3.2",
     "istanbul": "^0.4.5",
     "jasmine": "~3.4.0",
     "jasmine-core": "^3.1.0",
@@ -69,6 +72,7 @@
     "rollup-plugin-terser": "^5.0.0",
     "rsvp": "^4.7.0",
     "serve": "*",
+    "tap-spot": "^1.1.1",
     "unexpected-documentation-site-generator": "^6.0.0",
     "unexpected-magicpen": "^2.1.0",
     "unexpected-markdown": "^4.0.0"
