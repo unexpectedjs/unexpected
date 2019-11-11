@@ -36,7 +36,10 @@ describe('when passed as parameters to assertion', () => {
 
   it('should combine with other assertions (showcase)', () => {
     expect(
-      [[1, 2], [3, 4]],
+      [
+        [1, 2],
+        [3, 4]
+      ],
       'to have items satisfying',
       'when passed as parameters to',
       add,
