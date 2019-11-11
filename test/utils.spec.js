@@ -54,11 +54,19 @@ describe('utils', () => {
 
     describe('#getFunctionName', () => {
       it('should return the name of a named function', () => {
-        expect(utils.getFunctionName(function foo() {}), 'to equal', 'foo');
+        expect(
+          utils.getFunctionName(function foo() {}),
+          'to equal',
+          'foo'
+        );
       });
 
       it('should return the empty string for an anonymous function', () => {
-        expect(utils.getFunctionName(function() {}), 'to equal', '');
+        expect(
+          utils.getFunctionName(function() {}),
+          'to equal',
+          ''
+        );
       });
 
       describe('with Function.prototype.toString mocked out', () => {

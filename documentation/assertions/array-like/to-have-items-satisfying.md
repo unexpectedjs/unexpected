@@ -33,7 +33,11 @@ In case of a failing expectation you get the following output:
 
 ```js
 expect(
-  [[0, 1, 2], [4, '5', '6'], [7, '8', 9]],
+  [
+    [0, 1, 2],
+    [4, '5', '6'],
+    [7, '8', 9]
+  ],
   'to have items satisfying',
   'to have items satisfying',
   'to be a number'

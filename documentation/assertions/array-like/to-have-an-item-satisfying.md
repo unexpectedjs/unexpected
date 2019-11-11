@@ -51,7 +51,11 @@ In case of a failing expectation you get the following output:
 
 ```js
 expect(
-  [['0', '1'], ['5', '6'], ['7', '8']],
+  [
+    ['0', '1'],
+    ['5', '6'],
+    ['7', '8']
+  ],
   'to have an item satisfying',
   'to have an item satisfying',
   'to be a number'

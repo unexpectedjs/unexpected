@@ -54,7 +54,10 @@ describe('Promise type', () => {
   describe('with a Bluebird promise (that supports synchronous inspection)', () => {
     it('should inspect a pending promise', () => {
       var promise = expect.promise(function(run) {
-        setTimeout(run(function() {}), 0);
+        setTimeout(
+          run(function() {}),
+          0
+        );
       });
       expect(promise, 'to inspect as', 'Promise (pending)');
       return promise;

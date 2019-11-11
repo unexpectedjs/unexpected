@@ -33,7 +33,11 @@ describe('to have values satisfying assertion', () => {
   it('only accepts objects and arrays as the target', () => {
     expect(
       function() {
-        expect(42, 'to have values satisfying', expect.it(function(value) {}));
+        expect(
+          42,
+          'to have values satisfying',
+          expect.it(function(value) {})
+        );
       },
       'to throw',
       'expected 42 to have values satisfying expect.it(function (value) {})\n' +
