@@ -1,3 +1,13 @@
+### v11.8.1 (2019-11-12)
+
+- [#667](https://github.com/unexpectedjs/unexpected/pull/667) Upgrade prettier to version 1.19.1 ([Andreas Lind](mailto:andreaslindpetersen@gmail.com), [depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#666](https://github.com/unexpectedjs/unexpected/pull/666) Upgrade karma to version 4.4.1 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#664](https://github.com/unexpectedjs/unexpected/pull/664) Upgrade jasmine to version 3.5.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#663](https://github.com/unexpectedjs/unexpected/pull/663) Upgrade eslint-plugin-node to version 10.0.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#658](https://github.com/unexpectedjs/unexpected/pull/658) Upgrade karma-chrome-launcher to version 3.1.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#662](https://github.com/unexpectedjs/unexpected/pull/662) Check documentation link integrity when building docs ([Peter Müller](mailto:munter@fumle.dk))
+- [#661](https://github.com/unexpectedjs/unexpected/pull/661) Upgrade karma to version 4.3.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+
 ### v11.8.0 (2019-08-28)
 
 #### Pull requests
