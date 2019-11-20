@@ -10,12 +10,185 @@ expect.addAssertion(pattern, handler);
 expect.addAssertion([pattern, ...]], handler);
 ```
 
-New assertions can be added to Unexpected the following way.
+`expect.addAssertion` takes two arguments:
+
+1. a string pattern (or an array of patterns) that describes the assertion.
+2. a handler function that is called when when the assertion is invoked.
+
+For example:
 
 ```js
-var errorMode = 'default'; // use to control the error mode later in the example
 expect.addAssertion(
-  '<array> [not] to be (sorted|ordered) <function?>',
+  '<array> to have item <any>',
+  function(expect, subject, value) {
+    expect(subject, 'to contain', value);
+  }
+);
+```
+
+A handler function can use other assertions, including other custom assertions
+previously added via `expect.addAssertion`. This way, one could build up complex assertions from simpler ones or just reword an existing assertion, like in this example.
+
+The new assertion can then be used as follows:
+
+```js
+expect([1, 2, 3], 'to have item', 2);
+```
+
+The first parameter to `addAssertion` is a string or an array of strings
+describing the pattern(s) the assertion should match. The pattern takes the
+following structure:
+
+`<the-subject> an assertion string <the-value>`
+
+The words in angle brackets define what types the assertion applies to. These
+can be any of the internally-defined types or new types added via
+[expect.addType](../addType). In this example, the subject to `to have item`
+must be an array, while the value may be of any type.
+
+If mismatching types are used, Unexpected throws an error with a helpful
+suggestion:
+
+```js
+expect('abcd', 'to have item', 'a');
+```
+
+```output
+expect('abcd', 'to have item', 'a');
+The assertion does not have a matching signature for:
+    <string> to have item <string>
+  did you mean:
+    <array> to have item <any>
+```
+
+If no subject type is specified, the assertion will be defined for the
+type `any` and would be applicable to any type.
+
+An assertion can only have a single assertion string, which must be
+provided after the subject type. This means it's not possible to add assertions
+such as `<number> to be between <number> and <number>`.
+
+## Alternations
+
+Different versions of the same assertion, or different assertions that share the
+same handler function, can be added using an array:
+
+<!-- unexpected-markdown evaluate:false -->
+<!-- eslint-skip -->
+
+```js
+expect.addAssertion(
+  ['<array> to have item <any>', '<array> to have value <any>'],
+  /* handler */
+);
+```
+
+However, array patterns are ideal for assertions that have different types for
+the subject or value; for instance, if the second assertion was defined as
+`<array> to have value <number>`. When the difference is only in the assertion
+string, an alternation is more handy:
+
+<!-- unexpected-markdown evaluate:false -->
+<!-- eslint-skip -->
+
+```js
+expect.addAssertion('<array> to have (item|value) <any>', /* handler */);
+```
+
+Alternations are made available to the handler function as an
+`expect.alternations` array, which contains the word used when the assertion is invoked.
+
+## Flags
+
+Flags allow defining different versions of an assertion, where some words can
+be included when the assertion is invoked to yield different behaviour:
+
+<!-- unexpected-markdown evaluate:false -->
+
+```js
+expect.addAssertion(
+  '<array> [not] to have item <any>',
+  function(expect, subject, value) {
+    if (expect.flags.not) {
+      expect(subject, 'not to contain', value);
+    } else {
+      expect(subject, 'to contain', value);
+    }
+  }
+);
+```
+
+This makes the following assertions possible:
+
+<!-- unexpected-markdown evaluate:false -->
+
+```js
+expect([1, 2, 3], 'to have item', 2);
+expect([1, 2, 3], 'not to have item', 4);
+```
+
+If the `not` flag is present in an invocation, `expect.flags.not` will be `true`.
+
+In this case though, since [to contain](../../assertions/array-like/to-contain/)
+also supports the `not` flag, one can propagate the flag as follows:
+
+<!-- unexpected-markdown evaluate:false -->
+
+```js
+expect.addAssertion(
+  '<array> [not] to have item <any>',
+  function(expect, subject, value) {
+    expect(subject, '[not] to contain', value);
+  }
+);
+```
+
+In this way, when `to have item` is invoked with the `not` flag, that flag will
+be passed along to `to contain`.
+
+When flags are propagated, one can also invert the flag as follows:
+
+<!-- unexpected-markdown evaluate:false -->
+
+```js
+expect.addAssertion(
+  '<array> [not] to have item <any>',
+  function(expect, subject, value) {
+    expect(subject, '[!not] to contain', value);
+  }
+);
+```
+
+This means that if `to have item` is invoked with the `not` flag, that flag will
+not be propagated to `to contain` - and vice versa.
+
+Flags can also be used to define optional filler words that make the assertion
+read better:
+
+<!-- unexpected-markdown evaluate:false -->
+<!-- eslint-skip -->
+
+```js
+expect.addAssertion('<array> to have [this] item <any>', /* handler */);
+```
+
+## Optional values
+
+Assertions where the value is optional can be defined as follows:
+
+<!-- unexpected-markdown evaluate:false -->
+<!-- eslint-skip -->
+
+```js
+expect.addAssertion('<array> to have item <any?>', /* handler */);
+```
+
+This can be used to define optional `function` values:
+
+```js
+var errorMode = 'default'; // use to control the error mode in later examples
+expect.addAssertion(
+  '<array> [not] to be (sorted|ordered) [by] <function?>',
   function(expect, subject, cmp) {
     expect.errorMode = errorMode;
     expect(subject, '[not] to equal', [].concat(subject).sort(cmp));
@@ -23,7 +196,7 @@ expect.addAssertion(
 );
 ```
 
-The above assertion definition makes the following expects possible:
+Which can then be used as follows:
 
 ```js
 expect([1, 2, 3], 'to be sorted');
@@ -33,59 +206,12 @@ expect([2, 1, 3], 'not to be ordered');
 expect([3, 2, 1], 'to be sorted', function(x, y) {
   return y - x;
 });
-```
-
-Let's dissect the different parts of the custom assertion we just
-introduced.
-
-The first parameter to `addAssertion` is a string or an array of strings
-stating the patterns this assertion should match. A pattern has the following
-syntax. A word in angle brackets represents a type of either the subject
-or one of the parameters to the assertion. In this case the assertion
-is only defined for arrays. If no subject type is specified,
-the assertion will be defined for the type `any`, and would
-be applicable any type. See the `Extending Unexpected with new types`
-section for more information about the type system in Unexpected.
-
-A word in square brackets represents a flag that can either be
-there or not. If the flag is present `expect.flags[flag]` will contain
-the value `true`. In this case `not` is a flag. When a flag it present
-in a nested `expect` it will be inserted if the flag is present;
-otherwise it will be removed. Text that is in parentheses with
-vertical bars between them are treated as alternative texts that can
-be used. In this case you can write _ordered_ as an alternative to
-_sorted_.
-
-An assertion can only have a single assertion string, which must be
-provided after the subject type. This means that you cannot have
-more words, flags, and alternations after the first type.
-
-The second and last parameter to `addAssertion` is function that will
-be called when `expect` is invoked with an expectation matching the
-type and pattern of the assertion.
-
-So in this case, when `expect` is called the following way:
-
-<!-- unexpected-markdown evaluate:false -->
-
-```js
-expect([3, 2, 1], 'to be sorted', reverse);
-```
-
-The handler to our assertion will be called with the values the
-following way, where the _not_ flag in the nested expect will be
-removed:
-
-<!-- unexpected-markdown evaluate:false -->
-<!-- eslint-skip -->
-
-```js
-expect.addAssertion('<array> [not] to be (sorted|ordered) <function?>', function(expect, [3,2,1], reverse){
-    expect([3,2,1], '[not] to equal', [].concat([3,2,1]).sort(reverse));
+expect([3, 2, 1], 'to be sorted by', function(x, y) {
+  return y - x;
 });
 ```
 
-### Overriding the standard error message
+## Overriding the standard error message
 
 When you create a new assertion Unexpected will generate an error
 message from the assertion text and the input arguments. In some cases
