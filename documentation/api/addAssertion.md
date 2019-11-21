@@ -54,8 +54,8 @@ expect('abcd', 'to have item', 'a');
 ```
 
 ```output
-expect('abcd', 'to have item', 'a');
-The assertion does not have a matching signature for:
+expected 'abcd' 'to have item' 'a'
+  The assertion does not have a matching signature for:
     <string> to have item <string>
   did you mean:
     <array> to have item <any>
