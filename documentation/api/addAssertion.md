@@ -18,13 +18,11 @@ expect.addAssertion([pattern, ...]], handler);
 For example:
 
 ```js
-expect.addAssertion('<array> to have item <any>', function(
-  expect,
-  subject,
-  value
-) {
+function handler(expect, subject, value) {
   expect(subject, 'to contain', value);
-});
+}
+
+expect.addAssertion('<array> to have item <any>', handler);
 ```
 
 A handler function can use other assertions, including other custom assertions
@@ -40,60 +38,84 @@ The first parameter to `addAssertion` is a string or an array of strings
 describing the pattern(s) the assertion should match. The pattern takes the
 following structure:
 
-`<the-subject> an assertion string <the-value>`
+`<subject type> an assertion string <value type>`
 
 The words in angle brackets define what types the assertion applies to. These
 can be any of the internally-defined types or new types added via
 [expect.addType](../addType). In this example, the subject to `to have item`
 must be an array, while the value may be of any type.
 
-If mismatching types are used, Unexpected throws an error with a helpful
-suggestion:
+If mismatching types are used when an assertion is invoked, Unexpected throws an
+error with a helpful suggestion:
 
 ```js
 expect('abcd', 'to have item', 'a');
 ```
 
 ```output
-expected 'abcd' 'to have item' 'a'
+expected 'abcd' to have item 'a'
   The assertion does not have a matching signature for:
     <string> to have item <string>
   did you mean:
     <array> to have item <any>
 ```
 
-If no subject type is specified, the assertion will be defined for the
-type `any` and would be applicable to any type.
-
 An assertion can only have a single assertion string, which must be
-provided after the subject type. This means it's not possible to add assertions
-such as `<number> to be between <number> and <number>`.
+provided after the subject type. This means that it's not possible to add
+assertions such as `<number> to be between <number> and <number>`.
+
+However, an assertion may define more than one value as long as there are
+no assertion strings in between the value-type definitions. The `to be between`
+assertion could instead be defined as:
+
+```js
+expect.addAssertion('<number> to be between <number> <number>', function(
+  expect,
+  subject,
+  value1,
+  value2
+) {
+  expect(subject, 'to be greater than', value1).and('to be less than', value2);
+});
+```
+
+```js
+expect(2, 'to be between', 1, 3);
+```
 
 ## Alternations
 
 Different versions of the same assertion, or different assertions that share the
 same handler function, can be added using an array:
 
-<!-- unexpected-markdown evaluate:false -->
-<!-- eslint-skip -->
+<!-- unexpected-markdown freshExpect:true -->
 
 ```js
 expect.addAssertion(
-  ['<array> to have item <any>', '<array> to have value <any>']
-  /* handler */
+  ['<array> to have item <any>', '<array> to have value <any>'],
+  handler
 );
 ```
 
+```js
+expect([1, 2, 3], 'to have item', 2);
+expect([1, 2, 3], 'to have value', 3);
+```
+
 However, array patterns are ideal for assertions that have different types for
-the subject or value; for instance, if the second assertion was defined as
+the subject or values; for instance, if the second assertion was defined as
 `<array> to have value <number>`. When the difference is only in the assertion
 string, an alternation is more handy:
 
-<!-- unexpected-markdown evaluate:false -->
-<!-- eslint-skip -->
+<!-- unexpected-markdown freshExpect:true -->
 
 ```js
-expect.addAssertion('<array> to have (item|value) <any>' /* handler */);
+expect.addAssertion('<array> to have (item|value) <any>', handler);
+```
+
+```js
+expect([1, 2, 3], 'to have item', 2);
+expect([1, 2, 3], 'to have value', 3);
 ```
 
 Alternations are made available to the handler function as an
@@ -104,7 +126,7 @@ Alternations are made available to the handler function as an
 Flags allow defining different versions of an assertion, where some words can
 be included when the assertion is invoked to yield different behaviour:
 
-<!-- unexpected-markdown evaluate:false -->
+<!-- unexpected-markdown freshExpect:true -->
 
 ```js
 expect.addAssertion('<array> [not] to have item <any>', function(
@@ -122,8 +144,6 @@ expect.addAssertion('<array> [not] to have item <any>', function(
 
 This makes the following assertions possible:
 
-<!-- unexpected-markdown evaluate:false -->
-
 ```js
 expect([1, 2, 3], 'to have item', 2);
 expect([1, 2, 3], 'not to have item', 4);
@@ -134,7 +154,7 @@ If the `not` flag is present in an invocation, `expect.flags.not` will be `true`
 In this case though, since [to contain](../../assertions/array-like/to-contain/)
 also supports the `not` flag, one can propagate the flag as follows:
 
-<!-- unexpected-markdown evaluate:false -->
+<!-- unexpected-markdown freshExpect:true -->
 
 ```js
 expect.addAssertion('<array> [not] to have item <any>', function(
@@ -151,7 +171,7 @@ be passed along to `to contain`.
 
 When flags are propagated, one can also invert the flag as follows:
 
-<!-- unexpected-markdown evaluate:false -->
+<!-- unexpected-markdown freshExpect:true -->
 
 ```js
 expect.addAssertion('<array> [not] to have item <any>', function(
@@ -164,30 +184,32 @@ expect.addAssertion('<array> [not] to have item <any>', function(
 ```
 
 This means that if `to have item` is invoked with the `not` flag, that flag will
-not be propagated to `to contain` - and vice versa.
+not be propagated to `to contain` - and vice versa:
+
+```js
+expect([1, 2, 3], 'not to have item', 2);
+expect([1, 2, 3], 'to have item', 4);
+```
 
 Flags can also be used to define optional filler words that make the assertion
 read better:
 
-<!-- unexpected-markdown evaluate:false -->
-<!-- eslint-skip -->
+<!-- unexpected-markdown freshExpect:true -->
 
 ```js
-expect.addAssertion('<array> to have [this] item <any>' /* handler */);
+expect.addAssertion('<array> to have [this] item <any>', handler);
+```
+
+```js
+expect([1, 2, 3], 'to have item', 2);
+expect([1, 2, 3], 'to have this item', 2);
 ```
 
 ## Optional values
 
-Assertions where the value is optional can be defined as follows:
-
-<!-- unexpected-markdown evaluate:false -->
-<!-- eslint-skip -->
-
-```js
-expect.addAssertion('<array> to have item <any?>' /* handler */);
-```
-
-This can be used to define optional `function` values:
+Assertions where a value is optional can be defined by adding a `?` after the
+value's type definition. For instance, this can be used to define optional
+`function` values:
 
 ```js
 var errorMode = 'default'; // use to control the error mode in later examples
