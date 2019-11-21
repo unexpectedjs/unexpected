@@ -18,12 +18,13 @@ expect.addAssertion([pattern, ...]], handler);
 For example:
 
 ```js
-expect.addAssertion(
-  '<array> to have item <any>',
-  function(expect, subject, value) {
-    expect(subject, 'to contain', value);
-  }
-);
+expect.addAssertion('<array> to have item <any>', function(
+  expect,
+  subject,
+  value
+) {
+  expect(subject, 'to contain', value);
+});
 ```
 
 A handler function can use other assertions, including other custom assertions
@@ -78,7 +79,7 @@ same handler function, can be added using an array:
 
 ```js
 expect.addAssertion(
-  ['<array> to have item <any>', '<array> to have value <any>'],
+  ['<array> to have item <any>', '<array> to have value <any>']
   /* handler */
 );
 ```
@@ -92,7 +93,7 @@ string, an alternation is more handy:
 <!-- eslint-skip -->
 
 ```js
-expect.addAssertion('<array> to have (item|value) <any>', /* handler */);
+expect.addAssertion('<array> to have (item|value) <any>' /* handler */);
 ```
 
 Alternations are made available to the handler function as an
@@ -106,16 +107,17 @@ be included when the assertion is invoked to yield different behaviour:
 <!-- unexpected-markdown evaluate:false -->
 
 ```js
-expect.addAssertion(
-  '<array> [not] to have item <any>',
-  function(expect, subject, value) {
-    if (expect.flags.not) {
-      expect(subject, 'not to contain', value);
-    } else {
-      expect(subject, 'to contain', value);
-    }
+expect.addAssertion('<array> [not] to have item <any>', function(
+  expect,
+  subject,
+  value
+) {
+  if (expect.flags.not) {
+    expect(subject, 'not to contain', value);
+  } else {
+    expect(subject, 'to contain', value);
   }
-);
+});
 ```
 
 This makes the following assertions possible:
@@ -135,12 +137,13 @@ also supports the `not` flag, one can propagate the flag as follows:
 <!-- unexpected-markdown evaluate:false -->
 
 ```js
-expect.addAssertion(
-  '<array> [not] to have item <any>',
-  function(expect, subject, value) {
-    expect(subject, '[not] to contain', value);
-  }
-);
+expect.addAssertion('<array> [not] to have item <any>', function(
+  expect,
+  subject,
+  value
+) {
+  expect(subject, '[not] to contain', value);
+});
 ```
 
 In this way, when `to have item` is invoked with the `not` flag, that flag will
@@ -151,12 +154,13 @@ When flags are propagated, one can also invert the flag as follows:
 <!-- unexpected-markdown evaluate:false -->
 
 ```js
-expect.addAssertion(
-  '<array> [not] to have item <any>',
-  function(expect, subject, value) {
-    expect(subject, '[!not] to contain', value);
-  }
-);
+expect.addAssertion('<array> [not] to have item <any>', function(
+  expect,
+  subject,
+  value
+) {
+  expect(subject, '[!not] to contain', value);
+});
 ```
 
 This means that if `to have item` is invoked with the `not` flag, that flag will
@@ -169,7 +173,7 @@ read better:
 <!-- eslint-skip -->
 
 ```js
-expect.addAssertion('<array> to have [this] item <any>', /* handler */);
+expect.addAssertion('<array> to have [this] item <any>' /* handler */);
 ```
 
 ## Optional values
@@ -180,7 +184,7 @@ Assertions where the value is optional can be defined as follows:
 <!-- eslint-skip -->
 
 ```js
-expect.addAssertion('<array> to have item <any?>', /* handler */);
+expect.addAssertion('<array> to have item <any?>' /* handler */);
 ```
 
 This can be used to define optional `function` values:
