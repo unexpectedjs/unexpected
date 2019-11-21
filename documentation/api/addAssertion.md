@@ -149,10 +149,13 @@ expect([1, 2, 3], 'to have item', 2);
 expect([1, 2, 3], 'not to have item', 4);
 ```
 
-If the `not` flag is present in an invocation, `expect.flags.not` will be `true`.
+Flags are made available to the handler function as an `expect.flags` object,
+where the keys are the names of the flags and the values are `true`, if the flag
+is used, or otherwise `undefined`.
 
-In this case though, since [to contain](../../assertions/array-like/to-contain/)
-also supports the `not` flag, one can propagate the flag as follows:
+This example could be improved further. Since
+[to contain](../../assertions/array-like/to-contain/) also supports the `not`
+flag, one can propagate the flag to that assertion as follows:
 
 <!-- unexpected-markdown freshExpect:true -->
 
@@ -191,8 +194,8 @@ expect([1, 2, 3], 'not to have item', 2);
 expect([1, 2, 3], 'to have item', 4);
 ```
 
-Flags can also be used to define optional filler words that make the assertion
-read better:
+Fun with flags, right? Flags can also be used to define optional filler words
+that make an assertion read better:
 
 <!-- unexpected-markdown freshExpect:true -->
 
