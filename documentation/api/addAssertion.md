@@ -123,8 +123,8 @@ Alternations are made available to the handler function as an
 
 ## Flags
 
-Flags allow defining different versions of an assertion, where some words can
-be included when the assertion is invoked to yield different behaviour:
+Flags allow assertions to define modifiers which can alter the behaviour of the assertion. The most common example is the `not` flag which requests that
+the assertion be negated:
 
 <!-- unexpected-markdown freshExpect:true -->
 
