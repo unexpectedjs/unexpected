@@ -13,7 +13,7 @@ expect.addAssertion([pattern, ...]], handler);
 `expect.addAssertion` takes two arguments:
 
 1. a string pattern (or an array of patterns) that describes the assertion.
-2. a handler function that is called when when the assertion is invoked.
+2. a handler function that is called when the assertion is invoked.
 
 For example:
 
@@ -98,8 +98,8 @@ expect.addAssertion('<array> to have item <number|string>', function(
 });
 ```
 
-Which would make the assertion more strict, only allowing number and string
-values but not boolean values:
+This would make the assertion more strict, only allowing number and string
+values but not boolean values, for example:
 
 ```js
 expect([1, 2, 3], 'to have item', 2);
@@ -136,7 +136,7 @@ expect([1, 2, 3], 'to have item', 2);
 expect([1, 2, 3], 'to have value', 3);
 ```
 
-However, when it's a small deviation as in this case an alternation is more
+However, when it's a small deviation, as in this case, an alternation is more
 handy:
 
 <!-- unexpected-markdown freshExpect:true -->
