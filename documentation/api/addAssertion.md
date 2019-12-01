@@ -18,11 +18,13 @@ expect.addAssertion([pattern, ...]], handler);
 For example:
 
 ```js
-function handler(expect, subject, value) {
+expect.addAssertion('<array> to have item <any>', function(
+  expect,
+  subject,
+  value
+) {
   expect(subject, 'to contain', value);
-}
-
-expect.addAssertion('<array> to have item <any>', handler);
+});
 ```
 
 A handler function can use other assertions, including other custom assertions
@@ -60,13 +62,11 @@ expected 'abcd' to have item 'a'
     <array> to have item <any>
 ```
 
-An assertion can only have a single assertion string, which must be
-provided after the subject type. This means that it's not possible to add
-assertions such as `<number> to be between <number> and <number>`.
-
-However, an assertion may define more than one value as long as there are
-no assertion strings in between the value-type definitions. The `to be between`
-assertion could instead be defined as:
+An assertion may only have one `<subject type>` definition, followed by the
+desired assertion string, followed by zero or more `<value type>` definitions.
+It's not possible to add words between the value-type definitions. For instance,
+an assertion such as `<number> to be between <number> and <number>` could
+instead be written as:
 
 ```js
 expect.addAssertion('<number> to be between <number> <number>', function(
@@ -83,6 +83,38 @@ expect.addAssertion('<number> to be between <number> <number>', function(
 expect(2, 'to be between', 1, 3);
 ```
 
+Assertions that support different subject or value types can be defined as
+follows:
+
+<!-- unexpected-markdown freshExpect:true -->
+
+```js
+expect.addAssertion('<array> to have item <number|string>', function(
+  expect,
+  subject,
+  value
+) {
+  expect(subject, 'to contain', value);
+});
+```
+
+Which would make the assertion more strict, only allowing number and string
+values but not boolean values:
+
+```js
+expect([1, 2, 3], 'to have item', 2);
+expect(['a', 'b', 'c'], 'to have item', 'a');
+expect([true, false], 'to have item', true);
+```
+
+```output
+expected [ true, false ] to have item true
+  The assertion does not have a matching signature for:
+    <array> to have item <boolean>
+  did you mean:
+    <array> to have item <number|string>
+```
+
 ## Alternations
 
 Different versions of the same assertion, or different assertions that share the
@@ -93,7 +125,9 @@ same handler function, can be added using an array:
 ```js
 expect.addAssertion(
   ['<array> to have item <any>', '<array> to have value <any>'],
-  handler
+  function(expect, subject, value) {
+    expect(subject, 'to contain', value);
+  }
 );
 ```
 
@@ -102,15 +136,19 @@ expect([1, 2, 3], 'to have item', 2);
 expect([1, 2, 3], 'to have value', 3);
 ```
 
-However, array patterns are ideal for assertions that have different types for
-the subject or values; for instance, if the second assertion was defined as
-`<array> to have value <number>`. When the difference is only in the assertion
-string, an alternation is more handy:
+However, when it's a small deviation as in this case an alternation is more
+handy:
 
 <!-- unexpected-markdown freshExpect:true -->
 
 ```js
-expect.addAssertion('<array> to have (item|value) <any>', handler);
+expect.addAssertion('<array> to have (item|value) <any>', function(
+  expect,
+  subject,
+  value
+) {
+  expect(subject, 'to contain', value);
+});
 ```
 
 ```js
@@ -118,8 +156,34 @@ expect([1, 2, 3], 'to have item', 2);
 expect([1, 2, 3], 'to have value', 3);
 ```
 
-Alternations are made available to the handler function as an
-`expect.alternations` array, which contains the word used when the assertion is invoked.
+Alternations allow branching, similar to an `if..else` statement. They are made
+available to the handler function as an `expect.alternations` array which
+contains the word used when the assertion is invoked:
+
+<!-- unexpected-markdown freshExpect:true -->
+
+```js
+expect.addAssertion('<object> to have (key|value) <any>', function(
+  expect,
+  subject,
+  value
+) {
+  if (expect.alternations[0] === 'key') {
+    expect(Object.keys(subject), 'to contain', value);
+  } else {
+    expect(Object.values(subject), 'to contain', value);
+  }
+});
+```
+
+```js
+expect({ foo: 'bar' }, 'to have key', 'foo');
+expect({ foo: 'bar' }, 'to have value', 'bar');
+```
+
+> Note that Unexpected already ships with [to have
+> key](../../assertions/object/to-have-key/) and [to have
+> property](../../assertions/object/to-have-property/) assertions.
 
 ## Flags
 
@@ -200,7 +264,13 @@ that make an assertion read better:
 <!-- unexpected-markdown freshExpect:true -->
 
 ```js
-expect.addAssertion('<array> to have [this] item <any>', handler);
+expect.addAssertion('<array> to have [this] item <any>', function(
+  expect,
+  subject,
+  value
+) {
+  expect(subject, 'to contain', value);
+});
 ```
 
 ```js
