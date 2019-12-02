@@ -163,27 +163,23 @@ contains the word used when the assertion is invoked:
 <!-- unexpected-markdown freshExpect:true -->
 
 ```js
-expect.addAssertion('<object> to have (key|value) <any>', function(
+expect.addAssertion('<array> to have (index|value) <any>', function(
   expect,
   subject,
   value
 ) {
-  if (expect.alternations[0] === 'key') {
-    expect(Object.keys(subject), 'to contain', value);
+  if (expect.alternations[0] === 'index') {
+    expect(subject[value], 'to be defined');
   } else {
-    expect(Object.values(subject), 'to contain', value);
+    expect(subject, 'to contain', value);
   }
 });
 ```
 
 ```js
-expect({ foo: 'bar' }, 'to have key', 'foo');
-expect({ foo: 'bar' }, 'to have value', 'bar');
+expect(['a', 'b'], 'to have index', 1);
+expect(['a', 'b'], 'to have value', 'b');
 ```
-
-> Note that Unexpected already ships with [to have
-> key](../../assertions/object/to-have-key/) and [to have
-> property](../../assertions/object/to-have-property/) assertions.
 
 ## Flags
 
