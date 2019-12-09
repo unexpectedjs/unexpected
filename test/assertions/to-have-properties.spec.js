@@ -323,36 +323,24 @@ describe('to have properties assertion', () => {
       }, 'not to throw');
     });
 
+    it('should fail if used with the not flag', () => {
+      expect(
+        function() {
+          expect({ foo: 123 }, 'not to only have properties', ['foo']);
+        },
+        'to throw',
+        'The "not" flag cannot be used together with "to only have properties".'
+      );
+    });
+
     it('should fail if used with the own flag', () => {
       expect(
         function() {
-          expect({ foo: 123, bar: undefined }, 'to only have own properties', [
-            'foo'
-          ]);
+          expect({ foo: 123 }, 'to only have own properties', ['foo']);
         },
         'to throw',
         'The "own" flag cannot be used together with "to only have properties".'
       );
-    });
-
-    describe('when negated', () => {
-      it('should pass', () => {
-        expect(function() {
-          expect({ foo: 123, bar: 456 }, 'not to only have properties', [
-            'foo'
-          ]);
-        }, 'not to throw');
-      });
-
-      it('should fail', () => {
-        expect(
-          function() {
-            expect({ foo: 123 }, 'not to only have properties', ['foo']);
-          },
-          'to throw',
-          "expected { foo: 123 } not to only have properties [ 'foo' ]"
-        );
-      });
     });
   });
 });
