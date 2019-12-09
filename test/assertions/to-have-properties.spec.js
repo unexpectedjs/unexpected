@@ -195,7 +195,7 @@ describe('to have properties assertion', () => {
         '  The assertion does not have a matching signature for:\n' +
         '    <object> to have properties <string> <string>\n' +
         '  did you mean:\n' +
-        '    <object> [not] to have [own] properties <array>\n' +
+        '    <object> [not] to [only] have [own] properties <array>\n' +
         '    <object> to have [own] properties <object>'
     );
 
@@ -211,7 +211,7 @@ describe('to have properties assertion', () => {
         '  The assertion does not have a matching signature for:\n' +
         '    <object> not to have properties <object>\n' +
         '  did you mean:\n' +
-        '    <object> [not] to have [own] properties <array>'
+        '    <object> [not] to [only] have [own] properties <array>'
     );
   });
 
@@ -287,6 +287,72 @@ describe('to have properties assertion', () => {
           '    true\n' +
           '    false'
       );
+    });
+  });
+
+  describe('with the "only" flag', () => {
+    it('should pass', () => {
+      expect(function() {
+        expect({ foo: 123, bar: 456 }, 'to only have properties', [
+          'foo',
+          'bar'
+        ]);
+      }, 'not to throw');
+    });
+
+    it('should fail with a diff and mark properties to be removed', () => {
+      expect(
+        function() {
+          expect({ foo: 123, bar: 456 }, 'to only have properties', ['foo']);
+        },
+        'to error',
+        "expected { foo: 123, bar: 456 } to only have properties [ 'foo' ]\n" +
+          '\n' +
+          '{\n' +
+          '  foo: 123,\n' +
+          '  bar: 456 // should be removed\n' +
+          '}'
+      );
+    });
+
+    it('should ignore undefined properties', () => {
+      expect(function() {
+        expect({ foo: 123, bar: undefined }, 'to only have properties', [
+          'foo'
+        ]);
+      }, 'not to throw');
+    });
+
+    it('should fail if used with the own flag', () => {
+      expect(
+        function() {
+          expect({ foo: 123, bar: undefined }, 'to only have own properties', [
+            'foo'
+          ]);
+        },
+        'to throw',
+        'The "own" flag cannot be used together with "to only have properties".'
+      );
+    });
+
+    describe('when negated', () => {
+      it('should pass', () => {
+        expect(function() {
+          expect({ foo: 123, bar: 456 }, 'not to only have properties', [
+            'foo'
+          ]);
+        }, 'not to throw');
+      });
+
+      it('should fail', () => {
+        expect(
+          function() {
+            expect({ foo: 123 }, 'not to only have properties', ['foo']);
+          },
+          'to throw',
+          "expected { foo: 123 } not to only have properties [ 'foo' ]"
+        );
+      });
     });
   });
 });
