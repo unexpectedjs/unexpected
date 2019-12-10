@@ -344,6 +344,20 @@ describe('to have properties assertion', () => {
       );
     });
 
+    it('should fail with a diff while avoiding the prototype chain', () => {
+      expect(
+        function() {
+          expect({ toString: 'foobar' }, 'to only have properties', []);
+        },
+        'to error',
+        "expected { toString: 'foobar' } to only have properties []\n" +
+          '\n' +
+          '{\n' +
+          "  toString: 'foobar' // should be removed\n" +
+          '}'
+      );
+    });
+
     it('should ignore undefined properties', () => {
       expect(function() {
         expect({ foo: 123, bar: undefined }, 'to only have properties', [
@@ -352,7 +366,7 @@ describe('to have properties assertion', () => {
       }, 'not to throw');
     });
 
-    it('should fail if used with the not flag', () => {
+    it('should error if used with the not flag', () => {
       expect(
         function() {
           expect({ foo: 123 }, 'not to only have properties', ['foo']);
@@ -362,7 +376,7 @@ describe('to have properties assertion', () => {
       );
     });
 
-    it('should fail if used with the own flag', () => {
+    it('should error if used with the own flag', () => {
       expect(
         function() {
           expect({ foo: 123 }, 'to only have own properties', ['foo']);
