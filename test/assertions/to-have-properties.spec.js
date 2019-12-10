@@ -315,6 +315,25 @@ describe('to have properties assertion', () => {
       );
     });
 
+    it('should fail with a diff and mark properties that are missing', () => {
+      expect(
+        function() {
+          expect({ foo: 123, bar: 456 }, 'to only have properties', [
+            'foo',
+            'baz'
+          ]);
+        },
+        'to error',
+        "expected { foo: 123, bar: 456 } to only have properties [ 'foo', 'baz' ]\n" +
+          '\n' +
+          '{\n' +
+          '  foo: 123,\n' +
+          '  bar: 456 // should be removed\n' +
+          "  // missing 'baz'\n" +
+          '}'
+      );
+    });
+
     it('should ignore undefined properties', () => {
       expect(function() {
         expect({ foo: 123, bar: undefined }, 'to only have properties', [
