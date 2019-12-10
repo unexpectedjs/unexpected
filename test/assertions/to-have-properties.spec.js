@@ -300,6 +300,16 @@ describe('to have properties assertion', () => {
       }, 'not to throw');
     });
 
+    it('should pass regardless of ordering', () => {
+      expect(function() {
+        expect({ foo: 123, bar: 456, baz: 768 }, 'to only have properties', [
+          'baz',
+          'foo',
+          'bar'
+        ]);
+      }, 'not to throw');
+    });
+
     it('should fail with a diff and mark properties to be removed', () => {
       expect(
         function() {
