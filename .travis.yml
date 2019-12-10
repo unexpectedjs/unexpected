@@ -5,35 +5,35 @@ env:
 
 node_js:
   - '6'
-  - '8.7.0'
+  - '8.16.2'
   - '9'
   - '10'
 
 matrix:
   include:
-    - name: Lint (8.7.0)
-      node_js: '8.7.0'
+    - name: Lint (8.16.2)
+      node_js: '8.16.2'
       env: TARGET=lint
-    - name: Jest (8.7.0)
-      node_js: '8.7.0'
+    - name: Jest (8.16.2)
+      node_js: '8.16.2'
       env: TARGET=test-jest
-    - name: Jasmine (8.7.0)
-      node_js: '8.7.0'
+    - name: Jasmine (8.16.2)
+      node_js: '8.16.2'
       env: TARGET=test-jasmine
-    - name: Coverage (8.7.0)
-      node_js: '8.7.0'
+    - name: Coverage (8.16.2)
+      node_js: '8.16.2'
       env: TARGET=travis-coverage
-    - name: Plugins (8.7.0)
-      node_js: '8.7.0'
+    - name: Plugins (8.16.2)
+      node_js: '8.16.2'
       env: TARGET=test-plugins
     - name: BrowserStack IE11
-      node_js: '8.7.0'
+      node_js: '8.16.2'
       env: TARGET=test-browserstack-ie11
     - name: Chrome headless
-      node_js: '8.7.0'
+      node_js: '8.16.2'
       env: TARGET=test-chrome-headless
     - name: Deno
-      node_js: '8.7.0'
+      node_js: '8.16.2'
       env: TARGET=test-deno
 
 addons:
