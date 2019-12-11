@@ -358,12 +358,18 @@ describe('to have properties assertion', () => {
       );
     });
 
-    it('should ignore undefined properties', () => {
+    it('should ignore undefined properties (pass)', () => {
       expect(function() {
         expect({ foo: 123, bar: undefined }, 'to only have properties', [
           'foo'
         ]);
       }, 'not to throw');
+    });
+
+    it('should ignore undefined properties (fail)', () => {
+      expect(function() {
+        expect({ 123: undefined }, 'to only have properties', ['123']);
+      }, 'to throw');
     });
 
     it('should error if used with the not flag', () => {
