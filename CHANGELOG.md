@@ -1,3 +1,17 @@
+### v11.9.0 (2019-12-15)
+
+#### Pull requests
+
+- [#671](https://github.com/unexpectedjs/unexpected/pull/671) Support an "only" flag in the "to have properties" assertion. ([Alex J Burke](mailto:alex@alexjeffburke.com), [Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+
+#### Commits to master
+
+- [Build with node 8.16.2 instead of 8.7.0](https://github.com/unexpectedjs/unexpected/commit/cd4c62faa74e3de230b6a295b2d9f129a22869c0) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [Pin deno to v0.25.0 until a timers issue in v0.26.0 is resolved.](https://github.com/unexpectedjs/unexpected/commit/f77eadbff74bc63ec92faf0286fe628dc4c80a1d) ([Alex J Burke](mailto:alex@alexjeffburke.com))
+- [Catch up with deno install script default path change.](https://github.com/unexpectedjs/unexpected/commit/8ab57331f05b567bb3b83fe0b0043e0525109403) ([Alex J Burke](mailto:alex@alexjeffburke.com))
+- [Rename variable "unexpected" =&gt; "expect" in top-level creation code.](https://github.com/unexpectedjs/unexpected/commit/bf643675ce816ba2997466dd5e14922db5b1f7a3) ([Alex J Burke](mailto:alex@alexjeffburke.com))
+- [docs\(addAssertion\): document alternations, flags and optional values \(\#668\)](https://github.com/unexpectedjs/unexpected/commit/9c35e90a2b10aea1892cbbeea6196ede610447a0) ([Joel Mukuthu](mailto:joelmukuthu@gmail.com))
+
 ### v11.8.1 (2019-11-12)
 
 - [#667](https://github.com/unexpectedjs/unexpected/pull/667) Upgrade prettier to version 1.19.1 ([Andreas Lind](mailto:andreaslindpetersen@gmail.com), [depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
