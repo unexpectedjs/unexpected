@@ -12,6 +12,22 @@ expect(['a', { c: 'c' }, 'd'], 'to have properties', {
 });
 ```
 
+When validating the object against an array of properties, the `only` flag can
+be used to assert that only the specified properties are present:
+
+```js
+expect({ foo: 123, bar: 456 }, 'to only have properties', ['foo']);
+```
+
+```output
+expected { foo: 123, bar: 456 } to only have properties [ 'foo' ]
+
+{
+  foo: 123,
+  bar: 456 // should be removed
+}
+```
+
 Using the `own` flag, you can assert presence of an own properties.
 
 ```js

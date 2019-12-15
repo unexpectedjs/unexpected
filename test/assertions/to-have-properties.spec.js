@@ -195,7 +195,7 @@ describe('to have properties assertion', () => {
         '  The assertion does not have a matching signature for:\n' +
         '    <object> to have properties <string> <string>\n' +
         '  did you mean:\n' +
-        '    <object> [not] to have [own] properties <array>\n' +
+        '    <object> [not] to [only] have [own] properties <array>\n' +
         '    <object> to have [own] properties <object>'
     );
 
@@ -211,7 +211,7 @@ describe('to have properties assertion', () => {
         '  The assertion does not have a matching signature for:\n' +
         '    <object> not to have properties <object>\n' +
         '  did you mean:\n' +
-        '    <object> [not] to have [own] properties <array>'
+        '    <object> [not] to [only] have [own] properties <array>'
     );
   });
 
@@ -286,6 +286,109 @@ describe('to have properties assertion', () => {
           '  All expected properties must be passed as strings or numbers, but these are not:\n' +
           '    true\n' +
           '    false'
+      );
+    });
+  });
+
+  describe('with the "only" flag', () => {
+    it('should pass', () => {
+      expect(function() {
+        expect({ foo: 123, bar: 456 }, 'to only have properties', [
+          'foo',
+          'bar'
+        ]);
+      }, 'not to throw');
+    });
+
+    it('should pass regardless of ordering', () => {
+      expect(function() {
+        expect({ foo: 123, bar: 456, baz: 768 }, 'to only have properties', [
+          'baz',
+          'foo',
+          'bar'
+        ]);
+      }, 'not to throw');
+    });
+
+    it('should fail with a diff and mark properties to be removed', () => {
+      expect(
+        function() {
+          expect({ foo: 123, bar: 456 }, 'to only have properties', ['foo']);
+        },
+        'to error',
+        "expected { foo: 123, bar: 456 } to only have properties [ 'foo' ]\n" +
+          '\n' +
+          '{\n' +
+          '  foo: 123,\n' +
+          '  bar: 456 // should be removed\n' +
+          '}'
+      );
+    });
+
+    it('should fail with a diff and mark properties that are missing', () => {
+      expect(
+        function() {
+          expect({ foo: 123, bar: 456 }, 'to only have properties', [
+            'foo',
+            'baz'
+          ]);
+        },
+        'to error',
+        "expected { foo: 123, bar: 456 } to only have properties [ 'foo', 'baz' ]\n" +
+          '\n' +
+          '{\n' +
+          '  foo: 123,\n' +
+          '  bar: 456 // should be removed\n' +
+          "  // missing 'baz'\n" +
+          '}'
+      );
+    });
+
+    it('should fail with a diff while avoiding the prototype chain', () => {
+      expect(
+        function() {
+          expect({ toString: 'foobar' }, 'to only have properties', []);
+        },
+        'to error',
+        "expected { toString: 'foobar' } to only have properties []\n" +
+          '\n' +
+          '{\n' +
+          "  toString: 'foobar' // should be removed\n" +
+          '}'
+      );
+    });
+
+    it('should ignore undefined properties (pass)', () => {
+      expect(function() {
+        expect({ foo: 123, bar: undefined }, 'to only have properties', [
+          'foo'
+        ]);
+      }, 'not to throw');
+    });
+
+    it('should ignore undefined properties (fail)', () => {
+      expect(function() {
+        expect({ 123: undefined }, 'to only have properties', ['123']);
+      }, 'to throw');
+    });
+
+    it('should error if used with the not flag', () => {
+      expect(
+        function() {
+          expect({ foo: 123 }, 'not to only have properties', ['foo']);
+        },
+        'to throw',
+        'The "not" flag cannot be used together with "to only have properties".'
+      );
+    });
+
+    it('should error if used with the own flag', () => {
+      expect(
+        function() {
+          expect({ foo: 123 }, 'to only have own properties', ['foo']);
+        },
+        'to throw',
+        'The "own" flag cannot be used together with "to only have properties".'
       );
     });
   });
