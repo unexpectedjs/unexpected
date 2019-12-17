@@ -6,6 +6,14 @@ if (typeof BigInt === 'function') {
       expect(a, 'to equal', a);
     });
 
+    it('should not be considered equal to the equivalent number', () => {
+      expect(
+        () => expect(BigInt(1), 'to equal', 1),
+        'to throw',
+        'expected BigInt(1) to equal 1'
+      );
+    });
+
     it('should inspect as source code', () => {
       const a = BigInt(123);
       expect(a, 'to inspect as', 'BigInt(123)');
