@@ -1,4 +1,11 @@
 /* global expect, BigInt */
+
+// Bogus test to prevent jest from failing with "Your test suite must contain at least one test"
+// on node.js 9 and below, which don't have BigInt support:
+it('should be registered as a type', function() {
+  expect(expect.getType('BigInt'), 'to be truthy');
+});
+
 if (typeof BigInt === 'function') {
   describe('BigInt type', () => {
     it('should consider an instance equal to itself', () => {
