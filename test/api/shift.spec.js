@@ -374,6 +374,7 @@ describe('expect.shift', () => {
         '    The assertion does not have a matching signature for:\n' +
         '      <string> to be negative\n' +
         '    did you mean:\n' +
+        '      <BigInt> [not] to be negative\n' +
         '      <number> [not] to be negative'
     );
   });
@@ -401,6 +402,7 @@ describe('expect.shift', () => {
           '    The assertion does not have a matching signature for:\n' +
           '      <string> to be negative\n' +
           '    did you mean:\n' +
+          '      <BigInt> [not] to be negative\n' +
           '      <number> [not] to be negative'
       );
     });
