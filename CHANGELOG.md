@@ -1,3 +1,14 @@
+### v11.10.0 (2019-12-18)
+
+#### Pull requests
+
+- [#674](https://github.com/unexpectedjs/unexpected/pull/674) Add support for BigInt ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+
+#### Commits to master
+
+- [Fix typos in test descriptions](https://github.com/unexpectedjs/unexpected/commit/2969dfd38f5ba2eda5f717b9fe0019a49ba190b8) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [Remove duplicated function name that confuses the TS compiler.](https://github.com/unexpectedjs/unexpected/commit/9b6ac24aaee1e29cad3c39b3920659f51dba767c) ([Alex J Burke](mailto:alex@alexjeffburke.com))
+
 ### v11.9.0 (2019-12-15)
 
 #### Pull requests
