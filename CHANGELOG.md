@@ -1,3 +1,13 @@
+### v11.11.0 (2019-12-19)
+
+#### Pull requests
+
+- [#675](https://github.com/unexpectedjs/unexpected/pull/675) Always define Symbol and Buffer, even if the runtime doesn't support them ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+
+#### Commits to master
+
+- [Revert "Pin deno to v0.25.0 until a timers issue in v0.26.0 is resolved."](https://github.com/unexpectedjs/unexpected/commit/73514bde8fb861474b40aeef9e9dadad64479e5e) ([Alex J Burke](mailto:alex@alexjeffburke.com))
+
 ### v11.10.0 (2019-12-18)
 
 #### Pull requests
