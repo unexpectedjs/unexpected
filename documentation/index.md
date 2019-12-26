@@ -1,6 +1,5 @@
 ---
 template: default.ejs
-theme: dark
 title: Unexpected
 repository: https://github.com/unexpectedjs/unexpected
 ---
