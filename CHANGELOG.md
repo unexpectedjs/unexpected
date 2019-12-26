@@ -1,3 +1,8 @@
+### v11.12.0 (2019-12-26)
+
+- [#679](https://github.com/unexpectedjs/unexpected/pull/679) Replace leven with ukkonen ([Sune Simonsen](mailto:sune@we-knowhow.dk))
+- [#677](https://github.com/unexpectedjs/unexpected/pull/677) Upgrade nyc to version 15.0.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+
 ### v11.11.0 (2019-12-19)
 
 #### Pull requests
@@ -69,10 +74,6 @@
 - [#647](https://github.com/unexpectedjs/unexpected/pull/647) Upgrade unexpected-magicpen to version 2.0.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
 - [#644](https://github.com/unexpectedjs/unexpected/pull/644) Rework "to satisfy" documentation to clarify the semantics. ([Alex J Burke](mailto:alex@alexjeffburke.com), [Sune Simonsen](mailto:sune@we-knowhow.dk))
 - [#643](https://github.com/unexpectedjs/unexpected/pull/643) Upgrade eslint-config-prettier to version 5.0.0 ([depfu[bot]](mailto:depfu[bot]@users.noreply.github.com))
-- [#642](https://github.com/unexpectedjs/unexpected/pull/642) Fix context reset for child expect's ([Sune Simonsen](mailto:sune@we-knowhow.dk))
-- [#641](https://github.com/unexpectedjs/unexpected/pull/641) Upgrade prettier to version 1.18.2 ([Andreas Lind](mailto:andreaslindpetersen@gmail.com), [depfu[bot]](mailto:depfu[bot]@users.noreply.github.com))
-- [#639](https://github.com/unexpectedjs/unexpected/pull/639) Upgrade rollup-plugin-terser to version 5.0.0 ([depfu[bot]](mailto:depfu[bot]@users.noreply.github.com))
-- [#638](https://github.com/unexpectedjs/unexpected/pull/638) Replace uglify-js with terser ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
 
 #### Commits to master
 
@@ -80,6 +81,18 @@
 - [Fix lint](https://github.com/unexpectedjs/unexpected/commit/33209a92a89c1852e8d9e64c6e9b13d963280534) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
 - [Remove no longer used rollup-plugin-uglify](https://github.com/unexpectedjs/unexpected/commit/f9102bc737723bc50c0b07f6fc0f1ad772915991) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
 - [Fix complex specifications link target.](https://github.com/unexpectedjs/unexpected/commit/039e123594f235fb1357ad5f89b98e84c943cb2f) ([Alex J Burke](mailto:alex@alexjeffburke.com))
+
+### v11.6.1 (2019-06-13)
+
+#### Pull requests
+
+- [#642](https://github.com/unexpectedjs/unexpected/pull/642) Fix context reset for child expect's ([Sune Simonsen](mailto:sune@we-knowhow.dk))
+- [#641](https://github.com/unexpectedjs/unexpected/pull/641) Upgrade prettier to version 1.18.2 ([Andreas Lind](mailto:andreaslindpetersen@gmail.com), [depfu[bot]](mailto:depfu[bot]@users.noreply.github.com))
+- [#639](https://github.com/unexpectedjs/unexpected/pull/639) Upgrade rollup-plugin-terser to version 5.0.0 ([depfu[bot]](mailto:depfu[bot]@users.noreply.github.com))
+- [#638](https://github.com/unexpectedjs/unexpected/pull/638) Replace uglify-js with terser ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+
+#### Commits to master
+
 - [Update rollup-plugin-node-resolve to version 5.0.0](https://github.com/unexpectedjs/unexpected/commit/284a61f20b68e8c6ae761816d4ff198979b4ff42) ([depfu[bot]](mailto:depfu[bot]@users.noreply.github.com))
 
 ### v11.6.0 (2019-05-20)
