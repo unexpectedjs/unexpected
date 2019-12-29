@@ -121,7 +121,7 @@ deploy-site: site-build
 	./node_modules/.bin/gh-pages -d site-build -r git@github.com:unexpectedjs/unexpectedjs.github.io.git -b master
 
 .PHONY: release-%
-release-%: git-dirty-check lint ${TARGETS} test-chrome-headless test-jasmine test-jest deploy-site
+release-%: git-dirty-check lint ${TARGETS} test-chrome-headless test-jasmine test-jest check-site-links deploy-site
 	IS_MAKE_RELEASE=yes npm version $*
 	@echo $* release ready to be publised to NPM
 	@echo Remember to push master and tags
@@ -133,6 +133,9 @@ clean:
 .PHONY: site-build
 site-build:
 	npm run generate-site
+
+check-site-links: site-build
+	./node_modules/.bin/hyperlink -ri --canonicalroot https://unexpected.js.org --skip content-type-mismatch --skip unexpected.js.org/unexpected- site-build/index.html | tap-spot
 
 .PHONY: update-examples
 update-examples:
