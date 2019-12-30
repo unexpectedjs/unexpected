@@ -135,7 +135,7 @@ site-build:
 	npm run generate-site
 
 check-site-links: site-build
-	./node_modules/.bin/hyperlink -ri --canonicalroot https://unexpected.js.org --skip content-type-mismatch --skip unexpected.js.org/unexpected- site-build/index.html | tap-spot
+	./node_modules/.bin/hyperlink -ri --canonicalroot https://unexpected.js.org --skip content-type-mismatch --skip unexpected.js.org/unexpected- site-build/index.html | ./node_modules/.bin/tap-spot
 
 .PHONY: update-examples
 update-examples:
