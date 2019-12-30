@@ -29,7 +29,7 @@
     "detect-indent": "3.0.1",
     "diff": "4.0.1",
     "greedy-interval-packer": "1.2.0",
-    "magicpen": "^6.1.1",
+    "magicpen": "git://github.com/sunesimonsen/magicpen.git#a9f3570",
     "ukkonen": "^1.4.0",
     "unexpected-bluebird": "2.9.34-longstack2"
   },
