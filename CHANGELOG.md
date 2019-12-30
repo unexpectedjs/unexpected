@@ -1,3 +1,15 @@
+### v11.12.1 (2019-12-30)
+
+#### Pull requests
+
+- [#683](https://github.com/unexpectedjs/unexpected/pull/683) Clone aware magic pen themes ([Alex J Burke](mailto:alex@alexjeffburke.com))
+- [#682](https://github.com/unexpectedjs/unexpected/pull/682) Upgrade eslint-plugin-node to version 11.0.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+
+#### Commits to master
+
+- [Fix path to bin in Makefile after 56194bc.](https://github.com/unexpectedjs/unexpected/commit/d8aee944feaf8fc3fd165d8fab478b64174660c1) ([Alex J Burke](mailto:alex@alexjeffburke.com))
+- [Only run hyperlink on release so "npm run generate-site" doesn't become too slow](https://github.com/unexpectedjs/unexpected/commit/56194bc75948c125d7ed6fc8a44b27c2dad32efd) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+
 ### v11.12.0 (2019-12-26)
 
 - [#679](https://github.com/unexpectedjs/unexpected/pull/679) Replace leven with ukkonen ([Sune Simonsen](mailto:sune@we-knowhow.dk))
