@@ -14,6 +14,7 @@
     "url": "https://github.com/unexpectedjs/unexpected"
   },
   "scripts": {
+    "prepare": "make build/lib",
     "test": "make test && make test-chrome-headless",
     "lint": "eslint . && eslint --ext md documentation && prettier --check '**/*.{js,md}'",
     "generate-site": "generate-site --require ./bootstrap-unexpected-markdown.js",
@@ -28,7 +29,7 @@
     "detect-indent": "3.0.1",
     "diff": "4.0.1",
     "greedy-interval-packer": "1.2.0",
-    "magicpen": "^6.1.1",
+    "magicpen": "^6.2.1",
     "ukkonen": "^1.4.0",
     "unexpected-bluebird": "2.9.34-longstack2"
   },
