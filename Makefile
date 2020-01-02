@@ -66,7 +66,11 @@ endif
 
 .PHONY: test
 test: test-sources
-	@./node_modules/.bin/mocha --opts $(MOCHA_OPTS) $(TEST_SOURCES) $(TEST_SOURCES_MARKDOWN)
+ifeq ($(MODERN_NODE), true)
+	@./node_modules/.bin/mocha --opts $(MOCHA_OPTS) --require unexpected-markdown $(TEST_SOURCES) $(TEST_SOURCES_MARKDOWN)
+else
+	@./node_modules/.bin/mocha --opts $(MOCHA_OPTS) $(TEST_SOURCES)
+endif
 
 nyc-includes:
 ifeq ($(MODERN_NODE), true)

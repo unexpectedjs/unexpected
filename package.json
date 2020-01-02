@@ -74,7 +74,7 @@
     "tap-spot": "^1.1.1",
     "unexpected-documentation-site-generator": "^6.0.0",
     "unexpected-magicpen": "^2.1.0",
-    "unexpected-markdown": "^4.0.0"
+    "unexpected-markdown": "^5.0.0"
   },
   "files": [
     "unexpected.js",
