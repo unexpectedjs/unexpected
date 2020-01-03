@@ -103,7 +103,7 @@ test-plugins: ${TARGETS}
 .PHONY: test-deno
 test-deno: ${TARGETS} build/tests.esm.js
 	if [ ! -f ~/.local/bin/deno ]; then \
-		curl -fsSL https://deno.land/x/install/install.sh | sh -s v0.27.0; \
+		curl -fsSL https://deno.land/x/install/install.sh | sh; \
 	fi;
 	~/.local/bin/deno test-deno/deno-test.js
 
