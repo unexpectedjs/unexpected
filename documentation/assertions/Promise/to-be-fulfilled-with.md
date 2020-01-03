@@ -39,7 +39,7 @@ return expect(Promise.resolve('abc'), 'to be fulfilled with', 'def');
 
 ```output
 expected Promise to be fulfilled with 'def'
-  expected 'abc' to equal 'def'
+  expected 'abc' to satisfy 'def'
 
   -abc
   +def

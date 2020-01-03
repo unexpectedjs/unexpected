@@ -49,7 +49,7 @@ return expect(
 
 ```output
 expected Promise to be fulfilled with value satisfying 'def'
-  expected 'abc' to equal 'def'
+  expected 'abc' to satisfy 'def'
 
   -abc
   +def
