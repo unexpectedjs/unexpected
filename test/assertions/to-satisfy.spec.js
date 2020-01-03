@@ -2763,4 +2763,36 @@ describe('to satisfy assertion', () => {
       { foo: 123 }
     );
   });
+
+  describe('when comparing two any types', () => {
+    const clonedExpect = expect.clone();
+    clonedExpect.addType({
+      name: 'anyOne',
+      identify(obj) {
+        return obj && obj.anyOne;
+      },
+      inspect() {
+        return 'anyOne';
+      }
+    });
+    clonedExpect.addType({
+      name: 'anyPerson',
+      identify(obj) {
+        return obj && obj.anyPerson;
+      },
+      inspect() {
+        return 'anyPerson';
+      }
+    });
+
+    it('should output the assertion as "satisfy"', () => {
+      expect(
+        () => {
+          clonedExpect({ anyOne: true }, 'to satisfy', { anyPerson: true });
+        },
+        'to throw',
+        'expected anyOne to satisfy anyPerson'
+      );
+    });
+  });
 });
