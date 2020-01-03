@@ -30,7 +30,7 @@ describe('to have message/diff assertion', () => {
             message,
             'to contain',
             "to have message 'expected 3 to equal 2'\n" +
-              "  expected 'expected 1 to equal 2' to equal 'expected 3 to equal 2'\n" +
+              "  expected 'expected 1 to equal 2' to satisfy 'expected 3 to equal 2'\n" +
               '\n' +
               '  -expected 1 to equal 2\n' +
               '  +expected 3 to equal 2'
@@ -327,7 +327,7 @@ describe('to have message/diff assertion', () => {
         },
         'to throw',
         "expected Error('Bummer!') to have message 'Dammit!'\n" +
-          "  expected 'Bummer!' to equal 'Dammit!'\n" +
+          "  expected 'Bummer!' to satisfy 'Dammit!'\n" +
           '\n' +
           '  -Bummer!\n' +
           '  +Dammit!'

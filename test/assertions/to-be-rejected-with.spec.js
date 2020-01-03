@@ -68,7 +68,7 @@ describe('to be rejected with assertion', () => {
           "  expect(err, 'to have message', 'OMGOSH!');\n" +
           '})\n' +
           "  expected Error('OMG!') to have message 'OMGOSH!'\n" +
-          "    expected 'OMG!' to equal 'OMGOSH!'\n" +
+          "    expected 'OMG!' to satisfy 'OMGOSH!'\n" +
           '\n' +
           '    -OMG!\n' +
           '    +OMGOSH!'

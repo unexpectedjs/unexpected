@@ -131,7 +131,7 @@ describe('to be fulfilled with value satisfying assertion', () => {
           '}\n' +
           'to be fulfilled with value satisfying 456\n' +
           '  expected Promise (fulfilled) => 123 to be fulfilled with value satisfying 456\n' +
-          '    expected 123 to equal 456'
+          '    expected 123 to satisfy 456'
       );
     });
 

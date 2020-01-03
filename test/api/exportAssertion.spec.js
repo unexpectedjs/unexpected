@@ -168,7 +168,7 @@ describe('exportAssertion', () => {
         '  )\n' +
         "  to have message 'expected \\'barf\\' to foo\\n\\ngot >>bar<< but expected >>foo<<'\n" +
         "    expected 'expected \\'bar\\' to foo\\n\\ngot >>bar<< but expected >>foo<<'\n" +
-        "    to equal 'expected \\'barf\\' to foo\\n\\ngot >>bar<< but expected >>foo<<'\n" +
+        "    to satisfy 'expected \\'barf\\' to foo\\n\\ngot >>bar<< but expected >>foo<<'\n" +
         '\n' +
         "    -expected 'bar' to foo\n" +
         "    +expected 'barf' to foo\n" +
