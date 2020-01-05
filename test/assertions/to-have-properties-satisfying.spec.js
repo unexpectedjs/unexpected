@@ -45,21 +45,11 @@ describe('to have properties satisfying assertion', () => {
     );
   });
 
-  it('does not throw for any keys in the map with an expect.it-wrapped function', () => {
+  it('allows assertions as the argument', () => {
     expect(
       { foo: 0, bar: 1, baz: 2, qux: 3 },
       'to have properties satisfying',
-      expect.it(function(key) {
-        expect(key, 'not to be empty');
-      })
-    );
-
-    expect(
-      { foo: 0, bar: 1, baz: 2, qux: 3 },
-      'to have properties satisfying',
-      expect.it(function(key) {
-        expect(key, 'to match', /^[a-z]{3}$/);
-      })
+      'not to be empty'
     );
 
     expect(
@@ -76,45 +66,46 @@ describe('to have properties satisfying assertion', () => {
     );
   });
 
-  it('receives the key when the third argument is an expect.it-wrapped function', () => {
+  it('allows expect.it as an argument (the wrapped function receives the property)', () => {
     expect(
-      { foo: 123 },
+      { ff: 0, bbbb: 1, cc: 2 },
       'to have properties satisfying',
-      expect.it(function(key) {
-        expect(key, 'to equal', 'foo');
+      expect.it(function(property) {
+        // properties must be of even length
+        expect(property.length % 2 === 0, 'to be true');
       })
     );
   });
 
-  it('ignores undefined keys', () => {
+  it('ignores properties with undefined values', () => {
     expect(
       { foo: undefined, bar: '123' },
       'to have properties satisfying',
-      expect.it('to be a string')
+      'to be a string'
     );
   });
 
   it('uses value semantics for functions', () => {
     expect(
-      function() {
+      () => {
         expect(
           {
             foo: true
           },
           'to have properties satisfying',
-          function(key) {
+          function(property) {
             throw new Error('should not be called');
           }
         );
       },
       'to throw',
       'expected { foo: true } to have properties satisfying\n' +
-        'function (key) {\n' +
+        'function (property) {\n' +
         "  throw new Error('should not be called');\n" +
         '}\n' +
         '\n' +
         '[\n' +
-        "  'foo' // should equal function (key) {\n" +
+        "  'foo' // should equal function (property) {\n" +
         "        //                throw new Error('should not be called');\n" +
         '        //              }\n' +
         ']'
@@ -146,7 +137,7 @@ describe('to have properties satisfying assertion', () => {
     );
   });
 
-  it('fails when the assertion fails', () => {
+  it('fails when the assertion argument fails', () => {
     expect(
       function() {
         expect(
@@ -158,6 +149,33 @@ describe('to have properties satisfying assertion', () => {
       },
       'to throw',
       /'Baz', \/\/ should match/
+    );
+  });
+
+  it('fails when the expect.it argument fails', () => {
+    expect(
+      () => {
+        expect(
+          { ff: 0, bbb: 1, cc: 2 },
+          'to have properties satisfying',
+          expect.it(function(property) {
+            // properties must be of even length
+            expect(property.length % 2 === 0, 'to be true');
+          })
+        );
+      },
+      'to throw',
+      'expected { ff: 0, bbb: 1, cc: 2 } to have properties satisfying\n' +
+        'expect.it(function (property) {\n' +
+        '  // properties must be of even length\n' +
+        "  expect(property.length % 2 === 0, 'to be true');\n" +
+        '})\n' +
+        '\n' +
+        '[\n' +
+        "  'ff',\n" +
+        "  'bbb', // expected false to be true\n" +
+        "  'cc'\n" +
+        ']'
     );
   });
 
