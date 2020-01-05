@@ -20,14 +20,16 @@ if (typeof process === 'object') {
           return expect.promise(function (run) {
             childProcess.execFile(
               pathModule.resolve(basePath, 'node_modules', '.bin', 'mocha'),
-              ['--opts', pathModule.resolve(__dirname, 'mocha.opts')].concat(
-                subject.map(function (fileName) {
+              [
+                '--config',
+                pathModule.resolve(__dirname, '..', '.mocharc.json'),
+                ...subject.map(function (fileName) {
                   return pathModule.resolve(
                     externaltestsDir,
                     `${fileName}.spec.js`
                   );
-                })
-              ),
+                }),
+              ],
               {
                 cwd: basePath,
                 env: extend({}, process.env, env || {}),
