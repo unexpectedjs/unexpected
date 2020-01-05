@@ -22,8 +22,8 @@ build/lib: lib/*
 build/test: $(shell find test -type f)
 	mkdir -p ./build
 	./node_modules/.bin/buble -o build/test test
-	cp ./test/mocha.opts ./build/test/mocha.opts
-	sed -i -e 's#--require ./test#--require ./build/test#g' ./build/test/mocha.opts
+	cp ./.mocharc.json ./build/test/.mocharc.json
+	sed -i -e 's#./test#./build/test#g' ./build/test/.mocharc.json
 
 build/externaltests: externaltests/*
 	./node_modules/.bin/buble -o build/externaltests externaltests
@@ -44,10 +44,10 @@ test-jasmine:
 	./node_modules/.bin/jasmine JASMINE_CONFIG_PATH=test/support/jasmine.json
 
 ifeq ($(MODERN_NODE), true)
-MOCHA_OPTS = ./test/mocha.opts
+MOCHA_CONFIG = .mocharc.json
 TEST_SOURCES = $(shell find test -name '*.spec.js')
 else
-MOCHA_OPTS = ./build/test/mocha.opts
+MOCHA_CONFIG = ./build/test/.mocharc.json
 TEST_SOURCES = $(shell find build/test -name '*.spec.js')
 endif
 
@@ -67,9 +67,9 @@ endif
 .PHONY: test
 test: test-sources
 ifeq ($(MODERN_NODE), true)
-	@./node_modules/.bin/mocha --opts $(MOCHA_OPTS) --require unexpected-markdown $(TEST_SOURCES) $(TEST_SOURCES_MARKDOWN)
+	@./node_modules/.bin/mocha --config $(MOCHA_CONFIG) --require unexpected-markdown $(TEST_SOURCES) $(TEST_SOURCES_MARKDOWN)
 else
-	@./node_modules/.bin/mocha --opts $(MOCHA_OPTS) $(TEST_SOURCES)
+	@./node_modules/.bin/mocha --config $(MOCHA_CONFIG) $(TEST_SOURCES)
 endif
 
 nyc-includes:
@@ -81,7 +81,7 @@ endif
 
 .PHONY: coverage
 coverage: nyc-includes test-sources
-	@./node_modules/.bin/nyc --include $(NYC_INCLUDES) --reporter=lcov --reporter=text --all -- mocha --opts $(MOCHA_OPTS) --require unexpected-markdown $(TEST_SOURCES) $(TEST_SOURCES_MARKDOWN)
+	@./node_modules/.bin/nyc --include $(NYC_INCLUDES) --reporter=lcov --reporter=text --all -- mocha --config $(MOCHA_CONFIG) --require unexpected-markdown $(TEST_SOURCES) $(TEST_SOURCES_MARKDOWN)
 	@echo google-chrome coverage/lcov-report/index.html
 
  .PHONY: test-browser
