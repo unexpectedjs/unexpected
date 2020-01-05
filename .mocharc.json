@@ -1,0 +1,7 @@
+{
+  "reporter": "spec",
+  "recursive": true,
+  "check-leaks": true,
+  "timeout": 20000,
+  "require": ["./test/common", "./test/promisePolyfill"]
+}
