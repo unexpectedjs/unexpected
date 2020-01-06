@@ -115,7 +115,9 @@ if (typeof process === 'object') {
             'to contain',
             'Error: should fail: You have created a promise that was not returned from the it block'
           );
-          expect(err, 'to satisfy', { code: 1 });
+          expect(err, 'to satisfy', {
+            code: expect.it('to be greater than', 0)
+          });
         });
       });
 
