@@ -28,5 +28,22 @@ describe('outputFormat', () => {
         }
       );
     });
+
+    it('throws if being reset on a child expect', () => {
+      const clonedExpect = expect
+        .clone()
+        .addAssertion('<string> to foo', (expect, subject) => {
+          expect.child().outputFormat('html');
+          expect(subject, 'to contain', 'foo');
+        });
+
+      expect(
+        () => {
+          clonedExpect('foobar', 'to foo');
+        },
+        'to throw',
+        'This method only works on the top level expect function'
+      );
+    });
   });
 });
