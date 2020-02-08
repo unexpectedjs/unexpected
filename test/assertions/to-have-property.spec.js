@@ -62,6 +62,38 @@ describe('to have property assertion', () => {
           "to have writable property 'writableFalse'"
       );
     });
+
+    // Regression test
+    it('does not break when the object does not have the given property', function() {
+      expect(
+        () => expect({}, 'to have configurable property', 'foo'),
+        'to throw',
+        "expected {} to have configurable property 'foo'"
+      );
+    });
+
+    describe('with the not flag', function() {
+      it('succeeds when the property is absent', function() {
+        expect({}, 'not to have configurable property', 'foo');
+      });
+
+      it('succeeds when the property is present but does not have the given attribute', function() {
+        const obj = {};
+        Object.defineProperty(obj, 'foo', {
+          enumerable: false,
+          value: 123
+        });
+        expect(obj, 'not to have enumerable property', 'foo');
+      });
+
+      it('fails when the property is there and has the given attribute', function() {
+        expect(
+          () => expect({ foo: 123 }, 'not to have enumerable property', 'foo'),
+          'to throw',
+          "expected { foo: 123 } not to have enumerable property 'foo'"
+        );
+      });
+    });
   });
 
   it('throws when the assertion fails', () => {
