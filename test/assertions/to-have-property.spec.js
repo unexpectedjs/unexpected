@@ -89,7 +89,7 @@ describe('to have property assertion', () => {
         '    <null> to have property <string>\n' +
         '  did you mean:\n' +
         '    <object> [not] to have property <string|Symbol>\n' +
-        '    <object> to have [own] property <string> <any>'
+        '    <object> to have [own] property <string|Symbol> <any>'
     );
 
     expect(
@@ -224,6 +224,33 @@ describe('to have property assertion', () => {
             'to throw',
             "expected { bar: 123 } to have own property Symbol('foo')"
           );
+        });
+
+        describe('with expected value', function() {
+          it('should pass when the object contains the symbol with the given value', function() {
+            const symbol = Symbol('foo');
+            expect({ [symbol]: 123 }, 'to have own property', symbol, 123);
+          });
+
+          it('should fail when the object does not contain the symbol', function() {
+            const symbol = Symbol('foo');
+            expect(
+              () => expect({ bar: 123 }, 'to have own property', symbol, 123),
+              'to throw',
+              "expected { bar: 123 } to have own property Symbol('foo'), 123"
+            );
+          });
+
+          it('should fail when the object contains the symbol, but with a different value', function() {
+            const symbol = Symbol('foo');
+            expect(
+              () =>
+                expect({ [symbol]: 456 }, 'to have own property', symbol, 123),
+              'to throw',
+              "expected { [Symbol('foo')]: 456 }\n" +
+                "to have own property Symbol('foo') with a value of 123"
+            );
+          });
         });
       });
 
