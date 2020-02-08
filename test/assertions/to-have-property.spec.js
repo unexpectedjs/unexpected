@@ -29,11 +29,8 @@ describe('to have property assertion', () => {
 
     it('asserts validity of property descriptor', () => {
       expect(subject, 'to have enumerable property', 'a');
-      expect(subject, 'not to have enumerable property', 'enumFalse');
       expect(subject, 'to have configurable property', 'a');
-      expect(subject, 'not to have configurable property', 'configFalse');
       expect(subject, 'to have writable property', 'a');
-      expect(subject, 'not to have writable property', 'writableFalse');
     });
 
     it('throws when assertion fails', () => {
@@ -70,29 +67,6 @@ describe('to have property assertion', () => {
         'to throw',
         "expected {} to have configurable property 'foo'"
       );
-    });
-
-    describe('with the not flag', function() {
-      it('succeeds when the property is absent', function() {
-        expect({}, 'not to have configurable property', 'foo');
-      });
-
-      it('succeeds when the property is present but does not have the given attribute', function() {
-        const obj = {};
-        Object.defineProperty(obj, 'foo', {
-          enumerable: false,
-          value: 123
-        });
-        expect(obj, 'not to have enumerable property', 'foo');
-      });
-
-      it('fails when the property is there and has the given attribute', function() {
-        expect(
-          () => expect({ foo: 123 }, 'not to have enumerable property', 'foo'),
-          'to throw',
-          "expected { foo: 123 } not to have enumerable property 'foo'"
-        );
-      });
     });
   });
 
