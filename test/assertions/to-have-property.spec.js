@@ -137,7 +137,7 @@ describe('to have property assertion', () => {
         '  The assertion does not have a matching signature for:\n' +
         '    <null> not to have own property <string> <string>\n' +
         '  did you mean:\n' +
-        '    <object> [not] to have own property <string>'
+        '    <object> [not] to have own property <string|Symbol>'
     );
   });
 
@@ -163,7 +163,7 @@ describe('to have property assertion', () => {
         '  The assertion does not have a matching signature for:\n' +
         '    <object> not to have own property <string> <string>\n' +
         '  did you mean:\n' +
-        '    <object> [not] to have own property <string>'
+        '    <object> [not] to have own property <string|Symbol>'
     );
   });
 
@@ -207,6 +207,22 @@ describe('to have property assertion', () => {
             () => expect({ bar: 123 }, 'to have property', symbol),
             'to throw',
             "expected { bar: 123 } to have property Symbol('foo')"
+          );
+        });
+      });
+
+      describe('to have own property', function() {
+        it('should pass when the object contains the symbol', function() {
+          const symbol = Symbol('foo');
+          expect({ [symbol]: 123 }, 'to have own property', symbol);
+        });
+
+        it('should fail when the object does not contain the symbol', function() {
+          const symbol = Symbol('foo');
+          expect(
+            () => expect({ bar: 123 }, 'to have own property', symbol),
+            'to throw',
+            "expected { bar: 123 } to have own property Symbol('foo')"
           );
         });
       });
