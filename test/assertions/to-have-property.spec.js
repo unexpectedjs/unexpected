@@ -195,18 +195,36 @@ describe('to have property assertion', () => {
 
   if (typeof Symbol === 'function') {
     describe('with symbols', function() {
-      it('should pass when the object contains the symbol', function() {
-        const symbol = Symbol('foo');
-        expect({ [symbol]: 123 }, 'to have property', symbol);
+      describe('to have property', function() {
+        it('should pass when the object contains the symbol', function() {
+          const symbol = Symbol('foo');
+          expect({ [symbol]: 123 }, 'to have property', symbol);
+        });
+
+        it('should fail when the object does not contain the symbol', function() {
+          const symbol = Symbol('foo');
+          expect(
+            () => expect({ bar: 123 }, 'to have property', symbol),
+            'to throw',
+            "expected { bar: 123 } to have property Symbol('foo')"
+          );
+        });
       });
 
-      it('should fail when the object does not contain the symbol', function() {
-        const symbol = Symbol('foo');
-        expect(
-          () => expect({ bar: 123 }, 'to have property', symbol),
-          'to throw',
-          "expected { bar: 123 } to have property Symbol('foo')"
-        );
+      describe('to have enumerable(/configurable/writable) property', function() {
+        it('should pass when the object contains the symbol', function() {
+          const symbol = Symbol('foo');
+          expect({ [symbol]: 123 }, 'to have enumerable property', symbol);
+        });
+
+        it('should fail when the object does not contain the symbol', function() {
+          const symbol = Symbol('foo');
+          expect(
+            () => expect({ bar: 123 }, 'to have enumerable property', symbol),
+            'to throw',
+            "expected { bar: 123 } to have enumerable property Symbol('foo')"
+          );
+        });
       });
     });
   }
