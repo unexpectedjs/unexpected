@@ -88,7 +88,7 @@ describe('to have property assertion', () => {
         '  The assertion does not have a matching signature for:\n' +
         '    <null> to have property <string>\n' +
         '  did you mean:\n' +
-        '    <object> [not] to have property <string>\n' +
+        '    <object> [not] to have property <string|Symbol>\n' +
         '    <object> to have [own] property <string> <any>'
     );
 
@@ -124,7 +124,7 @@ describe('to have property assertion', () => {
         '  The assertion does not have a matching signature for:\n' +
         '    <null> not to have property <string> <string>\n' +
         '  did you mean:\n' +
-        '    <object> [not] to have property <string>'
+        '    <object> [not] to have property <string|Symbol>'
     );
 
     expect(
@@ -151,7 +151,7 @@ describe('to have property assertion', () => {
         '  The assertion does not have a matching signature for:\n' +
         '    <object> not to have property <string> <string>\n' +
         '  did you mean:\n' +
-        '    <object> [not] to have property <string>'
+        '    <object> [not] to have property <string|Symbol>'
     );
 
     expect(
@@ -192,4 +192,22 @@ describe('to have property assertion', () => {
       );
     });
   });
+
+  if (typeof Symbol === 'function') {
+    describe('with symbols', function() {
+      it('should pass when the object contains the symbol', function() {
+        const symbol = Symbol('foo');
+        expect({ [symbol]: 123 }, 'to have property', symbol);
+      });
+
+      it('should fail when the object does not contain the symbol', function() {
+        const symbol = Symbol('foo');
+        expect(
+          () => expect({ bar: 123 }, 'to have property', symbol),
+          'to throw',
+          "expected { bar: 123 } to have property Symbol('foo')"
+        );
+      });
+    });
+  }
 });
