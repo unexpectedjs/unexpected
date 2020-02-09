@@ -1,6 +1,10 @@
 /* global expect */
 describe('to have properties assertion', () => {
   it('asserts presence of a list of properties', () => {
+    console.log(
+      'the order is',
+      expect.assertions['to have properties'].map(h => h.declaration)
+    );
     expect({ a: 'foo', b: 'bar' }, 'to have properties', ['a', 'b']);
   });
 
