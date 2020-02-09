@@ -9,14 +9,7 @@ const plugins = [
     ignore: process.env.ESM_BUILD ? ['os'] : undefined
   }),
   require('rollup-plugin-node-resolve')({ preferBuiltins: true }),
-  require('rollup-plugin-node-globals')(),
-  require('rollup-plugin-terser').terser({
-    output: {
-      comments(node, comment) {
-        return /^!|@preserve|@license|@cc_on/i.test(comment.value);
-      }
-    }
-  })
+  require('rollup-plugin-node-globals')()
 ];
 
 module.exports = {
