@@ -29,11 +29,8 @@ describe('to have property assertion', () => {
 
     it('asserts validity of property descriptor', () => {
       expect(subject, 'to have enumerable property', 'a');
-      expect(subject, 'not to have enumerable property', 'enumFalse');
       expect(subject, 'to have configurable property', 'a');
-      expect(subject, 'not to have configurable property', 'configFalse');
       expect(subject, 'to have writable property', 'a');
-      expect(subject, 'not to have writable property', 'writableFalse');
     });
 
     it('throws when assertion fails', () => {
@@ -60,6 +57,15 @@ describe('to have property assertion', () => {
         'to throw exception',
         "expected { a: 'b', enumFalse: 't', configFalse: 't', writableFalse: 't' }\n" +
           "to have writable property 'writableFalse'"
+      );
+    });
+
+    // Regression test
+    it('does not break when the object does not have the given property', function() {
+      expect(
+        () => expect({}, 'to have configurable property', 'foo'),
+        'to throw',
+        "expected {} to have configurable property 'foo'"
       );
     });
   });
