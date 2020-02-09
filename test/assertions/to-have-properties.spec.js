@@ -252,7 +252,7 @@ describe('to have properties assertion', () => {
         },
         'to error',
         'expected { true: 123 } to have properties [ true ]\n' +
-          '  All expected properties must be passed as strings or numbers, but these are not:\n' +
+          '  All expected properties must be passed as strings, symbols, or numbers, but these are not:\n' +
           '    true'
       );
     });
@@ -271,7 +271,7 @@ describe('to have properties assertion', () => {
         'to error',
         'expected { foo: 123 }\n' +
           "to have properties [ { toString: function toString() { return 'foo'; } } ]\n" +
-          '  All expected properties must be passed as strings or numbers, but these are not:\n' +
+          '  All expected properties must be passed as strings, symbols, or numbers, but these are not:\n' +
           "    { toString: function toString() { return 'foo'; } }"
       );
     });
@@ -283,7 +283,7 @@ describe('to have properties assertion', () => {
         },
         'to error',
         'expected { foo: 123 } to have properties [ true, false ]\n' +
-          '  All expected properties must be passed as strings or numbers, but these are not:\n' +
+          '  All expected properties must be passed as strings, symbols, or numbers, but these are not:\n' +
           '    true\n' +
           '    false'
       );
@@ -392,4 +392,43 @@ describe('to have properties assertion', () => {
       );
     });
   });
+
+  if (typeof Symbol === 'function') {
+    describe('with symbols', function() {
+      it('should pass if the object has the given symbol(s)', () => {
+        const symbol = Symbol('foo');
+        expect({ [symbol]: 123 }, 'to have properties', [symbol]);
+      });
+
+      it('should fail if the object is missing the given symbol(s)', () => {
+        const symbolFoo = Symbol('foo');
+        const symbolBar = Symbol('bar');
+        expect(
+          () => expect({ [symbolFoo]: 123 }, 'to have properties', [symbolBar]),
+          'to throw',
+          "expected { [Symbol('foo')]: 123 } to have properties [ Symbol('bar') ]"
+        );
+      });
+
+      describe('and the own flag', function() {
+        it('should pass if the object has the given own symbol(s)', () => {
+          const symbol = Symbol('foo');
+          expect({ [symbol]: 123 }, 'to have own properties', [symbol]);
+        });
+
+        it('should fail if the object is missing the given symbol(s)', () => {
+          const symbolFoo = Symbol('foo');
+          const symbolBar = Symbol('bar');
+          expect(
+            () =>
+              expect({ [symbolFoo]: 123 }, 'to have own properties', [
+                symbolBar
+              ]),
+            'to throw',
+            "expected { [Symbol('foo')]: 123 } to have own properties [ Symbol('bar') ]"
+          );
+        });
+      });
+    });
+  }
 });
