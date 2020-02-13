@@ -1,4 +1,21 @@
-### v11.12.1 (2019-12-30)
+### v11.13.0 (2020-02-13)
+
+#### Pull requests
+
+- [#696](https://github.com/unexpectedjs/unexpected/pull/696) Add support for symbols in &lt;object&gt; to have property\/properties... ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [#695](https://github.com/unexpectedjs/unexpected/pull/695) Remove support for: not to have \(configurable|enumerable|writable\) property ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [#697](https://github.com/unexpectedjs/unexpected/pull/697) utils.isArray: Use Array.isArray if available ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [#698](https://github.com/unexpectedjs/unexpected/pull/698) Rewrite calculateLimits ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [#691](https://github.com/unexpectedjs/unexpected/pull/691) Upgrade diff to version 4.0.2 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#684](https://github.com/unexpectedjs/unexpected/pull/684) Bring in unexpected-markdown 5 and reconfigure test setup to match. ([Alex J Burke](mailto:alex@alexjeffburke.com))
+
+#### Commits to master
+
+- [Revert "Temporarily pin deno to v0.27.0 due to an openssl linking issue."](https://github.com/unexpectedjs/unexpected/commit/94728c20dcfab663b508270a5cbd76d04cd94d97) ([Alex J Burke](mailto:alex@alexjeffburke.com))
+- [Temporarily pin deno to v0.27.0 due to an openssl linking issue.](https://github.com/unexpectedjs/unexpected/commit/53c168fe5950da95a6220b1484f355c4e9cfe0f2) ([Alex J Burke](mailto:alex@alexjeffburke.com))
+- [Don't try to run hyperlink after updating examples](https://github.com/unexpectedjs/unexpected/commit/bbf153adb5e66acbb0276b7f0c92e942c5c91c78) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+
+### v11.12.1 (2019-12-31)
 
 #### Pull requests
 
