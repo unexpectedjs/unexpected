@@ -46,7 +46,6 @@ describe('to have property assertion', () => {
       expect(subject, 'to have unenumerable property', 'enumFalse');
       expect(subject, 'to have unconfigurable property', 'configFalse');
       expect(subject, 'to have unwritable property', 'writableFalse');
-      expect(subject, 'to have read-only property', 'writableFalse');
       expect(subject, 'to have readonly property', 'writableFalse');
     });
 
@@ -122,18 +121,6 @@ describe('to have property assertion', () => {
           "  enumTrue: 't', configTrue: 't', writableTrue: 't'\n" +
           '}\n' +
           "to have unwritable property 'writableTrue'"
-      );
-      expect(
-        function() {
-          expect(subject, 'to have read-only property', 'writableTrue');
-        },
-        'to throw exception',
-        'expected\n' +
-          '{\n' +
-          "  a: 'b', enumFalse: 't', configFalse: 't', writableFalse: 't',\n" +
-          "  enumTrue: 't', configTrue: 't', writableTrue: 't'\n" +
-          '}\n' +
-          "to have read-only property 'writableTrue'"
       );
       expect(
         function() {
