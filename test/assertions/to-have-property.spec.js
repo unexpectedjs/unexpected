@@ -135,6 +135,18 @@ describe('to have property assertion', () => {
           '}\n' +
           "to have read-only property 'writableTrue'"
       );
+      expect(
+        function() {
+          expect(subject, 'to have readonly property', 'writableTrue');
+        },
+        'to throw exception',
+        'expected\n' +
+          '{\n' +
+          "  a: 'b', enumFalse: 't', configFalse: 't', writableFalse: 't',\n" +
+          "  enumTrue: 't', configTrue: 't', writableTrue: 't'\n" +
+          '}\n' +
+          "to have readonly property 'writableTrue'"
+      );
     });
 
     // Regression test
