@@ -12,13 +12,13 @@ rejected with the errors.
 Let's make an asynchronous assertion that we can use for the examples:
 
 ```js
-expect.addAssertion('<any> to be a number after a short delay', function(
+expect.addAssertion('<any> to be a number after a short delay', function (
   expect,
   subject
 ) {
-  return expect.promise(function(run) {
+  return expect.promise(function (run) {
     setTimeout(
-      run(function() {
+      run(function () {
         expect(subject, 'to be a number');
       }),
       0
@@ -48,7 +48,7 @@ return expect.promise.any({
     { a: '1', b: 2 },
     'to have values satisfying',
     'to be a number after a short delay'
-  )
+  ),
 });
 ```
 
@@ -71,11 +71,11 @@ return expect.promise
       { a: '0', b: 1 },
       'to have values satisfying',
       'to be a number after a short delay'
-    )
+    ),
   })
-  .caught(function(aggregateError) {
+  .caught(function (aggregateError) {
     // Let's reformat the error a bit
-    expect.fail(function(output) {
+    expect.fail(function (output) {
       output.error(aggregateError.message);
       var errors = [];
       for (var i = 0; i < aggregateError.length; i += 1) {
@@ -83,7 +83,7 @@ return expect.promise
         errors.push(aggregateError[i]);
       }
 
-      errors.sort(function(a, b) {
+      errors.sort(function (a, b) {
         // Make the output stable
         if (a.message < b.message) return -1;
         if (a.message > b.message) return 1;
@@ -91,7 +91,7 @@ return expect.promise
       });
 
       output.indentLines();
-      errors.forEach(function(e, i) {
+      errors.forEach(function (e, i) {
         output
           .nl()
           .i()

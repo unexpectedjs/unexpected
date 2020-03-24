@@ -8,7 +8,7 @@ Notice this assertion fails when given an empty array.
 expect(
   [0, 1, 2, 3, 4],
   'to have items satisfying',
-  expect.it(function(item) {
+  expect.it(function (item) {
     expect(item, 'to be a number');
   })
 );
@@ -36,7 +36,7 @@ expect(
   [
     [0, 1, 2],
     [4, '5', '6'],
-    [7, '8', 9]
+    [7, '8', 9],
   ],
   'to have items satisfying',
   'to have items satisfying',

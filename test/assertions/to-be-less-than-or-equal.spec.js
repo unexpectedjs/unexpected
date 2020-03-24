@@ -9,7 +9,7 @@ describe('less than or equal assertion', () => {
 
   it('throws when the assertion fails', () => {
     expect(
-      function() {
+      function () {
         expect(0, 'to be less than or equal to', -1);
       },
       'to throw exception',
@@ -18,7 +18,7 @@ describe('less than or equal assertion', () => {
   });
 
   if (typeof BigInt === 'function') {
-    describe('with BigInt', function() {
+    describe('with BigInt', function () {
       it('asserts <=', () => {
         expect(BigInt(0), 'to be less than or equal to', BigInt(4));
         expect(BigInt(0), 'to be less than or equal to', BigInt(0));
@@ -26,7 +26,7 @@ describe('less than or equal assertion', () => {
 
       it('throws when the assertion fails', () => {
         expect(
-          function() {
+          function () {
             expect(BigInt(0), 'to be less than or equal to', BigInt(-1));
           },
           'to throw exception',
@@ -36,7 +36,7 @@ describe('less than or equal assertion', () => {
 
       it('refuses to compare a BigInt to a number', () => {
         expect(
-          function() {
+          function () {
             expect(BigInt(123), 'to be less than or equal to', 1);
           },
           'to throw',

@@ -3,11 +3,11 @@ Asserts that a promise is rejected with a specific reason (error):
 <!-- unexpected-markdown async:true -->
 
 ```js
-var promiseThatWillBeRejectedWithAReason = new Promise(function(
+var promiseThatWillBeRejectedWithAReason = new Promise(function (
   resolve,
   reject
 ) {
-  setTimeout(function() {
+  setTimeout(function () {
     reject(new Error('Oh dear'));
   }, 10);
 });
@@ -26,11 +26,11 @@ values supported by `to satisfy`:
 <!-- unexpected-markdown async:true -->
 
 ```js
-var promiseThatWillBeRejectedWithAReason = new Promise(function(
+var promiseThatWillBeRejectedWithAReason = new Promise(function (
   resolve,
   reject
 ) {
-  setTimeout(function() {
+  setTimeout(function () {
     reject(new Error('Oh dear'));
   }, 10);
 });
@@ -47,11 +47,11 @@ You get a nice diff if the assertion fails:
 <!-- unexpected-markdown async:true -->
 
 ```js
-var promiseThatWillBeRejectedWithAReason = new Promise(function(
+var promiseThatWillBeRejectedWithAReason = new Promise(function (
   resolve,
   reject
 ) {
-  setTimeout(function() {
+  setTimeout(function () {
     reject(new Error('Oh dear'));
   }, 10);
 });

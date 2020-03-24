@@ -2,7 +2,7 @@
 describe('to start with assertion', () => {
   it('should throw an error when the expected prefix is the empty string', () => {
     expect(
-      function() {
+      function () {
         expect('foo', 'to start with', '');
       },
       'to throw',
@@ -20,7 +20,7 @@ describe('to start with assertion', () => {
   describe('when the assertion fails', () => {
     it('does not include a diff when there is no common prefix', () => {
       expect(
-        function() {
+        function () {
           expect('hello world', 'to start with', 'foo');
         },
         'to throw exception',
@@ -30,7 +30,7 @@ describe('to start with assertion', () => {
 
     it('includes a diff when there is a common prefix', () => {
       expect(
-        function() {
+        function () {
           expect('hello world', 'to start with', 'hell yeah');
         },
         'to throw exception',

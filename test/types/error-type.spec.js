@@ -36,10 +36,10 @@ describe('Error type', () => {
       },
       unwrap(obj) {
         return parseInt(obj.message, 10);
-      }
+      },
     });
     expect(
-      function() {
+      function () {
         clonedExpect(new Error('1'), 'to equal', new Error('2'));
       },
       'to throw',
@@ -59,8 +59,8 @@ describe('Error type', () => {
           value: ctor,
           enumerable: false,
           writable: true,
-          configurable: true
-        }
+          configurable: true,
+        },
       });
     }
 
@@ -86,7 +86,7 @@ describe('Error type', () => {
 
     it('should consider an instance of the custom error different from an otherwise identical Error instance', () => {
       expect(
-        function() {
+        function () {
           expect(new MyError('foo'), 'to equal', new Error('foo'));
         },
         'to throw',
@@ -98,7 +98,7 @@ describe('Error type', () => {
 
     it('should instances of the custom error different to be different when they have different messages', () => {
       expect(
-        function() {
+        function () {
           expect(new MyError('foo'), 'to equal', new MyError('bar'));
         },
         'to throw',
@@ -123,7 +123,7 @@ describe('Error type', () => {
 
       it('should use the "name" property when reporting mismatching constructors', () => {
         expect(
-          function() {
+          function () {
             expect(myError, 'to equal', new Error('foo'));
           },
           'to throw',
@@ -135,7 +135,7 @@ describe('Error type', () => {
 
       it('should use the "name" property when diffing', () => {
         expect(
-          function() {
+          function () {
             var otherMyError = new MyError('bar');
             otherMyError.name = 'SomethingElse';
             expect(myError, 'to equal', otherMyError);

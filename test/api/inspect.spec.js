@@ -3,16 +3,16 @@ describe('inspect', () => {
   function Field(val, options) {
     var value = val;
     var propertyDescription = {
-      enumerable: true
+      enumerable: true,
     };
     if (options.match(/getter/)) {
-      propertyDescription.get = function() {
+      propertyDescription.get = function () {
         return value;
       };
     }
 
     if (options.match(/setter/)) {
-      propertyDescription.set = function(val) {
+      propertyDescription.set = function (val) {
         value = val;
       };
     }
@@ -103,14 +103,14 @@ describe('inspect', () => {
         return typeof value === 'string' && value.indexOf('\n') !== -1;
       },
       inspect(value, depth, output) {
-        output.block(function() {
+        output.block(function () {
           this.jsString("'")
-            .block(function() {
+            .block(function () {
               this.jsString(value);
             })
             .amend('jsString', "'");
         });
-      }
+      },
     });
 
     it('arrays', () => {
@@ -171,8 +171,8 @@ describe('inspect', () => {
           { id: 16, name: 'Conley Walsh' },
           { id: 17, name: 'Suarez Norman' },
           { id: 18, name: 'Susana Pitts' },
-          { id: 19, name: 'Peck Hester' }
-        ]
+          { id: 19, name: 'Peck Hester' },
+        ],
       },
       {
         guid: '904c2f38-071c-4b97-b968-f5c228aaf41a',
@@ -191,7 +191,7 @@ describe('inspect', () => {
           'anim',
           'sint',
           'incididunt',
-          'labore'
+          'labore',
         ],
         friends: [
           { id: 0, name: 'Patterson Meadows' },
@@ -199,7 +199,7 @@ describe('inspect', () => {
           { id: 2, name: 'Horn Harrison' },
           { id: 3, name: 'Young Mooney' },
           { id: 4, name: 'Barbara Lynn' },
-          { id: 5, name: 'Sharpe Downs' }
+          { id: 5, name: 'Sharpe Downs' },
         ],
         circular,
         this: {
@@ -207,12 +207,12 @@ describe('inspect', () => {
             deeply: {
               nested: { object: 'This should not be shown' },
               string: 'should be shown',
-              list: [1, 2, 3]
+              list: [1, 2, 3],
             },
-            list: [1, 2, 3]
-          }
-        }
-      }
+            list: [1, 2, 3],
+          },
+        },
+      },
     ];
 
     expect(
@@ -329,7 +329,7 @@ describe('inspect', () => {
 
   it('should inspect an arguments object differently from an array', () => {
     var args;
-    (function() {
+    (function () {
       args = arguments;
     })('a', 123);
     expect(args, 'to inspect as', "arguments( 'a', 123 )");
@@ -337,7 +337,7 @@ describe('inspect', () => {
 
   it('should output the body of a function', () => {
     expect(
-      function() {
+      function () {
         var foo = 'bar';
         var quux = 'baz';
         while (foo) {
@@ -400,7 +400,7 @@ describe('inspect', () => {
           0x62,
           0x6f,
           0x75,
-          0x74
+          0x74,
         ]),
         'to inspect as',
         'Uint8Array([0x00, 0x01, 0x02, 0x48, 0x65, 0x72, 0x65, 0x20, 0x69, 0x73, 0x20, 0x74, 0x68, 0x65, 0x20, 0x74 /* 24 more */ ])'

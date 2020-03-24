@@ -1,12 +1,12 @@
 var expect = require('../lib').clone();
 
-expect.addAssertion('<any> when delayed a little bit <assertion?>', function(
+expect.addAssertion('<any> when delayed a little bit <assertion?>', function (
   expect,
   subject
 ) {
-  return expect.promise(function(run) {
+  return expect.promise(function (run) {
     setTimeout(
-      run(function() {
+      run(function () {
         return expect.shift();
       }),
       1

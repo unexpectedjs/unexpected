@@ -3,13 +3,13 @@ Asserts that a promise is fulfilled with a specific value:
 <!-- unexpected-markdown async:true -->
 
 ```js
-var promiseThatWillBeFulfilledWithAValue = new Promise(function(
+var promiseThatWillBeFulfilledWithAValue = new Promise(function (
   resolve,
   reject
 ) {
-  setTimeout(function() {
+  setTimeout(function () {
     resolve({
-      foo: 'bar'
+      foo: 'bar',
     });
   }, 1);
 });
@@ -64,11 +64,11 @@ You can use the `exhaustively` flag to use strict
 return expect(
   Promise.resolve({
     foo: 'foo',
-    bar: 'bar'
+    bar: 'bar',
   }),
   'to be fulfilled with value exhaustively satisfying',
   {
-    foo: 'foo'
+    foo: 'foo',
   }
 );
 ```

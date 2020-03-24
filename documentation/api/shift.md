@@ -5,7 +5,7 @@ the `<assertion>` type, you can use `expect.shift` to invoke that assertion,
 optionally replacing the subject with an alternative one.
 
 ```js
-expect.addAssertion('<string> when parsed as an integer <assertion>', function(
+expect.addAssertion('<string> when parsed as an integer <assertion>', function (
   expect,
   subject
 ) {
@@ -37,13 +37,13 @@ promise returned from your assertion:
 ```js
 expect.addAssertion(
   '<string> [when] parsed as an integer <assertion?>',
-  function(expect, subject) {
+  function (expect, subject) {
     expect(subject, 'to match', /^[1-9][0-9]*$/);
     return expect.shift(parseInt(subject, 10));
   }
 );
 
-return expect('42', 'parsed as an integer').then(function(integer) {
+return expect('42', 'parsed as an integer').then(function (integer) {
   return expect(integer, 'to be within', 30, 50);
 });
 ```
@@ -59,7 +59,7 @@ construct to resolve them all, for example:
 ```js
 expect.addAssertion(
   '<number> up to [and including] <number> <assertion?>',
-  function(expect, subject, value) {
+  function (expect, subject, value) {
     expect.errorMode = 'nested';
     var numbers = [];
     for (
@@ -70,8 +70,8 @@ expect.addAssertion(
       numbers.push(i);
     }
     return expect.promise.all(
-      numbers.map(function(number) {
-        return expect.promise(function() {
+      numbers.map(function (number) {
+        return expect.promise(function () {
           return expect.shift(number);
         });
       })
@@ -88,7 +88,7 @@ the fulfillment value of the promise if invoked without an assertion:
 <!-- unexpected-markdown async:true -->
 
 ```js
-return expect(10, 'up to', 20).then(function(numbers) {
+return expect(10, 'up to', 20).then(function (numbers) {
   expect(numbers, 'to have length', 10);
 });
 ```

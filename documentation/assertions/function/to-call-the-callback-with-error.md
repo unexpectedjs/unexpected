@@ -3,7 +3,7 @@ will call it with a truthy value as the first parameter.
 
 ```js
 function myFailingAsyncFunction(cb) {
-  setTimeout(function() {
+  setTimeout(function () {
     cb(new Error('Oh dear'));
   }, 0);
 }
@@ -81,7 +81,7 @@ function asyncFn(cb) {
   cb(new Error('yikes'));
 }
 
-return expect(asyncFn, 'to call the callback with error').then(function(err) {
+return expect(asyncFn, 'to call the callback with error').then(function (err) {
   // err will be new Error('yikes')
   expect(err, 'to have message', 'yikes');
 });

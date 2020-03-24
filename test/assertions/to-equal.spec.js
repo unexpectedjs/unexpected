@@ -54,17 +54,17 @@ describe('to equal assertion', () => {
     expect(toArguments('foo', 'bar', 'baz'), 'not to equal', [
       'foo',
       'bar',
-      'baz'
+      'baz',
     ]);
   });
 
   it('array should not equal sparse array', () => {
-    expect(function() {
+    expect(function () {
       var sparse = [];
       sparse[1] = 2;
       expect(sparse, 'to equal', [1, 2]);
     }, 'to throw');
-    expect(function() {
+    expect(function () {
       var sparse = [];
       sparse[1] = 2;
       expect([1, 2], 'to equal', sparse);
@@ -75,7 +75,7 @@ describe('to equal assertion', () => {
     expect(Object.create(null), 'to equal', Object.create(null));
 
     expect(
-      function() {
+      function () {
         expect(Object.create(null), 'to equal', {});
       },
       'to throw',
@@ -85,7 +85,7 @@ describe('to equal assertion', () => {
     );
 
     expect(
-      function() {
+      function () {
         expect({}, 'to equal', Object.create(null));
       },
       'to throw',
@@ -106,7 +106,7 @@ describe('to equal assertion', () => {
     foo.foo = foo;
     bar.foo = bar;
     expect(
-      function() {
+      function () {
         expect(foo, 'not to equal', bar);
       },
       'to throw',
@@ -120,7 +120,7 @@ describe('to equal assertion', () => {
     foo.b = foo;
     bar.b = bar;
     expect(
-      function() {
+      function () {
         expect(foo, 'to equal', bar);
       },
       'to throw',
@@ -130,7 +130,7 @@ describe('to equal assertion', () => {
 
   it('throws when the assertion fails', () => {
     expect(
-      function() {
+      function () {
         expect({ a: { b: 'c' } }, 'to equal', { a: { b: 'd' } });
       },
       'to throw exception',
@@ -147,7 +147,7 @@ describe('to equal assertion', () => {
     );
 
     expect(
-      function() {
+      function () {
         expect({ a: 'b' }, 'not to equal', { a: 'b' });
       },
       'to throw exception',
@@ -155,7 +155,7 @@ describe('to equal assertion', () => {
     );
 
     expect(
-      function() {
+      function () {
         expect(new Error('foo'), 'to equal', new Error('bar'));
       },
       'to throw exception',
@@ -170,7 +170,7 @@ describe('to equal assertion', () => {
     );
 
     expect(
-      function() {
+      function () {
         expect(toArguments('foo', 'bar'), 'to equal', ['foo', 'bar', 'baz']);
       },
       'to throw exception',
@@ -182,7 +182,7 @@ describe('to equal assertion', () => {
 
   it('throws an error with a diff when not negated', () => {
     expect(
-      function() {
+      function () {
         expect('123', 'to equal', '456');
       },
       'to throw exception',
@@ -192,7 +192,7 @@ describe('to equal assertion', () => {
 
   it('throws an error without a diff when negated', () => {
     expect(
-      function() {
+      function () {
         expect('123', 'not to equal', '123');
       },
       'to throw exception',
@@ -202,7 +202,7 @@ describe('to equal assertion', () => {
 
   it('throws an error with a diff when comparing arrays and not negated', () => {
     expect(
-      function() {
+      function () {
         expect([1], 'to equal', [2]);
       },
       'to throw exception',
@@ -214,7 +214,7 @@ describe('to equal assertion', () => {
     );
 
     expect(
-      function() {
+      function () {
         expect(
           [0, { foo: 'bar' }, 1, { bar: 'bar' }, [1, 3, 2], 'bar'],
           'to equal',
@@ -254,7 +254,7 @@ describe('to equal assertion', () => {
 
   it('throws an error with a diff when comparing objects and not negated', () => {
     expect(
-      function() {
+      function () {
         expect({ foo: 1 }, 'to equal', { foo: 2 });
       },
       'to throw exception',
@@ -268,7 +268,7 @@ describe('to equal assertion', () => {
 
   it('throws an error with a diff when comparing strings and not negated', () => {
     expect(
-      function() {
+      function () {
         expect('foo\t \u0558\x09', 'to equal', 'bar Ѿ\u0559\x08');
       },
       'to throw exception',
@@ -281,11 +281,11 @@ describe('to equal assertion', () => {
 
   it('throws an error without actual and expected comparing strings and negated', () => {
     expect(
-      function() {
+      function () {
         expect('foo', 'not to equal', 'foo');
       },
       'to throw exception',
-      expect.it(function(e) {
+      expect.it(function (e) {
         expect(e, 'not to have property', 'actual');
         expect(e, 'not to have property', 'expected');
       })
@@ -294,11 +294,11 @@ describe('to equal assertion', () => {
 
   it('throws an error without showDiff:true when comparing an object to an array', () => {
     expect(
-      function() {
+      function () {
         expect({ foo: 1 }, 'to equal', []);
       },
       'to throw exception',
-      expect.it(function(e) {
+      expect.it(function (e) {
         expect(e.showDiff, 'not to be ok');
       })
     );
@@ -306,11 +306,11 @@ describe('to equal assertion', () => {
 
   it('throws an error without showDiff:true when negated', () => {
     expect(
-      function() {
+      function () {
         expect({ foo: 1 }, 'not to equal', { foo: 1 });
       },
       'to throw exception',
-      expect.it(function(e) {
+      expect.it(function (e) {
         expect(e.showDiff, 'not to be ok');
       })
     );
@@ -318,18 +318,18 @@ describe('to equal assertion', () => {
 
   it('outputs a character-based diff when two regular expressions do not equal', () => {
     expect(
-      function() {
+      function () {
         expect(/foq/i, 'to equal', /fob/i);
       },
       'to throw',
-      expect.it('to have ansi diff', function() {
-        this.block(function() {
+      expect.it('to have ansi diff', function () {
+        this.block(function () {
           this.diffRemovedLine('/fo')
             .diffRemovedHighlight('q')
             .diffRemovedLine('/i');
         })
           .nl()
-          .block(function() {
+          .block(function () {
             this.diffAddedLine('/fo')
               .diffAddedHighlight('b')
               .diffAddedLine('/i');
@@ -345,7 +345,7 @@ describe('to equal assertion', () => {
 
     it('produces a hex-diff in JSON when Buffers differ', () => {
       expect(
-        function() {
+        function () {
           expect(
             Buffer.from(
               '\x00\x01\x02Here is the thing I was talking about',
@@ -370,7 +370,7 @@ describe('to equal assertion', () => {
     });
 
     it('regression test for infinite loop in buffer diff code', () => {
-      expect(function() {
+      expect(function () {
         expect(
           Buffer.from([
             0x63,
@@ -388,13 +388,13 @@ describe('to equal assertion', () => {
             0x62,
             0x61,
             0x72,
-            0x3b
+            0x3b,
           ]),
           'to equal',
           Buffer.concat([
             Buffer.from('ct=T;;'),
             Buffer.from([0xa3, 0x3b]),
-            Buffer.from(';foo=bar;')
+            Buffer.from(';foo=bar;'),
           ])
         );
       }, 'to throw');
@@ -402,7 +402,7 @@ describe('to equal assertion', () => {
 
     it('suppresses Buffer diff for large buffers', () => {
       expect(
-        function() {
+        function () {
           const a = Buffer.alloc(1024);
           const b = Buffer.alloc(1024);
           a[0] = 1;
@@ -418,7 +418,7 @@ describe('to equal assertion', () => {
   if (typeof Int8Array !== 'undefined') {
     it('produces a hex-diff in JSON when Int8Arrays differ', () => {
       expect(
-        function() {
+        function () {
           expect(
             new Int8Array([
               0x00,
@@ -460,7 +460,7 @@ describe('to equal assertion', () => {
               0x62,
               0x6f,
               0x75,
-              0x74
+              0x74,
             ]),
             'to equal',
             new Int8Array([
@@ -503,7 +503,7 @@ describe('to equal assertion', () => {
               0x62,
               0x6f,
               0x75,
-              0x74
+              0x74,
             ])
           );
         },
@@ -530,7 +530,7 @@ describe('to equal assertion', () => {
 
     it('produces a hex-diff in JSON when Uint8Arrays differ', () => {
       expect(
-        function() {
+        function () {
           expect(
             new Uint8Array([
               0x00,
@@ -572,7 +572,7 @@ describe('to equal assertion', () => {
               0x62,
               0x6f,
               0x75,
-              0x74
+              0x74,
             ]),
             'to equal',
             new Uint8Array([
@@ -615,7 +615,7 @@ describe('to equal assertion', () => {
               0x62,
               0x6f,
               0x75,
-              0x74
+              0x74,
             ])
           );
         },
@@ -634,7 +634,7 @@ describe('to equal assertion', () => {
   if (typeof Uint16Array !== 'undefined') {
     it('produces a hex-diff in JSON when Uint16Arrays differ', () => {
       expect(
-        function() {
+        function () {
           expect(
             new Uint16Array([
               0x0001,
@@ -656,7 +656,7 @@ describe('to equal assertion', () => {
               0x6e67,
               0x2061,
               0x626f,
-              0x7574
+              0x7574,
             ]),
             'to equal',
             new Uint16Array([
@@ -679,7 +679,7 @@ describe('to equal assertion', () => {
               0x6e67,
               0x2061,
               0x626f,
-              0x7574
+              0x7574,
             ])
           );
         },
@@ -698,7 +698,7 @@ describe('to equal assertion', () => {
   if (typeof Uint32Array !== 'undefined') {
     it('produces a hex-diff in JSON when Uint32Arrays differ', () => {
       expect(
-        function() {
+        function () {
           expect(
             new Uint32Array([
               0x00010248,
@@ -710,7 +710,7 @@ describe('to equal assertion', () => {
               0x61732074,
               0x616c6b69,
               0x6e672061,
-              0x626f7574
+              0x626f7574,
             ]),
             'to equal',
             new Uint32Array([
@@ -723,7 +723,7 @@ describe('to equal assertion', () => {
               0x61732071,
               0x75757869,
               0x6e672061,
-              0x626f7574
+              0x626f7574,
             ])
           );
         },
@@ -742,7 +742,7 @@ describe('to equal assertion', () => {
   describe('with Error instances', () => {
     it('considers Error instances with different messages to be different', () => {
       expect(
-        function() {
+        function () {
           expect(new Error('foo'), 'to equal', new Error('bar'));
         },
         'to throw exception',
@@ -777,7 +777,7 @@ describe('to equal assertion', () => {
       err1.extra = 'foo';
       err2.extra = 'bar';
       expect(
-        function() {
+        function () {
           expect(err1, 'to equal', err2);
         },
         'to throw exception',

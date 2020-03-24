@@ -1,11 +1,11 @@
 var expect = require('../lib').clone();
 
-expect.addAssertion('<any> to bar', function(expect, subject) {
+expect.addAssertion('<any> to bar', function (expect, subject) {
   expect(subject, 'to equal', 'bar');
-  return expect.promise(function(resolve, reject) {});
+  return expect.promise(function (resolve, reject) {});
 });
 
-expect.addAssertion('<any> to foo', function(expect) {
+expect.addAssertion('<any> to foo', function (expect) {
   expect('bar', 'to bar');
 });
 

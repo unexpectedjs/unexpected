@@ -6,6 +6,6 @@ describe('addStyle', () => {
   });
 
   it('is chainable (returns the expect function, not the magicpen instance)', () => {
-    clonedExpect.addStyle('foo', function() {})('bar', 'to equal', 'bar');
+    clonedExpect.addStyle('foo', function () {})('bar', 'to equal', 'bar');
   });
 });

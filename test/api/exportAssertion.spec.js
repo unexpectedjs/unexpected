@@ -9,14 +9,14 @@ describe('exportAssertion', () => {
 
   it('is chainable', () => {
     childExpect
-      .exportAssertion('<any> foo', function() {})
-      .exportAssertion('<any> bar', function() {});
+      .exportAssertion('<any> foo', function () {})
+      .exportAssertion('<any> bar', function () {});
 
     expect(parentExpect.assertions, 'to have keys', 'foo', 'bar');
   });
 
   it('makes the assertion available to the parent expect', () => {
-    childExpect.exportAssertion('<string> to foo', function(expect, subject) {
+    childExpect.exportAssertion('<string> to foo', function (expect, subject) {
       expect(subject, 'to equal', 'foo');
     });
 
@@ -26,11 +26,11 @@ describe('exportAssertion', () => {
   it('does not make the assertion available to a parent parent expect', () => {
     childExpect
       .child()
-      .exportAssertion('<string> to foo', function(expect, subject) {
+      .exportAssertion('<string> to foo', function (expect, subject) {
         expect(subject, 'to equal', 'foo');
       });
     expect(
-      function() {
+      function () {
         parentExpect('foo', 'to foo');
       },
       'to throw',
@@ -45,16 +45,13 @@ describe('exportAssertion', () => {
         return /^yadda/.test(obj);
       },
       inspect(value, depth, output, inspect) {
-        output
-          .text('>>')
-          .text(value)
-          .text('<<');
-      }
+        output.text('>>').text(value).text('<<');
+      },
     });
-    childExpect.addAssertion('<yadda> to foo', function(expect, subject) {
+    childExpect.addAssertion('<yadda> to foo', function (expect, subject) {
       expect(subject, 'to contain', 'foo');
     });
-    childExpect.exportAssertion('<string> to be silly', function(
+    childExpect.exportAssertion('<string> to be silly', function (
       expect,
       subject
     ) {
@@ -63,7 +60,7 @@ describe('exportAssertion', () => {
     parentExpect('yaddafoo', 'to be silly');
 
     expect(
-      function() {
+      function () {
         parentExpect('yaddafo', 'to be silly');
       },
       'to throw',
@@ -72,7 +69,7 @@ describe('exportAssertion', () => {
   });
 
   it('picks up type definitions from the parent expect when setting expect.subjectType and expect.argTypes', () => {
-    childExpect.exportAssertion('<any> to foo <any>', function(
+    childExpect.exportAssertion('<any> to foo <any>', function (
       expect,
       subject,
       value
@@ -85,12 +82,10 @@ describe('exportAssertion', () => {
   });
 
   it('should make custom styles available to the output generation code called by expect.fail', () => {
-    childExpect.addStyle('fancyQuotes', function(text) {
-      this.text('>>')
-        .text(text)
-        .text('<<');
+    childExpect.addStyle('fancyQuotes', function (text) {
+      this.text('>>').text(text).text('<<');
     });
-    childExpect.exportAssertion('<any> to foo', function(expect, subject) {
+    childExpect.exportAssertion('<any> to foo', function (expect, subject) {
       if (subject !== 'foo') {
         expect.fail({
           diff(output, diff, inspect, equal) {
@@ -108,13 +103,13 @@ describe('exportAssertion', () => {
               .text(
                 `and they really are different, see: ${equal(subject, 'foo')}`
               );
-          }
+          },
         });
       }
     });
 
     expect(
-      function() {
+      function () {
         parentExpect('bar', 'to foo');
       },
       'to error',
@@ -128,12 +123,10 @@ describe('exportAssertion', () => {
   });
 
   it('should make custom styles available when a parent expect appends an error associated with a child expect', () => {
-    childExpect.addStyle('fancyQuotes', function(text) {
-      this.text('>>')
-        .text(text)
-        .text('<<');
+    childExpect.addStyle('fancyQuotes', function (text) {
+      this.text('>>').text(text).text('<<');
     });
-    childExpect.exportAssertion('<any> to foo', function(expect, subject) {
+    childExpect.exportAssertion('<any> to foo', function (expect, subject) {
       if (subject !== 'foo') {
         expect.fail({
           diff(output, diff, inspect, equal) {
@@ -142,15 +135,15 @@ describe('exportAssertion', () => {
               .fancyQuotes(subject)
               .text(' but expected ')
               .fancyQuotes('foo');
-          }
+          },
         });
       }
     });
 
     expect(
-      function() {
+      function () {
         expect(
-          function() {
+          function () {
             parentExpect('bar', 'to foo');
           },
           'to error',
@@ -181,12 +174,12 @@ describe('exportAssertion', () => {
     beforeEach(() => {
       childExpect.exportAssertion(
         '<string> when prepended with foo <assertion?>',
-        function(expect, subject) {
+        function (expect, subject) {
           return expect.shift(`foo${subject}`);
         }
       );
 
-      parentExpect.addAssertion('<string> to foo', function(expect, subject) {
+      parentExpect.addAssertion('<string> to foo', function (expect, subject) {
         expect(subject, 'to equal', 'foo');
       });
     });
@@ -197,7 +190,7 @@ describe('exportAssertion', () => {
 
     it('should fail with a diff', () => {
       expect(
-        function() {
+        function () {
           parentExpect('bar', 'when prepended with foo', 'to foo');
         },
         'to throw',
@@ -213,14 +206,14 @@ describe('exportAssertion', () => {
     beforeEach(() => {
       childExpect.exportAssertion(
         '<string> when prepended with foo <assertion?>',
-        function(expect, subject) {
+        function (expect, subject) {
           return expect.shift(`foo${subject}`);
         }
       );
 
       parentExpect
         .child()
-        .exportAssertion('<string> to foo', function(expect, subject) {
+        .exportAssertion('<string> to foo', function (expect, subject) {
           expect(subject, 'to equal', 'foo');
         });
     });
@@ -231,7 +224,7 @@ describe('exportAssertion', () => {
 
     it('should fail with a diff', () => {
       expect(
-        function() {
+        function () {
           parentExpect('bar', 'when prepended with foo', 'to foo');
         },
         'to throw',
@@ -247,21 +240,21 @@ describe('exportAssertion', () => {
     beforeEach(() => {
       childExpect.exportAssertion(
         '<string> when prepended with foo <assertion?>',
-        function(expect, subject) {
+        function (expect, subject) {
           return expect.shift(`foo${subject}`);
         }
       );
 
       childExpect.exportAssertion(
         '<string> when trimmed <assertion?>',
-        function(expect, subject) {
+        function (expect, subject) {
           return expect.shift(subject.trim());
         }
       );
 
       parentExpect
         .child()
-        .exportAssertion('<string> to foo', function(expect, subject) {
+        .exportAssertion('<string> to foo', function (expect, subject) {
           expect(subject, 'to equal', 'foo');
         });
     });
@@ -272,7 +265,7 @@ describe('exportAssertion', () => {
 
     it('should fail with a diff', () => {
       expect(
-        function() {
+        function () {
           parentExpect(
             'bar',
             'when prepended with foo when prepended with foo',
@@ -291,14 +284,14 @@ describe('exportAssertion', () => {
   it('uses the current context', () => {
     childExpect.exportAssertion(
       '<string> to have context value <any>',
-      function(expect, field, value) {
+      function (expect, field, value) {
         expect(expect.context[field], 'to equal', value);
       }
     );
 
     parentExpect.addAssertion(
       '<any> when set on the context as <string> <assertion>',
-      function(expect, value, field) {
+      function (expect, value, field) {
         expect.context[field] = value;
         expect.shift(field);
       }

@@ -12,14 +12,14 @@ describe('within assertion', () => {
 
   it('throws when the assertion fails', () => {
     expect(
-      function() {
+      function () {
         expect(4, 'not to be within', 0, 4);
       },
       'to throw exception',
       'expected 4 not to be within 0..4'
     );
     expect(
-      function() {
+      function () {
         expect(null, 'not to be within', 0, 4);
       },
       'to throw exception',
@@ -35,7 +35,7 @@ describe('within assertion', () => {
 
   it('throws with the correct error message when the end points are strings', () => {
     expect(
-      function() {
+      function () {
         expect('a', 'to be within', 'c', 'd');
       },
       'to throw exception',
@@ -44,7 +44,7 @@ describe('within assertion', () => {
   });
 
   if (typeof BigInt === 'function') {
-    describe('with BigInt', function() {
+    describe('with BigInt', function () {
       it('asserts a number within a range', () => {
         expect(BigInt(0), 'to be within', BigInt(0), BigInt(4));
         expect(BigInt(1), 'to be within', BigInt(0), BigInt(4));
@@ -53,7 +53,7 @@ describe('within assertion', () => {
 
       it('throws when the assertion fails', () => {
         expect(
-          function() {
+          function () {
             expect(BigInt(4), 'not to be within', BigInt(0), BigInt(4));
           },
           'to throw exception',
@@ -63,7 +63,7 @@ describe('within assertion', () => {
 
       it('refuses to compare a BigInt to a number', () => {
         expect(
-          function() {
+          function () {
             expect(BigInt(123), 'to be within', 100, 200);
           },
           'to throw',

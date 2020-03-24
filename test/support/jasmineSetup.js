@@ -7,10 +7,7 @@ function jasmineFail(err) {
 
 function jasmineSuccess() {
   if (typeof jasmine === 'object') {
-    jasmine
-      .getEnv()
-      .expect(true)
-      .toBe(true);
+    jasmine.getEnv().expect(true).toBe(true);
   }
 }
 
@@ -22,16 +19,16 @@ var shouldApplyPatch =
 if (typeof it === 'function' && shouldApplyPatch) {
   var originalIt = it;
   // eslint-disable-next-line no-global-assign
-  it = function(title, fn) {
+  it = function (title, fn) {
     if (!fn) {
       return originalIt(title);
     }
     var async = fn.length > 0;
-    var wrapper = function(done) {
+    var wrapper = function (done) {
       var result;
       try {
         if (async) {
-          fn.call(this, function(err) {
+          fn.call(this, function (err) {
             if (err) {
               jasmineFail(err);
               done(err);
@@ -52,11 +49,11 @@ if (typeof it === 'function' && shouldApplyPatch) {
 
         if (isPromise) {
           result.then(
-            function() {
+            function () {
               jasmineSuccess();
               done();
             },
-            function(err) {
+            function (err) {
               jasmineFail(err);
               done(err);
             }
@@ -70,25 +67,25 @@ if (typeof it === 'function' && shouldApplyPatch) {
         return done(err);
       }
     };
-    wrapper.toString = function() {
+    wrapper.toString = function () {
       return fn.toString();
     };
     return originalIt(title, wrapper);
   };
-  Object.keys(originalIt).forEach(function(methodName) {
+  Object.keys(originalIt).forEach(function (methodName) {
     it[methodName] = originalIt[methodName];
   });
   it.patchApplied = true;
 }
 
 if (!it.skip && xit) {
-  it.skip = function(...args) {
+  it.skip = function (...args) {
     xit.apply(it, args);
   };
 }
 
 if (!describe.skip && xdescribe) {
-  describe.skip = function(...args) {
+  describe.skip = function (...args) {
     xdescribe.apply(describe, args, 1);
   };
 }

@@ -2,13 +2,13 @@
 describe('to throw assertion', () => {
   it('fails if no exception is thrown', () => {
     expect(
-      function() {
-        expect(function() {
+      function () {
+        expect(function () {
           // Don't throw
         }, 'to throw exception');
       },
       'to throw',
-      expect.it(function(err) {
+      expect.it(function (err) {
         var message = err.getErrorMessage({ format: 'text' }).toString();
 
         expect(
@@ -27,7 +27,7 @@ describe('to throw assertion', () => {
 
   it('fails if exception is thrown', () => {
     expect(
-      function() {
+      function () {
         expect(function testFunction() {
           throw new Error('The Error');
         }, 'not to throw');
@@ -67,7 +67,7 @@ describe('to throw assertion', () => {
 
   it('fails if the argument is not a function', () => {
     expect(
-      function() {
+      function () {
         expect(1, 'to throw exception');
       },
       'to throw exception',
@@ -82,11 +82,11 @@ describe('to throw assertion', () => {
 
   it('given a function the function is called with the exception', () => {
     expect(
-      function() {
+      function () {
         throw new SyntaxError();
       },
       'to throw exception',
-      expect.it(function(e) {
+      expect.it(function (e) {
         expect(e, 'to be a', SyntaxError);
       })
     );
@@ -94,7 +94,7 @@ describe('to throw assertion', () => {
 
   it('matches the message against the given regular expression', () => {
     expect(
-      function() {
+      function () {
         throw new Error('matches the exception message');
       },
       'to throw exception',
@@ -104,9 +104,9 @@ describe('to throw assertion', () => {
 
   it('does not support the not-flag in combination with an argument', () => {
     expect(
-      function() {
+      function () {
         expect(
-          function() {
+          function () {
             throw new Error('matches the exception message');
           },
           'not to throw',
@@ -128,7 +128,7 @@ describe('to throw assertion', () => {
 
   it('provides a diff when the exception message does not match the given string', () => {
     expect(
-      function() {
+      function () {
         expect(
           function testFunction() {
             throw new Error('bar');
@@ -148,7 +148,7 @@ describe('to throw assertion', () => {
 
   it('matches the error against the given error instance', () => {
     expect(
-      function() {
+      function () {
         throw new Error('matches the exception message');
       },
       'to throw exception',
@@ -158,7 +158,7 @@ describe('to throw assertion', () => {
 
   it('provides a diff when the thrown error does not match the given error instance', () => {
     expect(
-      function() {
+      function () {
         expect(
           function testFunction() {
             throw new Error('Custom error');
@@ -186,7 +186,7 @@ describe('to throw assertion', () => {
 
   it('exactly matches the message against the given string', () => {
     expect(
-      function() {
+      function () {
         throw new Error('matches the exception message');
       },
       'to throw exception',
@@ -196,7 +196,7 @@ describe('to throw assertion', () => {
 
   it('does not break if null is thrown', () => {
     expect(
-      function() {
+      function () {
         // prettier-ignore
         // eslint-disable-next-line no-throw-literal
         expect(function() { throw null; }, 'not to throw');
@@ -209,15 +209,15 @@ describe('to throw assertion', () => {
   describe('with the not flag', () => {
     it('should use the stack of the thrown error when failing', () => {
       expect(
-        function() {
-          expect(function() {
+        function () {
+          expect(function () {
             (function thisIsImportant() {
               throw new Error('argh');
             })();
           }, 'not to throw');
         },
         'to throw',
-        expect.it(function(err) {
+        expect.it(function (err) {
           expect(err.stack, 'to match', /thisIsImportant/);
         })
       );
@@ -227,9 +227,9 @@ describe('to throw assertion', () => {
   describe('without the not flag', () => {
     it('should use the stack of the thrown (but wrong) error when failing', () => {
       expect(
-        function() {
+        function () {
           expect(
-            function() {
+            function () {
               (function thisIsImportant() {
                 throw new Error('argh');
               })();
@@ -239,7 +239,7 @@ describe('to throw assertion', () => {
           );
         },
         'to throw',
-        expect.it(function(err) {
+        expect.it(function (err) {
           expect(err.stack, 'to match', /thisIsImportant/);
         })
       );

@@ -2,9 +2,9 @@
 describe('to throw a/an assertion', () => {
   it('fails if no exception is thrown', () => {
     expect(
-      function() {
+      function () {
         expect(
-          function() {
+          function () {
             // Don't throw
           },
           'to throw an',
@@ -12,7 +12,7 @@ describe('to throw a/an assertion', () => {
         );
       },
       'to throw',
-      expect.it(function(err) {
+      expect.it(function (err) {
         var message = err.getErrorMessage({ format: 'text' }).toString();
 
         expect(
@@ -32,7 +32,7 @@ describe('to throw a/an assertion', () => {
 
   it('succeeds if the function throws an instance of the supplied constructor function', () => {
     expect(
-      function() {
+      function () {
         throw new SyntaxError();
       },
       'to throw a',
@@ -43,19 +43,19 @@ describe('to throw a/an assertion', () => {
   it('fulfills its promise with the error that was thrown', () => {
     const err = new SyntaxError('foo');
     expect(
-      function() {
+      function () {
         throw err;
       },
       'to throw a',
       SyntaxError
-    ).then(fulfilmentValue => expect(fulfilmentValue, 'to be', err));
+    ).then((fulfilmentValue) => expect(fulfilmentValue, 'to be', err));
   });
 
   it('fails if the function throws an instance of a different constructor', () => {
     expect(
-      function() {
+      function () {
         expect(
-          function() {
+          function () {
             throw new SyntaxError('foo');
           },
           'to throw a',
@@ -70,7 +70,7 @@ describe('to throw a/an assertion', () => {
 
   it('fails with a proper error if the function throws null', () => {
     expect(
-      function() {
+      function () {
         expect(
           // prettier-ignore
           // eslint-disable-next-line no-throw-literal
@@ -87,7 +87,7 @@ describe('to throw a/an assertion', () => {
 
   it('fails with a proper error if the function throws an empty string', () => {
     expect(
-      function() {
+      function () {
         expect(
           // prettier-ignore
           // eslint-disable-next-line no-throw-literal

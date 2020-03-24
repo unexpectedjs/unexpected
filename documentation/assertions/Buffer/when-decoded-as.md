@@ -42,7 +42,7 @@ as the fulfillment value of the promise:
 
 ```js
 return expect(Buffer.from([0xe2, 0x98, 0xba]), 'decoded as', 'utf-8').then(
-  function(result) {
+  function (result) {
     expect(result, 'to equal', '☺');
   }
 );

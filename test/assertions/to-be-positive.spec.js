@@ -6,7 +6,7 @@ describe('positive assertion', () => {
 
   it('throws when the assertion fails', () => {
     expect(
-      function() {
+      function () {
         expect(0, 'to be positive');
       },
       'to throw exception',
@@ -15,14 +15,14 @@ describe('positive assertion', () => {
   });
 
   if (typeof BigInt === 'function') {
-    describe('with BigInt', function() {
+    describe('with BigInt', function () {
       it('asserts that a number is positive', () => {
         expect(BigInt(3), 'to be positive');
       });
 
       it('throws when the assertion fails', () => {
         expect(
-          function() {
+          function () {
             expect(BigInt(0), 'to be positive');
           },
           'to throw exception',

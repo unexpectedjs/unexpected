@@ -29,7 +29,7 @@ to the `it` block:
 <!-- unexpected-markdown evaluate:false -->
 
 ```js
-it('should call the callback', function() {
+it('should call the callback', function () {
   return expect(setImmediate, 'to call the callback');
 });
 ```
@@ -57,7 +57,7 @@ block if any of the assertions are asynchronous:
 <!-- unexpected-markdown evaluate: false -->
 
 ```js
-it('should do the right thing', function() {
+it('should do the right thing', function () {
   return expect(setImmediate, 'to be a function').and('to call the callback');
 });
 ```

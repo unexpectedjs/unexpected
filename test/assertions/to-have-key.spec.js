@@ -9,7 +9,7 @@ describe('to have key assertion', () => {
 
   it('throws when the assertion fails', () => {
     expect(
-      function() {
+      function () {
         expect({ a: 'b', b: 'c' }, 'to have key', 'e');
       },
       'to throw exception',
@@ -17,7 +17,7 @@ describe('to have key assertion', () => {
     );
 
     expect(
-      function() {
+      function () {
         expect({ a: 'b', b: 'c' }, 'to only have key', 'b');
       },
       'to throw exception',
@@ -30,7 +30,7 @@ describe('to have key assertion', () => {
     );
 
     expect(
-      function() {
+      function () {
         expect({ a: 'b', b: 'c' }, 'not to have key', 'b');
       },
       'to throw exception',

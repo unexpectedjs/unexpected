@@ -1,12 +1,12 @@
 var expect = require('../lib')
   .clone()
-  .addAssertion('<any> to be a number after a (short|long) delay', function(
+  .addAssertion('<any> to be a number after a (short|long) delay', function (
     expect,
     subject
   ) {
-    return expect.promise(function(run) {
+    return expect.promise(function (run) {
       setTimeout(
-        run(function() {
+        run(function () {
           expect(subject, 'to be a number');
         }),
         expect.alternations[0] === 'short' ? 0 : 10
@@ -21,6 +21,6 @@ it('should succeed', () => {
       [0, 1, 2],
       'to have items satisfying',
       expect.it('to be a number after a short delay')
-    )
+    ),
   });
 });

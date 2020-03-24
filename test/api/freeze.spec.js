@@ -9,19 +9,16 @@ describe('freeze', () => {
   // Debatable? Seems nice for forwards compatibility if we freeze
   // the default instance in Unexpected 11.
   it('does not throw if the instance is already frozen', () => {
-    expect
-      .clone()
-      .freeze()
-      .freeze();
+    expect.clone().freeze().freeze();
   });
 
   it('makes .use(...) throw', () => {
     expect(
-      function() {
+      function () {
         expect
           .clone()
           .freeze()
-          .use(function() {});
+          .use(function () {});
       },
       'to throw',
       'Cannot install a plugin into a frozen instance, please run .clone() first'
@@ -30,12 +27,12 @@ describe('freeze', () => {
 
   it('makes .hook(...) throw', () => {
     expect(
-      function() {
+      function () {
         expect
           .clone()
           .freeze()
-          .hook(function(next) {
-            return function(context, args) {
+          .hook(function (next) {
+            return function (context, args) {
               return next(context, args);
             };
           });
@@ -50,16 +47,16 @@ describe('freeze', () => {
       .clone()
       .freeze()
       .clone()
-      .use(function() {});
+      .use(function () {});
   });
 
   it('makes .addAssertion(...) throw', () => {
     expect(
-      function() {
+      function () {
         expect
           .clone()
           .freeze()
-          .addAssertion('<string> to foo', function(expect, subject) {
+          .addAssertion('<string> to foo', function (expect, subject) {
             expect(subject, 'to equal', 'foo');
           });
       },
@@ -70,11 +67,8 @@ describe('freeze', () => {
 
   it('makes .addType(...) throw', () => {
     expect(
-      function() {
-        expect
-          .clone()
-          .freeze()
-          .addType({ name: 'foo', identify: false });
+      function () {
+        expect.clone().freeze().addType({ name: 'foo', identify: false });
       },
       'to throw',
       'Cannot add a type to a frozen instance, please run .clone() first'
@@ -83,11 +77,11 @@ describe('freeze', () => {
 
   it('makes .addStyle(...) throw', () => {
     expect(
-      function() {
+      function () {
         expect
           .clone()
           .freeze()
-          .addStyle('smiley', function() {
+          .addStyle('smiley', function () {
             this.red('\u263a');
           });
       },
@@ -98,11 +92,8 @@ describe('freeze', () => {
 
   it('makes .installTheme(...) throw', () => {
     expect(
-      function() {
-        expect
-          .clone()
-          .freeze()
-          .installTheme('html', { comment: 'gray' });
+      function () {
+        expect.clone().freeze().installTheme('html', { comment: 'gray' });
       },
       'to throw',
       'Cannot install a theme into a frozen instance, please run .clone() first'
@@ -111,10 +102,7 @@ describe('freeze', () => {
 
   describe('with .child()', () => {
     it('does not throw', () => {
-      expect
-        .clone()
-        .freeze()
-        .child();
+      expect.clone().freeze().child();
     });
 
     it('allows addAssertion', () => {
@@ -122,19 +110,19 @@ describe('freeze', () => {
         .clone()
         .freeze()
         .child()
-        .addAssertion('<string> to foo', function(expect, subject) {
+        .addAssertion('<string> to foo', function (expect, subject) {
           expect(subject, 'to equal', 'foo');
         });
     });
 
     it('throws on exportAssertion', () => {
       expect(
-        function() {
+        function () {
           expect
             .clone()
             .freeze()
             .child()
-            .exportAssertion('<string> to foo', function(expect, subject) {
+            .exportAssertion('<string> to foo', function (expect, subject) {
               expect(subject, 'to equal', 'foo');
             });
         },
@@ -145,7 +133,7 @@ describe('freeze', () => {
 
     it('throws on exportType', () => {
       expect(
-        function() {
+        function () {
           expect
             .clone()
             .freeze()
@@ -162,19 +150,19 @@ describe('freeze', () => {
         .clone()
         .freeze()
         .child()
-        .addStyle('smiley', function() {
+        .addStyle('smiley', function () {
           this.red('\u263a');
         });
     });
 
     it('throws on exportStyle', () => {
       expect(
-        function() {
+        function () {
           expect
             .clone()
             .freeze()
             .child()
-            .exportStyle('smiley', function() {
+            .exportStyle('smiley', function () {
               this.red('\u263a');
             });
         },

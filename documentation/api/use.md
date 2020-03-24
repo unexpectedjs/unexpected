@@ -61,31 +61,30 @@ Now we will define an example plugin that will add support for this type:
 ```js
 expect.use({
   name: 'unexpected-integer-intervals',
-  installInto: function(expect) {
+  installInto: function (expect) {
     expect.addType({
       name: 'IntegerInterval',
       base: 'object',
-      identify: function(value) {
+      identify: function (value) {
         return value && value instanceof IntegerInterval;
       },
-      inspect: function(value, depth, output) {
+      inspect: function (value, depth, output) {
         output
           .text('[')
           .jsNumber(value.from)
           .text(',')
           .jsNumber(value.to)
           .text(']');
-      }
+      },
     });
 
-    expect.addAssertion('<IntegerInterval> [not] to contain <number>', function(
-      expect,
-      subject,
-      value
-    ) {
-      expect(value, '[not] to be within', subject.from, subject.to);
-    });
-  }
+    expect.addAssertion(
+      '<IntegerInterval> [not] to contain <number>',
+      function (expect, subject, value) {
+        expect(value, '[not] to be within', subject.from, subject.to);
+      }
+    );
+  },
 });
 ```
 

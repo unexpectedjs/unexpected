@@ -12,7 +12,7 @@ var originalExpect = expect;
 
 expect = expect
   .clone()
-  .addAssertion('<number> to be an integer', function(expect, subject) {
+  .addAssertion('<number> to be an integer', function (expect, subject) {
     expect(Math.round(subject), 'to be', subject);
   });
 

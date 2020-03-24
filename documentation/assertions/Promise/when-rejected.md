@@ -3,8 +3,8 @@ Wait for a promise to be rejected, then delegate the reason to another assertion
 <!-- unexpected-markdown async:true -->
 
 ```js
-var rejectedPromise = new Promise(function(resolve, reject) {
-  setTimeout(function() {
+var rejectedPromise = new Promise(function (resolve, reject) {
+  setTimeout(function () {
     reject(new Error('argh'));
   }, 1);
 });

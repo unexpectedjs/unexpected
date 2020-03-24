@@ -5,7 +5,7 @@ delegate the return value to another assertion.
 expect(
   [2, 1, 3],
   'when sorted by',
-  function(a, b) {
+  function (a, b) {
     return a - b;
   },
   'to equal',
@@ -19,7 +19,7 @@ In case of a failing expectation you get the following output:
 expect(
   [2, 1, 3],
   'when sorted by',
-  function(a, b) {
+  function (a, b) {
     return a - b;
   },
   'to equal',

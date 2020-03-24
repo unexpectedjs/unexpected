@@ -3,11 +3,11 @@ Asserts that a promise is fulfilled with a specific value:
 <!-- unexpected-markdown async:true -->
 
 ```js
-var promiseThatWillBeFulfilledWithAValue = new Promise(function(
+var promiseThatWillBeFulfilledWithAValue = new Promise(function (
   resolve,
   reject
 ) {
-  setTimeout(function() {
+  setTimeout(function () {
     resolve('abc');
   }, 1);
 });

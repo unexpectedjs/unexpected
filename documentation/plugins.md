@@ -55,9 +55,7 @@ And then in your test suite:
 <!-- eslint-disable import/no-extraneous-dependencies -->
 
 ```js
-var expect = require('unexpected')
-  .clone()
-  .use(require('unexpected-dom'));
+var expect = require('unexpected').clone().use(require('unexpected-dom'));
 ```
 
 For plugins that work in the browser, you'll either need to add an extra `<script>`, or
@@ -80,11 +78,11 @@ var expect = require('unexpected')
   .use(require('unexpected-dom'))
   .use(require('unexpected-color'));
 
-var app = require('express')().get('/myPage', function(req, res, next) {
+var app = require('express')().get('/myPage', function (req, res, next) {
   res.send('<html><body><div style="color: #ff0">Hey!</div></body></html>');
 });
 
-it('should deliver something pretty', function() {
+it('should deliver something pretty', function () {
   return expect(app, 'to yield exchange', {
     request: 'GET /myPage',
     response: {
@@ -97,12 +95,12 @@ it('should deliver something pretty', function() {
         {
           attributes: {
             style: {
-              color: expect.it('to be colored', 'yellow')
-            }
-          }
+              color: expect.it('to be colored', 'yellow'),
+            },
+          },
         }
-      )
-    }
+      ),
+    },
   });
 });
 ```
@@ -120,7 +118,7 @@ var expect = require('unexpected')
   .use(require('unexpected-image'))
   .use(require('unexpected-resemble'));
 
-it('should spew out the expected image', function() {
+it('should spew out the expected image', function () {
   var myStream = require('fs').createReadStream('foo.png');
 
   return expect(
@@ -128,10 +126,10 @@ it('should spew out the expected image', function() {
     'to yield output satisfying',
     expect
       .it('to resemble', 'bar.png', {
-        mismatchPercentage: expect.it('to be less than', 10)
+        mismatchPercentage: expect.it('to be less than', 10),
       })
       .and('to have metadata satisfying', {
-        format: 'PNG'
+        format: 'PNG',
       })
   );
 });

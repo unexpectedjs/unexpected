@@ -13,7 +13,7 @@ expect(
 expect(
   { foo: 0, bar: 1, baz: 2, qux: 3 },
   'to have a value satisfying',
-  expect.it(function(value) {
+  expect.it(function (value) {
     expect(value, 'to be a number');
   })
 );
@@ -36,7 +36,7 @@ expect({ foo: { a: 1, b: 2 } }, 'to have a value satisfying', { a: 1 });
 
 ```js
 expect({ foo: { a: 1, b: 2 } }, 'to have a value exhaustively satisfying', {
-  a: 1
+  a: 1,
 });
 ```
 

@@ -8,34 +8,34 @@ var unexpected =
 unexpected.output.preferredWidth = 80;
 
 unexpected
-  .addAssertion('<any> to inspect as <string>', function(
+  .addAssertion('<any> to inspect as <string>', function (
     expect,
     subject,
     value
   ) {
     expect(expect.inspect(subject).toString(), 'to equal', value);
   })
-  .addAssertion('<any> when delayed a little bit <assertion>', function(
+  .addAssertion('<any> when delayed a little bit <assertion>', function (
     expect,
     subject
   ) {
-    return expect.promise(function(run) {
+    return expect.promise(function (run) {
       setTimeout(
-        run(function() {
+        run(function () {
           return expect.shift();
         }),
         1
       );
     });
   })
-  .addAssertion('<any> when delayed <number> <assertion>', function(
+  .addAssertion('<any> when delayed <number> <assertion>', function (
     expect,
     subject,
     value
   ) {
-    return expect.promise(function(run) {
+    return expect.promise(function (run) {
       setTimeout(
-        run(function() {
+        run(function () {
           return expect.shift();
         }),
         value
@@ -53,7 +53,7 @@ var expectWithUnexpectedMagicPen = unexpected
       : weknowhow.unexpectedMagicPen
   );
 
-(function(root) {
+(function (root) {
   // expose require globals
   root.unexpected = unexpected;
   root.expect = expect;
@@ -61,7 +61,7 @@ var expectWithUnexpectedMagicPen = unexpected
 
   if (!root.setImmediate) {
     // eslint-disable-next-line no-global-assign
-    root.setImmediate = function(cb) {
+    root.setImmediate = function (cb) {
       setTimeout(cb, 0);
     };
   }

@@ -42,7 +42,7 @@ the returned promise, so you can do further assertions like this:
 <!-- unexpected-markdown async:true -->
 
 ```js
-return expect(willThrow, 'to throw a', SyntaxError).then(function(err) {
+return expect(willThrow, 'to throw a', SyntaxError).then(function (err) {
   expect(err, 'to have message', /\bmessage/);
 });
 ```
@@ -55,7 +55,7 @@ function willThrow(input) {
   return input;
 }
 expect(
-  function() {
+  function () {
     willThrow('input.here');
   },
   'to throw a',

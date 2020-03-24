@@ -17,7 +17,7 @@ In case of a failing expectation you get the following output:
 
 ```js
 function myFailingAsyncFunction(cb) {
-  setTimeout(function() {
+  setTimeout(function () {
     cb(new Error('Oh dear'));
   }, 0);
 }
@@ -47,7 +47,7 @@ function asyncFn(cb) {
   cb(null, 123, 456);
 }
 
-return expect(asyncFn, 'to call the callback without error').then(function(
+return expect(asyncFn, 'to call the callback without error').then(function (
   args
 ) {
   // args will be [123, 456];
@@ -59,7 +59,7 @@ Or using the Bluebird-specific `.spread` extension:
 <!-- unexpected-markdown async:true -->
 
 ```js
-return expect(asyncFn, 'to call the callback without error').spread(function(
+return expect(asyncFn, 'to call the callback without error').spread(function (
   result1,
   result2
 ) {

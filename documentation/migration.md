@@ -75,14 +75,14 @@ value to allow further assertions:
 ```js
 const obj = {
   version: 11,
-  greeting: 'hello new major'
+  greeting: 'hello new major',
 };
 
 expect(obj, 'to satisfy', {
   year: 2018,
-  greeting: function(theValue) {
+  greeting: function (theValue) {
     expect(theValue, 'to start with', 'hello');
-  }
+  },
 });
 ```
 
@@ -95,14 +95,14 @@ the `expect.it()`:
 ```js
 const obj = {
   version: 11,
-  greeting: 'hello new major'
+  greeting: 'hello new major',
 };
 
 expect(obj, 'to satisfy', {
   version: 11,
-  greeting: expect.it(function(theValue) {
+  greeting: expect.it(function (theValue) {
     expect(theValue, 'to start with', 'hello');
-  })
+  }),
 });
 ```
 
@@ -115,7 +115,7 @@ expect(obj, 'to satisfy', {
   greeting: expect
     .it('to be a string')
     .and('to end with', 'major')
-    .and(theValue => expect(theValue.split(' '), 'to have length', 3))
+    .and((theValue) => expect(theValue.split(' '), 'to have length', 3)),
 });
 ```
 
@@ -172,11 +172,11 @@ function myCallback() {}
 
 const options = {
   data: null,
-  callback: myCallback
+  callback: myCallback,
 };
 
 expect(options, 'to satisfy', {
-  callback: myCallback
+  callback: myCallback,
 });
 
 expect(options, 'to have a value satisfying', myCallback);

@@ -8,7 +8,7 @@ describe('to be close to assertion', () => {
 
   it('fails when the assertion fails', () => {
     expect(
-      function() {
+      function () {
         expect(1.5, 'to be close to', 1.4999);
       },
       'to throw exception',
@@ -16,7 +16,7 @@ describe('to be close to assertion', () => {
     );
 
     expect(
-      function() {
+      function () {
         expect(1.5, 'to be close to', 1.5001);
       },
       'to throw exception',
@@ -30,7 +30,7 @@ describe('to be close to assertion', () => {
     expect(1.5, 'not to be close to', 1.51, 1e-3);
 
     expect(
-      function() {
+      function () {
         expect(1.5, 'to be close to', 1.51, 1e-3);
       },
       'to throw exception',

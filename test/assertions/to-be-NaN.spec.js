@@ -7,7 +7,7 @@ describe('to be NaN assertion', () => {
 
   it('fails when the assertion fails', () => {
     expect(
-      function() {
+      function () {
         expect(0, 'to be NaN');
       },
       'to throw',
@@ -15,7 +15,7 @@ describe('to be NaN assertion', () => {
     );
 
     expect(
-      function() {
+      function () {
         expect(NaN, 'not to be NaN');
       },
       'to throw',

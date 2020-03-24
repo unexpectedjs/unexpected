@@ -8,7 +8,7 @@ describe('greater than assertion', () => {
 
   it('throws when the assertion fails', () => {
     expect(
-      function() {
+      function () {
         expect(0, 'to be greater than', 0);
       },
       'to throw exception',
@@ -18,7 +18,7 @@ describe('greater than assertion', () => {
 
   it('refuses to compare NaN to a number', () => {
     expect(
-      function() {
+      function () {
         expect(NaN, 'not to be greater than', 1);
       },
       'to throw',
@@ -33,7 +33,7 @@ describe('greater than assertion', () => {
   });
 
   if (typeof BigInt === 'function') {
-    describe('with BigInt', function() {
+    describe('with BigInt', function () {
       it('asserts >', () => {
         expect(BigInt(3), 'to be greater than', BigInt(2));
         expect(BigInt(1), 'to be above', BigInt(0));
@@ -41,7 +41,7 @@ describe('greater than assertion', () => {
 
       it('throws when the assertion fails', () => {
         expect(
-          function() {
+          function () {
             expect(BigInt(0), 'to be greater than', BigInt(0));
           },
           'to throw exception',
@@ -51,7 +51,7 @@ describe('greater than assertion', () => {
 
       it('refuses to compare a BigInt to a number', () => {
         expect(
-          function() {
+          function () {
             expect(BigInt(123), 'to be greater than', 1);
           },
           'to throw',

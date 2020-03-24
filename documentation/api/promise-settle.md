@@ -13,13 +13,13 @@ on each of the promises to read their values.
 Let's make an asynchronous assertion that we can use for the examples:
 
 ```js
-expect.addAssertion('<any> to be a number after a short delay', function(
+expect.addAssertion('<any> to be a number after a short delay', function (
   expect,
   subject
 ) {
-  return expect.promise(function(run) {
+  return expect.promise(function (run) {
     setTimeout(
-      run(function() {
+      run(function () {
         expect(subject, 'to be a number');
       }),
       1
@@ -49,20 +49,16 @@ var promises = {
     { a: '1', b: 2 },
     'to have values satisfying',
     'to be a number after a short delay'
-  )
+  ),
 };
 
-return expect.promise.all(promises).caught(function() {
-  return expect.promise.settle(promises).then(function() {
-    expect.fail(function(output) {
+return expect.promise.all(promises).caught(function () {
+  return expect.promise.settle(promises).then(function () {
+    expect.fail(function (output) {
       output.text('{').nl();
       output.indentLines();
-      Object.keys(promises).forEach(function(key, index) {
-        output
-          .i()
-          .jsKey(key)
-          .text(':')
-          .sp();
+      Object.keys(promises).forEach(function (key, index) {
+        output.i().jsKey(key).text(':').sp();
         if (promises[key].isFulfilled()) {
           output.success('✓');
         } else {

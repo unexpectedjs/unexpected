@@ -2,8 +2,8 @@
 describe('to be rejected with error satisfying assertion', () => {
   it('should succeed if the response is rejected with a reason satisfying the argument', () => {
     return expect(
-      new Promise(function(resolve, reject) {
-        setTimeout(function() {
+      new Promise(function (resolve, reject) {
+        setTimeout(function () {
           reject(new Error('OMG!'));
         }, 0);
       }),
@@ -17,15 +17,15 @@ describe('to be rejected with error satisfying assertion', () => {
       expect.promise.reject(new Error('foo')),
       'to be rejected with error satisfying',
       'foo'
-    ).then(function(reason) {
+    ).then(function (reason) {
       expect(reason, 'to have message', 'foo');
     });
   });
 
   it('should support matching the error message against a regular expression', () => {
     return expect(
-      new Promise(function(resolve, reject) {
-        setTimeout(function() {
+      new Promise(function (resolve, reject) {
+        setTimeout(function () {
           reject(new Error('OMG!'));
         }, 0);
       }),
@@ -36,8 +36,8 @@ describe('to be rejected with error satisfying assertion', () => {
 
   it('should support matching the error message of an UnexpectedError against a regular expression', () => {
     return expect(
-      new Promise(function(resolve, reject) {
-        setTimeout(function() {
+      new Promise(function (resolve, reject) {
+        setTimeout(function () {
           try {
             expect(false, 'to be truthy');
           } catch (err) {
@@ -53,8 +53,8 @@ describe('to be rejected with error satisfying assertion', () => {
   it('should fail if the promise is rejected with a reason that does not satisfy the argument', () => {
     return expect(
       expect(
-        new Promise(function(resolve, reject) {
-          setTimeout(function() {
+        new Promise(function (resolve, reject) {
+          setTimeout(function () {
             reject(new Error('OMG!'));
           }, 1);
         }),
@@ -76,7 +76,7 @@ describe('to be rejected with error satisfying assertion', () => {
 
   describe('with the "exhaustively" flag', () => {
     it("errors if the rejection reason doesn't have all the same properties as the value", () => {
-      return expect(function() {
+      return expect(function () {
         var error = new Error('foobar');
         error.data = { foo: 'bar' };
         return expect(
@@ -89,7 +89,7 @@ describe('to be rejected with error satisfying assertion', () => {
 
     it('errors with the correct error', () => {
       return expect(
-        function() {
+        function () {
           var error = new Error('foobar');
           error.data = { foo: 'bar' };
           return expect(
@@ -114,7 +114,7 @@ describe('to be rejected with error satisfying assertion', () => {
 
   describe('without the "exhaustively" flag', () => {
     it("does not error if the rejection reason doesn't have all the same properties as the value", () => {
-      return expect(function() {
+      return expect(function () {
         var error = new Error('foobar');
         error.data = { foo: 'bar' };
         return expect(
@@ -129,9 +129,9 @@ describe('to be rejected with error satisfying assertion', () => {
   describe('when passed a function as the subject', () => {
     it('should fail if the function returns a promise that is rejected with the wrong reason', () => {
       expect(
-        function() {
+        function () {
           return expect(
-            function() {
+            function () {
               return expect.promise.reject(new Error('foo'));
             },
             'to be rejected with error satisfying',
@@ -159,10 +159,10 @@ describe('to be rejected with error satisfying assertion', () => {
 
     it('should use the stack of the rejection reason when failing', () => {
       return expect(
-        function() {
+        function () {
           return expect(
-            function() {
-              return expect.promise(function() {
+            function () {
+              return expect.promise(function () {
                 (function thisIsImportant() {
                   throw new Error('argh');
                 })();
@@ -173,7 +173,7 @@ describe('to be rejected with error satisfying assertion', () => {
           );
         },
         'to error',
-        expect.it(function(err) {
+        expect.it(function (err) {
           expect(err.stack, 'to match', /thisIsImportant/);
         })
       );
@@ -181,10 +181,10 @@ describe('to be rejected with error satisfying assertion', () => {
 
     describe('with the "exhaustively" flag', () => {
       it("errors if the rejection reason doesn't have all the same properties as the value", () => {
-        return expect(function() {
+        return expect(function () {
           return expect(
-            function() {
-              return expect.promise(function() {
+            function () {
+              return expect.promise(function () {
                 var error = new Error('foobar');
                 error.data = { foo: 'bar' };
                 throw error;
@@ -237,10 +237,10 @@ describe('to be rejected with error satisfying assertion', () => {
 
     describe('without the "exhaustively" flag', () => {
       it("does not error if the rejection reason doesn't have all the same properties as the value", () => {
-        return expect(function() {
+        return expect(function () {
           return expect(
-            function() {
-              return expect.promise(function() {
+            function () {
+              return expect.promise(function () {
                 var error = new Error('foobar');
                 error.data = { foo: 'bar' };
                 throw error;
@@ -257,10 +257,10 @@ describe('to be rejected with error satisfying assertion', () => {
   describe('with another promise library', () => {
     it('should use the stack of the rejection reason when failing', () => {
       return expect(
-        function() {
+        function () {
           return expect(
-            function() {
-              return new Promise(function(resolve, reject) {
+            function () {
+              return new Promise(function (resolve, reject) {
                 (function thisIsImportant() {
                   throw new Error('argh');
                 })();
@@ -271,7 +271,7 @@ describe('to be rejected with error satisfying assertion', () => {
           );
         },
         'to error',
-        expect.it(function(err) {
+        expect.it(function (err) {
           expect(err.stack, 'to match', /thisIsImportant/);
         })
       );

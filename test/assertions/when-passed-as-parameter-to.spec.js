@@ -9,14 +9,14 @@ describe('when passed as parameters to assertion', () => {
   });
 
   it('should should provide the result as the fulfillment value if no assertion is provided', () => {
-    return expect([3, 4], 'passed as parameters to', add).then(function(sum) {
+    return expect([3, 4], 'passed as parameters to', add).then(function (sum) {
       expect(sum, 'to equal', 7);
     });
   });
 
   it('works with an array-like object', () => {
     var args;
-    (function() {
+    (function () {
       args = arguments;
     })(3, 4);
     expect(args, 'when passed as parameters to', add, 'to equal', 7);
@@ -24,7 +24,7 @@ describe('when passed as parameters to assertion', () => {
 
   it('should produce a nested error message when the assertion fails', () => {
     expect(
-      function() {
+      function () {
         expect([3, 4], 'when passed as parameters to', add, 'to equal', 8);
       },
       'to throw',
@@ -38,7 +38,7 @@ describe('when passed as parameters to assertion', () => {
     expect(
       [
         [1, 2],
-        [3, 4]
+        [3, 4],
       ],
       'to have items satisfying',
       'when passed as parameters to',
@@ -60,7 +60,7 @@ describe('when passed as parameters to assertion', () => {
 
     it('should should provide the result as the fulfillment value if no assertion is provided', () => {
       return expect(2, 'passed as parameter to', add.bind(null, 1)).then(
-        function(sum) {
+        function (sum) {
           expect(sum, 'to equal', 3);
         }
       );
@@ -71,7 +71,7 @@ describe('when passed as parameters to assertion', () => {
         return n + 1;
       }
       expect(
-        function() {
+        function () {
           expect(1, 'when passed as parameter to', increment, 'to equal', 3);
         },
         'to throw',
@@ -95,7 +95,7 @@ describe('when passed as parameters to assertion', () => {
         'when passed as parameters to constructor',
         Foo,
         'to satisfy',
-        expect.it(function(obj) {
+        expect.it(function (obj) {
           expect(obj, 'to be a', Foo);
           expect(obj.a, 'to equal', 1);
           expect(obj.b, 'to equal', 2);

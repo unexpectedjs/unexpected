@@ -14,21 +14,15 @@ describe('removedHighlight', () => {
         'to equal',
         expect
           .createOutput('text')
-          .block(function() {
-            this.text('foo')
-              .nl()
-              .text('^^^');
+          .block(function () {
+            this.text('foo').nl().text('^^^');
           })
-          .block(function() {
-            this.diffRemovedHighlight('\\n')
-              .nl()
-              .text('^');
+          .block(function () {
+            this.diffRemovedHighlight('\\n').nl().text('^');
           })
           .nl()
-          .block(function() {
-            this.text('bar')
-              .nl()
-              .text('^^^');
+          .block(function () {
+            this.text('bar').nl().text('^^^');
           })
       );
     });

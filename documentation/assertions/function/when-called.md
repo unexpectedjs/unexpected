@@ -25,7 +25,7 @@ as the fulfillment value of the promise:
 <!-- unexpected-markdown async:true -->
 
 ```js
-return expect(giveMeFive, 'called').then(function(result) {
+return expect(giveMeFive, 'called').then(function (result) {
   expect(result, 'to equal', 5);
 });
 ```
@@ -38,11 +38,11 @@ function Person(name) {
   this.name = name;
 }
 
-Person.prototype.toString = function() {
+Person.prototype.toString = function () {
   return this.name;
 };
 
 expect(new Person('John Doe'), 'to satisfy', {
-  toString: expect.it('when called to equal', 'John Doe')
+  toString: expect.it('when called to equal', 'John Doe'),
 });
 ```

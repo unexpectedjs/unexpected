@@ -4,8 +4,8 @@ describe('to error assertion', () => {
     describe('with the "not" flag', () => {
       it('should indicate that the function threw', () => {
         expect(
-          function() {
-            expect(function() {
+          function () {
+            expect(function () {
               throw new Error('yikes');
             }, 'not to error');
           },
@@ -47,8 +47,8 @@ describe('to error assertion', () => {
 
   it('should fail if the function returns a fulfilled promise', () => {
     expect(
-      function() {
-        expect(function() {
+      function () {
+        expect(function () {
           return expect.promise.resolve(123);
         }, 'to error');
       },
@@ -63,8 +63,8 @@ describe('to error assertion', () => {
 
   it('should fail if the function does not throw and does not return a promise', () => {
     expect(
-      function() {
-        expect(function() {}, 'to error');
+      function () {
+        expect(function () {}, 'to error');
       },
       'to throw',
       'expected function () {} to error'
@@ -73,7 +73,7 @@ describe('to error assertion', () => {
 
   it('should allow matching the message of an UnexpectedError against a regexp', () => {
     expect(
-      function() {
+      function () {
         expect(123, 'to equal', 456);
       },
       'to error',
@@ -84,10 +84,10 @@ describe('to error assertion', () => {
   describe('without the not flag', () => {
     it('should use the stack of the rejection reason when failing', () => {
       return expect(
-        function() {
+        function () {
           return expect(
-            function() {
-              return expect.promise(function() {
+            function () {
+              return expect.promise(function () {
                 (function thisIsImportant() {
                   throw new Error('argh');
                 })();
@@ -98,7 +98,7 @@ describe('to error assertion', () => {
           );
         },
         'to error',
-        expect.it(function(err) {
+        expect.it(function (err) {
           expect(err.stack, 'to match', /thisIsImportant/);
         })
       );
@@ -107,10 +107,10 @@ describe('to error assertion', () => {
     describe('with another promise library', () => {
       it('should use the stack of the rejection reason when failing', () => {
         return expect(
-          function() {
+          function () {
             return expect(
-              function() {
-                return new Promise(function(resolve, reject) {
+              function () {
+                return new Promise(function (resolve, reject) {
                   (function thisIsImportant() {
                     throw new Error('argh');
                   })();
@@ -121,7 +121,7 @@ describe('to error assertion', () => {
             );
           },
           'to error',
-          expect.it(function(err) {
+          expect.it(function (err) {
             expect(err.stack, 'to match', /thisIsImportant/);
           })
         );
@@ -132,9 +132,9 @@ describe('to error assertion', () => {
   describe('with the not flag', () => {
     it('should use the stack of the rejection reason when failing', () => {
       return expect(
-        function() {
-          return expect(function() {
-            return expect.promise(function() {
+        function () {
+          return expect(function () {
+            return expect.promise(function () {
               (function thisIsImportant() {
                 throw new Error('argh');
               })();
@@ -142,7 +142,7 @@ describe('to error assertion', () => {
           }, 'not to error');
         },
         'to error',
-        expect.it(function(err) {
+        expect.it(function (err) {
           expect(err.stack, 'to match', /thisIsImportant/);
         })
       );
@@ -151,9 +151,9 @@ describe('to error assertion', () => {
     describe('with another promise library', () => {
       it('should use the stack of the rejection reason when failing', () => {
         return expect(
-          function() {
-            return expect(function() {
-              return new Promise(function(resolve, reject) {
+          function () {
+            return expect(function () {
+              return new Promise(function (resolve, reject) {
                 (function thisIsImportant() {
                   throw new Error('argh');
                 })();
@@ -161,7 +161,7 @@ describe('to error assertion', () => {
             }, 'not to error');
           },
           'to error',
-          expect.it(function(err) {
+          expect.it(function (err) {
             expect(err.stack, 'to match', /thisIsImportant/);
           })
         );

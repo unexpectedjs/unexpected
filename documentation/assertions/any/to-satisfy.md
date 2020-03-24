@@ -13,7 +13,7 @@ To disallow additional properties in the subject, use `to exhaustively satisfy`:
 
 ```js
 expect({ hey: { there: true } }, 'to exhaustively satisfy', {
-  hey: { there: true }
+  hey: { there: true },
 });
 ```
 
@@ -53,7 +53,7 @@ are themselves compared using `to satisfy` semantics:
 
 ```js
 expect([{ greeting: true }, { hey: { there: true } }], 'to satisfy', {
-  1: { hey: { there: true } }
+  1: { hey: { there: true } },
 });
 ```
 
@@ -104,7 +104,7 @@ expect({ foo: 123, bar: 'bar', baz: 'bogus', qux: 42 }, 'to satisfy', {
     .it('to be a string')
     .and('not to be empty')
     .or('to be a number')
-    .and('to be positive')
+    .and('to be positive'),
 });
 ```
 
@@ -118,7 +118,7 @@ expect({ foo: 9, bar: 'bar', baz: 'bogus', qux: 42 }, 'to satisfy', {
     .it('to be a string')
     .and('not to be empty')
     .or('to be a number')
-    .and('to be positive')
+    .and('to be positive'),
 });
 ```
 

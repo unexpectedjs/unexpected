@@ -13,12 +13,12 @@ repository: https://github.com/unexpectedjs/unexpected
 const library = {
   name: 'un3xp3c73d',
   created: 2013,
-  site: 'https://unexpected.js.org'
+  site: 'https://unexpected.js.org',
 };
 
 expect(library, 'to satisfy', {
   name: 'Unexpected',
-  created: 2013
+  created: 2013,
 });
 ```
 
@@ -100,11 +100,11 @@ Include the library with RequireJS the following way:
 ```js
 require.config({
   paths: {
-    unexpected: 'path/to/unexpected'
-  }
+    unexpected: 'path/to/unexpected',
+  },
 });
 
-define(['unexpected'], function(expect) {
+define(['unexpected'], function (expect) {
   // Your code
 });
 ```
@@ -131,13 +131,13 @@ Our test file would look like this:
 <!-- unexpected-markdown evaluate:false -->
 
 ```js
-describe('math.js', function() {
-  describe('add', function() {
-    it('is a function', function() {
+describe('math.js', function () {
+  describe('add', function () {
+    it('is a function', function () {
       expect(add, 'to be a', 'function');
     });
 
-    it('adds numbers', function() {
+    it('adds numbers', function () {
       expect(add(1, 3), 'to be', 4);
     });
   });

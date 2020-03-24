@@ -5,7 +5,7 @@ function somethingThatThrows() {
   throw new Error('The error message');
 }
 
-expect(function() {
+expect(function () {
   somethingThatThrows();
 }, 'to throw');
 ```
@@ -17,7 +17,7 @@ function willNotThrow() {
   // ...
 }
 
-expect(function() {
+expect(function () {
   willNotThrow();
 }, 'to throw');
 ```
@@ -44,7 +44,7 @@ assert the thrown error has that message.
 
 ```js
 expect(
-  function() {
+  function () {
     throw new Error('The error message');
   },
   'to throw',
@@ -56,7 +56,7 @@ In case of a failing expectation you get the following output:
 
 ```js
 expect(
-  function() {
+  function () {
     throw new Error('The error message!');
   },
   'to throw',
@@ -81,7 +81,7 @@ assert the error message matches the given regular expression.
 
 ```js
 expect(
-  function() {
+  function () {
     throw new Error('The error message');
   },
   'to throw',
@@ -93,7 +93,7 @@ In case of a failing expectation you get the following output:
 
 ```js
 expect(
-  function() {
+  function () {
     throw new Error('The error message!');
   },
   'to throw',
@@ -114,7 +114,7 @@ That can also just supply an error object to validate against:
 
 ```js
 expect(
-  function() {
+  function () {
     throw new TypeError('Invalid syntax');
   },
   'to throw',
@@ -126,7 +126,7 @@ In case of a failing expectation you get the following output:
 
 ```js
 expect(
-  function() {
+  function () {
     throw new Error('Another error');
   },
   'to throw',
@@ -144,7 +144,7 @@ to throw TypeError('Invalid syntax')
 ```
 
 ```js
-expect(function() {
+expect(function () {
   // Do some work that should not throw
 }, 'not to throw');
 ```
@@ -152,7 +152,7 @@ expect(function() {
 In case of a failing expectation you get the following output:
 
 ```js
-expect(function() {
+expect(function () {
   throw new Error('threw anyway');
 }, 'not to throw');
 ```
@@ -172,7 +172,7 @@ the returned promise, so you can do further assertions like this:
 <!-- unexpected-markdown async:true -->
 
 ```js
-return expect(somethingThatThrows, 'to throw').then(function(err) {
+return expect(somethingThatThrows, 'to throw').then(function (err) {
   expect(err, 'to have message', /\bmessage/);
 });
 ```
@@ -185,7 +185,7 @@ function willThrow(input) {
   return input;
 }
 expect(
-  function() {
+  function () {
     willThrow('input.here');
   },
   'to throw',

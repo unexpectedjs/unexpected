@@ -35,7 +35,7 @@ expect({ one: 1, two: 2, four: 4, five: 5 }, 'to equal', {
   one: 1,
   two: 2,
   three: 3,
-  four: 4
+  four: 4,
 });
 ```
 

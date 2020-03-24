@@ -5,7 +5,7 @@ describe('clone', () => {
     clonedExpect = expect.clone();
     clonedExpect.addAssertion(
       '<any> [not] to be the answer to the Ultimate Question of Life, the Universe, and Everything',
-      function(expect, subject) {
+      function (expect, subject) {
         expect(subject, '[not] to equal', 42);
       }
     );
@@ -30,7 +30,7 @@ describe('clone', () => {
       'not to be the answer to the Ultimate Question of Life, the Universe, and Everything'
     );
 
-    expect(function() {
+    expect(function () {
       clonedExpect(
         41,
         'to be the answer to the Ultimate Question of Life, the Universe, and Everything'
@@ -41,7 +41,7 @@ describe('clone', () => {
   describe('when the assertion does not exist', () => {
     it('it suggests a similarly named assertion', () => {
       expect(
-        function() {
+        function () {
           clonedExpect(null, 'to bee', null);
         },
         'to throw',
@@ -49,7 +49,7 @@ describe('clone', () => {
       );
 
       expect(
-        function() {
+        function () {
           clonedExpect(
             1,
             'to be the answer to the ultimate question of life, the universe, and everything'
@@ -62,7 +62,7 @@ describe('clone', () => {
 
     describe('but exists for another type', () => {
       it('explains that in the error message', () => {
-        clonedExpect.addAssertion('<array> to foobarquux', function(
+        clonedExpect.addAssertion('<array> to foobarquux', function (
           expect,
           subject
         ) {
@@ -70,7 +70,7 @@ describe('clone', () => {
         });
         clonedExpect(['foobarquux'], 'to foobarquux');
         expect(
-          function() {
+          function () {
             clonedExpect('foobarquux', 'to foobarquux');
           },
           'to throw',
@@ -84,14 +84,14 @@ describe('clone', () => {
 
       it('prefers to suggest a similarly named assertion defined for the correct type over an exact match defined for other types', () => {
         clonedExpect
-          .addAssertion('<array> to foo', function(expect, subject) {
+          .addAssertion('<array> to foo', function (expect, subject) {
             expect(subject, 'to equal', ['foo']);
           })
-          .addAssertion('<string> to fooo', function(expect, subject) {
+          .addAssertion('<string> to fooo', function (expect, subject) {
             expect(subject, 'to equal', 'fooo');
           });
         expect(
-          function() {
+          function () {
             clonedExpect(['fooo'], 'to fooo');
           },
           'to throw',
@@ -102,11 +102,11 @@ describe('clone', () => {
             '    <string> to fooo'
         );
 
-        clonedExpect.addAssertion('<null> to fooo', function(expect, subject) {
+        clonedExpect.addAssertion('<null> to fooo', function (expect, subject) {
           expect(subject.message, 'to equal', 'fooo');
         });
         expect(
-          function() {
+          function () {
             clonedExpect(['fooo'], 'to fooo');
           },
           'to throw',
@@ -126,28 +126,28 @@ describe('clone', () => {
             base: 'string',
             identify(obj) {
               return /^a/.test(obj);
-            }
+            },
           })
           .addType({
             name: 'myMoreSpecificType',
             base: 'myType',
             identify(obj) {
               return /^aa/.test(obj);
-            }
+            },
           })
           .addType({
             name: 'myMostSpecificType',
             base: 'myMoreSpecificType',
             identify(obj) {
               return /^aaa/.test(obj);
-            }
+            },
           })
-          .addAssertion('<myType> to fooa', function() {})
-          .addAssertion('<myMoreSpecificType> to foob', function() {})
-          .addAssertion('<myMostSpecificType> to fooc', function() {});
+          .addAssertion('<myType> to fooa', function () {})
+          .addAssertion('<myMoreSpecificType> to foob', function () {})
+          .addAssertion('<myMostSpecificType> to fooc', function () {});
 
         expect(
-          function() {
+          function () {
             clonedExpect('a', 'to fooo');
           },
           'to throw',
@@ -155,7 +155,7 @@ describe('clone', () => {
         );
 
         expect(
-          function() {
+          function () {
             clonedExpect('aa', 'to fooo');
           },
           'to throw',
@@ -163,7 +163,7 @@ describe('clone', () => {
         );
 
         expect(
-          function() {
+          function () {
             clonedExpect('aaa', 'to fooo');
           },
           'to throw',
@@ -171,7 +171,7 @@ describe('clone', () => {
         );
 
         expect(
-          function() {
+          function () {
             clonedExpect('aaa', 'to fooaq');
           },
           'to throw',

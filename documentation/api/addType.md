@@ -61,9 +61,9 @@ inherit from the built-in `object` type. Furthermore we add an
 expect.addType({
   name: 'Person',
   base: 'object',
-  identify: function(value) {
+  identify: function (value) {
     return value instanceof Person;
-  }
+  },
 });
 ```
 
@@ -100,17 +100,17 @@ constructor. We can fix that by implementing an `inspect` method on the type.
 expect.addType({
   name: 'Person',
   base: 'object',
-  identify: function(value) {
+  identify: function (value) {
     return value instanceof Person;
   },
-  inspect: function(person, depth, output, inspect) {
+  inspect: function (person, depth, output, inspect) {
     output
       .text('new Person(')
       .append(inspect(person.name, depth))
       .text(', ')
       .append(inspect(person.age, depth))
       .text(')');
-  }
+  },
 });
 ```
 
@@ -156,10 +156,10 @@ age. Then we need to override the `equal` method:
 expect.addType({
   name: 'Person',
   base: 'object',
-  identify: function(value) {
+  identify: function (value) {
     return value instanceof Person;
   },
-  inspect: function(person, depth, output, inspect) {
+  inspect: function (person, depth, output, inspect) {
     output
       .text('new Person(')
       .append(inspect(person.name, depth))
@@ -167,9 +167,9 @@ expect.addType({
       .append(inspect(person.age, depth))
       .text(')');
   },
-  equal: function(a, b, equal) {
+  equal: function (a, b, equal) {
     return a === b || equal(a.name, b.name);
-  }
+  },
 });
 ```
 
@@ -183,10 +183,10 @@ following way:
 expect.addType({
   name: 'Person',
   base: 'object',
-  identify: function(value) {
+  identify: function (value) {
     return value instanceof Person;
   },
-  inspect: function(person, depth, output, inspect) {
+  inspect: function (person, depth, output, inspect) {
     output
       .text('new Person(')
       .append(inspect(person.name, depth))
@@ -194,16 +194,16 @@ expect.addType({
       .append(inspect(person.age, depth))
       .text(')');
   },
-  equal: function(a, b, equal) {
+  equal: function (a, b, equal) {
     return a === b || equal(a.name, b.name);
   },
-  diff: function(actual, expected, output, diff, inspect) {
+  diff: function (actual, expected, output, diff, inspect) {
     return this.baseType.diff(
       { name: actual.name },
       { name: expected.name },
       output
     );
-  }
+  },
 });
 ```
 
@@ -239,10 +239,10 @@ var inlineDiff = true; // used to change inlining in a later example
 expect.addType({
   name: 'Person',
   base: 'object',
-  identify: function(value) {
+  identify: function (value) {
     return value instanceof Person;
   },
-  inspect: function(person, depth, output, inspect) {
+  inspect: function (person, depth, output, inspect) {
     output
       .text('new Person(')
       .append(inspect(person.name, depth))
@@ -250,17 +250,14 @@ expect.addType({
       .append(inspect(person.age, depth))
       .text(')');
   },
-  equal: function(a, b, equal) {
+  equal: function (a, b, equal) {
     return a === b || equal(a.name, b.name);
   },
-  diff: function(actual, expected, output, diff, inspect) {
+  diff: function (actual, expected, output, diff, inspect) {
     output.inline = inlineDiff;
     var nameDiff = diff(actual.name, expected.name);
 
-    output
-      .text('new Person(')
-      .nl()
-      .indentLines();
+    output.text('new Person(').nl().indentLines();
 
     if (nameDiff && nameDiff.inline) {
       output.append(nameDiff);
@@ -270,7 +267,7 @@ expect.addType({
         .append(inspect(actual.name))
         .text(',')
         .sp()
-        .annotationBlock(function() {
+        .annotationBlock(function () {
           this.error('should be ').append(inspect(expected.name));
           if (nameDiff) {
             this.nl().append(nameDiff);
@@ -279,15 +276,10 @@ expect.addType({
         .nl();
     }
 
-    output
-      .i()
-      .append(inspect(actual.age))
-      .outdentLines()
-      .nl()
-      .text(')');
+    output.i().append(inspect(actual.age)).outdentLines().nl().text(')');
 
     return output;
-  }
+  },
 });
 ```
 
@@ -323,12 +315,12 @@ inlineDiff = true;
 expect(
   {
     JohnDoe: new Person('John Doe', 42),
-    JaneDoe: new Person('Janie Doe', 24)
+    JaneDoe: new Person('Janie Doe', 24),
   },
   'to equal',
   {
     JohnDoe: new Person('John Doe', 42),
-    JaneDoe: new Person('Jane Doe', 24)
+    JaneDoe: new Person('Jane Doe', 24),
   }
 );
 ```
@@ -361,12 +353,12 @@ inlineDiff = false;
 expect(
   {
     JohnDoe: new Person('John Doe', 42),
-    JaneDoe: new Person('Janie Doe', 24)
+    JaneDoe: new Person('Janie Doe', 24),
   },
   'to equal',
   {
     JohnDoe: new Person('John Doe', 42),
-    JaneDoe: new Person('Jane Doe', 24)
+    JaneDoe: new Person('Jane Doe', 24),
   }
 );
 ```
@@ -401,7 +393,7 @@ it. These assertions will only work on this type or types inheriting
 from the type.
 
 ```js
-expect.addAssertion('<Person> to be above legal age', function(
+expect.addAssertion('<Person> to be above legal age', function (
   expect,
   subject
 ) {
@@ -418,7 +410,7 @@ defined for `object` or any of its ancestors. Here is an example:
 expect(new Person('Jane Doe', 24), 'to have keys', 'name', 'age');
 expect(new Person('Jane Doe', 24), 'to satisfy', {
   name: expect.it('to be a string').and('not to be empty'),
-  age: expect.it('to be a number').and('not to be negative')
+  age: expect.it('to be a number').and('not to be negative'),
 });
 ```
 

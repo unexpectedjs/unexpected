@@ -17,17 +17,17 @@ describe('to satisfy assertion', () => {
 
     it('should succeed when the assertion fails without the not flag, async case', () => {
       return expect({ foo: 123 }, 'not to satisfy', {
-        foo: expect.it('when delayed a little bit', 'to equal', 456)
+        foo: expect.it('when delayed a little bit', 'to equal', 456),
       });
     });
 
     it('should fail when a non-Unexpected error occurs', () => {
       expect(
-        function() {
+        function () {
           expect(
             { foo: 123 },
             'not to satisfy',
-            expect.it(function() {
+            expect.it(function () {
               throw new Error('foo');
             })
           );
@@ -39,7 +39,7 @@ describe('to satisfy assertion', () => {
 
     it('should fail when the assertion succeeds', () => {
       expect(
-        function() {
+        function () {
           expect({ foo: 123 }, 'not to satisfy', { foo: 123 });
         },
         'to throw',
@@ -55,7 +55,7 @@ describe('to satisfy assertion', () => {
 
     it('should fail', () => {
       expect(
-        function() {
+        function () {
           expect(['aa', 'bb', 'cc'], 'to satisfy', { 2: /quux/ });
         },
         'to throw',
@@ -73,7 +73,7 @@ describe('to satisfy assertion', () => {
   describe('with an object satisfied against an array', () => {
     it('should fail', () => {
       expect(
-        function() {
+        function () {
           expect({}, 'to satisfy', []);
         },
         'to throw',
@@ -84,7 +84,7 @@ describe('to satisfy assertion', () => {
     describe('when the array is nested inside an object', () => {
       it('should fail', () => {
         expect(
-          function() {
+          function () {
             expect({ foo: {} }, 'to satisfy', { foo: [] });
           },
           'to throw',
@@ -101,7 +101,7 @@ describe('to satisfy assertion', () => {
   describe('with an array satisfied against an array', () => {
     it('should render missing number items nicely', () => {
       expect(
-        function() {
+        function () {
           expect([], 'to satisfy', [1, 2]);
         },
         'to throw',
@@ -116,7 +116,7 @@ describe('to satisfy assertion', () => {
 
     it('should render missing object items nicely', () => {
       expect(
-        function() {
+        function () {
           expect([], 'to satisfy', [{ foo: true }, { baz: false }]);
         },
         'to throw',
@@ -132,7 +132,7 @@ describe('to satisfy assertion', () => {
     it('should render missing custom items nicely', () => {
       var clonedExpect = expect.clone();
 
-      clonedExpect.addStyle('xuuqProperty', function(key, inspectedValue) {
+      clonedExpect.addStyle('xuuqProperty', function (key, inspectedValue) {
         this.text('<')
           .appendInspected(key)
           .text('> --> ')
@@ -142,19 +142,19 @@ describe('to satisfy assertion', () => {
       clonedExpect.addType({
         name: 'xuuq',
         base: 'object',
-        identify: function(obj) {
+        identify: function (obj) {
           return obj && typeof 'object' && obj.quux === 'xuuq';
         },
-        property: function(output, key, inspectedValue) {
+        property: function (output, key, inspectedValue) {
           return output.xuuqProperty(key, inspectedValue);
-        }
+        },
       });
 
       expect(
-        function() {
+        function () {
           clonedExpect([], 'to satisfy', [
             { quux: 'xuuq', foo: true },
-            { quux: 'xuuq', baz: false }
+            { quux: 'xuuq', baz: false },
           ]);
         },
         'to throw',
@@ -173,7 +173,7 @@ describe('to satisfy assertion', () => {
 
     it('should fall back to comparing index-by-index if one of the arrays has more than 10 entries', () => {
       expect(
-        function() {
+        function () {
           expect([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 'to satisfy', [
             0,
             2,
@@ -183,7 +183,7 @@ describe('to satisfy assertion', () => {
             6,
             7,
             8,
-            9
+            9,
           ]);
         },
         'to throw',
@@ -206,7 +206,7 @@ describe('to satisfy assertion', () => {
       );
 
       expect(
-        function() {
+        function () {
           expect([1, 2, 3, 4, 5, 6, 7, 8], 'to satisfy', [
             1,
             2,
@@ -218,7 +218,7 @@ describe('to satisfy assertion', () => {
             8,
             9,
             10,
-            11
+            11,
           ]);
         },
         'to throw',
@@ -244,11 +244,11 @@ describe('to satisfy assertion', () => {
     describe('with sync expect.it entries in the value', () => {
       it('should render missing entries', () => {
         expect(
-          function() {
+          function () {
             expect([1, 2], 'to satisfy', [
               expect.it('to be a number'),
               2,
-              expect.it('to be a string')
+              expect.it('to be a string'),
             ]);
           },
           'to throw',
@@ -265,7 +265,7 @@ describe('to satisfy assertion', () => {
 
       it('should render moved entries', () => {
         return expect(
-          function() {
+          function () {
             expect(['a', 'b'], 'to satisfy', [expect.it('to equal', 'b')]);
           },
           'to throw',
@@ -280,7 +280,7 @@ describe('to satisfy assertion', () => {
 
       it('should render entries that do not satisfy the RHS entry', () => {
         return expect(
-          function() {
+          function () {
             expect(['a', 'b'], 'to satisfy', ['e', expect.it('to equal', 'c')]);
           },
           'to throw',
@@ -301,7 +301,7 @@ describe('to satisfy assertion', () => {
 
       it('should render extraneous entries', () => {
         expect(
-          function() {
+          function () {
             expect([1, 2, 3], 'to satisfy', [1, 2]);
           },
           'to throw',
@@ -319,11 +319,11 @@ describe('to satisfy assertion', () => {
     describe('with async expect.it entries in the value', () => {
       it('should render missing entries', () => {
         return expect(
-          function() {
+          function () {
             return expect([1, 2], 'to satisfy', [
               expect.it('when delayed a little bit', 'to be a number'),
               2,
-              expect.it('when delayed a little bit', 'to be a string')
+              expect.it('when delayed a little bit', 'to be a string'),
             ]);
           },
           'to error',
@@ -344,7 +344,7 @@ describe('to satisfy assertion', () => {
 
       it('should render unsatisfied entries', () => {
         return expect(
-          function() {
+          function () {
             return expect([1, 2, 3, 4, 5, 6], 'to satisfy', [
               expect.it('when delayed a little bit', 'to be a number'),
               2,
@@ -354,7 +354,7 @@ describe('to satisfy assertion', () => {
                 'when delayed a little bit',
                 'to be a regular expression'
               ),
-              expect.it('when delayed a little bit', 'to be a function')
+              expect.it('when delayed a little bit', 'to be a function'),
             ]);
           },
           'to error',
@@ -381,9 +381,9 @@ describe('to satisfy assertion', () => {
 
       it('should render moved entries', () => {
         return expect(
-          function() {
+          function () {
             return expect(['a', 'b'], 'to satisfy', [
-              expect.it('when delayed a little bit', 'to equal', 'b')
+              expect.it('when delayed a little bit', 'to equal', 'b'),
             ]);
           },
           'to error',
@@ -399,10 +399,10 @@ describe('to satisfy assertion', () => {
 
       it('should render entries that do not satisfy the RHS entry', () => {
         return expect(
-          function() {
+          function () {
             return expect(['a', 'b'], 'to satisfy', [
               'a',
-              expect.it('when delayed a little bit', 'to equal', 'c')
+              expect.it('when delayed a little bit', 'to equal', 'c'),
             ]);
           },
           'to error',
@@ -421,10 +421,10 @@ describe('to satisfy assertion', () => {
 
       it('should render extraneous entries', () => {
         return expect(
-          function() {
+          function () {
             return expect([1, 2, 3], 'to satisfy', [
               expect.it('when delayed a little bit', 'to be a number'),
-              2
+              2,
             ]);
           },
           'to error',
@@ -444,7 +444,7 @@ describe('to satisfy assertion', () => {
   describe('with an array satisfied against an object', () => {
     it('should render missing items nicely', () => {
       expect(
-        function() {
+        function () {
           expect([], 'to satisfy', { 0: 1, 1: 2 });
         },
         'to throw',
@@ -473,14 +473,14 @@ describe('to satisfy assertion', () => {
         },
         getKeys() {
           return ['a', 'b'];
-        }
+        },
       });
 
       expect(
-        function() {
+        function () {
           clonedExpect(new MyThing(123, 456), 'to exhaustively satisfy', {
             a: 123,
-            b: 654
+            b: 654,
           });
         },
         'to throw',
@@ -496,7 +496,7 @@ describe('to satisfy assertion', () => {
 
   it('renders missing properties correctly', () => {
     expect(
-      function() {
+      function () {
         expect({ foo: 'bar' }, 'to satisfy', { foo: 'bar', baz: 123 });
       },
       'to throw',
@@ -512,7 +512,7 @@ describe('to satisfy assertion', () => {
   it('should render a diff where missing properties expected to be missing are not rendered', () => {
     // Regression test, used to be shown as:  shown as // missing: <property name>: undefined
     expect(
-      function() {
+      function () {
         expect({ bar: 123 }, 'to satisfy', { foo: undefined, bar: 456 });
       },
       'to throw',
@@ -528,7 +528,7 @@ describe('to satisfy assertion', () => {
     var error = new Error('foo');
     error.description = 'qux';
     expect(
-      function() {
+      function () {
         expect(error, 'to satisfy', new Error('bar'));
       },
       'to throw',
@@ -545,10 +545,10 @@ describe('to satisfy assertion', () => {
 
   it('renders missing properties correctly with expect.it', () => {
     expect(
-      function() {
+      function () {
         expect({ foo: 'bar' }, 'to satisfy', {
           foo: 'bar',
-          baz: expect.it('to equal', 123)
+          baz: expect.it('to equal', 123),
         });
       },
       'to throw',
@@ -568,7 +568,7 @@ describe('to satisfy assertion', () => {
 
     it('should fail with a diff', () => {
       expect(
-        function() {
+        function () {
           expect('foo', 'to satisfy assertion', 'to equal', 'bar');
         },
         'to throw',
@@ -579,13 +579,13 @@ describe('to satisfy assertion', () => {
     describe('and the exhaustively flag', () => {
       it('should succeed', () => {
         expect({ foo: 123 }, 'to exhaustively satisfy assertion', 'to equal', {
-          foo: 123
+          foo: 123,
         });
       });
 
       it('should fail with a diff', () => {
         expect(
-          function() {
+          function () {
             expect(
               { foo: 123 },
               'to exhaustively satisfy assertion',
@@ -606,13 +606,13 @@ describe('to satisfy assertion', () => {
 
   it('forwards normal errors to the top-level', () => {
     expect(
-      function() {
+      function () {
         expect(
           {
-            foo: 'foo'
+            foo: 'foo',
           },
           'to satisfy',
-          expect.it(function(value) {
+          expect.it(function (value) {
             throw new Error('Custom error');
           })
         );
@@ -625,21 +625,21 @@ describe('to satisfy assertion', () => {
   it('forwards normal errors found in promise aggregate errors to the top level', () => {
     var clonedExpect = expect
       .clone()
-      .addAssertion('<any> to foo', function(expect, subject) {
+      .addAssertion('<any> to foo', function (expect, subject) {
         var promises = [
-          clonedExpect.promise(function() {
+          clonedExpect.promise(function () {
             clonedExpect('foo', 'to equal', 'bar');
           }),
-          clonedExpect.promise(function() {
+          clonedExpect.promise(function () {
             return clonedExpect.promise.any([
-              clonedExpect.promise(function() {
+              clonedExpect.promise(function () {
                 clonedExpect('foo', 'to equal', 'bar');
               }),
-              clonedExpect.promise(function() {
+              clonedExpect.promise(function () {
                 throw new Error('wat');
-              })
+              }),
             ]);
-          })
+          }),
         ];
         return expect.promise.all(promises).caught(() => {
           return clonedExpect.promise.settle(promises);
@@ -647,7 +647,7 @@ describe('to satisfy assertion', () => {
       });
 
     expect(
-      function() {
+      function () {
         return clonedExpect('foo', 'to foo');
       },
       'to throw',
@@ -662,7 +662,7 @@ describe('to satisfy assertion', () => {
 
     it('should fail when the regular expressions have different sets of flags', () => {
       expect(
-        function() {
+        function () {
           expect(/wat/im, 'to satisfy', /wat/gi);
         },
         'to throw',
@@ -675,7 +675,7 @@ describe('to satisfy assertion', () => {
 
     it('should fail when the regular expressions have different patterns', () => {
       expect(
-        function() {
+        function () {
           expect(/foo/i, 'to satisfy', /bar/i);
         },
         'to throw',
@@ -687,7 +687,7 @@ describe('to satisfy assertion', () => {
   describe('with a expect.it function wrapper', () => {
     it("succeeds if the function doesn't throw", () => {
       expect({ foo: 'bar' }, 'to satisfy', {
-        foo: expect.it(v => expect(v, 'to be a string'))
+        foo: expect.it((v) => expect(v, 'to be a string')),
       });
     });
 
@@ -695,9 +695,9 @@ describe('to satisfy assertion', () => {
       expect(
         () => {
           expect({ foo: 3 }, 'to satisfy', {
-            foo: expect.it(function(v) {
+            foo: expect.it(function (v) {
               expect(v, 'to equal', 2);
-            })
+            }),
           });
         },
         'to throw',
@@ -714,9 +714,9 @@ describe('to satisfy assertion', () => {
       expect(
         () => {
           expect({ foo: { bar: 'baz' } }, 'to satisfy', {
-            foo: expect.it(function(v) {
+            foo: expect.it(function (v) {
               expect(v, 'to equal', { bar: 'qux' });
-            })
+            }),
           });
         },
         'to throw',
@@ -746,10 +746,10 @@ describe('to satisfy assertion', () => {
             'when delayed a little bit',
             'to satisfy',
             {
-              foo: expect.it(function(v) {
+              foo: expect.it(function (v) {
                 expect(v, 'to equal', { bar: 'qux' });
               }),
-              number: expect.it('when delayed a little bit', 'to equal', 987)
+              number: expect.it('when delayed a little bit', 'to equal', 987),
             }
           ),
         'to error',
@@ -776,13 +776,13 @@ describe('to satisfy assertion', () => {
   describe('with a synchronous expect.it in the RHS object', () => {
     it('should support an object with a property value of expect.it', () => {
       expect({ foo: 'bar' }, 'to satisfy', {
-        foo: expect.it('to be a string')
+        foo: expect.it('to be a string'),
       });
     });
 
     it('should support passing an array value to an expect.it', () => {
       expect({ foo: [123] }, 'to satisfy', {
-        foo: expect.it('to have items satisfying', 'to be a number')
+        foo: expect.it('to have items satisfying', 'to be a number'),
       });
     });
 
@@ -791,11 +791,11 @@ describe('to satisfy assertion', () => {
         {
           foo() {
             throw new Error('Explosion');
-          }
+          },
         },
         'to satisfy',
         {
-          foo: expect.it('to be a function')
+          foo: expect.it('to be a function'),
         }
       );
     });
@@ -826,7 +826,7 @@ describe('to satisfy assertion', () => {
 
     it('should fail with an or group where both assertions fail', () => {
       expect(
-        function() {
+        function () {
           expect(3, 'to satisfy', expect.it('to equal', 2).or('to equal', 1));
         },
         'to throw',
@@ -843,7 +843,7 @@ describe('to satisfy assertion', () => {
   describe('with an asynchronous expect.it in the RHS object', () => {
     it('should support an object with a property value of expect.it', () => {
       return expect({ foo: 'bar' }, 'to satisfy', {
-        foo: expect.it('when delayed a little bit', 'to be a string')
+        foo: expect.it('when delayed a little bit', 'to be a string'),
       });
     });
 
@@ -853,7 +853,7 @@ describe('to satisfy assertion', () => {
           'when delayed a little bit',
           'to have items satisfying',
           'to be a number'
-        )
+        ),
       });
     });
 
@@ -974,7 +974,7 @@ describe('to satisfy assertion', () => {
       },
       inspect(obj, depth, output) {
         output.text('Foo', 'green');
-      }
+      },
     });
 
     clonedExpect.addAssertion(
@@ -982,7 +982,7 @@ describe('to satisfy assertion', () => {
       (expect, subject, value) => {
         return expect.withError(
           () => expect(subject.thing, 'to satisfy', value.thing),
-          err => {
+          (err) => {
             expect.fail({
               diff: (output, diff, inspect, equal) => {
                 output.text('-- custom diff --', 'yellow').nl(2);
@@ -993,7 +993,7 @@ describe('to satisfy assertion', () => {
                 }
 
                 return output;
-              }
+              },
             });
           }
         );
@@ -1005,8 +1005,8 @@ describe('to satisfy assertion', () => {
         () =>
           clonedExpect(new Foo({ foo: 123 }), 'to satisfy', {
             thing: expect.it('when delayed a little bit', 'to equal', {
-              foo: 787
-            })
+              foo: 787,
+            }),
           }),
         'to error',
         'expected Foo\n' +
@@ -1024,7 +1024,7 @@ describe('to satisfy assertion', () => {
 
   it('should support diffs in the error report', () => {
     expect(
-      function() {
+      function () {
         expect(
           'foo',
           'to satisfy',
@@ -1049,7 +1049,7 @@ describe('to satisfy assertion', () => {
 
   it('should support expect.it at the first level', () => {
     expect(
-      function() {
+      function () {
         expect('bar', 'to satisfy', expect.it('to be a number'));
       },
       'to throw',
@@ -1061,13 +1061,13 @@ describe('to satisfy assertion', () => {
 
   it('should support regular expressions in the RHS object', () => {
     expect({ foo: 'bar' }, 'to satisfy', {
-      foo: /ba/
+      foo: /ba/,
     });
 
     expect(
-      function() {
+      function () {
         expect({ foo: 'foo' }, 'to satisfy', {
-          foo: /f00/
+          foo: /f00/,
         });
       },
       'to throw',
@@ -1079,9 +1079,9 @@ describe('to satisfy assertion', () => {
     );
 
     expect(
-      function() {
+      function () {
         expect({ foo: 'foo' }, 'to satisfy', {
-          foo: expect.it('not to match', /oo/)
+          foo: expect.it('not to match', /oo/),
         });
       },
       'to throw',
@@ -1098,7 +1098,7 @@ describe('to satisfy assertion', () => {
 
   it('should support expect.it in an array', () => {
     expect({ foo: [123] }, 'to satisfy', {
-      foo: [expect.it('to be a number')]
+      foo: [expect.it('to be a number')],
     });
   });
 
@@ -1121,7 +1121,7 @@ describe('to satisfy assertion', () => {
       expect(
         { foo: 123 },
         'to satisfy',
-        expect.it(function(obj) {
+        expect.it(function (obj) {
           expect(obj.foo, 'to equal', 123);
         })
       );
@@ -1134,7 +1134,7 @@ describe('to satisfy assertion', () => {
           return (
             typeof obj === 'function' && obj.toString().match(/^function\s*f/)
           );
-        }
+        },
       });
 
       function foo() {
@@ -1153,7 +1153,7 @@ describe('to satisfy assertion', () => {
 
     it('should support satisfying against a primitive', () => {
       expect(
-        function() {
+        function () {
           expect(new Error('foo'), 'to satisfy', 123);
         },
         'to throw',
@@ -1169,7 +1169,7 @@ describe('to satisfy assertion', () => {
 
     it('should not consider errors with different constructors to satisfy each other, even if all properties are identical', () => {
       expect(
-        function() {
+        function () {
           expect(new Error('foo'), 'to satisfy', new TypeError('foo'));
         },
         'to throw',
@@ -1191,7 +1191,7 @@ describe('to satisfy assertion', () => {
           var err = new Error('foo');
           err.bar = 123;
           expect(
-            function() {
+            function () {
               expect(err, 'to exhaustively satisfy', { message: 'foo' });
             },
             'to throw',
@@ -1209,7 +1209,7 @@ describe('to satisfy assertion', () => {
           var error = new Error('foobar');
           error.data = { foo: 'bar' };
           expect(
-            function() {
+            function () {
               expect(error, 'to exhaustively satisfy', new Error('foobar'));
             },
             'to throw',
@@ -1235,9 +1235,9 @@ describe('to satisfy assertion', () => {
       // Regression test for #380
       it('should display a proper error message when a missing key is satisfied against an expect.it', () => {
         expect(
-          function() {
+          function () {
             expect({}, 'to exhaustively satisfy', {
-              foo: expect.it('to be undefined')
+              foo: expect.it('to be undefined'),
             });
           },
           'to throw',
@@ -1259,7 +1259,7 @@ describe('to satisfy assertion', () => {
         expect(
           new Error('foo'),
           'to satisfy',
-          expect.it(function(err) {
+          expect.it(function (err) {
             expect(err, 'to be an', Error);
           })
         );
@@ -1267,11 +1267,11 @@ describe('to satisfy assertion', () => {
 
       it('fails when the function throws', () => {
         expect(
-          function() {
+          function () {
             expect(
               new Error('Custom message'),
               'to satisfy',
-              expect.it(function(err) {
+              expect.it(function (err) {
                 expect(err, 'to be a', TypeError);
               })
             );
@@ -1291,7 +1291,7 @@ describe('to satisfy assertion', () => {
 
       it('should fail with a binary diff when the assertion fails', () => {
         expect(
-          function() {
+          function () {
             expect(
               Buffer.from([1, 2, 3]),
               'to satisfy',
@@ -1317,7 +1317,7 @@ describe('to satisfy assertion', () => {
 
         it('should fail with a diff', () => {
           expect(
-            function() {
+            function () {
               expect(
                 Buffer.from('bar'),
                 'to satisfy',
@@ -1340,7 +1340,7 @@ describe('to satisfy assertion', () => {
         expect(
           Buffer.from('bar'),
           'to satisfy',
-          expect.it(function(buffer) {
+          expect.it(function (buffer) {
             expect(buffer, 'to have length', 3);
           })
         );
@@ -1397,7 +1397,7 @@ describe('to satisfy assertion', () => {
 
       it('fail with a binary diff when the assertion fails', () => {
         expect(
-          function() {
+          function () {
             expect(
               new Uint8Array([1, 2, 3]),
               'to satisfy',
@@ -1421,13 +1421,13 @@ describe('to satisfy assertion', () => {
         get() {
           return 'got me';
         },
-        enumerable: false
+        enumerable: false,
       });
 
       expect(subject, 'to satisfy', {
         nextLevel: {
-          getMe: 'got me'
-        }
+          getMe: 'got me',
+        },
       });
     });
   });
@@ -1435,9 +1435,9 @@ describe('to satisfy assertion', () => {
   describe('on array-like', () => {
     it('should diff correctly against an array on the right hand side', () => {
       expect(
-        function() {
+        function () {
           expect(toArguments({ foo: 'foo' }, 2, 3), 'to satisfy', [
-            { foo: 'f00' }
+            { foo: 'f00' },
           ]);
         },
         'to throw',
@@ -1460,7 +1460,7 @@ describe('to satisfy assertion', () => {
       function Greeter(folks) {
         this.push(...(folks || []));
 
-        this.greet = function(prefix) {
+        this.greet = function (prefix) {
           return prefix + this.join(' & ');
         };
       }
@@ -1471,7 +1471,7 @@ describe('to satisfy assertion', () => {
       clonedExpect.addType({
         name: 'Greeter',
         base: 'array-like',
-        identify: obj => obj instanceof Greeter
+        identify: (obj) => obj instanceof Greeter,
       });
 
       const expected = ['Alice', 'Bob'];
@@ -1489,7 +1489,7 @@ describe('to satisfy assertion', () => {
       function Greeter(folks) {
         this.push(...(folks || []));
 
-        this.greet = function(prefix) {
+        this.greet = function (prefix) {
           return prefix + this.join(' & ');
         };
       }
@@ -1500,8 +1500,8 @@ describe('to satisfy assertion', () => {
       clonedExpect.addType({
         name: 'Greeter',
         base: 'array-like',
-        identify: obj => obj instanceof Greeter,
-        numericalPropertiesOnly: false
+        identify: (obj) => obj instanceof Greeter,
+        numericalPropertiesOnly: false,
       });
 
       const expected = ['Alice', 'Bob'];
@@ -1523,7 +1523,7 @@ describe('to satisfy assertion', () => {
 
     it('should produce a diff when an undefined item in the subject is found at a position outside of the value array', () => {
       expect(
-        function() {
+        function () {
           expect([undefined], 'to satisfy', []);
         },
         'to throw',
@@ -1537,7 +1537,7 @@ describe('to satisfy assertion', () => {
 
     it('should produce a diff when the value has more items than the subject', () => {
       expect(
-        function() {
+        function () {
           expect([], 'to satisfy', [undefined]);
         },
         'to throw',
@@ -1551,7 +1551,7 @@ describe('to satisfy assertion', () => {
 
     it('should fail if the value does not include all the indices of the subject', () => {
       expect(
-        function() {
+        function () {
           expect([1, 2, 3], 'to satisfy', [1, 2]);
         },
         'to throw',
@@ -1567,7 +1567,7 @@ describe('to satisfy assertion', () => {
 
     it('should fail if the value includes more indices than the subject', () => {
       expect(
-        function() {
+        function () {
           expect([1, 2, 3], 'to satisfy', [1, 2, 3, 4]);
         },
         'to throw',
@@ -1591,14 +1591,14 @@ describe('to satisfy assertion', () => {
 
       const clonedExpect = expect.clone().addType({
         name: 'box',
-        identify: value => value && value instanceof Box,
+        identify: (value) => value && value instanceof Box,
         inspect: (box, depth, output, inspect) =>
-          output.block(output => {
+          output.block((output) => {
             output.text('╔═══╗').nl();
             output.text(`║ ${box.value} ║`).nl();
             output.text('╚═══╝');
           }),
-        equal: (a, b, equal) => a.value === b.value
+        equal: (a, b, equal) => a.value === b.value,
       });
 
       expect(
@@ -1668,7 +1668,7 @@ describe('to satisfy assertion', () => {
 
   it('should render a missing item expected to satisfy an expect.it', () => {
     expect(
-      function() {
+      function () {
         expect([], 'to satisfy', [expect.it('to be falsy')]);
       },
       'to throw',
@@ -1684,13 +1684,13 @@ describe('to satisfy assertion', () => {
 
   it('should support a chained expect.it', () => {
     expect({ foo: 123 }, 'to satisfy', {
-      foo: expect.it('to be a number').and('to be greater than', 10)
+      foo: expect.it('to be a number').and('to be greater than', 10),
     });
 
     expect(
-      function() {
+      function () {
         expect({ foo: 123 }, 'to satisfy', {
-          foo: expect.it('to be a number').and('to be greater than', 200)
+          foo: expect.it('to be a number').and('to be greater than', 200),
         });
       },
       'to throw',
@@ -1709,13 +1709,13 @@ describe('to satisfy assertion', () => {
 
   it('should support asserting on properties that are not defined', () => {
     expect({ foo: 123 }, 'to satisfy', {
-      bar: expect.it('to be undefined')
+      bar: expect.it('to be undefined'),
     });
   });
 
   it('should assert missing properties with undefined in the RHS object', () => {
     expect({ foo: 123 }, 'to satisfy', {
-      bar: undefined
+      bar: undefined,
     });
   });
 
@@ -1725,13 +1725,13 @@ describe('to satisfy assertion', () => {
 
   it('should support delegating to itself with the exhaustively flag', () => {
     expect({ foo: { bar: 123 }, baz: 456 }, 'to satisfy', {
-      foo: expect.it('to exhaustively satisfy', { bar: 123 })
+      foo: expect.it('to exhaustively satisfy', { bar: 123 }),
     });
   });
 
   it('should support delegating to itself without the exhaustively flag', () => {
     expect({ foo: { bar: 123, baz: 456 } }, 'to exhaustively satisfy', {
-      foo: expect.it('to satisfy', { bar: 123 })
+      foo: expect.it('to satisfy', { bar: 123 }),
     });
   });
 
@@ -1741,7 +1741,7 @@ describe('to satisfy assertion', () => {
 
   it('fails when comparing errors that do not have the same message', () => {
     expect(
-      function() {
+      function () {
         expect(new Error('foo'), 'to satisfy', new Error('bar'));
       },
       'to throw exception',
@@ -1758,7 +1758,7 @@ describe('to satisfy assertion', () => {
 
   it('fails when error message does not match given regexp', () => {
     expect(
-      function() {
+      function () {
         expect(new Error('foo'), 'to satisfy', /bar/);
       },
       'to throw exception',
@@ -1768,9 +1768,9 @@ describe('to satisfy assertion', () => {
 
   it('fails when using an unknown assertion', () => {
     expect(
-      function() {
+      function () {
         expect({ bool: 'true' }, 'to satisfy', {
-          bool: expect.it('to be true')
+          bool: expect.it('to be true'),
         });
       },
       'to throw exception',
@@ -1788,7 +1788,7 @@ describe('to satisfy assertion', () => {
 
   it('fails is error does not satisfy properties of given object', () => {
     expect(
-      function() {
+      function () {
         expect(new Error('foo'), 'to satisfy', { message: 'bar' });
       },
       'to throw exception',
@@ -1809,7 +1809,7 @@ describe('to satisfy assertion', () => {
       this.value = value;
     }
     expect(
-      function() {
+      function () {
         expect(new Foo('bar'), 'to satisfy', { value: 'quux' });
       },
       'to throw exception',
@@ -1826,21 +1826,21 @@ describe('to satisfy assertion', () => {
 
   it('collapses subtrees without conflicts', () => {
     expect(
-      function() {
+      function () {
         expect(
           {
             pill: {
               red: "I'll show you how deep the rabbit hole goes",
               blue: {
                 ignorance: {
-                  of: { illusion: { will: { not: { lead: 'to the truth' } } } }
-                }
+                  of: { illusion: { will: { not: { lead: 'to the truth' } } } },
+                },
               },
               purple: {
                 you: 'wat there is another pill',
-                them: 'there is always more choices'
-              }
-            }
+                them: 'there is always more choices',
+              },
+            },
           },
           'to satisfy',
           {
@@ -1848,10 +1848,10 @@ describe('to satisfy assertion', () => {
               red: "I'll show you how deep the rabbit hole goes.",
               blue: {
                 ignorance: {
-                  of: { illusion: { will: { not: { lead: 'to the truth' } } } }
-                }
-              }
-            }
+                  of: { illusion: { will: { not: { lead: 'to the truth' } } } },
+                },
+              },
+            },
           }
         );
       },
@@ -1889,7 +1889,7 @@ describe('to satisfy assertion', () => {
   it('indents removed objects correctly', () => {
     var str = 'abcdefghijklmnopqrstuvwxyz';
     expect(
-      function() {
+      function () {
         expect(
           { foo: { a: str, b: str, c: str, d: str, e: str } },
           'to equal',
@@ -1924,7 +1924,7 @@ describe('to satisfy assertion', () => {
   it('indents unchanged objects correctly', () => {
     var str = 'abcdefghijklmnopqrstuvwxyz';
     expect(
-      function() {
+      function () {
         expect(
           { foo: { a: str, b: str, c: str, d: str, e: str }, bar: 1 },
           'to equal',
@@ -1989,13 +1989,13 @@ describe('to satisfy assertion', () => {
         },
         suffix(output) {
           return output.text(')');
-        }
+        },
       });
     });
 
     it('should inspect multiline block values in diffs correctly', () => {
       expect(
-        function() {
+        function () {
           clonedExpect.addType({
             base: 'number',
             name: 'numberBox',
@@ -2003,14 +2003,10 @@ describe('to satisfy assertion', () => {
               return typeof obj === 'number' && obj > 0 && obj < 10;
             },
             inspect(obj, depth, output) {
-              return output.block(function() {
-                this.text('+-+')
-                  .nl()
-                  .text(`|${obj}|`)
-                  .nl()
-                  .text('|_|');
+              return output.block(function () {
+                this.text('+-+').nl().text(`|${obj}|`).nl().text('|_|');
               });
-            }
+            },
           });
           clonedExpect({ foo: 2, bar: 'baz' }, 'to satisfy', { bar: 'quux' });
         },
@@ -2038,7 +2034,7 @@ describe('to satisfy assertion', () => {
 
     it('should use a "to satisfy" label when a conflict does not have a label', () => {
       expect(
-        function() {
+        function () {
           expect({ foo: { bar: 123 } }, 'to satisfy', { foo: { bar: /d/ } });
         },
         'to throw',
@@ -2054,10 +2050,10 @@ describe('to satisfy assertion', () => {
 
     it('should build the correct diff when the subject and value have "diff" and "inline" keys', () => {
       expect(
-        function() {
+        function () {
           expect({ diff: 123, inline: 456 }, 'to satisfy', {
             diff: 321,
-            inline: 654
+            inline: 654,
           });
         },
         'to throw',
@@ -2072,7 +2068,7 @@ describe('to satisfy assertion', () => {
 
     it('should support satisfy agaist the unwrapped object with nested expect.it', () => {
       clonedExpect(new MysteryBox({ baz: 123 }), 'to satisfy', {
-        baz: expect.it('to be a number')
+        baz: expect.it('to be a number'),
       });
     });
 
@@ -2080,26 +2076,26 @@ describe('to satisfy assertion', () => {
       clonedExpect(
         {
           foo: new MysteryBox({ baz: 123, quux: 987 }),
-          bar: new MysteryBox(456)
+          bar: new MysteryBox(456),
         },
         'to satisfy',
         {
           foo: { baz: clonedExpect.it('to be a number') },
-          bar: 456
+          bar: 456,
         }
       );
     });
 
     it('should preserve the "exhaustively" flag when matching inside instances of the custom type', () => {
       expect(
-        function() {
+        function () {
           clonedExpect(
             {
-              foo: new MysteryBox({ baz: 123, quux: 987 })
+              foo: new MysteryBox({ baz: 123, quux: 987 }),
             },
             'to exhaustively satisfy',
             {
-              foo: { baz: clonedExpect.it('to be a number') }
+              foo: { baz: clonedExpect.it('to be a number') },
             }
           );
         },
@@ -2118,14 +2114,14 @@ describe('to satisfy assertion', () => {
 
     it('should include wrapper object type information in diff', () => {
       expect(
-        function() {
+        function () {
           clonedExpect(
             {
-              foo: new MysteryBox({ baz: 123, quux: 987 })
+              foo: new MysteryBox({ baz: 123, quux: 987 }),
             },
             'to satisfy',
             {
-              foo: { baz: clonedExpect.it('not to be a number') }
+              foo: { baz: clonedExpect.it('not to be a number') },
             }
           );
         },
@@ -2144,14 +2140,14 @@ describe('to satisfy assertion', () => {
 
     it('should preserve the "exhaustively" flag when matching instances of the custom type against each other', () => {
       expect(
-        function() {
+        function () {
           clonedExpect(
             {
-              foo: new MysteryBox({ baz: 123, quux: 987 })
+              foo: new MysteryBox({ baz: 123, quux: 987 }),
             },
             'to exhaustively satisfy',
             {
-              foo: new MysteryBox({ baz: clonedExpect.it('to be a number') })
+              foo: new MysteryBox({ baz: clonedExpect.it('to be a number') }),
             }
           );
         },
@@ -2172,26 +2168,26 @@ describe('to satisfy assertion', () => {
       clonedExpect(
         {
           foo: new MysteryBox({ baz: 123 }),
-          bar: new MysteryBox(456)
+          bar: new MysteryBox(456),
         },
         'to satisfy',
         {
           foo: new MysteryBox({ baz: clonedExpect.it('to be a number') }),
-          bar: new MysteryBox(456)
+          bar: new MysteryBox(456),
         }
       );
     });
 
     it('should fail to match', () => {
       expect(
-        function() {
+        function () {
           clonedExpect(
             {
-              foo: new MysteryBox('abc')
+              foo: new MysteryBox('abc'),
             },
             'to satisfy',
             {
-              foo: 'def'
+              foo: 'def',
             }
           );
         },
@@ -2209,14 +2205,14 @@ describe('to satisfy assertion', () => {
 
     it('should fail to match unequal instances of the custom type', () => {
       expect(
-        function() {
+        function () {
           clonedExpect(
             {
-              foo: new MysteryBox('abc')
+              foo: new MysteryBox('abc'),
             },
             'to satisfy',
             {
-              foo: new MysteryBox('def')
+              foo: new MysteryBox('def'),
             }
           );
         },
@@ -2239,7 +2235,7 @@ describe('to satisfy assertion', () => {
     expect('foobar', 'not to satisfy', /quux/i);
 
     expect({ foo: 123 }, 'not to satisfy', {
-      foo: expect.it('to be a string')
+      foo: expect.it('to be a string'),
     });
 
     expect({ foo: 123, bar: 456 }, 'not to exhaustively satisfy', { foo: 123 });
@@ -2248,12 +2244,12 @@ describe('to satisfy assertion', () => {
   });
 
   it('fails when the assertion fails', () => {
-    expect(function() {
+    expect(function () {
       expect(123, 'to satisfy assertion', 'to be a string');
     }, 'to throw');
 
     expect(
-      function() {
+      function () {
         expect('foobar', 'to satisfy', /quux/i);
       },
       'to throw',
@@ -2262,9 +2258,9 @@ describe('to satisfy assertion', () => {
 
     // FIXME: Could this error message be improved?
     expect(
-      function() {
+      function () {
         expect({ foo: 123 }, 'to satisfy', {
-          foo: expect.it('to be a string')
+          foo: expect.it('to be a string'),
         });
       },
       'to throw',
@@ -2275,11 +2271,11 @@ describe('to satisfy assertion', () => {
         '}'
     );
 
-    expect(function() {
+    expect(function () {
       expect({ foo: 123, bar: 456 }, 'to exhaustively satisfy', { foo: 123 });
     }, 'to throw');
 
-    expect(function() {
+    expect(function () {
       expect({ foo: 123 }, 'to exhaustively satisfy', { bar: undefined });
     }, 'to throw');
   });
@@ -2287,15 +2283,15 @@ describe('to satisfy assertion', () => {
   describe('when delegating to async assertions', () => {
     var clonedExpect = expect
       .clone()
-      .addAssertion('<any> to be a number after a short delay', function(
+      .addAssertion('<any> to be a number after a short delay', function (
         expect,
         subject
       ) {
         expect.errorMode = 'nested';
 
-        return expect.promise(function(run) {
+        return expect.promise(function (run) {
           setTimeout(
-            run(function() {
+            run(function () {
               expect(subject, 'to be a number');
             }),
             1
@@ -2384,7 +2380,7 @@ describe('to satisfy assertion', () => {
         subject.foobar = 456;
         expect(subject, 'to exhaustively satisfy', {
           0: 123,
-          foobar: 456
+          foobar: 456,
         });
       });
 
@@ -2392,10 +2388,10 @@ describe('to satisfy assertion', () => {
         var subject = [123];
         subject.foobar = 456;
         expect(
-          function() {
+          function () {
             expect(subject, 'to exhaustively satisfy', {
               0: 123,
-              foobar: 987
+              foobar: 987,
             });
           },
           'to throw',
@@ -2431,7 +2427,7 @@ describe('to satisfy assertion', () => {
         expected.quux = false;
 
         expect(
-          function() {
+          function () {
             expect(subject, 'to satisfy', expected);
           },
           'to throw',
@@ -2455,7 +2451,7 @@ describe('to satisfy assertion', () => {
 
   it('should not break when trying to determine whether an object and null are structurally similar', () => {
     expect(
-      function() {
+      function () {
         expect([{}], 'to satisfy', [null]);
       },
       'to throw',
@@ -2477,7 +2473,7 @@ describe('to satisfy assertion', () => {
 
       it('should fail with a diff', () => {
         expect(
-          function() {
+          function () {
             expect(new Foo(), 'to exhaustively satisfy', { isFoo: false });
           },
           'to throw',
@@ -2498,7 +2494,7 @@ describe('to satisfy assertion', () => {
       var bar = {};
       Object.defineProperty(bar, 'nonEnumerable', {
         value: 'theValue',
-        enumerable: false
+        enumerable: false,
       });
 
       describe('when matching the non-enumerable property', () => {
@@ -2508,9 +2504,9 @@ describe('to satisfy assertion', () => {
 
         it('should fail with a diff', () => {
           expect(
-            function() {
+            function () {
               expect(bar, 'to exhaustively satisfy', {
-                nonEnumerable: 'wrong'
+                nonEnumerable: 'wrong',
               });
             },
             'to throw',
@@ -2531,9 +2527,9 @@ describe('to satisfy assertion', () => {
       describe('when not matching the non-enumerable property', () => {
         it('should fail with a diff', () => {
           expect(
-            function() {
+            function () {
               expect(bar, 'to exhaustively satisfy', {
-                somethingElse: 'wrong'
+                somethingElse: 'wrong',
               });
             },
             'to throw',
@@ -2553,9 +2549,9 @@ describe('to satisfy assertion', () => {
   describe('when an unpresent value to is satisfied against an expect.it function wrapper', () => {
     it('should allow an unpresent value to be satisfied against the function', () => {
       expect({}, 'to satisfy', {
-        foo: expect.it(v => {
+        foo: expect.it((v) => {
           expect(v, 'to be undefined');
-        })
+        }),
       });
     });
 
@@ -2563,13 +2559,13 @@ describe('to satisfy assertion', () => {
       expect(
         () => {
           expect({}, 'to satisfy', {
-            foo: expect.it(value => {
+            foo: expect.it((value) => {
               expect(value, 'to be a string');
-            })
+            }),
           });
         },
         'to throw',
-        expect.it(err => {
+        expect.it((err) => {
           // Compensate for V8 5.1+ setting { foo: function () {} }.foo.name === 'foo'
           // http://v8project.blogspot.dk/2016/04/v8-release-51.html
           expect(
@@ -2610,13 +2606,13 @@ describe('to satisfy assertion', () => {
       () => {
         expect({}, 'to satisfy', {
           bar: 123,
-          foo: expect.it(function(v) {
+          foo: expect.it(function (v) {
             expect(v, 'to be undefined');
-          })
+          }),
         });
       },
       'to throw',
-      expect.it(err => {
+      expect.it((err) => {
         // Compensate for V8 5.1+ setting { foo: function () {} }.foo.name === 'foo'
         // http://v8project.blogspot.dk/2016/04/v8-release-51.html
         expect(
@@ -2668,7 +2664,7 @@ describe('to satisfy assertion', () => {
 
     it('fail with a diff', () => {
       expect(
-        function() {
+        function () {
           expect(new Foo(), 'to satisfy', { constructor: 123 });
         },
         'to throw',
@@ -2683,7 +2679,7 @@ describe('to satisfy assertion', () => {
 
   it('should not break when the assertion fails and the subject has a property that also exists on Object.prototype', () => {
     expect(
-      function() {
+      function () {
         expect({ constructor: 123 }, 'to satisfy', { foo: 456 });
       },
       'to throw',
@@ -2696,20 +2692,20 @@ describe('to satisfy assertion', () => {
     );
   });
 
-  describe('with a function subject', function() {
+  describe('with a function subject', function () {
     function foo() {}
     function bar() {}
     foo.baz = 123;
 
-    describe('against a function', function() {
-      it('should succeed', function() {
+    describe('against a function', function () {
+      it('should succeed', function () {
         expect(foo, 'to satisfy', foo);
         expect({ foo }, 'to satisfy', { foo });
       });
 
-      it('should fail without a diff', function() {
+      it('should fail without a diff', function () {
         expect(
-          function() {
+          function () {
             expect(foo, 'to satisfy', bar);
           },
           'to throw',
@@ -2718,14 +2714,14 @@ describe('to satisfy assertion', () => {
       });
     });
 
-    describe('against an object', function() {
-      it('should succeed', function() {
+    describe('against an object', function () {
+      it('should succeed', function () {
         expect(foo, 'to satisfy', { baz: 123 });
       });
 
-      it('should fail with an object diff', function() {
+      it('should fail with an object diff', function () {
         expect(
-          function() {
+          function () {
             expect(foo, 'to satisfy', { baz: 456 });
           },
           'to throw',
@@ -2739,11 +2735,11 @@ describe('to satisfy assertion', () => {
     });
   });
 
-  describe('with an object subject', function() {
-    describe('satisfied against a function not wrapped in expect.it', function() {
+  describe('with an object subject', function () {
+    describe('satisfied against a function not wrapped in expect.it', function () {
       it('should fail', () => {
         expect(
-          () => expect({}, 'to satisfy', function() {}),
+          () => expect({}, 'to satisfy', function () {}),
           'to throw',
           'expected {} to satisfy function () {}'
         );
@@ -2751,13 +2747,13 @@ describe('to satisfy assertion', () => {
     });
   });
 
-  it('should not dereference properties that are not being asserted on', function() {
+  it('should not dereference properties that are not being asserted on', function () {
     expect(
       {
         get ohNo() {
           throw new Error('argh');
         },
-        foo: 123
+        foo: 123,
       },
       'to satisfy',
       { foo: 123 }

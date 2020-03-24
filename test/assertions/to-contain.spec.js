@@ -4,7 +4,7 @@ describe('to contain assertion', () => {
 
   it('should throw an error when one of the arguments is the empty string', () => {
     expect(
-      function() {
+      function () {
         expect('foo', 'to contain', 'bar', '');
       },
       'to throw',
@@ -24,7 +24,7 @@ describe('to contain assertion', () => {
 
   it('throws when the assertion fails', () => {
     expect(
-      function() {
+      function () {
         expect(null, 'not to contain', 'world');
       },
       'to throw',
@@ -37,7 +37,7 @@ describe('to contain assertion', () => {
     );
 
     expect(
-      function() {
+      function () {
         expect('hello world', 'to contain', 'foo');
       },
       'to throw exception',
@@ -45,7 +45,7 @@ describe('to contain assertion', () => {
     );
 
     expect(
-      function() {
+      function () {
         expect('hello world', 'to contain', 'hello', 'foo');
       },
       'to throw exception',
@@ -56,7 +56,7 @@ describe('to contain assertion', () => {
     );
 
     expect(
-      function() {
+      function () {
         expect([1, 2], 'to contain', 2, 3);
       },
       'to throw exception',
@@ -64,7 +64,7 @@ describe('to contain assertion', () => {
     );
 
     expect(
-      function() {
+      function () {
         expect([{ foo: 123 }], 'to contain', { foo: 123 }, { bar: 456 });
       },
       'to throw exception',
@@ -72,7 +72,7 @@ describe('to contain assertion', () => {
     );
 
     expect(
-      function() {
+      function () {
         expect(1, 'to contain', 1);
       },
       'to throw exception',
@@ -87,7 +87,7 @@ describe('to contain assertion', () => {
 
   it('produces a diff showing full and partial matches for each needle when the assertion fails', () => {
     expect(
-      function() {
+      function () {
         expect('foo\nbarquux', 'to contain', 'foo\nb', 'quuux');
       },
       'to throw',
@@ -101,7 +101,7 @@ describe('to contain assertion', () => {
             'barquux\n' +
             '^  ^^^'
         )
-        .and('to have ansi diff', function() {
+        .and('to have ansi diff', function () {
           this.text('foo', ['bgGreen', 'black'])
             .nl()
             .text('b', ['bgGreen', 'black'])
@@ -115,11 +115,11 @@ describe('to contain assertion', () => {
   describe('with the not flag', () => {
     it('produces a useful diff in text mode when a match spans multiple lines', () => {
       expect(
-        function() {
+        function () {
           expect('blahfoo\nbar\nquux', 'not to contain', 'foo\nbar\nq');
         },
         'to throw',
-        expect.it(function(err) {
+        expect.it(function (err) {
           expect(
             err,
             'to have message',
@@ -138,7 +138,7 @@ describe('to contain assertion', () => {
 
     it('produces a diff when the array case fails', () => {
       expect(
-        function() {
+        function () {
           expect([1, 2, 3], 'not to contain', 2);
         },
         'to throw',
@@ -154,7 +154,7 @@ describe('to contain assertion', () => {
 
     it('produces a diff when the string case fails', () => {
       expect(
-        function() {
+        function () {
           expect('foobarquuxfoo', 'not to contain', 'foo');
         },
         'to throw',
@@ -168,7 +168,7 @@ describe('to contain assertion', () => {
 
   it('should not highlight overlapping partial matches', () => {
     expect(
-      function() {
+      function () {
         expect('foobarquux', 'not to contain', 'foob', 'barq');
       },
       'to throw',
@@ -181,7 +181,7 @@ describe('to contain assertion', () => {
 
   it('should highlight all occurrences of the longest partial match', () => {
     expect(
-      function() {
+      function () {
         expect('foobarquuxfoob', 'to contain', 'ooaaq', 'foobr');
       },
       'to throw',

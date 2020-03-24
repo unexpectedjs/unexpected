@@ -1,4 +1,4 @@
-module.exports = function(config) {
+module.exports = function (config) {
   config.set({
     frameworks: ['mocha'],
 
@@ -10,7 +10,7 @@ module.exports = function(config) {
       'build/test/promisePolyfill.js',
       'unexpected.js',
       'build/test/common.js',
-      'build/test/**/*.spec.js'
+      'build/test/**/*.spec.js',
     ],
 
     browsers: ['ChromeHeadlessNoSandbox', 'ie11'],
@@ -21,8 +21,8 @@ module.exports = function(config) {
     client: {
       mocha: {
         reporter: 'html',
-        timeout: 60000
-      }
+        timeout: 60000,
+      },
     },
 
     browserStack: {
@@ -31,23 +31,23 @@ module.exports = function(config) {
         process.env.TRAVIS_BRANCH === 'master' &&
         !process.env.TRAVIS_PULL_REQUEST_BRANCH // Catch Travis "PR" builds
           ? 'unexpected'
-          : 'unexpected-dev'
+          : 'unexpected-dev',
     },
 
     customLaunchers: {
       ChromeHeadlessNoSandbox: {
         base: 'ChromeHeadless',
-        flags: ['--no-sandbox']
+        flags: ['--no-sandbox'],
       },
       ie11: {
         base: 'BrowserStack',
         browser: 'IE',
         browser_version: '11',
         os: 'Windows',
-        os_version: '7'
-      }
+        os_version: '7',
+      },
     },
 
-    reporters: ['dots', 'BrowserStack']
+    reporters: ['dots', 'BrowserStack'],
   });
 };

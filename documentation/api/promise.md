@@ -23,8 +23,8 @@ the following way:
 <!-- unexpected-markdown evaluate:false -->
 
 ```js
-var promises = items.map(function(item) {
-  return expect.promise(function() {
+var promises = items.map(function (item) {
+  return expect.promise(function () {
     expect(item, 'to be a number');
   });
 });
@@ -36,9 +36,9 @@ wrapper function that should be used to wrap asynchronous callbacks:
 <!-- unexpected-markdown evaluate:false -->
 
 ```js
-expect.promise(function(run) {
+expect.promise(function (run) {
   backend.loadData(
-    run(function(err, data) {
+    run(function (err, data) {
       expect(err, 'to be falsy');
       expect(data, 'not to equal', {});
     })

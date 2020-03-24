@@ -13,15 +13,15 @@ if (typeof process === 'object') {
     describe('executed through mocha', () => {
       expect.addAssertion(
         '<array|string> executed through mocha <object?>',
-        function(expect, subject, env) {
+        function (expect, subject, env) {
           if (!Array.isArray(subject)) {
             subject = [subject];
           }
-          return expect.promise(function(run) {
+          return expect.promise(function (run) {
             childProcess.execFile(
               pathModule.resolve(basePath, 'node_modules', '.bin', 'mocha'),
               ['--opts', pathModule.resolve(__dirname, 'mocha.opts')].concat(
-                subject.map(function(fileName) {
+                subject.map(function (fileName) {
                   return pathModule.resolve(
                     externaltestsDir,
                     `${fileName}.spec.js`
@@ -30,9 +30,9 @@ if (typeof process === 'object') {
               ),
               {
                 cwd: basePath,
-                env: extend({}, process.env, env || {})
+                env: extend({}, process.env, env || {}),
               },
-              run(function(err, stdout, stderr) {
+              run(function (err, stdout, stderr) {
                 return [err, stdout, stderr];
               })
             );
@@ -44,7 +44,7 @@ if (typeof process === 'object') {
         return expect(
           'forgotToReturnPendingPromiseFromSuccessfulItBlock',
           'executed through mocha'
-        ).spread(function(err, stdout, stderr) {
+        ).spread(function (err, stdout, stderr) {
           expect(
             stdout,
             'to contain',
@@ -58,7 +58,7 @@ if (typeof process === 'object') {
         return expect(
           'forgotToReturnPendingPromiseFromFailingItBlock',
           'executed through mocha'
-        ).spread(function(err, stdout, stderr) {
+        ).spread(function (err, stdout, stderr) {
           expect(
             stdout,
             'not to contain',
@@ -70,8 +70,8 @@ if (typeof process === 'object') {
 
       it('should trim unexpected plugins from the stack trace when the UNEXPECTED_FULL_TRACE environment variable is not set', () => {
         return expect('fullTrace', 'executed through mocha', {
-          UNEXPECTED_FULL_TRACE: ''
-        }).spread(function(err, stdout, stderr) {
+          UNEXPECTED_FULL_TRACE: '',
+        }).spread(function (err, stdout, stderr) {
           expect(stdout, 'not to contain', 'node_modules/unexpected-bogus/');
           expect(err, 'to satisfy', { code: 1 });
         });
@@ -79,8 +79,8 @@ if (typeof process === 'object') {
 
       it('should not trim unexpected plugins from the stack trace when the UNEXPECTED_FULL_TRACE environment variable is set', () => {
         return expect('fullTrace', 'executed through mocha', {
-          UNEXPECTED_FULL_TRACE: 'yes'
-        }).spread(function(err, stdout, stderr) {
+          UNEXPECTED_FULL_TRACE: 'yes',
+        }).spread(function (err, stdout, stderr) {
           expect(stdout, 'to contain', 'node_modules/unexpected-bogus/');
           expect(err, 'to satisfy', { code: 1 });
         });
@@ -88,28 +88,26 @@ if (typeof process === 'object') {
 
       it('should accept an UNEXPECTED_DEPTH environment variable', () => {
         return expect('deepObject', 'executed through mocha', {
-          UNEXPECTED_DEPTH: 6
-        }).spread(function(err, stdout, stderr) {
+          UNEXPECTED_DEPTH: 6,
+        }).spread(function (err, stdout, stderr) {
           expect(err, 'to be falsy');
         });
       });
 
       it('should render a long stack trace for an async test', () => {
-        return expect('failingAsync', 'executed through mocha').spread(function(
-          err,
-          stdout,
-          stderr
-        ) {
-          expect(err, 'to be truthy');
-          expect(stdout, 'to contain', 'From previous event:');
-        });
+        return expect('failingAsync', 'executed through mocha').spread(
+          function (err, stdout, stderr) {
+            expect(err, 'to be truthy');
+            expect(stdout, 'to contain', 'From previous event:');
+          }
+        );
       });
 
       it('should fail when a promise failing in the next tick is created but not returned', () => {
         return expect(
           'forgotToReturnPromiseRejectedInTheNextTick',
           'executed through mocha'
-        ).spread(function(err, stdout, stderr) {
+        ).spread(function (err, stdout, stderr) {
           expect(
             stdout,
             'to contain',
@@ -142,7 +140,7 @@ if (typeof process === 'object') {
           return expect(
             ['forgotToReturnPendingPromiseFromSuccessfulItBlock', 'successful'],
             'executed through mocha'
-          ).spread(function(err, stdout, stderr) {
+          ).spread(function (err, stdout, stderr) {
             expect(
               stdout,
               'to contain',
@@ -156,7 +154,7 @@ if (typeof process === 'object') {
           return expect(
             ['successful', 'forgotToReturnPendingPromiseFromSuccessfulItBlock'],
             'executed through mocha'
-          ).spread(function(err, stdout, stderr) {
+          ).spread(function (err, stdout, stderr) {
             expect(
               stdout,
               'to contain',
@@ -172,7 +170,7 @@ if (typeof process === 'object') {
           return expect(
             'assertionSucceedsWhilePromiseIsPending',
             'executed through mocha'
-          ).spread(function(err, stdout, stderr) {
+          ).spread(function (err, stdout, stderr) {
             expect(
               stdout,
               'not to contain',
@@ -185,7 +183,7 @@ if (typeof process === 'object') {
 
       it('should render the stack trace of the thrown error without any artifacts when "not to error" encounters an error', () => {
         return expect('notToErrorCaughtError', 'executed through mocha').spread(
-          function(err, stdout, stderr) {
+          function (err, stdout, stderr) {
             expect(err, 'to satisfy', { code: 1 });
             expect(
               stdout,
@@ -199,20 +197,20 @@ if (typeof process === 'object') {
     });
 
     describe('executed through jasmine', () => {
-      expect.addAssertion('<string> executed through jasmine', function(
+      expect.addAssertion('<string> executed through jasmine', function (
         expect,
         subject
       ) {
-        return expect.promise(function(run) {
+        return expect.promise(function (run) {
           childProcess.execFile(
             pathModule.resolve(basePath, 'node_modules', '.bin', 'jasmine'),
             {
               cwd: pathModule.join(externaltestsDir, '..'),
               env: extend({}, process.env, {
-                JASMINE_CONFIG_PATH: `${externaltestsDir}/${subject}.jasmine.json`
-              })
+                JASMINE_CONFIG_PATH: `${externaltestsDir}/${subject}.jasmine.json`,
+              }),
             },
-            run(function(err, stdout, stderr) {
+            run(function (err, stdout, stderr) {
               return [err, stdout, stderr];
             })
           );
@@ -223,7 +221,7 @@ if (typeof process === 'object') {
         return expect(
           'forgotToReturnPendingPromiseFromSuccessfulItBlock',
           'executed through jasmine'
-        ).spread(function(err, stdout, stderr) {
+        ).spread(function (err, stdout, stderr) {
           expect(
             stdout,
             'to contain',
@@ -237,7 +235,7 @@ if (typeof process === 'object') {
         return expect(
           'forgotToReturnPendingPromiseFromFailingItBlock',
           'executed through jasmine'
-        ).spread(function(err, stdout, stderr) {
+        ).spread(function (err, stdout, stderr) {
           expect(
             stdout,
             'not to contain',
@@ -251,7 +249,7 @@ if (typeof process === 'object') {
         return expect(
           'notToErrorCaughtError',
           'executed through jasmine'
-        ).spread(function(err, stdout, stderr) {
+        ).spread(function (err, stdout, stderr) {
           expect(err, 'to satisfy', { code: 1 });
           expect(
             stdout,
@@ -266,18 +264,18 @@ if (typeof process === 'object') {
     describe('executed through jest', () => {
       expect.addAssertion(
         '<array|string> executed through jest <object?>',
-        function(expect, subject, env) {
+        function (expect, subject, env) {
           if (!Array.isArray(subject)) {
             subject = [subject];
           }
-          return expect.promise(function(run) {
+          return expect.promise(function (run) {
             childProcess.execFile(
               pathModule.resolve(basePath, 'node_modules', '.bin', 'jest'),
               [
                 '--config',
-                pathModule.resolve(externaltestsDir, 'jestconfig.json')
+                pathModule.resolve(externaltestsDir, 'jestconfig.json'),
               ].concat(
-                subject.map(function(fileName) {
+                subject.map(function (fileName) {
                   return pathModule.resolve(
                     externaltestsDir,
                     `${fileName}.spec.js`
@@ -286,9 +284,9 @@ if (typeof process === 'object') {
               ),
               {
                 cwd: basePath,
-                env: extend({}, process.env, env || {})
+                env: extend({}, process.env, env || {}),
               },
-              run(function(err, stdout, stderr) {
+              run(function (err, stdout, stderr) {
                 return [err, stdout, stderr];
               })
             );
@@ -300,7 +298,7 @@ if (typeof process === 'object') {
         return expect(
           'forgotToReturnPendingPromiseFromSuccessfulItBlock',
           'executed through jest'
-        ).spread(function(err, stdout, stderr) {
+        ).spread(function (err, stdout, stderr) {
           expect(
             stderr,
             'to contain',
@@ -314,7 +312,7 @@ if (typeof process === 'object') {
         return expect(
           'forgotToReturnPendingPromiseFromFailingItBlock',
           'executed through jest'
-        ).spread(function(err, stdout, stderr) {
+        ).spread(function (err, stdout, stderr) {
           expect(
             stderr,
             'not to contain',
@@ -326,8 +324,8 @@ if (typeof process === 'object') {
 
       it('should trim unexpected plugins from the stack trace when the UNEXPECTED_FULL_TRACE environment variable is not set', () => {
         return expect('fullTrace', 'executed through jest', {
-          UNEXPECTED_FULL_TRACE: ''
-        }).spread(function(err, stdout, stderr) {
+          UNEXPECTED_FULL_TRACE: '',
+        }).spread(function (err, stdout, stderr) {
           expect(stderr, 'not to contain', 'node_modules/unexpected-bogus/');
           expect(err, 'to satisfy', { code: 1 });
         });
@@ -335,8 +333,8 @@ if (typeof process === 'object') {
 
       it('should not trim unexpected plugins from the stack trace when the UNEXPECTED_FULL_TRACE environment variable is set', () => {
         return expect('fullTrace', 'executed through jest', {
-          UNEXPECTED_FULL_TRACE: 'yes'
-        }).spread(function(err, stdout, stderr) {
+          UNEXPECTED_FULL_TRACE: 'yes',
+        }).spread(function (err, stdout, stderr) {
           expect(stderr, 'to contain', 'node_modules/unexpected-bogus/');
           expect(err, 'to satisfy', { code: 1 });
         });
@@ -344,14 +342,14 @@ if (typeof process === 'object') {
 
       it('should accept an UNEXPECTED_DEPTH environment variable', () => {
         return expect('deepObject', 'executed through jest', {
-          UNEXPECTED_DEPTH: 6
-        }).spread(function(err, stdout, stderr) {
+          UNEXPECTED_DEPTH: 6,
+        }).spread(function (err, stdout, stderr) {
           expect(err, 'to be falsy');
         });
       });
 
       it('should render a long stack trace for an async test', () => {
-        return expect('failingAsync', 'executed through jest').spread(function(
+        return expect('failingAsync', 'executed through jest').spread(function (
           err,
           stdout,
           stderr
@@ -365,7 +363,7 @@ if (typeof process === 'object') {
         return expect(
           'forgotToReturnPromiseRejectedInTheNextTick',
           'executed through jest'
-        ).spread(function(err, stdout, stderr) {
+        ).spread(function (err, stdout, stderr) {
           expect(
             stderr,
             'to contain',
@@ -398,7 +396,7 @@ if (typeof process === 'object') {
           return expect(
             ['forgotToReturnPendingPromiseFromSuccessfulItBlock', 'successful'],
             'executed through jest'
-          ).spread(function(err, stdout, stderr) {
+          ).spread(function (err, stdout, stderr) {
             expect(
               stderr,
               'to contain',
@@ -412,7 +410,7 @@ if (typeof process === 'object') {
           return expect(
             ['successful', 'forgotToReturnPendingPromiseFromSuccessfulItBlock'],
             'executed through jest'
-          ).spread(function(err, stdout, stderr) {
+          ).spread(function (err, stdout, stderr) {
             expect(
               stderr,
               'to contain',
@@ -428,7 +426,7 @@ if (typeof process === 'object') {
           return expect(
             'assertionSucceedsWhilePromiseIsPending',
             'executed through jest'
-          ).spread(function(err, stdout, stderr) {
+          ).spread(function (err, stdout, stderr) {
             expect(
               stderr,
               'not to contain',
@@ -441,7 +439,7 @@ if (typeof process === 'object') {
 
       it('should render the stack trace of the thrown error without any artifacts when "not to error" encounters an error', () => {
         return expect('notToErrorCaughtError', 'executed through jest').spread(
-          function(err, stdout, stderr) {
+          function (err, stdout, stderr) {
             expect(err, 'to satisfy', { code: 1 });
             expect(
               stderr,

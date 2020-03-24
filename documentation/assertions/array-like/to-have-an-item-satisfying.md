@@ -11,7 +11,7 @@ expect([0, 1, 2, 3, 4], 'to have an item satisfying', 'to be a number');
 expect(
   [0, 1, 2, 3, 4],
   'to have an item satisfying',
-  expect.it(function(item) {
+  expect.it(function (item) {
     expect(item, 'to be a number');
   })
 );
@@ -54,7 +54,7 @@ expect(
   [
     ['0', '1'],
     ['5', '6'],
-    ['7', '8']
+    ['7', '8'],
   ],
   'to have an item satisfying',
   'to have an item satisfying',

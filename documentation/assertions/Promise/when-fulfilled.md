@@ -3,8 +3,8 @@ Wait for a promise to be fulfilled, then delegate the value to another assertion
 <!-- unexpected-markdown async:true -->
 
 ```js
-var fulfilledPromise = new Promise(function(resolve, reject) {
-  setTimeout(function() {
+var fulfilledPromise = new Promise(function (resolve, reject) {
+  setTimeout(function () {
     resolve(123);
   }, 1);
 });
@@ -29,8 +29,8 @@ If the response is rejected, the assertion fails with the following output:
 <!-- unexpected-markdown async:true -->
 
 ```js
-var rejectedPromise = new Promise(function(resolve, reject) {
-  setTimeout(function() {
+var rejectedPromise = new Promise(function (resolve, reject) {
+  setTimeout(function () {
     reject(new Error('argh'));
   }, 1);
 });

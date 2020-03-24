@@ -10,7 +10,7 @@ describe('when called with assertion', () => {
 
   it('should combine with other assertions (showcase)', () => {
     expect(
-      function() {
+      function () {
         expect(add, 'when called with', [3, 4], 'to equal', 9);
       },
       'to throw',
@@ -20,7 +20,7 @@ describe('when called with assertion', () => {
   });
 
   it('should should provide the result as the fulfillment value if no assertion is provided', () => {
-    return expect(add, 'when called with', [3, 4]).then(function(sum) {
+    return expect(add, 'when called with', [3, 4]).then(function (sum) {
       expect(sum, 'to equal', 7);
     });
   });
@@ -31,7 +31,7 @@ describe('when called with assertion', () => {
         this.prefix = prefix;
       }
 
-      Greeter.prototype.greet = function(name) {
+      Greeter.prototype.greet = function (name) {
         return this.prefix + name;
       };
 
@@ -41,7 +41,7 @@ describe('when called with assertion', () => {
           ['John Doe'],
           'to equal',
           'Hello, John Doe'
-        )
+        ),
       });
     });
   });

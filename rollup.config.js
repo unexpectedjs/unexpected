@@ -6,7 +6,7 @@ const plugins = [
   require('rollup-plugin-commonjs')({
     // leave the os require in the tree as that codepath is not
     // taken when executed in Deno after magicpen porting work
-    ignore: process.env.ESM_BUILD ? ['os'] : undefined
+    ignore: process.env.ESM_BUILD ? ['os'] : undefined,
   }),
   require('rollup-plugin-node-resolve')({ preferBuiltins: true }),
   require('rollup-plugin-node-globals')(),
@@ -14,9 +14,9 @@ const plugins = [
     output: {
       comments(node, comment) {
         return /^!|@preserve|@license|@cc_on/i.test(comment.value);
-      }
-    }
-  })
+      },
+    },
+  }),
 ];
 
 module.exports = {
@@ -27,7 +27,7 @@ module.exports = {
         .readFileSync(pathModule.resolve(__dirname, 'LICENSE'), 'utf-8')
         .replace(/^/gm, ' * ')
         .replace(/\s+$/g, '') +
-      '/\n'
+      '/\n',
   },
-  plugins
+  plugins,
 };

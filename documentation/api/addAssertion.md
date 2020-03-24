@@ -18,7 +18,7 @@ expect.addAssertion([pattern, ...]], handler);
 For example:
 
 ```js
-expect.addAssertion('<array> to have item <any>', function(
+expect.addAssertion('<array> to have item <any>', function (
   expect,
   subject,
   value
@@ -69,7 +69,7 @@ an assertion such as `<number> to be between <number> and <number>` could
 instead be written as:
 
 ```js
-expect.addAssertion('<number> to be between <number> <number>', function(
+expect.addAssertion('<number> to be between <number> <number>', function (
   expect,
   subject,
   value1,
@@ -89,7 +89,7 @@ follows:
 <!-- unexpected-markdown freshExpect:true -->
 
 ```js
-expect.addAssertion('<array> to have item <number|string>', function(
+expect.addAssertion('<array> to have item <number|string>', function (
   expect,
   subject,
   value
@@ -125,7 +125,7 @@ same handler function, can be added using an array:
 ```js
 expect.addAssertion(
   ['<array> to have item <any>', '<array> to have value <any>'],
-  function(expect, subject, value) {
+  function (expect, subject, value) {
     expect(subject, 'to contain', value);
   }
 );
@@ -142,7 +142,7 @@ handy:
 <!-- unexpected-markdown freshExpect:true -->
 
 ```js
-expect.addAssertion('<array> to have (item|value) <any>', function(
+expect.addAssertion('<array> to have (item|value) <any>', function (
   expect,
   subject,
   value
@@ -163,7 +163,7 @@ contains the word used when the assertion is invoked:
 <!-- unexpected-markdown freshExpect:true -->
 
 ```js
-expect.addAssertion('<array> to have (index|value) <any>', function(
+expect.addAssertion('<array> to have (index|value) <any>', function (
   expect,
   subject,
   value
@@ -189,7 +189,7 @@ the assertion be negated:
 <!-- unexpected-markdown freshExpect:true -->
 
 ```js
-expect.addAssertion('<array> [not] to have item <any>', function(
+expect.addAssertion('<array> [not] to have item <any>', function (
   expect,
   subject,
   value
@@ -220,7 +220,7 @@ flag, one can propagate the flag to that assertion as follows:
 <!-- unexpected-markdown freshExpect:true -->
 
 ```js
-expect.addAssertion('<array> [not] to have item <any>', function(
+expect.addAssertion('<array> [not] to have item <any>', function (
   expect,
   subject,
   value
@@ -237,7 +237,7 @@ When flags are propagated, one can also invert the flag as follows:
 <!-- unexpected-markdown freshExpect:true -->
 
 ```js
-expect.addAssertion('<array> [not] to have item <any>', function(
+expect.addAssertion('<array> [not] to have item <any>', function (
   expect,
   subject,
   value
@@ -260,7 +260,7 @@ that make an assertion read better:
 <!-- unexpected-markdown freshExpect:true -->
 
 ```js
-expect.addAssertion('<array> to have [this] item <any>', function(
+expect.addAssertion('<array> to have [this] item <any>', function (
   expect,
   subject,
   value
@@ -284,7 +284,7 @@ value's type definition. For instance, this can be used to define optional
 var errorMode = 'default'; // use to control the error mode in later examples
 expect.addAssertion(
   '<array> [not] to be (sorted|ordered) [by] <function?>',
-  function(expect, subject, cmp) {
+  function (expect, subject, cmp) {
     expect.errorMode = errorMode;
     expect(subject, '[not] to equal', [].concat(subject).sort(cmp));
   }
@@ -298,10 +298,10 @@ expect([1, 2, 3], 'to be sorted');
 expect([1, 2, 3], 'to be ordered');
 expect([2, 1, 3], 'not to be sorted');
 expect([2, 1, 3], 'not to be ordered');
-expect([3, 2, 1], 'to be sorted', function(x, y) {
+expect([3, 2, 1], 'to be sorted', function (x, y) {
   return y - x;
 });
-expect([3, 2, 1], 'to be sorted by', function(x, y) {
+expect([3, 2, 1], 'to be sorted by', function (x, y) {
   return y - x;
 });
 ```
@@ -322,16 +322,16 @@ an output function on the assertion.
 Here is a few examples:
 
 ```js
-expect.addAssertion('<number> to be contained by <number> <number>', function(
+expect.addAssertion('<number> to be contained by <number> <number>', function (
   expect,
   subject,
   start,
   finish
 ) {
-  expect.subjectOutput = function(output) {
+  expect.subjectOutput = function (output) {
     output.text('point ').jsNumber(subject);
   };
-  expect.argsOutput = function(output) {
+  expect.argsOutput = function (output) {
     output
       .text('interval ')
       .text('[')
@@ -351,7 +351,7 @@ expected point 4 to be contained by interval [8;10]
 ```
 
 ```js
-expect.addAssertion('<number> to be similar to <number> <number?>', function(
+expect.addAssertion('<number> to be similar to <number> <number?>', function (
   expect,
   subject,
   value,
@@ -360,11 +360,8 @@ expect.addAssertion('<number> to be similar to <number> <number?>', function(
   if (typeof epsilon !== 'number') {
     epsilon = 1e-9;
   }
-  expect.argsOutput[2] = function(output) {
-    output
-      .text('(epsilon: ')
-      .jsNumber(epsilon.toExponential())
-      .text(')');
+  expect.argsOutput[2] = function (output) {
+    output.text('(epsilon: ').jsNumber(epsilon.toExponential()).text(')');
   };
   expect(Math.abs(subject - value), 'to be less than or equal to', epsilon);
 });
@@ -502,9 +499,9 @@ function Timelock(value, delay) {
   this.delay = delay;
 }
 
-Timelock.prototype.getValue = function(cb) {
+Timelock.prototype.getValue = function (cb) {
   var that = this;
-  setTimeout(function() {
+  setTimeout(function () {
     cb(that.value);
   }, this.delay);
 };
@@ -530,24 +527,24 @@ First we need to define a [type](../addType/) for handling the `Timelock`:
 ```js
 expect.addType({
   name: 'Timelock',
-  identify: function(value) {
+  identify: function (value) {
     return value && value instanceof Timelock;
   },
-  inspect: function(value, depth, output) {
+  inspect: function (value, depth, output) {
     output.jsFunctionName('Timelock');
-  }
+  },
 });
 ```
 
 ```js
-expect.addAssertion('<Timelock> to satisfy <any>', function(
+expect.addAssertion('<Timelock> to satisfy <any>', function (
   expect,
   subject,
   spec
 ) {
-  return expect.promise(function(run) {
+  return expect.promise(function (run) {
     subject.getValue(
-      run(function(value) {
+      run(function (value) {
         return expect(value, 'to satisfy', spec);
       })
     );

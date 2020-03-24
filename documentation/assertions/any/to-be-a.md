@@ -74,7 +74,7 @@ In case of a failing expectation you get the following output:
 
 ```js
 expect(
-  function() {
+  function () {
     return 'wat';
   },
   'not to be an',

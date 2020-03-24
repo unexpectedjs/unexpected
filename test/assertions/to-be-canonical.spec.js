@@ -19,7 +19,7 @@ describe('to be a canonical object assertion', () => {
 
   it('fails when the assertion fails', () => {
     expect(
-      function() {
+      function () {
         expect({ b: 456, a: 123 }, 'to be canonical');
       },
       'to throw exception',
@@ -27,7 +27,7 @@ describe('to be a canonical object assertion', () => {
     );
 
     expect(
-      function() {
+      function () {
         expect({ foo: { b: 456, a: 123 } }, 'to be canonical');
       },
       'to throw exception',

@@ -3,11 +3,11 @@ describe('UnexpectedError', () => {
   describe('with a single line message', () => {
     it('should be inspected correctly', () => {
       expect(
-        function() {
+        function () {
           expect(2, 'to equal', 4);
         },
         'to throw',
-        expect.it(function(err) {
+        expect.it(function (err) {
           expect(
             err,
             'to inspect as',
@@ -21,11 +21,11 @@ describe('UnexpectedError', () => {
   describe('with a multiline message', () => {
     it('should be inspected correctly', () => {
       expect(
-        function() {
+        function () {
           expect('foo', 'to equal', 'bar');
         },
         'to throw',
-        expect.it(function(err) {
+        expect.it(function (err) {
           expect(
             err,
             'to inspect as',
@@ -43,15 +43,15 @@ describe('UnexpectedError', () => {
 
   it('#getKeys should return a trimmed-down list', () => {
     expect(
-      function() {
+      function () {
         expect('foo', 'to equal', 'bar');
       },
       'to throw',
-      expect.it(function(err) {
+      expect.it(function (err) {
         expect(expect.findTypeOf(err).getKeys(err), 'to equal', [
           'message',
           'errorMode',
-          'parent'
+          'parent',
         ]);
       })
     );
@@ -60,11 +60,11 @@ describe('UnexpectedError', () => {
   describe('when full stack traces is disabled', () => {
     it('trims the stack for node_module/unexpected/ and node_module/unexpected-<plugin-name>/', () => {
       expect(
-        function() {
+        function () {
           expect.fail('wat');
         },
         'to throw',
-        expect.it(function(err) {
+        expect.it(function (err) {
           err.useFullStackTrace = false;
           err._hasSerializedErrorMessage = false;
           err.stack =
@@ -83,7 +83,7 @@ describe('UnexpectedError', () => {
             stack:
               'wat\n' +
               '      at Context.<anonymous> (test/Insection.spec.js:48:17)\n' +
-              '      set UNEXPECTED_FULL_TRACE=true to see the full stack trace'
+              '      set UNEXPECTED_FULL_TRACE=true to see the full stack trace',
           });
         })
       );
@@ -91,11 +91,11 @@ describe('UnexpectedError', () => {
 
     it('trims the stack for node_module\\unexpected\\ and node_module\\unexpected-<plugin-name>\\ (windows paths)', () => {
       expect(
-        function() {
+        function () {
           expect.fail('wat');
         },
         'to throw',
-        expect.it(function(err) {
+        expect.it(function (err) {
           err.useFullStackTrace = false;
           err._hasSerializedErrorMessage = false;
           err.stack =
@@ -114,7 +114,7 @@ describe('UnexpectedError', () => {
             stack:
               'wat\n' +
               '      at Context.<anonymous> (test\\Insection.spec.js:48:17)\n' +
-              '      set UNEXPECTED_FULL_TRACE=true to see the full stack trace'
+              '      set UNEXPECTED_FULL_TRACE=true to see the full stack trace',
           });
         })
       );
@@ -122,11 +122,11 @@ describe('UnexpectedError', () => {
 
     it('trims the stack for custom assertions in the consuming code', () => {
       expect(
-        function() {
+        function () {
           expect.fail('wat');
         },
         'to throw',
-        expect.it(function(err) {
+        expect.it(function (err) {
           err.useFullStackTrace = false;
           err._hasSerializedErrorMessage = false;
           err.stack =
@@ -148,7 +148,7 @@ describe('UnexpectedError', () => {
               'wat\n' +
               '      at functionCalledByCustomHandler (test/my.spec.js:42:666)\n' +
               '      at Context.<anonymous> (test/my.spec.js:48:17)\n' +
-              '      set UNEXPECTED_FULL_TRACE=true to see the full stack trace'
+              '      set UNEXPECTED_FULL_TRACE=true to see the full stack trace',
           });
         })
       );
@@ -157,11 +157,11 @@ describe('UnexpectedError', () => {
     describe('and the output format is set to html', () => {
       it('shows a helping message about how to turn of stack trace trimming', () => {
         expect(
-          function() {
+          function () {
             expect.fail('wat');
           },
           'to throw',
-          expect.it(function(err) {
+          expect.it(function (err) {
             err.useFullStackTrace = false;
             err._hasSerializedErrorMessage = false;
             err.stack =
@@ -180,7 +180,7 @@ describe('UnexpectedError', () => {
               stack:
                 'wat\n' +
                 '      at Context.<anonymous> (test/Insection.spec.js:48:17)\n' +
-                '      set the query parameter full-trace=true to see the full stack trace'
+                '      set the query parameter full-trace=true to see the full stack trace',
             });
           })
         );
@@ -191,11 +191,11 @@ describe('UnexpectedError', () => {
   describe('when full stack traces is enabled', () => {
     it('the initial stack is preserved', () => {
       expect(
-        function() {
+        function () {
           expect.fail('wat');
         },
         'to throw',
-        expect.it(function(err) {
+        expect.it(function (err) {
           err.useFullStackTrace = true;
           err._hasSerializedErrorMessage = false;
           err.stack =
@@ -219,7 +219,7 @@ describe('UnexpectedError', () => {
               '      at Function.<anonymous> (node_modules/unexpected/lib/assertions.js:569:16)\n' +
               '      at executeExpect (node_modules/unexpected/lib/Unexpected.js:1103:50)\n' +
               '      at Unexpected.expect (node_modules/unexpected/lib/Unexpected.js:1111:22)\n' +
-              '      at Context.<anonymous> (test/Insection.spec.js:48:17)'
+              '      at Context.<anonymous> (test/Insection.spec.js:48:17)',
           });
         })
       );
@@ -229,8 +229,8 @@ describe('UnexpectedError', () => {
   describe('when an originalError instance is passed', () => {
     it('should give up', () => {
       return expect(
-        function() {
-          return expect(function() {
+        function () {
+          return expect(function () {
             try {
               throw new Error('argh');
             } catch (err) {
@@ -240,7 +240,7 @@ describe('UnexpectedError', () => {
           }, 'not to error');
         },
         'to error',
-        expect.it(function(err) {
+        expect.it(function (err) {
           expect(err.stack, 'to contain', 'foobarquux\n   at yaddayadda');
         })
       );
@@ -250,7 +250,7 @@ describe('UnexpectedError', () => {
   describe('#stack', () => {
     it('should not mess up when the error message contains $&', () => {
       return expect(() => expect('$&', 'to equal', 'foo'), 'to error').then(
-        err => {
+        (err) => {
           expect(err.stack, 'to contain', '$&');
         }
       );

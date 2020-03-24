@@ -3,7 +3,7 @@ Asserts an array (or array-like object) contains one or more items.
 ```js
 expect([0, 1, 2], 'to contain', 1);
 expect([{ name: 'John Doe' }, { name: 'Jane Doe' }], 'to contain', {
-  name: 'Jane Doe'
+  name: 'Jane Doe',
 });
 expect([0, 1, 2], 'to contain', 0, 2);
 ```
@@ -12,7 +12,7 @@ In case of a failing expectation you get the following output:
 
 ```js
 expect([{ name: 'John Doe' }, { name: 'Jane Doe' }], 'to contain', {
-  name: 'Jonnie Doe'
+  name: 'Jonnie Doe',
 });
 ```
 
@@ -25,7 +25,7 @@ This assertion can be negated using the `not` flag:
 
 ```js
 expect([{ name: 'John Doe' }, { name: 'Jane Doe' }], 'not to contain', {
-  name: 'Jonnie Doe'
+  name: 'Jonnie Doe',
 });
 ```
 
@@ -33,7 +33,7 @@ In case of a failing expectation you get the following output:
 
 ```js
 expect([{ name: 'John Doe' }, { name: 'Jane Doe' }], 'not to contain', {
-  name: 'Jane Doe'
+  name: 'Jane Doe',
 });
 ```
 

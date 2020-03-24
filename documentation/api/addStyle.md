@@ -9,7 +9,7 @@ See the documentation there.
 Example:
 
 ```js
-expect.addStyle('jsString', function(text, rainbowColors) {
+expect.addStyle('jsString', function (text, rainbowColors) {
   rainbowColors = rainbowColors || [
     'gray',
     'red',
@@ -17,7 +17,7 @@ expect.addStyle('jsString', function(text, rainbowColors) {
     'yellow',
     'blue',
     'magenta',
-    'cyan'
+    'cyan',
   ];
   for (var i = 0; i < text.length; i += 1) {
     var color = rainbowColors[i % rainbowColors.length];

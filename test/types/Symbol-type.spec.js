@@ -30,7 +30,7 @@ if (
 
       it('does not render a diff', () => {
         expect(
-          function() {
+          function () {
             expect(symbolA, 'to equal', symbolB);
           },
           'to throw',
@@ -46,7 +46,7 @@ if (
         b[symbolA] = 'bar';
         b[symbolB] = 123;
         expect(
-          function() {
+          function () {
             expect(a, 'to equal', b);
           },
           'to throw',
@@ -76,7 +76,7 @@ if (
 
       it('does not render a diff', () => {
         expect(
-          function() {
+          function () {
             expect({ foo: symbolA }, 'to satisfy', { foo: anotherSymbolA });
           },
           'to throw',
@@ -96,7 +96,7 @@ if (
         b[symbolA] = 'bar';
         b[symbolB] = 123;
         expect(
-          function() {
+          function () {
             expect(a, 'to satisfy', b);
           },
           'to throw',

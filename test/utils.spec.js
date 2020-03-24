@@ -63,7 +63,7 @@ describe('utils', () => {
 
       it('should return the empty string for an anonymous function', () => {
         expect(
-          utils.getFunctionName(function() {}),
+          utils.getFunctionName(function () {}),
           'to equal',
           ''
         );
@@ -74,7 +74,7 @@ describe('utils', () => {
         beforeEach(() => {
           orig = Function.prototype.toString;
           // eslint-disable-next-line no-extend-native
-          Function.prototype.toString = function() {
+          Function.prototype.toString = function () {
             return 'function whatever() {}';
           };
         });

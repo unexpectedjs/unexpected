@@ -25,7 +25,7 @@ provided as the fulfillment value of the promise:
 <!-- unexpected-markdown async:true -->
 
 ```js
-return expect(add, 'called with', [1, 2]).then(function(result) {
+return expect(add, 'called with', [1, 2]).then(function (result) {
   expect(result, 'to equal', 3);
 });
 ```
@@ -38,7 +38,7 @@ function Greeter(prefix) {
   this.prefix = prefix;
 }
 
-Greeter.prototype.greet = function(name) {
+Greeter.prototype.greet = function (name) {
   return this.prefix + name;
 };
 
@@ -50,6 +50,6 @@ expect(helloGreeter, 'to satisfy', {
     ['John Doe'],
     'to equal',
     'Hello, John Doe'
-  )
+  ),
 });
 ```

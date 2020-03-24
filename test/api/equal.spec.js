@@ -4,16 +4,16 @@ if (Object.defineProperty) {
     function Field(val, options) {
       var value = val;
       var propertyDescription = {
-        enumerable: true
+        enumerable: true,
       };
       if (options.match(/getter/)) {
-        propertyDescription.get = function() {
+        propertyDescription.get = function () {
           return value;
         };
       }
 
       if (options.match(/setter/)) {
-        propertyDescription.set = function(val) {
+        propertyDescription.set = function (val) {
           value = val;
         };
       }

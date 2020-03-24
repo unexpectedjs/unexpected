@@ -1,6 +1,6 @@
 /* global unexpected, weknowhow */
 
-it.skipIf = function(condition) {
+it.skipIf = function (condition) {
   (condition ? it.skip : it).apply(
     it,
     Array.prototype.slice.call(arguments, 1)
@@ -15,8 +15,8 @@ describe('unexpected', () => {
       typeof weknowhow === 'undefined' ? require('../lib/') : weknowhow.expect;
 
     expect(
-      function() {
-        topLevelExpect.addAssertion('<any> to foo', function() {});
+      function () {
+        topLevelExpect.addAssertion('<any> to foo', function () {});
       },
       'to throw',
       'Cannot add an assertion to a frozen instance, please run .clone() first'
@@ -26,7 +26,7 @@ describe('unexpected', () => {
   describe('argument validation', () => {
     it('fails when given no parameters', () => {
       expect(
-        function() {
+        function () {
           expect();
         },
         'to throw',
@@ -36,7 +36,7 @@ describe('unexpected', () => {
 
     it('fails when given only one parameter', () => {
       expect(
-        function() {
+        function () {
           expect('foo');
         },
         'to throw',
@@ -46,7 +46,7 @@ describe('unexpected', () => {
 
     it('fails when the second parameter is not a string', () => {
       expect(
-        function() {
+        function () {
           expect({}, {});
         },
         'to throw',
@@ -91,11 +91,11 @@ describe('unexpected', () => {
       it('fails when given no parameters', () => {
         var clonedExpect = expect
           .clone()
-          .addAssertion('<any> to foo', function(expect) {
+          .addAssertion('<any> to foo', function (expect) {
             expect();
           });
         expect(
-          function() {
+          function () {
             clonedExpect('foo', 'to foo');
           },
           'to throw',
@@ -106,11 +106,11 @@ describe('unexpected', () => {
       it('fails when the second parameter is not a string', () => {
         var clonedExpect = expect
           .clone()
-          .addAssertion('<any> to foo', function(expect) {
+          .addAssertion('<any> to foo', function (expect) {
             expect({}, {});
           });
         expect(
-          function() {
+          function () {
             clonedExpect({}, {});
           },
           'to throw',
@@ -122,7 +122,7 @@ describe('unexpected', () => {
 
   it('throws if the assertion does not exist', () => {
     expect(
-      function() {
+      function () {
         expect({}, 'to bee', 2);
       },
       'to throw exception',
@@ -133,11 +133,11 @@ describe('unexpected', () => {
   it('shows a specific error message when the assertion exists, but not for the given type signature', () => {
     var clonedExpect = expect
       .clone()
-      .addAssertion('<string> [not] to foo <array>', function(expect) {
+      .addAssertion('<string> [not] to foo <array>', function (expect) {
         expect();
       });
     expect(
-      function() {
+      function () {
         clonedExpect(123, 'to foo', 456);
       },
       'to throw',
@@ -153,13 +153,13 @@ describe('unexpected', () => {
     it('should catch non-Unexpected error caught from a nested assertion', () => {
       var clonedExpect = expect
         .clone()
-        .addAssertion('<any> to foo', function(expect, subject) {
+        .addAssertion('<any> to foo', function (expect, subject) {
           return expect(subject, 'to bar');
         })
-        .addAssertion('<any> to bar', function(expect, subject) {
-          return expect.promise(function(run) {
+        .addAssertion('<any> to bar', function (expect, subject) {
+          return expect.promise(function (run) {
             setTimeout(
-              run(function() {
+              run(function () {
                 throw new Error('foo');
               }),
               1
@@ -168,7 +168,7 @@ describe('unexpected', () => {
         });
 
       return expect(
-        function() {
+        function () {
           return clonedExpect('bar', 'to foo');
         },
         'to error',
@@ -184,7 +184,7 @@ describe('unexpected', () => {
 
     it('should fail with a diff', () => {
       expect(
-        function() {
+        function () {
           expect(123, expect.it('to be a string'));
         },
         'to throw',
@@ -197,7 +197,7 @@ describe('unexpected', () => {
     describe('on strings', () => {
       it('highlights unexpected extra newlines after the input', () => {
         expect(
-          function() {
+          function () {
             expect('foo\n', 'to equal', 'foo');
           },
           'to throw',
@@ -207,7 +207,7 @@ describe('unexpected', () => {
 
       it('highlights missing newlines after the input', () => {
         expect(
-          function() {
+          function () {
             expect('foo', 'to equal', 'foo\n');
           },
           'to throw',
@@ -217,7 +217,7 @@ describe('unexpected', () => {
 
       it('highlights unexpected carriage returns', () => {
         expect(
-          function() {
+          function () {
             expect('foo\r\nbar', 'to equal', 'foo\nbar');
           },
           'to throw',
@@ -229,7 +229,7 @@ describe('unexpected', () => {
         );
 
         expect(
-          function() {
+          function () {
             expect('foo\r\n', 'to equal', 'foo\n');
           },
           'to throw',
@@ -240,7 +240,7 @@ describe('unexpected', () => {
         );
 
         expect(
-          function() {
+          function () {
             expect('foo\r\n', 'to equal', 'foo');
           },
           'to throw',
@@ -253,7 +253,7 @@ describe('unexpected', () => {
 
       it('highlights missing carriage returns', () => {
         expect(
-          function() {
+          function () {
             expect('foo\nbar', 'to equal', 'foo\r\nbar');
           },
           'to throw',
@@ -265,7 +265,7 @@ describe('unexpected', () => {
         );
 
         expect(
-          function() {
+          function () {
             expect('foo\n', 'to equal', 'foo\r\n');
           },
           'to throw',
@@ -276,7 +276,7 @@ describe('unexpected', () => {
         );
 
         expect(
-          function() {
+          function () {
             expect('foo', 'to equal', 'foo\r\n');
           },
           'to throw',
@@ -289,7 +289,7 @@ describe('unexpected', () => {
 
       it('matching carriage returns are not highlighted', () => {
         expect(
-          function() {
+          function () {
             expect('foo\r\nbar', 'to equal', 'foo\r\nbaz');
           },
           'to throw',
@@ -303,7 +303,7 @@ describe('unexpected', () => {
 
       it('should show a \\r\\n line as removed', () => {
         expect(
-          function() {
+          function () {
             expect('foo\r\n\r\nbar', 'to equal', 'foo\r\nbar');
           },
           'to throw',
@@ -317,7 +317,7 @@ describe('unexpected', () => {
 
       it('should show an empty removed line', () => {
         expect(
-          function() {
+          function () {
             expect('foo\n\nbar', 'to equal', 'foo\nbar');
           },
           'to throw',
@@ -331,7 +331,7 @@ describe('unexpected', () => {
 
       it('should show a missing empty line', () => {
         expect(
-          function() {
+          function () {
             expect('foo\nbar', 'to equal', 'foo\n\nbar');
           },
           'to throw',
@@ -345,7 +345,7 @@ describe('unexpected', () => {
 
       it('should show missing content when comparing to the empty string', () => {
         expect(
-          function() {
+          function () {
             expect('', 'to equal', 'foo\nbar');
           },
           'to throw',
@@ -355,7 +355,7 @@ describe('unexpected', () => {
 
       it('should show unexpected content when comparing to the empty string', () => {
         expect(
-          function() {
+          function () {
             expect('foo\nbar', 'to equal', '');
           },
           'to throw',
@@ -367,16 +367,16 @@ describe('unexpected', () => {
     describe('on objects', () => {
       it('should not collapse parts containing conflicts', () => {
         expect(
-          function() {
+          function () {
             expect(
               {
                 bar: {
-                  b: { foo: { bar: 123 } }
-                }
+                  b: { foo: { bar: 123 } },
+                },
               },
               'to equal',
               {
-                bar: {}
+                bar: {},
               }
             );
           },
@@ -393,14 +393,14 @@ describe('unexpected', () => {
 
       it('should quote property names that require it', () => {
         expect(
-          function() {
+          function () {
             expect(
               {
-                "the-'thing": 123
+                "the-'thing": 123,
               },
               'to equal',
               {
-                "the-'thing": 456
+                "the-'thing": 456,
               }
             );
           },
@@ -415,14 +415,14 @@ describe('unexpected', () => {
 
       it('can contain nested string diffs', () => {
         expect(
-          function() {
+          function () {
             expect(
               {
-                value: 'bar'
+                value: 'bar',
               },
               'to equal',
               {
-                value: 'baz'
+                value: 'baz',
               }
             );
           },
@@ -440,17 +440,17 @@ describe('unexpected', () => {
 
       it('highlights properties that has been removed', () => {
         expect(
-          function() {
+          function () {
             expect(
               {
                 foo: 'foo',
                 bar: 'bar',
-                baz: 'baz'
+                baz: 'baz',
               },
               'to equal',
               {
                 bar: 'bar',
-                baz: 'baz'
+                baz: 'baz',
               }
             );
           },
@@ -467,17 +467,17 @@ describe('unexpected', () => {
 
       it('highlights missing properties', () => {
         expect(
-          function() {
+          function () {
             expect(
               {
                 one: 1,
-                three: 3
+                three: 3,
               },
               'to equal',
               {
                 one: 1,
                 two: 2,
-                three: 3
+                three: 3,
               }
             );
           },
@@ -494,18 +494,18 @@ describe('unexpected', () => {
 
       it('highlights properties with an unexpected value', () => {
         expect(
-          function() {
+          function () {
             expect(
               {
                 one: 1,
                 two: 42,
-                three: 3
+                three: 3,
               },
               'to equal',
               {
                 one: 1,
                 two: 2,
-                three: 3
+                three: 3,
               }
             );
           },
@@ -522,14 +522,14 @@ describe('unexpected', () => {
 
       it('can contain nested object diffs for properties', () => {
         expect(
-          function() {
+          function () {
             expect(
               {
-                one: { two: { three: 4 } }
+                one: { two: { three: 4 } },
               },
               'to equal',
               {
-                one: { two: { three: 3 } }
+                one: { two: { three: 3 } },
               }
             );
           },
@@ -548,20 +548,20 @@ describe('unexpected', () => {
 
       it('collapses subtrees without conflicts', () => {
         expect(
-          function() {
+          function () {
             expect(
               {
                 pill: {
                   red: "I'll show you how deep the rabbit hole goes",
-                  blue: { ignorance: { of: 'illusion' } }
-                }
+                  blue: { ignorance: { of: 'illusion' } },
+                },
               },
               'to equal',
               {
                 pill: {
                   red: "I'll show you how deep the rabbit hole goes.",
-                  blue: { ignorance: { of: 'illusion' } }
-                }
+                  blue: { ignorance: { of: 'illusion' } },
+                },
               }
             );
           },
@@ -603,7 +603,7 @@ describe('unexpected', () => {
         }
 
         expect(
-          function() {
+          function () {
             expect(new Foo('test'), 'to equal', new Bar('test'));
           },
           'to throw',
@@ -617,7 +617,7 @@ describe('unexpected', () => {
     describe('on arrays', () => {
       it('suppresses array diff for large arrays', () => {
         expect(
-          function() {
+          function () {
             const a = new Array(513);
             const b = new Array(513);
             a[0] = 1;
@@ -631,7 +631,7 @@ describe('unexpected', () => {
 
       it('highlights unexpected entries', () => {
         expect(
-          function() {
+          function () {
             expect([0, 1, 2], 'to equal', [0, 2]);
           },
           'to throw',
@@ -647,7 +647,7 @@ describe('unexpected', () => {
 
       it('highlights missing entries', () => {
         expect(
-          function() {
+          function () {
             expect([0, 2], 'to equal', [0, 1, 2]);
           },
           'to throw',
@@ -663,7 +663,7 @@ describe('unexpected', () => {
 
       it('omits comma after last actual entry', () => {
         expect(
-          function() {
+          function () {
             expect([0], 'to equal', [0, 1]);
           },
           'to throw',
@@ -678,7 +678,7 @@ describe('unexpected', () => {
 
       it('handles complicated similarities', () => {
         expect(
-          function() {
+          function () {
             expect([4, 3, 1, 2], 'to equal', [1, 2, 3, 4]);
           },
           'to throw',
@@ -696,7 +696,7 @@ describe('unexpected', () => {
         );
 
         expect(
-          function() {
+          function () {
             expect([4, 1, 2, 3], 'to equal', [1, 2, 3, 4]);
           },
           'to throw',
@@ -714,7 +714,7 @@ describe('unexpected', () => {
         );
 
         expect(
-          function() {
+          function () {
             expect([1, 2, 3, 0], 'to equal', [0, 1, 2, 3]);
           },
           'to throw',
@@ -730,7 +730,7 @@ describe('unexpected', () => {
         );
 
         expect(
-          function() {
+          function () {
             expect([4, 3, 1, 2], 'to equal', [3, 4]);
           },
           'to throw',
@@ -748,7 +748,7 @@ describe('unexpected', () => {
 
       it('highlights conflicting entries', () => {
         expect(
-          function() {
+          function () {
             expect([0, 'once', 2], 'to equal', [0, 'one', 2]);
           },
           'to throw',
@@ -767,12 +767,12 @@ describe('unexpected', () => {
 
       it('considers object with a similar structure candidates for diffing', () => {
         expect(
-          function() {
+          function () {
             expect([0, 1, { name: 'John', age: 34 }, 3, 2], 'to equal', [
               0,
               { name: 'Jane', age: 24, children: 2 },
               3,
-              2
+              2,
             ]);
           },
           'to throw',
@@ -798,12 +798,12 @@ describe('unexpected', () => {
 
       it('does not consider object with a different structure candidates for diffing', () => {
         expect(
-          function() {
+          function () {
             expect([0, 1, { name: 'John' }, 3, 2], 'to equal', [
               0,
               { firstName: 'John', lastName: 'Doe' },
               3,
-              2
+              2,
             ]);
           },
           'to throw',
@@ -823,7 +823,7 @@ describe('unexpected', () => {
 
       it('considers similar strings candidates for diffing', () => {
         expect(
-          function() {
+          function () {
             expect(['twoo', 1, 3, 4, 5], 'to equal', [0, 1, 'two', 3, 4, 5]);
           },
           'to throw',
@@ -846,7 +846,7 @@ describe('unexpected', () => {
 
       it('does not consider different strings candidates for diffing', () => {
         expect(
-          function() {
+          function () {
             expect(['tw00', 1, 3, 4, 5], 'to equal', [0, 1, 'two', 3, 4, 5]);
           },
           'to throw',
@@ -888,13 +888,13 @@ describe('unexpected', () => {
           },
           diff() {
             return null;
-          }
+          },
         });
 
         expect(
-          function() {
+          function () {
             clonedExpect([new Person('John', 'Doe')], 'to equal', [
-              new Person('Jane', 'Doe')
+              new Person('Jane', 'Doe'),
             ]);
           },
           'to throw',
@@ -909,7 +909,7 @@ describe('unexpected', () => {
       describe('sparse arrays', () => {
         it('elem was sparse', () => {
           expect(
-            function() {
+            function () {
               var sparse = [];
               sparse[1] = 2;
               sparse[2] = 3;
@@ -927,7 +927,7 @@ describe('unexpected', () => {
         });
         it('elem should be sparse', () => {
           expect(
-            function() {
+            function () {
               var sparse = [];
               sparse[1] = 2;
               sparse[2] = 3;
@@ -951,11 +951,11 @@ describe('unexpected', () => {
     it('should render the error message sanely in an annotation block inside a satisfy diff', () => {
       var clonedExpect = expect
         .clone()
-        .addAssertion('<any> foobar', function(expect, subject) {
+        .addAssertion('<any> foobar', function (expect, subject) {
           expect(subject, 'to equal', 'foobar');
         });
       expect(
-        function() {
+        function () {
           clonedExpect(['barfoo'], 'to have items satisfying', 'foobar');
         },
         'to throw',
@@ -975,10 +975,7 @@ describe('unexpected', () => {
     describe('#errorName', () => {
       it('should inspect an object with an anoymous constructor', () => {
         expect(
-          expect.output
-            .clone()
-            .errorName(Object.create(null))
-            .toString(),
+          expect.output.clone().errorName(Object.create(null)).toString(),
           'to equal',
           'Error'
         );
@@ -988,7 +985,7 @@ describe('unexpected', () => {
     describe('#appendItems', () => {
       it('should inspect multiple items', () => {
         var magicPen = expect.output.clone();
-        magicPen.addStyle('appendInspected', function(arg) {
+        magicPen.addStyle('appendInspected', function (arg) {
           this.text(arg);
         });
         expect(magicPen.appendItems([1, 2], ',').toString(), 'to equal', '1,2');
@@ -996,7 +993,7 @@ describe('unexpected', () => {
 
       it('should default to a separator of the empty string', () => {
         var magicPen = expect.output.clone();
-        magicPen.addStyle('appendInspected', function(arg) {
+        magicPen.addStyle('appendInspected', function (arg) {
           this.text(arg);
         });
         expect(magicPen.appendItems([1, 2]).toString(), 'to equal', '12');
@@ -1008,7 +1005,7 @@ describe('unexpected', () => {
     describe('with multiple compound assertions', () => {
       var clonedExpect = expect
         .clone()
-        .addAssertion('<number> [when] incremented <assertion?>', function(
+        .addAssertion('<number> [when] incremented <assertion?>', function (
           expect,
           subject
         ) {
@@ -1016,14 +1013,14 @@ describe('unexpected', () => {
         })
         .addAssertion(
           '<number> [when] added to <number> <assertion?>',
-          function(expect, subject, value) {
+          function (expect, subject, value) {
             return expect.shift(subject + value);
           }
         );
 
       it('should several compound assertions separated by an assertion argument', () => {
         expect(
-          function() {
+          function () {
             return clonedExpect(
               2,
               'when incremented when added to',
@@ -1042,7 +1039,7 @@ describe('unexpected', () => {
 
       it('should several long compound assertions separated by an assertion argument', () => {
         expect(
-          function() {
+          function () {
             return clonedExpect(
               2,
               'when incremented when incremented when incremented when added to',
@@ -1067,7 +1064,7 @@ describe('unexpected', () => {
 
       it('should fail', () => {
         return expect(
-          function() {
+          function () {
             return expect([123], 'to have items satisfying to be a boolean');
           },
           'to error',
@@ -1090,7 +1087,7 @@ describe('unexpected', () => {
 
       it('should fail', () => {
         return expect(
-          function() {
+          function () {
             return expect(
               [[123]],
               'to have items satisfying to have items satisfying to be a boolean'
@@ -1120,7 +1117,7 @@ describe('unexpected', () => {
 
       it('should fail', () => {
         return expect(
-          function() {
+          function () {
             return expect(
               expect.promise.reject(true),
               'when rejected to be a number'
@@ -1144,7 +1141,7 @@ describe('unexpected', () => {
 
       it('should fail', () => {
         return expect(
-          function() {
+          function () {
             return expect(
               expect.promise.reject(expect.promise.reject(true)),
               'when rejected when rejected to be a number'
@@ -1162,9 +1159,9 @@ describe('unexpected', () => {
     // https://github.com/unexpectedjs/unexpected/issues/394
     it('should produce a meaningful error message when the last half of a compound assertion is not a valid assertion name', () => {
       expect(
-        function() {
+        function () {
           expect(
-            function() {},
+            function () {},
             'when called with',
             'M1',
             'to throw a',
@@ -1185,8 +1182,8 @@ describe('unexpected', () => {
   describe('#output', () => {
     it('does not allow the creation of a style named "inline"', () => {
       expect(
-        function() {
-          expect.output.addStyle('inline', function() {});
+        function () {
+          expect.output.addStyle('inline', function () {});
         },
         'to throw',
         '"inline" style cannot be defined, it clashes with a built-in attribute'
@@ -1195,8 +1192,8 @@ describe('unexpected', () => {
 
     it('does not allow the creation of a style named "inline" on a clone', () => {
       expect(
-        function() {
-          expect.output.clone().addStyle('inline', function() {});
+        function () {
+          expect.output.clone().addStyle('inline', function () {});
         },
         'to throw',
         '"inline" style cannot be defined, it clashes with a built-in attribute'
@@ -1205,8 +1202,8 @@ describe('unexpected', () => {
 
     it('does not allow the creation of a style named "diff"', () => {
       expect(
-        function() {
-          expect.output.addStyle('diff', function() {});
+        function () {
+          expect.output.addStyle('diff', function () {});
         },
         'to throw',
         '"diff" style cannot be defined, it clashes with a built-in attribute'
@@ -1217,14 +1214,14 @@ describe('unexpected', () => {
   it('should render the error message correctly when an non-existent assertion is used later in the argument list', () => {
     var clonedExpect = expect
       .clone()
-      .addAssertion('<any> to foo <assertion>', function(expect, subject) {
+      .addAssertion('<any> to foo <assertion>', function (expect, subject) {
         expect(subject, 'to equal', 'foo');
       })
-      .addAssertion('<any> to bar <assertion>', function(expect, subject) {
+      .addAssertion('<any> to bar <assertion>', function (expect, subject) {
         expect(subject, 'to equal', 'bar');
       });
     expect(
-      function() {
+      function () {
         clonedExpect(123, 'to foo', 'to bar', 'bogus');
       },
       'to throw',
@@ -1234,9 +1231,9 @@ describe('unexpected', () => {
 
   it('should render the error message correctly when a failing assertion is followed by an assertion where a non-string is where an assertion should have been', () => {
     expect(
-      function() {
+      function () {
         expect(
-          function() {
+          function () {
             return 123;
           },
           'when called when called with',
@@ -1264,7 +1261,7 @@ describe('unexpected', () => {
 
     clonedExpect.addAssertion(
       '<string> when suffixed with foo <assertion?>',
-      function(expect, subject) {
+      function (expect, subject) {
         var _len = arguments.length;
         var rest = Array(_len > 2 ? _len - 2 : 0);
         for (var _key = 2; _key < _len; _key++) {
@@ -1275,7 +1272,7 @@ describe('unexpected', () => {
     );
 
     it('should return a promise that resolves to that value', () => {
-      clonedExpect('bar', 'when suffixed with foo').then(function(value) {
+      clonedExpect('bar', 'when suffixed with foo').then(function (value) {
         expect(value, 'to equal', 'barfoo');
       });
     });
@@ -1287,7 +1284,7 @@ describe('unexpected', () => {
 
       it('should fail with a diff', () => {
         expect(
-          function() {
+          function () {
             clonedExpect('bar', 'when suffixed with foo', 'to equal', 'foobar');
           },
           'to throw',
@@ -1310,7 +1307,7 @@ describe('unexpected', () => {
 
       it('should fail with a diff', () => {
         expect(
-          function() {
+          function () {
             clonedExpect(
               'bar',
               'when suffixed with foo',
@@ -1330,7 +1327,7 @@ describe('unexpected', () => {
     it('should return a promise that has an "and" method', () => {
       clonedExpect.addAssertion(
         '<string> to equal foo and when suffixed with bar <assertion?>',
-        function(expect, subject) {
+        function (expect, subject) {
           var _len = arguments.length;
           var rest = Array(_len > 2 ? _len - 2 : 0);
           for (var _key = 2; _key < _len; _key++) {
@@ -1340,14 +1337,14 @@ describe('unexpected', () => {
           return expect
             .apply(undefined, [result].concat(rest))
             .and('to equal', 'foobar')
-            .then(function() {
+            .then(function () {
               return result;
             });
         }
       );
 
       clonedExpect('foo', 'to equal foo and when suffixed with bar').then(
-        function(value) {
+        function (value) {
           expect(value, 'to equal', 'foobar');
         }
       );
@@ -1383,9 +1380,11 @@ describe('unexpected', () => {
   });
 
   it('throws when calling a function that only works on the top-level expect', () => {
-    const clonedExpect = expect.clone().addAssertion('<any> to foo', expect => {
-      expect.use(() => {});
-    });
+    const clonedExpect = expect
+      .clone()
+      .addAssertion('<any> to foo', (expect) => {
+        expect.use(() => {});
+      });
 
     expect(
       () => clonedExpect(123, 'to foo'),

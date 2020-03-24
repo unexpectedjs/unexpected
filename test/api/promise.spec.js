@@ -3,27 +3,27 @@ describe('expect.promise', () => {
   it('should forward non-unexpected errors', () => {
     var clonedExpect = expect
       .clone()
-      .addAssertion('<any> to foo', function(expect, subject) {
+      .addAssertion('<any> to foo', function (expect, subject) {
         return expect.withError(
-          function() {
-            return expect.promise(function() {
+          function () {
+            return expect.promise(function () {
               return expect.promise.any([
-                expect.promise(function() {
+                expect.promise(function () {
                   expect(subject, 'to be', 24);
                 }),
-                expect.promise(function() {
+                expect.promise(function () {
                   throw new Error('wat');
-                })
+                }),
               ]);
             });
           },
-          function(e) {
+          function (e) {
             // success
           }
         );
       });
     expect(
-      function() {
+      function () {
         clonedExpect(42, 'to foo');
       },
       'to throw',
@@ -34,8 +34,8 @@ describe('expect.promise', () => {
   it('should return the fulfilled promise even if it is oathbreakable', () => {
     var clonedExpect = expect
       .clone()
-      .addAssertion('<any> to foo', function(expect, subject) {
-        return expect.promise(function() {
+      .addAssertion('<any> to foo', function (expect, subject) {
+        return expect.promise(function () {
           expect(subject, 'to equal', 'foo');
           return 'bar';
         });
@@ -43,18 +43,18 @@ describe('expect.promise', () => {
     expect(clonedExpect('foo', 'to foo'), 'to be fulfilled with', 'bar');
   });
 
-  it('should preserve the resolved value when an assertion contains a non-oathbreakable promise', function(done) {
+  it('should preserve the resolved value when an assertion contains a non-oathbreakable promise', function (done) {
     var clonedExpect = expect
       .clone()
-      .addAssertion('<any> to foo', function(expect, subject) {
-        return expect.promise(function(resolve, reject) {
+      .addAssertion('<any> to foo', function (expect, subject) {
+        return expect.promise(function (resolve, reject) {
           expect(subject, 'to equal', 'foo');
-          setTimeout(function() {
+          setTimeout(function () {
             resolve('bar');
           }, 1);
         });
       });
-    clonedExpect('foo', 'to foo').then(function(value) {
+    clonedExpect('foo', 'to foo').then(function (value) {
       expect(value, 'to equal', 'bar');
       done();
     });
@@ -63,11 +63,11 @@ describe('expect.promise', () => {
   it('should return a promise fulfilled with the return value when an assertion returns a non-promise value', () => {
     var clonedExpect = expect
       .clone()
-      .addAssertion('<any> to foo', function(expect, subject) {
+      .addAssertion('<any> to foo', function (expect, subject) {
         expect(subject, 'to equal', 'foo');
         return 'bar';
       });
-    clonedExpect('foo', 'to foo').then(function(value) {
+    clonedExpect('foo', 'to foo').then(function (value) {
       expect(value, 'to equal', 'bar');
     });
   });
@@ -90,7 +90,7 @@ describe('expect.promise', () => {
 
       it('should fail with a diff', () => {
         return expect(
-          function() {
+          function () {
             return expect('foo', 'to equal', 'foo').and('to be a number');
           },
           'to error',
@@ -100,7 +100,7 @@ describe('expect.promise', () => {
 
       it('should fail with a diff even when the promise is not returned', () => {
         return expect(
-          function() {
+          function () {
             expect('foo', 'to equal', 'foo').and('to be a number');
           },
           'to error',
@@ -117,7 +117,7 @@ describe('expect.promise', () => {
 
         it('should fail with a diff', () => {
           return expect(
-            function() {
+            function () {
               return expect('foo', 'to equal', 'foo').and(
                 expect.it('to be a number')
               );
@@ -144,7 +144,7 @@ describe('expect.promise', () => {
 
       it('should fail with a diff when the asynchronous assertion fails', () => {
         return expect(
-          function() {
+          function () {
             return expect('foo', 'when delayed', 5, 'to equal', 'bar').and(
               'to be a string'
             );
@@ -159,7 +159,7 @@ describe('expect.promise', () => {
 
       it('should fail with a diff when the synchronous assertion fails', () => {
         return expect(
-          function() {
+          function () {
             return expect('foo', 'when delayed', 5, 'to equal', 'foo').and(
               'to be a number'
             );
@@ -171,7 +171,7 @@ describe('expect.promise', () => {
 
       it('should fail with a diff when both assertions fail', () => {
         return expect(
-          function() {
+          function () {
             return expect('foo', 'when delayed', 5, 'to equal', 'bar').and(
               'to be a number'
             );
@@ -200,7 +200,7 @@ describe('expect.promise', () => {
 
         it('should fail with a diff', () => {
           return expect(
-            function() {
+            function () {
               return expect('foo', 'when delayed', 5, 'to equal', 'foo').and(
                 expect.it('to be a number')
               );
@@ -216,13 +216,13 @@ describe('expect.promise', () => {
       it('should mount the and method on a promise returned from a nested assertion', () => {
         var clonedExpect = expect
           .clone()
-          .addAssertion('<any> to foo', function(expect, subject) {
+          .addAssertion('<any> to foo', function (expect, subject) {
             return expect(subject, 'to bar').and('to equal', 'foo');
           })
-          .addAssertion('<any> to bar', function(expect, subject) {
-            return expect.promise(function(run) {
+          .addAssertion('<any> to bar', function (expect, subject) {
+            return expect.promise(function (run) {
               setTimeout(
-                run(function() {
+                run(function () {
                   expect(subject, 'to be truthy');
                 }),
                 1
@@ -240,16 +240,16 @@ describe('expect.promise', () => {
         'See http://unexpected.js.org/api/promise/ for more details.'
     );
     expect(
-      function() {
+      function () {
         expect.promise();
       },
       'to throw',
       expectedError
     );
 
-    [undefined, null, '', [], {}].forEach(function(arg) {
+    [undefined, null, '', [], {}].forEach(function (arg) {
       expect(
-        function() {
+        function () {
           expect.promise(arg);
         },
         'to throw',
@@ -279,7 +279,7 @@ describe('expect.promise', () => {
     it('should inspect a fulfilled promise without a value', () => {
       expect(
         expect
-          .promise(function() {
+          .promise(function () {
             expect(2, 'to equal', 2);
           })
           [inspectMethodName](),
@@ -291,7 +291,7 @@ describe('expect.promise', () => {
     it('should inspect a fulfilled promise with a value', () => {
       expect(
         expect
-          .promise(function() {
+          .promise(function () {
             return 123;
           })
           [inspectMethodName](),
@@ -316,23 +316,23 @@ describe('expect.promise', () => {
     });
 
     it('should inspect a rejected promise without a reason', () => {
-      var promise = expect.promise(function(resolve, reject) {
+      var promise = expect.promise(function (resolve, reject) {
         reject();
       });
 
-      return promise.caught(function() {
+      return promise.caught(function () {
         expect(promise[inspectMethodName](), 'to equal', 'Promise (rejected)');
       });
     });
 
     it('should inspect a rejected promise with a reason', () => {
-      var promise = expect.promise(function(resolve, reject) {
-        setTimeout(function() {
+      var promise = expect.promise(function (resolve, reject) {
+        setTimeout(function () {
           reject(new Error('argh'));
         }, 0);
       });
 
-      return promise.caught(function() {
+      return promise.caught(function () {
         expect(
           promise[inspectMethodName](),
           'to equal',
@@ -346,9 +346,9 @@ describe('expect.promise', () => {
     it('should support non-Promise leaves', () => {
       return expect.promise
         .settle({
-          a: 123
+          a: 123,
         })
-        .then(function(promises) {
+        .then(function (promises) {
           expect(promises, 'to equal', []);
         });
     });
@@ -356,14 +356,14 @@ describe('expect.promise', () => {
 
   describe('called with a function that takes a single ("run") parameter', () => {
     it('should allow providing an empty function', () => {
-      return expect.promise(function(run) {
+      return expect.promise(function (run) {
         setImmediate(run());
       });
     });
 
     it('should not fulfill the promise until the outer function has returned', () => {
       return expect(
-        expect.promise(function(run) {
+        expect.promise(function (run) {
           run()();
           throw new Error('foo');
         }),
@@ -373,8 +373,8 @@ describe('expect.promise', () => {
     });
 
     it('should provide a run function that preserves the return value of the supplied function', () => {
-      return expect.promise(function(run) {
-        var runner = run(function() {
+      return expect.promise(function (run) {
+        var runner = run(function () {
           return 123;
         });
         expect(runner(), 'to equal', 123);

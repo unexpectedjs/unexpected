@@ -2,8 +2,8 @@
 describe('to be fulfilled with assertion', () => {
   it('should succeed if the response is resolved with a reason satisfying the argument', () => {
     return expect(
-      new Promise(function(resolve, reject) {
-        setTimeout(function() {
+      new Promise(function (resolve, reject) {
+        setTimeout(function () {
           resolve(123);
         }, 0);
       }),
@@ -17,7 +17,7 @@ describe('to be fulfilled with assertion', () => {
       expect.promise.resolve(123),
       'to be fulfilled with',
       123
-    ).then(function(value) {
+    ).then(function (value) {
       expect(value, 'to equal', 123);
     });
   });
@@ -25,8 +25,8 @@ describe('to be fulfilled with assertion', () => {
   it('should fail if the promise is resolved with a value that does not satisfy the argument', () => {
     return expect(
       expect(
-        new Promise(function(resolve, reject) {
-          setTimeout(function() {
+        new Promise(function (resolve, reject) {
+          setTimeout(function () {
             resolve({ foo: 'bar', baz: 'quux' });
           }, 1);
         }),
@@ -50,11 +50,11 @@ describe('to be fulfilled with assertion', () => {
   describe('when matching the fulfillment value against an expect.it', () => {
     it('should succeed', () => {
       return expect(
-        new Promise(function(resolve) {
+        new Promise(function (resolve) {
           resolve(123);
         }),
         'to be fulfilled with',
-        expect.it(function(value) {
+        expect.it(function (value) {
           expect(value, 'to equal', 123);
         })
       );
@@ -63,11 +63,11 @@ describe('to be fulfilled with assertion', () => {
     it('should fail with a diff', () => {
       return expect(
         expect(
-          new Promise(function(resolve) {
+          new Promise(function (resolve) {
             resolve(123);
           }),
           'to be fulfilled with',
-          expect.it(function(value) {
+          expect.it(function (value) {
             expect(value, 'to equal', 456);
           })
         ),
@@ -89,9 +89,9 @@ describe('to be fulfilled with assertion', () => {
   describe('when passed a function', () => {
     it('should fail if the function returns a promise that is fulfilled with the wrong value', () => {
       expect(
-        function() {
+        function () {
           return expect(
-            function() {
+            function () {
               return expect.promise.resolve(123);
             },
             'to be fulfilled with',

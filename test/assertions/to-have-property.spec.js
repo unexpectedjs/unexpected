@@ -9,34 +9,34 @@ describe('to have property assertion', () => {
     expect({ a: 'b' }, 'not to have property', 'b');
     expect({ '"a"': 'b' }, 'to have own property', '"a"');
     expect(Object.create({ a: 'b' }), 'not to have own property', 'a');
-    expect(function() {}, 'to have property', 'toString');
+    expect(function () {}, 'to have property', 'toString');
   });
 
   describe('property descriptor', () => {
     var subject = { a: 'b' };
     Object.defineProperty(subject, 'enumFalse', {
       enumerable: false,
-      value: 't'
+      value: 't',
     });
     Object.defineProperty(subject, 'configFalse', {
       configurable: false,
-      value: 't'
+      value: 't',
     });
     Object.defineProperty(subject, 'writableFalse', {
       writable: false,
-      value: 't'
+      value: 't',
     });
     Object.defineProperty(subject, 'enumTrue', {
       enumerable: true,
-      value: 't'
+      value: 't',
     });
     Object.defineProperty(subject, 'configTrue', {
       configurable: true,
-      value: 't'
+      value: 't',
     });
     Object.defineProperty(subject, 'writableTrue', {
       writable: true,
-      value: 't'
+      value: 't',
     });
 
     it('asserts validity of property descriptor', () => {
@@ -51,7 +51,7 @@ describe('to have property assertion', () => {
 
     it('throws when assertion fails', () => {
       expect(
-        function() {
+        function () {
           expect(subject, 'to have enumerable property', 'enumFalse');
         },
         'to throw exception',
@@ -63,7 +63,7 @@ describe('to have property assertion', () => {
           "to have enumerable property 'enumFalse'"
       );
       expect(
-        function() {
+        function () {
           expect(subject, 'to have unenumerable property', 'enumTrue');
         },
         'to throw exception',
@@ -75,7 +75,7 @@ describe('to have property assertion', () => {
           "to have unenumerable property 'enumTrue'"
       );
       expect(
-        function() {
+        function () {
           expect(subject, 'to have configurable property', 'configFalse');
         },
         'to throw exception',
@@ -87,7 +87,7 @@ describe('to have property assertion', () => {
           "to have configurable property 'configFalse'"
       );
       expect(
-        function() {
+        function () {
           expect(subject, 'to have unconfigurable property', 'configTrue');
         },
         'to throw exception',
@@ -99,7 +99,7 @@ describe('to have property assertion', () => {
           "to have unconfigurable property 'configTrue'"
       );
       expect(
-        function() {
+        function () {
           expect(subject, 'to have writable property', 'writableFalse');
         },
         'to throw exception',
@@ -111,7 +111,7 @@ describe('to have property assertion', () => {
           "to have writable property 'writableFalse'"
       );
       expect(
-        function() {
+        function () {
           expect(subject, 'to have unwritable property', 'writableTrue');
         },
         'to throw exception',
@@ -123,7 +123,7 @@ describe('to have property assertion', () => {
           "to have unwritable property 'writableTrue'"
       );
       expect(
-        function() {
+        function () {
           expect(subject, 'to have readonly property', 'writableTrue');
         },
         'to throw exception',
@@ -137,7 +137,7 @@ describe('to have property assertion', () => {
     });
 
     // Regression test
-    it('does not break when the object does not have the given property', function() {
+    it('does not break when the object does not have the given property', function () {
       expect(
         () => expect({}, 'to have configurable property', 'foo'),
         'to throw',
@@ -148,7 +148,7 @@ describe('to have property assertion', () => {
 
   it('throws when the assertion fails', () => {
     expect(
-      function() {
+      function () {
         expect({ a: 'b' }, 'to have property', 'b');
       },
       'to throw exception',
@@ -156,7 +156,7 @@ describe('to have property assertion', () => {
     );
 
     expect(
-      function() {
+      function () {
         expect(null, 'to have property', 'b');
       },
       'to throw exception',
@@ -169,7 +169,7 @@ describe('to have property assertion', () => {
     );
 
     expect(
-      function() {
+      function () {
         expect({ a: 'b' }, 'to have property', 'a', 'c');
       },
       'to throw exception',
@@ -180,7 +180,7 @@ describe('to have property assertion', () => {
     );
 
     expect(
-      function() {
+      function () {
         expect({ a: 'b' }, 'to have own property', 'a', 'c');
       },
       'to throw exception',
@@ -191,7 +191,7 @@ describe('to have property assertion', () => {
     );
 
     expect(
-      function() {
+      function () {
         // property expectations ignores value if property
         expect(null, 'not to have property', 'a', 'b');
       },
@@ -204,7 +204,7 @@ describe('to have property assertion', () => {
     );
 
     expect(
-      function() {
+      function () {
         // property expectations on value expects the property to be present
         expect(null, 'not to have own property', 'a', 'b');
       },
@@ -219,7 +219,7 @@ describe('to have property assertion', () => {
 
   it('does not support the not-flag in combination with a value argument', () => {
     expect(
-      function() {
+      function () {
         expect({ a: 'a' }, 'not to have property', 'a', 'a');
       },
       'to throw',
@@ -231,7 +231,7 @@ describe('to have property assertion', () => {
     );
 
     expect(
-      function() {
+      function () {
         expect({ a: 'a' }, 'not to have own property', 'a', 'a');
       },
       'to throw',
@@ -249,15 +249,15 @@ describe('to have property assertion', () => {
     clonedExpect.addType({
       name: 'upperCaseObject',
       base: 'object',
-      identify: function(obj) {
+      identify: function (obj) {
         return obj && typeof 'object';
       },
-      valueForKey: function(obj, key) {
+      valueForKey: function (obj, key) {
         if (typeof obj[key] === 'string') {
           return obj[key].toUpperCase();
         }
         return obj[key];
-      }
+      },
     });
 
     it('should process the value in "to have property"', () => {
@@ -270,14 +270,14 @@ describe('to have property assertion', () => {
   });
 
   if (typeof Symbol === 'function') {
-    describe('with symbols', function() {
-      describe('to have property', function() {
-        it('should pass when the object contains the symbol', function() {
+    describe('with symbols', function () {
+      describe('to have property', function () {
+        it('should pass when the object contains the symbol', function () {
           const symbol = Symbol('foo');
           expect({ [symbol]: 123 }, 'to have property', symbol);
         });
 
-        it('should fail when the object does not contain the symbol', function() {
+        it('should fail when the object does not contain the symbol', function () {
           const symbol = Symbol('foo');
           expect(
             () => expect({ bar: 123 }, 'to have property', symbol),
@@ -287,13 +287,13 @@ describe('to have property assertion', () => {
         });
       });
 
-      describe('to have own property', function() {
-        it('should pass when the object contains the symbol', function() {
+      describe('to have own property', function () {
+        it('should pass when the object contains the symbol', function () {
           const symbol = Symbol('foo');
           expect({ [symbol]: 123 }, 'to have own property', symbol);
         });
 
-        it('should fail when the object does not contain the symbol', function() {
+        it('should fail when the object does not contain the symbol', function () {
           const symbol = Symbol('foo');
           expect(
             () => expect({ bar: 123 }, 'to have own property', symbol),
@@ -302,13 +302,13 @@ describe('to have property assertion', () => {
           );
         });
 
-        describe('with expected value', function() {
-          it('should pass when the object contains the symbol with the given value', function() {
+        describe('with expected value', function () {
+          it('should pass when the object contains the symbol with the given value', function () {
             const symbol = Symbol('foo');
             expect({ [symbol]: 123 }, 'to have own property', symbol, 123);
           });
 
-          it('should fail when the object does not contain the symbol', function() {
+          it('should fail when the object does not contain the symbol', function () {
             const symbol = Symbol('foo');
             expect(
               () => expect({ bar: 123 }, 'to have own property', symbol, 123),
@@ -317,7 +317,7 @@ describe('to have property assertion', () => {
             );
           });
 
-          it('should fail when the object contains the symbol, but with a different value', function() {
+          it('should fail when the object contains the symbol, but with a different value', function () {
             const symbol = Symbol('foo');
             expect(
               () =>
@@ -330,13 +330,13 @@ describe('to have property assertion', () => {
         });
       });
 
-      describe('to have enumerable(/configurable/writable) property', function() {
-        it('should pass when the object contains the symbol', function() {
+      describe('to have enumerable(/configurable/writable) property', function () {
+        it('should pass when the object contains the symbol', function () {
           const symbol = Symbol('foo');
           expect({ [symbol]: 123 }, 'to have enumerable property', symbol);
         });
 
-        it('should fail when the object does not contain the symbol', function() {
+        it('should fail when the object does not contain the symbol', function () {
           const symbol = Symbol('foo');
           expect(
             () => expect({ bar: 123 }, 'to have enumerable property', symbol),

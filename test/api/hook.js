@@ -3,8 +3,8 @@ describe('hook', () => {
   it('should hook into the expect function itself', () => {
     var clonedExpect = expect.clone();
     var called = false;
-    clonedExpect.hook(function(next) {
-      return function(context, args) {
+    clonedExpect.hook(function (next) {
+      return function (context, args) {
         called = true;
         return next(context, args);
       };
@@ -20,8 +20,8 @@ describe('hook', () => {
       var clonedClonedExpect = clonedExpect.clone();
 
       var called = false;
-      clonedExpect.hook(function(next) {
-        return function(context, args) {
+      clonedExpect.hook(function (next) {
+        return function (context, args) {
           called = true;
           return next(context, args);
         };
@@ -33,8 +33,8 @@ describe('hook', () => {
     it('should affect clones made after hooking in', () => {
       var clonedExpect = expect.clone();
       var called = false;
-      clonedExpect.hook(function(next) {
-        return function(context, args) {
+      clonedExpect.hook(function (next) {
+        return function (context, args) {
           called = true;
           return next(context, args);
         };
@@ -51,8 +51,8 @@ describe('hook', () => {
       var childExpect = parentExpect.child();
 
       var called = false;
-      parentExpect.hook(function(next) {
-        return function(context, args) {
+      parentExpect.hook(function (next) {
+        return function (context, args) {
           called = true;
           return next(context, args);
         };
@@ -66,8 +66,8 @@ describe('hook', () => {
       var parentExpect = expect.clone();
 
       var called = false;
-      parentExpect.hook(function(next) {
-        return function(context, args) {
+      parentExpect.hook(function (next) {
+        return function (context, args) {
           called = true;
           return next(context, args);
         };
@@ -82,8 +82,8 @@ describe('hook', () => {
 
   it('should allow rewriting the assertion string', () => {
     var clonedExpect = expect.clone();
-    clonedExpect.hook(function(next) {
-      return function(context, args) {
+    clonedExpect.hook(function (next) {
+      return function (context, args) {
         args[1] = 'to equal';
         return next(context, args);
       };
@@ -93,8 +93,8 @@ describe('hook', () => {
 
   it('should allow suppressing the return value of the "next" expect', () => {
     var clonedExpect = expect.clone();
-    clonedExpect.hook(function(next) {
-      return function(context, args) {
+    clonedExpect.hook(function (next) {
+      return function (context, args) {
         try {
           next(context, args);
         } catch (e) {
@@ -109,14 +109,14 @@ describe('hook', () => {
     var firstCalled = false;
     var secondCalled = false;
     var clonedExpect = expect.clone();
-    clonedExpect.hook(function(next) {
-      return function(context, args) {
+    clonedExpect.hook(function (next) {
+      return function (context, args) {
         firstCalled = true;
         return next(context, args);
       };
     });
-    clonedExpect.hook(function(next) {
-      return function(context, args) {
+    clonedExpect.hook(function (next) {
+      return function (context, args) {
         secondCalled = true;
         return next(context, args);
       };

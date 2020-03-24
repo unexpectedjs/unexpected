@@ -45,8 +45,8 @@ When you want to build a completely custom output, you can call
 output can be written to.
 
 ```js
-expect.fail(function(output) {
-  'You have been a very bad boy!'.split(/ /).forEach(function(word, index) {
+expect.fail(function (output) {
+  'You have been a very bad boy!'.split(/ /).forEach(function (word, index) {
     if (index > 0) {
       output.sp();
     }
@@ -65,8 +65,8 @@ If you want to build an error containing a diff you can call
 
 ```js
 expect.fail({
-  message: function(output) {
-    'You have been a very bad boy!'.split(/ /).forEach(function(word, index) {
+  message: function (output) {
+    'You have been a very bad boy!'.split(/ /).forEach(function (word, index) {
       if (index > 0) {
         output.sp();
       }
@@ -74,12 +74,12 @@ expect.fail({
       output[style](word);
     });
   },
-  diff: function(output, diff, inspect, equal) {
+  diff: function (output, diff, inspect, equal) {
     return diff(
       'You have been a very bad boy!',
       'You have been a very mad boy!'
     );
-  }
+  },
 });
 ```
 

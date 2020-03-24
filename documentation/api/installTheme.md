@@ -11,8 +11,8 @@ Example:
 expect.installTheme({
   styles: {
     ugliness: 'yellow',
-    jsKeyword: 'ugliness'
-  }
+    jsKeyword: 'ugliness',
+  },
 });
 
 expect(function foo() {}, 'to throw', 'bar');

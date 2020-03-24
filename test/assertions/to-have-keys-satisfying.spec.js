@@ -2,7 +2,7 @@
 describe('to have keys satisfying assertion', () => {
   it('requires a third argument', () => {
     expect(
-      function() {
+      function () {
         expect([1, 2, 3], 'to have keys satisfying');
       },
       'to throw',
@@ -17,7 +17,7 @@ describe('to have keys satisfying assertion', () => {
 
   it('does not accept a fourth argument', () => {
     expect(
-      function() {
+      function () {
         expect([1], 'to have keys satisfying', 0, 1);
       },
       'to throw',
@@ -32,7 +32,7 @@ describe('to have keys satisfying assertion', () => {
 
   it('only accepts objects as the target', () => {
     expect(
-      function() {
+      function () {
         expect(42, 'to have keys satisfying', true);
       },
       'to throw',
@@ -49,7 +49,7 @@ describe('to have keys satisfying assertion', () => {
     expect(
       { foo: 0, bar: 1, baz: 2, qux: 3 },
       'to have keys satisfying',
-      expect.it(function(key) {
+      expect.it(function (key) {
         expect(key, 'not to be empty');
       })
     );
@@ -57,7 +57,7 @@ describe('to have keys satisfying assertion', () => {
     expect(
       { foo: 0, bar: 1, baz: 2, qux: 3 },
       'to have keys satisfying',
-      expect.it(function(key) {
+      expect.it(function (key) {
         expect(key, 'to match', /^[a-z]{3}$/);
       })
     );
@@ -80,7 +80,7 @@ describe('to have keys satisfying assertion', () => {
     expect(
       { foo: 123 },
       'to have keys satisfying',
-      expect.it(function(key) {
+      expect.it(function (key) {
         expect(key, 'to equal', 'foo');
       })
     );
@@ -88,8 +88,8 @@ describe('to have keys satisfying assertion', () => {
 
   it('fails if the given object is empty', () => {
     expect(
-      function() {
-        expect({}, 'to have keys satisfying', function(key) {
+      function () {
+        expect({}, 'to have keys satisfying', function (key) {
           expect(key, 'to match', /^[a-z]{3}$/);
         });
       },
@@ -104,7 +104,7 @@ describe('to have keys satisfying assertion', () => {
 
   it('fails for an empty array', () => {
     expect(
-      function() {
+      function () {
         expect([], 'to have keys satisfying', 123);
       },
       'to throw',
@@ -115,7 +115,7 @@ describe('to have keys satisfying assertion', () => {
 
   it('should work with non-enumerable keys returned by the getKeys function of the subject type', () => {
     expect(
-      function() {
+      function () {
         expect(new Error('foo'), 'to have keys satisfying', /bar/);
       },
       'to throw',
@@ -152,7 +152,7 @@ describe('to have keys satisfying assertion', () => {
 
   it('fails when the assertion fails', () => {
     expect(
-      function() {
+      function () {
         expect(
           { foo: 0, bar: 1, Baz: 2, qux: 3 },
           'to have keys satisfying',
@@ -167,11 +167,11 @@ describe('to have keys satisfying assertion', () => {
 
   it('provides a detailed report of where failures occur', () => {
     expect(
-      function() {
+      function () {
         expect(
           { foo: 0, bar: 1, baz: 2, qux: 3, quux: 4 },
           'to have keys satisfying',
-          expect.it(function(key) {
+          expect.it(function (key) {
             expect(key, 'to have length', 3);
           })
         );
@@ -198,12 +198,12 @@ describe('to have keys satisfying assertion', () => {
       .clone()
       .addAssertion(
         '<any> to be a sequence of as after a short delay',
-        function(expect, subject) {
+        function (expect, subject) {
           expect.errorMode = 'nested';
 
-          return expect.promise(function(run) {
+          return expect.promise(function (run) {
             setTimeout(
-              run(function() {
+              run(function () {
                 expect(subject, 'to match', /^a+$/);
               }),
               1

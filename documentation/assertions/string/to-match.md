@@ -40,7 +40,7 @@ are available to the `then` function:
 <!-- unexpected-markdown async:true -->
 
 ```js
-return expect('Hello world!', 'to match', /(\w+)!/).then(function(captures) {
+return expect('Hello world!', 'to match', /(\w+)!/).then(function (captures) {
   expect(captures[0], 'to equal', 'world!');
   expect(captures[1], 'to equal', 'world');
   expect(captures.index, 'to equal', 6);
@@ -52,7 +52,7 @@ Or using the Bluebird-specific `.spread` extension:
 <!-- unexpected-markdown async:true -->
 
 ```js
-return expect('Hello world!', 'to match', /(\w+)!/).spread(function($0, $1) {
+return expect('Hello world!', 'to match', /(\w+)!/).spread(function ($0, $1) {
   expect($0, 'to equal', 'world!');
   expect($1, 'to equal', 'world');
 });

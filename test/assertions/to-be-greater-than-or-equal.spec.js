@@ -9,7 +9,7 @@ describe('greater than or equal assertion', () => {
 
   it('throws when the assertion fails', () => {
     expect(
-      function() {
+      function () {
         expect(-1, 'to be greater than or equal to', 0);
       },
       'to throw exception',
@@ -18,7 +18,7 @@ describe('greater than or equal assertion', () => {
   });
 
   if (typeof BigInt === 'function') {
-    describe('with BigInt', function() {
+    describe('with BigInt', function () {
       it('asserts >=', () => {
         expect(BigInt(3), 'to be greater than or equal to', BigInt(2));
         expect(BigInt(2), 'to be greater than or equal to', BigInt(2));
@@ -26,7 +26,7 @@ describe('greater than or equal assertion', () => {
 
       it('throws when the assertion fails', () => {
         expect(
-          function() {
+          function () {
             expect(BigInt(-1), 'to be greater than or equal to', BigInt(0));
           },
           'to throw exception',
@@ -36,7 +36,7 @@ describe('greater than or equal assertion', () => {
 
       it('refuses to compare a BigInt to a number', () => {
         expect(
-          function() {
+          function () {
             expect(BigInt(-1), 'to be greater than or equal to', 0);
           },
           'to throw',

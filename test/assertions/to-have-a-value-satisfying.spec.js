@@ -2,7 +2,7 @@
 describe('to have a value satisfying assertion', () => {
   it('requires a third argument', () => {
     expect(
-      function() {
+      function () {
         expect([1, 2, 3], 'to have a value satisfying');
       },
       'to throw',
@@ -16,21 +16,21 @@ describe('to have a value satisfying assertion', () => {
   });
 
   it('accepts objects as the subject', () => {
-    expect(function() {
+    expect(function () {
       expect({ foo: 1 }, 'to have a value satisfying', 'to be a number');
     }, 'not to throw');
   });
 
   it('accepts arrays as the subject', () => {
-    expect(function() {
+    expect(function () {
       expect([1], 'to have a value satisfying', 'to be a number');
     }, 'not to throw');
   });
 
   it('only accepts objects and arrays as the subject', () => {
     expect(
-      function() {
-        expect(42, 'to have a value satisfying', function(value) {});
+      function () {
+        expect(42, 'to have a value satisfying', function (value) {});
       },
       'to throw',
       'expected 42 to have a value satisfying function (value) {}\n' +
@@ -44,7 +44,7 @@ describe('to have a value satisfying assertion', () => {
 
   it('fails if the given object is empty', () => {
     expect(
-      function() {
+      function () {
         expect({}, 'to have a value satisfying', 'to be a number');
       },
       'to throw',
@@ -55,7 +55,7 @@ describe('to have a value satisfying assertion', () => {
 
   it('fails if the given array is empty', () => {
     expect(
-      function() {
+      function () {
         expect([], 'to have a value satisfying', 'to be a number');
       },
       'to throw',
@@ -74,7 +74,7 @@ describe('to have a value satisfying assertion', () => {
     expect(
       { foo: '0', bar: 1 },
       'to have a value satisfying',
-      expect.it(function(value) {
+      expect.it(function (value) {
         expect(value, 'to be a number');
       })
     );
@@ -103,7 +103,7 @@ describe('to have a value satisfying assertion', () => {
     expect(
       { foo: '0', bar: '1' },
       'not to have a value satisfying',
-      expect.it(function(value) {
+      expect.it(function (value) {
         expect(value, 'to be a number');
       })
     );
@@ -124,7 +124,7 @@ describe('to have a value satisfying assertion', () => {
 
   it("throws the correct error if none of the subject's values match the RHS expectation", () => {
     expect(
-      function() {
+      function () {
         expect(
           { foo: 'foo', bar: 'bar' },
           'to have a value satisfying',
@@ -139,7 +139,7 @@ describe('to have a value satisfying assertion', () => {
 
   it("throws the correct error, when negated, if any of the subject's values match the RHS expectation", () => {
     expect(
-      function() {
+      function () {
         expect(
           { foo: 'foo', bar: 1 },
           'not to have a value satisfying',
@@ -159,15 +159,15 @@ describe('to have a value satisfying assertion', () => {
   describe('delegating to an async assertion', () => {
     var clonedExpect = expect
       .clone()
-      .addAssertion('<any> to be a number after a short delay', function(
+      .addAssertion('<any> to be a number after a short delay', function (
         expect,
         subject
       ) {
         expect.errorMode = 'nested';
 
-        return expect.promise(function(run) {
+        return expect.promise(function (run) {
           setTimeout(
-            run(function() {
+            run(function () {
               expect(subject, 'to be a number');
             }),
             1
@@ -195,7 +195,7 @@ describe('to have a value satisfying assertion', () => {
 
     it('should fail when the spec is not met only because of the "exhaustively" semantics', () => {
       expect(
-        function() {
+        function () {
           expect(
             [{ foo: 'bar', quux: 'baz' }],
             'to have a value exhaustively satisfying',
@@ -215,15 +215,15 @@ describe('to have a value satisfying assertion', () => {
     clonedExpect.addType({
       name: 'oneFooObject',
       base: 'object',
-      identify: function(obj) {
+      identify: function (obj) {
         return obj && typeof 'object' && obj.foo === '';
       },
-      valueForKey: function(obj, key) {
+      valueForKey: function (obj, key) {
         if (key === 'foo') {
           return 1;
         }
         return obj[key];
-      }
+      },
     });
 
     it('should process the value in "to have a value satisfying"', () => {
@@ -238,16 +238,16 @@ describe('to have a value satisfying assertion', () => {
     });
   });
 
-  describe('when passed a function', function() {
+  describe('when passed a function', function () {
     function foo() {}
 
-    it('succeeds when object has that function as a value', function() {
+    it('succeeds when object has that function as a value', function () {
       expect({ abc: foo }, 'to have a value satisfying', foo);
     });
 
-    it('fails when the array does not have that function as a value', function() {
+    it('fails when the array does not have that function as a value', function () {
       expect(
-        function() {
+        function () {
           expect({ abc: 123 }, 'to have a value satisfying', foo);
         },
         'to throw',

@@ -5,7 +5,7 @@ describe('array-like type', () => {
       name: 'simpleArrayLike',
       base: 'array-like',
       identify: Array.isArray,
-      numericalPropertiesOnly: false
+      numericalPropertiesOnly: false,
     };
     var clonedExpect = expect.clone().addType(simpleArrayLikeType);
 
@@ -26,7 +26,7 @@ describe('array-like type', () => {
       var b = ['a'];
 
       expect(
-        function() {
+        function () {
           clonedExpect(a, 'to equal', b);
         },
         'to throw',
@@ -46,7 +46,7 @@ describe('array-like type', () => {
       b.foobar = undefined;
 
       expect(
-        function() {
+        function () {
           clonedExpect(a, 'to equal', b);
         },
         'to throw',
@@ -66,7 +66,7 @@ describe('array-like type', () => {
       b.foobar = undefined;
 
       expect(
-        function() {
+        function () {
           clonedExpect(a, 'to satisfy', b);
         },
         'to throw',
@@ -87,7 +87,7 @@ describe('array-like type', () => {
         var b = ['a'];
 
         expect(
-          function() {
+          function () {
             clonedExpect(a, 'to equal', b);
           },
           'to throw',
@@ -102,7 +102,7 @@ describe('array-like type', () => {
 
       (typeof weknowhow === 'undefined' ? it : it.skip)(
         'should correctly fetch keys in the absence of symbol support',
-        function() {
+        function () {
           // stash away then clobber object symbol support
           var getOwnPropertySymbols = Object.getOwnPropertySymbols;
           delete Object.getOwnPropertySymbols;
@@ -127,7 +127,7 @@ describe('array-like type', () => {
           b.foobar = undefined;
 
           localExpect(
-            function() {
+            function () {
               localExpect(a, 'to equal', b);
             },
             'to throw',
@@ -150,7 +150,7 @@ describe('array-like type', () => {
       base: 'array-like',
       name: 'bogusarray',
       identify: Array.isArray,
-      indent: false
+      indent: false,
     });
 
     it('should not render the indentation when an instance is inspected in a multi-line context', () => {
@@ -158,7 +158,7 @@ describe('array-like type', () => {
         clonedExpect
           .inspect([
             'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-            'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'
+            'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
           ])
           .toString(),
         'to equal',
@@ -188,7 +188,7 @@ describe('array-like type', () => {
 
     it('should not render the indentation when an instance participates in a "to satisfy" diff', () => {
       expect(
-        function() {
+        function () {
           clonedExpect(['aaa', 'bbb'], 'to satisfy', { 0: 'foo' });
         },
         'to throw',
@@ -217,7 +217,7 @@ describe('array-like type', () => {
       },
       suffix(output) {
         return output;
-      }
+      },
     });
 
     it('should not render the prefix, suffix, and the newlines when an instance is inspected in a multi-line context', () => {
@@ -225,7 +225,7 @@ describe('array-like type', () => {
         clonedExpect
           .inspect([
             'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-            'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'
+            'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
           ])
           .toString(),
         'to equal',
@@ -251,7 +251,7 @@ describe('array-like type', () => {
 
     it('should not render the prefix, suffix, and the newlines when an instance participates in a "to satisfy" diff', () => {
       expect(
-        function() {
+        function () {
           clonedExpect(['aaa', 'bbb'], 'to satisfy', { 0: 'foo' });
         },
         'to throw',
@@ -273,7 +273,7 @@ describe('array-like type', () => {
       base: 'array-like',
       name: 'bogusarray',
       identify: Array.isArray,
-      forceMultipleLines: true
+      forceMultipleLines: true,
     });
 
     it('should inspect in forceMultipleLines mode despite being able to render on one line', () => {
@@ -322,11 +322,11 @@ describe('array-like type', () => {
             keys.push('foobar');
           }
           return keys;
-        }
+        },
       });
 
       expect(
-        function() {
+        function () {
           clonedExpect(a, 'to equal', b);
         },
         'to throw',
@@ -356,11 +356,11 @@ describe('array-like type', () => {
             keys.push('foobar');
           }
           return keys;
-        }
+        },
       });
 
       expect(
-        function() {
+        function () {
           clonedExpect(a, 'to satisfy', b);
         },
         'to throw',
@@ -379,11 +379,11 @@ describe('array-like type', () => {
       clonedExpect.addType({
         name: 'foo',
         base: 'array-like',
-        identify: function(obj) {
+        identify: function (obj) {
           return obj && obj._isFoo;
         },
         numericalPropertiesOnly: false,
-        getKeys: function(obj) {
+        getKeys: function (obj) {
           var keys = this.baseType.getKeys(obj);
           var fooIndex = keys.indexOf('_isFoo');
           if (fooIndex > -1) {
@@ -391,24 +391,24 @@ describe('array-like type', () => {
           }
           keys.push('bar');
           return keys;
-        }
+        },
       });
 
       var foo1 = ['hey', 'there'];
       foo1._isFoo = true;
       Object.defineProperty(foo1, 'bar', {
         value: 123,
-        enumerable: false
+        enumerable: false,
       });
       var foo2 = ['hey', 'there'];
       foo2._isFoo = true;
       Object.defineProperty(foo2, 'bar', {
         value: 456,
-        enumerable: false
+        enumerable: false,
       });
 
       expect(
-        function() {
+        function () {
           clonedExpect(foo1, 'to satisfy', foo2);
         },
         'to throw',
@@ -430,12 +430,12 @@ describe('array-like type', () => {
         base: 'array-like',
         identify: Array.isArray,
         numericalPropertiesOnly: false,
-        hasKey: function(obj, key) {
+        hasKey: function (obj, key) {
           if (String(key).indexOf('foo') === 0) {
             return false;
           }
           return obj[key];
-        }
+        },
       });
 
       var arr = ['a'];
@@ -449,7 +449,7 @@ describe('array-like type', () => {
     it('should render correctly in both inspection and diff in "to equal"', () => {
       var clonedExpect = expect.clone();
 
-      clonedExpect.addStyle('xuuqProperty', function(key, inspectedValue) {
+      clonedExpect.addStyle('xuuqProperty', function (key, inspectedValue) {
         this.text('<')
           .appendInspected(key)
           .text('> --> ')
@@ -460,10 +460,10 @@ describe('array-like type', () => {
         name: 'xuuq',
         base: 'array-like',
         numericalPropertiesOnly: false,
-        identify: function(obj) {
+        identify: function (obj) {
           return obj && typeof 'object' && obj.quux === 'xuuq';
         },
-        property: function(output, key, inspectedValue, isSubjectArrayLike) {
+        property: function (output, key, inspectedValue, isSubjectArrayLike) {
           if (isSubjectArrayLike && !isNaN(Number(key))) {
             return this.baseType.property(
               output,
@@ -473,7 +473,7 @@ describe('array-like type', () => {
             );
           }
           return output.xuuqProperty(key, inspectedValue);
-        }
+        },
       });
 
       const lhs = [1, 2, 3];
@@ -485,7 +485,7 @@ describe('array-like type', () => {
       rhs.foobar = 'baz';
 
       expect(
-        function() {
+        function () {
           clonedExpect(lhs, 'to equal', rhs);
         },
         'to throw',
@@ -521,16 +521,16 @@ describe('array-like type', () => {
         name: 'firstElemUpper',
         base: 'array-like',
         identify: Array.isArray,
-        valueForKey: function(arr, key) {
+        valueForKey: function (arr, key) {
           var value = arr[key];
           if (key === 0) {
             return value.toUpperCase();
           }
           return value;
-        }
+        },
       });
       expect(
-        function() {
+        function () {
           clonedExpect(['foobar', 'barbar'], 'to equal', ['foobar', 'barbaz']);
         },
         'to throw',
@@ -557,7 +557,7 @@ describe('array-like type', () => {
 
   it('should render a moved item with an arrow', () => {
     expect(
-      function() {
+      function () {
         expect(['a', 'b', 'c'], 'to equal', ['c', 'a', 'b']);
       },
       'to error with',
@@ -574,14 +574,14 @@ describe('array-like type', () => {
 
   it('should stop rendering more arrows when there would be more than 3 lanes', () => {
     expect(
-      function() {
+      function () {
         expect(['a', 'b', 'c', 'd', 'e', 'f'], 'to equal', [
           'f',
           'c',
           'd',
           'e',
           'a',
-          'b'
+          'b',
         ]);
       },
       'to error with',
@@ -604,7 +604,7 @@ describe('array-like type', () => {
 
   it('should render multiple moved items with arrows', () => {
     expect(
-      function() {
+      function () {
         expect(['a', 'b', 'c', 'd'], 'to equal', ['d', 'b', 'a', 'c']);
       },
       'to error with',
@@ -623,13 +623,13 @@ describe('array-like type', () => {
 
   it('should render 3 moved neighbor items', () => {
     expect(
-      function() {
+      function () {
         expect(['a', 'b', 'c', 'd', 'e'], 'to equal', [
           'c',
           'd',
           'e',
           'a',
-          'b'
+          'b',
         ]);
       },
       'to error with',

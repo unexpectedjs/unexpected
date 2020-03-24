@@ -1,9 +1,9 @@
 /* global jasmineRequire */
-(function() {
+(function () {
   if (typeof jasmineRequire === 'object') {
     var originalBuildExpectationResult = jasmineRequire.buildExpectationResult();
-    jasmineRequire.buildExpectationResult = function() {
-      return function(options) {
+    jasmineRequire.buildExpectationResult = function () {
+      return function (options) {
         var result = originalBuildExpectationResult.apply(this, arguments);
         if (options.error && options.error.htmlMessage) {
           var errorElement = document.createElement('div');

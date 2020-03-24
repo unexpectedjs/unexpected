@@ -3,7 +3,7 @@ Asserts that a promise is rejected.
 <!-- unexpected-markdown async:true -->
 
 ```js
-var promiseThatWillBeRejected = new Promise(function(resolve, reject) {
+var promiseThatWillBeRejected = new Promise(function (resolve, reject) {
   setTimeout(reject, 1);
 });
 
@@ -15,7 +15,7 @@ If the promise is fulfilled, the assertion will fail with the following output:
 <!-- unexpected-markdown async:true -->
 
 ```js
-var fulfilledPromise = new Promise(function(resolve, reject) {
+var fulfilledPromise = new Promise(function (resolve, reject) {
   setTimeout(resolve, 1);
 });
 

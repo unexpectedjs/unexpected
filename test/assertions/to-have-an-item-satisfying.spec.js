@@ -2,7 +2,7 @@
 describe('to have an item satisfying assertion', () => {
   it('requires a third argument', () => {
     expect(
-      function() {
+      function () {
         expect([1, 2, 3], 'to have an item satisfying');
       },
       'to throw',
@@ -17,7 +17,7 @@ describe('to have an item satisfying assertion', () => {
 
   it('only accepts arrays as the subject', () => {
     expect(
-      function() {
+      function () {
         expect(42, 'to have an item satisfying', 'to be a number');
       },
       'to throw',
@@ -32,7 +32,7 @@ describe('to have an item satisfying assertion', () => {
 
   it('fails if the given array is empty', () => {
     expect(
-      function() {
+      function () {
         expect([], 'to have an item satisfying', 'to be a number');
       },
       'to throw',
@@ -66,7 +66,7 @@ describe('to have an item satisfying assertion', () => {
     expect(
       ['foo', 'bar'],
       'not to have an item satisfying',
-      expect.it(function(item) {
+      expect.it(function (item) {
         expect(item, 'to be a number');
       })
     );
@@ -87,7 +87,7 @@ describe('to have an item satisfying assertion', () => {
 
   it("throws the correct error if none of the subject's values match the RHS expectation", () => {
     expect(
-      function() {
+      function () {
         expect(
           ['foo', 'bar'],
           'to have an item satisfying',
@@ -101,7 +101,7 @@ describe('to have an item satisfying assertion', () => {
 
   it("throws the correct error, when negated, if any of the subject's values match the RHS expectation", () => {
     expect(
-      function() {
+      function () {
         expect(
           ['foo', 1],
           'not to have an item satisfying',
@@ -119,7 +119,7 @@ describe('to have an item satisfying assertion', () => {
 
   it('formats non-Unexpected errors correctly', () => {
     expect(
-      function() {
+      function () {
         expect(
           [
             [
@@ -142,8 +142,8 @@ describe('to have an item satisfying assertion', () => {
               17,
               18,
               19,
-              20
-            ]
+              20,
+            ],
           ],
           'to have an item satisfying',
           // prettier-ignore
@@ -171,15 +171,15 @@ describe('to have an item satisfying assertion', () => {
   describe('delegating to an async assertion', () => {
     var clonedExpect = expect
       .clone()
-      .addAssertion('<any> to be a number after a short delay', function(
+      .addAssertion('<any> to be a number after a short delay', function (
         expect,
         subject
       ) {
         expect.errorMode = 'nested';
 
-        return expect.promise(function(run) {
+        return expect.promise(function (run) {
           setTimeout(
-            run(function() {
+            run(function () {
               expect(subject, 'to be a number');
             }),
             1
@@ -207,7 +207,7 @@ describe('to have an item satisfying assertion', () => {
 
     it('should fail when the spec is not met only because of the "exhaustively" semantics', () => {
       expect(
-        function() {
+        function () {
           expect(
             [{ foo: 'bar', quux: 'baz' }],
             'to have an item exhaustively satisfying',

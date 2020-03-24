@@ -3,7 +3,7 @@ is rejected.
 
 ```js
 function willBeRejected() {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     reject(new Error('The reject message'));
   });
 }
@@ -21,7 +21,7 @@ In case of a failing expectation you get the following output:
 
 ```js
 function willNotBeRejected() {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     resolve('Hello world');
   });
 }
@@ -131,8 +131,8 @@ assertions on the error.
 
 ```js
 function willBeRejectedAsync() {
-  return new Promise(function(resolve, reject) {
-    setTimeout(function() {
+  return new Promise(function (resolve, reject) {
+    setTimeout(function () {
       reject(new Error('async error'));
     }, 1);
   });
@@ -141,7 +141,7 @@ function willBeRejectedAsync() {
 return expect(
   willBeRejectedAsync,
   'to error',
-  expect.it(function(e) {
+  expect.it(function (e) {
     return expect(e.message, 'to equal', 'async error');
   })
 );
@@ -154,8 +154,8 @@ You can even do async assertions in the function that you pass in.
 ```js
 var errorCount = 0;
 function willBeRejectedAsync() {
-  return new Promise(function(resolve, reject) {
-    setTimeout(function() {
+  return new Promise(function (resolve, reject) {
+    setTimeout(function () {
       var error = new Error('async error');
       errorCount += 1;
       error.errorCount = errorCount;
@@ -167,11 +167,11 @@ function willBeRejectedAsync() {
 return expect(
   willBeRejectedAsync,
   'to error',
-  expect.it(function(e) {
+  expect.it(function (e) {
     return expect(
       willBeRejectedAsync,
       'to error',
-      expect.it(function(e2) {
+      expect.it(function (e2) {
         return expect(e2.errorCount, 'to be greater than', e.errorCount);
       })
     );

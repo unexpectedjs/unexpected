@@ -1,7 +1,7 @@
 module.exports = {
   input: 'build/test/**/*.js',
   output: {
-    format: 'esm'
+    format: 'esm',
   },
-  plugins: require('rollup-plugin-multi-entry')({ exports: false })
+  plugins: require('rollup-plugin-multi-entry')({ exports: false }),
 };

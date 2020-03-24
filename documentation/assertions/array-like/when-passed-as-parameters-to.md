@@ -28,7 +28,7 @@ passes to the callback.
 
 ```js
 function delayedAdd(a, b, cb) {
-  setTimeout(function() {
+  setTimeout(function () {
     cb(null, a + b);
   }, 1);
 }
@@ -61,7 +61,7 @@ as the fulfillment value of the promise:
 <!-- unexpected-markdown async:true -->
 
 ```js
-return expect([1, 3], 'passed as parameters to', add).then(function(result) {
+return expect([1, 3], 'passed as parameters to', add).then(function (result) {
   expect(result, 'to equal', 4);
 });
 ```

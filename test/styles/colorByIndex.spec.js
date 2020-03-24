@@ -20,9 +20,9 @@ describe('colorByIndex', () => {
         0: {
           0: {
             style: 'text',
-            args: { content: 'foo', styles: [] }
-          }
-        }
+            args: { content: 'foo', styles: [] },
+          },
+        },
       });
     });
   });

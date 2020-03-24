@@ -5,7 +5,7 @@ will call it.
 
 ```js
 function mySuccessfulAsyncFunction(cb) {
-  setTimeout(function() {
+  setTimeout(function () {
     cb();
   });
 }
@@ -44,7 +44,7 @@ so you can do further assertions like this:
 
 ```js
 function asyncFn(cb) {
-  setTimeout(function() {
+  setTimeout(function () {
     cb(null, 'foo');
   });
 }
@@ -53,7 +53,7 @@ function asyncFn(cb) {
 <!-- unexpected-markdown async:true -->
 
 ```js
-return expect(asyncFn, 'to call the callback').then(function(args) {
+return expect(asyncFn, 'to call the callback').then(function (args) {
   // args will be [null, 'foo'];
 });
 ```
@@ -63,7 +63,7 @@ Or using the Bluebird-specific `.spread` extension:
 <!-- unexpected-markdown async:true -->
 
 ```js
-return expect(asyncFn, 'to call the callback').spread(function(err, result) {
+return expect(asyncFn, 'to call the callback').spread(function (err, result) {
   expect(err, 'to be null');
   expect(result, 'to equal', 'foo');
 });

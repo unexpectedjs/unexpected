@@ -1,7 +1,7 @@
 /* global expect, expectWithUnexpectedMagicPen */
 describe('function type', () => {
   it('should inspect an empty anonymous function correctly', () => {
-    expect(function() {}, 'to inspect as', 'function () {}');
+    expect(function () {}, 'to inspect as', 'function () {}');
   });
 
   it('should inspect an empty named function correctly', () => {
@@ -24,7 +24,7 @@ describe('function type', () => {
     it('should inspect an anonymous bound function correctly', () => {
       expect(
         // eslint-disable-next-line no-extra-bind
-        function() {}.bind({}),
+        function () {}.bind({}),
         'to inspect as',
         'function bound () { /* native code */ }'
       );
@@ -41,7 +41,7 @@ describe('function type', () => {
   }
 
   it('should inspect an function with just a newline correctly', () => {
-    expect(function() {}, 'to inspect as', 'function () {}');
+    expect(function () {}, 'to inspect as', 'function () {}');
   });
 
   it('should inspect a one-line function correctly', () => {
@@ -316,14 +316,14 @@ describe('function type', () => {
     );
   });
 
-  describe('diff()', function() {
+  describe('diff()', function () {
     function foo() {}
     function bar() {}
 
     foo.baz = 123;
 
-    describe('against another function', function() {
-      it('should not produce a diff', function() {
+    describe('against another function', function () {
+      it('should not produce a diff', function () {
         const functionType = expect.getType('function');
         expect(
           functionType.diff(foo, bar, expect.createOutput()),
@@ -332,8 +332,8 @@ describe('function type', () => {
       });
     });
 
-    describe('against an object', function() {
-      it('should delegate to the object diff', function() {
+    describe('against an object', function () {
+      it('should delegate to the object diff', function () {
         const functionType = expect.getType('function');
         const diff = functionType.diff(
           foo,
