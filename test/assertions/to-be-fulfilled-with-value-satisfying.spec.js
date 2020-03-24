@@ -179,7 +179,7 @@ describe('to be fulfilled with value satisfying assertion', () => {
             '  return Promise.resolve({\n' +
             "    foo: 'foo',\n" +
             "    bar: 'bar',\n" +
-            "    quux: 'quux'\n" +
+            "    quux: 'quux',\n" +
             '  });\n' +
             '}\n' +
             "to be fulfilled with value exhaustively satisfying { foo: 'foo', bar: 'bar' }\n" +
