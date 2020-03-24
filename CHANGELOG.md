@@ -1,3 +1,8 @@
+### v11.14.0 (2020-03-24)
+
+- [#705](https://github.com/unexpectedjs/unexpected/pull/705) Add support for &lt;object&gt; to have \(unconfigurable|unenumerable|unwritable|readonly|read-only\) property &lt;string|Symbol&gt; ([Andreas Lind](mailto:andreas.lind@peakon.com), [Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [#701](https://github.com/unexpectedjs/unexpected/pull/701) Upgrade rollup to version 2.0.3 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+
 ### v11.13.0 (2020-02-13)
 
 #### Pull requests
