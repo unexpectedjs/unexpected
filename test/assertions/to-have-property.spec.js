@@ -26,11 +26,28 @@ describe('to have property assertion', () => {
       writable: false,
       value: 't'
     });
+    Object.defineProperty(subject, 'enumTrue', {
+      enumerable: true,
+      value: 't'
+    });
+    Object.defineProperty(subject, 'configTrue', {
+      configurable: true,
+      value: 't'
+    });
+    Object.defineProperty(subject, 'writableTrue', {
+      writable: true,
+      value: 't'
+    });
 
     it('asserts validity of property descriptor', () => {
       expect(subject, 'to have enumerable property', 'a');
       expect(subject, 'to have configurable property', 'a');
       expect(subject, 'to have writable property', 'a');
+      expect(subject, 'to have unenumerable property', 'enumFalse');
+      expect(subject, 'to have unconfigurable property', 'configFalse');
+      expect(subject, 'to have unwritable property', 'writableFalse');
+      expect(subject, 'to have read-only property', 'writableFalse');
+      expect(subject, 'to have readonly property', 'writableFalse');
     });
 
     it('throws when assertion fails', () => {
@@ -39,24 +56,84 @@ describe('to have property assertion', () => {
           expect(subject, 'to have enumerable property', 'enumFalse');
         },
         'to throw exception',
-        "expected { a: 'b', enumFalse: 't', configFalse: 't', writableFalse: 't' }\n" +
+        'expected\n' +
+          '{\n' +
+          "  a: 'b', enumFalse: 't', configFalse: 't', writableFalse: 't',\n" +
+          "  enumTrue: 't', configTrue: 't', writableTrue: 't'\n" +
+          '}\n' +
           "to have enumerable property 'enumFalse'"
+      );
+      expect(
+        function() {
+          expect(subject, 'to have unenumerable property', 'enumTrue');
+        },
+        'to throw exception',
+        'expected\n' +
+          '{\n' +
+          "  a: 'b', enumFalse: 't', configFalse: 't', writableFalse: 't',\n" +
+          "  enumTrue: 't', configTrue: 't', writableTrue: 't'\n" +
+          '}\n' +
+          "to have unenumerable property 'enumTrue'"
       );
       expect(
         function() {
           expect(subject, 'to have configurable property', 'configFalse');
         },
         'to throw exception',
-        "expected { a: 'b', enumFalse: 't', configFalse: 't', writableFalse: 't' }\n" +
+        'expected\n' +
+          '{\n' +
+          "  a: 'b', enumFalse: 't', configFalse: 't', writableFalse: 't',\n" +
+          "  enumTrue: 't', configTrue: 't', writableTrue: 't'\n" +
+          '}\n' +
           "to have configurable property 'configFalse'"
+      );
+      expect(
+        function() {
+          expect(subject, 'to have unconfigurable property', 'configTrue');
+        },
+        'to throw exception',
+        'expected\n' +
+          '{\n' +
+          "  a: 'b', enumFalse: 't', configFalse: 't', writableFalse: 't',\n" +
+          "  enumTrue: 't', configTrue: 't', writableTrue: 't'\n" +
+          '}\n' +
+          "to have unconfigurable property 'configTrue'"
       );
       expect(
         function() {
           expect(subject, 'to have writable property', 'writableFalse');
         },
         'to throw exception',
-        "expected { a: 'b', enumFalse: 't', configFalse: 't', writableFalse: 't' }\n" +
+        'expected\n' +
+          '{\n' +
+          "  a: 'b', enumFalse: 't', configFalse: 't', writableFalse: 't',\n" +
+          "  enumTrue: 't', configTrue: 't', writableTrue: 't'\n" +
+          '}\n' +
           "to have writable property 'writableFalse'"
+      );
+      expect(
+        function() {
+          expect(subject, 'to have unwritable property', 'writableTrue');
+        },
+        'to throw exception',
+        'expected\n' +
+          '{\n' +
+          "  a: 'b', enumFalse: 't', configFalse: 't', writableFalse: 't',\n" +
+          "  enumTrue: 't', configTrue: 't', writableTrue: 't'\n" +
+          '}\n' +
+          "to have unwritable property 'writableTrue'"
+      );
+      expect(
+        function() {
+          expect(subject, 'to have read-only property', 'writableTrue');
+        },
+        'to throw exception',
+        'expected\n' +
+          '{\n' +
+          "  a: 'b', enumFalse: 't', configFalse: 't', writableFalse: 't',\n" +
+          "  enumTrue: 't', configTrue: 't', writableTrue: 't'\n" +
+          '}\n' +
+          "to have read-only property 'writableTrue'"
       );
     });
 
