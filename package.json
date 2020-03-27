@@ -33,7 +33,7 @@
     "unexpected-bluebird": "2.9.34-longstack2"
   },
   "devDependencies": {
-    "buble": "^0.19.7",
+    "buble": "^0.20.0",
     "coveralls": "^3.0.0",
     "eslint": "^6.0.0",
     "eslint-config-prettier": "^6.0.0",
