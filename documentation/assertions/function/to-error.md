@@ -17,15 +17,17 @@ return expect(willBeRejected, 'to error');
 
 In case of a failing expectation you get the following output:
 
-<!-- unexpected-markdown async:true -->
-
 ```js
 function willNotBeRejected() {
   return new Promise(function (resolve, reject) {
     resolve('Hello world');
   });
 }
+```
 
+<!-- unexpected-markdown async:true -->
+
+```js
 return expect(willNotBeRejected, 'to error');
 ```
 
