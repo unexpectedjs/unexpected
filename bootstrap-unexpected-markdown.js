@@ -1,4 +1,4 @@
-/* global unexpected:true */
-unexpected = require('./lib/');
-unexpected.output.preferredWidth = 80;
+/* global expect:true */
+expect = require('./lib/');
+expect.output.preferredWidth = 80;
 require('./test/promisePolyfill');
