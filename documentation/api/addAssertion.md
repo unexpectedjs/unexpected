@@ -7,7 +7,7 @@ Signature:
 
 ```js
 expect.addAssertion(pattern, handler);
-expect.addAssertion([pattern, ...]], handler);
+expect.addAssertion([pattern, ...], handler);
 ```
 
 `expect.addAssertion` takes two arguments:
@@ -77,16 +77,18 @@ expect.addAssertion('<number> to be between <number> <number>', function (
 ) {
   expect(subject, 'to be greater than', value1).and('to be less than', value2);
 });
-```
 
-```js
 expect(2, 'to be between', 1, 3);
 ```
 
-Assertions that support different subject or value types can be defined as
-follows:
+Assertions that support specific subject or value types can be defined by
+separating the permissible types with a `|` character.
 
-<!-- unexpected-markdown freshExpect:true -->
+We use this to redefine our earlier "to have item" assertion - doing so
+makes the assertion more strict, only allowing number and string values
+but not boolean values, for example:
+
+<!-- unexpected-markdown freshContext:true -->
 
 ```js
 expect.addAssertion('<array> to have item <number|string>', function (
@@ -96,12 +98,7 @@ expect.addAssertion('<array> to have item <number|string>', function (
 ) {
   expect(subject, 'to contain', value);
 });
-```
 
-This would make the assertion more strict, only allowing number and string
-values but not boolean values, for example:
-
-```js
 expect([1, 2, 3], 'to have item', 2);
 expect(['a', 'b', 'c'], 'to have item', 'a');
 expect([true, false], 'to have item', true);
@@ -120,7 +117,7 @@ expected [ true, false ] to have item true
 Different versions of the same assertion, or different assertions that share the
 same handler function, can be added using an array:
 
-<!-- unexpected-markdown freshExpect:true -->
+<!-- unexpected-markdown freshContext:true -->
 
 ```js
 expect.addAssertion(
@@ -129,9 +126,7 @@ expect.addAssertion(
     expect(subject, 'to contain', value);
   }
 );
-```
 
-```js
 expect([1, 2, 3], 'to have item', 2);
 expect([1, 2, 3], 'to have value', 3);
 ```
@@ -139,7 +134,7 @@ expect([1, 2, 3], 'to have value', 3);
 However, when it's a small deviation, as in this case, an alternation is more
 handy:
 
-<!-- unexpected-markdown freshExpect:true -->
+<!-- unexpected-markdown freshContext:true -->
 
 ```js
 expect.addAssertion('<array> to have (item|value) <any>', function (
@@ -149,9 +144,7 @@ expect.addAssertion('<array> to have (item|value) <any>', function (
 ) {
   expect(subject, 'to contain', value);
 });
-```
 
-```js
 expect([1, 2, 3], 'to have item', 2);
 expect([1, 2, 3], 'to have value', 3);
 ```
@@ -160,7 +153,7 @@ Alternations allow branching, similar to an `if..else` statement. They are made
 available to the handler function as an `expect.alternations` array which
 contains the word used when the assertion is invoked:
 
-<!-- unexpected-markdown freshExpect:true -->
+<!-- unexpected-markdown freshContext:true -->
 
 ```js
 expect.addAssertion('<array> to have (index|value) <any>', function (
@@ -174,19 +167,18 @@ expect.addAssertion('<array> to have (index|value) <any>', function (
     expect(subject, 'to contain', value);
   }
 });
-```
 
-```js
 expect(['a', 'b'], 'to have index', 1);
 expect(['a', 'b'], 'to have value', 'b');
 ```
 
 ## Flags
 
-Flags allow assertions to define modifiers which can alter the behaviour of the assertion. The most common example is the `not` flag which requests that
-the assertion be negated:
+Flags allow assertions to define modifiers which can alter the behaviour of the assertion.
+The most common example is the `not` flag which requests that the assertion be negated,
+which makes the following possible:
 
-<!-- unexpected-markdown freshExpect:true -->
+<!-- unexpected-markdown freshContext:true -->
 
 ```js
 expect.addAssertion('<array> [not] to have item <any>', function (
@@ -200,11 +192,7 @@ expect.addAssertion('<array> [not] to have item <any>', function (
     expect(subject, 'to contain', value);
   }
 });
-```
 
-This makes the following assertions possible:
-
-```js
 expect([1, 2, 3], 'to have item', 2);
 expect([1, 2, 3], 'not to have item', 4);
 ```
@@ -217,7 +205,7 @@ This example could be improved further. Since
 [to contain](../../assertions/array-like/to-contain/) also supports the `not`
 flag, one can propagate the flag to that assertion as follows:
 
-<!-- unexpected-markdown freshExpect:true -->
+<!-- unexpected-markdown freshContext:true -->
 
 ```js
 expect.addAssertion('<array> [not] to have item <any>', function (
@@ -232,9 +220,11 @@ expect.addAssertion('<array> [not] to have item <any>', function (
 In this way, when `to have item` is invoked with the `not` flag, that flag will
 be passed along to `to contain`.
 
-When flags are propagated, one can also invert the flag as follows:
+When flags are propagated, one can also invert the flag. This means that if
+`to have item` is invoked with the `not` flag, that flag will not be propagated
+to `to contain` - and vice versa:
 
-<!-- unexpected-markdown freshExpect:true -->
+<!-- unexpected-markdown freshContext:true -->
 
 ```js
 expect.addAssertion('<array> [not] to have item <any>', function (
@@ -244,12 +234,7 @@ expect.addAssertion('<array> [not] to have item <any>', function (
 ) {
   expect(subject, '[!not] to contain', value);
 });
-```
 
-This means that if `to have item` is invoked with the `not` flag, that flag will
-not be propagated to `to contain` - and vice versa:
-
-```js
 expect([1, 2, 3], 'not to have item', 2);
 expect([1, 2, 3], 'to have item', 4);
 ```
@@ -257,7 +242,7 @@ expect([1, 2, 3], 'to have item', 4);
 Fun with flags, right? Flags can also be used to define optional filler words
 that make an assertion read better:
 
-<!-- unexpected-markdown freshExpect:true -->
+<!-- unexpected-markdown freshContext:true -->
 
 ```js
 expect.addAssertion('<array> to have [this] item <any>', function (
@@ -267,9 +252,7 @@ expect.addAssertion('<array> to have [this] item <any>', function (
 ) {
   expect(subject, 'to contain', value);
 });
-```
 
-```js
 expect([1, 2, 3], 'to have item', 2);
 expect([1, 2, 3], 'to have this item', 2);
 ```
@@ -534,9 +517,7 @@ expect.addType({
     output.jsFunctionName('Timelock');
   },
 });
-```
 
-```js
 expect.addAssertion('<Timelock> to satisfy <any>', function (
   expect,
   subject,
