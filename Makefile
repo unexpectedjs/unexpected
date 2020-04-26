@@ -72,6 +72,14 @@ else
 	@./node_modules/.bin/mocha --opts $(MOCHA_OPTS) $(TEST_SOURCES)
 endif
 
+.PHONY: test-docs
+test-docs:
+ifeq ($(MODERN_NODE), true)
+	@./node_modules/.bin/mocha --opts $(MOCHA_OPTS) --no-check-leaks --require ./bootstrap-unexpected-markdown --require unexpected-markdown $(TEST_SOURCES_MARKDOWN)
+else
+	echo "testing documentation is not supported on this version of node"
+endif
+
 nyc-includes:
 ifeq ($(MODERN_NODE), true)
 NYC_INCLUDES='lib/**'
