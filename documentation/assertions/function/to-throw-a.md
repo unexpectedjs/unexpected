@@ -4,6 +4,11 @@ Asserts that the function throws an instance of a specific constructor.
 function willThrow() {
   throw new SyntaxError('The error message');
 }
+```
+
+<!-- unexpected-markdown ignore:true -->
+
+```js
 expect(willThrow, 'to throw a', SyntaxError);
 ```
 
