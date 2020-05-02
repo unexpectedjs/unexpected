@@ -66,11 +66,8 @@ endif
 
 .PHONY: test
 test: test-sources
-ifeq ($(MODERN_NODE), true)
-	@./node_modules/.bin/mocha --opts $(MOCHA_OPTS) --require unexpected-markdown $(TEST_SOURCES) $(TEST_SOURCES_MARKDOWN)
-else
 	@./node_modules/.bin/mocha --opts $(MOCHA_OPTS) $(TEST_SOURCES)
-endif
+	make test-docs
 
 .PHONY: test-docs
 test-docs:
