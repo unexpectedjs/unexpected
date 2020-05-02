@@ -86,7 +86,7 @@ endif
 
 .PHONY: coverage
 coverage: nyc-includes test-sources
-	@./node_modules/.bin/nyc --include $(NYC_INCLUDES) --reporter=lcov --reporter=text --all -- mocha --opts $(MOCHA_OPTS) --require unexpected-markdown $(TEST_SOURCES) $(TEST_SOURCES_MARKDOWN)
+	@./node_modules/.bin/nyc --include $(NYC_INCLUDES) --reporter=lcov --reporter=text --all -- mocha --opts $(MOCHA_OPTS) $(TEST_SOURCES)
 	@echo google-chrome coverage/lcov-report/index.html
 
  .PHONY: test-browser
