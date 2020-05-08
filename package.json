@@ -74,7 +74,7 @@
     "tap-spot": "^1.1.1",
     "unexpected-documentation-site-generator": "git://github.com/unexpectedjs/unexpected-documentation-site-generator.git#ec2e34b",
     "unexpected-magicpen": "^2.1.0",
-    "unexpected-markdown": "git://github.com/unexpectedjs/unexpected-markdown.git#2954f9b"
+    "unexpected-markdown": "git://github.com/unexpectedjs/unexpected-markdown.git#39e2095"
   },
   "files": [
     "unexpected.js",
