@@ -16,7 +16,7 @@
   "scripts": {
     "prepare": "make build/lib",
     "test": "make test && make test-chrome-headless",
-    "lint": "eslint . && eslint --ext md documentation && prettier --check '**/*.{js,md}'",
+    "lint": "eslint . && prettier --check '**/*.{js,md}'",
     "generate-site": "generate-site --require ./bootstrap-unexpected-markdown.js",
     "update-examples": "generate-site --require ./bootstrap-unexpected-markdown.js --update-examples",
     "version": "(test -n \"${IS_MAKE_RELEASE}\" || (echo Please run make release instead && exit 1)) && offline-github-changelog --next=${npm_package_version} > CHANGELOG.md && git add CHANGELOG.md"
