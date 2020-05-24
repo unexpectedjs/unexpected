@@ -68,7 +68,7 @@
     "rollup-plugin-multi-entry": "^2.1.0",
     "rollup-plugin-node-globals": "^1.1.0",
     "rollup-plugin-node-resolve": "^5.0.0",
-    "rollup-plugin-terser": "^5.0.0",
+    "rollup-plugin-terser": "^6.0.1",
     "rsvp": "^4.7.0",
     "serve": "*",
     "tap-spot": "^1.1.1",
