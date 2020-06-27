@@ -7,6 +7,7 @@
     "https://github.com/unexpectedjs/unexpected-express.git",
     "https://github.com/unexpectedjs/unexpected-messy.git",
     "https://github.com/unexpectedjs/unexpected-http.git",
+    "https://github.com/unexpectedjs/unexpected-mitm.git",
     "https://github.com/unexpectedjs/unexpected-dom.git",
     "https://github.com/unexpectedjs/unexpected-resemble.git",
     "https://github.com/unexpectedjs/unexpected-exif.git",
