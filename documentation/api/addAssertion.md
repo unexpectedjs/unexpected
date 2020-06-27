@@ -221,8 +221,8 @@ In this way, when `to have item` is invoked with the `not` flag, that flag will
 be passed along to `to contain`.
 
 When flags are propagated, one can also invert the flag. This means that if
-`to have item` is invoked with the `not` flag, that flag will not be propagated
-to `to contain` - and vice versa:
+`to have item` is invoked with the `not` flag, it will be negated and the
+`to contain` assertion will execute without it:
 
 <!-- unexpected-markdown freshContext:true -->
 
