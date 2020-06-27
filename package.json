@@ -72,9 +72,9 @@
     "rsvp": "^4.7.0",
     "serve": "*",
     "tap-spot": "^1.1.1",
-    "unexpected-documentation-site-generator": "git://github.com/unexpectedjs/unexpected-documentation-site-generator.git#ac1b629",
+    "unexpected-documentation-site-generator": "git://github.com/unexpectedjs/unexpected-documentation-site-generator.git#57f933a",
     "unexpected-magicpen": "^2.1.0",
-    "unexpected-markdown": "git://github.com/unexpectedjs/unexpected-markdown.git#0a0628c"
+    "unexpected-markdown": "git://github.com/unexpectedjs/unexpected-markdown.git#2073a4e"
   },
   "files": [
     "unexpected.js",
