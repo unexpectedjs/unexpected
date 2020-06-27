@@ -52,8 +52,6 @@ const originalExpect = expect;
 expect = expect.clone();
 ```
 
-<!-- unexpected-markdown persist:true -->
-
 ```js
 function Person(name, age) {
   this.name = name;
@@ -106,6 +104,11 @@ constructor. We can fix that by implementing an `inspect` method on the type.
 <!-- unexpected-markdown freshContext:true -->
 
 ```js
+function Person(name, age) {
+  this.name = name;
+  this.age = age;
+}
+
 expect.addType({
   name: 'Person',
   base: 'object',
@@ -160,6 +163,11 @@ age. Then we need to override the `equal` method:
 <!-- unexpected-markdown freshContext:true -->
 
 ```js
+function Person(name, age) {
+  this.name = name;
+  this.age = age;
+}
+
 expect.addType({
   name: 'Person',
   base: 'object',
@@ -187,6 +195,11 @@ following way:
 <!-- unexpected-markdown freshContext:true -->
 
 ```js
+function Person(name, age) {
+  this.name = name;
+  this.age = age;
+}
+
 expect.addType({
   name: 'Person',
   base: 'object',
