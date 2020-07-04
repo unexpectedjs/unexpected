@@ -189,9 +189,11 @@ With array-like types it affects:
 - [to have items satisfying](../assertions/array-like/to-have-items-satisfying/)
 
 ```js
-const args = [myCallback];
+function someFunction() {}
 
-expect(args, 'to have an item satisfying', myCallback);
+const args = [someFunction];
+
+expect(args, 'to have an item satisfying', someFunction);
 ```
 
 #### Support for `expect.async` has been removed

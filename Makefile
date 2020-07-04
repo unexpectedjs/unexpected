@@ -66,10 +66,15 @@ endif
 
 .PHONY: test
 test: test-sources
-ifeq ($(MODERN_NODE), true)
-	@./node_modules/.bin/mocha --opts $(MOCHA_OPTS) --require unexpected-markdown $(TEST_SOURCES) $(TEST_SOURCES_MARKDOWN)
-else
 	@./node_modules/.bin/mocha --opts $(MOCHA_OPTS) $(TEST_SOURCES)
+	make test-docs
+
+.PHONY: test-docs
+test-docs:
+ifeq ($(MODERN_NODE), true)
+	@./node_modules/.bin/mocha --opts $(MOCHA_OPTS) --no-check-leaks --require ./bootstrap-unexpected-markdown --require unexpected-markdown $(TEST_SOURCES_MARKDOWN)
+else
+	echo "testing documentation is not supported on this version of node"
 endif
 
 nyc-includes:
@@ -81,7 +86,7 @@ endif
 
 .PHONY: coverage
 coverage: nyc-includes test-sources
-	@./node_modules/.bin/nyc --include $(NYC_INCLUDES) --reporter=lcov --reporter=text --all -- mocha --opts $(MOCHA_OPTS) --require unexpected-markdown $(TEST_SOURCES) $(TEST_SOURCES_MARKDOWN)
+	@./node_modules/.bin/nyc --include $(NYC_INCLUDES) --reporter=lcov --reporter=text --all -- mocha --opts $(MOCHA_OPTS) $(TEST_SOURCES)
 	@echo google-chrome coverage/lcov-report/index.html
 
  .PHONY: test-browser

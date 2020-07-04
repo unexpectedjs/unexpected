@@ -18,7 +18,7 @@
     "test": "make test && make test-chrome-headless",
     "lint": "eslint . && prettier --check '**/*.{js,md}'",
     "generate-site": "generate-site --require ./bootstrap-unexpected-markdown.js",
-    "update-examples": "generate-site --require ./bootstrap-unexpected-markdown.js --update-examples",
+    "update-examples": "evaldown --comment-marker unexpected-markdown --require ./bootstrap-unexpected-markdown.js --inplace ./documentation",
     "version": "(test -n \"${IS_MAKE_RELEASE}\" || (echo Please run make release instead && exit 1)) && offline-github-changelog --next=${npm_package_version} > CHANGELOG.md && git add CHANGELOG.md"
   },
   "main": "./build/lib/index.js",
@@ -44,6 +44,7 @@
     "eslint-plugin-node": "^11.0.0",
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
+    "evaldown": "^1.0.0",
     "find-node-modules": "^2.0.0",
     "fugl": "^1.0.0",
     "gh-pages": "^3.0.0",
@@ -72,9 +73,9 @@
     "rsvp": "^4.7.0",
     "serve": "*",
     "tap-spot": "^1.1.1",
-    "unexpected-documentation-site-generator": "^6.0.0",
+    "unexpected-documentation-site-generator": "^7.0.0",
     "unexpected-magicpen": "^2.1.0",
-    "unexpected-markdown": "^5.0.0"
+    "unexpected-markdown": "^6.0.0"
   },
   "files": [
     "unexpected.js",

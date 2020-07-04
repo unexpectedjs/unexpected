@@ -32,7 +32,7 @@ optionally takes one via `<assertion?>` and is invoked without,
 `expect.shift` will propagate its argument as the fulfillment value of the
 promise returned from your assertion:
 
-<!-- unexpected-markdown async:true, freshExpect:true -->
+<!-- unexpected-markdown freshContext:true -->
 
 ```js
 expect.addAssertion(

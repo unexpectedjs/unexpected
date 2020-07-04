@@ -8,21 +8,19 @@ Adding new functionality to the cloned instance will not affect the
 original instance:
 
 ```js
-var originalExpect = expect;
-
-expect = expect
+var clonedExpect = expect
   .clone()
   .addAssertion('<number> to be an integer', function (expect, subject) {
     expect(Math.round(subject), 'to be', subject);
   });
 
-expect(42, 'to be an integer');
+clonedExpect(42, 'to be an integer');
 ```
 
 If we try to use the new assertion on the original instance it fails:
 
 ```js
-originalExpect(42, 'to be an integer');
+expect(42, 'to be an integer');
 ```
 
 ```output

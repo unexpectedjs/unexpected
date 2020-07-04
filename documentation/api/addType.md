@@ -45,6 +45,13 @@ Optional members:
 Adding new types to the system is best explained by an example. Let's
 say we wanted to add first class support for a `Person` type:
 
+<!-- unexpected-markdown hide:true -->
+
+```js
+const originalExpect = expect;
+expect = expect.clone();
+```
+
 ```js
 function Person(name, age) {
   this.name = name;
@@ -94,9 +101,14 @@ That is already quite helpful, but it would be even nicer if the
 stringification of `Person` instances could read as valid calls to the
 constructor. We can fix that by implementing an `inspect` method on the type.
 
-<!-- unexpected-markdown freshExpect:true -->
+<!-- unexpected-markdown freshContext:true -->
 
 ```js
+function Person(name, age) {
+  this.name = name;
+  this.age = age;
+}
+
 expect.addType({
   name: 'Person',
   base: 'object',
@@ -112,13 +124,11 @@ expect.addType({
       .text(')');
   },
 });
+
+expect(new Person('John Doe', 42), 'to equal', new Person('Jane Doe', 24));
 ```
 
 Now we get the following output:
-
-```js
-expect(new Person('John Doe', 42), 'to equal', new Person('Jane Doe', 24));
-```
 
 ```output
 expected new Person('John Doe', 42) to equal new Person('Jane Doe', 24)
@@ -150,9 +160,14 @@ same depth to the `inspect` function.
 Let's say we wanted `Person` instances only to be compared by name and not by
 age. Then we need to override the `equal` method:
 
-<!-- unexpected-markdown freshExpect:true -->
+<!-- unexpected-markdown freshContext:true -->
 
 ```js
+function Person(name, age) {
+  this.name = name;
+  this.age = age;
+}
+
 expect.addType({
   name: 'Person',
   base: 'object',
@@ -177,9 +192,14 @@ This will produce the same output as above, but that means the diff if
 wrong. It states that the age should be changed. We can fix that the
 following way:
 
-<!-- unexpected-markdown freshExpect:true -->
+<!-- unexpected-markdown freshContext:true -->
 
 ```js
+function Person(name, age) {
+  this.name = name;
+  this.age = age;
+}
+
 expect.addType({
   name: 'Person',
   base: 'object',
@@ -205,9 +225,7 @@ expect.addType({
     );
   },
 });
-```
 
-```js
 expect(new Person('John Doe', 42), 'to equal', new Person('Jane Doe', 24));
 ```
 
@@ -231,7 +249,11 @@ on the base directly when you know it is the one you need.
 
 You could also do something really custom as seen below:
 
-<!-- unexpected-markdown freshExpect:true -->
+<!-- unexpected-markdown hide:true -->
+
+```js
+expect = originalExpect;
+```
 
 ```js
 var inlineDiff = true; // used to change inlining in a later example
@@ -281,13 +303,11 @@ expect.addType({
     return output;
   },
 });
-```
 
-That would produce the following output.
-
-```js
 expect(new Person('John Doe', 42), 'to equal', new Person('Jane Doe', 24));
 ```
+
+That produces the following output:
 
 ```output
 expected new Person('John Doe', 42) to equal new Person('Jane Doe', 24)
