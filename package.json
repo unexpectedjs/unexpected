@@ -73,7 +73,7 @@
     "rsvp": "^4.7.0",
     "serve": "*",
     "tap-spot": "^1.1.1",
-    "unexpected-documentation-site-generator": "^7.0.0",
+    "unexpected-documentation-site-generator": "^7.0.1",
     "unexpected-magicpen": "^2.1.0",
     "unexpected-markdown": "^6.0.0"
   },
