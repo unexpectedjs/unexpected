@@ -44,6 +44,7 @@
     "eslint-plugin-node": "^11.0.0",
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
+    "evaldown": "^1.0.0",
     "find-node-modules": "^2.0.0",
     "fugl": "^1.0.0",
     "gh-pages": "^3.0.0",
@@ -72,9 +73,9 @@
     "rsvp": "^4.7.0",
     "serve": "*",
     "tap-spot": "^1.1.1",
-    "unexpected-documentation-site-generator": "git://github.com/unexpectedjs/unexpected-documentation-site-generator.git#57f933a",
+    "unexpected-documentation-site-generator": "^7.0.0",
     "unexpected-magicpen": "^2.1.0",
-    "unexpected-markdown": "git://github.com/unexpectedjs/unexpected-markdown.git#2073a4e"
+    "unexpected-markdown": "^6.0.0"
   },
   "files": [
     "unexpected.js",
