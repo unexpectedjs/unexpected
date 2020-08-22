@@ -72,7 +72,7 @@ test: test-sources
 .PHONY: test-docs
 test-docs:
 ifeq ($(MODERN_NODE), true)
-	@evaldown --comment-marker unexpected-markdown --require ./bootstrap-unexpected-markdown.js --validate --reporter spec ./documentation
+	@./node_modules/.bin/evaldown --comment-marker unexpected-markdown --require ./bootstrap-unexpected-markdown.js --validate --reporter spec ./documentation
 else
 	echo "testing documentation is not supported on this version of node"
 endif
