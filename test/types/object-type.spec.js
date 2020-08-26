@@ -314,7 +314,7 @@ describe('object type', () => {
         clonedExpect.inspect({ a: 'a', b: 'b' }).toString(),
         'to equal',
         '{\n' +
-        "  a: 'a', b: 'b'\n" + // This is the 'compact' feature kicking in
+          "  a: 'a', b: 'b'\n" + // This is the 'compact' feature kicking in
           '}'
       );
     });
