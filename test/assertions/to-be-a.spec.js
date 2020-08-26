@@ -173,7 +173,7 @@ describe('to be a/an assertion', () => {
           // prettier-ignore
           identify: function () {
             return true;
-          }
+          },
         });
       },
       'to throw',
