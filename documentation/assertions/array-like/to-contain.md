@@ -46,3 +46,36 @@ not to contain { name: 'Jane Doe' }
   { name: 'Jane Doe' } // should be removed
 ]
 ```
+
+You can use the `exhaustively` flag to indicate that you want no other items to
+be in the subject.
+
+```js
+expect(
+  [{ name: 'John Doe' }, { name: 'Jane Doe' }],
+  'to exhaustively contain',
+  { name: 'Jane Doe' },
+  { name: 'John Doe' }
+);
+```
+
+In case there are more items than that in your subject, you will get the
+following output:
+
+```js
+expect(
+  [{ name: 'Jane Doe' }, { name: 'John Doe' }],
+  'to exhaustively contain',
+  { name: 'Jane Doe' }
+);
+```
+
+```output
+expected [ { name: 'Jane Doe' }, { name: 'John Doe' } ]
+to exhaustively contain { name: 'Jane Doe' }
+
+[
+  { name: 'Jane Doe' },
+  { name: 'John Doe' } // should be removed
+]
+```
