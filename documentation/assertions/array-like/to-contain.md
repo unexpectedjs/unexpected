@@ -47,7 +47,7 @@ not to contain { name: 'Jane Doe' }
 ]
 ```
 
-You can use the `exhaustively` flag to indicate that you want no other items to
+You can use the `only` flag to indicate that you want no other items to
 be in the subject.
 
 ```js
