@@ -32,7 +32,7 @@ describe('to contain assertion', () => {
         '  The assertion does not have a matching signature for:\n' +
         '    <null> not to contain <string>\n' +
         '  did you mean:\n' +
-        '    <array-like> [not] to contain <any+>\n' +
+        '    <array-like> [not] to [exhaustively] contain <any+>\n' +
         '    <string> [not] to contain <string+>'
     );
 
@@ -80,7 +80,7 @@ describe('to contain assertion', () => {
         '  The assertion does not have a matching signature for:\n' +
         '    <number> to contain <number>\n' +
         '  did you mean:\n' +
-        '    <array-like> [not] to contain <any+>\n' +
+        '    <array-like> [not] to [exhaustively] contain <any+>\n' +
         '    <string> [not] to contain <string+>'
     );
   });
@@ -162,6 +162,71 @@ describe('to contain assertion', () => {
           '\n' +
           'foobarquuxfoo\n' +
           '^^^       ^^^'
+      );
+    });
+  });
+
+  describe('with the exhaustively flag', () => {
+    it('should not throw when all items are included in the subject', () => {
+      expect(function () {
+        expect(
+          [{ bar: 456 }, { foo: 123 }],
+          'to exhaustively contain',
+          { foo: 123 },
+          { bar: 456 }
+        );
+      }, 'not to throw');
+    });
+
+    it('should throw when all items are not included in the subject', () => {
+      expect(
+        function () {
+          expect(
+            [{ bar: 456 }],
+            'to exhaustively contain',
+            { foo: 123 },
+            { bar: 456 }
+          );
+        },
+        'to throw exception',
+        'expected [ { bar: 456 } ] to exhaustively contain { foo: 123 }, { bar: 456 }\n' +
+          '\n' +
+          '[\n' +
+          '  { bar: 456 }\n' +
+          '  // missing { foo: 123 }\n' +
+          ']'
+      );
+    });
+
+    it('should throw when all items are included in the subject but subject has other items as well', () => {
+      expect(
+        function () {
+          expect(
+            [{ bar: 456 }, { foo: 123 }, { baz: 789 }],
+            'to exhaustively contain',
+            { foo: 123 },
+            { bar: 456 }
+          );
+        },
+        'to throw exception',
+        'expected [ { bar: 456 }, { foo: 123 }, { baz: 789 } ]\n' +
+          'to exhaustively contain { foo: 123 }, { bar: 456 }\n' +
+          '\n' +
+          '[\n' +
+          '  { bar: 456 },\n' +
+          '  { foo: 123 },\n' +
+          '  { baz: 789 } // should be removed\n' +
+          ']'
+      );
+    });
+
+    it('should throw when combining the not and exhaustively flags', () => {
+      expect(
+        function () {
+          expect([{ foo: 123 }], 'not to exhaustively contain', { foo: 123 });
+        },
+        'to throw exception',
+        'The "not" flag cannot be used together with "to exhaustively contain".'
       );
     });
   });
