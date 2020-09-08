@@ -63,11 +63,9 @@ In case there are more items than that in your subject, you will get the
 following output:
 
 ```js
-expect(
-  [{ name: 'Jane Doe' }, { name: 'John Doe' }],
-  'to only contain',
-  { name: 'Jane Doe' }
-);
+expect([{ name: 'Jane Doe' }, { name: 'John Doe' }], 'to only contain', {
+  name: 'Jane Doe',
+});
 ```
 
 ```output

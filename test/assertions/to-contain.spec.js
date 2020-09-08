@@ -181,12 +181,7 @@ describe('to contain assertion', () => {
     it('should throw when all items are not included in the subject', () => {
       expect(
         function () {
-          expect(
-            [{ bar: 456 }],
-            'to only contain',
-            { foo: 123 },
-            { bar: 456 }
-          );
+          expect([{ bar: 456 }], 'to only contain', { foo: 123 }, { bar: 456 });
         },
         'to throw exception',
         'expected [ { bar: 456 } ] to only contain { foo: 123 }, { bar: 456 }\n' +
