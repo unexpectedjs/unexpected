@@ -53,7 +53,7 @@ be in the subject.
 ```js
 expect(
   [{ name: 'John Doe' }, { name: 'Jane Doe' }],
-  'to exhaustively contain',
+  'to only contain',
   { name: 'Jane Doe' },
   { name: 'John Doe' }
 );
@@ -65,14 +65,14 @@ following output:
 ```js
 expect(
   [{ name: 'Jane Doe' }, { name: 'John Doe' }],
-  'to exhaustively contain',
+  'to only contain',
   { name: 'Jane Doe' }
 );
 ```
 
 ```output
 expected [ { name: 'Jane Doe' }, { name: 'John Doe' } ]
-to exhaustively contain { name: 'Jane Doe' }
+to only contain { name: 'Jane Doe' }
 
 [
   { name: 'Jane Doe' },

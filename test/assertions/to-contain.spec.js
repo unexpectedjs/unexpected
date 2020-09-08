@@ -32,7 +32,7 @@ describe('to contain assertion', () => {
         '  The assertion does not have a matching signature for:\n' +
         '    <null> not to contain <string>\n' +
         '  did you mean:\n' +
-        '    <array-like> [not] to [exhaustively] contain <any+>\n' +
+        '    <array-like> [not] to [only] contain <any+>\n' +
         '    <string> [not] to contain <string+>'
     );
 
@@ -80,7 +80,7 @@ describe('to contain assertion', () => {
         '  The assertion does not have a matching signature for:\n' +
         '    <number> to contain <number>\n' +
         '  did you mean:\n' +
-        '    <array-like> [not] to [exhaustively] contain <any+>\n' +
+        '    <array-like> [not] to [only] contain <any+>\n' +
         '    <string> [not] to contain <string+>'
     );
   });
@@ -166,12 +166,12 @@ describe('to contain assertion', () => {
     });
   });
 
-  describe('with the exhaustively flag', () => {
+  describe('with the only flag', () => {
     it('should not throw when all items are included in the subject', () => {
       expect(function () {
         expect(
           [{ bar: 456 }, { foo: 123 }],
-          'to exhaustively contain',
+          'to only contain',
           { foo: 123 },
           { bar: 456 }
         );
@@ -183,13 +183,13 @@ describe('to contain assertion', () => {
         function () {
           expect(
             [{ bar: 456 }],
-            'to exhaustively contain',
+            'to only contain',
             { foo: 123 },
             { bar: 456 }
           );
         },
         'to throw exception',
-        'expected [ { bar: 456 } ] to exhaustively contain { foo: 123 }, { bar: 456 }\n' +
+        'expected [ { bar: 456 } ] to only contain { foo: 123 }, { bar: 456 }\n' +
           '\n' +
           '[\n' +
           '  { bar: 456 }\n' +
@@ -203,14 +203,14 @@ describe('to contain assertion', () => {
         function () {
           expect(
             [{ bar: 456 }, { foo: 123 }, { baz: 789 }],
-            'to exhaustively contain',
+            'to only contain',
             { foo: 123 },
             { bar: 456 }
           );
         },
         'to throw exception',
         'expected [ { bar: 456 }, { foo: 123 }, { baz: 789 } ]\n' +
-          'to exhaustively contain { foo: 123 }, { bar: 456 }\n' +
+          'to only contain { foo: 123 }, { bar: 456 }\n' +
           '\n' +
           '[\n' +
           '  { bar: 456 },\n' +
@@ -220,13 +220,13 @@ describe('to contain assertion', () => {
       );
     });
 
-    it('should throw when combining the not and exhaustively flags', () => {
+    it('should throw when combining the not and only flags', () => {
       expect(
         function () {
-          expect([{ foo: 123 }], 'not to exhaustively contain', { foo: 123 });
+          expect([{ foo: 123 }], 'not to only contain', { foo: 123 });
         },
         'to throw exception',
-        'The "not" flag cannot be used together with "to exhaustively contain".'
+        'The "not" flag cannot be used together with "to only contain".'
       );
     });
   });
