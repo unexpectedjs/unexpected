@@ -81,6 +81,7 @@ describe('to contain assertion', () => {
         '    <number> to contain <number>\n' +
         '  did you mean:\n' +
         '    <array-like> [not] to contain <any+>\n' +
+        '    <array-like> to [only] contain <any+>\n' +
         '    <string> [not] to contain <string+>'
     );
   });
@@ -162,6 +163,77 @@ describe('to contain assertion', () => {
           '\n' +
           'foobarquuxfoo\n' +
           '^^^       ^^^'
+      );
+    });
+  });
+
+  describe('with the only flag', () => {
+    it('should not throw when all items are included in the subject', () => {
+      expect(function () {
+        expect(
+          [{ bar: 456 }, { foo: 123 }],
+          'to only contain',
+          { foo: 123 },
+          { bar: 456 }
+        );
+      }, 'not to throw');
+    });
+
+    it('should not throw when all items are included in the subject and some multiple times', () => {
+      expect(function () {
+        expect(
+          [{ bar: 456 }, { foo: 123 }, { bar: 456 }],
+          'to only contain',
+          { foo: 123 },
+          { bar: 456 }
+        );
+      }, 'not to throw');
+    });
+
+    it('should throw when all items are not included in the subject', () => {
+      expect(
+        function () {
+          expect([{ bar: 456 }], 'to only contain', { foo: 123 }, { bar: 456 });
+        },
+        'to throw exception',
+        'expected [ { bar: 456 } ] to only contain { foo: 123 }, { bar: 456 }\n' +
+          '\n' +
+          '[\n' +
+          '  { bar: 456 }\n' +
+          '  // missing { foo: 123 }\n' +
+          ']'
+      );
+    });
+
+    it('should throw when all items are included in the subject but subject has other items as well', () => {
+      expect(
+        function () {
+          expect(
+            [{ bar: 456 }, { foo: 123 }, { baz: 789 }],
+            'to only contain',
+            { foo: 123 },
+            { bar: 456 }
+          );
+        },
+        'to throw exception',
+        'expected [ { bar: 456 }, { foo: 123 }, { baz: 789 } ]\n' +
+          'to only contain { foo: 123 }, { bar: 456 }\n' +
+          '\n' +
+          '[\n' +
+          '  { bar: 456 },\n' +
+          '  { foo: 123 },\n' +
+          '  { baz: 789 } // should be removed\n' +
+          ']'
+      );
+    });
+
+    it('should throw when combining the not and only flags', () => {
+      expect(
+        function () {
+          expect([{ foo: 123 }], 'not to only contain', { foo: 123 });
+        },
+        'to throw exception',
+        "Unknown assertion 'not to only contain', did you mean: 'to only contain'"
       );
     });
   });
