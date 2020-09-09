@@ -179,6 +179,17 @@ describe('to contain assertion', () => {
       }, 'not to throw');
     });
 
+    it('should not throw when all items are included in the subject and some multiple times', () => {
+      expect(function () {
+        expect(
+          [{ bar: 456 }, { foo: 123 }, { bar: 456 }],
+          'to only contain',
+          { foo: 123 },
+          { bar: 456 }
+        );
+      }, 'not to throw');
+    });
+
     it('should throw when all items are not included in the subject', () => {
       expect(
         function () {
