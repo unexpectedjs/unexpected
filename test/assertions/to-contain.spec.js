@@ -32,7 +32,7 @@ describe('to contain assertion', () => {
         '  The assertion does not have a matching signature for:\n' +
         '    <null> not to contain <string>\n' +
         '  did you mean:\n' +
-        '    <array-like> [not] to [only] contain <any+>\n' +
+        '    <array-like> [not] to contain <any+>\n' +
         '    <string> [not] to contain <string+>'
     );
 
@@ -80,7 +80,8 @@ describe('to contain assertion', () => {
         '  The assertion does not have a matching signature for:\n' +
         '    <number> to contain <number>\n' +
         '  did you mean:\n' +
-        '    <array-like> [not] to [only] contain <any+>\n' +
+        '    <array-like> [not] to contain <any+>\n' +
+        '    <array-like> to [only] contain <any+>\n' +
         '    <string> [not] to contain <string+>'
     );
   });
@@ -221,7 +222,7 @@ describe('to contain assertion', () => {
           expect([{ foo: 123 }], 'not to only contain', { foo: 123 });
         },
         'to throw exception',
-        'The "not" flag cannot be used together with "to only contain".'
+        "Unknown assertion 'not to only contain', did you mean: 'to only contain'"
       );
     });
   });
