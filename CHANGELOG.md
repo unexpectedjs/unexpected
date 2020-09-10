@@ -1,3 +1,44 @@
+### v11.15.0 (2020-09-10)
+
+#### Pull requests
+
+- [#756](https://github.com/unexpectedjs/unexpected/pull/756) Upgrade karma to version 5.2.2 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#754](https://github.com/unexpectedjs/unexpected/pull/754) Upgrade karma to version 5.2.1 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#753](https://github.com/unexpectedjs/unexpected/pull/753) Upgrade karma to version 5.2.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#750](https://github.com/unexpectedjs/unexpected/pull/750) Upgrade prettier to version 2.1.0 ([Andreas Lind](mailto:andreas.lind@peakon.com), [depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#748](https://github.com/unexpectedjs/unexpected/pull/748) Switch to evaldown --validate for the documentation. ([Alex J Burke](mailto:alex@alexjeffburke.com))
+- [#744](https://github.com/unexpectedjs/unexpected/pull/744) Upgrade rollup-plugin-terser to version 7.0.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#743](https://github.com/unexpectedjs/unexpected/pull/743) Upgrade eslint-plugin-mocha to version 8.0.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#739](https://github.com/unexpectedjs/unexpected/pull/739) Upgrade karma to version 5.1.1 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#738](https://github.com/unexpectedjs/unexpected/pull/738) Upgrade jasmine to version 3.6.1 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#721](https://github.com/unexpectedjs/unexpected/pull/721) Switch to evaldown ([Alex J Burke](mailto:alex@alexjeffburke.com))
+- [#736](https://github.com/unexpectedjs/unexpected/pull/736) Upgrade karma to version 5.1.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#734](https://github.com/unexpectedjs/unexpected/pull/734) Upgrade gh-pages to version 3.0.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#732](https://github.com/unexpectedjs/unexpected/pull/732) Upgrade rollup-plugin-terser to version 6.0.1 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#731](https://github.com/unexpectedjs/unexpected/pull/731) Upgrade karma to version 5.0.9 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#730](https://github.com/unexpectedjs/unexpected/pull/730) Upgrade karma to version 5.0.8 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#729](https://github.com/unexpectedjs/unexpected/pull/729) Upgrade karma-browserstack-launcher to version 1.6.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#728](https://github.com/unexpectedjs/unexpected/pull/728) Upgrade karma to version 5.0.7 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#727](https://github.com/unexpectedjs/unexpected/pull/727) Upgrade eslint-plugin-mocha to version 7.0.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#725](https://github.com/unexpectedjs/unexpected/pull/725) Upgrade eslint to version 7.0.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#724](https://github.com/unexpectedjs/unexpected/pull/724) Upgrade karma to version 5.0.5 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#718](https://github.com/unexpectedjs/unexpected/pull/718) Upgrade karma to version 5.0.4 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#717](https://github.com/unexpectedjs/unexpected/pull/717) Upgrade karma-mocha to version 2.0.1 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#715](https://github.com/unexpectedjs/unexpected/pull/715) Upgrade karma-browserstack-launcher to version 1.5.2 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#712](https://github.com/unexpectedjs/unexpected/pull/712) Upgrade karma-mocha to version 2.0.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#711](https://github.com/unexpectedjs/unexpected/pull/711) Upgrade karma to version 5.0.1 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#708](https://github.com/unexpectedjs/unexpected/pull/708) Upgrade jest to version 25.2.3 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#707](https://github.com/unexpectedjs/unexpected/pull/707) Upgrade buble to version 0.20.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+
+#### Commits to master
+
+- [Add only flag for to contain assertion \(\#755\)](https://github.com/unexpectedjs/unexpected/commit/8b2b82f5e69b3f27a26825fe8f5a38b43d70afdf) ([Gustav Nikolaj](mailto:gno@one.com))
+- [Empty commit to trigger build](https://github.com/unexpectedjs/unexpected/commit/45e5043930f76b377b89ceaaf2199579539e8319) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [Bump unexpected-documentation-site-generator for assets copying fix.](https://github.com/unexpectedjs/unexpected/commit/b3273efd25125310451ba30f409bd4e0a84e6295) ([Alex J Burke](mailto:alex@alexjeffburke.com))
+- [Revert "Revert "Revert "Temporarily remove unexpected-mitm due to a node &gt;=12.6.3 regression."""](https://github.com/unexpectedjs/unexpected/commit/b603f1af43740f235b0e196aa553bb299fdde435) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [Revert "Revert "Temporarily remove unexpected-mitm due to a node &gt;=12.6.3 regression.""](https://github.com/unexpectedjs/unexpected/commit/df97d9b72cfd65b7fe2cd1100f24761645749cbd) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [+14 more](https://github.com/unexpectedjs/unexpected/compare/v11.14.0...v11.15.0)
+
 ### v11.14.0 (2020-03-24)
 
 - [#705](https://github.com/unexpectedjs/unexpected/pull/705) Add support for &lt;object&gt; to have \(unconfigurable|unenumerable|unwritable|readonly|read-only\) property &lt;string|Symbol&gt; ([Andreas Lind](mailto:andreas.lind@peakon.com), [Andreas Lind](mailto:andreaslindpetersen@gmail.com))
