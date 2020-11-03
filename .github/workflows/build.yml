@@ -22,7 +22,7 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - run: npm install
-      - run: npm test
+      - run: make test
 
   test-targets:
     runs-on: ubuntu-18.04
@@ -43,5 +43,5 @@ jobs:
         with:
           node-version: '12'
       - run: npm install
-      - run: npm run ${{ matrix.targets.target }}
+      - run: make ${{ matrix.targets.target }}
 
