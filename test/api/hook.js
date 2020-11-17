@@ -126,7 +126,8 @@ describe('hook', () => {
     expect(secondCalled, 'to be true');
   });
 
-  it('should not break when a clone is created after a hook is added', function () {
+  // Regression test for https://gitter.im/unexpectedjs/unexpected?at=5fb42b73747be107c1c76095
+  it('should not break `this` in clones created after installing the hook', function () {
     expect.hook(function (next) {
       return function (context, ...rest) {
         return next(context, ...rest);
