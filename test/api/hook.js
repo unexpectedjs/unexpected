@@ -125,4 +125,43 @@ describe('hook', () => {
     expect(firstCalled, 'to be true');
     expect(secondCalled, 'to be true');
   });
+
+  it('should not break when a clone is created after a hook is added', function () {
+    expect.hook(function (next) {
+      return function (context, ...rest) {
+        return next(context, ...rest);
+      };
+    });
+
+    const clonedExpect = expect.clone();
+
+    clonedExpect.addType({
+      base: 'array',
+      name: 'bogusArray',
+      identify(obj) {
+        return Array.isArray(obj);
+      },
+      prefix(output) {
+        return output;
+      },
+      suffix(output) {
+        return output;
+      },
+      indent: false,
+    });
+
+    expect(
+      () => {
+        clonedExpect(['aaa', 'bbb'], 'to satisfy', ['foo']);
+      },
+      'to throw',
+      "expected 'aaa', 'bbb' to satisfy 'foo'\n" +
+        '\n' +
+        "'aaa', // should equal 'foo'\n" +
+        '       //\n' +
+        '       // -aaa\n' +
+        '       // +foo\n' +
+        "'bbb' // should be removed"
+    );
+  });
 });
