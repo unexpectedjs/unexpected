@@ -66,7 +66,7 @@ endif
 
 .PHONY: test
 test: test-sources
-	@./node_modules/.bin/mocha --opts $(MOCHA_OPTS) $(TEST_SOURCES)
+	@./node_modules/.bin/mocha --config $(MOCHA_CONFIG) $(TEST_SOURCES)
 	make test-docs
 
 .PHONY: test-docs
