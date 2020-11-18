@@ -1,12 +1,12 @@
 /* global unexpected */
 
-var expect = unexpected.clone();
+const expect = unexpected.clone();
 
 describe('createStandardErrorMessage', () => {
   // Regression test for a bug where the compactSubject of a MagicPen instance from
   // the prototype chain was picked up, causing the inner subject to be rendered as 'array'
   it('should not pick up the subject compaction code from a MagicPen instance in the prototype chain', () => {
-    var clonedExpect = expect
+    const clonedExpect = expect
       .clone()
       .addAssertion('<any> shifted <assertion>', function (expect, subject) {
         expect.errorMode = 'nested';

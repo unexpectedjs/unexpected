@@ -13,7 +13,7 @@ describe('to have property assertion', () => {
   });
 
   describe('property descriptor', () => {
-    var subject = { a: 'b' };
+    const subject = { a: 'b' };
     Object.defineProperty(subject, 'enumFalse', {
       enumerable: false,
       value: 't',
@@ -244,7 +244,7 @@ describe('to have property assertion', () => {
   });
 
   describe('with a subtype that overrides valueForKey()', () => {
-    var clonedExpect = expect.clone();
+    const clonedExpect = expect.clone();
 
     clonedExpect.addType({
       name: 'upperCaseObject',

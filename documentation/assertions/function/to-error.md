@@ -154,11 +154,11 @@ You can even do async assertions in the function that you pass in.
 <!-- unexpected-markdown async:true -->
 
 ```js
-var errorCount = 0;
+let errorCount = 0;
 function willBeRejectedAsync() {
   return new Promise(function (resolve, reject) {
     setTimeout(function () {
-      var error = new Error('async error');
+      const error = new Error('async error');
       errorCount += 1;
       error.errorCount = errorCount;
       reject(error);

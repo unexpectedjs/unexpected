@@ -1,7 +1,7 @@
 /* global expect */
 describe('#child', () => {
-  var parentExpect;
-  var childExpect;
+  let parentExpect;
+  let childExpect;
   beforeEach(() => {
     parentExpect = expect.clone();
     childExpect = parentExpect.child();

@@ -8,7 +8,7 @@ it.skipIf = function (condition) {
 };
 
 describe('unexpected', () => {
-  var expect = unexpected.clone();
+  const expect = unexpected.clone();
 
   it('should freeze the top-level unexpected instance', () => {
     const topLevelExpect =
@@ -89,7 +89,7 @@ describe('unexpected', () => {
 
     describe('in a nested expect', () => {
       it('fails when given no parameters', () => {
-        var clonedExpect = expect
+        const clonedExpect = expect
           .clone()
           .addAssertion('<any> to foo', function (expect) {
             expect();
@@ -104,7 +104,7 @@ describe('unexpected', () => {
       });
 
       it('fails when the second parameter is not a string', () => {
-        var clonedExpect = expect
+        const clonedExpect = expect
           .clone()
           .addAssertion('<any> to foo', function (expect) {
             expect({}, {});
@@ -131,7 +131,7 @@ describe('unexpected', () => {
   });
 
   it('shows a specific error message when the assertion exists, but not for the given type signature', () => {
-    var clonedExpect = expect
+    const clonedExpect = expect
       .clone()
       .addAssertion('<string> [not] to foo <array>', function (expect) {
         expect();
@@ -151,7 +151,7 @@ describe('unexpected', () => {
 
   describe('expect', () => {
     it('should catch non-Unexpected error caught from a nested assertion', () => {
-      var clonedExpect = expect
+      const clonedExpect = expect
         .clone()
         .addAssertion('<any> to foo', function (expect, subject) {
           return expect(subject, 'to bar');
@@ -870,7 +870,7 @@ describe('unexpected', () => {
           this.lastName = lastName;
         }
 
-        var clonedExpect = expect.clone().addType({
+        const clonedExpect = expect.clone().addType({
           name: 'Person',
           identify(value) {
             return value instanceof Person;
@@ -910,7 +910,7 @@ describe('unexpected', () => {
         it('elem was sparse', () => {
           expect(
             function () {
-              var sparse = [];
+              const sparse = [];
               sparse[1] = 2;
               sparse[2] = 3;
               expect(sparse, 'to equal', [1, 2, 3]);
@@ -928,7 +928,7 @@ describe('unexpected', () => {
         it('elem should be sparse', () => {
           expect(
             function () {
-              var sparse = [];
+              const sparse = [];
               sparse[1] = 2;
               sparse[2] = 3;
               expect([1, 2, 3], 'to equal', sparse);
@@ -949,7 +949,7 @@ describe('unexpected', () => {
 
   describe('with an assertion that has a non-standard name', () => {
     it('should render the error message sanely in an annotation block inside a satisfy diff', () => {
-      var clonedExpect = expect
+      const clonedExpect = expect
         .clone()
         .addAssertion('<any> foobar', function (expect, subject) {
           expect(subject, 'to equal', 'foobar');
@@ -984,7 +984,7 @@ describe('unexpected', () => {
 
     describe('#appendItems', () => {
       it('should inspect multiple items', () => {
-        var magicPen = expect.output.clone();
+        const magicPen = expect.output.clone();
         magicPen.addStyle('appendInspected', function (arg) {
           this.text(arg);
         });
@@ -992,7 +992,7 @@ describe('unexpected', () => {
       });
 
       it('should default to a separator of the empty string', () => {
-        var magicPen = expect.output.clone();
+        const magicPen = expect.output.clone();
         magicPen.addStyle('appendInspected', function (arg) {
           this.text(arg);
         });
@@ -1003,7 +1003,7 @@ describe('unexpected', () => {
 
   describe('with the next assertion as a continuation', () => {
     describe('with multiple compound assertions', () => {
-      var clonedExpect = expect
+      const clonedExpect = expect
         .clone()
         .addAssertion('<number> [when] incremented <assertion?>', function (
           expect,
@@ -1212,7 +1212,7 @@ describe('unexpected', () => {
   });
 
   it('should render the error message correctly when an non-existent assertion is used later in the argument list', () => {
-    var clonedExpect = expect
+    const clonedExpect = expect
       .clone()
       .addAssertion('<any> to foo <assertion>', function (expect, subject) {
         expect(subject, 'to equal', 'foo');
@@ -1252,7 +1252,7 @@ describe('unexpected', () => {
   });
 
   describe('wrappedExpect via an assertion', () => {
-    var clonedExpect = expect.clone();
+    const clonedExpect = expect.clone();
 
     // This is roughly babel's transpilation of
     // expect.addAssertion('<string> when suffixed with foo <assertion?>', function (expect, subject, ...rest) {
@@ -1262,9 +1262,9 @@ describe('unexpected', () => {
     clonedExpect.addAssertion(
       '<string> when suffixed with foo <assertion?>',
       function (expect, subject) {
-        var _len = arguments.length;
-        var rest = Array(_len > 2 ? _len - 2 : 0);
-        for (var _key = 2; _key < _len; _key++) {
+        const _len = arguments.length;
+        const rest = Array(_len > 2 ? _len - 2 : 0);
+        for (let _key = 2; _key < _len; _key++) {
           rest[_key - 2] = arguments[_key];
         }
         return expect.apply(undefined, [`${subject}foo`].concat(rest));
@@ -1328,12 +1328,12 @@ describe('unexpected', () => {
       clonedExpect.addAssertion(
         '<string> to equal foo and when suffixed with bar <assertion?>',
         function (expect, subject) {
-          var _len = arguments.length;
-          var rest = Array(_len > 2 ? _len - 2 : 0);
-          for (var _key = 2; _key < _len; _key++) {
+          const _len = arguments.length;
+          const rest = Array(_len > 2 ? _len - 2 : 0);
+          for (let _key = 2; _key < _len; _key++) {
             rest[_key - 2] = arguments[_key];
           }
-          var result = `${subject}bar`;
+          const result = `${subject}bar`;
           return expect
             .apply(undefined, [result].concat(rest))
             .and('to equal', 'foobar')

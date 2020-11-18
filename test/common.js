@@ -1,6 +1,6 @@
 /* global unexpected:true, expect:true, expectWithUnexpectedMagicPen:true, weknowhow, jasmine */
 /* eslint no-unused-vars: "off" */
-var unexpected =
+const unexpected =
   typeof window === 'undefined' || !window.weknowhow
     ? require('../lib/').clone()
     : window.weknowhow.expect.clone();
@@ -43,9 +43,9 @@ unexpected
     });
   });
 
-var expect = unexpected.clone();
+const expect = unexpected.clone();
 
-var expectWithUnexpectedMagicPen = unexpected
+const expectWithUnexpectedMagicPen = unexpected
   .clone()
   .use(
     typeof weknowhow === 'undefined'

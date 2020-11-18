@@ -12,7 +12,7 @@ describe('to be a canonical object assertion', () => {
   });
 
   it('works with a circular object', () => {
-    var obj = { a: 123, b: {} };
+    const obj = { a: 123, b: {} };
     obj.b.a = obj;
     expect(obj, 'to be canonical');
   });

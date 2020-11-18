@@ -23,7 +23,7 @@ the following way:
 <!-- unexpected-markdown evaluate:false -->
 
 ```js
-var promises = items.map(function (item) {
+const promises = items.map(function (item) {
   return expect.promise(function () {
     expect(item, 'to be a number');
   });

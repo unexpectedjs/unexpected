@@ -1,7 +1,7 @@
 /* global expect */
 describe('expect.promise', () => {
   it('should forward non-unexpected errors', () => {
-    var clonedExpect = expect
+    const clonedExpect = expect
       .clone()
       .addAssertion('<any> to foo', function (expect, subject) {
         return expect.withError(
@@ -32,7 +32,7 @@ describe('expect.promise', () => {
   });
 
   it('should return the fulfilled promise even if it is oathbreakable', () => {
-    var clonedExpect = expect
+    const clonedExpect = expect
       .clone()
       .addAssertion('<any> to foo', function (expect, subject) {
         return expect.promise(function () {
@@ -44,7 +44,7 @@ describe('expect.promise', () => {
   });
 
   it('should preserve the resolved value when an assertion contains a non-oathbreakable promise', function (done) {
-    var clonedExpect = expect
+    const clonedExpect = expect
       .clone()
       .addAssertion('<any> to foo', function (expect, subject) {
         return expect.promise(function (resolve, reject) {
@@ -61,7 +61,7 @@ describe('expect.promise', () => {
   });
 
   it('should return a promise fulfilled with the return value when an assertion returns a non-promise value', () => {
-    var clonedExpect = expect
+    const clonedExpect = expect
       .clone()
       .addAssertion('<any> to foo', function (expect, subject) {
         expect(subject, 'to equal', 'foo');
@@ -214,7 +214,7 @@ describe('expect.promise', () => {
 
     describe('with a nested asynchronous assertion', () => {
       it('should mount the and method on a promise returned from a nested assertion', () => {
-        var clonedExpect = expect
+        const clonedExpect = expect
           .clone()
           .addAssertion('<any> to foo', function (expect, subject) {
             return expect(subject, 'to bar').and('to equal', 'foo');
@@ -235,7 +235,7 @@ describe('expect.promise', () => {
   });
 
   it('should throw an exception if the argument was not a function', () => {
-    var expectedError = new TypeError(
+    const expectedError = new TypeError(
       'expect.promise(...) requires a function argument to be supplied.\n' +
         'See http://unexpected.js.org/api/promise/ for more details.'
     );
@@ -268,7 +268,7 @@ describe('expect.promise', () => {
     }
   } catch (err) {}
   describe('#inspect', () => {
-    var originalDefaultFormat = expect.output.constructor.defaultFormat;
+    const originalDefaultFormat = expect.output.constructor.defaultFormat;
     beforeEach(() => {
       expect.output.constructor.defaultFormat = 'text';
     });
@@ -301,7 +301,7 @@ describe('expect.promise', () => {
     });
 
     it('should inspect a pending promise', () => {
-      var asyncPromise = expect(
+      const asyncPromise = expect(
         'foo',
         'when delayed a little bit',
         'to equal',
@@ -316,7 +316,7 @@ describe('expect.promise', () => {
     });
 
     it('should inspect a rejected promise without a reason', () => {
-      var promise = expect.promise(function (resolve, reject) {
+      const promise = expect.promise(function (resolve, reject) {
         reject();
       });
 
@@ -326,7 +326,7 @@ describe('expect.promise', () => {
     });
 
     it('should inspect a rejected promise with a reason', () => {
-      var promise = expect.promise(function (resolve, reject) {
+      const promise = expect.promise(function (resolve, reject) {
         setTimeout(function () {
           reject(new Error('argh'));
         }, 0);
@@ -374,7 +374,7 @@ describe('expect.promise', () => {
 
     it('should provide a run function that preserves the return value of the supplied function', () => {
       return expect.promise(function (run) {
-        var runner = run(function () {
+        const runner = run(function () {
           return 123;
         });
         expect(runner(), 'to equal', 123);

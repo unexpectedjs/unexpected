@@ -9,7 +9,7 @@ describe('to throw assertion', () => {
       },
       'to throw',
       expect.it(function (err) {
-        var message = err.getErrorMessage({ format: 'text' }).toString();
+        const message = err.getErrorMessage({ format: 'text' }).toString();
 
         expect(
           message,

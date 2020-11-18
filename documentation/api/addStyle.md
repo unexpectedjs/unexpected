@@ -19,8 +19,8 @@ expect.addStyle('jsString', function (text, rainbowColors) {
     'magenta',
     'cyan',
   ];
-  for (var i = 0; i < text.length; i += 1) {
-    var color = rainbowColors[i % rainbowColors.length];
+  for (let i = 0; i < text.length; i += 1) {
+    const color = rainbowColors[i % rainbowColors.length];
     this.text(text[i], color);
   }
 });

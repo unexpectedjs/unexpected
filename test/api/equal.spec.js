@@ -2,8 +2,8 @@
 if (Object.defineProperty) {
   describe('equal', () => {
     function Field(val, options) {
-      var value = val;
-      var propertyDescription = {
+      let value = val;
+      const propertyDescription = {
         enumerable: true,
       };
       if (options.match(/getter/)) {

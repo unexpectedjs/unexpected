@@ -1,12 +1,12 @@
 /* global expect */
 describe('use', () => {
-  var clonedExpect;
+  let clonedExpect;
   beforeEach(() => {
     clonedExpect = expect.clone();
   });
 
   it('calls the given plugin with the clonedExpect instance as the parameter', function (done) {
-    var plugin = {
+    const plugin = {
       name: 'test',
       installInto(expectInstance) {
         clonedExpect(expectInstance, 'to be', clonedExpect);
@@ -42,8 +42,8 @@ describe('use', () => {
   });
 
   it('allows the installation of a plugin given as an anonymous function', () => {
-    var callCount = 0;
-    var plugin = function () {
+    let callCount = 0;
+    const plugin = function () {
       callCount += 1;
     };
     clonedExpect.use(plugin);
@@ -53,8 +53,8 @@ describe('use', () => {
   });
 
   it('allows the installation of a plugin given as a named function', () => {
-    var callCount = 0;
-    var plugin = function myPlugin() {
+    let callCount = 0;
+    const plugin = function myPlugin() {
       callCount += 1;
     };
     clonedExpect.use(plugin);
@@ -75,11 +75,11 @@ describe('use', () => {
   });
 
   it('does not fail if all plugin dependencies has been fulfilled', function (done) {
-    var pluginA = {
+    const pluginA = {
       name: 'PluginA',
       installInto(clonedExpect) {},
     };
-    var pluginB = {
+    const pluginB = {
       name: 'PluginB',
       dependencies: ['PluginA'],
       installInto(clonedExpect) {
@@ -91,11 +91,11 @@ describe('use', () => {
   });
 
   it('dependencies can be fulfilled across clones', function (done) {
-    var pluginA = {
+    const pluginA = {
       name: 'PluginA',
       installInto(clonedExpect) {},
     };
-    var pluginB = {
+    const pluginB = {
       name: 'PluginB',
       dependencies: ['PluginA'],
       installInto(clonedExpect) {
@@ -107,8 +107,8 @@ describe('use', () => {
   });
 
   it('installing a plugin more than once is a no-op', () => {
-    var callCount = 0;
-    var plugin = {
+    let callCount = 0;
+    const plugin = {
       name: 'plugin',
       installInto() {
         callCount += 1;
@@ -121,16 +121,16 @@ describe('use', () => {
   });
 
   it('installing two different plugins that are identically named and have the same version (but not ===) will only install the first one', () => {
-    var callCount1 = 0;
-    var plugin1 = {
+    let callCount1 = 0;
+    const plugin1 = {
       name: 'plugin',
       version: '1.2.3',
       installInto() {
         callCount1 += 1;
       },
     };
-    var callCount2 = 0;
-    var plugin2 = {
+    let callCount2 = 0;
+    const plugin2 = {
       name: 'plugin',
       version: '1.2.3',
       installInto() {

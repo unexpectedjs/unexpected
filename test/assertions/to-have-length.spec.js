@@ -17,7 +17,7 @@ describe('to have length assertion', () => {
   });
 
   it('assert sparse array length', () => {
-    var sparse = [];
+    const sparse = [];
     sparse[1] = 'foo';
     expect(function () {
       expect(sparse, 'to have length', 2);

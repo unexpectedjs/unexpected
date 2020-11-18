@@ -1,14 +1,14 @@
 /* global unexpected */
 
 describe('expect.output.preferredWidth', () => {
-  var expect = unexpected.clone();
+  let expect = unexpected.clone();
   beforeEach(() => {
     expect = expect.clone();
     expect.output.preferredWidth = 9999;
   });
 
   describe('and a clone', () => {
-    var clonedExpect;
+    let clonedExpect;
     beforeEach(() => {
       clonedExpect = expect.clone();
     });
@@ -39,7 +39,7 @@ describe('expect.output.preferredWidth', () => {
   });
 
   describe('and a child', () => {
-    var childExpect;
+    let childExpect;
     beforeEach(() => {
       childExpect = expect.child();
     });

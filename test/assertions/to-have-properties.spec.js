@@ -8,7 +8,7 @@ describe('to have properties assertion', () => {
     expect({ a: 'foo', b: 'bar' }, 'to have own properties', ['a', 'b']);
     expect(
       function () {
-        var obj = Object.create({ a: 'foo', b: 'bar' });
+        const obj = Object.create({ a: 'foo', b: 'bar' });
         expect(obj, 'to have properties', ['a', 'b']); // should not fail
         expect(obj, 'to have own properties', ['a', 'b']); // should fail
       },
@@ -33,7 +33,7 @@ describe('to have properties assertion', () => {
   });
 
   it('asserts absence of a list of own properties', () => {
-    var obj = Object.create({ a: 'foo', b: 'bar' });
+    const obj = Object.create({ a: 'foo', b: 'bar' });
     expect(obj, 'to have properties', ['a', 'b']);
     expect(obj, 'not to have own properties', ['a', 'b']);
     expect(
@@ -95,7 +95,7 @@ describe('to have properties assertion', () => {
     });
     expect(
       function () {
-        var obj = Object.create({ a: 'foo', b: 'bar' });
+        const obj = Object.create({ a: 'foo', b: 'bar' });
         expect(obj, 'to have properties', { a: 'foo', b: 'bar' }); // should not fail
         expect(obj, 'to have own properties', { a: 'foo', b: 'bar' }); // should fail
       },
@@ -129,7 +129,7 @@ describe('to have properties assertion', () => {
   });
 
   it('asserts absence and values of an object of own properties', () => {
-    var obj = Object.create({ a: 'foo', b: 'bar' });
+    const obj = Object.create({ a: 'foo', b: 'bar' });
     expect(obj, 'to have properties', { a: 'foo', b: 'bar' });
     expect(obj, 'not to have own properties', ['a', 'b']);
     expect(
@@ -216,7 +216,7 @@ describe('to have properties assertion', () => {
   });
 
   it('works with function objects as well', () => {
-    var subject = function () {};
+    const subject = function () {};
     subject.foo = 'foo';
     subject.bar = 'bar';
     subject.baz = 'baz';

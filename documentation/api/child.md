@@ -18,7 +18,7 @@ methods. These methods have the same signature as `addAssertion`, `addType`,
 and `addStyle`, respectively, but affect the parent `expect`:
 
 ```js
-var childExpect = expect.child();
+const childExpect = expect.child();
 
 // Only available in childExpect:
 childExpect.addAssertion('<string> to begin with foo', function (
@@ -50,7 +50,7 @@ Note that in order to reference a type in the signature used with
 In other words, this won't work:
 
 ```js
-var childExpect = expect.child();
+const childExpect = expect.child();
 
 childExpect.addType({
   name: 'foosomething',

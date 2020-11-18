@@ -11,21 +11,21 @@ function jasmineSuccess() {
   }
 }
 
-var shouldApplyPatch =
+const shouldApplyPatch =
   typeof jasmine !== 'undefined' &&
   typeof jasmine.version === 'string' &&
   jasmine.version.match(/^[23]\./);
 
 if (typeof it === 'function' && shouldApplyPatch) {
-  var originalIt = it;
+  const originalIt = it;
   // eslint-disable-next-line no-global-assign
   it = function (title, fn) {
     if (!fn) {
       return originalIt(title);
     }
-    var async = fn.length > 0;
-    var wrapper = function (done) {
-      var result;
+    const async = fn.length > 0;
+    const wrapper = function (done) {
+      let result;
       try {
         if (async) {
           fn.call(this, function (err) {
@@ -42,7 +42,7 @@ if (typeof it === 'function' && shouldApplyPatch) {
           result = fn.call(this);
         }
 
-        var isPromise =
+        const isPromise =
           result &&
           typeof result === 'object' &&
           typeof result.then === 'function';

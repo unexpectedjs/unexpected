@@ -1,4 +1,4 @@
-var expect = require('../lib');
+const expect = require('../lib');
 it('should not dot out the object in the diff', () => {
   expect(
     function () {

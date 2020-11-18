@@ -72,7 +72,7 @@ Then:
 <!-- eslint-disable import/no-extraneous-dependencies -->
 
 ```js
-var expect = require('unexpected');
+const expect = require('unexpected');
 ```
 
 ### Browser
@@ -88,7 +88,7 @@ This will expose the `expect` function under the following namespace:
 <!-- unexpected-markdown evaluate:false -->
 
 ```js
-var expect = weknowhow.expect;
+const expect = weknowhow.expect;
 ```
 
 ### RequireJS

@@ -13,19 +13,19 @@ describe('Error type', () => {
   });
 
   it('should inspect correctly when the message is set and there are other properties', () => {
-    var err = new Error('foo');
+    const err = new Error('foo');
     err.bar = 123;
     expect(err, 'to inspect as', "Error({ message: 'foo', bar: 123 })");
   });
 
   it('should inspect correctly when the message is not set and there are other properties', () => {
-    var err = new Error();
+    const err = new Error();
     err.bar = 123;
     expect(err, 'to inspect as', "Error({ message: '', bar: 123 })");
   });
 
   it('should diff instances with unwrapped values that do not produce a diff', () => {
-    var clonedExpect = expect.clone().addType({
+    const clonedExpect = expect.clone().addType({
       name: 'numericalError',
       base: 'Error',
       identify(obj) {
@@ -47,7 +47,7 @@ describe('Error type', () => {
     );
   });
 
-  var isIE =
+  const isIE =
     typeof navigator !== 'undefined' &&
     navigator.userAgent.indexOf('Trident') !== -1;
 
@@ -65,8 +65,8 @@ describe('Error type', () => {
     }
 
     function MyError(message) {
-      var instance = new Error(message);
-      var proto = Object.getPrototypeOf(this);
+      const instance = new Error(message);
+      const proto = Object.getPrototypeOf(this);
       if (Object.setPrototypeOf) {
         Object.setPrototypeOf(instance, proto);
       } else {
@@ -114,7 +114,7 @@ describe('Error type', () => {
     });
 
     describe('when the custom error has a "name" property', () => {
-      var myError = new MyError('foo');
+      const myError = new MyError('foo');
       myError.name = 'SomethingElse';
 
       it('should use the "name" property when inspecting instances', () => {
@@ -136,7 +136,7 @@ describe('Error type', () => {
       it('should use the "name" property when diffing', () => {
         expect(
           function () {
-            var otherMyError = new MyError('bar');
+            const otherMyError = new MyError('bar');
             otherMyError.name = 'SomethingElse';
             expect(myError, 'to equal', otherMyError);
           },
@@ -156,8 +156,8 @@ describe('Error type', () => {
 
   describe('when comparing Error objects with differing enumerable keys', () => {
     it('should not break', () => {
-      var e1 = new Error('foo');
-      var e2 = new Error();
+      const e1 = new Error('foo');
+      const e2 = new Error();
       e2.message = 'foo';
 
       expect(() => {

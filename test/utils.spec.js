@@ -1,10 +1,10 @@
 /* global expect */
 describe('utils', () => {
   if (typeof process === 'object') {
-    var utils = require('../lib/utils');
+    const utils = require('../lib/utils');
     describe('#objectIs', () => {
       describe('without Object.is available', () => {
-        var objectIs = Object.is;
+        const objectIs = Object.is;
         beforeEach(() => {
           Object.is = undefined;
         });
@@ -13,7 +13,7 @@ describe('utils', () => {
           Object.is = objectIs;
         });
 
-        var utilsWithoutObjectIsAvailable;
+        let utilsWithoutObjectIsAvailable;
         beforeEach(() => {
           // Avoid require's cache:
           delete require.cache[require.resolve('../lib/utils.js')];
@@ -70,7 +70,7 @@ describe('utils', () => {
       });
 
       describe('with Function.prototype.toString mocked out', () => {
-        var orig;
+        let orig;
         beforeEach(() => {
           orig = Function.prototype.toString;
           // eslint-disable-next-line no-extend-native

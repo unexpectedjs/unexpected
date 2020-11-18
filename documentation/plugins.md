@@ -55,7 +55,7 @@ And then in your test suite:
 <!-- eslint-disable import/no-extraneous-dependencies -->
 
 ```js
-var expect = require('unexpected').clone().use(require('unexpected-dom'));
+const expect = require('unexpected').clone().use(require('unexpected-dom'));
 ```
 
 For plugins that work in the browser, you'll either need to add an extra `<script>`, or
@@ -72,13 +72,13 @@ app serves an HTML response body that contains a yellow `<div>`:
 <!-- eslint-disable import/no-extraneous-dependencies -->
 
 ```js
-var expect = require('unexpected')
+const expect = require('unexpected')
   .clone()
   .use(require('unexpected-express'))
   .use(require('unexpected-dom'))
   .use(require('unexpected-color'));
 
-var app = require('express')().get('/myPage', function (req, res, next) {
+const app = require('express')().get('/myPage', function (req, res, next) {
   res.send('<html><body><div style="color: #ff0">Hey!</div></body></html>');
 });
 
@@ -112,14 +112,14 @@ Or you could assert that a node.js readable stream outputs an image that's at mo
 <!-- eslint-disable import/no-extraneous-dependencies -->
 
 ```js
-var expect = require('unexpected')
+const expect = require('unexpected')
   .clone()
   .use(require('unexpected-stream'))
   .use(require('unexpected-image'))
   .use(require('unexpected-resemble'));
 
 it('should spew out the expected image', function () {
-  var myStream = require('fs').createReadStream('foo.png');
+  const myStream = require('fs').createReadStream('foo.png');
 
   return expect(
     myStream,

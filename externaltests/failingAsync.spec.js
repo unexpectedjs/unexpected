@@ -1,4 +1,4 @@
-var expect = require('../lib').clone();
+const expect = require('../lib').clone();
 
 expect.addAssertion('<any> when delayed a little bit <assertion?>', function (
   expect,

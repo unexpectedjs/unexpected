@@ -9,12 +9,12 @@ describe('function type', () => {
   });
 
   it('should inspect a function with a custom toString correctly', () => {
-    var fn = function foo() {};
+    const fn = function foo() {};
     fn.toString = 'breakage';
     expect(fn, 'to inspect as', 'function foo() {}');
   });
 
-  var isIE =
+  const isIE =
     typeof navigator !== 'undefined' &&
     navigator.userAgent.indexOf('Trident') !== -1;
 
@@ -48,7 +48,7 @@ describe('function type', () => {
     /* eslint-disable no-unused-vars */
     expect(
       // prettier-ignore
-      function() { var a = 123;console.log(a); },
+      function() { const a = 123;console.log(a); },
       'to inspect as',
       'function () { var a = 123;console.log(a); }'
     );
@@ -60,7 +60,7 @@ describe('function type', () => {
     expect(
       // prettier-ignore
       function() {
-        var a = 123;console.log(a); },
+        const a = 123;console.log(a); },
       'to inspect as',
       'function () { var a = 123;console.log(a); }'
     );
@@ -72,7 +72,7 @@ describe('function type', () => {
     expect(
       // prettier-ignore
       function() {
-        var a = 123 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2;console.log(a);
+        const a = 123 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2;console.log(a);
       },
       'to inspect as',
       'function () {\n' +
@@ -84,7 +84,7 @@ describe('function type', () => {
 
   /* eslint-disable no-unused-vars */
   function twoLinesWithComment() {
-    var a = 123;
+    const a = 123;
     console.log(a); // foo
   }
   /* eslint-enable no-unused-vars */

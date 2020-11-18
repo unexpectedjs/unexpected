@@ -9,7 +9,7 @@ describe('addAssertion', () => {
   });
 
   it('supports transfering flags from the custom assertion to nested expect', () => {
-    var clonedExpect = expect
+    const clonedExpect = expect
       .clone()
       .addAssertion('<any> [not] to be sorted', function (expect, subject) {
         expect(subject, 'to be an array');
@@ -56,7 +56,7 @@ describe('addAssertion', () => {
 
   describe('when overriding an assertion', () => {
     it('uses the most specific version', () => {
-      var clonedExpect = expect
+      const clonedExpect = expect
         .clone()
         .addAssertion('<string> to foo', function (expect, subject) {
           expect.errorMode = 'bubble';
@@ -78,7 +78,7 @@ describe('addAssertion', () => {
 
     describe('with the same specificity', () => {
       it('uses the most recently added version', () => {
-        var clonedExpect = expect
+        const clonedExpect = expect
           .clone()
           .addAssertion('<any> to foo', function (expect, subject) {
             expect.errorMode = 'bubble';
@@ -112,7 +112,7 @@ describe('addAssertion', () => {
   });
 
   it('does not break when declaring multiple patterns that do not have the same set of flags defined', () => {
-    var clonedExpect = expect
+    const clonedExpect = expect
       .clone()
       .addAssertion(
         [
@@ -277,7 +277,7 @@ describe('addAssertion', () => {
 
     describe('alternations', () => {
       it('can be empty', () => {
-        var clonedExpect = expect
+        const clonedExpect = expect
           .clone()
           .addAssertion('<any> to foo (|bar)', function (expect, subject) {
             expect(subject, 'to equal', 'foo');
@@ -330,7 +330,7 @@ describe('addAssertion', () => {
     }
 
     it('allows specifying assertions with overlapping patterns for different types', () => {
-      var clonedExpect = expect.clone();
+      const clonedExpect = expect.clone();
       clonedExpect
         .addType({
           name: 'box',
@@ -371,7 +371,7 @@ describe('addAssertion', () => {
     });
 
     it('allows you to control the inspection depth', () => {
-      var clonedExpect = expect.clone().addType({
+      const clonedExpect = expect.clone().addType({
         name: 'box',
         base: 'object',
         identify(obj) {
@@ -394,8 +394,8 @@ describe('addAssertion', () => {
   });
 
   describe('error modes', () => {
-    var errorMode = 'default';
-    var clonedExpect;
+    let errorMode = 'default';
+    let clonedExpect;
 
     describe('for synchronous custom assertions', () => {
       beforeEach(() => {
@@ -491,7 +491,7 @@ describe('addAssertion', () => {
       });
 
       it('avoids repeating large subjects', () => {
-        var clonedExpect = expect
+        const clonedExpect = expect
           .clone()
           .addAssertion('<any> to foobarbaz', function (expect, subject) {
             expect.errorMode = 'nested';
@@ -736,7 +736,7 @@ describe('addAssertion', () => {
 
     describe('when the error mode of the assertion changes after the assertion has failed', () => {
       it('serializes the error with the error mode that was in effect at the time of its creation', () => {
-        var clonedExpect = expect
+        const clonedExpect = expect
           .clone()
           .addAssertion('<any> to be equal to foo', function (expect, subject) {
             expect.errorMode = 'nested';
@@ -764,7 +764,7 @@ describe('addAssertion', () => {
   });
 
   it('nested expects throws if the assertion does not exists', () => {
-    var clonedExpect = expect
+    const clonedExpect = expect
       .clone()
       .addAssertion('<any> to be foo', function theCustomAssertion(
         expect,
@@ -832,7 +832,7 @@ describe('addAssertion', () => {
   });
 
   it('makes expect.it available inside a custom assertion', () => {
-    var clonedExpect = expect.clone();
+    const clonedExpect = expect.clone();
     clonedExpect.addAssertion('<any> to foo', function (expect, subject) {
       expect.it('to equal', 'foo')(subject);
     });

@@ -53,7 +53,7 @@ describe('to have keys assertion', () => {
   });
 
   describe('with a subtype that overrides valueForKey()', () => {
-    var clonedExpect = expect.clone();
+    const clonedExpect = expect.clone();
 
     clonedExpect.addType({
       name: 'upperFooObject',

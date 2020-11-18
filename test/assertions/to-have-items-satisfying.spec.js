@@ -254,7 +254,7 @@ describe('to have items satisfying assertion', () => {
   });
 
   describe('delegating to an async assertion', () => {
-    var clonedExpect = expect
+    const clonedExpect = expect
       .clone()
       .addAssertion('<any> to be a number after a short delay', function (
         expect,

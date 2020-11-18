@@ -1,9 +1,9 @@
 /* global unexpected */
 describe('parseAssertion', () => {
-  var expect = unexpected.clone();
+  const expect = unexpected.clone();
 
   it('converts an assertion string to an object representation', () => {
-    var assertion = expect.parseAssertion(
+    const assertion = expect.parseAssertion(
       '<string|function> [not] to be <string> <string*|object>'
     );
     expect(assertion, 'to satisfy', [
@@ -43,7 +43,7 @@ describe('parseAssertion', () => {
   });
 
   it('accepts assertions without alternations', () => {
-    var assertion = expect.parseAssertion(
+    const assertion = expect.parseAssertion(
       '<any> [not] to [exhaustively] satisfy [assertion] <any*>'
     );
     expect(assertion, 'to satisfy', [
@@ -56,7 +56,7 @@ describe('parseAssertion', () => {
   });
 
   it('accepts assertions with alternations on the subject', () => {
-    var assertion = expect.parseAssertion(
+    const assertion = expect.parseAssertion(
       '<string|array-like> [not] to be empty <any*>'
     );
     expect(assertion, 'to satisfy', [
@@ -110,7 +110,7 @@ describe('parseAssertion', () => {
   });
 
   it('accepts assertions with no arguments', () => {
-    var assertion = expect.parseAssertion('<any> [not] to be truthy');
+    const assertion = expect.parseAssertion('<any> [not] to be truthy');
     expect(assertion, 'to satisfy', [
       {
         subject: { type: { name: 'any' }, minimum: 1, maximum: 1 },
@@ -186,7 +186,7 @@ describe('parseAssertion', () => {
   });
 
   it('handles types with upper case characters', () => {
-    var assertion = expect.parseAssertion('<number|NaN> [not] to be NaN');
+    const assertion = expect.parseAssertion('<number|NaN> [not] to be NaN');
     expect(assertion, 'to satisfy', [
       {
         subject: { type: { name: 'number' }, minimum: 1, maximum: 1 },
@@ -203,7 +203,7 @@ describe('parseAssertion', () => {
 
   describe('with an assertion that has <assertion>', () => {
     it('should accept it as the last argument', () => {
-      var assertion = expect.parseAssertion(
+      const assertion = expect.parseAssertion(
         '<Buffer> when decoded as <string> <assertion>'
       );
       expect(assertion, 'to satisfy', [
