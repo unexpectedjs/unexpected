@@ -125,4 +125,44 @@ describe('hook', () => {
     expect(firstCalled, 'to be true');
     expect(secondCalled, 'to be true');
   });
+
+  // Regression test for https://gitter.im/unexpectedjs/unexpected?at=5fb42b73747be107c1c76095
+  it('should not break `this` in clones created after installing the hook', function () {
+    expect.hook(function (next) {
+      return function (context, ...rest) {
+        return next(context, ...rest);
+      };
+    });
+
+    const clonedExpect = expect.clone();
+
+    clonedExpect.addType({
+      base: 'array',
+      name: 'bogusArray',
+      identify(obj) {
+        return Array.isArray(obj);
+      },
+      prefix(output) {
+        return output;
+      },
+      suffix(output) {
+        return output;
+      },
+      indent: false,
+    });
+
+    expect(
+      () => {
+        clonedExpect(['aaa', 'bbb'], 'to satisfy', ['foo']);
+      },
+      'to throw',
+      "expected 'aaa', 'bbb' to satisfy 'foo'\n" +
+        '\n' +
+        "'aaa', // should equal 'foo'\n" +
+        '       //\n' +
+        '       // -aaa\n' +
+        '       // +foo\n' +
+        "'bbb' // should be removed"
+    );
+  });
 });
