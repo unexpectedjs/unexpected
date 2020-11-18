@@ -28,6 +28,7 @@ describe('to equal assertion', () => {
     expect(/foo/i, 'not to equal', /foo/);
     expect(/foo/gm, 'to equal', /foo/gm);
     expect(/foo/m, 'not to equal', /foo/i);
+    // eslint-disable-next-line prefer-regex-literals
     expect(/foo/m, 'to equal', new RegExp('foo', 'm'));
     expect([], 'not to equal', 0);
     expect(new Error('foo'), 'to equal', new Error('foo'));

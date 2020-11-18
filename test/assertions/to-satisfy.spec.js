@@ -623,7 +623,7 @@ describe('to satisfy assertion', () => {
   });
 
   it('forwards normal errors found in promise aggregate errors to the top level', () => {
-    var clonedExpect = expect
+    const clonedExpect = expect
       .clone()
       .addAssertion('<any> to foo', function (expect, subject) {
         const promises = [
