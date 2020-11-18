@@ -1,3 +1,9 @@
+### v11.15.1 (2020-11-18)
+
+- [#771](https://github.com/unexpectedjs/unexpected/pull/771) Fix expect.hook\/expect.clone interaction ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [#772](https://github.com/unexpectedjs/unexpected/pull/772) Inspect Date instances as ISO strings instead of the longer format that includes the weekday ([Andreas Lind](mailto:andreas.lind@peakon.com))
+- [#757](https://github.com/unexpectedjs/unexpected/pull/757) Upgrade karma to version 5.2.3 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+
 ### v11.15.0 (2020-09-10)
 
 #### Pull requests
