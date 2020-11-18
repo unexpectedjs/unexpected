@@ -4,37 +4,36 @@ env:
   - TARGET=travis
 
 node_js:
-  - 6
-  - 8
-  - 9
   - 10
   - 12
+  - 14
+  - node
 
 matrix:
   include:
     - name: Lint (12)
-      node_js: 12
+      node_js: 14
       env: TARGET=lint
     - name: Jest (12)
-      node_js: 12
+      node_js: 14
       env: TARGET=test-jest
     - name: Jasmine (12)
-      node_js: 12
+      node_js: 14
       env: TARGET=test-jasmine
     - name: Coverage (12)
-      node_js: 12
+      node_js: 14
       env: TARGET=travis-coverage
     - name: Plugins (12)
-      node_js: 12
+      node_js: 14
       env: TARGET=test-plugins
     - name: BrowserStack IE11
-      node_js: 12
+      node_js: 14
       env: TARGET=test-browserstack-ie11
     - name: Chrome headless
-      node_js: 12
+      node_js: 14
       env: TARGET=test-chrome-headless
     - name: Deno
-      node_js: 12
+      node_js: 14
       env: TARGET=test-deno
 
 addons:
