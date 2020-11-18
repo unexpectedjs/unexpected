@@ -1,6 +1,7 @@
 /build/
 /vendor/
 /coverage/
+/.nyc_output/
 /site-build/
 /unexpected.js
 /unexpected.esm.js
