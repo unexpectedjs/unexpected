@@ -224,8 +224,8 @@ describe('inspect', () => {
         "    age: 38, email: 'huntterry@medalert.com', phone: '+1 (803) 472-3209',\n" +
         "    address: '944 Milton Street, Madrid, Ohio, 1336',\n" +
         "    about: 'Ea consequat nulla duis incididunt ut irureirure cupidatat. Est tempor cillum commodo aliquaconsequat esse commodo. Culpa ipsum eu consectetur idenim quis sint. Aliqua deserunt dolore reprehenderitid anim exercitation laboris. Eiusmod aute consecteturexcepteur in nulla proident occaecatconsectetur.\\r\\n',\n" +
-        "    registered: new Date('Sun, 03 Jun 1984 09:36:47 GMT'),\n" +
-        '    latitude: 8.635553, longitude: -103.382498,\n' +
+        "    registered: new Date('1984-06-03T09:36:47Z'), latitude: 8.635553,\n" +
+        '    longitude: -103.382498,\n' +
         "    tags: [ 'tempor', 'dolore', 'non', 'sit', 'minim', 'aute', 'non' ],\n" +
         '    friends: [\n' +
         "      { id: 0, name: 'Jeanne Hyde' },\n" +
@@ -255,8 +255,8 @@ describe('inspect', () => {
         "    age: 34, email: 'peckhester@medalert.com',\n" +
         "    phone: '+1 (848) 599-3447',\n" +
         "    address: '323 Legion Street, Caspar, Delaware, 4117',\n" +
-        "    registered: new Date('Tue, 10 Mar 1981 17:02:53 GMT'),\n" +
-        '    latitude: -55.321712, longitude: -100.276818,\n' +
+        "    registered: new Date('1981-03-10T17:02:53Z'), latitude: -55.321712,\n" +
+        '    longitude: -100.276818,\n' +
         "    tags: [ 'Lorem', 'laboris', 'enim', 'anim', 'sint', 'incididunt', 'labore' ],\n" +
         '    friends: [\n' +
         "      { id: 0, name: 'Patterson Meadows' },\n" +
@@ -286,7 +286,7 @@ describe('inspect', () => {
         '  {\n' +
         "    guid: 'db550c87-1680-462a-bacc-655cecdd8907', isActive: false, age: 38, email: 'huntterry@medalert.com', phone: '+1 (803) 472-3209', address: '944 Milton Street, Madrid, Ohio, 1336',\n" +
         "    about: 'Ea consequat nulla duis incididunt ut irureirure cupidatat. Est tempor cillum commodo aliquaconsequat esse commodo. Culpa ipsum eu consectetur idenim quis sint. Aliqua deserunt dolore reprehenderitid anim exercitation laboris. Eiusmod aute consecteturexcepteur in nulla proident occaecatconsectetur.\\r\\n',\n" +
-        "    registered: new Date('Sun, 03 Jun 1984 09:36:47 GMT'), latitude: 8.635553, longitude: -103.382498, tags: [ 'tempor', 'dolore', 'non', 'sit', 'minim', 'aute', 'non' ],\n" +
+        "    registered: new Date('1984-06-03T09:36:47Z'), latitude: 8.635553, longitude: -103.382498, tags: [ 'tempor', 'dolore', 'non', 'sit', 'minim', 'aute', 'non' ],\n" +
         '    friends: [\n' +
         "      { id: 0, name: 'Jeanne Hyde' },\n" +
         "      { id: 1, name: 'Chavez Parker' },\n" +
@@ -312,7 +312,7 @@ describe('inspect', () => {
         '  },\n' +
         '  {\n' +
         "    guid: '904c2f38-071c-4b97-b968-f5c228aaf41a', isActive: false, age: 34, email: 'peckhester@medalert.com', phone: '+1 (848) 599-3447', address: '323 Legion Street, Caspar, Delaware, 4117',\n" +
-        "    registered: new Date('Tue, 10 Mar 1981 17:02:53 GMT'), latitude: -55.321712, longitude: -100.276818, tags: [ 'Lorem', 'laboris', 'enim', 'anim', 'sint', 'incididunt', 'labore' ],\n" +
+        "    registered: new Date('1981-03-10T17:02:53Z'), latitude: -55.321712, longitude: -100.276818, tags: [ 'Lorem', 'laboris', 'enim', 'anim', 'sint', 'incididunt', 'labore' ],\n" +
         '    friends: [\n' +
         "      { id: 0, name: 'Patterson Meadows' },\n" +
         "      { id: 1, name: 'Velasquez Joseph' },\n" +
