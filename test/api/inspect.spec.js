@@ -347,8 +347,8 @@ describe('inspect', () => {
       },
       'to inspect as',
       'function () {\n' +
-        "  var foo = 'bar';\n" +
-        "  var quux = 'baz';\n" +
+        "  let foo = 'bar';\n" +
+        "  const quux = 'baz';\n" +
         '  while (foo) {\n' +
         '    foo = foo.substr(0, foo.length - 1);\n' +
         '  }\n' +
@@ -423,8 +423,8 @@ describe('inspect', () => {
       multilineStringLiteral,
       'to inspect as',
       'function multilineStringLiteral() {\n' +
-        "    var foo = 'bar';\n" +
-        "    var quux = 'baz\\\n" +
+        "    let foo = 'bar';\n" +
+        "    const quux = 'baz\\\n" +
         "      blah';\n" +
         '    foo = foo + quux;\n' +
         '    return foo;\n' +
@@ -437,7 +437,7 @@ describe('inspect', () => {
       // prettier-ignore
       function() { const foo = 123;return foo; },
       'to inspect as',
-      'function () { var foo = 123;return foo; }'
+      'function () { const foo = 123;return foo; }'
     );
   });
 

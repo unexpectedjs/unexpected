@@ -50,7 +50,7 @@ describe('function type', () => {
       // prettier-ignore
       function() { const a = 123;console.log(a); },
       'to inspect as',
-      'function () { var a = 123;console.log(a); }'
+      'function () { const a = 123;console.log(a); }'
     );
     /* eslint-enable no-unused-vars */
   });
@@ -62,7 +62,7 @@ describe('function type', () => {
       function() {
         const a = 123;console.log(a); },
       'to inspect as',
-      'function () { var a = 123;console.log(a); }'
+      'function () { const a = 123;console.log(a); }'
     );
     /* eslint-enable no-unused-vars */
   });
@@ -76,7 +76,7 @@ describe('function type', () => {
       },
       'to inspect as',
       'function () {\n' +
-        '  var a = 123 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2;console.log(a);\n' +
+        '  const a = 123 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2;console.log(a);\n' +
         '}'
     );
     /* eslint-enable no-unused-vars */
@@ -96,7 +96,7 @@ describe('function type', () => {
       twoLinesWithComment,
       'to inspect as',
       'function twoLinesWithComment() {\n' +
-        '  var a = 123;\n  console.log(a); // foo\n' +
+        '  const a = 123;\n  console.log(a); // foo\n' +
         '}'
     );
     /* eslint-enable no-unused-vars */
