@@ -59,7 +59,7 @@ nyc-includes:
 NYC_INCLUDES='lib/**'
 
 .PHONY: coverage
-coverage: nyc-includes test-sources
+coverage: nyc-includes
 	@./node_modules/.bin/nyc --include $(NYC_INCLUDES) --reporter=lcov --reporter=text --all -- mocha --config $(MOCHA_CONFIG) $(TEST_SOURCES)
 	@echo google-chrome coverage/lcov-report/index.html
 
