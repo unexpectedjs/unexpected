@@ -337,18 +337,20 @@ describe('inspect', () => {
 
   it('should output the body of a function', () => {
     expect(
+      /* eslint-disable no-var */
       function () {
-        let foo = 'bar';
-        const quux = 'baz';
+        var foo = 'bar';
+        var quux = 'baz';
         while (foo) {
           foo = foo.substr(0, foo.length - 1);
         }
         return quux;
       },
+      /* eslint-enable no-var */
       'to inspect as',
       'function () {\n' +
-        "  let foo = 'bar';\n" +
-        "  const quux = 'baz';\n" +
+        "  var foo = 'bar';\n" +
+        "  var quux = 'baz';\n" +
         '  while (foo) {\n' +
         '    foo = foo.substr(0, foo.length - 1);\n' +
         '  }\n' +
@@ -408,23 +410,23 @@ describe('inspect', () => {
     });
   }
 
-  /* eslint-disable no-multi-str */
+  /* eslint-disable no-multi-str, no-var */
   function multilineStringLiteral() {
-    let foo = 'bar';
-    const quux = 'baz\
+    var foo = 'bar';
+    var quux = 'baz\
       blah';
     foo = foo + quux;
     return foo;
   }
-  /* eslint-enable no-multi-str */
+  /* eslint-enable no-multi-str, no-var */
 
   it('should bail out of removing the indentation of functions that use multiline string literals', () => {
     expect(
       multilineStringLiteral,
       'to inspect as',
       'function multilineStringLiteral() {\n' +
-        "    let foo = 'bar';\n" +
-        "    const quux = 'baz\\\n" +
+        "    var foo = 'bar';\n" +
+        "    var quux = 'baz\\\n" +
         "      blah';\n" +
         '    foo = foo + quux;\n' +
         '    return foo;\n' +
@@ -435,9 +437,11 @@ describe('inspect', () => {
   it('should bail out of removing the indentation of one-liner functions', () => {
     expect(
       // prettier-ignore
-      function() { const foo = 123;return foo; },
+      /* eslint-disable no-var */
+      function() { var foo = 123;return foo; },
+      /* eslint-enable no-var */
       'to inspect as',
-      'function () { const foo = 123;return foo; }'
+      'function () { var foo = 123;return foo; }'
     );
   });
 

@@ -201,13 +201,15 @@ describe('to be rejected with error satisfying assertion', () => {
           // prettier-ignore
           function () {
             return expect(
+              /* eslint-disable no-var */
               function() {
                 return expect.promise(function () {
-                  const error = new Error('foobar');
+                  var error = new Error('foobar');
                   error.data = { foo: 'bar' };
                   throw error;
                 });
               },
+              /* eslint-enable no-var */
               'to be rejected with error exhaustively satisfying',
               new Error('foobar')
             );
@@ -216,7 +218,7 @@ describe('to be rejected with error satisfying assertion', () => {
           'expected\n' +
             'function () {\n' +
             '  return expect.promise(function () {\n' +
-            "    const error = new Error('foobar');\n" +
+            "    var error = new Error('foobar');\n" +
             "    error.data = { foo: 'bar' };\n" +
             '    throw error;\n' +
             '  });\n' +

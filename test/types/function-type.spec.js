@@ -45,49 +45,49 @@ describe('function type', () => {
   });
 
   it('should inspect a one-line function correctly', () => {
-    /* eslint-disable no-unused-vars */
+    /* eslint-disable no-unused-vars, no-var */
     expect(
       // prettier-ignore
-      function() { const a = 123;console.log(a); },
+      function() { var a = 123;console.log(a); },
       'to inspect as',
-      'function () { const a = 123;console.log(a); }'
+      'function () { var a = 123;console.log(a); }'
     );
-    /* eslint-enable no-unused-vars */
+    /* eslint-enable no-unused-vars, no-var */
   });
 
   it('should inspect a short one-line function with leading and trailing newline correctly', () => {
-    /* eslint-disable no-unused-vars */
+    /* eslint-disable no-unused-vars, no-var */
     expect(
       // prettier-ignore
       function() {
-        const a = 123;console.log(a); },
+        var a = 123;console.log(a); },
       'to inspect as',
-      'function () { const a = 123;console.log(a); }'
+      'function () { var a = 123;console.log(a); }'
     );
-    /* eslint-enable no-unused-vars */
+    /* eslint-enable no-unused-vars, no-var */
   });
 
   it('should inspect a long one-line function with leading and trailing newline correctly', () => {
-    /* eslint-disable no-unused-vars */
+    /* eslint-disable no-unused-vars, no-var */
     expect(
       // prettier-ignore
       function() {
-        const a = 123 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2;console.log(a);
+        var a = 123 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2;console.log(a);
       },
       'to inspect as',
       'function () {\n' +
-        '  const a = 123 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2;console.log(a);\n' +
+        '  var a = 123 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2;console.log(a);\n' +
         '}'
     );
-    /* eslint-enable no-unused-vars */
+    /* eslint-enable no-unused-vars, no-var */
   });
 
-  /* eslint-disable no-unused-vars */
+  /* eslint-disable no-unused-vars, no-var */
   function twoLinesWithComment() {
-    const a = 123;
+    var a = 123;
     console.log(a); // foo
   }
-  /* eslint-enable no-unused-vars */
+  /* eslint-enable no-unused-vars, no-var */
 
   it('should inspect a short two-line function with leading and trailing newline correctly and a C++-style comment correctly', () => {
     /* eslint-disable no-unused-vars */
@@ -96,7 +96,7 @@ describe('function type', () => {
       twoLinesWithComment,
       'to inspect as',
       'function twoLinesWithComment() {\n' +
-        '  const a = 123;\n  console.log(a); // foo\n' +
+        '  var a = 123;\n  console.log(a); // foo\n' +
         '}'
     );
     /* eslint-enable no-unused-vars */
