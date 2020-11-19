@@ -32,7 +32,11 @@ jobs:
           - { target: 'test-jest', name: 'Jest' }
           - { target: 'test-jasmine', name: 'Jasmine' }
           - { target: 'test-plugins', name: 'Plugins' }
-          - { target: 'test-browserstack-ie11', name: 'Browser - IE11' }
+          - target: 'test-browserstack-ie11'
+            name: 'Browser - IE11'
+            env:
+              BROWSER_STACK_ACCESS_KEY: '${{ secrets.BROWSER_STACK_ACCESS_KEY }}'
+              BROWSER_STACK_USERNAME: '${{ secrets.BROWSER_STACK_USERNAME }}'
           - { target: 'test-deno', name: 'Deno' }
     steps:
       - uses: actions/checkout@v2
