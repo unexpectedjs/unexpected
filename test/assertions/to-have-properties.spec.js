@@ -393,7 +393,10 @@ describe('to have properties assertion', () => {
     });
   });
 
-  if (typeof Symbol === 'function') {
+  if (
+    typeof Symbol === 'function' &&
+    Symbol('foo').toString() === 'Symbol(foo)'
+  ) {
     describe('with symbols', function () {
       it('should pass if the object has the given symbol(s)', () => {
         const symbol = Symbol('foo');

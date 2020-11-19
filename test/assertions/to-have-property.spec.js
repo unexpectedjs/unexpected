@@ -269,7 +269,10 @@ describe('to have property assertion', () => {
     });
   });
 
-  if (typeof Symbol === 'function') {
+  if (
+    typeof Symbol === 'function' &&
+    Symbol('foo').toString() === 'Symbol(foo)'
+  ) {
     describe('with symbols', function () {
       describe('to have property', function () {
         it('should pass when the object contains the symbol', function () {

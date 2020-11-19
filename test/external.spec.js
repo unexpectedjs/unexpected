@@ -22,7 +22,7 @@ if (typeof process === 'object') {
               pathModule.resolve(basePath, 'node_modules', '.bin', 'mocha'),
               [
                 '--config',
-                pathModule.resolve(__dirname, '..', '.mocharc.json'),
+                pathModule.resolve(basePath, '.mocharc.json'),
                 ...subject.map(function (fileName) {
                   return pathModule.resolve(
                     externaltestsDir,
