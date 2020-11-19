@@ -4,8 +4,6 @@ TARGETS ?= unexpected.js unexpected.js.map unexpected.esm.js unexpected.esm.js.m
 .PHONY: unexpected.js unexpected.esm.js
 .SECONDARY: unexpected.js.map unexpected.esm.js.map
 
-CHEWBACCA_THRESHOLD ?= 25
-
 TEST_SOURCES_MARKDOWN =  $(shell find documentation -name '*.md')
 
 lint:
