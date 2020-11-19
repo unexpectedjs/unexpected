@@ -2,7 +2,7 @@
 describe('expect.shift', () => {
   describe('when preserving the subject by passing no arguments', () => {
     it('should succeed', () => {
-      var clonedExpect = expect
+      const clonedExpect = expect
         .clone()
         .addAssertion('<string> blabla <assertion>', function (
           expect,
@@ -14,7 +14,7 @@ describe('expect.shift', () => {
     });
 
     it('should fail with a diff', () => {
-      var clonedExpect = expect
+      const clonedExpect = expect
         .clone()
         .addAssertion('<string> blabla <assertion>', function (
           expect,
@@ -36,15 +36,15 @@ describe('expect.shift', () => {
   });
 
   it('should support calling shift multiple times', () => {
-    var clonedExpect = expect
+    const clonedExpect = expect
       .clone()
       .addAssertion(
         '<number> up to [and including] <number> <assertion>',
         function (expect, subject, value) {
           expect.errorMode = 'nested';
-          var numbers = [];
+          const numbers = [];
           for (
-            var i = subject;
+            let i = subject;
             i < (expect.flags['and including'] ? value + 1 : value);
             i += 1
           ) {
@@ -72,7 +72,7 @@ describe('expect.shift', () => {
 
   describe('when substituting a different subject by passing a single argument', () => {
     it('should succeed', () => {
-      var clonedExpect = expect
+      const clonedExpect = expect
         .clone()
         .addAssertion('<string> when appended with bar <assertion>', function (
           expect,
@@ -84,7 +84,7 @@ describe('expect.shift', () => {
     });
 
     it('should fail with a diff', () => {
-      var clonedExpect = expect
+      const clonedExpect = expect
         .clone()
         .addAssertion('<string> when appended with bar <assertion>', function (
           expect,
@@ -106,7 +106,7 @@ describe('expect.shift', () => {
   });
 
   it('should identify the assertions even when the next assertion fails before shifting', () => {
-    var clonedExpect = expect
+    const clonedExpect = expect
       .clone()
       .addAssertion('<string> when appended with bar <assertion>', function (
         expect,
@@ -133,7 +133,7 @@ describe('expect.shift', () => {
   });
 
   it('supports the legacy 3 argument version', () => {
-    var clonedExpect = expect
+    const clonedExpect = expect
       .clone()
       .addAssertion('<string> when prepended with foo <assertion>', function (
         expect,
@@ -150,7 +150,7 @@ describe('expect.shift', () => {
 
   describe('with the legacy 2 argument version', () => {
     it('inspects multiple arguments correctly', () => {
-      var clonedExpect = expect
+      const clonedExpect = expect
         .clone()
         .addAssertion(
           '<string> when surrounded by <string> <string> <assertion>',
@@ -177,7 +177,7 @@ describe('expect.shift', () => {
 
   describe('with an expect.it function as the next argument', () => {
     it('should succeed', () => {
-      var clonedExpect = expect
+      const clonedExpect = expect
         .clone()
         .addAssertion('<string> when prepended with foo <assertion>', function (
           expect,
@@ -194,7 +194,7 @@ describe('expect.shift', () => {
   });
 
   it('should fail when the next argument is a non-expect.it function', () => {
-    var clonedExpect = expect
+    const clonedExpect = expect
       .clone()
       .addAssertion('<string> when prepended with foo <assertion>', function (
         expect,
@@ -231,7 +231,7 @@ describe('expect.shift', () => {
 
   describe('in legacy mode where the assertion index is passed as the second parameter', () => {
     it('should get the assertion string from that index', () => {
-      var clonedExpect = expect
+      const clonedExpect = expect
         .clone()
         .addAssertion(
           '<string> when prepended with <string> <assertion>',
@@ -259,7 +259,7 @@ describe('expect.shift', () => {
     });
 
     it('should render the correct error message when there is several non-string parameters following the assertion index', () => {
-      var clonedExpect = expect
+      const clonedExpect = expect
         .clone()
         .addAssertion(
           '<string> when prepended with foo <string> <number+>',
@@ -279,7 +279,7 @@ describe('expect.shift', () => {
     });
 
     it('should render the correct error message when the assertion being shifted to is not a string', () => {
-      var clonedExpect = expect
+      const clonedExpect = expect
         .clone()
         .addAssertion('<string> when prepended with foo <number+>', function (
           expect,
@@ -302,7 +302,7 @@ describe('expect.shift', () => {
     });
 
     it('should render the correct error message when there are no parameters following the assertion index', () => {
-      var clonedExpect = expect
+      const clonedExpect = expect
         .clone()
         .addAssertion('<string> when prepended with foo', function (
           expect,
@@ -324,7 +324,7 @@ describe('expect.shift', () => {
 
   describe('when a non-Unexpected promise is passed to shift', () => {
     it('should allow a subsequent .and()', () => {
-      var clonedExpect = expect
+      const clonedExpect = expect
         .clone()
         .addAssertion('<any> promisified', function (expect, subject) {
           return expect.shift(new Promise(subject));
@@ -337,7 +337,7 @@ describe('expect.shift', () => {
     });
 
     it('should allow a subsequent .and() within a nested context', () => {
-      var clonedExpect = expect
+      const clonedExpect = expect
         .clone()
         .addAssertion('<any> promisified', function (expect, subject) {
           return expect.shift(new Promise(subject));
@@ -360,7 +360,7 @@ describe('expect.shift', () => {
   });
 
   it('fails when the given assertion does not accept the shifted subject type', () => {
-    var clonedExpect = expect
+    const clonedExpect = expect
       .clone()
       .addAssertion('<number> when stringified <assertion>', function (
         expect,
@@ -387,7 +387,7 @@ describe('expect.shift', () => {
 
   describe('when you shift to an assertion in the parent expect', () => {
     it('fails when the given assertion does not accept the shifted subject type', () => {
-      var clonedExpect = expect
+      const clonedExpect = expect
         .clone()
         .child()
         .exportAssertion('<number> when stringified <assertion>', function (

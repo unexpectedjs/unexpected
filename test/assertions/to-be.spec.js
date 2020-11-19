@@ -1,7 +1,7 @@
 /* global expect */
 describe('to be assertion', () => {
   it('assert === equality', () => {
-    var obj = {};
+    const obj = {};
     expect(obj, 'to be', obj);
     expect(obj, 'not to be', {});
     expect(1, 'to be', 1);
@@ -40,14 +40,14 @@ describe('to be assertion', () => {
 
   if (typeof Buffer !== 'undefined') {
     it('asserts === equality for Buffers', () => {
-      var buffer = Buffer.from([0x45, 0x59]);
+      const buffer = Buffer.from([0x45, 0x59]);
       expect(buffer, 'to be', buffer);
     });
   }
 
   if (typeof Uint8Array !== 'undefined') {
     it('asserts === equality for Uint8Array', () => {
-      var uint8Array = new Uint8Array([0x45, 0x59]);
+      const uint8Array = new Uint8Array([0x45, 0x59]);
       expect(uint8Array, 'to be', uint8Array);
     });
   }

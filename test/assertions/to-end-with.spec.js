@@ -1,6 +1,6 @@
 /* global expectWithUnexpectedMagicPen */
 describe('to end with assertion', () => {
-  var expect = expectWithUnexpectedMagicPen;
+  const expect = expectWithUnexpectedMagicPen;
 
   it('should throw an error when the expected suffix is the empty string', () => {
     expect(

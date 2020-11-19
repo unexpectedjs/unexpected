@@ -1,6 +1,6 @@
 /* global expectWithUnexpectedMagicPen */
 describe('to begin with assertion', () => {
-  var expect = expectWithUnexpectedMagicPen;
+  const expect = expectWithUnexpectedMagicPen;
 
   it('should throw an error when the expected prefix is the empty string', () => {
     expect(

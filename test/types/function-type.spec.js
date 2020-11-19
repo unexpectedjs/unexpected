@@ -9,12 +9,12 @@ describe('function type', () => {
   });
 
   it('should inspect a function with a custom toString correctly', () => {
-    var fn = function foo() {};
+    const fn = function foo() {};
     fn.toString = 'breakage';
     expect(fn, 'to inspect as', 'function foo() {}');
   });
 
-  var isIE =
+  const isIE =
     typeof navigator !== 'undefined' &&
     navigator.userAgent.indexOf('Trident') !== -1;
 
@@ -45,18 +45,18 @@ describe('function type', () => {
   });
 
   it('should inspect a one-line function correctly', () => {
-    /* eslint-disable no-unused-vars */
+    /* eslint-disable no-unused-vars, no-var */
     expect(
       // prettier-ignore
       function() { var a = 123;console.log(a); },
       'to inspect as',
       'function () { var a = 123;console.log(a); }'
     );
-    /* eslint-enable no-unused-vars */
+    /* eslint-enable no-unused-vars, no-var */
   });
 
   it('should inspect a short one-line function with leading and trailing newline correctly', () => {
-    /* eslint-disable no-unused-vars */
+    /* eslint-disable no-unused-vars, no-var */
     expect(
       // prettier-ignore
       function() {
@@ -64,11 +64,11 @@ describe('function type', () => {
       'to inspect as',
       'function () { var a = 123;console.log(a); }'
     );
-    /* eslint-enable no-unused-vars */
+    /* eslint-enable no-unused-vars, no-var */
   });
 
   it('should inspect a long one-line function with leading and trailing newline correctly', () => {
-    /* eslint-disable no-unused-vars */
+    /* eslint-disable no-unused-vars, no-var */
     expect(
       // prettier-ignore
       function() {
@@ -79,15 +79,15 @@ describe('function type', () => {
         '  var a = 123 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2;console.log(a);\n' +
         '}'
     );
-    /* eslint-enable no-unused-vars */
+    /* eslint-enable no-unused-vars, no-var */
   });
 
-  /* eslint-disable no-unused-vars */
+  /* eslint-disable no-unused-vars, no-var */
   function twoLinesWithComment() {
     var a = 123;
     console.log(a); // foo
   }
-  /* eslint-enable no-unused-vars */
+  /* eslint-enable no-unused-vars, no-var */
 
   it('should inspect a short two-line function with leading and trailing newline correctly and a C++-style comment correctly', () => {
     /* eslint-disable no-unused-vars */

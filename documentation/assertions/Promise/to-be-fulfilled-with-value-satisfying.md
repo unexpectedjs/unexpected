@@ -3,7 +3,7 @@ Asserts that a promise is fulfilled with a specific value:
 <!-- unexpected-markdown async:true -->
 
 ```js
-var promiseThatWillBeFulfilledWithAValue = new Promise(function (
+const promiseThatWillBeFulfilledWithAValue = new Promise(function (
   resolve,
   reject
 ) {

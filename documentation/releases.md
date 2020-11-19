@@ -12,6 +12,10 @@ Here is a very high level overview of the major releases. See the
 [changelog](https://github.com/unexpectedjs/unexpected/blob/master/CHANGELOG.md)
 for more details.
 
+### v12.0.0 (2020-11-18)
+
+- Drop support for node.js < 10
+
 ### v11.0.0 (2019-01-06)
 
 This release includes backwards-incompatible changes. There's a [migration

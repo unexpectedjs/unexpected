@@ -31,7 +31,7 @@ In case you want to rethrow an error, you should always use
 for the different error modes.
 
 ```js
-var error = new Error('throw me');
+const error = new Error('throw me');
 expect.fail(new Error(error));
 ```
 
@@ -50,7 +50,7 @@ expect.fail(function (output) {
     if (index > 0) {
       output.sp();
     }
-    var style = index % 2 === 0 ? 'jsPrimitive' : 'jsString';
+    const style = index % 2 === 0 ? 'jsPrimitive' : 'jsString';
     output[style](word);
   });
 });
@@ -70,7 +70,7 @@ expect.fail({
       if (index > 0) {
         output.sp();
       }
-      var style = index % 2 === 0 ? 'jsPrimitive' : 'jsString';
+      const style = index % 2 === 0 ? 'jsPrimitive' : 'jsString';
       output[style](word);
     });
   },

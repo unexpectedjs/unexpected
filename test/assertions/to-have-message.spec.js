@@ -1,9 +1,9 @@
 /* global expectWithUnexpectedMagicPen */
 describe('to have message/diff assertion', () => {
-  var expect = expectWithUnexpectedMagicPen;
+  const expect = expectWithUnexpectedMagicPen;
 
   describe('with an Unexpected error', () => {
-    var err;
+    let err;
     beforeEach(() => {
       try {
         expect(1, 'to equal', 2);
@@ -23,7 +23,7 @@ describe('to have message/diff assertion', () => {
         },
         'to throw',
         expect.it(function (err) {
-          var message = err
+          const message = err
             .getErrorMessage({ format: 'text' })
             .toString('text');
           expect(
@@ -127,7 +127,7 @@ describe('to have message/diff assertion', () => {
 
     describe('when comparing against a magicpen instance', () => {
       it('should succeed', () => {
-        var expectedDiff = expect
+        const expectedDiff = expect
           .createOutput('ansi')
           .text('abc', ['bgRed', 'black'])
           .nl()
@@ -143,7 +143,7 @@ describe('to have message/diff assertion', () => {
       });
 
       it('should fail with a diff', () => {
-        var expectedDiff = expect
+        const expectedDiff = expect
           .createOutput('ansi')
           .red('-')
           .text('abc')
@@ -315,7 +315,7 @@ describe('to have message/diff assertion', () => {
   });
 
   describe('with a non-Unexpected error', () => {
-    var err = new Error('Bummer!');
+    const err = new Error('Bummer!');
     it('should succeed', () => {
       expect(err, 'to have message', 'Bummer!');
     });

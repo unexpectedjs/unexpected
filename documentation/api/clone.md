@@ -8,7 +8,7 @@ Adding new functionality to the cloned instance will not affect the
 original instance:
 
 ```js
-var clonedExpect = expect
+const clonedExpect = expect
   .clone()
   .addAssertion('<number> to be an integer', function (expect, subject) {
     expect(Math.round(subject), 'to be', subject);

@@ -1,9 +1,9 @@
 /* global expect */
 describe('merge', () => {
   it('should overlay a pen on top of another', () => {
-    var pen = expect.createOutput('text');
+    const pen = expect.createOutput('text');
     pen.text('abc').nl().text('def');
-    var anotherPen = pen.clone().text(' h').nl().text('i');
+    const anotherPen = pen.clone().text(' h').nl().text('i');
     expect(
       pen.clone().merge([pen, anotherPen]).toString(),
       'to equal',
@@ -12,9 +12,9 @@ describe('merge', () => {
   });
 
   it('should result in a wider pen when merging a wide pen on top of a slim one', () => {
-    var pen = expect.createOutput('text');
+    const pen = expect.createOutput('text');
     pen.text('a').nl().text('b');
-    var anotherPen = pen.clone().text('c').nl().text('  d');
+    const anotherPen = pen.clone().text('c').nl().text('  d');
     expect(
       pen.clone().merge([pen, anotherPen]).toString(),
       'to equal',

@@ -1,6 +1,4 @@
 {
   "spec_dir": "externaltests",
-  "spec_files": [
-    "notToErrorCaughtError.spec.js"
-  ]
+  "spec_files": ["notToErrorCaughtError.spec.js"]
 }

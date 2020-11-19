@@ -1,4 +1,4 @@
-var expect = require('../lib');
+const expect = require('../lib');
 
 it('should foo', () => {
   return expect(function () {

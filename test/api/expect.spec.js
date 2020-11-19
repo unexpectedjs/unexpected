@@ -1,7 +1,7 @@
 /* global expect */
 describe('expect', function () {
   it('should forward flags to assertion strings that are processed by the next assertion', function () {
-    var clonedExpect = expect.clone();
+    const clonedExpect = expect.clone();
 
     clonedExpect.addAssertion(
       '<number> [not] to have an absolute value of <number>',
@@ -21,7 +21,7 @@ describe('expect', function () {
   });
 
   it('should forward flags to assertion strings that are processed by the next next assertion', function () {
-    var clonedExpect = expect.clone();
+    const clonedExpect = expect.clone();
 
     clonedExpect.addAssertion(
       '<number> [not] to have a floored absolute value of <number>',

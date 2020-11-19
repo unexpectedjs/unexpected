@@ -256,7 +256,7 @@ expect = originalExpect;
 ```
 
 ```js
-var inlineDiff = true; // used to change inlining in a later example
+const inlineDiff = true; // used to change inlining in a later example
 
 expect.addType({
   name: 'Person',
@@ -277,7 +277,7 @@ expect.addType({
   },
   diff: function (actual, expected, output, diff, inspect) {
     output.inline = inlineDiff;
-    var nameDiff = diff(actual.name, expected.name);
+    const nameDiff = diff(actual.name, expected.name);
 
     output.text('new Person(').nl().indentLines();
 

@@ -38,7 +38,7 @@ is rejected it create an error report with the details.
 <!-- unexpected-markdown async:true -->
 
 ```js
-var promises = {
+const promises = {
   foo: expect('42', 'to be a number after a short delay'),
   bar: expect(
     [0, 1, 2],

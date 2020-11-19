@@ -1,7 +1,7 @@
 /* global expect */
 describe('Promise type', () => {
   it('should inspect a pending promise', () => {
-    var promise = new Promise(function (resolve, reject) {
+    const promise = new Promise(function (resolve, reject) {
       setTimeout(resolve, 0);
     });
     expect(promise, 'to inspect as', 'Promise');
@@ -9,7 +9,7 @@ describe('Promise type', () => {
   });
 
   it('should inspect a fulfilled promise without a value', () => {
-    var promise = new Promise(function (resolve, reject) {
+    const promise = new Promise(function (resolve, reject) {
       resolve();
     });
 
@@ -19,7 +19,7 @@ describe('Promise type', () => {
   });
 
   it('should inspect a fulfilled promise with a value', () => {
-    var promise = new Promise(function (resolve, reject) {
+    const promise = new Promise(function (resolve, reject) {
       resolve(123);
     });
 
@@ -29,7 +29,7 @@ describe('Promise type', () => {
   });
 
   it('should inspect a rejected promise without a value', () => {
-    var promise = new Promise(function (resolve, reject) {
+    const promise = new Promise(function (resolve, reject) {
       // eslint-disable-next-line prefer-promise-reject-errors
       reject();
     });
@@ -40,7 +40,7 @@ describe('Promise type', () => {
   });
 
   it('should inspect a rejected promise with a value', () => {
-    var promise = new Promise(function (resolve, reject) {
+    const promise = new Promise(function (resolve, reject) {
       setTimeout(function () {
         reject(new Error('argh'));
       }, 0);
@@ -53,7 +53,7 @@ describe('Promise type', () => {
 
   describe('with a Bluebird promise (that supports synchronous inspection)', () => {
     it('should inspect a pending promise', () => {
-      var promise = expect.promise(function (run) {
+      const promise = expect.promise(function (run) {
         setTimeout(
           run(function () {}),
           0
@@ -64,7 +64,7 @@ describe('Promise type', () => {
     });
 
     it('should inspect a fulfilled promise without a value', () => {
-      var promise = expect.promise(function () {});
+      const promise = expect.promise(function () {});
 
       return promise.then(function () {
         expect(promise, 'to inspect as', 'Promise (fulfilled)');
@@ -72,7 +72,7 @@ describe('Promise type', () => {
     });
 
     it('should inspect a fulfilled promise without a value method', () => {
-      var promise = expect.promise(function () {});
+      const promise = expect.promise(function () {});
       promise.value = null;
       return promise.then(function () {
         expect(promise, 'to inspect as', 'Promise (fulfilled)');
@@ -80,7 +80,7 @@ describe('Promise type', () => {
     });
 
     it('should inspect a fulfilled promise with a value', () => {
-      var promise = expect.promise(function (resolve, reject) {
+      const promise = expect.promise(function (resolve, reject) {
         resolve(123);
       });
 
@@ -90,7 +90,7 @@ describe('Promise type', () => {
     });
 
     it('should inspect a rejected promise without a value', () => {
-      var promise = expect.promise(function (resolve, reject) {
+      const promise = expect.promise(function (resolve, reject) {
         reject();
       });
 
@@ -100,7 +100,7 @@ describe('Promise type', () => {
     });
 
     it('should inspect a rejected promise with a value', () => {
-      var promise = expect.promise(function (resolve, reject) {
+      const promise = expect.promise(function (resolve, reject) {
         setTimeout(function () {
           reject(new Error('argh'));
         }, 0);

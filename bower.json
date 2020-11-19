@@ -1,15 +1,9 @@
 {
   "name": "unexpected",
-  "authors": [
-    "Sune Simonsen <sune@we-knowhow.dk>"
-  ],
+  "authors": ["Sune Simonsen <sune@we-knowhow.dk>"],
   "description": "The extensible BDD assertion toolkit",
   "main": "unexpected.js",
-  "moduleType": [
-    "amd",
-    "globals",
-    "node"
-  ],
+  "moduleType": ["amd", "globals", "node"],
   "keywords": [
     "assert",
     "expect",

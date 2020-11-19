@@ -1,6 +1,6 @@
 /* global expect */
 describe('addStyle', () => {
-  var clonedExpect;
+  let clonedExpect;
   beforeEach(() => {
     clonedExpect = expect.clone();
   });

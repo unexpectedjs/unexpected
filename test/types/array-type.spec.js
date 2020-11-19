@@ -1,24 +1,24 @@
 /* global expect */
 describe('array type', () => {
   it('should find an array instance identical to itself', () => {
-    var arr = [1, 2, 3];
+    const arr = [1, 2, 3];
     expect(arr, 'to equal', arr);
   });
 
   it('should inspect non-numerical properties at the end', () => {
-    var arr = [1, 2, 3];
+    const arr = [1, 2, 3];
     arr.foo = 'bar';
     arr.push(4);
     expect(arr, 'to inspect as', "[ 1, 2, 3, 4, foo: 'bar' ]");
   });
 
   it('should diff non-numerical properties', () => {
-    var arr1 = [1, 2, 3];
+    const arr1 = [1, 2, 3];
     arr1.foo = 123;
     arr1.bar = 456;
     arr1.quux = {};
 
-    var arr2 = [1, 2, 3];
+    const arr2 = [1, 2, 3];
     arr2.bar = 456;
     arr2.baz = 789;
     arr2.quux = false;

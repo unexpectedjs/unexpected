@@ -1,7 +1,7 @@
 Asserts equality using `Object.is`/the [SameValue](http://ecma-international.org/ecma-262/5.1/#sec-9.12) algorithm.
 
 ```js
-var obj = {};
+const obj = {};
 expect(obj, 'to be', obj);
 expect(1, 'to be', 1);
 expect(null, 'to be', null);

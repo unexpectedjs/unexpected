@@ -4,7 +4,7 @@ describe('outputFormat', () => {
     it('decides the output that will be used for serializing errors', () => {
       expect(
         function () {
-          var clonedExpect = expect.clone().outputFormat('html');
+          const clonedExpect = expect.clone().outputFormat('html');
           clonedExpect(42, 'to equal', 24);
         },
         'to throw',
@@ -18,7 +18,7 @@ describe('outputFormat', () => {
 
       expect(
         function () {
-          var clonedExpect = expect.clone().outputFormat('ansi');
+          const clonedExpect = expect.clone().outputFormat('ansi');
           clonedExpect(42, 'to equal', 24);
         },
         'to throw',

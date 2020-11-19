@@ -1,13 +1,13 @@
 /* global expectWithUnexpectedMagicPen */
 describe('stringDiff', () => {
-  var expect = expectWithUnexpectedMagicPen;
+  const expect = expectWithUnexpectedMagicPen;
 
-  var actual = 'abc\ndef\nghi\njkl\nmno';
-  var expected = 'ghi\njkl\nmno\npqr\nstu\nvwx';
+  const actual = 'abc\ndef\nghi\njkl\nmno';
+  const expected = 'ghi\njkl\nmno\npqr\nstu\nvwx';
 
   describe('in text mode', () => {
     it('outputs leading + and - in text mode', () => {
-      var pen = expect.createOutput('text').stringDiff(actual, expected);
+      const pen = expect.createOutput('text').stringDiff(actual, expected);
       expect(
         pen.toString(),
         'to equal',

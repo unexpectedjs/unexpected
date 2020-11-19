@@ -1,8 +1,8 @@
 /* global expect */
 describe('inspect', () => {
   function Field(val, options) {
-    var value = val;
-    var propertyDescription = {
+    let value = val;
+    const propertyDescription = {
       enumerable: true,
     };
     if (options.match(/getter/)) {
@@ -19,7 +19,7 @@ describe('inspect', () => {
     Object.defineProperty(this, 'value', propertyDescription);
   }
 
-  var circular = {};
+  const circular = {};
   circular.self = circular;
 
   if (Object.defineProperty) {
@@ -43,8 +43,8 @@ describe('inspect', () => {
   }
 
   it('should render strings with control chars and backslashes correctly', () => {
-    var stringWithControlCharsAndStuff = '\\';
-    for (var i = 0; i < 32; i += 1) {
+    let stringWithControlCharsAndStuff = '\\';
+    for (let i = 0; i < 32; i += 1) {
       stringWithControlCharsAndStuff += String.fromCharCode(i);
     }
 
@@ -84,19 +84,19 @@ describe('inspect', () => {
       expect(-Infinity, 'to inspect as', '-Infinity');
     });
     it('sparse array', () => {
-      var sparse = [];
+      const sparse = [];
       sparse[1] = 'foo';
       expect(sparse, 'to inspect as', "[ , 'foo' ]");
     });
     it('sparse array with explicit undefined', () => {
-      var sparse = [];
+      const sparse = [];
       sparse[1] = undefined;
       expect(sparse, 'to inspect as', '[ , undefined ]');
     });
   });
 
   describe('block items as inspected correctly in', () => {
-    var clonedExpect = expect.clone().addType({
+    const clonedExpect = expect.clone().addType({
       name: 'multiline',
       base: 'string',
       identify(value) {
@@ -131,7 +131,7 @@ describe('inspect', () => {
   });
 
   it('indents correctly', () => {
-    var data = [
+    const data = [
       {
         guid: 'db550c87-1680-462a-bacc-655cecdd8907',
         isActive: false,
@@ -277,7 +277,7 @@ describe('inspect', () => {
         ']'
     );
 
-    var clonedExpect = expect.clone();
+    const clonedExpect = expect.clone();
     clonedExpect.output.preferredWidth = 200;
     expect(
       clonedExpect.inspect(data, 5).toString(),
@@ -328,7 +328,7 @@ describe('inspect', () => {
   });
 
   it('should inspect an arguments object differently from an array', () => {
-    var args;
+    let args;
     (function () {
       args = arguments;
     })('a', 123);
@@ -337,6 +337,7 @@ describe('inspect', () => {
 
   it('should output the body of a function', () => {
     expect(
+      /* eslint-disable no-var */
       function () {
         var foo = 'bar';
         var quux = 'baz';
@@ -345,6 +346,7 @@ describe('inspect', () => {
         }
         return quux;
       },
+      /* eslint-enable no-var */
       'to inspect as',
       'function () {\n' +
         "  var foo = 'bar';\n" +
@@ -408,7 +410,7 @@ describe('inspect', () => {
     });
   }
 
-  /* eslint-disable no-multi-str */
+  /* eslint-disable no-multi-str, no-var */
   function multilineStringLiteral() {
     var foo = 'bar';
     var quux = 'baz\
@@ -416,7 +418,7 @@ describe('inspect', () => {
     foo = foo + quux;
     return foo;
   }
-  /* eslint-enable no-multi-str */
+  /* eslint-enable no-multi-str, no-var */
 
   it('should bail out of removing the indentation of functions that use multiline string literals', () => {
     expect(
@@ -435,7 +437,9 @@ describe('inspect', () => {
   it('should bail out of removing the indentation of one-liner functions', () => {
     expect(
       // prettier-ignore
+      /* eslint-disable no-var */
       function() { var foo = 123;return foo; },
+      /* eslint-enable no-var */
       'to inspect as',
       'function () { var foo = 123;return foo; }'
     );
@@ -450,8 +454,8 @@ describe('inspect', () => {
   });
 
   it('should not inspect a recurring object as [Circular]', () => {
-    var a = { foo: 'bar' };
-    var b = { c: a, d: a };
+    const a = { foo: 'bar' };
+    const b = { c: a, d: a };
     expect(b, 'to inspect as', "{ c: { foo: 'bar' }, d: { foo: 'bar' } }");
   });
 });

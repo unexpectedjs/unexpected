@@ -37,7 +37,7 @@ expected 'Hello world!' not to be 'Hello world!'
 If you compare large strings, we truncate the similar parts:
 
 ```js
-var text = `\
+const text = `\
 Bacon ipsum amet tri-tip kielbasa kevin spare RIBS. Sirloin chuck jerky
 venison leberkas. T-bone alcatra short loin short ribs spare ribs rump, brisket
 pastrami frankfurter corned beef kielbasa fatback cupim andouille. Pastrami
@@ -55,7 +55,7 @@ meatloaf turkey kielbasa. Tenderloin porchetta biltong burgdoggen sirloin, strip
 steak pastrami ham hock beef spare ribs shank kevin bacon. Pork loin sausage
 boudin meatball chuck.`;
 
-var expectedText = `\
+const expectedText = `\
 Bacon ipsum dolor amet tri-tip kielbasa kevin spare ribs. Sirloin chuck jerky
 venison leberkas. T-bone alcatra short loin short ribs spare ribs rump, brisket
 pastrami frankfurter corned beef kielbasa fatback cupim andouille. Pastrami

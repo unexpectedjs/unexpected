@@ -77,8 +77,8 @@ return expect.promise
     // Let's reformat the error a bit
     expect.fail(function (output) {
       output.error(aggregateError.message);
-      var errors = [];
-      for (var i = 0; i < aggregateError.length; i += 1) {
+      const errors = [];
+      for (let i = 0; i < aggregateError.length; i += 1) {
         aggregateError[i].serializeMessage(expect.outputFormat());
         errors.push(aggregateError[i]);
       }

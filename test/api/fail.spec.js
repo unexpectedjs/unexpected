@@ -11,7 +11,7 @@ describe('fail assertion', () => {
   });
 
   it('sets the error message', () => {
-    var wasCaught = false;
+    let wasCaught = false;
     try {
       expect.fail('fail with error message');
     } catch (e) {
@@ -42,7 +42,7 @@ describe('fail assertion', () => {
 
     expect(
       function () {
-        var output = expect.output.clone().text('zero');
+        const output = expect.output.clone().text('zero');
         expect.fail('{0} was expected to be {1}', 0, output);
       },
       'to throw exception',
@@ -134,7 +134,7 @@ describe('fail assertion', () => {
 
   describe('with a diff function', () => {
     it('should generate the diff', () => {
-      var clonedExpect = expect.clone();
+      const clonedExpect = expect.clone();
       clonedExpect.addAssertion('<any> to foo', function (expect, subject) {
         expect.fail({
           diff(output, diff, inspect, equal) {

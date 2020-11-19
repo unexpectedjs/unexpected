@@ -1,6 +1,6 @@
 /* global expect */
 describe('clone', () => {
-  var clonedExpect;
+  let clonedExpect;
   beforeEach(() => {
     clonedExpect = expect.clone();
     clonedExpect.addAssertion(

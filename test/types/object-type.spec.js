@@ -2,7 +2,7 @@
 describe('object type', () => {
   describe('#diff', () => {
     it('should show identical multiline values correctly in diffs', () => {
-      var clonedExpect = expect.clone().addType({
+      const clonedExpect = expect.clone().addType({
         name: 'numberNine',
         identify(obj) {
           return obj === 9;
@@ -54,7 +54,7 @@ describe('object type', () => {
     });
 
     describe('with a subtype that overrides valueForKey()', () => {
-      var clonedExpect = expect.clone();
+      const clonedExpect = expect.clone();
 
       clonedExpect.addType({
         name: 'undefinerObject',
@@ -85,7 +85,7 @@ describe('object type', () => {
   });
 
   describe('#getKeys', () => {
-    var clonedExpect = expect.clone();
+    const clonedExpect = expect.clone();
 
     clonedExpect.addType({
       name: 'fooObject',
@@ -111,7 +111,7 @@ describe('object type', () => {
   });
 
   describe('#similar', () => {
-    var clonedExpect = expect.clone();
+    const clonedExpect = expect.clone();
 
     clonedExpect.addType({
       name: 'ignoreUnderscoresObject',
@@ -167,7 +167,7 @@ describe('object type', () => {
   });
 
   describe('with a subtype that disables indentation', () => {
-    var clonedExpect = expect.clone();
+    const clonedExpect = expect.clone();
 
     clonedExpect.addType({
       base: 'object',
@@ -233,7 +233,7 @@ describe('object type', () => {
   });
 
   describe('with a subtype that renders an empty prefix and an empty suffix', () => {
-    var clonedExpect = expect.clone();
+    const clonedExpect = expect.clone();
 
     clonedExpect.addType({
       base: 'object',
@@ -298,7 +298,7 @@ describe('object type', () => {
   });
 
   describe('with a subtype that forces forceMultipleLines mode', () => {
-    var clonedExpect = expect.clone();
+    const clonedExpect = expect.clone();
 
     clonedExpect.addType({
       base: 'object',
@@ -322,7 +322,7 @@ describe('object type', () => {
 
   describe('with a subtype that overrides property()', () => {
     it('should render correctly in both inspection and diff', () => {
-      var clonedExpect = expect.clone();
+      const clonedExpect = expect.clone();
 
       clonedExpect.addStyle('xuuqProperty', function (key, inspectedValue) {
         this.text('<')
@@ -365,7 +365,7 @@ describe('object type', () => {
   });
 
   describe('with a subtype that overrides valueForKey()', () => {
-    var clonedExpect = expect.clone();
+    const clonedExpect = expect.clone();
 
     clonedExpect.addType({
       name: 'nineObject',
@@ -429,11 +429,11 @@ describe('object type', () => {
     (Object.setPrototypeOf ? it : it.skip)(
       'should process keys from the prototype chain in "to exhaustively satisfy"',
       function () {
-        var fooObject = {
+        const fooObject = {
           foo: 'bAr',
           oof: 'should not appear',
         };
-        var chainedObject = { nine: 9, baz: undefined };
+        const chainedObject = { nine: 9, baz: undefined };
         Object.setPrototypeOf(chainedObject, fooObject);
 
         expect(
@@ -466,7 +466,7 @@ describe('object type', () => {
       this.contentObject = contentObject;
     }
 
-    var clonedExpect = expect.clone();
+    const clonedExpect = expect.clone();
 
     clonedExpect.addType({
       name: 'NestedObject',

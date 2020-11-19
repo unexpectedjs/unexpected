@@ -1,7 +1,7 @@
 /* global expect */
 describe('string type', () => {
   it('should suppress a diff when the actual value has a length greater than 64 KB', () => {
-    var longString = new Array(65538).join('A');
+    const longString = new Array(65538).join('A');
     expect(
       function () {
         expect(longString, 'to equal', 'foo');
@@ -12,7 +12,7 @@ describe('string type', () => {
   });
 
   it('should suppress a diff when the expected value has a length greater than 64 KB', () => {
-    var longString = new Array(65538).join('A');
+    const longString = new Array(65538).join('A');
     expect(
       function () {
         expect('foo', 'to equal', longString);

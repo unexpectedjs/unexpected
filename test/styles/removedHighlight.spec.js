@@ -2,11 +2,11 @@
 describe('removedHighlight', () => {
   const expect = expectWithUnexpectedMagicPen;
 
-  var text = 'foo\nbar';
+  const text = 'foo\nbar';
 
   describe('in text mode', () => {
     it('escapes the newlines', () => {
-      var pen = expect.createOutput('text').removedHighlight(text);
+      const pen = expect.createOutput('text').removedHighlight(text);
       expect(pen.toString(), 'to equal', 'foo\\n\n^^^^\nbar\n^^^');
 
       expect(

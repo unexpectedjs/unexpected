@@ -13,7 +13,7 @@ describe('to have property assertion', () => {
   });
 
   describe('property descriptor', () => {
-    var subject = { a: 'b' };
+    const subject = { a: 'b' };
     Object.defineProperty(subject, 'enumFalse', {
       enumerable: false,
       value: 't',
@@ -244,7 +244,7 @@ describe('to have property assertion', () => {
   });
 
   describe('with a subtype that overrides valueForKey()', () => {
-    var clonedExpect = expect.clone();
+    const clonedExpect = expect.clone();
 
     clonedExpect.addType({
       name: 'upperCaseObject',
@@ -269,7 +269,10 @@ describe('to have property assertion', () => {
     });
   });
 
-  if (typeof Symbol === 'function') {
+  if (
+    typeof Symbol === 'function' &&
+    Symbol('foo').toString() === 'Symbol(foo)'
+  ) {
     describe('with symbols', function () {
       describe('to have property', function () {
         it('should pass when the object contains the symbol', function () {

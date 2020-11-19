@@ -2,7 +2,7 @@ Asserts deep equality.
 
 ```js
 expect({ a: 'b' }, 'to equal', { a: 'b' });
-var now = new Date();
+const now = new Date();
 expect(now, 'to equal', now);
 expect(now, 'to equal', new Date(now.getTime()));
 expect({ now: now }, 'to equal', { now: now });
@@ -99,8 +99,8 @@ This assertion can be negated using the `not` flag:
 expect(1, 'not to equal', '1');
 expect({ one: 1 }, 'not to equal', { one: '1' });
 expect(null, 'not to equal', '1');
-var now = new Date();
-var later = new Date(now.getTime() + 42);
+const now = new Date();
+const later = new Date(now.getTime() + 42);
 expect(now, 'not to equal', later);
 expect({ time: now }, 'not to equal', { time: later });
 ```

@@ -194,7 +194,7 @@ describe('to have keys satisfying assertion', () => {
   });
 
   describe('delegating to an async assertion', () => {
-    var clonedExpect = expect
+    const clonedExpect = expect
       .clone()
       .addAssertion(
         '<any> to be a sequence of as after a short delay',

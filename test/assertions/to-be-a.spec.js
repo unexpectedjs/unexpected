@@ -1,6 +1,6 @@
 /* global expect */
 describe('to be a/an assertion', () => {
-  var circular = {};
+  const circular = {};
   circular.self = circular;
 
   it('asserts typeof with support for array type and instanceof', () => {
@@ -83,7 +83,7 @@ describe('to be a/an assertion', () => {
   it('formats Error instances correctly when an assertion fails', () => {
     expect(
       function () {
-        var error = new Error('error message');
+        const error = new Error('error message');
         error.data = 'extra';
         expect(error, 'to be a number');
       },

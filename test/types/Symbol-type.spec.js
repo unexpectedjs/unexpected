@@ -5,16 +5,16 @@ if (
   Symbol('foo').toString() === 'Symbol(foo)'
 ) {
   describe('Symbol type', () => {
-    var symbolA = Symbol('a');
-    var anotherSymbolA = Symbol('a');
-    var symbolB = Symbol('b');
+    const symbolA = Symbol('a');
+    const anotherSymbolA = Symbol('a');
+    const symbolB = Symbol('b');
 
     it('inspects correctly', () => {
       expect(symbolA, 'to inspect as', "Symbol('a')");
     });
 
     it('inspects correctly when used as a key in an object', () => {
-      var obj = {};
+      const obj = {};
       obj[symbolA] = 123;
       expect(obj, 'to inspect as', "{ [Symbol('a')]: 123 }");
     });
@@ -39,10 +39,10 @@ if (
       });
 
       it('should include Symbol properties in the "to equal" diff of objects', () => {
-        var a = { foo: 123 };
+        const a = { foo: 123 };
         a[symbolA] = 'foo';
         a[symbolB] = 123;
-        var b = { foo: 456 };
+        const b = { foo: 456 };
         b[symbolA] = 'bar';
         b[symbolB] = 123;
         expect(
@@ -89,10 +89,10 @@ if (
       });
 
       it('should include the Symbol properties in the diff', () => {
-        var a = { foo: 123 };
+        const a = { foo: 123 };
         a[symbolA] = 'foo';
         a[symbolB] = 123;
-        var b = { foo: 456 };
+        const b = { foo: 456 };
         b[symbolA] = 'bar';
         b[symbolB] = 123;
         expect(

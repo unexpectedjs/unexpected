@@ -1,7 +1,7 @@
 /* global expect */
 describe('expect.it', () => {
   it('returns an expectation function that when applied runs the assertion on the given subject', () => {
-    var expectation = expect.it('to be greater than', 14);
+    const expectation = expect.it('to be greater than', 14);
     expectation(20);
     expect(
       function () {
@@ -13,7 +13,7 @@ describe('expect.it', () => {
   });
 
   it('is inspected as it is written', () => {
-    var expectation = expect
+    const expectation = expect
       .it('to be a number')
       .and('to be less than', 14)
       .and('to be negative')
@@ -31,7 +31,7 @@ describe('expect.it', () => {
   });
 
   it('does not catch errors that are not thrown by unexpected', () => {
-    var clonedExpect = expect
+    const clonedExpect = expect
       .clone()
       .addAssertion('<any> explode', function (expect, subject) {
         throw new Error('Explosion');
@@ -42,7 +42,7 @@ describe('expect.it', () => {
 
   describe('with chained and', () => {
     it('all assertions has to be satisfied', () => {
-      var expectation = expect
+      const expectation = expect
         .it('to be a number')
         .and('to be less than', 14)
         .and('to be negative');
@@ -58,8 +58,8 @@ describe('expect.it', () => {
     });
 
     it('returns a new function', () => {
-      var expectation = expect.it('to be a number');
-      var compositeExpectation = expectation.and('to be less than', 14);
+      const expectation = expect.it('to be a number');
+      const compositeExpectation = expectation.and('to be less than', 14);
       expect(compositeExpectation, 'not to be', expectation);
 
       expectation(20);
@@ -74,7 +74,7 @@ describe('expect.it', () => {
     });
 
     it('outputs one failing assertion correctly', () => {
-      var expectation = expect
+      const expectation = expect
         .it('to be a number')
         .and('to be less than', 14)
         .and('to be negative');
@@ -92,7 +92,7 @@ describe('expect.it', () => {
 
   describe('with chained or', () => {
     it('succeeds if any expectations succeeds', () => {
-      var expectation = expect
+      const expectation = expect
         .it('to be a number')
         .or('to be a string')
         .or('to be an array');
@@ -102,7 +102,7 @@ describe('expect.it', () => {
     });
 
     it('fails if all the expectations fails', () => {
-      var expectation = expect
+      const expectation = expect
         .it('to be a number')
         .and('to be greater than', 6)
         .or('to be a string')
@@ -125,7 +125,7 @@ describe('expect.it', () => {
     });
 
     it('if there are no and-clauses it writes the failure output more compactly', () => {
-      var expectation = expect
+      const expectation = expect
         .it('to be a number')
         .or('to be a string')
         .or('to be an array');
@@ -141,8 +141,8 @@ describe('expect.it', () => {
     });
 
     it('returns a new function', () => {
-      var expectation = expect.it('to be a number');
-      var compositeExpectation = expectation.or('to be a string');
+      const expectation = expect.it('to be a number');
+      const compositeExpectation = expectation.or('to be a string');
       expect(compositeExpectation, 'not to be', expectation);
 
       expectation(20);
@@ -158,7 +158,7 @@ describe('expect.it', () => {
   });
 
   describe('with async assertions', () => {
-    var clonedExpect = expect
+    const clonedExpect = expect
       .clone()
       .addAssertion('<any> to be a number after a short delay', function (
         expect,
@@ -315,7 +315,7 @@ describe('expect.it', () => {
 
   describe('with forwarding of flags', () => {
     describe('directly', () => {
-      var clonedExpect = expect
+      const clonedExpect = expect
         .clone()
         .addAssertion('<object> [not] to have a foo property of bar', function (
           expect,
@@ -369,7 +369,7 @@ describe('expect.it', () => {
     });
 
     describe('through an <assertion> being shifted to', () => {
-      var clonedExpect = expect
+      const clonedExpect = expect
         .clone()
         .addAssertion('<object> [not] to have a foo property of bar', function (
           expect,

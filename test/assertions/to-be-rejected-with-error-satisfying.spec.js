@@ -77,7 +77,7 @@ describe('to be rejected with error satisfying assertion', () => {
   describe('with the "exhaustively" flag', () => {
     it("errors if the rejection reason doesn't have all the same properties as the value", () => {
       return expect(function () {
-        var error = new Error('foobar');
+        const error = new Error('foobar');
         error.data = { foo: 'bar' };
         return expect(
           expect.promise.reject(error),
@@ -90,7 +90,7 @@ describe('to be rejected with error satisfying assertion', () => {
     it('errors with the correct error', () => {
       return expect(
         function () {
-          var error = new Error('foobar');
+          const error = new Error('foobar');
           error.data = { foo: 'bar' };
           return expect(
             expect.promise.reject(error),
@@ -115,7 +115,7 @@ describe('to be rejected with error satisfying assertion', () => {
   describe('without the "exhaustively" flag', () => {
     it("does not error if the rejection reason doesn't have all the same properties as the value", () => {
       return expect(function () {
-        var error = new Error('foobar');
+        const error = new Error('foobar');
         error.data = { foo: 'bar' };
         return expect(
           expect.promise.reject(error),
@@ -185,7 +185,7 @@ describe('to be rejected with error satisfying assertion', () => {
           return expect(
             function () {
               return expect.promise(function () {
-                var error = new Error('foobar');
+                const error = new Error('foobar');
                 error.data = { foo: 'bar' };
                 throw error;
               });
@@ -201,6 +201,7 @@ describe('to be rejected with error satisfying assertion', () => {
           // prettier-ignore
           function () {
             return expect(
+              /* eslint-disable no-var */
               function() {
                 return expect.promise(function () {
                   var error = new Error('foobar');
@@ -208,6 +209,7 @@ describe('to be rejected with error satisfying assertion', () => {
                   throw error;
                 });
               },
+              /* eslint-enable no-var */
               'to be rejected with error exhaustively satisfying',
               new Error('foobar')
             );
@@ -241,7 +243,7 @@ describe('to be rejected with error satisfying assertion', () => {
           return expect(
             function () {
               return expect.promise(function () {
-                var error = new Error('foobar');
+                const error = new Error('foobar');
                 error.data = { foo: 'bar' };
                 throw error;
               });

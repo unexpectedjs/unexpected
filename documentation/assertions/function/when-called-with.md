@@ -42,7 +42,7 @@ Greeter.prototype.greet = function (name) {
   return this.prefix + name;
 };
 
-var helloGreeter = new Greeter('Hello, ');
+const helloGreeter = new Greeter('Hello, ');
 
 expect(helloGreeter, 'to satisfy', {
   greet: expect.it(

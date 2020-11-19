@@ -4,11 +4,7 @@ TARGETS ?= unexpected.js unexpected.js.map unexpected.esm.js unexpected.esm.js.m
 .PHONY: unexpected.js unexpected.esm.js
 .SECONDARY: unexpected.js.map unexpected.esm.js.map
 
-CHEWBACCA_THRESHOLD ?= 25
-
 TEST_SOURCES_MARKDOWN =  $(shell find documentation -name '*.md')
-
-MODERN_NODE = $(shell node -p -e 'require("node-version-check").gte(require("fs").readFileSync(".nvmrc", "utf8").trim())')
 
 lint:
 	npm run lint
@@ -22,8 +18,8 @@ build/lib: lib/*
 build/test: $(shell find test -type f)
 	mkdir -p ./build
 	./node_modules/.bin/buble -o build/test test
-	cp ./test/mocha.opts ./build/test/mocha.opts
-	sed -i -e 's#--require ./test#--require ./build/test#g' ./build/test/mocha.opts
+	cp ./.mocharc.json ./build/test/.mocharc.json
+	sed -i -e 's#./test#./build/test#g' ./build/test/.mocharc.json
 
 build/externaltests: externaltests/*
 	./node_modules/.bin/buble -o build/externaltests externaltests
@@ -43,50 +39,28 @@ unexpected.esm.js unexpected.esm.js.map: build
 test-jasmine:
 	./node_modules/.bin/jasmine JASMINE_CONFIG_PATH=test/support/jasmine.json
 
-ifeq ($(MODERN_NODE), true)
-MOCHA_OPTS = ./test/mocha.opts
+MOCHA_CONFIG = .mocharc.json
 TEST_SOURCES = $(shell find test -name '*.spec.js')
-else
-MOCHA_OPTS = ./build/test/mocha.opts
-TEST_SOURCES = $(shell find build/test -name '*.spec.js')
-endif
-
-test-sources:
-ifneq ($(MODERN_NODE), true)
-	make build
-endif
 
 .PHONY: test-jest
 test-jest:
-ifeq ($(MODERN_NODE), true)
 	./node_modules/.bin/jest
-else
-	./node_modules/.bin/jest --rootDir . -c test/jest.es5.config.json
-endif
 
 .PHONY: test
-test: test-sources
-	@./node_modules/.bin/mocha --opts $(MOCHA_OPTS) $(TEST_SOURCES)
+test:
+	@./node_modules/.bin/mocha --config $(MOCHA_CONFIG) $(TEST_SOURCES)
 	make test-docs
 
 .PHONY: test-docs
 test-docs:
-ifeq ($(MODERN_NODE), true)
 	@./node_modules/.bin/evaldown --comment-marker unexpected-markdown --require ./bootstrap-unexpected-markdown.js --validate --reporter spec ./documentation
-else
-	echo "testing documentation is not supported on this version of node"
-endif
 
 nyc-includes:
-ifeq ($(MODERN_NODE), true)
 NYC_INCLUDES='lib/**'
-else
-NYC_INCLUDES='build/lib/**'
-endif
 
 .PHONY: coverage
-coverage: nyc-includes test-sources
-	@./node_modules/.bin/nyc --include $(NYC_INCLUDES) --reporter=lcov --reporter=text --all -- mocha --opts $(MOCHA_OPTS) $(TEST_SOURCES)
+coverage: nyc-includes
+	@./node_modules/.bin/nyc --include $(NYC_INCLUDES) --reporter=lcov --reporter=text --all -- node_modules/.bin/mocha --config $(MOCHA_CONFIG) $(TEST_SOURCES)
 	@echo google-chrome coverage/lcov-report/index.html
 
  .PHONY: test-browser

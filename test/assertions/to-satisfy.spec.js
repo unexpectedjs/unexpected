@@ -5,7 +5,7 @@ describe('to satisfy assertion', () => {
   }
 
   it('passes when an object is tested against itself, even in the presence of circular references', () => {
-    var circular = {};
+    const circular = {};
     circular.loop = circular;
     expect(circular, 'to satisfy', circular);
   });
@@ -130,7 +130,7 @@ describe('to satisfy assertion', () => {
     });
 
     it('should render missing custom items nicely', () => {
-      var clonedExpect = expect.clone();
+      const clonedExpect = expect.clone();
 
       clonedExpect.addStyle('xuuqProperty', function (key, inspectedValue) {
         this.text('<')
@@ -465,7 +465,7 @@ describe('to satisfy assertion', () => {
         Object.defineProperty(this, 'b', { enumerable: false, value: b });
       }
 
-      var clonedExpect = expect.clone().addType({
+      const clonedExpect = expect.clone().addType({
         name: 'MyThing',
         base: 'object',
         identify(obj) {
@@ -525,7 +525,7 @@ describe('to satisfy assertion', () => {
   });
 
   it('ignores blacklisted properties in the diff', () => {
-    var error = new Error('foo');
+    const error = new Error('foo');
     error.description = 'qux';
     expect(
       function () {
@@ -623,10 +623,10 @@ describe('to satisfy assertion', () => {
   });
 
   it('forwards normal errors found in promise aggregate errors to the top level', () => {
-    var clonedExpect = expect
+    const clonedExpect = expect
       .clone()
       .addAssertion('<any> to foo', function (expect, subject) {
-        var promises = [
+        const promises = [
           clonedExpect.promise(function () {
             clonedExpect('foo', 'to equal', 'bar');
           }),
@@ -1128,7 +1128,7 @@ describe('to satisfy assertion', () => {
     });
 
     it('should only consider functions that are identified as functions by the type system', () => {
-      var clonedExpect = expect.clone().addType({
+      const clonedExpect = expect.clone().addType({
         name: 'functionStartingWithF',
         identify(obj) {
           return (
@@ -1162,7 +1162,7 @@ describe('to satisfy assertion', () => {
     });
 
     it('should support satisfying against an Error instance when the subject has additional properties', () => {
-      var err = new Error('foo');
+      const err = new Error('foo');
       err.bar = 123;
       expect(err, 'to satisfy', new Error('foo'));
     });
@@ -1188,7 +1188,7 @@ describe('to satisfy assertion', () => {
 
       describe('should fail with a diff', () => {
         it('when satisfying against an object', () => {
-          var err = new Error('foo');
+          const err = new Error('foo');
           err.bar = 123;
           expect(
             function () {
@@ -1206,7 +1206,7 @@ describe('to satisfy assertion', () => {
         });
 
         it('when satisfying against another Error instance', () => {
-          var error = new Error('foobar');
+          const error = new Error('foobar');
           error.data = { foo: 'bar' };
           expect(
             function () {
@@ -1416,7 +1416,7 @@ describe('to satisfy assertion', () => {
 
   describe('on object with getters', () => {
     it('should satisfy on the value returned by the getter', () => {
-      var subject = { nextLevel: {} };
+      const subject = { nextLevel: {} };
       Object.defineProperty(subject.nextLevel, 'getMe', {
         get() {
           return 'got me';
@@ -1887,7 +1887,7 @@ describe('to satisfy assertion', () => {
   });
 
   it('indents removed objects correctly', () => {
-    var str = 'abcdefghijklmnopqrstuvwxyz';
+    const str = 'abcdefghijklmnopqrstuvwxyz';
     expect(
       function () {
         expect(
@@ -1922,7 +1922,7 @@ describe('to satisfy assertion', () => {
   });
 
   it('indents unchanged objects correctly', () => {
-    var str = 'abcdefghijklmnopqrstuvwxyz';
+    const str = 'abcdefghijklmnopqrstuvwxyz';
     expect(
       function () {
         expect(
@@ -1972,7 +1972,7 @@ describe('to satisfy assertion', () => {
       this.propertyName = `prop${Math.floor(1000 * Math.random())}`;
       this[this.propertyName] = value;
     }
-    var clonedExpect;
+    let clonedExpect;
 
     beforeEach(() => {
       clonedExpect = expect.clone().addType({
@@ -2281,7 +2281,7 @@ describe('to satisfy assertion', () => {
   });
 
   describe('when delegating to async assertions', () => {
-    var clonedExpect = expect
+    const clonedExpect = expect
       .clone()
       .addAssertion('<any> to be a number after a short delay', function (
         expect,
@@ -2376,7 +2376,7 @@ describe('to satisfy assertion', () => {
   describe('with an array with non-numerical properties', () => {
     describe('satisfied exhaustively against an object', () => {
       it('should succeed', () => {
-        var subject = [123];
+        const subject = [123];
         subject.foobar = 456;
         expect(subject, 'to exhaustively satisfy', {
           0: 123,
@@ -2385,7 +2385,7 @@ describe('to satisfy assertion', () => {
       });
 
       it('should fail with a diff', () => {
-        var subject = [123];
+        const subject = [123];
         subject.foobar = 456;
         expect(
           function () {
@@ -2407,21 +2407,21 @@ describe('to satisfy assertion', () => {
 
     describe('satisfied exhaustively against another array', () => {
       it('should succeed', () => {
-        var subject = [123];
+        const subject = [123];
         subject.foobar = 456;
 
-        var expected = [123];
+        const expected = [123];
         expected.foobar = 456;
         expect(subject, 'to exhaustively satisfy', expected);
       });
 
       it('should fail with a diff', () => {
-        var subject = [2, 3, 1];
+        const subject = [2, 3, 1];
         subject.foo = 123;
         subject.bar = 456;
         subject.quux = {};
 
-        var expected = [1, 2, 3];
+        const expected = [1, 2, 3];
         expected.bar = 456;
         expected.baz = 789;
         expected.quux = false;
@@ -2491,7 +2491,7 @@ describe('to satisfy assertion', () => {
     });
 
     describe('with a non-enumerable property', () => {
-      var bar = {};
+      const bar = {};
       Object.defineProperty(bar, 'nonEnumerable', {
         value: 'theValue',
         enumerable: false,

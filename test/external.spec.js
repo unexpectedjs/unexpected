@@ -1,15 +1,15 @@
 /* global unexpected */
 
-var expect = unexpected.clone();
+const expect = unexpected.clone();
 
 if (typeof process === 'object') {
   describe('invoked in a test via an external test runner', () => {
-    var findNodeModules = require('find-node-modules');
-    var pathModule = require('path');
-    var childProcess = require('child_process');
-    var basePath = pathModule.join(findNodeModules()[0], '..');
-    var externaltestsDir = pathModule.join(__dirname, '..', 'externaltests');
-    var extend = require('../lib/utils').extend;
+    const findNodeModules = require('find-node-modules');
+    const pathModule = require('path');
+    const childProcess = require('child_process');
+    const basePath = pathModule.join(findNodeModules()[0], '..');
+    const externaltestsDir = pathModule.join(__dirname, '..', 'externaltests');
+    const extend = require('../lib/utils').extend;
     describe('executed through mocha', () => {
       expect.addAssertion(
         '<array|string> executed through mocha <object?>',
@@ -20,14 +20,16 @@ if (typeof process === 'object') {
           return expect.promise(function (run) {
             childProcess.execFile(
               pathModule.resolve(basePath, 'node_modules', '.bin', 'mocha'),
-              ['--opts', pathModule.resolve(__dirname, 'mocha.opts')].concat(
-                subject.map(function (fileName) {
+              [
+                '--config',
+                pathModule.resolve(basePath, '.mocharc.json'),
+                ...subject.map(function (fileName) {
                   return pathModule.resolve(
                     externaltestsDir,
                     `${fileName}.spec.js`
                   );
-                })
-              ),
+                }),
+              ],
               {
                 cwd: basePath,
                 env: extend({}, process.env, env || {}),
@@ -113,7 +115,9 @@ if (typeof process === 'object') {
             'to contain',
             'Error: should fail: You have created a promise that was not returned from the it block'
           );
-          expect(err, 'to satisfy', { code: 1 });
+          expect(err, 'to satisfy', {
+            code: expect.it('to be greater than', 0),
+          });
         });
       });
 

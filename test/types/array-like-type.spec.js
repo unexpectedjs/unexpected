@@ -1,18 +1,18 @@
 /* global expect */
 describe('array-like type', () => {
   describe('equal()', () => {
-    var simpleArrayLikeType = {
+    const simpleArrayLikeType = {
       name: 'simpleArrayLike',
       base: 'array-like',
       identify: Array.isArray,
       numericalPropertiesOnly: false,
     };
-    var clonedExpect = expect.clone().addType(simpleArrayLikeType);
+    const clonedExpect = expect.clone().addType(simpleArrayLikeType);
 
     it('should treat properties with a value of undefined as equivalent to missing properties', () => {
-      var a = [];
+      const a = [];
       a.ignoreMe = undefined;
-      var b = [];
+      const b = [];
 
       clonedExpect(a, 'to equal', b);
       clonedExpect(b, 'to equal', a);
@@ -21,9 +21,9 @@ describe('array-like type', () => {
     });
 
     it('should error when a LHS key is undefined on the RHS', () => {
-      var a = ['a'];
+      const a = ['a'];
       a.foobar = true;
-      var b = ['a'];
+      const b = ['a'];
 
       expect(
         function () {
@@ -40,9 +40,9 @@ describe('array-like type', () => {
     });
 
     it('should error when a LHS key is explicitly undefined on the RHS', () => {
-      var a = ['a'];
+      const a = ['a'];
       a.foobar = true;
-      var b = ['a'];
+      const b = ['a'];
       b.foobar = undefined;
 
       expect(
@@ -60,9 +60,9 @@ describe('array-like type', () => {
     });
 
     it('should error when a LHS key is undefined on the RHS in "to satisfy"', () => {
-      var a = ['a'];
+      const a = ['a'];
       a.foobar = true;
-      var b = ['a'];
+      const b = ['a'];
       b.foobar = undefined;
 
       expect(
@@ -79,12 +79,15 @@ describe('array-like type', () => {
       );
     });
 
-    if (typeof Symbol === 'function') {
+    if (
+      typeof Symbol === 'function' &&
+      Symbol('foo').toString() === 'Symbol(foo)'
+    ) {
       it('should error when a LHS key is a Symbol but undefined on the RHS', () => {
-        var a = ['a'];
-        var s = Symbol('foo');
+        const a = ['a'];
+        const s = Symbol('foo');
         a[s] = true;
-        var b = ['a'];
+        const b = ['a'];
 
         expect(
           function () {
@@ -104,7 +107,7 @@ describe('array-like type', () => {
         'should correctly fetch keys in the absence of symbol support',
         function () {
           // stash away then clobber object symbol support
-          var getOwnPropertySymbols = Object.getOwnPropertySymbols;
+          const getOwnPropertySymbols = Object.getOwnPropertySymbols;
           delete Object.getOwnPropertySymbols;
           // grab a fresh copy of Unexpected with object symbol support disabled
           if (typeof jest !== 'undefined') {
@@ -113,17 +116,17 @@ describe('array-like type', () => {
           } else {
             delete require.cache[require.resolve('../../lib/')];
           }
-          var localExpect = require('../../lib/')
+          const localExpect = require('../../lib/')
             .clone()
             .addType(simpleArrayLikeType);
           // restore object symbol support for the rest of the suite
           Object.getOwnPropertySymbols = getOwnPropertySymbols;
 
-          var a = ['a'];
+          const a = ['a'];
           a.foobar = true;
-          var s = Symbol('foo');
+          const s = Symbol('foo');
           a[s] = true; // should be ignored
-          var b = ['a'];
+          const b = ['a'];
           b.foobar = undefined;
 
           localExpect(
@@ -144,7 +147,7 @@ describe('array-like type', () => {
   });
 
   describe('with a subtype that disables indentation', () => {
-    var clonedExpect = expect.clone();
+    const clonedExpect = expect.clone();
 
     clonedExpect.addType({
       base: 'array-like',
@@ -206,7 +209,7 @@ describe('array-like type', () => {
   });
 
   describe('with a subtype that renders an empty prefix and an empty suffix', () => {
-    var clonedExpect = expect.clone();
+    const clonedExpect = expect.clone();
 
     clonedExpect.addType({
       base: 'array-like',
@@ -267,7 +270,7 @@ describe('array-like type', () => {
   });
 
   describe('with a subtype that forces forceMultipleLines mode', () => {
-    var clonedExpect = expect.clone();
+    const clonedExpect = expect.clone();
 
     clonedExpect.addType({
       base: 'array-like',
@@ -291,33 +294,33 @@ describe('array-like type', () => {
 
   describe('when both types have numericalPropertiesOnly set', () => {
     it('should only compare numerical properties for equality', () => {
-      var a = toArguments(1, 2);
-      var b = toArguments(1, 2);
+      const a = toArguments(1, 2);
+      const b = toArguments(1, 2);
       b.foo = 123;
       expect(a, 'to equal', b);
     });
 
     it('should fail when a numerical property has different values', () => {
-      var a = toArguments(1, 3);
-      var b = toArguments(1, 2);
+      const a = toArguments(1, 3);
+      const b = toArguments(1, 2);
       expect(a, 'not to equal', b);
     });
   });
 
   describe('with a custom subtype that comes with its own getKeys', () => {
     it('should process the elements in both inspection and diff in "to equal"', () => {
-      var a = ['a'];
-      var b = ['a'];
+      const a = ['a'];
+      const b = ['a'];
       b.foobar = true;
 
-      var clonedExpect = expect.clone().addType({
+      const clonedExpect = expect.clone().addType({
         name: 'foo',
         base: 'array-like',
         identify: Array.isArray,
         numericalPropertiesOnly: false,
         getKeys(obj) {
           // use array-like getKeys() method in non-numerical mode
-          var keys = this.baseType.getKeys.call(this, obj);
+          const keys = this.baseType.getKeys.call(this, obj);
           if (obj === a) {
             keys.push('foobar');
           }
@@ -340,18 +343,18 @@ describe('array-like type', () => {
     });
 
     it('should process the elements in both inspection and diff in "to satisfy"', () => {
-      var a = ['a'];
-      var b = ['a'];
+      const a = ['a'];
+      const b = ['a'];
       b.foobar = true;
 
-      var clonedExpect = expect.clone().addType({
+      const clonedExpect = expect.clone().addType({
         name: 'foo',
         base: 'array-like',
         identify: Array.isArray,
         numericalPropertiesOnly: false,
         getKeys(obj) {
           // use array-like getKeys in non-numerical mode
-          var keys = this.baseType.getKeys.call(this, obj);
+          const keys = this.baseType.getKeys.call(this, obj);
           if (obj === a) {
             keys.push('foobar');
           }
@@ -374,7 +377,7 @@ describe('array-like type', () => {
     });
 
     it('should honour the precise list of keys returned by getKeys in "to satisfy"', () => {
-      var clonedExpect = expect.clone();
+      const clonedExpect = expect.clone();
 
       clonedExpect.addType({
         name: 'foo',
@@ -384,8 +387,8 @@ describe('array-like type', () => {
         },
         numericalPropertiesOnly: false,
         getKeys: function (obj) {
-          var keys = this.baseType.getKeys(obj);
-          var fooIndex = keys.indexOf('_isFoo');
+          let keys = this.baseType.getKeys(obj);
+          const fooIndex = keys.indexOf('_isFoo');
           if (fooIndex > -1) {
             keys = keys.splice(fooIndex, 1);
           }
@@ -394,13 +397,13 @@ describe('array-like type', () => {
         },
       });
 
-      var foo1 = ['hey', 'there'];
+      const foo1 = ['hey', 'there'];
       foo1._isFoo = true;
       Object.defineProperty(foo1, 'bar', {
         value: 123,
         enumerable: false,
       });
-      var foo2 = ['hey', 'there'];
+      const foo2 = ['hey', 'there'];
       foo2._isFoo = true;
       Object.defineProperty(foo2, 'bar', {
         value: 456,
@@ -425,7 +428,7 @@ describe('array-like type', () => {
 
   describe('with a custom subtype that comes with its own hasKey', () => {
     it('should honour the presence of a key within inspection', () => {
-      var clonedExpect = expect.clone().addType({
+      const clonedExpect = expect.clone().addType({
         name: 'allExceptFoo',
         base: 'array-like',
         identify: Array.isArray,
@@ -438,7 +441,7 @@ describe('array-like type', () => {
         },
       });
 
-      var arr = ['a'];
+      const arr = ['a'];
       arr.fooAndBar = true;
 
       clonedExpect(arr, 'to inspect as', "[ 'a', fooAndBar: undefined ]");
@@ -447,7 +450,7 @@ describe('array-like type', () => {
 
   describe('with a subtype that overrides property()', () => {
     it('should render correctly in both inspection and diff in "to equal"', () => {
-      var clonedExpect = expect.clone();
+      const clonedExpect = expect.clone();
 
       clonedExpect.addStyle('xuuqProperty', function (key, inspectedValue) {
         this.text('<')
@@ -517,12 +520,12 @@ describe('array-like type', () => {
 
   describe('with a custom subtype that comes with its own valueForKeys', () => {
     it('should process the elements in both inspection and diff in "to equal"', () => {
-      var clonedExpect = expect.clone().addType({
+      const clonedExpect = expect.clone().addType({
         name: 'firstElemUpper',
         base: 'array-like',
         identify: Array.isArray,
         valueForKey: function (arr, key) {
-          var value = arr[key];
+          const value = arr[key];
           if (key === 0) {
             return value.toUpperCase();
           }

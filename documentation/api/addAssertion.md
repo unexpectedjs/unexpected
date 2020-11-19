@@ -264,7 +264,7 @@ value's type definition. For instance, this can be used to define optional
 `function` values:
 
 ```js
-var errorMode = 'default'; // use to control the error mode in later examples
+const errorMode = 'default'; // use to control the error mode in later examples
 expect.addAssertion(
   '<array> [not] to be (sorted|ordered) [by] <function?>',
   function (expect, subject, cmp) {
@@ -483,7 +483,7 @@ function Timelock(value, delay) {
 }
 
 Timelock.prototype.getValue = function (cb) {
-  var that = this;
+  const that = this;
   setTimeout(function () {
     cb(that.value);
   }, this.delay);

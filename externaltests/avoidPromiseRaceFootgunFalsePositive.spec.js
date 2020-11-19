@@ -1,4 +1,4 @@
-var expect = require('../lib')
+const expect = require('../lib')
   .clone()
   .addAssertion('<any> to be a number after a (short|long) delay', function (
     expect,

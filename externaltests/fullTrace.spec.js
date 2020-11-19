@@ -1,4 +1,4 @@
-var expect = require('../lib')
+const expect = require('../lib')
   .clone()
   .use(require('./node_modules/unexpected-bogus/index.js'));
 

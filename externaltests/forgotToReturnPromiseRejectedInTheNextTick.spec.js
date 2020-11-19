@@ -1,4 +1,4 @@
-var expect = require('../lib').clone();
+const expect = require('../lib').clone();
 
 it('should fail', () => {
   expect.addAssertion('<any> to foo', function (expect, subject) {

@@ -61,9 +61,9 @@ expect.addAssertion(
   '<number> up to [and including] <number> <assertion?>',
   function (expect, subject, value) {
     expect.errorMode = 'nested';
-    var numbers = [];
+    const numbers = [];
     for (
-      var i = subject;
+      let i = subject;
       i < (expect.flags['and including'] ? value + 1 : value);
       i += 1
     ) {

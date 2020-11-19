@@ -1,6 +1,6 @@
 /* global expectWithUnexpectedMagicPen */
 describe('to equal assertion', () => {
-  var expect = expectWithUnexpectedMagicPen;
+  const expect = expectWithUnexpectedMagicPen;
 
   function toArguments() {
     return arguments;
@@ -12,7 +12,7 @@ describe('to equal assertion', () => {
     expect({ foo: 1 }, 'not to equal', { foo: '1' });
     expect(1, 'to equal', 1);
     expect(null, 'not to equal', '1');
-    var now = new Date();
+    const now = new Date();
     expect(now, 'to equal', now);
     expect(now, 'to equal', new Date(now.getTime()));
     expect({ now }, 'to equal', { now });
@@ -28,6 +28,7 @@ describe('to equal assertion', () => {
     expect(/foo/i, 'not to equal', /foo/);
     expect(/foo/gm, 'to equal', /foo/gm);
     expect(/foo/m, 'not to equal', /foo/i);
+    // eslint-disable-next-line prefer-regex-literals
     expect(/foo/m, 'to equal', new RegExp('foo', 'm'));
     expect([], 'not to equal', 0);
     expect(new Error('foo'), 'to equal', new Error('foo'));
@@ -60,12 +61,12 @@ describe('to equal assertion', () => {
 
   it('array should not equal sparse array', () => {
     expect(function () {
-      var sparse = [];
+      const sparse = [];
       sparse[1] = 2;
       expect(sparse, 'to equal', [1, 2]);
     }, 'to throw');
     expect(function () {
-      var sparse = [];
+      const sparse = [];
       sparse[1] = 2;
       expect([1, 2], 'to equal', sparse);
     }, 'to throw');
@@ -115,8 +116,8 @@ describe('to equal assertion', () => {
   });
 
   it('fails gracefully when producing a diff based on circular structures', () => {
-    var foo = { a: 'foo' };
-    var bar = { a: 'bar' };
+    const foo = { a: 'foo' };
+    const bar = { a: 'bar' };
     foo.b = foo;
     bar.b = bar;
     expect(
@@ -795,8 +796,8 @@ describe('to equal assertion', () => {
     });
 
     it('considers Error instances with the same message and stack to be equal', () => {
-      var errors = [];
-      for (var i = 0; i < 2; i += 1) {
+      const errors = [];
+      for (let i = 0; i < 2; i += 1) {
         errors.push(new Error('foo'));
       }
       expect(errors[0], 'to equal', errors[1]);

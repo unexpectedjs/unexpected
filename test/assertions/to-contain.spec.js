@@ -1,6 +1,6 @@
 /* global expectWithUnexpectedMagicPen */
 describe('to contain assertion', () => {
-  var expect = expectWithUnexpectedMagicPen;
+  const expect = expectWithUnexpectedMagicPen;
 
   it('should throw an error when one of the arguments is the empty string', () => {
     expect(

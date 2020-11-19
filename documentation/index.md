@@ -39,7 +39,7 @@ to satisfy { name: 'Unexpected', created: 2013 }
 ## Badges
 
 [![NPM version](https://badge.fury.io/js/unexpected.svg)](https://www.npmjs.com/package/unexpected)
-[![Build Status](https://api.travis-ci.org/unexpectedjs/unexpected.svg?branch=master)](https://travis-ci.org/unexpectedjs/unexpected)
+[![Build Status](https://github.com/unexpectedjs/unexpected/workflows/build/badge.svg)](https://travis-ci.org/unexpectedjs/unexpected)
 [![Coverage Status](https://coveralls.io/repos/unexpectedjs/unexpected/badge.svg)](https://coveralls.io/github/unexpectedjs/unexpected)
 [![Dependency Status](https://david-dm.org/unexpectedjs/unexpected.svg)](https://david-dm.org/unexpectedjs/unexpected)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/unexpectedjs/unexpected?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
@@ -72,7 +72,7 @@ Then:
 <!-- eslint-disable import/no-extraneous-dependencies -->
 
 ```js
-var expect = require('unexpected');
+const expect = require('unexpected');
 ```
 
 ### Browser
@@ -88,7 +88,7 @@ This will expose the `expect` function under the following namespace:
 <!-- unexpected-markdown evaluate:false -->
 
 ```js
-var expect = weknowhow.expect;
+const expect = weknowhow.expect;
 ```
 
 ### RequireJS

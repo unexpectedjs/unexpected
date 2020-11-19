@@ -15,7 +15,7 @@ describe('when passed as parameters to assertion', () => {
   });
 
   it('works with an array-like object', () => {
-    var args;
+    let args;
     (function () {
       args = arguments;
     })(3, 4);
