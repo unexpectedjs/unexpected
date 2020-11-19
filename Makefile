@@ -8,8 +8,6 @@ CHEWBACCA_THRESHOLD ?= 25
 
 TEST_SOURCES_MARKDOWN =  $(shell find documentation -name '*.md')
 
-MODERN_NODE = $(shell node -p -e 'require("node-version-check").gte(require("fs").readFileSync(".nvmrc", "utf8").trim())')
-
 lint:
 	npm run lint
 
@@ -43,46 +41,24 @@ unexpected.esm.js unexpected.esm.js.map: build
 test-jasmine:
 	./node_modules/.bin/jasmine JASMINE_CONFIG_PATH=test/support/jasmine.json
 
-ifeq ($(MODERN_NODE), true)
 MOCHA_CONFIG = .mocharc.json
 TEST_SOURCES = $(shell find test -name '*.spec.js')
-else
-MOCHA_CONFIG = ./build/test/.mocharc.json
-TEST_SOURCES = $(shell find build/test -name '*.spec.js')
-endif
-
-test-sources:
-ifneq ($(MODERN_NODE), true)
-	make build
-endif
 
 .PHONY: test-jest
 test-jest:
-ifeq ($(MODERN_NODE), true)
 	./node_modules/.bin/jest
-else
-	./node_modules/.bin/jest --rootDir . -c test/jest.es5.config.json
-endif
 
 .PHONY: test
-test: test-sources
+test:
 	@./node_modules/.bin/mocha --config $(MOCHA_CONFIG) $(TEST_SOURCES)
 	make test-docs
 
 .PHONY: test-docs
 test-docs:
-ifeq ($(MODERN_NODE), true)
 	@./node_modules/.bin/evaldown --comment-marker unexpected-markdown --require ./bootstrap-unexpected-markdown.js --validate --reporter spec ./documentation
-else
-	echo "testing documentation is not supported on this version of node"
-endif
 
 nyc-includes:
-ifeq ($(MODERN_NODE), true)
 NYC_INCLUDES='lib/**'
-else
-NYC_INCLUDES='build/lib/**'
-endif
 
 .PHONY: coverage
 coverage: nyc-includes test-sources
