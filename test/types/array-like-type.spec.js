@@ -79,7 +79,10 @@ describe('array-like type', () => {
       );
     });
 
-    if (typeof Symbol === 'function') {
+    if (
+      typeof Symbol === 'function' &&
+      Symbol('foo').toString() === 'Symbol(foo)'
+    ) {
       it('should error when a LHS key is a Symbol but undefined on the RHS', () => {
         const a = ['a'];
         const s = Symbol('foo');
