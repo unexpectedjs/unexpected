@@ -28,6 +28,7 @@ Here is a list of plugins that is maintained by the unexpected team.
 - [unexpected-resemble](https://unexpected.js.org/unexpected-resemble/): Image resemblance assertions based on [resemble.js](https://rsmbl.github.io/Resemble.js/). Works in both node.js and the browser.
 - [unexpected-set](https://unexpected.js.org/unexpected-set/): Add support for [Set](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Set) instances.
 - [unexpected-sinon](https://unexpected.js.org/unexpected-sinon/): Add support for [sinon](https://sinonjs.org/) spies.
+- [unexpected-snapshot](https://github.com/unexpectedjs/unexpected-snapshot): Inline snapshot testing.
 - [unexpected-stream](https://unexpected.js.org/unexpected-stream/): Assertions for node.js streams.
 
 ## Community plugins
