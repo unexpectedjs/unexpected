@@ -10,6 +10,14 @@ describe('to satisfy assertion', () => {
     expect(circular, 'to satisfy', circular);
   });
 
+  it('fails when asserting against a non-plain object', () => {
+    expect(
+      () => expect({}, 'to satisfy', new Set()),
+      'to error',
+      'Can only satisfy against a plain object'
+    );
+  });
+
   describe('with the not flag', () => {
     it('should succeed when the assertion fails without the not flag', () => {
       expect({ foo: 123 }, 'not to satisfy', { foo: 456 });
