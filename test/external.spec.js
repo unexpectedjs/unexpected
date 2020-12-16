@@ -201,25 +201,25 @@ if (typeof process === 'object') {
     });
 
     describe('executed through jasmine', () => {
-      expect.addAssertion('<string> executed through jasmine', function (
-        expect,
-        subject
-      ) {
-        return expect.promise(function (run) {
-          childProcess.execFile(
-            pathModule.resolve(basePath, 'node_modules', '.bin', 'jasmine'),
-            {
-              cwd: pathModule.join(externaltestsDir, '..'),
-              env: extend({}, process.env, {
-                JASMINE_CONFIG_PATH: `${externaltestsDir}/${subject}.jasmine.json`,
-              }),
-            },
-            run(function (err, stdout, stderr) {
-              return [err, stdout, stderr];
-            })
-          );
-        });
-      });
+      expect.addAssertion(
+        '<string> executed through jasmine',
+        function (expect, subject) {
+          return expect.promise(function (run) {
+            childProcess.execFile(
+              pathModule.resolve(basePath, 'node_modules', '.bin', 'jasmine'),
+              {
+                cwd: pathModule.join(externaltestsDir, '..'),
+                env: extend({}, process.env, {
+                  JASMINE_CONFIG_PATH: `${externaltestsDir}/${subject}.jasmine.json`,
+                }),
+              },
+              run(function (err, stdout, stderr) {
+                return [err, stdout, stderr];
+              })
+            );
+          });
+        }
+      );
 
       it('should report that a promise was created, but not returned by the it block when the test ', () => {
         return expect(

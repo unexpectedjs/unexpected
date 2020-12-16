@@ -276,11 +276,14 @@ describe('addType', () => {
         expect(
           clonedExpect
             .getType('bar')
-            .baseType.inspect(null, 3, clonedExpect.createOutput(), function (
-              value
-            ) {
-              return expect.createOutput().appendInspected(value);
-            })
+            .baseType.inspect(
+              null,
+              3,
+              clonedExpect.createOutput(),
+              function (value) {
+                return expect.createOutput().appendInspected(value);
+              }
+            )
             .toString('text'),
           'to equal',
           "'foo'"

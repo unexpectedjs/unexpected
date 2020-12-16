@@ -30,12 +30,10 @@ describe('addAssertion', () => {
   it('throws when a handler takes more parameters than are specified in the type signature', () => {
     expect(
       function () {
-        expect.addAssertion('<string> to foobar <number>', function (
-          expect,
-          subject,
-          one,
-          toomany
-        ) {});
+        expect.addAssertion(
+          '<string> to foobar <number>',
+          function (expect, subject, one, toomany) {}
+        );
       },
       'to throw',
       'The provided assertion handler takes 2 parameters, but the type signature specifies a maximum of 1:\n\n    ["<string> to foobar <number>"]'
@@ -45,13 +43,10 @@ describe('addAssertion', () => {
   it('allows a handler with many parameters when the type signature contains varargs', () => {
     expect
       .clone()
-      .addAssertion('<string> to foobar <number+>', function (
-        expect,
-        subject,
-        quite,
-        a,
-        lot
-      ) {});
+      .addAssertion(
+        '<string> to foobar <number+>',
+        function (expect, subject, quite, a, lot) {}
+      );
   });
 
   describe('when overriding an assertion', () => {
@@ -644,22 +639,21 @@ describe('addAssertion', () => {
       beforeEach(() => {
         clonedExpect = expect
           .clone()
-          .addAssertion('<any> to be sorted after delay <number>', function (
-            expect,
-            subject,
-            delay
-          ) {
-            expect.errorMode = errorMode;
-            return expect.promise(function (run) {
-              setTimeout(
-                run(function () {
-                  expect(subject, 'to be an array');
-                  expect(subject, 'to equal', [].concat(subject).sort());
-                }),
-                delay
-              );
-            });
-          });
+          .addAssertion(
+            '<any> to be sorted after delay <number>',
+            function (expect, subject, delay) {
+              expect.errorMode = errorMode;
+              return expect.promise(function (run) {
+                setTimeout(
+                  run(function () {
+                    expect(subject, 'to be an array');
+                    expect(subject, 'to equal', [].concat(subject).sort());
+                  }),
+                  delay
+                );
+              });
+            }
+          );
       });
 
       it('errorMode=nested nest the error message of expect failures in the assertion under the assertion standard message', () => {
@@ -766,12 +760,12 @@ describe('addAssertion', () => {
   it('nested expects throws if the assertion does not exists', () => {
     const clonedExpect = expect
       .clone()
-      .addAssertion('<any> to be foo', function theCustomAssertion(
-        expect,
-        subject
-      ) {
-        expect(subject, 'to bee', 'foo');
-      });
+      .addAssertion(
+        '<any> to be foo',
+        function theCustomAssertion(expect, subject) {
+          expect(subject, 'to bee', 'foo');
+        }
+      );
     expect(
       function () {
         clonedExpect('foo', 'to be foo');
@@ -804,10 +798,11 @@ describe('addAssertion', () => {
   it('throws with an extended error message if the pre-Unexpected 10 string type syntax is used', () => {
     expect(
       function () {
-        expect.addAssertion('string', '[not] to be foo', function (
-          expect,
-          subject
-        ) {});
+        expect.addAssertion(
+          'string',
+          '[not] to be foo',
+          function (expect, subject) {}
+        );
       },
       'to throw',
       'Syntax: expect.addAssertion(<string|array[string]>, function (expect, subject, ...) { ... });\n' +
@@ -819,10 +814,11 @@ describe('addAssertion', () => {
   it('throws with an extended error message if the pre-Unexpected 10 array type syntax is used', () => {
     expect(
       function () {
-        expect.addAssertion(['string', 'number'], '[not] to be foo', function (
-          expect,
-          subject
-        ) {});
+        expect.addAssertion(
+          ['string', 'number'],
+          '[not] to be foo',
+          function (expect, subject) {}
+        );
       },
       'to throw',
       'Syntax: expect.addAssertion(<string|array[string]>, function (expect, subject, ...) { ... });\n' +

@@ -51,12 +51,12 @@ describe('exportAssertion', () => {
     childExpect.addAssertion('<yadda> to foo', function (expect, subject) {
       expect(subject, 'to contain', 'foo');
     });
-    childExpect.exportAssertion('<string> to be silly', function (
-      expect,
-      subject
-    ) {
-      expect(subject, 'to foo');
-    });
+    childExpect.exportAssertion(
+      '<string> to be silly',
+      function (expect, subject) {
+        expect(subject, 'to foo');
+      }
+    );
     parentExpect('yaddafoo', 'to be silly');
 
     expect(
@@ -69,14 +69,13 @@ describe('exportAssertion', () => {
   });
 
   it('picks up type definitions from the parent expect when setting expect.subjectType and expect.argTypes', () => {
-    childExpect.exportAssertion('<any> to foo <any>', function (
-      expect,
-      subject,
-      value
-    ) {
-      expect(expect.subjectType.name, 'to equal', 'number');
-      expect(expect.argTypes, 'to satisfy', [{ name: 'string' }]);
-    });
+    childExpect.exportAssertion(
+      '<any> to foo <any>',
+      function (expect, subject, value) {
+        expect(expect.subjectType.name, 'to equal', 'number');
+        expect(expect.argTypes, 'to satisfy', [{ name: 'string' }]);
+      }
+    );
 
     parentExpect(123, 'to foo', 'bar');
   });

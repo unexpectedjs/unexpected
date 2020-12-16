@@ -5,13 +5,13 @@ the `<assertion>` type, you can use `expect.shift` to invoke that assertion,
 optionally replacing the subject with an alternative one.
 
 ```js
-expect.addAssertion('<string> when parsed as an integer <assertion>', function (
-  expect,
-  subject
-) {
-  expect(subject, 'to match', /^[1-9][0-9]*$/);
-  return expect.shift(parseInt(subject, 10));
-});
+expect.addAssertion(
+  '<string> when parsed as an integer <assertion>',
+  function (expect, subject) {
+    expect(subject, 'to match', /^[1-9][0-9]*$/);
+    return expect.shift(parseInt(subject, 10));
+  }
+);
 
 expect('42', 'when parsed as an integer', 'to be greater than', 10);
 ```

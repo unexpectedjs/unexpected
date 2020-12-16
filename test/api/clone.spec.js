@@ -62,12 +62,12 @@ describe('clone', () => {
 
     describe('but exists for another type', () => {
       it('explains that in the error message', () => {
-        clonedExpect.addAssertion('<array> to foobarquux', function (
-          expect,
-          subject
-        ) {
-          expect(subject, 'to equal', ['foobarquux']);
-        });
+        clonedExpect.addAssertion(
+          '<array> to foobarquux',
+          function (expect, subject) {
+            expect(subject, 'to equal', ['foobarquux']);
+          }
+        );
         clonedExpect(['foobarquux'], 'to foobarquux');
         expect(
           function () {

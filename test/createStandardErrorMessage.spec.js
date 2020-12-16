@@ -12,13 +12,13 @@ describe('createStandardErrorMessage', () => {
         expect.errorMode = 'nested';
         return expect.shift();
       })
-      .addAssertion('<array> to be an array of one foo', function (
-        expect,
-        subject
-      ) {
-        expect.errorMode = 'nested';
-        expect(subject[0], 'to equal', 'foo');
-      });
+      .addAssertion(
+        '<array> to be an array of one foo',
+        function (expect, subject) {
+          expect.errorMode = 'nested';
+          expect(subject[0], 'to equal', 'foo');
+        }
+      );
     expect(
       function () {
         clonedExpect(

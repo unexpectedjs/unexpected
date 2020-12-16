@@ -26,27 +26,26 @@ Person.prototype.genderSign = function () {
   }
 };
 
-expect.addAssertion('<object> to have same gender as <object>', function (
-  expect,
-  subject,
-  value
-) {
-  expect.withError(
-    function () {
-      expect(subject.gender, 'to be', value.gender);
-    },
-    function (e) {
-      expect.fail({
-        diff: function (output) {
-          return output
-            .bold(subject.genderSign())
-            .text(' ≠ ')
-            .bold(value.genderSign());
-        },
-      });
-    }
-  );
-});
+expect.addAssertion(
+  '<object> to have same gender as <object>',
+  function (expect, subject, value) {
+    expect.withError(
+      function () {
+        expect(subject.gender, 'to be', value.gender);
+      },
+      function (e) {
+        expect.fail({
+          diff: function (output) {
+            return output
+              .bold(subject.genderSign())
+              .text(' ≠ ')
+              .bold(value.genderSign());
+          },
+        });
+      }
+    );
+  }
+);
 
 expect(
   new Person({ name: 'John Doe', gender: 'male' }),
@@ -67,24 +66,24 @@ The method also supports asynchronous assertion the following way:
 <!-- unexpected-markdown evaluate:false -->
 
 ```js
-expect.addAssertion('<any> delegating to an asynchronous assertion', function (
-  expect,
-  subject
-) {
-  return expect.withError(
-    function () {
-      return expect(subject, 'asynchronous expectation');
-    },
-    function (e) {
-      expect.fail({
-        diff: function (output) {
-          output.inline = true;
-          return output.text(
-            'Cool a diff attached to an asynchronous failure!'
-          );
-        },
-      });
-    }
-  );
-});
+expect.addAssertion(
+  '<any> delegating to an asynchronous assertion',
+  function (expect, subject) {
+    return expect.withError(
+      function () {
+        return expect(subject, 'asynchronous expectation');
+      },
+      function (e) {
+        expect.fail({
+          diff: function (output) {
+            output.inline = true;
+            return output.text(
+              'Cool a diff attached to an asynchronous failure!'
+            );
+          },
+        });
+      }
+    );
+  }
+);
 ```

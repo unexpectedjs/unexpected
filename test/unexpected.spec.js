@@ -1005,12 +1005,12 @@ describe('unexpected', () => {
     describe('with multiple compound assertions', () => {
       const clonedExpect = expect
         .clone()
-        .addAssertion('<number> [when] incremented <assertion?>', function (
-          expect,
-          subject
-        ) {
-          return expect.shift(subject + 1);
-        })
+        .addAssertion(
+          '<number> [when] incremented <assertion?>',
+          function (expect, subject) {
+            return expect.shift(subject + 1);
+          }
+        )
         .addAssertion(
           '<number> [when] added to <number> <assertion?>',
           function (expect, subject, value) {

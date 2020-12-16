@@ -160,51 +160,51 @@ describe('expect.it', () => {
   describe('with async assertions', () => {
     const clonedExpect = expect
       .clone()
-      .addAssertion('<any> to be a number after a short delay', function (
-        expect,
-        subject
-      ) {
-        expect.errorMode = 'nested';
+      .addAssertion(
+        '<any> to be a number after a short delay',
+        function (expect, subject) {
+          expect.errorMode = 'nested';
 
-        return expect.promise(function (run) {
-          setTimeout(
-            run(function () {
-              expect(subject, 'to be a number');
-            }),
-            1
-          );
-        });
-      })
-      .addAssertion('<any> to be finite after a short delay', function (
-        expect,
-        subject
-      ) {
-        expect.errorMode = 'nested';
+          return expect.promise(function (run) {
+            setTimeout(
+              run(function () {
+                expect(subject, 'to be a number');
+              }),
+              1
+            );
+          });
+        }
+      )
+      .addAssertion(
+        '<any> to be finite after a short delay',
+        function (expect, subject) {
+          expect.errorMode = 'nested';
 
-        return expect.promise(function (run) {
-          setTimeout(
-            run(function () {
-              expect(subject, 'to be finite');
-            }),
-            1
-          );
-        });
-      })
-      .addAssertion('<any> to be a string after a short delay', function (
-        expect,
-        subject
-      ) {
-        expect.errorMode = 'nested';
+          return expect.promise(function (run) {
+            setTimeout(
+              run(function () {
+                expect(subject, 'to be finite');
+              }),
+              1
+            );
+          });
+        }
+      )
+      .addAssertion(
+        '<any> to be a string after a short delay',
+        function (expect, subject) {
+          expect.errorMode = 'nested';
 
-        return expect.promise(function (run) {
-          setTimeout(
-            run(function () {
-              expect(subject, 'to be a string');
-            }),
-            1
-          );
-        });
-      });
+          return expect.promise(function (run) {
+            setTimeout(
+              run(function () {
+                expect(subject, 'to be a string');
+              }),
+              1
+            );
+          });
+        }
+      );
 
     it('should succeed', () => {
       return clonedExpect.it('to be a number after a short delay')(123);
@@ -317,14 +317,14 @@ describe('expect.it', () => {
     describe('directly', () => {
       const clonedExpect = expect
         .clone()
-        .addAssertion('<object> [not] to have a foo property of bar', function (
-          expect,
-          subject
-        ) {
-          return expect(subject, 'to satisfy', {
-            foo: expect.it('[not] to equal', 'bar'),
-          });
-        });
+        .addAssertion(
+          '<object> [not] to have a foo property of bar',
+          function (expect, subject) {
+            return expect(subject, 'to satisfy', {
+              foo: expect.it('[not] to equal', 'bar'),
+            });
+          }
+        );
 
       describe('when the flag is not being forwarded', () => {
         it('should succeed', () => {
@@ -371,14 +371,14 @@ describe('expect.it', () => {
     describe('through an <assertion> being shifted to', () => {
       const clonedExpect = expect
         .clone()
-        .addAssertion('<object> [not] to have a foo property of bar', function (
-          expect,
-          subject
-        ) {
-          return expect(subject, 'to satisfy', {
-            foo: expect.it('noop', '[not] to equal', 'bar'),
-          });
-        })
+        .addAssertion(
+          '<object> [not] to have a foo property of bar',
+          function (expect, subject) {
+            return expect(subject, 'to satisfy', {
+              foo: expect.it('noop', '[not] to equal', 'bar'),
+            });
+          }
+        )
         .addAssertion('<any> noop <assertion>', (expect) => expect.shift());
 
       describe('when the flag is not being forwarded', () => {

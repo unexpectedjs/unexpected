@@ -254,12 +254,12 @@ describe('#child', () => {
   });
 
   it('should allow adding an assertion referencing the assertion and any types to the child expect', () => {
-    childExpect.addAssertion('<any> foo <assertion>', function (
-      expect,
-      subject
-    ) {
-      return expect.shift(`${String(subject)}foo`);
-    });
+    childExpect.addAssertion(
+      '<any> foo <assertion>',
+      function (expect, subject) {
+        return expect.shift(`${String(subject)}foo`);
+      }
+    );
     expect(childExpect.assertions.foo, 'to satisfy', {
       1: {
         subject: { type: { name: 'any' } },

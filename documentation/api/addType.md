@@ -413,12 +413,12 @@ it. These assertions will only work on this type or types inheriting
 from the type.
 
 ```js
-expect.addAssertion('<Person> to be above legal age', function (
-  expect,
-  subject
-) {
-  expect(subject.age, 'to be greater than or equal to', 18);
-});
+expect.addAssertion(
+  '<Person> to be above legal age',
+  function (expect, subject) {
+    expect(subject.age, 'to be greater than or equal to', 18);
+  }
+);
 
 expect(new Person('Jane Doe', 24), 'to be above legal age');
 ```

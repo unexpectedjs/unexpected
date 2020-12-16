@@ -27,42 +27,42 @@ output.appendErrorMessage(error);
 This is useful if you want to combine multiple errors in one assertion:
 
 ```js
-expect.addAssertion('<array> to have item satisfying <any+>', function (
-  expect,
-  subject
-) {
-  const args = Array.prototype.slice.call(arguments, 2);
-  const promises = subject.map(function (item) {
-    return expect.promise(function () {
-      return expect.apply(expect, [item].concat(args));
-    });
-  });
-
-  return expect.promise.settle(promises).then(function () {
-    const failed = promises.every(function (promise) {
-      return promise.isRejected();
-    });
-
-    if (failed) {
-      expect.fail({
-        diff: function (output, diff, inspect, equal) {
-          output.inline = true;
-          promises.forEach(function (promise, index) {
-            if (index > 0) {
-              output.nl(2);
-            }
-            const error = promise.reason();
-            // the error is connected to the current scope
-            // but we are just interested in the nested error
-            error.errorMode = 'bubble';
-            output.append(error.getErrorMessage(output));
-          });
-          return output;
-        },
+expect.addAssertion(
+  '<array> to have item satisfying <any+>',
+  function (expect, subject) {
+    const args = Array.prototype.slice.call(arguments, 2);
+    const promises = subject.map(function (item) {
+      return expect.promise(function () {
+        return expect.apply(expect, [item].concat(args));
       });
-    }
-  });
-});
+    });
+
+    return expect.promise.settle(promises).then(function () {
+      const failed = promises.every(function (promise) {
+        return promise.isRejected();
+      });
+
+      if (failed) {
+        expect.fail({
+          diff: function (output, diff, inspect, equal) {
+            output.inline = true;
+            promises.forEach(function (promise, index) {
+              if (index > 0) {
+                output.nl(2);
+              }
+              const error = promise.reason();
+              // the error is connected to the current scope
+              // but we are just interested in the nested error
+              error.errorMode = 'bubble';
+              output.append(error.getErrorMessage(output));
+            });
+            return output;
+          },
+        });
+      }
+    });
+  }
+);
 ```
 
 When the assertion fails we get the following output:
@@ -99,24 +99,23 @@ We could for example change the error mode for all the errors in the
 chain to `nested`:
 
 ```js
-expect.addAssertion('<any> detailed to be <any>', function (
-  expect,
-  subject,
-  value
-) {
-  expect.errorMode = 'bubble';
-  expect.withError(
-    function () {
-      expect(subject, 'to be', value);
-    },
-    function (err) {
-      err.getParents().forEach(function (e) {
-        e.errorMode = 'nested';
-      });
-      expect.fail(err);
-    }
-  );
-});
+expect.addAssertion(
+  '<any> detailed to be <any>',
+  function (expect, subject, value) {
+    expect.errorMode = 'bubble';
+    expect.withError(
+      function () {
+        expect(subject, 'to be', value);
+      },
+      function (err) {
+        err.getParents().forEach(function (e) {
+          e.errorMode = 'nested';
+        });
+        expect.fail(err);
+      }
+    );
+  }
+);
 
 expect('f00!', 'detailed to be', 'foo!');
 ```
@@ -159,31 +158,31 @@ create the diff. Now you can delegate to that method from
 `expect.fail`:
 
 ```js
-expect.addAssertion('<any> to be completely custom', function (
-  expect,
-  subject
-) {
-  return expect.withError(
-    function () {
-      expect(subject, 'to satisfy', { custom: true });
-    },
-    function (err) {
-      const createDiff = err.getDiffMethod();
-      expect.fail({
-        diff: function (output, diff, inspect, equal) {
-          output
-            .text('~~~~~~~~~~~~~~')
-            .sp()
-            .success('custom')
-            .sp()
-            .text('~~~~~~~~~~~~~~')
-            .nl();
-          return createDiff(output, diff, inspect, equal);
-        },
-      });
-    }
-  );
-});
+expect.addAssertion(
+  '<any> to be completely custom',
+  function (expect, subject) {
+    return expect.withError(
+      function () {
+        expect(subject, 'to satisfy', { custom: true });
+      },
+      function (err) {
+        const createDiff = err.getDiffMethod();
+        expect.fail({
+          diff: function (output, diff, inspect, equal) {
+            output
+              .text('~~~~~~~~~~~~~~')
+              .sp()
+              .success('custom')
+              .sp()
+              .text('~~~~~~~~~~~~~~')
+              .nl();
+            return createDiff(output, diff, inspect, equal);
+          },
+        });
+      }
+    );
+  }
+);
 
 expect({ custom: false }, 'to be completely custom');
 ```

@@ -13,19 +13,19 @@ on each of the promises to read their values.
 Let's make an asynchronous assertion that we can use for the examples:
 
 ```js
-expect.addAssertion('<any> to be a number after a short delay', function (
-  expect,
-  subject
-) {
-  return expect.promise(function (run) {
-    setTimeout(
-      run(function () {
-        expect(subject, 'to be a number');
-      }),
-      1
-    );
-  });
-});
+expect.addAssertion(
+  '<any> to be a number after a short delay',
+  function (expect, subject) {
+    return expect.promise(function (run) {
+      setTimeout(
+        run(function () {
+          expect(subject, 'to be a number');
+        }),
+        1
+      );
+    });
+  }
+);
 ```
 
 See the [promise](../promise/) documentation for more details on how

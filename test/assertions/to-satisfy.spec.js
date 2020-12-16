@@ -2283,21 +2283,21 @@ describe('to satisfy assertion', () => {
   describe('when delegating to async assertions', () => {
     const clonedExpect = expect
       .clone()
-      .addAssertion('<any> to be a number after a short delay', function (
-        expect,
-        subject
-      ) {
-        expect.errorMode = 'nested';
+      .addAssertion(
+        '<any> to be a number after a short delay',
+        function (expect, subject) {
+          expect.errorMode = 'nested';
 
-        return expect.promise(function (run) {
-          setTimeout(
-            run(function () {
-              expect(subject, 'to be a number');
-            }),
-            1
-          );
-        });
-      });
+          return expect.promise(function (run) {
+            setTimeout(
+              run(function () {
+                expect(subject, 'to be a number');
+              }),
+              1
+            );
+          });
+        }
+      );
 
     it('returns a promise that is resolved if the assertion succeeds', () => {
       return clonedExpect(

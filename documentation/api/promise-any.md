@@ -12,19 +12,19 @@ rejected with the errors.
 Let's make an asynchronous assertion that we can use for the examples:
 
 ```js
-expect.addAssertion('<any> to be a number after a short delay', function (
-  expect,
-  subject
-) {
-  return expect.promise(function (run) {
-    setTimeout(
-      run(function () {
-        expect(subject, 'to be a number');
-      }),
-      0
-    );
-  });
-});
+expect.addAssertion(
+  '<any> to be a number after a short delay',
+  function (expect, subject) {
+    return expect.promise(function (run) {
+      setTimeout(
+        run(function () {
+          expect(subject, 'to be a number');
+        }),
+        0
+      );
+    });
+  }
+);
 ```
 
 See the [promise](../promise/) documentation for more details on how

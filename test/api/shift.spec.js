@@ -4,24 +4,24 @@ describe('expect.shift', () => {
     it('should succeed', () => {
       const clonedExpect = expect
         .clone()
-        .addAssertion('<string> blabla <assertion>', function (
-          expect,
-          subject
-        ) {
-          return expect.shift();
-        });
+        .addAssertion(
+          '<string> blabla <assertion>',
+          function (expect, subject) {
+            return expect.shift();
+          }
+        );
       clonedExpect('foo', 'blabla', 'to equal', 'foo');
     });
 
     it('should fail with a diff', () => {
       const clonedExpect = expect
         .clone()
-        .addAssertion('<string> blabla <assertion>', function (
-          expect,
-          subject
-        ) {
-          return expect.shift();
-        });
+        .addAssertion(
+          '<string> blabla <assertion>',
+          function (expect, subject) {
+            return expect.shift();
+          }
+        );
       expect(
         function () {
           clonedExpect('foo', 'blabla', 'to equal', 'foobar');
@@ -74,24 +74,24 @@ describe('expect.shift', () => {
     it('should succeed', () => {
       const clonedExpect = expect
         .clone()
-        .addAssertion('<string> when appended with bar <assertion>', function (
-          expect,
-          subject
-        ) {
-          return expect.shift(`${subject}bar`);
-        });
+        .addAssertion(
+          '<string> when appended with bar <assertion>',
+          function (expect, subject) {
+            return expect.shift(`${subject}bar`);
+          }
+        );
       clonedExpect('foo', 'when appended with bar', 'to equal', 'foobar');
     });
 
     it('should fail with a diff', () => {
       const clonedExpect = expect
         .clone()
-        .addAssertion('<string> when appended with bar <assertion>', function (
-          expect,
-          subject
-        ) {
-          return expect.shift(`${subject}bar`);
-        });
+        .addAssertion(
+          '<string> when appended with bar <assertion>',
+          function (expect, subject) {
+            return expect.shift(`${subject}bar`);
+          }
+        );
       expect(
         function () {
           clonedExpect('crow', 'when appended with bar', 'to equal', 'foobar');
@@ -108,15 +108,15 @@ describe('expect.shift', () => {
   it('should identify the assertions even when the next assertion fails before shifting', () => {
     const clonedExpect = expect
       .clone()
-      .addAssertion('<string> when appended with bar <assertion>', function (
-        expect,
-        subject
-      ) {
-        if (subject === 'crow') {
-          expect.fail();
+      .addAssertion(
+        '<string> when appended with bar <assertion>',
+        function (expect, subject) {
+          if (subject === 'crow') {
+            expect.fail();
+          }
+          return expect.shift(`${subject}bar`);
         }
-        return expect.shift(`${subject}bar`);
-      });
+      );
     expect(
       function () {
         clonedExpect(
@@ -135,12 +135,12 @@ describe('expect.shift', () => {
   it('supports the legacy 3 argument version', () => {
     const clonedExpect = expect
       .clone()
-      .addAssertion('<string> when prepended with foo <assertion>', function (
-        expect,
-        subject
-      ) {
-        return expect.shift(expect, `foo${subject}`, 0);
-      });
+      .addAssertion(
+        '<string> when prepended with foo <assertion>',
+        function (expect, subject) {
+          return expect.shift(expect, `foo${subject}`, 0);
+        }
+      );
     clonedExpect(
       'foo',
       'when prepended with foo',
@@ -179,12 +179,12 @@ describe('expect.shift', () => {
     it('should succeed', () => {
       const clonedExpect = expect
         .clone()
-        .addAssertion('<string> when prepended with foo <assertion>', function (
-          expect,
-          subject
-        ) {
-          return expect.shift(`foo${subject}`);
-        });
+        .addAssertion(
+          '<string> when prepended with foo <assertion>',
+          function (expect, subject) {
+            return expect.shift(`foo${subject}`);
+          }
+        );
       clonedExpect(
         'foo',
         'when prepended with foo',
@@ -196,12 +196,12 @@ describe('expect.shift', () => {
   it('should fail when the next argument is a non-expect.it function', () => {
     const clonedExpect = expect
       .clone()
-      .addAssertion('<string> when prepended with foo <assertion>', function (
-        expect,
-        subject
-      ) {
-        return expect.shift(`foo${subject}`);
-      });
+      .addAssertion(
+        '<string> when prepended with foo <assertion>',
+        function (expect, subject) {
+          return expect.shift(`foo${subject}`);
+        }
+      );
     expect(
       function () {
         clonedExpect('foo', 'when prepended with foo', function () {});
@@ -281,13 +281,13 @@ describe('expect.shift', () => {
     it('should render the correct error message when the assertion being shifted to is not a string', () => {
       const clonedExpect = expect
         .clone()
-        .addAssertion('<string> when prepended with foo <number+>', function (
-          expect,
-          subject
-        ) {
-          expect.shift(`foo${subject}`, 0);
-          expect('abc', 'to equal', 'def');
-        });
+        .addAssertion(
+          '<string> when prepended with foo <number+>',
+          function (expect, subject) {
+            expect.shift(`foo${subject}`, 0);
+            expect('abc', 'to equal', 'def');
+          }
+        );
 
       expect(
         function () {
@@ -304,13 +304,13 @@ describe('expect.shift', () => {
     it('should render the correct error message when there are no parameters following the assertion index', () => {
       const clonedExpect = expect
         .clone()
-        .addAssertion('<string> when prepended with foo', function (
-          expect,
-          subject
-        ) {
-          expect.shift(`foo${subject}`, 1);
-          expect('abc', 'to equal', 'def');
-        });
+        .addAssertion(
+          '<string> when prepended with foo',
+          function (expect, subject) {
+            expect.shift(`foo${subject}`, 1);
+            expect('abc', 'to equal', 'def');
+          }
+        );
 
       expect(
         function () {
@@ -342,12 +342,12 @@ describe('expect.shift', () => {
         .addAssertion('<any> promisified', function (expect, subject) {
           return expect.shift(new Promise(subject));
         })
-        .addAssertion('<function> executed inside an assertion', function (
-          expect,
-          subject
-        ) {
-          return subject(expect);
-        });
+        .addAssertion(
+          '<function> executed inside an assertion',
+          function (expect, subject) {
+            return subject(expect);
+          }
+        );
 
       return clonedExpect((expect) => {
         expect((resolve) => {
@@ -362,13 +362,13 @@ describe('expect.shift', () => {
   it('fails when the given assertion does not accept the shifted subject type', () => {
     const clonedExpect = expect
       .clone()
-      .addAssertion('<number> when stringified <assertion>', function (
-        expect,
-        subject
-      ) {
-        expect.errorMode = 'nested';
-        return expect.shift(String(subject));
-      });
+      .addAssertion(
+        '<number> when stringified <assertion>',
+        function (expect, subject) {
+          expect.errorMode = 'nested';
+          return expect.shift(String(subject));
+        }
+      );
 
     expect(
       () => {
@@ -390,13 +390,13 @@ describe('expect.shift', () => {
       const clonedExpect = expect
         .clone()
         .child()
-        .exportAssertion('<number> when stringified <assertion>', function (
-          expect,
-          subject
-        ) {
-          expect.errorMode = 'nested';
-          return expect.shift(String(subject));
-        });
+        .exportAssertion(
+          '<number> when stringified <assertion>',
+          function (expect, subject) {
+            expect.errorMode = 'nested';
+            return expect.shift(String(subject));
+          }
+        );
 
       expect(
         () => {

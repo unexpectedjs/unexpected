@@ -21,12 +21,12 @@ and `addStyle`, respectively, but affect the parent `expect`:
 const childExpect = expect.child();
 
 // Only available in childExpect:
-childExpect.addAssertion('<string> to begin with foo', function (
-  expect,
-  subject
-) {
-  expect(subject, 'to begin with', 'foo');
-});
+childExpect.addAssertion(
+  '<string> to begin with foo',
+  function (expect, subject) {
+    expect(subject, 'to begin with', 'foo');
+  }
+);
 
 // Available in parentExpect, but has access to "to begin with foo" internally:
 childExpect.exportAssertion('<string> to foobar', function (expect, subject) {
@@ -59,12 +59,12 @@ childExpect.addType({
   },
 });
 
-childExpect.exportAssertion('<foosomething> to end with bar', function (
-  expect,
-  subject
-) {
-  expect(subject, 'to end with', 'bar');
-});
+childExpect.exportAssertion(
+  '<foosomething> to end with bar',
+  function (expect, subject) {
+    expect(subject, 'to end with', 'bar');
+  }
+);
 ```
 
 ```output

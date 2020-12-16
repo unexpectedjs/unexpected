@@ -18,13 +18,12 @@ expect.addAssertion([pattern, ...], handler);
 For example:
 
 ```js
-expect.addAssertion('<array> to have item <any>', function (
-  expect,
-  subject,
-  value
-) {
-  expect(subject, 'to contain', value);
-});
+expect.addAssertion(
+  '<array> to have item <any>',
+  function (expect, subject, value) {
+    expect(subject, 'to contain', value);
+  }
+);
 ```
 
 A handler function can use other assertions, including other custom assertions
@@ -69,14 +68,15 @@ an assertion such as `<number> to be between <number> and <number>` could
 instead be written as:
 
 ```js
-expect.addAssertion('<number> to be between <number> <number>', function (
-  expect,
-  subject,
-  value1,
-  value2
-) {
-  expect(subject, 'to be greater than', value1).and('to be less than', value2);
-});
+expect.addAssertion(
+  '<number> to be between <number> <number>',
+  function (expect, subject, value1, value2) {
+    expect(subject, 'to be greater than', value1).and(
+      'to be less than',
+      value2
+    );
+  }
+);
 
 expect(2, 'to be between', 1, 3);
 ```
@@ -91,13 +91,12 @@ but not boolean values, for example:
 <!-- unexpected-markdown freshContext:true -->
 
 ```js
-expect.addAssertion('<array> to have item <number|string>', function (
-  expect,
-  subject,
-  value
-) {
-  expect(subject, 'to contain', value);
-});
+expect.addAssertion(
+  '<array> to have item <number|string>',
+  function (expect, subject, value) {
+    expect(subject, 'to contain', value);
+  }
+);
 
 expect([1, 2, 3], 'to have item', 2);
 expect(['a', 'b', 'c'], 'to have item', 'a');
@@ -137,13 +136,12 @@ handy:
 <!-- unexpected-markdown freshContext:true -->
 
 ```js
-expect.addAssertion('<array> to have (item|value) <any>', function (
-  expect,
-  subject,
-  value
-) {
-  expect(subject, 'to contain', value);
-});
+expect.addAssertion(
+  '<array> to have (item|value) <any>',
+  function (expect, subject, value) {
+    expect(subject, 'to contain', value);
+  }
+);
 
 expect([1, 2, 3], 'to have item', 2);
 expect([1, 2, 3], 'to have value', 3);
@@ -156,17 +154,16 @@ contains the word used when the assertion is invoked:
 <!-- unexpected-markdown freshContext:true -->
 
 ```js
-expect.addAssertion('<array> to have (index|value) <any>', function (
-  expect,
-  subject,
-  value
-) {
-  if (expect.alternations[0] === 'index') {
-    expect(subject[value], 'to be defined');
-  } else {
-    expect(subject, 'to contain', value);
+expect.addAssertion(
+  '<array> to have (index|value) <any>',
+  function (expect, subject, value) {
+    if (expect.alternations[0] === 'index') {
+      expect(subject[value], 'to be defined');
+    } else {
+      expect(subject, 'to contain', value);
+    }
   }
-});
+);
 
 expect(['a', 'b'], 'to have index', 1);
 expect(['a', 'b'], 'to have value', 'b');
@@ -181,17 +178,16 @@ which makes the following possible:
 <!-- unexpected-markdown freshContext:true -->
 
 ```js
-expect.addAssertion('<array> [not] to have item <any>', function (
-  expect,
-  subject,
-  value
-) {
-  if (expect.flags.not) {
-    expect(subject, 'not to contain', value);
-  } else {
-    expect(subject, 'to contain', value);
+expect.addAssertion(
+  '<array> [not] to have item <any>',
+  function (expect, subject, value) {
+    if (expect.flags.not) {
+      expect(subject, 'not to contain', value);
+    } else {
+      expect(subject, 'to contain', value);
+    }
   }
-});
+);
 
 expect([1, 2, 3], 'to have item', 2);
 expect([1, 2, 3], 'not to have item', 4);
@@ -208,13 +204,12 @@ flag, one can propagate the flag to that assertion as follows:
 <!-- unexpected-markdown freshContext:true -->
 
 ```js
-expect.addAssertion('<array> [not] to have item <any>', function (
-  expect,
-  subject,
-  value
-) {
-  expect(subject, '[not] to contain', value);
-});
+expect.addAssertion(
+  '<array> [not] to have item <any>',
+  function (expect, subject, value) {
+    expect(subject, '[not] to contain', value);
+  }
+);
 ```
 
 In this way, when `to have item` is invoked with the `not` flag, that flag will
@@ -227,13 +222,12 @@ When flags are propagated, one can also invert the flag. This means that if
 <!-- unexpected-markdown freshContext:true -->
 
 ```js
-expect.addAssertion('<array> [not] to have item <any>', function (
-  expect,
-  subject,
-  value
-) {
-  expect(subject, '[!not] to contain', value);
-});
+expect.addAssertion(
+  '<array> [not] to have item <any>',
+  function (expect, subject, value) {
+    expect(subject, '[!not] to contain', value);
+  }
+);
 
 expect([1, 2, 3], 'not to have item', 2);
 expect([1, 2, 3], 'to have item', 4);
@@ -245,13 +239,12 @@ that make an assertion read better:
 <!-- unexpected-markdown freshContext:true -->
 
 ```js
-expect.addAssertion('<array> to have [this] item <any>', function (
-  expect,
-  subject,
-  value
-) {
-  expect(subject, 'to contain', value);
-});
+expect.addAssertion(
+  '<array> to have [this] item <any>',
+  function (expect, subject, value) {
+    expect(subject, 'to contain', value);
+  }
+);
 
 expect([1, 2, 3], 'to have item', 2);
 expect([1, 2, 3], 'to have this item', 2);
@@ -305,26 +298,24 @@ an output function on the assertion.
 Here is a few examples:
 
 ```js
-expect.addAssertion('<number> to be contained by <number> <number>', function (
-  expect,
-  subject,
-  start,
-  finish
-) {
-  expect.subjectOutput = function (output) {
-    output.text('point ').jsNumber(subject);
-  };
-  expect.argsOutput = function (output) {
-    output
-      .text('interval ')
-      .text('[')
-      .appendInspected(start)
-      .text(';')
-      .appendInspected(finish)
-      .text(']');
-  };
-  expect(subject >= start && subject <= finish, '[not] to be truthy');
-});
+expect.addAssertion(
+  '<number> to be contained by <number> <number>',
+  function (expect, subject, start, finish) {
+    expect.subjectOutput = function (output) {
+      output.text('point ').jsNumber(subject);
+    };
+    expect.argsOutput = function (output) {
+      output
+        .text('interval ')
+        .text('[')
+        .appendInspected(start)
+        .text(';')
+        .appendInspected(finish)
+        .text(']');
+    };
+    expect(subject >= start && subject <= finish, '[not] to be truthy');
+  }
+);
 
 expect(4, 'to be contained by', 8, 10);
 ```
@@ -334,20 +325,18 @@ expected point 4 to be contained by interval [8;10]
 ```
 
 ```js
-expect.addAssertion('<number> to be similar to <number> <number?>', function (
-  expect,
-  subject,
-  value,
-  epsilon
-) {
-  if (typeof epsilon !== 'number') {
-    epsilon = 1e-9;
+expect.addAssertion(
+  '<number> to be similar to <number> <number?>',
+  function (expect, subject, value, epsilon) {
+    if (typeof epsilon !== 'number') {
+      epsilon = 1e-9;
+    }
+    expect.argsOutput[2] = function (output) {
+      output.text('(epsilon: ').jsNumber(epsilon.toExponential()).text(')');
+    };
+    expect(Math.abs(subject - value), 'to be less than or equal to', epsilon);
   }
-  expect.argsOutput[2] = function (output) {
-    output.text('(epsilon: ').jsNumber(epsilon.toExponential()).text(')');
-  };
-  expect(Math.abs(subject - value), 'to be less than or equal to', epsilon);
-});
+);
 
 expect(4, 'to be similar to', 4.0001);
 ```
@@ -518,19 +507,18 @@ expect.addType({
   },
 });
 
-expect.addAssertion('<Timelock> to satisfy <any>', function (
-  expect,
-  subject,
-  spec
-) {
-  return expect.promise(function (run) {
-    subject.getValue(
-      run(function (value) {
-        return expect(value, 'to satisfy', spec);
-      })
-    );
-  });
-});
+expect.addAssertion(
+  '<Timelock> to satisfy <any>',
+  function (expect, subject, spec) {
+    return expect.promise(function (run) {
+      subject.getValue(
+        run(function (value) {
+          return expect(value, 'to satisfy', spec);
+        })
+      );
+    });
+  }
+);
 ```
 
 Let's see how it works:

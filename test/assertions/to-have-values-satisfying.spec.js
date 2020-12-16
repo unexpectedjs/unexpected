@@ -232,21 +232,21 @@ describe('to have values satisfying assertion', () => {
   describe('delegating to an async assertion', () => {
     const clonedExpect = expect
       .clone()
-      .addAssertion('<any> to be a number after a short delay', function (
-        expect,
-        subject
-      ) {
-        expect.errorMode = 'nested';
+      .addAssertion(
+        '<any> to be a number after a short delay',
+        function (expect, subject) {
+          expect.errorMode = 'nested';
 
-        return expect.promise(function (run) {
-          setTimeout(
-            run(function () {
-              expect(subject, 'to be a number');
-            }),
-            1
-          );
-        });
-      });
+          return expect.promise(function (run) {
+            setTimeout(
+              run(function () {
+                expect(subject, 'to be a number');
+              }),
+              1
+            );
+          });
+        }
+      );
 
     it('should succeed', () => {
       return clonedExpect(
