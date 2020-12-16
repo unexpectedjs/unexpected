@@ -18,6 +18,46 @@ describe('to satisfy assertion', () => {
     );
   });
 
+  if (typeof Set === 'function') {
+    it('refuses a Set instance as the subject', () => {
+      expect(
+        () => expect(new Set(), 'to satisfy', {}),
+        'to error',
+        'A Set instance is not allowed as a subject of "to satisfy"'
+      );
+    });
+  }
+
+  if (typeof Map === 'function') {
+    it('refuses a Map instance as the subject', () => {
+      expect(
+        () => expect(new Map(), 'to satisfy', {}),
+        'to error',
+        'A Map instance is not allowed as a subject of "to satisfy"'
+      );
+    });
+  }
+
+  if (typeof WeakSet === 'function') {
+    it('refuses a WeakSet instance as the subject', () => {
+      expect(
+        () => expect(new WeakSet(), 'to satisfy', {}),
+        'to error',
+        'A WeakSet instance is not allowed as a subject of "to satisfy"'
+      );
+    });
+  }
+
+  if (typeof WeakMap === 'function') {
+    it('refuses a WeakMap instance as the subject', () => {
+      expect(
+        () => expect(new WeakMap(), 'to satisfy', {}),
+        'to error',
+        'A WeakMap instance is not allowed as a subject of "to satisfy"'
+      );
+    });
+  }
+
   describe('with the not flag', () => {
     it('should succeed when the assertion fails without the not flag', () => {
       expect({ foo: 123 }, 'not to satisfy', { foo: 456 });
