@@ -82,6 +82,8 @@ describe('unexpected', () => {
           '  The assertion does not have a matching signature for:\n' +
           '    <string> to have items satisfying <expect.it>\n' +
           '  did you mean:\n' +
+          '    <Set> to have items [exhaustively] satisfying <any>\n' +
+          '    <Set> to have items [exhaustively] satisfying <assertion>\n' +
           '    <array-like> to have items [exhaustively] satisfying <any>\n' +
           '    <array-like> to have items [exhaustively] satisfying <assertion>'
       );
