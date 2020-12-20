@@ -288,6 +288,37 @@ describe('to contain assertion', () => {
       );
     });
 
+    describe('with a value that is equal according to unexpected, but not the SameValueZero algorithm', function () {
+      it('should succeed', () => {
+        expect(
+          new Set([new Date('2020-01-01T12:34:56.789Z')]),
+          'to contain',
+          new Date('2020-01-01T12:34:56.789Z')
+        );
+      });
+
+      it('not render such an item as different in a diff', () => {
+        expect(
+          () => {
+            expect(
+              new Set([new Date('2020-01-01T12:34:56.789Z')]),
+              'to contain',
+              new Date('2020-01-01T12:34:56.789Z'),
+              1
+            );
+          },
+          'to throw',
+          "expected new Set([ new Date('2020-01-01T12:34:56.789Z') ])\n" +
+            "to contain new Date('2020-01-01T12:34:56.789Z'), 1\n" +
+            '\n' +
+            'new Set([\n' +
+            "  new Date('2020-01-01T12:34:56.789Z')\n" +
+            '  // missing 1\n' +
+            '])'
+        );
+      });
+    });
+
     describe('with multiple expected values', function () {
       it('should succeed', () => {
         expect(new Set([1, 2, 3]), 'to contain', 1, 2);
