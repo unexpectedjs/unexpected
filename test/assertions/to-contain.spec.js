@@ -32,7 +32,7 @@ describe('to contain assertion', () => {
         '  The assertion does not have a matching signature for:\n' +
         '    <null> not to contain <string>\n' +
         '  did you mean:\n' +
-        '    <Set> [not] to contain <any>\n' +
+        '    <Set> [not] to contain <any+>\n' +
         '    <array-like> [not] to contain <any+>\n' +
         '    <string> [not] to contain <string+>'
     );
@@ -81,7 +81,7 @@ describe('to contain assertion', () => {
         '  The assertion does not have a matching signature for:\n' +
         '    <number> to contain <number>\n' +
         '  did you mean:\n' +
-        '    <Set> [not] to contain <any>\n' +
+        '    <Set> [not] to contain <any+>\n' +
         '    <array-like> [not] to contain <any+>\n' +
         '    <array-like> to [only] contain <any+>\n' +
         '    <string> [not] to contain <string+>'
@@ -288,6 +288,29 @@ describe('to contain assertion', () => {
       );
     });
 
+    describe('with multiple expected values', function () {
+      it('should succeed', () => {
+        expect(new Set([1, 2, 3]), 'to contain', 1, 2);
+      });
+
+      it('should fail with a diff', () => {
+        expect(
+          () => {
+            expect(new Set([1, 2, 3]), 'to contain', 1, 4);
+          },
+          'to throw',
+          'expected new Set([ 1, 2, 3 ]) to contain 1, 4\n' +
+            '\n' +
+            'new Set([\n' +
+            '  1,\n' +
+            '  2,\n' +
+            '  3\n' +
+            '  // missing 4\n' +
+            '])'
+        );
+      });
+    });
+
     describe('with the not flag', () => {
       it('should succeed', () => {
         expect(new Set([1, 2, 3]), 'not to contain', 4);
@@ -307,6 +330,28 @@ describe('to contain assertion', () => {
             '  3\n' +
             '])'
         );
+      });
+
+      describe('with multiple expected values', function () {
+        it('should succeed', () => {
+          expect(new Set([1, 2, 3]), 'not to contain', 4, 5);
+        });
+
+        it('should fail with a diff', () => {
+          expect(
+            () => {
+              expect(new Set([1, 2, 3]), 'not to contain', 3, 4, 1);
+            },
+            'to throw',
+            'expected new Set([ 1, 2, 3 ]) not to contain 3, 4, 1\n' +
+              '\n' +
+              'new Set([\n' +
+              '  1, // should be removed\n' +
+              '  2,\n' +
+              '  3 // should be removed\n' +
+              '])'
+          );
+        });
       });
     });
   });
