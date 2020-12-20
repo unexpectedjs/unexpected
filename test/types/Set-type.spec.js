@@ -16,13 +16,36 @@ describe('Set type', () => {
     );
   });
 
+  it('should diff two Set instances with complex items correctly', () => {
+    expect(
+      [
+        new Set([1, new Date('2020-01-01T12:34:56.789Z')]),
+        new Set([new Date('2020-01-01T12:34:56.789Z'), 3]),
+      ],
+      'to produce a diff of',
+      'new Set([\n' +
+        '  1, // should be removed\n' +
+        "  new Date('2020-01-01T12:34:56.789Z')\n" +
+        '  // missing 3\n' +
+        '])'
+    );
+  });
+
   describe('equality', () => {
     it('should consider two empty sets equal', () => {
       expect(new Set(), 'to equal', new Set());
     });
 
-    it('should consider two sets with the same item equal', () => {
+    it('should consider two sets with the same primitive item equal', () => {
       expect(new Set(['abc']), 'to equal', new Set(['abc']));
+    });
+
+    it('should consider two sets with the same complex item equal', () => {
+      expect(
+        new Set([new Date('2020-01-01T12:34:56.789Z')]),
+        'to equal',
+        new Set([new Date('2020-01-01T12:34:56.789Z')])
+      );
     });
 
     it('should consider two sets with a different item unequal', () => {
