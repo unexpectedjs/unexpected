@@ -46,7 +46,7 @@ describe('hook', () => {
   });
 
   describe('with expect.child', () => {
-    it('should not affect child instances made before installing the hook', () => {
+    it('should affect child instances made before installing the hook', () => {
       const parentExpect = expect.clone();
       const childExpect = parentExpect.child();
 
@@ -59,7 +59,7 @@ describe('hook', () => {
       });
 
       childExpect(123, 'to equal', 123);
-      expect(called, 'to be false');
+      expect(called, 'to be true');
     });
 
     it('should not affect child instances made after installing the hook', () => {
