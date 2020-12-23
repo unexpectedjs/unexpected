@@ -30,17 +30,7 @@ describe('unexpected', () => {
           expect();
         },
         'to throw',
-        'The expect function requires at least two parameters.'
-      );
-    });
-
-    it('fails when given only one parameter', () => {
-      expect(
-        function () {
-          expect('foo');
-        },
-        'to throw',
-        'The expect function requires at least two parameters.'
+        'The expect function requires at least one parameter.'
       );
     });
 
