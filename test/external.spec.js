@@ -47,12 +47,10 @@ if (typeof process === 'object') {
           'forgotToReturnPendingPromiseFromSuccessfulItBlock',
           'executed through mocha'
         ).spread(function (err, stdout, stderr) {
-          expect(
-            stdout,
-            'to contain',
+          expect(stdout).toContain(
             'Error: should call the callback: You have created a promise that was not returned from the it block'
           );
-          expect(err, 'to satisfy', { code: 1 });
+          expect(err).toSatisfy({ code: 1 });
         });
       });
 
@@ -61,12 +59,10 @@ if (typeof process === 'object') {
           'forgotToReturnPendingPromiseFromFailingItBlock',
           'executed through mocha'
         ).spread(function (err, stdout, stderr) {
-          expect(
-            stdout,
-            'not to contain',
+          expect(stdout).notToContain(
             'should call the callback: You have created a promise that was not returned from the it block'
           );
-          expect(err, 'to satisfy', { code: 1 });
+          expect(err).toSatisfy({ code: 1 });
         });
       });
 
@@ -74,8 +70,8 @@ if (typeof process === 'object') {
         return expect('fullTrace', 'executed through mocha', {
           UNEXPECTED_FULL_TRACE: '',
         }).spread(function (err, stdout, stderr) {
-          expect(stdout, 'not to contain', 'node_modules/unexpected-bogus/');
-          expect(err, 'to satisfy', { code: 1 });
+          expect(stdout).notToContain('node_modules/unexpected-bogus/');
+          expect(err).toSatisfy({ code: 1 });
         });
       });
 
@@ -83,8 +79,8 @@ if (typeof process === 'object') {
         return expect('fullTrace', 'executed through mocha', {
           UNEXPECTED_FULL_TRACE: 'yes',
         }).spread(function (err, stdout, stderr) {
-          expect(stdout, 'to contain', 'node_modules/unexpected-bogus/');
-          expect(err, 'to satisfy', { code: 1 });
+          expect(stdout).toContain('node_modules/unexpected-bogus/');
+          expect(err).toSatisfy({ code: 1 });
         });
       });
 
@@ -92,15 +88,15 @@ if (typeof process === 'object') {
         return expect('deepObject', 'executed through mocha', {
           UNEXPECTED_DEPTH: 6,
         }).spread(function (err, stdout, stderr) {
-          expect(err, 'to be falsy');
+          expect(err).toBeFalsy();
         });
       });
 
       it('should render a long stack trace for an async test', () => {
         return expect('failingAsync', 'executed through mocha').spread(
           function (err, stdout, stderr) {
-            expect(err, 'to be truthy');
-            expect(stdout, 'to contain', 'From previous event:');
+            expect(err).toBeTruthy();
+            expect(stdout).toContain('From previous event:');
           }
         );
       });
@@ -110,13 +106,11 @@ if (typeof process === 'object') {
           'forgotToReturnPromiseRejectedInTheNextTick',
           'executed through mocha'
         ).spread(function (err, stdout, stderr) {
-          expect(
-            stdout,
-            'to contain',
+          expect(stdout).toContain(
             'Error: should fail: You have created a promise that was not returned from the it block'
           );
-          expect(err, 'to satisfy', {
-            code: expect.it('to be greater than', 0),
+          expect(err).toSatisfy({
+            code: expect.toBeGreaterThan(0),
           });
         });
       });
@@ -126,7 +120,7 @@ if (typeof process === 'object') {
           'avoidPromiseAnyFootgunFalsePositive',
           'executed through mocha'
         ).then(([err]) => {
-          expect(err, 'to be falsy');
+          expect(err).toBeFalsy();
         });
       });
 
@@ -135,7 +129,7 @@ if (typeof process === 'object') {
           'avoidPromiseRaceFootgunFalsePositive',
           'executed through mocha'
         ).then(([err]) => {
-          expect(err, 'to be falsy');
+          expect(err).toBeFalsy();
         });
       });
 
@@ -145,12 +139,10 @@ if (typeof process === 'object') {
             ['forgotToReturnPendingPromiseFromSuccessfulItBlock', 'successful'],
             'executed through mocha'
           ).spread(function (err, stdout, stderr) {
-            expect(
-              stdout,
-              'to contain',
+            expect(stdout).toContain(
               'Error: should call the callback: You have created a promise that was not returned from the it block'
             );
-            expect(err, 'to satisfy', { code: 1 });
+            expect(err).toSatisfy({ code: 1 });
           });
         });
 
@@ -159,12 +151,10 @@ if (typeof process === 'object') {
             ['successful', 'forgotToReturnPendingPromiseFromSuccessfulItBlock'],
             'executed through mocha'
           ).spread(function (err, stdout, stderr) {
-            expect(
-              stdout,
-              'to contain',
+            expect(stdout).toContain(
               'Error: should call the callback: You have created a promise that was not returned from the it block'
             );
-            expect(err, 'to satisfy', { code: 1 });
+            expect(err).toSatisfy({ code: 1 });
           });
         });
       });
@@ -175,12 +165,10 @@ if (typeof process === 'object') {
             'assertionSucceedsWhilePromiseIsPending',
             'executed through mocha'
           ).spread(function (err, stdout, stderr) {
-            expect(
-              stdout,
-              'not to contain',
+            expect(stdout).notToContain(
               'Error: should call the callback: You have created a promise that was not returned from the it block'
             );
-            expect(err, 'to be falsy');
+            expect(err).toBeFalsy();
           });
         });
       });
@@ -188,13 +176,13 @@ if (typeof process === 'object') {
       it('should render the stack trace of the thrown error without any artifacts when "not to error" encounters an error', () => {
         return expect('notToErrorCaughtError', 'executed through mocha').spread(
           function (err, stdout, stderr) {
-            expect(err, 'to satisfy', { code: 1 });
-            expect(
-              stdout,
-              'to contain',
-              'not to error\n' +
-                "  returned promise rejected with: Error('argh')\n"
-            ).and('to contain', '      at thisIsImportant');
+            expect(err).toSatisfy({ code: 1 });
+            expect(stdout)
+              .toContain(
+                'not to error\n' +
+                  "  returned promise rejected with: Error('argh')\n"
+              )
+              .and('to contain', '      at thisIsImportant');
           }
         );
       });
@@ -226,12 +214,10 @@ if (typeof process === 'object') {
           'forgotToReturnPendingPromiseFromSuccessfulItBlock',
           'executed through jasmine'
         ).spread(function (err, stdout, stderr) {
-          expect(
-            stdout,
-            'to contain',
+          expect(stdout).toContain(
             'should call the callback: You have created a promise that was not returned from the it block'
           );
-          expect(err, 'to satisfy', { code: 1 });
+          expect(err).toSatisfy({ code: 1 });
         });
       });
 
@@ -240,12 +226,10 @@ if (typeof process === 'object') {
           'forgotToReturnPendingPromiseFromFailingItBlock',
           'executed through jasmine'
         ).spread(function (err, stdout, stderr) {
-          expect(
-            stdout,
-            'not to contain',
+          expect(stdout).notToContain(
             'should call the callback: You have created a promise that was not returned from the it block'
           );
-          expect(err, 'to satisfy', { code: 1 });
+          expect(err).toSatisfy({ code: 1 });
         });
       });
 
@@ -254,13 +238,13 @@ if (typeof process === 'object') {
           'notToErrorCaughtError',
           'executed through jasmine'
         ).spread(function (err, stdout, stderr) {
-          expect(err, 'to satisfy', { code: 1 });
-          expect(
-            stdout,
-            'to contain',
-            '    not to error\n' +
-              "      returned promise rejected with: Error('argh')\n"
-          ).and('to contain', '        at thisIsImportant');
+          expect(err).toSatisfy({ code: 1 });
+          expect(stdout)
+            .toContain(
+              '    not to error\n' +
+                "      returned promise rejected with: Error('argh')\n"
+            )
+            .and('to contain', '        at thisIsImportant');
         });
       });
     });
@@ -303,12 +287,10 @@ if (typeof process === 'object') {
           'forgotToReturnPendingPromiseFromSuccessfulItBlock',
           'executed through jest'
         ).spread(function (err, stdout, stderr) {
-          expect(
-            stderr,
-            'to contain',
+          expect(stderr).toContain(
             'should call the callback: You have created a promise that was not returned from the it block'
           );
-          expect(err, 'to satisfy', { code: 1 });
+          expect(err).toSatisfy({ code: 1 });
         });
       });
 
@@ -317,12 +299,10 @@ if (typeof process === 'object') {
           'forgotToReturnPendingPromiseFromFailingItBlock',
           'executed through jest'
         ).spread(function (err, stdout, stderr) {
-          expect(
-            stderr,
-            'not to contain',
+          expect(stderr).notToContain(
             'should call the callback: You have created a promise that was not returned from the it block'
           );
-          expect(err, 'to satisfy', { code: 1 });
+          expect(err).toSatisfy({ code: 1 });
         });
       });
 
@@ -330,8 +310,8 @@ if (typeof process === 'object') {
         return expect('fullTrace', 'executed through jest', {
           UNEXPECTED_FULL_TRACE: '',
         }).spread(function (err, stdout, stderr) {
-          expect(stderr, 'not to contain', 'node_modules/unexpected-bogus/');
-          expect(err, 'to satisfy', { code: 1 });
+          expect(stderr).notToContain('node_modules/unexpected-bogus/');
+          expect(err).toSatisfy({ code: 1 });
         });
       });
 
@@ -339,8 +319,8 @@ if (typeof process === 'object') {
         return expect('fullTrace', 'executed through jest', {
           UNEXPECTED_FULL_TRACE: 'yes',
         }).spread(function (err, stdout, stderr) {
-          expect(stderr, 'to contain', 'node_modules/unexpected-bogus/');
-          expect(err, 'to satisfy', { code: 1 });
+          expect(stderr).toContain('node_modules/unexpected-bogus/');
+          expect(err).toSatisfy({ code: 1 });
         });
       });
 
@@ -348,7 +328,7 @@ if (typeof process === 'object') {
         return expect('deepObject', 'executed through jest', {
           UNEXPECTED_DEPTH: 6,
         }).spread(function (err, stdout, stderr) {
-          expect(err, 'to be falsy');
+          expect(err).toBeFalsy();
         });
       });
 
@@ -358,8 +338,8 @@ if (typeof process === 'object') {
           stdout,
           stderr
         ) {
-          expect(err, 'to be truthy');
-          expect(stderr, 'to contain', 'From previous event:');
+          expect(err).toBeTruthy();
+          expect(stderr).toContain('From previous event:');
         });
       });
 
@@ -368,12 +348,10 @@ if (typeof process === 'object') {
           'forgotToReturnPromiseRejectedInTheNextTick',
           'executed through jest'
         ).spread(function (err, stdout, stderr) {
-          expect(
-            stderr,
-            'to contain',
+          expect(stderr).toContain(
             'should fail: You have created a promise that was not returned from the it block'
           );
-          expect(err, 'to satisfy', { code: 1 });
+          expect(err).toSatisfy({ code: 1 });
         });
       });
 
@@ -382,7 +360,7 @@ if (typeof process === 'object') {
           'avoidPromiseAnyFootgunFalsePositive',
           'executed through jest'
         ).then(([err]) => {
-          expect(err, 'to be falsy');
+          expect(err).toBeFalsy();
         });
       });
 
@@ -391,7 +369,7 @@ if (typeof process === 'object') {
           'avoidPromiseRaceFootgunFalsePositive',
           'executed through jest'
         ).then(([err]) => {
-          expect(err, 'to be falsy');
+          expect(err).toBeFalsy();
         });
       });
 
@@ -401,12 +379,10 @@ if (typeof process === 'object') {
             ['forgotToReturnPendingPromiseFromSuccessfulItBlock', 'successful'],
             'executed through jest'
           ).spread(function (err, stdout, stderr) {
-            expect(
-              stderr,
-              'to contain',
+            expect(stderr).toContain(
               'should call the callback: You have created a promise that was not returned from the it block'
             );
-            expect(err, 'to satisfy', { code: 1 });
+            expect(err).toSatisfy({ code: 1 });
           });
         });
 
@@ -415,12 +391,10 @@ if (typeof process === 'object') {
             ['successful', 'forgotToReturnPendingPromiseFromSuccessfulItBlock'],
             'executed through jest'
           ).spread(function (err, stdout, stderr) {
-            expect(
-              stderr,
-              'to contain',
+            expect(stderr).toContain(
               'should call the callback: You have created a promise that was not returned from the it block'
             );
-            expect(err, 'to satisfy', { code: 1 });
+            expect(err).toSatisfy({ code: 1 });
           });
         });
       });
@@ -431,12 +405,10 @@ if (typeof process === 'object') {
             'assertionSucceedsWhilePromiseIsPending',
             'executed through jest'
           ).spread(function (err, stdout, stderr) {
-            expect(
-              stderr,
-              'not to contain',
+            expect(stderr).notToContain(
               'should call the callback: You have created a promise that was not returned from the it block'
             );
-            expect(err, 'to be falsy');
+            expect(err).toBeFalsy();
           });
         });
       });
@@ -444,13 +416,13 @@ if (typeof process === 'object') {
       it('should render the stack trace of the thrown error without any artifacts when "not to error" encounters an error', () => {
         return expect('notToErrorCaughtError', 'executed through jest').spread(
           function (err, stdout, stderr) {
-            expect(err, 'to satisfy', { code: 1 });
-            expect(
-              stderr,
-              'to contain',
-              '    not to error\n' +
-                "      returned promise rejected with: Error('argh')\n"
-            ).and('to contain', '      at thisIsImportant');
+            expect(err).toSatisfy({ code: 1 });
+            expect(stderr)
+              .toContain(
+                '    not to error\n' +
+                  "      returned promise rejected with: Error('argh')\n"
+              )
+              .and('to contain', '      at thisIsImportant');
           }
         );
       });

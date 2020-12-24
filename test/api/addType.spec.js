@@ -6,103 +6,77 @@ describe('addType', () => {
   });
 
   it('throws an expection if the type has an empty or undefined name', () => {
-    expect(
-      function () {
-        clonedExpect.addType({});
-      },
-      'to throw',
+    expect(function () {
+      clonedExpect.addType({});
+    }).toThrow(
       'A type must be given a non-empty name and must match ^[a-z_](?:|[a-z0-9_.-]*[_a-z0-9])$'
     );
   });
 
   it('throws an expection if the base type does not exist', () => {
-    expect(
-      function () {
-        clonedExpect.addType({
-          name: 'foo',
-          base: 'barquux',
-          identify() {
-            return false;
-          },
-        });
-      },
-      'to throw',
-      'Unknown base type: barquux'
-    );
+    expect(function () {
+      clonedExpect.addType({
+        name: 'foo',
+        base: 'barquux',
+        identify() {
+          return false;
+        },
+      });
+    }).toThrow('Unknown base type: barquux');
   });
 
   it('throws an expection if the type has a name of "assertion"', () => {
-    expect(
-      function () {
-        clonedExpect.addType({ name: 'assertion', identify: false });
-      },
-      'to throw',
-      'The type with the name assertion already exists'
-    );
+    expect(function () {
+      clonedExpect.addType({ name: 'assertion', identify: false });
+    }).toThrow('The type with the name assertion already exists');
   });
 
   it('throw an expection if the type does not specify a correct identify field', () => {
-    expect(
-      function () {
-        clonedExpect.addType({ name: 'wat' });
-      },
-      'to throw',
+    expect(function () {
+      clonedExpect.addType({ name: 'wat' });
+    }).toThrow(
       'Type wat must specify an identify function or be declared abstract by setting identify to false'
     );
 
-    expect(
-      function () {
-        clonedExpect.addType({ name: 'wat', identify: true });
-      },
-      'to throw',
+    expect(function () {
+      clonedExpect.addType({ name: 'wat', identify: true });
+    }).toThrow(
       'Type wat must specify an identify function or be declared abstract by setting identify to false'
     );
 
-    expect(
-      function () {
-        clonedExpect.addType({ name: 'wat', identify: 'wat' });
-      },
-      'to throw',
+    expect(function () {
+      clonedExpect.addType({ name: 'wat', identify: 'wat' });
+    }).toThrow(
       'Type wat must specify an identify function or be declared abstract by setting identify to false'
     );
   });
 
   it('throws an expection if a type of that name already exists', () => {
-    expect(
-      function () {
-        clonedExpect.addType({ name: 'Promise', identify: false });
-      },
-      'to throw',
-      'The type with the name Promise already exists'
-    );
+    expect(function () {
+      clonedExpect.addType({ name: 'Promise', identify: false });
+    }).toThrow('The type with the name Promise already exists');
   });
 
   it('throws an expection if the type starts with .', () => {
-    expect(
-      function () {
-        clonedExpect.addType({ name: '.foo' });
-      },
-      'to throw',
+    expect(function () {
+      clonedExpect.addType({ name: '.foo' });
+    }).toThrow(
       'A type must be given a non-empty name and must match ^[a-z_](?:|[a-z0-9_.-]*[_a-z0-9])$'
     );
   });
 
   it('throws an expection if the type ends with .', () => {
-    expect(
-      function () {
-        clonedExpect.addType({ name: 'foo.' });
-      },
-      'to throw',
+    expect(function () {
+      clonedExpect.addType({ name: 'foo.' });
+    }).toThrow(
       'A type must be given a non-empty name and must match ^[a-z_](?:|[a-z0-9_.-]*[_a-z0-9])$'
     );
   });
 
   it('throws an expection if the type contains non-alphanumeric chars', () => {
-    expect(
-      function () {
-        clonedExpect.addType({ name: 'ø' });
-      },
-      'to throw',
+    expect(function () {
+      clonedExpect.addType({ name: 'ø' });
+    }).toThrow(
       'A type must be given a non-empty name and must match ^[a-z_](?:|[a-z0-9_.-]*[_a-z0-9])$'
     );
   });
@@ -140,16 +114,14 @@ describe('addType', () => {
       });
 
       it('should use the equal defined by the type', () => {
-        clonedExpect(box(123), 'to equal', box(123));
-        clonedExpect(box(123), 'not to equal', box(321));
+        clonedExpect(box(123)).toEqual(box(123));
+        clonedExpect(box(123)).notToEqual(box(321));
       });
 
       it('shows a diff in case of a mismatch', () => {
-        expect(
-          function () {
-            clonedExpect(box(box(123)), 'to equal', box(box(456)));
-          },
-          'to throw',
+        expect(function () {
+          clonedExpect(box(box(123))).toEqual(box(box(456)));
+        }).toThrow(
           'expected box(box(123)) to equal box(box(456))\n' +
             '\n' +
             'box({\n' +
@@ -182,16 +154,14 @@ describe('addType', () => {
       });
 
       it('should use the equal defined by the type', () => {
-        clonedExpect(box(123), 'to equal', box(123));
-        clonedExpect(box(123), 'not to equal', box(321));
+        clonedExpect(box(123)).toEqual(box(123));
+        clonedExpect(box(123)).notToEqual(box(321));
       });
 
       it('shows a diff in case of a mismatch', () => {
-        expect(
-          function () {
-            clonedExpect(box(box(123)), 'to equal', box(box(456)));
-          },
-          'to throw',
+        expect(function () {
+          clonedExpect(box(box(123))).toEqual(box(box(456)));
+        }).toThrow(
           'expected box(box(123)) to equal box(box(456))\n' +
             '\n' +
             'box(box(\n' +
@@ -201,11 +171,9 @@ describe('addType', () => {
       });
 
       it('should include the diff when one is available', () => {
-        expect(
-          function () {
-            clonedExpect(box('abc'), 'to equal', box('abe'));
-          },
-          'to throw',
+        expect(function () {
+          clonedExpect(box('abc')).toEqual(box('abe'));
+        }).toThrow(
           "expected box('abc') to equal box('abe')\n" +
             '\n' +
             'box(\n' +
@@ -221,22 +189,16 @@ describe('addType', () => {
 
   describe('#inspect', () => {
     it('renders the name of the type if passed too few parameters, for compatibility with util.inspect', () => {
-      expect(
-        clonedExpect.getType('number').inspect(),
-        'to equal',
-        'type: number'
-      );
+      expect(clonedExpect.getType('number').inspect()).toEqual('type: number');
     });
   });
 
   describe('base type', () => {
     describe('#inspect', () => {
       it('bails out if passed the wrong parameters', () => {
-        expect(
-          function () {
-            clonedExpect.getType('number').baseType.inspect();
-          },
-          'to throw',
+        expect(function () {
+          clonedExpect.getType('number').baseType.inspect();
+        }).toThrow(
           'You need to pass the output to baseType.inspect() as the third parameter'
         );
       });
@@ -246,10 +208,8 @@ describe('addType', () => {
           clonedExpect
             .getType('number')
             .baseType.inspect(null, 3, clonedExpect.createOutput())
-            .toString(),
-          'to equal',
-          'null'
-        );
+            .toString()
+        ).toEqual('null');
       });
 
       it('provides an inspect function as the 4th parameter', () => {
@@ -284,20 +244,16 @@ describe('addType', () => {
                 return expect.createOutput().appendInspected(value);
               }
             )
-            .toString('text'),
-          'to equal',
-          "'foo'"
-        );
+            .toString('text')
+        ).toEqual("'foo'");
       });
     });
 
     describe('#diff', () => {
       it('bails out if passed the wrong parameters', () => {
-        expect(
-          function () {
-            clonedExpect.getType('number').baseType.diff();
-          },
-          'to throw',
+        expect(function () {
+          clonedExpect.getType('number').baseType.diff();
+        }).toThrow(
           'You need to pass the output to baseType.diff() as the third parameter'
         );
       });

@@ -2,7 +2,7 @@
 describe('array type', () => {
   it('should find an array instance identical to itself', () => {
     const arr = [1, 2, 3];
-    expect(arr, 'to equal', arr);
+    expect(arr).toEqual(arr);
   });
 
   it('should inspect non-numerical properties at the end', () => {
@@ -23,11 +23,9 @@ describe('array type', () => {
     arr2.baz = 789;
     arr2.quux = false;
 
-    expect(
-      function () {
-        expect(arr1, 'to equal', arr2);
-      },
-      'to throw',
+    expect(function () {
+      expect(arr1).toEqual(arr2);
+    }).toThrow(
       'expected [ 1, 2, 3, foo: 123, bar: 456, quux: {} ]\n' +
         'to equal [ 1, 2, 3, bar: 456, baz: 789, quux: false ]\n' +
         '\n' +

@@ -11,7 +11,7 @@ unexpected
   .addAssertion(
     '<any> to inspect as <string>',
     function (expect, subject, value) {
-      expect(expect.inspect(subject).toString(), 'to equal', value);
+      expect(expect.inspect(subject).toString()).toEqual(value);
     }
   )
   .addAssertion(

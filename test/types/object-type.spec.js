@@ -13,11 +13,9 @@ describe('object type', () => {
           });
         },
       });
-      expect(
-        function () {
-          clonedExpect({ a: 123, b: 9 }, 'to equal', { a: 456, b: 9 });
-        },
-        'to throw',
+      expect(function () {
+        clonedExpect({ a: 123, b: 9 }).toEqual({ a: 456, b: 9 });
+      }).toThrow(
         'expected\n' +
           '{\n' +
           '  a: 123,\n' +
@@ -43,14 +41,14 @@ describe('object type', () => {
   describe('#equal', () => {
     it('should ignore undefined properties on the LHS', () => {
       expect(function () {
-        expect({ lhs: undefined }, 'to equal', {});
-      }, 'not to throw');
+        expect({ lhs: undefined }).toEqual({});
+      }).notToThrow();
     });
 
     it('should ignore undefined properties on the RHS', () => {
       expect(function () {
-        expect({}, 'to equal', { rhs: undefined });
-      }, 'not to throw');
+        expect({}).toEqual({ rhs: undefined });
+      }).notToThrow();
     });
 
     describe('with a subtype that overrides valueForKey()', () => {
@@ -72,14 +70,14 @@ describe('object type', () => {
 
       it('should ignore undefined properties on the LHS', () => {
         expect(function () {
-          expect({ xuuq: true, lhs: undefined }, 'to equal', { xuuq: true });
-        }, 'not to throw');
+          expect({ xuuq: true, lhs: undefined }).toEqual({ xuuq: true });
+        }).notToThrow();
       });
 
       it('should ignore undefined properties on the RHS', () => {
         expect(function () {
-          expect({ xuuq: true }, 'to equal', { xuuq: true, rhs: undefined });
-        }, 'not to throw');
+          expect({ xuuq: true }).toEqual({ xuuq: true, rhs: undefined });
+        }).notToThrow();
       });
     });
   });
@@ -102,11 +100,11 @@ describe('object type', () => {
 
     it('should restrict the compared properties', () => {
       expect(function () {
-        clonedExpect({ foo: true, _bar: true }, 'to equal', {
+        clonedExpect({ foo: true, _bar: true }).toEqual({
           foo: true,
           _bar: false,
         });
-      }, 'not to throw');
+      }).notToThrow();
     });
   });
 
@@ -129,24 +127,20 @@ describe('object type', () => {
 
     it('should pass with values overriding valueForKey()', () => {
       expect(function () {
-        clonedExpect(
-          [{ xuuq: true, quux: 'foo', _bob: true }, 'foobar'],
-          'to equal',
-          [{ xuuq: true, quux: 'foo', _bob: false }, 'foobar']
-        );
-      }, 'not to throw');
+        clonedExpect([
+          { xuuq: true, quux: 'foo', _bob: true },
+          'foobar',
+        ]).toEqual([{ xuuq: true, quux: 'foo', _bob: false }, 'foobar']);
+      }).notToThrow();
     });
 
     it('should fail with values overriding valueForKey()', () => {
-      expect(
-        function () {
-          clonedExpect(
-            [{ xuuq: true, quux: 'bar', _bob: true }, 'foobar'],
-            'to equal',
-            ['foobar', { xuuq: true, quux: 'baz', _bob: false }]
-          );
-        },
-        'to throw',
+      expect(function () {
+        clonedExpect([
+          { xuuq: true, quux: 'bar', _bob: true },
+          'foobar',
+        ]).toEqual(['foobar', { xuuq: true, quux: 'baz', _bob: false }]);
+      }).toThrow(
         "expected [ { xuuq: true, quux: 'bar', _bob: undefined }, 'foobar' ]\n" +
           "to equal [ 'foobar', { xuuq: true, quux: 'baz', _bob: undefined } ]\n" +
           '\n' +
@@ -187,8 +181,8 @@ describe('object type', () => {
             b:
               'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
           })
-          .toString(),
-        'to equal',
+          .toString()
+      ).toEqual(
         '{\n' +
           "a: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',\n" +
           "b: 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'\n" +
@@ -198,8 +192,8 @@ describe('object type', () => {
 
     it('should not render the indentation when an instance is diffed', () => {
       expect(
-        clonedExpect.diff({ a: 'a', b: 'b' }, { a: 'aa', b: 'bb' }).toString(),
-        'to equal',
+        clonedExpect.diff({ a: 'a', b: 'b' }, { a: 'aa', b: 'bb' }).toString()
+      ).toEqual(
         '{\n' +
           "a: 'a', // should equal 'aa'\n" +
           '        //\n' +
@@ -214,11 +208,9 @@ describe('object type', () => {
     });
 
     it('should not render the indentation when an instance participates in a "to satisfy" diff', () => {
-      expect(
-        function () {
-          clonedExpect({ a: 'aaa', b: 'bbb' }, 'to satisfy', { a: 'foo' });
-        },
-        'to throw',
+      expect(function () {
+        clonedExpect({ a: 'aaa', b: 'bbb' }).toSatisfy({ a: 'foo' });
+      }).toThrow(
         "expected { a: 'aaa', b: 'bbb' } to satisfy { a: 'foo' }\n" +
           '\n' +
           '{\n' +
@@ -258,8 +250,8 @@ describe('object type', () => {
             b:
               'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
           })
-          .toString(),
-        'to equal',
+          .toString()
+      ).toEqual(
         "  a: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',\n" +
           "  b: 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'"
       );
@@ -267,8 +259,8 @@ describe('object type', () => {
 
     it('should not render the prefix, suffix, and the newlines when an instance is diffed', () => {
       expect(
-        clonedExpect.diff({ a: 'a', b: 'b' }, { a: 'aa', b: 'bb' }).toString(),
-        'to equal',
+        clonedExpect.diff({ a: 'a', b: 'b' }, { a: 'aa', b: 'bb' }).toString()
+      ).toEqual(
         "  a: 'a', // should equal 'aa'\n" +
           '          //\n' +
           '          // -a\n' +
@@ -281,11 +273,9 @@ describe('object type', () => {
     });
 
     it('should not render the prefix, suffix, and the newlines when an instance participates in a "to satisfy" diff', () => {
-      expect(
-        function () {
-          clonedExpect({ a: 'aaa', b: 'bbb' }, 'to satisfy', { a: 'foo' });
-        },
-        'to throw',
+      expect(function () {
+        clonedExpect({ a: 'aaa', b: 'bbb' }).toSatisfy({ a: 'foo' });
+      }).toThrow(
         "expected a: 'aaa', b: 'bbb' to satisfy a: 'foo'\n" +
           '\n' +
           "  a: 'aaa', // should equal 'foo'\n" +
@@ -310,9 +300,7 @@ describe('object type', () => {
     });
 
     it('should inspect in forceMultipleLines mode despite being able to render on one line', () => {
-      expect(
-        clonedExpect.inspect({ a: 'a', b: 'b' }).toString(),
-        'to equal',
+      expect(clonedExpect.inspect({ a: 'a', b: 'b' }).toString()).toEqual(
         '{\n' +
           "  a: 'a', b: 'b'\n" + // This is the 'compact' feature kicking in
           '}'
@@ -342,14 +330,12 @@ describe('object type', () => {
         },
       });
 
-      expect(
-        function () {
-          clonedExpect({ quux: 'xuuq', foobar: 'faz' }, 'to equal', {
-            quux: 'xuuq',
-            foobar: 'baz',
-          });
-        },
-        'to throw',
+      expect(function () {
+        clonedExpect({ quux: 'xuuq', foobar: 'faz' }).toEqual({
+          quux: 'xuuq',
+          foobar: 'baz',
+        });
+      }).toThrow(
         "expected { <'quux'> --> 'xuuq', <'foobar'> --> 'faz' }\n" +
           "to equal { <'quux'> --> 'xuuq', <'foobar'> --> 'baz' }\n" +
           '\n' +
@@ -385,15 +371,13 @@ describe('object type', () => {
     });
 
     it('should process properties in both inspection and diff in "to equal"', () => {
-      expect(
-        function () {
-          clonedExpect({ nine: 9, zero: 1, foo: 'bAr' }, 'to equal', {
-            nine: 9,
-            zero: 0,
-            foo: 'BaR',
-          });
-        },
-        'to throw',
+      expect(function () {
+        clonedExpect({ nine: 9, zero: 1, foo: 'bAr' }).toEqual({
+          nine: 9,
+          zero: 0,
+          foo: 'BaR',
+        });
+      }).toThrow(
         "expected { nine: 9, zero: 1, foo: 'BAR' } to equal { nine: 9, zero: 0, foo: 'BAR' }\n" +
           '\n' +
           '{\n' +
@@ -405,15 +389,19 @@ describe('object type', () => {
     });
 
     it('should process properties in both inspection and diff in "to satisfy"', () => {
-      expect(
-        function () {
-          clonedExpect(
-            { nine: 9, zero: 1, foo: 'bAr', baz: undefined },
-            'to satisfy',
-            { nine: 9, zero: 0, foo: 'BaR', baz: expect.it('to be undefined') }
-          );
-        },
-        'to throw',
+      expect(function () {
+        clonedExpect({
+          nine: 9,
+          zero: 1,
+          foo: 'bAr',
+          baz: undefined,
+        }).toSatisfy({
+          nine: 9,
+          zero: 0,
+          foo: 'BaR',
+          baz: expect.toBeUndefined(),
+        });
+      }).toThrow(
         "expected { nine: 9, zero: 1, foo: 'BAR', baz: undefined }\n" +
           "to satisfy { nine: 9, zero: 0, foo: 'BAR', baz: expect.it('to be undefined') }\n" +
           '\n' +
@@ -436,15 +424,13 @@ describe('object type', () => {
         const chainedObject = { nine: 9, baz: undefined };
         Object.setPrototypeOf(chainedObject, fooObject);
 
-        expect(
-          function () {
-            clonedExpect(chainedObject, 'to exhaustively satisfy', {
-              nine: 9,
-              foo: 'BaZ',
-              baz: expect.it('to be undefined'),
-            });
-          },
-          'to throw',
+        expect(function () {
+          clonedExpect(chainedObject).toExhaustivelySatisfy({
+            nine: 9,
+            foo: 'BaZ',
+            baz: expect.toBeUndefined(),
+          });
+        }).toThrow(
           'expected { nine: 9, baz: undefined }\n' +
             "to exhaustively satisfy { nine: 9, foo: 'BAZ', baz: expect.it('to be undefined') }\n" +
             '\n' +
@@ -486,15 +472,11 @@ describe('object type', () => {
     });
 
     it('should mark keys missing', () => {
-      expect(
-        function () {
-          clonedExpect(
-            new NestedObject({}),
-            'to equal',
-            new NestedObject({ foo: 'bar' })
-          );
-        },
-        'to throw',
+      expect(function () {
+        clonedExpect(new NestedObject({})).toEqual(
+          new NestedObject({ foo: 'bar' })
+        );
+      }).toThrow(
         "expected NestedObject({}) to equal NestedObject({ foo: 'bar' })\n" +
           '\n' +
           'NestedObject({\n' +
@@ -504,15 +486,11 @@ describe('object type', () => {
     });
 
     it('should mark keys unecessary', () => {
-      expect(
-        function () {
-          clonedExpect(
-            new NestedObject({ foo: 'bar' }),
-            'to equal',
-            new NestedObject({})
-          );
-        },
-        'to throw',
+      expect(function () {
+        clonedExpect(new NestedObject({ foo: 'bar' })).toEqual(
+          new NestedObject({})
+        );
+      }).toThrow(
         "expected NestedObject({ foo: 'bar' }) to equal NestedObject({})\n" +
           '\n' +
           'NestedObject({\n' +

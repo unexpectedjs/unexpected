@@ -4,9 +4,7 @@ describe('colorByIndex', () => {
 
   describe('in a mode that has a palette', () => {
     it('should output colored text', () => {
-      expect(
-        expect.createOutput('ansi').colorByIndex('foo', 0),
-        'to equal',
+      expect(expect.createOutput('ansi').colorByIndex('foo', 0)).toEqual(
         expect.createOutput('ansi').text('foo', '#FF1A53')
       );
     });
@@ -15,8 +13,8 @@ describe('colorByIndex', () => {
   describe('in a mode without a palette', () => {
     it('should output uncolored text', () => {
       const output = expect.createOutput('text').colorByIndex('foo', 0);
-      expect(output, 'to equal', expect.createOutput('text').text('foo'));
-      expect(output.output, 'to satisfy', {
+      expect(output).toEqual(expect.createOutput('text').text('foo'));
+      expect(output.output).toSatisfy({
         0: {
           0: {
             style: 'text',

@@ -5,24 +5,24 @@ describe('when called with assertion', () => {
   }
 
   it('should assert that the function invocation produces the correct output', () => {
-    expect(add, 'when called with', [3, 4], 'to equal', 7);
+    expect(add).whenCalledWith([3, 4]).toEqual(7);
   });
 
   it('should combine with other assertions (showcase)', () => {
-    expect(
-      function () {
-        expect(add, 'when called with', [3, 4], 'to equal', 9);
-      },
-      'to throw',
+    expect(function () {
+      expect(add).whenCalledWith([3, 4]).toEqual(9);
+    }).toThrow(
       'expected function add(a, b) { return a + b; } when called with 3, 4 to equal 9\n' +
         '  expected 7 to equal 9'
     );
   });
 
   it('should should provide the result as the fulfillment value if no assertion is provided', () => {
-    return expect(add, 'when called with', [3, 4]).then(function (sum) {
-      expect(sum, 'to equal', 7);
-    });
+    return expect(add)
+      .whenCalledWith([3, 4])
+      .then(function (sum) {
+        expect(sum).toEqual(7);
+      });
   });
 
   describe('when assertion is executed in context of another object', () => {
@@ -35,13 +35,8 @@ describe('when called with assertion', () => {
         return this.prefix + name;
       };
 
-      expect(new Greeter('Hello, '), 'to satisfy', {
-        greet: expect.it(
-          'when called with',
-          ['John Doe'],
-          'to equal',
-          'Hello, John Doe'
-        ),
+      expect(new Greeter('Hello, ')).toSatisfy({
+        greet: expect.whenCalledWith(['John Doe']).toEqual('Hello, John Doe'),
       });
     });
   });

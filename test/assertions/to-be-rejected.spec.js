@@ -7,18 +7,16 @@ describe('to be rejected assertion', () => {
           // eslint-disable-next-line prefer-promise-reject-errors
           reject();
         }, 0);
-      }),
-      'to be rejected'
-    );
+      })
+    ).toBeRejected();
   });
 
   it('should provide the rejection reason as the fulfillment value', () => {
-    return expect(
-      expect.promise.reject(new Error('foo')),
-      'to be rejected'
-    ).then(function (reason) {
-      expect(reason, 'to have message', 'foo');
-    });
+    return expect(expect.promise.reject(new Error('foo')))
+      .toBeRejected()
+      .then(function (reason) {
+        expect(reason).toHaveMessage('foo');
+      });
   });
 
   it('should succeed if the promise is rejected without a reason', () => {
@@ -28,10 +26,9 @@ describe('to be rejected assertion', () => {
           setTimeout(function () {
             resolve('happy times');
           }, 0);
-        }),
-        'to be rejected'
-      ),
-      'to be rejected with',
+        })
+      ).toBeRejected()
+    ).toBeRejectedWith(
       'expected Promise to be rejected\n' +
         "  Promise unexpectedly fulfilled with 'happy times'"
     );
@@ -42,10 +39,9 @@ describe('to be rejected assertion', () => {
       expect(
         new Promise(function (resolve, reject) {
           setTimeout(resolve, 0);
-        }),
-        'to be rejected'
-      ),
-      'to be rejected with',
+        })
+      ).toBeRejected()
+    ).toBeRejectedWith(
       'expected Promise to be rejected\n' + '  Promise unexpectedly fulfilled'
     );
   });
@@ -57,10 +53,9 @@ describe('to be rejected assertion', () => {
           setTimeout(function () {
             resolve('happy times');
           }, 0);
-        }),
-        'to be rejected'
-      ),
-      'to be rejected with',
+        })
+      ).toBeRejected()
+    ).toBeRejectedWith(
       'expected Promise to be rejected\n' +
         "  Promise unexpectedly fulfilled with 'happy times'"
     );
@@ -70,7 +65,7 @@ describe('to be rejected assertion', () => {
     it('should succeed if the function returns a promise that is rejected', () => {
       return expect(function () {
         return expect.promise.reject(new Error('foo'));
-      }, 'to be rejected');
+      }).toBeRejected();
     });
 
     it('should forward the rejection reason', () => {
@@ -78,19 +73,19 @@ describe('to be rejected assertion', () => {
         return expect.promise(function () {
           return expect.promise.reject(new Error('foo'));
         });
-      }, 'to be rejected').then(function (err) {
-        expect(err, 'to have message', 'foo');
-      });
+      })
+        .toBeRejected()
+        .then(function (err) {
+          expect(err).toHaveMessage('foo');
+        });
     });
 
     it('should fail if the function returns a promise that is fulfilled', () => {
-      expect(
-        function () {
-          return expect(function () {
-            return expect.promise.resolve(123);
-          }, 'to be rejected');
-        },
-        'to throw',
+      expect(function () {
+        return expect(function () {
+          return expect.promise.resolve(123);
+        }).toBeRejected();
+      }).toThrow(
         'expected\n' +
           'function () {\n' +
           '  return expect.promise.resolve(123);\n' +
@@ -104,7 +99,7 @@ describe('to be rejected assertion', () => {
     it('should succeed if the function throws synchronously', () => {
       return expect(function () {
         throw new Error('foo');
-      }, 'to be rejected');
+      }).toBeRejected();
     });
   });
 });

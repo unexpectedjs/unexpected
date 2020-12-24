@@ -9,9 +9,9 @@ describe('hook', () => {
         return next(context, args);
       };
     });
-    expect(called, 'to be false');
-    clonedExpect(123, 'to equal', 123);
-    expect(called, 'to be true');
+    expect(called).toBeFalse();
+    clonedExpect(123).toEqual(123);
+    expect(called).toBeTrue();
   });
 
   describe('with expect.clone', () => {
@@ -26,8 +26,8 @@ describe('hook', () => {
           return next(context, args);
         };
       });
-      clonedClonedExpect(123, 'to equal', 123);
-      expect(called, 'to be false');
+      clonedClonedExpect(123).toEqual(123);
+      expect(called).toBeFalse();
     });
 
     it('should affect clones made after hooking in', () => {
@@ -40,8 +40,8 @@ describe('hook', () => {
         };
       });
       const clonedClonedExpect = clonedExpect.clone();
-      clonedClonedExpect(123, 'to equal', 123);
-      expect(called, 'to be true');
+      clonedClonedExpect(123).toEqual(123);
+      expect(called).toBeTrue();
     });
   });
 
@@ -58,8 +58,8 @@ describe('hook', () => {
         };
       });
 
-      childExpect(123, 'to equal', 123);
-      expect(called, 'to be true');
+      childExpect(123).toEqual(123);
+      expect(called).toBeTrue();
     });
 
     it('should not affect child instances made after installing the hook', () => {
@@ -75,8 +75,8 @@ describe('hook', () => {
 
       const childExpect = parentExpect.clone();
 
-      childExpect(123, 'to equal', 123);
-      expect(called, 'to be true');
+      childExpect(123).toEqual(123);
+      expect(called).toBeTrue();
     });
   });
 
@@ -102,7 +102,7 @@ describe('hook', () => {
         }
       };
     });
-    clonedExpect(123, 'to equal', 456);
+    clonedExpect(123).toEqual(456);
   });
 
   it('should allow installing multiple hooks', () => {
@@ -121,9 +121,9 @@ describe('hook', () => {
         return next(context, args);
       };
     });
-    clonedExpect(123, 'to equal', 123);
-    expect(firstCalled, 'to be true');
-    expect(secondCalled, 'to be true');
+    clonedExpect(123).toEqual(123);
+    expect(firstCalled).toBeTrue();
+    expect(secondCalled).toBeTrue();
   });
 
   // Regression test for https://gitter.im/unexpectedjs/unexpected?at=5fb42b73747be107c1c76095
@@ -152,11 +152,9 @@ describe('hook', () => {
       indent: false,
     });
 
-    expect(
-      () => {
-        clonedExpect(['aaa', 'bbb'], 'to satisfy', ['foo']);
-      },
-      'to throw',
+    expect(() => {
+      clonedExpect(['aaa', 'bbb']).toSatisfy(['foo']);
+    }).toThrow(
       "expected 'aaa', 'bbb' to satisfy 'foo'\n" +
         '\n' +
         "'aaa', // should equal 'foo'\n" +

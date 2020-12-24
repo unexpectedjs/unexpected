@@ -326,9 +326,8 @@ describe('function type', () => {
       it('should not produce a diff', function () {
         const functionType = expect.getType('function');
         expect(
-          functionType.diff(foo, bar, expect.createOutput()),
-          'to be undefined'
-        );
+          functionType.diff(foo, bar, expect.createOutput())
+        ).toBeUndefined();
       });
     });
 

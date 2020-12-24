@@ -14,7 +14,7 @@ describe('expect.output.preferredWidth', () => {
     });
 
     it('should propagate into the clone', () => {
-      expect(clonedExpect.output.preferredWidth, 'to be', 9999);
+      expect(clonedExpect.output.preferredWidth).toBe(9999);
     });
 
     describe('when the value is changed in the clone', () => {
@@ -23,7 +23,7 @@ describe('expect.output.preferredWidth', () => {
       });
 
       it('should not affect the original', () => {
-        expect(expect.output.preferredWidth, 'to be', 9999);
+        expect(expect.output.preferredWidth).toBe(9999);
       });
     });
 
@@ -33,7 +33,7 @@ describe('expect.output.preferredWidth', () => {
       });
 
       it('should not affect the clone', () => {
-        expect(clonedExpect.output.preferredWidth, 'to be', 9999);
+        expect(clonedExpect.output.preferredWidth).toBe(9999);
       });
     });
   });
@@ -45,7 +45,7 @@ describe('expect.output.preferredWidth', () => {
     });
 
     it('should propagate into the child', () => {
-      expect(childExpect.output.preferredWidth, 'to be', 9999);
+      expect(childExpect.output.preferredWidth).toBe(9999);
     });
 
     describe('when the value is changed in the child', () => {
@@ -54,7 +54,7 @@ describe('expect.output.preferredWidth', () => {
       });
 
       it('should not affect the original', () => {
-        expect(expect.output.preferredWidth, 'to be', 9999);
+        expect(expect.output.preferredWidth).toBe(9999);
       });
 
       describe('and then in the parent', () => {
@@ -63,7 +63,7 @@ describe('expect.output.preferredWidth', () => {
         });
 
         it('should not affect the child', () => {
-          expect(childExpect.output.preferredWidth, 'to be', 7777);
+          expect(childExpect.output.preferredWidth).toBe(7777);
         });
       });
     });
@@ -74,7 +74,7 @@ describe('expect.output.preferredWidth', () => {
       });
 
       it('should propagate the change to the child', () => {
-        expect(childExpect.output.preferredWidth, 'to be', 5555);
+        expect(childExpect.output.preferredWidth).toBe(5555);
       });
     });
   });

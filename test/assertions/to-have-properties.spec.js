@@ -1,68 +1,56 @@
 /* global expect */
 describe('to have properties assertion', () => {
   it('asserts presence of a list of properties', () => {
-    expect({ a: 'foo', b: 'bar' }, 'to have properties', ['a', 'b']);
+    expect({ a: 'foo', b: 'bar' }).toHaveProperties(['a', 'b']);
   });
 
   it('asserts presence of a list of own properties', () => {
-    expect({ a: 'foo', b: 'bar' }, 'to have own properties', ['a', 'b']);
-    expect(
-      function () {
-        const obj = Object.create({ a: 'foo', b: 'bar' });
-        expect(obj, 'to have properties', ['a', 'b']); // should not fail
-        expect(obj, 'to have own properties', ['a', 'b']); // should fail
-      },
-      'to throw',
-      "expected {} to have own properties [ 'a', 'b' ]"
-    );
+    expect({ a: 'foo', b: 'bar' }).toHaveOwnProperties(['a', 'b']);
+    expect(function () {
+      const obj = Object.create({ a: 'foo', b: 'bar' });
+      expect(obj).toHaveProperties(['a', 'b']); // should not fail
+      expect(obj).toHaveOwnProperties(['a', 'b']); // should fail
+    }).toThrow("expected {} to have own properties [ 'a', 'b' ]");
   });
 
   it('asserts the absence of a property when the RHS object has an undefined value', () => {
-    expect({}, 'to have properties', { a: undefined });
+    expect({}).toHaveProperties({ a: undefined });
   });
 
   it('asserts absence of a list of properties', () => {
-    expect({ a: 'foo', b: 'bar' }, 'not to have properties', ['c', 'd']);
-    expect(
-      function () {
-        expect({ a: 'foo', b: 'bar' }, 'not to have properties', ['a', 'd']);
-      },
-      'to throw',
+    expect({ a: 'foo', b: 'bar' }).notToHaveProperties(['c', 'd']);
+    expect(function () {
+      expect({ a: 'foo', b: 'bar' }).notToHaveProperties(['a', 'd']);
+    }).toThrow(
       "expected { a: 'foo', b: 'bar' } not to have properties [ 'a', 'd' ]"
     );
   });
 
   it('asserts absence of a list of own properties', () => {
     const obj = Object.create({ a: 'foo', b: 'bar' });
-    expect(obj, 'to have properties', ['a', 'b']);
-    expect(obj, 'not to have own properties', ['a', 'b']);
-    expect(
-      function () {
-        expect({ a: 'foo', b: 'bar' }, 'not to have own properties', [
-          'a',
-          'b',
-        ]); // should fail
-      },
-      'to throw',
+    expect(obj).toHaveProperties(['a', 'b']);
+    expect(obj).notToHaveOwnProperties(['a', 'b']);
+    expect(function () {
+      expect({ a: 'foo', b: 'bar' }).notToHaveOwnProperties(['a', 'b']); // should fail
+    }).toThrow(
       "expected { a: 'foo', b: 'bar' } not to have own properties [ 'a', 'b' ]"
     );
   });
 
   it('asserts presence and values of an object of properties', () => {
-    expect(
-      { a: 'foo', b: 'bar', c: 'baz', d: { qux: 'qux', quux: 'quux' } },
-      'to have properties',
-      {
-        a: 'foo',
-        b: 'bar',
-        d: { qux: 'qux', quux: 'quux' },
-      }
-    );
-    expect(
-      function () {
-        expect({ a: 'foo', b: 'bar' }, 'to have properties', { c: 'baz' });
-      },
-      'to throw',
+    expect({
+      a: 'foo',
+      b: 'bar',
+      c: 'baz',
+      d: { qux: 'qux', quux: 'quux' },
+    }).toHaveProperties({
+      a: 'foo',
+      b: 'bar',
+      d: { qux: 'qux', quux: 'quux' },
+    });
+    expect(function () {
+      expect({ a: 'foo', b: 'bar' }).toHaveProperties({ c: 'baz' });
+    }).toThrow(
       "expected { a: 'foo', b: 'bar' } to have properties { c: 'baz' }\n" +
         '\n' +
         '{\n' +
@@ -71,11 +59,9 @@ describe('to have properties assertion', () => {
         "  // missing c: 'baz'\n" +
         '}'
     );
-    expect(
-      function () {
-        expect({ a: 'foo', b: 'bar' }, 'to have properties', { b: 'baz' });
-      },
-      'to throw',
+    expect(function () {
+      expect({ a: 'foo', b: 'bar' }).toHaveProperties({ b: 'baz' });
+    }).toThrow(
       "expected { a: 'foo', b: 'bar' } to have properties { b: 'baz' }\n" +
         '\n' +
         '{\n' +
@@ -89,17 +75,15 @@ describe('to have properties assertion', () => {
   });
 
   it('asserts presence and values of an object of own properties', () => {
-    expect({ a: 'foo', b: 'bar' }, 'to have own properties', {
+    expect({ a: 'foo', b: 'bar' }).toHaveOwnProperties({
       a: 'foo',
       b: 'bar',
     });
-    expect(
-      function () {
-        const obj = Object.create({ a: 'foo', b: 'bar' });
-        expect(obj, 'to have properties', { a: 'foo', b: 'bar' }); // should not fail
-        expect(obj, 'to have own properties', { a: 'foo', b: 'bar' }); // should fail
-      },
-      'to throw',
+    expect(function () {
+      const obj = Object.create({ a: 'foo', b: 'bar' });
+      expect(obj).toHaveProperties({ a: 'foo', b: 'bar' }); // should not fail
+      expect(obj).toHaveOwnProperties({ a: 'foo', b: 'bar' }); // should fail
+    }).toThrow(
       "expected {} to have own properties { a: 'foo', b: 'bar' }\n" +
         '\n' +
         '{\n' +
@@ -108,14 +92,12 @@ describe('to have properties assertion', () => {
         '}'
     );
 
-    expect(
-      function () {
-        expect({ a: 'f00', b: 'bar' }, 'to have own properties', {
-          a: 'foo',
-          b: 'bar',
-        }); // should fail
-      },
-      'to throw',
+    expect(function () {
+      expect({ a: 'f00', b: 'bar' }).toHaveOwnProperties({
+        a: 'foo',
+        b: 'bar',
+      }); // should fail
+    }).toThrow(
       "expected { a: 'f00', b: 'bar' } to have own properties { a: 'foo', b: 'bar' }\n" +
         '\n' +
         '{\n' +
@@ -130,16 +112,11 @@ describe('to have properties assertion', () => {
 
   it('asserts absence and values of an object of own properties', () => {
     const obj = Object.create({ a: 'foo', b: 'bar' });
-    expect(obj, 'to have properties', { a: 'foo', b: 'bar' });
-    expect(obj, 'not to have own properties', ['a', 'b']);
-    expect(
-      function () {
-        expect({ a: 'foo', b: 'bar' }, 'not to have own properties', [
-          'a',
-          'b',
-        ]); // should fail
-      },
-      'to throw',
+    expect(obj).toHaveProperties({ a: 'foo', b: 'bar' });
+    expect(obj).notToHaveOwnProperties(['a', 'b']);
+    expect(function () {
+      expect({ a: 'foo', b: 'bar' }).notToHaveOwnProperties(['a', 'b']); // should fail
+    }).toThrow(
       "expected { a: 'foo', b: 'bar' } not to have own properties [ 'a', 'b' ]"
     );
   });
@@ -149,11 +126,9 @@ describe('to have properties assertion', () => {
 
     Foo.prototype.doSomething = function () {};
 
-    expect(
-      function () {
-        expect(new Foo(), 'to have properties', { a: 123 });
-      },
-      'to throw',
+    expect(function () {
+      expect(new Foo()).toHaveProperties({ a: 123 });
+    }).toThrow(
       'expected Foo({}) to have properties { a: 123 }\n' +
         '\n' +
         'Foo({\n' +
@@ -164,19 +139,15 @@ describe('to have properties assertion', () => {
   });
 
   it('throws when the assertion fails', () => {
-    expect(
-      function () {
-        expect({ a: 'foo', b: 'bar' }, 'to have properties', ['c', 'd']);
-      },
-      'to throw',
+    expect(function () {
+      expect({ a: 'foo', b: 'bar' }).toHaveProperties(['c', 'd']);
+    }).toThrow(
       "expected { a: 'foo', b: 'bar' } to have properties [ 'c', 'd' ]"
     );
 
-    expect(
-      function () {
-        expect({ a: 'foo' }, 'to have properties', { a: undefined });
-      },
-      'to throw',
+    expect(function () {
+      expect({ a: 'foo' }).toHaveProperties({ a: undefined });
+    }).toThrow(
       "expected { a: 'foo' } to have properties { a: undefined }\n" +
         '\n' +
         '{\n' +
@@ -186,11 +157,9 @@ describe('to have properties assertion', () => {
   });
 
   it('throws when given invalid input', () => {
-    expect(
-      function () {
-        expect({ a: 'foo', b: 'bar' }, 'to have properties', 'a', 'b');
-      },
-      'to throw',
+    expect(function () {
+      expect({ a: 'foo', b: 'bar' }).toHaveProperties('a', 'b');
+    }).toThrow(
       "expected { a: 'foo', b: 'bar' } to have properties 'a', 'b'\n" +
         '  The assertion does not have a matching signature for:\n' +
         '    <object> to have properties <string> <string>\n' +
@@ -199,14 +168,12 @@ describe('to have properties assertion', () => {
         '    <object> to have [own] properties <object>'
     );
 
-    expect(
-      function () {
-        expect({ a: 'foo', b: 'bar' }, 'not to have properties', {
-          a: 'foo',
-          b: 'bar',
-        });
-      },
-      'to throw',
+    expect(function () {
+      expect({ a: 'foo', b: 'bar' }).notToHaveProperties({
+        a: 'foo',
+        b: 'bar',
+      });
+    }).toThrow(
       "expected { a: 'foo', b: 'bar' } not to have properties { a: 'foo', b: 'bar' }\n" +
         '  The assertion does not have a matching signature for:\n' +
         '    <object> not to have properties <object>\n' +
@@ -221,7 +188,7 @@ describe('to have properties assertion', () => {
     subject.bar = 'bar';
     subject.baz = 'baz';
 
-    expect(subject, 'to have properties', {
+    expect(subject).toHaveProperties({
       foo: 'foo',
       bar: 'bar',
       baz: 'baz',
@@ -230,27 +197,21 @@ describe('to have properties assertion', () => {
 
   describe('with expected numerical property names listed as numbers', () => {
     it('should succeed', () => {
-      expect({ 1: 'foo', 2: 'bar' }, 'to have properties', [1, 2]);
+      expect({ 1: 'foo', 2: 'bar' }).toHaveProperties([1, 2]);
     });
 
     it('should fail with a diff', () => {
-      expect(
-        function () {
-          expect({ 1: 123, 2: 456 }, 'to have properties', [1, 3]);
-        },
-        'to error',
-        'expected { 1: 123, 2: 456 } to have properties [ 1, 3 ]'
-      );
+      expect(function () {
+        expect({ 1: 123, 2: 456 }).toHaveProperties([1, 3]);
+      }).toError('expected { 1: 123, 2: 456 } to have properties [ 1, 3 ]');
     });
   });
 
   describe('with expected property names listed as neither strings nor numbers', () => {
     it('should fail when a boolean is passed, even if there is a corresponding string property', () => {
-      expect(
-        function () {
-          expect({ true: 123 }, 'to have properties', [true]);
-        },
-        'to error',
+      expect(function () {
+        expect({ true: 123 }).toHaveProperties([true]);
+      }).toError(
         'expected { true: 123 } to have properties [ true ]\n' +
           '  All expected properties must be passed as strings, symbols, or numbers, but these are not:\n' +
           '    true'
@@ -258,17 +219,15 @@ describe('to have properties assertion', () => {
     });
 
     it('should fail when an object is passed, even if there is a corresponding string property', () => {
-      expect(
-        function () {
-          expect({ foo: 123 }, 'to have properties', [
-            {
-              toString: function toString() {
-                return 'foo';
-              },
+      expect(function () {
+        expect({ foo: 123 }).toHaveProperties([
+          {
+            toString: function toString() {
+              return 'foo';
             },
-          ]);
-        },
-        'to error',
+          },
+        ]);
+      }).toError(
         'expected { foo: 123 }\n' +
           "to have properties [ { toString: function toString() { return 'foo'; } } ]\n" +
           '  All expected properties must be passed as strings, symbols, or numbers, but these are not:\n' +
@@ -277,11 +236,9 @@ describe('to have properties assertion', () => {
     });
 
     it('should should mention all the non-string, non-number property names in a list after the error message', () => {
-      expect(
-        function () {
-          expect({ foo: 123 }, 'to have properties', [true, false]);
-        },
-        'to error',
+      expect(function () {
+        expect({ foo: 123 }).toHaveProperties([true, false]);
+      }).toError(
         'expected { foo: 123 } to have properties [ true, false ]\n' +
           '  All expected properties must be passed as strings, symbols, or numbers, but these are not:\n' +
           '    true\n' +
@@ -293,29 +250,24 @@ describe('to have properties assertion', () => {
   describe('with the "only" flag', () => {
     it('should pass', () => {
       expect(function () {
-        expect({ foo: 123, bar: 456 }, 'to only have properties', [
-          'foo',
-          'bar',
-        ]);
-      }, 'not to throw');
+        expect({ foo: 123, bar: 456 }).toOnlyHaveProperties(['foo', 'bar']);
+      }).notToThrow();
     });
 
     it('should pass regardless of ordering', () => {
       expect(function () {
-        expect({ foo: 123, bar: 456, baz: 768 }, 'to only have properties', [
+        expect({ foo: 123, bar: 456, baz: 768 }).toOnlyHaveProperties([
           'baz',
           'foo',
           'bar',
         ]);
-      }, 'not to throw');
+      }).notToThrow();
     });
 
     it('should fail with a diff and mark properties to be removed', () => {
-      expect(
-        function () {
-          expect({ foo: 123, bar: 456 }, 'to only have properties', ['foo']);
-        },
-        'to error',
+      expect(function () {
+        expect({ foo: 123, bar: 456 }).toOnlyHaveProperties(['foo']);
+      }).toError(
         "expected { foo: 123, bar: 456 } to only have properties [ 'foo' ]\n" +
           '\n' +
           '{\n' +
@@ -326,14 +278,9 @@ describe('to have properties assertion', () => {
     });
 
     it('should fail with a diff and mark properties that are missing', () => {
-      expect(
-        function () {
-          expect({ foo: 123, bar: 456 }, 'to only have properties', [
-            'foo',
-            'baz',
-          ]);
-        },
-        'to error',
+      expect(function () {
+        expect({ foo: 123, bar: 456 }).toOnlyHaveProperties(['foo', 'baz']);
+      }).toError(
         "expected { foo: 123, bar: 456 } to only have properties [ 'foo', 'baz' ]\n" +
           '\n' +
           '{\n' +
@@ -345,11 +292,9 @@ describe('to have properties assertion', () => {
     });
 
     it('should fail with a diff while avoiding the prototype chain', () => {
-      expect(
-        function () {
-          expect({ toString: 'foobar' }, 'to only have properties', []);
-        },
-        'to error',
+      expect(function () {
+        expect({ toString: 'foobar' }).toOnlyHaveProperties([]);
+      }).toError(
         "expected { toString: 'foobar' } to only have properties []\n" +
           '\n' +
           '{\n' +
@@ -360,34 +305,28 @@ describe('to have properties assertion', () => {
 
     it('should ignore undefined properties (pass)', () => {
       expect(function () {
-        expect({ foo: 123, bar: undefined }, 'to only have properties', [
-          'foo',
-        ]);
-      }, 'not to throw');
+        expect({ foo: 123, bar: undefined }).toOnlyHaveProperties(['foo']);
+      }).notToThrow();
     });
 
     it('should ignore undefined properties (fail)', () => {
       expect(function () {
-        expect({ 123: undefined }, 'to only have properties', ['123']);
-      }, 'to throw');
+        expect({ 123: undefined }).toOnlyHaveProperties(['123']);
+      }).toThrow();
     });
 
     it('should error if used with the not flag', () => {
-      expect(
-        function () {
-          expect({ foo: 123 }, 'not to only have properties', ['foo']);
-        },
-        'to throw',
+      expect(function () {
+        expect({ foo: 123 }).notToOnlyHaveProperties(['foo']);
+      }).toThrow(
         'The "not" flag cannot be used together with "to only have properties".'
       );
     });
 
     it('should error if used with the own flag', () => {
-      expect(
-        function () {
-          expect({ foo: 123 }, 'to only have own properties', ['foo']);
-        },
-        'to throw',
+      expect(function () {
+        expect({ foo: 123 }).toOnlyHaveOwnProperties(['foo']);
+      }).toThrow(
         'The "own" flag cannot be used together with "to only have properties".'
       );
     });
@@ -400,15 +339,15 @@ describe('to have properties assertion', () => {
     describe('with symbols', function () {
       it('should pass if the object has the given symbol(s)', () => {
         const symbol = Symbol('foo');
-        expect({ [symbol]: 123 }, 'to have properties', [symbol]);
+        expect({ [symbol]: 123 }).toHaveProperties([symbol]);
       });
 
       it('should fail if the object is missing the given symbol(s)', () => {
         const symbolFoo = Symbol('foo');
         const symbolBar = Symbol('bar');
-        expect(
-          () => expect({ [symbolFoo]: 123 }, 'to have properties', [symbolBar]),
-          'to throw',
+        expect(() =>
+          expect({ [symbolFoo]: 123 }).toHaveProperties([symbolBar])
+        ).toThrow(
           "expected { [Symbol('foo')]: 123 } to have properties [ Symbol('bar') ]"
         );
       });
@@ -416,18 +355,15 @@ describe('to have properties assertion', () => {
       describe('and the own flag', function () {
         it('should pass if the object has the given own symbol(s)', () => {
           const symbol = Symbol('foo');
-          expect({ [symbol]: 123 }, 'to have own properties', [symbol]);
+          expect({ [symbol]: 123 }).toHaveOwnProperties([symbol]);
         });
 
         it('should fail if the object is missing the given symbol(s)', () => {
           const symbolFoo = Symbol('foo');
           const symbolBar = Symbol('bar');
-          expect(
-            () =>
-              expect({ [symbolFoo]: 123 }, 'to have own properties', [
-                symbolBar,
-              ]),
-            'to throw',
+          expect(() =>
+            expect({ [symbolFoo]: 123 }).toHaveOwnProperties([symbolBar])
+          ).toThrow(
             "expected { [Symbol('foo')]: 123 } to have own properties [ Symbol('bar') ]"
           );
         });

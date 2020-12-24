@@ -8,9 +8,7 @@ describe('stringDiff', () => {
   describe('in text mode', () => {
     it('outputs leading + and - in text mode', () => {
       const pen = expect.createOutput('text').stringDiff(actual, expected);
-      expect(
-        pen.toString(),
-        'to equal',
+      expect(pen.toString()).toEqual(
         '-abc\n' +
           '-def\n' +
           ' ghi\n' +
@@ -22,9 +20,7 @@ describe('stringDiff', () => {
           '+vwx'
       );
 
-      expect(
-        pen,
-        'to equal',
+      expect(pen).toEqual(
         expect
           .createOutput('text')
           .block(function () {
@@ -69,9 +65,7 @@ describe('stringDiff', () => {
 
   describe('in ansi mode', () => {
     it('does not output leading + and -', () => {
-      expect(
-        expect.createOutput('ansi').stringDiff(actual, expected),
-        'to equal',
+      expect(expect.createOutput('ansi').stringDiff(actual, expected)).toEqual(
         expect
           .createOutput('ansi')
           .diffRemovedLine('abc')
@@ -95,49 +89,37 @@ describe('stringDiff', () => {
     });
 
     it('renders escaped newlines when a line has been removed', () => {
-      expect(
-        expect.createOutput('ansi').stringDiff('\n', ''),
-        'to equal',
+      expect(expect.createOutput('ansi').stringDiff('\n', '')).toEqual(
         expect.createOutput('ansi').diffRemovedSpecialChar('\\n').nl()
       );
     });
 
     it('renders escaped newlines when a line has been added', () => {
-      expect(
-        expect.createOutput('ansi').stringDiff('', '\n'),
-        'to equal',
+      expect(expect.createOutput('ansi').stringDiff('', '\n')).toEqual(
         expect.createOutput('ansi').diffAddedSpecialChar('\\n').nl()
       );
     });
 
     it('highlights trailing whitespace in an added line', () => {
-      expect(
-        expect.createOutput('ansi').stringDiff('  \n', ''),
-        'to equal',
+      expect(expect.createOutput('ansi').stringDiff('  \n', '')).toEqual(
         expect.createOutput('ansi').diffRemovedHighlight('  ').nl()
       );
     });
 
     it('highlights trailing whitespace in a removed line', () => {
-      expect(
-        expect.createOutput('ansi').stringDiff('', '  \n'),
-        'to equal',
+      expect(expect.createOutput('ansi').stringDiff('', '  \n')).toEqual(
         expect.createOutput('ansi').diffAddedHighlight('  ').nl()
       );
     });
 
     it('highlights missing trailing whitespace in the last line without newline after', () => {
-      expect(
-        expect.createOutput('ansi').stringDiff('', ' '),
-        'to equal',
+      expect(expect.createOutput('ansi').stringDiff('', ' ')).toEqual(
         expect.createOutput('ansi').diffAddedHighlight(' ')
       );
     });
 
     it('highlights extraneous trailing whitespace in the last line without newline after', () => {
-      expect(
-        expect.createOutput('ansi').stringDiff(' ', ''),
-        'to equal',
+      expect(expect.createOutput('ansi').stringDiff(' ', '')).toEqual(
         expect.createOutput('ansi').diffRemovedHighlight(' ')
       );
     });
@@ -146,8 +128,8 @@ describe('stringDiff', () => {
       expect(
         expect
           .createOutput('ansi')
-          .stringDiff('foo bar quux baz', 'foo quux bar baz'),
-        'to equal',
+          .stringDiff('foo bar quux baz', 'foo quux bar baz')
+      ).toEqual(
         expect
           .createOutput('ansi')
           .diffRemovedLine('foo bar ')
@@ -162,8 +144,8 @@ describe('stringDiff', () => {
 
     it('does not highlight trailing whitespace in an unchanged line', () => {
       expect(
-        expect.createOutput('ansi').stringDiff('foo  \nbar', 'foo  \nquux'),
-        'to equal',
+        expect.createOutput('ansi').stringDiff('foo  \nbar', 'foo  \nquux')
+      ).toEqual(
         expect
           .createOutput('ansi')
           .text('foo  ')
@@ -175,9 +157,7 @@ describe('stringDiff', () => {
     });
 
     it('should escape an added newline immediately following a replaced chunk', () => {
-      expect(
-        expect.createOutput('ansi').stringDiff('aa );', '\n);'),
-        'to equal',
+      expect(expect.createOutput('ansi').stringDiff('aa );', '\n);')).toEqual(
         expect
           .createOutput('ansi')
           .diffRemovedHighlight('aa ')
@@ -197,10 +177,8 @@ describe('stringDiff', () => {
       expect(
         expect
           .createOutput('text')
-          .stringDiffFragment(' ', '\ufffd', 'text', true),
-        'to equal',
-        expect.createOutput('text').raw(' ').text('\ufffd')
-      );
+          .stringDiffFragment(' ', '\ufffd', 'text', true)
+      ).toEqual(expect.createOutput('text').raw(' ').text('\ufffd'));
     });
   });
 });

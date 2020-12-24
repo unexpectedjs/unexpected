@@ -21,21 +21,17 @@ if (
 
     describe('when compared for equality', () => {
       it('considers a symbol equal to itself', () => {
-        expect(symbolA, 'to equal', symbolA);
+        expect(symbolA).toEqual(symbolA);
       });
 
       it('considers two symbols with the same name different', () => {
-        expect(symbolA, 'not to equal', anotherSymbolA);
+        expect(symbolA).notToEqual(anotherSymbolA);
       });
 
       it('does not render a diff', () => {
-        expect(
-          function () {
-            expect(symbolA, 'to equal', symbolB);
-          },
-          'to throw',
-          "expected Symbol('a') to equal Symbol('b')"
-        );
+        expect(function () {
+          expect(symbolA).toEqual(symbolB);
+        }).toThrow("expected Symbol('a') to equal Symbol('b')");
       });
 
       it('should include Symbol properties in the "to equal" diff of objects', () => {
@@ -45,11 +41,9 @@ if (
         const b = { foo: 456 };
         b[symbolA] = 'bar';
         b[symbolB] = 123;
-        expect(
-          function () {
-            expect(a, 'to equal', b);
-          },
-          'to throw',
+        expect(function () {
+          expect(a).toEqual(b);
+        }).toThrow(
           "expected { foo: 123, [Symbol('a')]: 'foo', [Symbol('b')]: 123 }\n" +
             "to equal { foo: 456, [Symbol('a')]: 'bar', [Symbol('b')]: 123 }\n" +
             '\n' +
@@ -67,19 +61,17 @@ if (
 
     describe('with to satisfy', () => {
       it('satisfies itself', () => {
-        expect(symbolA, 'to satisfy', symbolA);
+        expect(symbolA).toSatisfy(symbolA);
       });
 
       it('does not satisfy another symbol, even with the same name', () => {
-        expect(symbolA, 'not to satisfy', anotherSymbolA);
+        expect(symbolA).notToSatisfy(anotherSymbolA);
       });
 
       it('does not render a diff', () => {
-        expect(
-          function () {
-            expect({ foo: symbolA }, 'to satisfy', { foo: anotherSymbolA });
-          },
-          'to throw',
+        expect(function () {
+          expect({ foo: symbolA }).toSatisfy({ foo: anotherSymbolA });
+        }).toThrow(
           "expected { foo: Symbol('a') } to satisfy { foo: Symbol('a') }\n" +
             '\n' +
             '{\n' +
@@ -95,11 +87,9 @@ if (
         const b = { foo: 456 };
         b[symbolA] = 'bar';
         b[symbolB] = 123;
-        expect(
-          function () {
-            expect(a, 'to satisfy', b);
-          },
-          'to throw',
+        expect(function () {
+          expect(a).toSatisfy(b);
+        }).toThrow(
           "expected { foo: 123, [Symbol('a')]: 'foo', [Symbol('b')]: 123 }\n" +
             "to satisfy { foo: 456, [Symbol('a')]: 'bar', [Symbol('b')]: 123 }\n" +
             '\n' +

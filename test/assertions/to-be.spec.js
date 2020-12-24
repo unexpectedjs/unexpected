@@ -2,81 +2,71 @@
 describe('to be assertion', () => {
   it('assert === equality', () => {
     const obj = {};
-    expect(obj, 'to be', obj);
-    expect(obj, 'not to be', {});
-    expect(1, 'to be', 1);
-    expect(1, 'not to be', true);
-    expect('1', 'not to be', 1);
-    expect(null, 'not to be', undefined);
-    expect(null, 'to be null');
-    expect(0, 'not to be null');
-    expect(undefined, 'not to be null');
-    expect(true, 'to be true');
-    expect(false, 'not to be true');
-    expect(false, 'to be false');
-    expect(true, 'not to be false');
-    expect(undefined, 'not to be defined');
-    expect(undefined, 'to be undefined');
-    expect(false, 'to be defined');
-    expect({}, 'to be defined');
-    expect('', 'to be defined');
+    expect(obj).toBe(obj);
+    expect(obj).notToBe({});
+    expect(1).toBe(1);
+    expect(1).notToBe(true);
+    expect('1').notToBe(1);
+    expect(null).notToBe(undefined);
+    expect(null).toBeNull();
+    expect(0).notToBeNull();
+    expect(undefined).notToBeNull();
+    expect(true).toBeTrue();
+    expect(false).notToBeTrue();
+    expect(false).toBeFalse();
+    expect(true).notToBeFalse();
+    expect(undefined).notToBeDefined();
+    expect(undefined).toBeUndefined();
+    expect(false).toBeDefined();
+    expect({}).toBeDefined();
+    expect('').toBeDefined();
   });
 
   it('NaN as equal to NaN', () => {
-    expect(NaN, 'to be', NaN);
+    expect(NaN).toBe(NaN);
   });
 
   it('considers negative zero not to be zero', () => {
-    expect(-0, 'not to be', 0);
+    expect(-0).notToBe(0);
   });
 
   it('considers negative zero to be itself', () => {
-    expect(-0, 'to be', -0);
+    expect(-0).toBe(-0);
   });
 
   it('considers zero to be itself', () => {
-    expect(0, 'to be', 0);
+    expect(0).toBe(0);
   });
 
   if (typeof Buffer !== 'undefined') {
     it('asserts === equality for Buffers', () => {
       const buffer = Buffer.from([0x45, 0x59]);
-      expect(buffer, 'to be', buffer);
+      expect(buffer).toBe(buffer);
     });
   }
 
   if (typeof Uint8Array !== 'undefined') {
     it('asserts === equality for Uint8Array', () => {
       const uint8Array = new Uint8Array([0x45, 0x59]);
-      expect(uint8Array, 'to be', uint8Array);
+      expect(uint8Array).toBe(uint8Array);
     });
   }
 
   describe('on strings', () => {
     it('throws when the assertion fails', () => {
-      expect(
-        function () {
-          expect('foo', 'to be', 'bar');
-        },
-        'to throw exception',
+      expect(function () {
+        expect('foo').toBe('bar');
+      }).toThrowException(
         "expected 'foo' to be 'bar'\n" + '\n' + '-foo\n' + '+bar'
       );
 
-      expect(
-        function () {
-          expect(true, 'not to be', true);
-        },
-        'to throw exception',
-        'expected true not to be true'
-      );
+      expect(function () {
+        expect(true).notToBe(true);
+      }).toThrowException('expected true not to be true');
 
-      expect(
-        function () {
-          expect(undefined, 'to be defined');
-        },
-        'to throw exception',
-        'expected undefined to be defined'
-      );
+      expect(function () {
+        expect(undefined).toBeDefined();
+      }).toThrowException('expected undefined to be defined');
     });
 
     it('truncates lines in large diffs', () => {
@@ -138,25 +128,18 @@ describe('to be assertion', () => {
          steak pastrami ham hock beef spare ribs shank kevin bacon. Pork loin sausage
          boudin meatball chuck.`.replace(/^ {8}/gm, '');
 
-      expect(
-        () => {
-          expect(modifiedParagraphs, 'to equal', paragraphs);
-        },
-        'to throw',
-        expectedOutput
-      );
+      expect(() => {
+        expect(modifiedParagraphs).toEqual(paragraphs);
+      }).toThrow(expectedOutput);
     });
 
     // These would be annoying to look at
     it('does not produce ... 1 lines omitted ... lines', () => {
-      expect(
-        () =>
-          expect(
-            'a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\nl\nm\nn\no\np\nq\n',
-            'to equal',
-            'a\nb\nc\nd\nf\ng\nh\ni\nj\nk\nl\nn\no\np\nq\n'
-          ),
-        'to throw',
+      expect(() =>
+        expect('a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\nl\nm\nn\no\np\nq\n').toEqual(
+          'a\nb\nc\nd\nf\ng\nh\ni\nj\nk\nl\nn\no\np\nq\n'
+        )
+      ).toThrow(
         "expected 'a\\nb\\nc\\nd\\ne\\nf\\ng\\nh\\ni\\nj\\nk\\nl\\nm\\nn\\no\\np\\nq\\n'\n" +
           "to equal 'a\\nb\\nc\\nd\\nf\\ng\\nh\\ni\\nj\\nk\\nl\\nn\\no\\np\\nq\\n'\n" +
           '\n' +
@@ -232,23 +215,15 @@ describe('to be assertion', () => {
          beef ribs. Prosciutto boudin pancetta beef ribs short loin porchetta pastrami,
         ... 5 lines omitted ...`.replace(/^ {8}/gm, '');
 
-      expect(
-        () => {
-          expect(modifiedParagraphs, 'to equal', paragraphs);
-        },
-        'to throw',
-        expectedOutput
-      );
+      expect(() => {
+        expect(modifiedParagraphs).toEqual(paragraphs);
+      }).toThrow(expectedOutput);
     });
 
     it('does not provide a diff when comparing against undefined', () => {
-      expect(
-        function () {
-          expect('blabla', 'to be undefined');
-        },
-        'to throw',
-        "expected 'blabla' to be undefined"
-      );
+      expect(function () {
+        expect('blabla').toBeUndefined();
+      }).toThrow("expected 'blabla' to be undefined");
     });
   });
 });

@@ -12,8 +12,8 @@ describe('styleType', () => {
       .exportStyle('firstStyle', function () {})
       .exportStyle('secondStyle', function () {});
 
-    expect(parentExpect.output.firstStyle, 'to be a function');
-    expect(parentExpect.output.secondStyle, 'to be a function');
+    expect(parentExpect.output.firstStyle).toBeAFunction();
+    expect(parentExpect.output.secondStyle).toBeAFunction();
   });
 
   it('makes the style available to the parent expect', () => {
@@ -21,9 +21,7 @@ describe('styleType', () => {
       this.text('>>').text(text).text('<<');
     });
 
-    expect(
-      parentExpect.createOutput().fancyQuotes('yadda').toString(),
-      'to equal',
+    expect(parentExpect.createOutput().fancyQuotes('yadda').toString()).toEqual(
       '>>yadda<<'
     );
   });
@@ -32,7 +30,7 @@ describe('styleType', () => {
     childExpect.child().exportStyle('fancyQuotes', function (text) {
       this.text('>>').text(text).text('<<');
     });
-    expect(parentExpect.createOutput(), 'to satisfy', {
+    expect(parentExpect.createOutput()).toSatisfy({
       fancyQuotes: undefined,
     });
   });
@@ -46,9 +44,7 @@ describe('styleType', () => {
       this.fancyQuotes(text);
     });
 
-    expect(
-      parentExpect.createOutput().emphasize('yadda').toString(),
-      'to equal',
+    expect(parentExpect.createOutput().emphasize('yadda').toString()).toEqual(
       '>>yadda<<'
     );
   });
@@ -65,9 +61,7 @@ describe('styleType', () => {
       true
     );
 
-    expect(
-      parentExpect.createOutput().fancyQuotes('yadda').toString(),
-      'to equal',
+    expect(parentExpect.createOutput().fancyQuotes('yadda').toString()).toEqual(
       '>>yadda<<'
     );
   });

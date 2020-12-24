@@ -6,20 +6,16 @@ describe('to be fulfilled with value satisfying assertion', () => {
         setTimeout(function () {
           resolve(123);
         }, 0);
-      }),
-      'to be fulfilled with value satisfying',
-      123
-    );
+      })
+    ).toBeFulfilledWithValueSatisfying(123);
   });
 
   it('should forward the fulfillment value', () => {
-    return expect(
-      expect.promise.resolve(123),
-      'to be fulfilled with value satisfying',
-      123
-    ).then(function (value) {
-      expect(value, 'to equal', 123);
-    });
+    return expect(expect.promise.resolve(123))
+      .toBeFulfilledWithValueSatisfying(123)
+      .then(function (value) {
+        expect(value).toEqual(123);
+      });
   });
 
   it('should fail if the promise is resolved with a value that does not satisfy the argument', () => {
@@ -29,11 +25,9 @@ describe('to be fulfilled with value satisfying assertion', () => {
           setTimeout(function () {
             resolve({ foo: 'bar', baz: 'quux' });
           }, 1);
-        }),
-        'to be fulfilled with value satisfying',
-        { baz: 'qux' }
-      ),
-      'to be rejected with',
+        })
+      ).toBeFulfilledWithValueSatisfying({ baz: 'qux' })
+    ).toBeRejectedWith(
       "expected Promise to be fulfilled with value satisfying { baz: 'qux' }\n" +
         "  expected { foo: 'bar', baz: 'quux' } to satisfy { baz: 'qux' }\n" +
         '\n' +
@@ -55,15 +49,12 @@ describe('to be fulfilled with value satisfying assertion', () => {
             foo: 'foo',
             bar: 'bar',
             quux: 'quux',
-          }),
-          'to be fulfilled with value exhaustively satisfying',
-          {
-            foo: 'foo',
-            bar: 'bar',
-          }
-        ),
-        'to be rejected'
-      );
+          })
+        ).toBeFulfilledWithValueExhaustivelySatisfying({
+          foo: 'foo',
+          bar: 'bar',
+        })
+      ).toBeRejected();
     });
 
     it('errors with the correct error', () => {
@@ -73,14 +64,12 @@ describe('to be fulfilled with value satisfying assertion', () => {
             foo: 'foo',
             bar: 'bar',
             quux: 'quux',
-          }),
-          'to be fulfilled with value exhaustively satisfying',
-          {
-            foo: 'foo',
-            bar: 'bar',
-          }
-        ),
-        'to be rejected with',
+          })
+        ).toBeFulfilledWithValueExhaustivelySatisfying({
+          foo: 'foo',
+          bar: 'bar',
+        })
+      ).toBeRejectedWith(
         'expected Promise\n' +
           "to be fulfilled with value exhaustively satisfying { foo: 'foo', bar: 'bar' }\n" +
           "  expected { foo: 'foo', bar: 'bar', quux: 'quux' }\n" +
@@ -102,29 +91,21 @@ describe('to be fulfilled with value satisfying assertion', () => {
           foo: 'foo',
           bar: 'bar',
           quux: 'quux',
-        }),
-        'to be fulfilled with value satisfying',
-        {
-          foo: 'foo',
-          bar: 'bar',
-        }
-      );
+        })
+      ).toBeFulfilledWithValueSatisfying({
+        foo: 'foo',
+        bar: 'bar',
+      });
     });
   });
 
   describe('when passed a function as the subject', () => {
     it('should fail if the function returns a promise that is fulfilled with the wrong value', () => {
-      expect(
-        function () {
-          return expect(
-            function () {
-              return expect.promise.resolve(123);
-            },
-            'to be fulfilled with value satisfying',
-            456
-          );
-        },
-        'to throw',
+      expect(function () {
+        return expect(function () {
+          return expect.promise.resolve(123);
+        }).toBeFulfilledWithValueSatisfying(456);
+      }).toThrow(
         'expected\n' +
           'function () {\n' +
           '  return expect.promise.resolve(123);\n' +
@@ -138,42 +119,32 @@ describe('to be fulfilled with value satisfying assertion', () => {
     describe('with the "exhaustively" flag', () => {
       it("errors if the expected value doesn't contain all the values in the subject", () => {
         return expect(function () {
-          return expect(
-            function () {
-              return Promise.resolve({
-                foo: 'foo',
-                bar: 'bar',
-                quux: 'quux',
-              });
-            },
-            'to be fulfilled with value exhaustively satisfying',
-            {
+          return expect(function () {
+            return Promise.resolve({
               foo: 'foo',
               bar: 'bar',
-            }
-          );
-        }, 'to be rejected');
+              quux: 'quux',
+            });
+          }).toBeFulfilledWithValueExhaustivelySatisfying({
+            foo: 'foo',
+            bar: 'bar',
+          });
+        }).toBeRejected();
       });
 
       it('errors with the correct error', () => {
-        return expect(
-          function () {
-            return expect(
-              function () {
-                return Promise.resolve({
-                  foo: 'foo',
-                  bar: 'bar',
-                  quux: 'quux',
-                });
-              },
-              'to be fulfilled with value exhaustively satisfying',
-              {
-                foo: 'foo',
-                bar: 'bar',
-              }
-            );
-          },
-          'to be rejected with',
+        return expect(function () {
+          return expect(function () {
+            return Promise.resolve({
+              foo: 'foo',
+              bar: 'bar',
+              quux: 'quux',
+            });
+          }).toBeFulfilledWithValueExhaustivelySatisfying({
+            foo: 'foo',
+            bar: 'bar',
+          });
+        }).toBeRejectedWith(
           'expected\n' +
             'function () {\n' +
             '  return Promise.resolve({\n' +
@@ -199,20 +170,16 @@ describe('to be fulfilled with value satisfying assertion', () => {
 
     describe('without the "exhaustively" flag', () => {
       it("doesn't error if the expected value doesn't contain all the values in the subject", () => {
-        return expect(
-          function () {
-            return expect.promise.resolve({
-              foo: 'foo',
-              bar: 'bar',
-              quux: 'quux',
-            });
-          },
-          'to be fulfilled with value satisfying',
-          {
+        return expect(function () {
+          return expect.promise.resolve({
             foo: 'foo',
             bar: 'bar',
-          }
-        );
+            quux: 'quux',
+          });
+        }).toBeFulfilledWithValueSatisfying({
+          foo: 'foo',
+          bar: 'bar',
+        });
       });
     });
   });

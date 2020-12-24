@@ -4,9 +4,7 @@ describe('merge', () => {
     const pen = expect.createOutput('text');
     pen.text('abc').nl().text('def');
     const anotherPen = pen.clone().text(' h').nl().text('i');
-    expect(
-      pen.clone().merge([pen, anotherPen]).toString(),
-      'to equal',
+    expect(pen.clone().merge([pen, anotherPen]).toString()).toEqual(
       'ahc\n' + 'ief'
     );
   });
@@ -15,9 +13,7 @@ describe('merge', () => {
     const pen = expect.createOutput('text');
     pen.text('a').nl().text('b');
     const anotherPen = pen.clone().text('c').nl().text('  d');
-    expect(
-      pen.clone().merge([pen, anotherPen]).toString(),
-      'to equal',
+    expect(pen.clone().merge([pen, anotherPen]).toString()).toEqual(
       'c\n' + 'b d'
     );
   });

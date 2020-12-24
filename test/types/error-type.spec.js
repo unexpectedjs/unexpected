@@ -38,13 +38,9 @@ describe('Error type', () => {
         return parseInt(obj.message, 10);
       },
     });
-    expect(
-      function () {
-        clonedExpect(new Error('1'), 'to equal', new Error('2'));
-      },
-      'to throw',
-      'expected Error#1 to equal Error#2'
-    );
+    expect(function () {
+      clonedExpect(new Error('1')).toEqual(new Error('2'));
+    }).toThrow('expected Error#1 to equal Error#2');
   });
 
   const isIE =
@@ -81,15 +77,13 @@ describe('Error type', () => {
     inherits(MyError, Error);
 
     it('should consider identical instances to be identical', () => {
-      expect(new MyError('foo'), 'to equal', new MyError('foo'));
+      expect(new MyError('foo')).toEqual(new MyError('foo'));
     });
 
     it('should consider an instance of the custom error different from an otherwise identical Error instance', () => {
-      expect(
-        function () {
-          expect(new MyError('foo'), 'to equal', new Error('foo'));
-        },
-        'to throw',
+      expect(function () {
+        expect(new MyError('foo')).toEqual(new Error('foo'));
+      }).toThrow(
         "expected MyError('foo') to equal Error('foo')\n" +
           '\n' +
           'Mismatching constructors MyError should be Error'
@@ -97,11 +91,9 @@ describe('Error type', () => {
     });
 
     it('should instances of the custom error different to be different when they have different messages', () => {
-      expect(
-        function () {
-          expect(new MyError('foo'), 'to equal', new MyError('bar'));
-        },
-        'to throw',
+      expect(function () {
+        expect(new MyError('foo')).toEqual(new MyError('bar'));
+      }).toThrow(
         "expected MyError('foo') to equal MyError('bar')\n" +
           '\n' +
           'MyError({\n' +
@@ -122,11 +114,9 @@ describe('Error type', () => {
       });
 
       it('should use the "name" property when reporting mismatching constructors', () => {
-        expect(
-          function () {
-            expect(myError, 'to equal', new Error('foo'));
-          },
-          'to throw',
+        expect(function () {
+          expect(myError).toEqual(new Error('foo'));
+        }).toThrow(
           "expected SomethingElse('foo') to equal Error('foo')\n" +
             '\n' +
             'Mismatching constructors SomethingElse should be Error'
@@ -134,13 +124,11 @@ describe('Error type', () => {
       });
 
       it('should use the "name" property when diffing', () => {
-        expect(
-          function () {
-            const otherMyError = new MyError('bar');
-            otherMyError.name = 'SomethingElse';
-            expect(myError, 'to equal', otherMyError);
-          },
-          'to throw',
+        expect(function () {
+          const otherMyError = new MyError('bar');
+          otherMyError.name = 'SomethingElse';
+          expect(myError).toEqual(otherMyError);
+        }).toThrow(
           "expected SomethingElse('foo') to equal SomethingElse('bar')\n" +
             '\n' +
             'SomethingElse({\n' +
@@ -161,8 +149,8 @@ describe('Error type', () => {
       e2.message = 'foo';
 
       expect(() => {
-        expect(e1, 'to equal', e2);
-      }, 'not to throw');
+        expect(e1).toEqual(e2);
+      }).notToThrow();
     });
   });
 });

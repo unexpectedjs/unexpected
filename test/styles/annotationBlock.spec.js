@@ -5,9 +5,7 @@ describe('annotationBlock', () => {
       expect
         .createOutput('text')
         .annotationBlock(function () {})
-        .toString(),
-      'to equal',
-      '// '
-    );
+        .toString()
+    ).toEqual('// ');
   });
 });

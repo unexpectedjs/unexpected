@@ -22,11 +22,9 @@ describe('expect.shift', () => {
             return expect.shift();
           }
         );
-      expect(
-        function () {
-          clonedExpect('foo', 'blabla', 'to equal', 'foobar');
-        },
-        'to throw',
+      expect(function () {
+        clonedExpect('foo', 'blabla', 'to equal', 'foobar');
+      }).toThrow(
         "expected 'foo' blabla to equal 'foobar'\n" +
           '\n' +
           '-foo\n' +
@@ -60,11 +58,9 @@ describe('expect.shift', () => {
         }
       );
 
-    return expect(
-      function () {
-        clonedExpect(5, 'up to and including', 100, 'to be within', 1, 90);
-      },
-      'to error',
+    return expect(function () {
+      clonedExpect(5, 'up to and including', 100, 'to be within', 1, 90);
+    }).toError(
       'expected 5 up to and including 100 to be within 1, 90\n' +
         '  expected 91 to be within 1..90'
     );
@@ -92,11 +88,9 @@ describe('expect.shift', () => {
             return expect.shift(`${subject}bar`);
           }
         );
-      expect(
-        function () {
-          clonedExpect('crow', 'when appended with bar', 'to equal', 'foobar');
-        },
-        'to throw',
+      expect(function () {
+        clonedExpect('crow', 'when appended with bar', 'to equal', 'foobar');
+      }).toThrow(
         "expected 'crow' when appended with bar to equal 'foobar'\n" +
           '\n' +
           '-crowbar\n' +
@@ -117,17 +111,15 @@ describe('expect.shift', () => {
           return expect.shift(`${subject}bar`);
         }
       );
-    expect(
-      function () {
-        clonedExpect(
-          'crow',
-          'when appended with bar',
-          'when appended with bar',
-          'to equal',
-          'foobarbar'
-        );
-      },
-      'to throw',
+    expect(function () {
+      clonedExpect(
+        'crow',
+        'when appended with bar',
+        'when appended with bar',
+        'to equal',
+        'foobarbar'
+      );
+    }).toThrow(
       "expected 'crow' when appended with bar when appended with bar to equal 'foobarbar'"
     );
   });
@@ -141,11 +133,7 @@ describe('expect.shift', () => {
           return expect.shift(expect, `foo${subject}`, 0);
         }
       );
-    clonedExpect(
-      'foo',
-      'when prepended with foo',
-      expect.it('to equal', 'foofoo')
-    );
+    clonedExpect('foo', 'when prepended with foo', expect.toEqual('foofoo'));
   });
 
   describe('with the legacy 2 argument version', () => {
@@ -159,17 +147,15 @@ describe('expect.shift', () => {
           }
         );
 
-      return expect(
-        function () {
-          clonedExpect(
-            'bar',
-            'when surrounded by',
-            'foo',
-            'quux',
-            'to be a number'
-          );
-        },
-        'to throw',
+      return expect(function () {
+        clonedExpect(
+          'bar',
+          'when surrounded by',
+          'foo',
+          'quux',
+          'to be a number'
+        );
+      }).toThrow(
         "expected 'bar' when surrounded by 'foo', 'quux' to be a number"
       );
     });
@@ -185,11 +171,7 @@ describe('expect.shift', () => {
             return expect.shift(`foo${subject}`);
           }
         );
-      clonedExpect(
-        'foo',
-        'when prepended with foo',
-        expect.it('to equal', 'foofoo')
-      );
+      clonedExpect('foo', 'when prepended with foo', expect.toEqual('foofoo'));
     });
   });
 
@@ -202,11 +184,9 @@ describe('expect.shift', () => {
           return expect.shift(`foo${subject}`);
         }
       );
-    expect(
-      function () {
-        clonedExpect('foo', 'when prepended with foo', function () {});
-      },
-      'to throw',
+    expect(function () {
+      clonedExpect('foo', 'when prepended with foo', function () {});
+    }).toThrow(
       "expected 'foo' when prepended with foo function () {}\n" +
         '  The assertion does not have a matching signature for:\n' +
         '    <string> when prepended with foo <function>\n' +
@@ -222,8 +202,8 @@ describe('expect.shift', () => {
 
     it('should fail with a diff', () => {
       return expect(
-        expect(false, 'when delayed a little bit', 'to be a number'),
-        'to be rejected with',
+        expect(false, 'when delayed a little bit', 'to be a number')
+      ).toBeRejectedWith(
         'expected false when delayed a little bit to be a number'
       );
     });
@@ -240,17 +220,15 @@ describe('expect.shift', () => {
           }
         );
 
-      expect(
-        function () {
-          clonedExpect(
-            'bar',
-            'when prepended with',
-            'foo',
-            'to equal',
-            'foobarquux'
-          );
-        },
-        'to throw',
+      expect(function () {
+        clonedExpect(
+          'bar',
+          'when prepended with',
+          'foo',
+          'to equal',
+          'foobarquux'
+        );
+      }).toThrow(
         "expected 'bar' when prepended with 'foo' to equal 'foobarquux'\n" +
           '\n' +
           '-foobar\n' +
@@ -265,17 +243,13 @@ describe('expect.shift', () => {
           '<string> when prepended with foo <string> <number+>',
           function (expect, subject) {
             expect.shift(`foo${subject}`, 0);
-            expect('abc', 'to equal', 'def');
+            expect('abc').toEqual('def');
           }
         );
 
-      expect(
-        function () {
-          clonedExpect('bar', 'when prepended with foo', 'to equal', 123, 456);
-        },
-        'to throw',
-        "expected 'bar' when prepended with foo to equal 123, 456"
-      );
+      expect(function () {
+        clonedExpect('bar', 'when prepended with foo', 'to equal', 123, 456);
+      }).toThrow("expected 'bar' when prepended with foo to equal 123, 456");
     });
 
     it('should render the correct error message when the assertion being shifted to is not a string', () => {
@@ -285,15 +259,13 @@ describe('expect.shift', () => {
           '<string> when prepended with foo <number+>',
           function (expect, subject) {
             expect.shift(`foo${subject}`, 0);
-            expect('abc', 'to equal', 'def');
+            expect('abc').toEqual('def');
           }
         );
 
-      expect(
-        function () {
-          clonedExpect('bar', 'when prepended with foo', 123, 456);
-        },
-        'to throw',
+      expect(function () {
+        clonedExpect('bar', 'when prepended with foo', 123, 456);
+      }).toThrow(
         "expected 'bar' when prepended with foo 123 456\n" +
           '\n' +
           '-abc\n' +
@@ -308,15 +280,13 @@ describe('expect.shift', () => {
           '<string> when prepended with foo',
           function (expect, subject) {
             expect.shift(`foo${subject}`, 1);
-            expect('abc', 'to equal', 'def');
+            expect('abc').toEqual('def');
           }
         );
 
-      expect(
-        function () {
-          clonedExpect('bar', 'when prepended with foo');
-        },
-        'to throw',
+      expect(function () {
+        clonedExpect('bar', 'when prepended with foo');
+      }).toThrow(
         "expected 'bar' when prepended with foo\n" + '\n' + '-abc\n' + '+def'
       );
     });
@@ -370,11 +340,9 @@ describe('expect.shift', () => {
         }
       );
 
-    expect(
-      () => {
-        clonedExpect(666, 'when stringified', 'to be negative');
-      },
-      'to throw',
+    expect(() => {
+      clonedExpect(666, 'when stringified', 'to be negative');
+    }).toThrow(
       'expected 666 when stringified to be negative\n' +
         "  expected '666' to be negative\n" +
         '    The assertion does not have a matching signature for:\n' +
@@ -398,11 +366,9 @@ describe('expect.shift', () => {
           }
         );
 
-      expect(
-        () => {
-          clonedExpect(666, 'when stringified', 'to be negative');
-        },
-        'to throw',
+      expect(() => {
+        clonedExpect(666, 'when stringified', 'to be negative');
+      }).toThrow(
         'expected 666 when stringified to be negative\n' +
           "  expected '666' to be negative\n" +
           '    The assertion does not have a matching signature for:\n' +

@@ -21,19 +21,13 @@ if (Object.defineProperty) {
     }
 
     it('handles getters and setters correctly', () => {
-      expect(
-        new Field('VALUE', 'getter'),
-        'to equal',
+      expect(new Field('VALUE', 'getter')).toEqual(
         new Field('VALUE', 'getter')
       );
-      expect(
-        new Field('VALUE', 'setter'),
-        'to equal',
+      expect(new Field('VALUE', 'setter')).toEqual(
         new Field('VALUE', 'setter')
       );
-      expect(
-        new Field('VALUE', 'getter and setter'),
-        'to equal',
+      expect(new Field('VALUE', 'getter and setter')).toEqual(
         new Field('VALUE', 'getter and setter')
       );
     });

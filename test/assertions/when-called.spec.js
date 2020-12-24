@@ -4,18 +4,16 @@ describe('when called assertion', () => {
     function hey() {
       return 123;
     }
-    expect(hey, 'when called', 'to equal', 123);
+    expect(hey).whenCalled().toEqual(123);
   });
 
   it('should fail when the assertion being delegated to fails', () => {
     function hey() {
       return 123;
     }
-    expect(
-      function () {
-        expect(hey, 'when called', 'to equal', 124);
-      },
-      'to throw',
+    expect(function () {
+      expect(hey).whenCalled().toEqual(124);
+    }).toThrow(
       'expected function hey() { return 123; } when called to equal 124\n' +
         '  expected 123 to equal 124'
     );
@@ -25,9 +23,11 @@ describe('when called assertion', () => {
     function hey() {
       return 123;
     }
-    return expect(hey, 'called').then(function (value) {
-      expect(value, 'to equal', 123);
-    });
+    return expect(hey)
+      .called()
+      .then(function (value) {
+        expect(value).toEqual(123);
+      });
   });
 
   describe('with the next assertion provided as an expect.it', () => {
@@ -36,15 +36,13 @@ describe('when called assertion', () => {
     }
 
     it('should succeed', () => {
-      expect(hey, 'when called', expect.it('to equal', 123));
+      expect(hey).whenCalled(expect.toEqual(123));
     });
 
     it('should fail with a diff', () => {
-      expect(
-        function () {
-          expect(hey, 'when called', expect.it('to equal', 456));
-        },
-        'to throw',
+      expect(function () {
+        expect(hey).whenCalled(expect.toEqual(456));
+      }).toThrow(
         "expected function hey() { return 123; } when called expect.it('to equal', 456)\n" +
           '  expected 123 to equal 456'
       );
@@ -61,7 +59,7 @@ describe('when called assertion', () => {
         return this.name;
       };
 
-      expect(new Person('John Doe'), 'to satisfy', {
+      expect(new Person('John Doe')).toSatisfy({
         toString: expect.it('when called to equal', 'John Doe'),
       });
     });

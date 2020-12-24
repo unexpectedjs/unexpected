@@ -16,17 +16,15 @@ describe('createStandardErrorMessage', () => {
         '<array> to be an array of one foo',
         function (expect, subject) {
           expect.errorMode = 'nested';
-          expect(subject[0], 'to equal', 'foo');
+          expect(subject[0]).toEqual('foo');
         }
       );
-    expect(
-      function () {
-        clonedExpect(
-          ['foooooooooooooooooooooooooooooooooooo'],
-          'shifted to be an array of one foo'
-        );
-      },
-      'to throw',
+    expect(function () {
+      clonedExpect(
+        ['foooooooooooooooooooooooooooooooooooo'],
+        'shifted to be an array of one foo'
+      );
+    }).toThrow(
       "expected [ 'foooooooooooooooooooooooooooooooooooo' ]\n" +
         'shifted to be an array of one foo\n' +
         '  expected array to be an array of one foo\n' +

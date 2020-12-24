@@ -9,7 +9,7 @@ describe('expect.promise', () => {
             return expect.promise(function () {
               return expect.promise.any([
                 expect.promise(function () {
-                  expect(subject, 'to be', 24);
+                  expect(subject).toBe(24);
                 }),
                 expect.promise(function () {
                   throw new Error('wat');
@@ -22,13 +22,9 @@ describe('expect.promise', () => {
           }
         );
       });
-    expect(
-      function () {
-        clonedExpect(42, 'to foo');
-      },
-      'to throw',
-      'wat'
-    );
+    expect(function () {
+      clonedExpect(42, 'to foo');
+    }).toThrow('wat');
   });
 
   it('should return the fulfilled promise even if it is oathbreakable', () => {
@@ -36,11 +32,11 @@ describe('expect.promise', () => {
       .clone()
       .addAssertion('<any> to foo', function (expect, subject) {
         return expect.promise(function () {
-          expect(subject, 'to equal', 'foo');
+          expect(subject).toEqual('foo');
           return 'bar';
         });
       });
-    expect(clonedExpect('foo', 'to foo'), 'to be fulfilled with', 'bar');
+    expect(clonedExpect('foo', 'to foo')).toBeFulfilledWith('bar');
   });
 
   it('should preserve the resolved value when an assertion contains a non-oathbreakable promise', function (done) {
@@ -48,14 +44,14 @@ describe('expect.promise', () => {
       .clone()
       .addAssertion('<any> to foo', function (expect, subject) {
         return expect.promise(function (resolve, reject) {
-          expect(subject, 'to equal', 'foo');
+          expect(subject).toEqual('foo');
           setTimeout(function () {
             resolve('bar');
           }, 1);
         });
       });
     clonedExpect('foo', 'to foo').then(function (value) {
-      expect(value, 'to equal', 'bar');
+      expect(value).toEqual('bar');
       done();
     });
   });
@@ -64,67 +60,52 @@ describe('expect.promise', () => {
     const clonedExpect = expect
       .clone()
       .addAssertion('<any> to foo', function (expect, subject) {
-        expect(subject, 'to equal', 'foo');
+        expect(subject).toEqual('foo');
         return 'bar';
       });
     clonedExpect('foo', 'to foo').then(function (value) {
-      expect(value, 'to equal', 'bar');
+      expect(value).toEqual('bar');
     });
   });
 
   describe('#and', () => {
     describe('with a synchronous assertion', () => {
       it('should succeed', () => {
-        return expect('foo', 'to equal', 'foo').and('to be a string');
+        return expect('foo').toEqual('foo').and('to be a string');
       });
 
       it('should succeed when another clause is added', () => {
-        return expect('foo', 'to equal', 'foo')
+        return expect('foo')
+          .toEqual('foo')
           .and('to be a string')
           .and('to match', /^f/);
       });
 
       it('should work without returning the promise', () => {
-        expect('foo', 'to equal', 'foo').and('to be a string');
+        expect('foo').toEqual('foo').and('to be a string');
       });
 
       it('should fail with a diff', () => {
-        return expect(
-          function () {
-            return expect('foo', 'to equal', 'foo').and('to be a number');
-          },
-          'to error',
-          "expected 'foo' to be a number"
-        );
+        return expect(function () {
+          return expect('foo').toEqual('foo').and('to be a number');
+        }).toError("expected 'foo' to be a number");
       });
 
       it('should fail with a diff even when the promise is not returned', () => {
-        return expect(
-          function () {
-            expect('foo', 'to equal', 'foo').and('to be a number');
-          },
-          'to error',
-          "expected 'foo' to be a number"
-        );
+        return expect(function () {
+          expect('foo').toEqual('foo').and('to be a number');
+        }).toError("expected 'foo' to be a number");
       });
 
       describe('with an expect.it as the second clause', () => {
         it('should succeed', () => {
-          return expect('foo', 'to equal', 'foo').and(
-            expect.it('to be a string')
-          );
+          return expect('foo').toEqual('foo').and(expect.toBeAString());
         });
 
         it('should fail with a diff', () => {
-          return expect(
-            function () {
-              return expect('foo', 'to equal', 'foo').and(
-                expect.it('to be a number')
-              );
-            },
-            'to error',
-            "expected 'foo' to be a number"
-          );
+          return expect(function () {
+            return expect('foo').toEqual('foo').and(expect.toBeANumber());
+          }).toError("expected 'foo' to be a number");
         });
       });
     });
@@ -143,13 +124,11 @@ describe('expect.promise', () => {
       });
 
       it('should fail with a diff when the asynchronous assertion fails', () => {
-        return expect(
-          function () {
-            return expect('foo', 'when delayed', 5, 'to equal', 'bar').and(
-              'to be a string'
-            );
-          },
-          'to error',
+        return expect(function () {
+          return expect('foo', 'when delayed', 5, 'to equal', 'bar').and(
+            'to be a string'
+          );
+        }).toError(
           "expected 'foo' when delayed 5 to equal 'bar'\n" +
             '\n' +
             '-foo\n' +
@@ -158,25 +137,19 @@ describe('expect.promise', () => {
       });
 
       it('should fail with a diff when the synchronous assertion fails', () => {
-        return expect(
-          function () {
-            return expect('foo', 'when delayed', 5, 'to equal', 'foo').and(
-              'to be a number'
-            );
-          },
-          'to error',
-          "expected 'foo' to be a number"
-        );
+        return expect(function () {
+          return expect('foo', 'when delayed', 5, 'to equal', 'foo').and(
+            'to be a number'
+          );
+        }).toError("expected 'foo' to be a number");
       });
 
       it('should fail with a diff when both assertions fail', () => {
-        return expect(
-          function () {
-            return expect('foo', 'when delayed', 5, 'to equal', 'bar').and(
-              'to be a number'
-            );
-          },
-          'to error',
+        return expect(function () {
+          return expect('foo', 'when delayed', 5, 'to equal', 'bar').and(
+            'to be a number'
+          );
+        }).toError(
           "expected 'foo' when delayed 5 to equal 'bar'\n" +
             '\n' +
             '-foo\n' +
@@ -187,27 +160,23 @@ describe('expect.promise', () => {
       describe('with an expect.it as the second clause', () => {
         it('should succeed', () => {
           return expect('foo', 'when delayed', 5, 'to equal', 'foo').and(
-            expect.it('to be a string')
+            expect.toBeAString()
           );
         });
 
         it('should succeed when more clauses are added', () => {
           return expect('foo', 'when delayed', 5, 'to equal', 'foo')
-            .and(expect.it('to be a string'))
+            .and(expect.toBeAString())
             .and('to be a string')
             .and('to be a string');
         });
 
         it('should fail with a diff', () => {
-          return expect(
-            function () {
-              return expect('foo', 'when delayed', 5, 'to equal', 'foo').and(
-                expect.it('to be a number')
-              );
-            },
-            'to error',
-            "expected 'foo' to be a number"
-          );
+          return expect(function () {
+            return expect('foo', 'when delayed', 5, 'to equal', 'foo').and(
+              expect.toBeANumber()
+            );
+          }).toError("expected 'foo' to be a number");
         });
       });
     });
@@ -223,7 +192,7 @@ describe('expect.promise', () => {
             return expect.promise(function (run) {
               setTimeout(
                 run(function () {
-                  expect(subject, 'to be truthy');
+                  expect(subject).toBeTruthy();
                 }),
                 1
               );
@@ -239,22 +208,14 @@ describe('expect.promise', () => {
       'expect.promise(...) requires a function argument to be supplied.\n' +
         'See http://unexpected.js.org/api/promise/ for more details.'
     );
-    expect(
-      function () {
-        expect.promise();
-      },
-      'to throw',
-      expectedError
-    );
+    expect(function () {
+      expect.promise();
+    }).toThrow(expectedError);
 
     [undefined, null, '', [], {}].forEach(function (arg) {
-      expect(
-        function () {
-          expect.promise(arg);
-        },
-        'to throw',
-        expectedError
-      );
+      expect(function () {
+        expect.promise(arg);
+      }).toThrow(expectedError);
     });
   });
 
@@ -280,12 +241,10 @@ describe('expect.promise', () => {
       expect(
         expect
           .promise(function () {
-            expect(2, 'to equal', 2);
+            expect(2).toEqual(2);
           })
-          [inspectMethodName](),
-        'to equal',
-        'Promise (fulfilled)'
-      );
+          [inspectMethodName]()
+      ).toEqual('Promise (fulfilled)');
     });
 
     it('should inspect a fulfilled promise with a value', () => {
@@ -294,10 +253,8 @@ describe('expect.promise', () => {
           .promise(function () {
             return 123;
           })
-          [inspectMethodName](),
-        'to equal',
-        'Promise (fulfilled) => 123'
-      );
+          [inspectMethodName]()
+      ).toEqual('Promise (fulfilled) => 123');
     });
 
     it('should inspect a pending promise', () => {
@@ -307,11 +264,7 @@ describe('expect.promise', () => {
         'to equal',
         'foo'
       );
-      expect(
-        asyncPromise[inspectMethodName](),
-        'to equal',
-        'Promise (pending)'
-      );
+      expect(asyncPromise[inspectMethodName]()).toEqual('Promise (pending)');
       return asyncPromise;
     });
 
@@ -321,7 +274,7 @@ describe('expect.promise', () => {
       });
 
       return promise.caught(function () {
-        expect(promise[inspectMethodName](), 'to equal', 'Promise (rejected)');
+        expect(promise[inspectMethodName]()).toEqual('Promise (rejected)');
       });
     });
 
@@ -333,9 +286,7 @@ describe('expect.promise', () => {
       });
 
       return promise.caught(function () {
-        expect(
-          promise[inspectMethodName](),
-          'to equal',
+        expect(promise[inspectMethodName]()).toEqual(
           "Promise (rejected) => Error('argh')"
         );
       });
@@ -349,7 +300,7 @@ describe('expect.promise', () => {
           a: 123,
         })
         .then(function (promises) {
-          expect(promises, 'to equal', []);
+          expect(promises).toEqual([]);
         });
     });
   });
@@ -366,10 +317,8 @@ describe('expect.promise', () => {
         expect.promise(function (run) {
           run()();
           throw new Error('foo');
-        }),
-        'to be rejected with',
-        'foo'
-      );
+        })
+      ).toBeRejectedWith('foo');
     });
 
     it('should provide a run function that preserves the return value of the supplied function', () => {
@@ -377,7 +326,7 @@ describe('expect.promise', () => {
         const runner = run(function () {
           return 123;
         });
-        expect(runner(), 'to equal', 123);
+        expect(runner()).toEqual(123);
       });
     });
   });

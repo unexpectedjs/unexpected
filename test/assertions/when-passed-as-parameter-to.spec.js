@@ -5,13 +5,15 @@ describe('when passed as parameters to assertion', () => {
   }
 
   it('should assert that the function invocation produces the correct output', () => {
-    expect([3, 4], 'when passed as parameters to', add, 'to equal', 7);
+    expect([3, 4]).whenPassedAsParametersTo(add).toEqual(7);
   });
 
   it('should should provide the result as the fulfillment value if no assertion is provided', () => {
-    return expect([3, 4], 'passed as parameters to', add).then(function (sum) {
-      expect(sum, 'to equal', 7);
-    });
+    return expect([3, 4])
+      .passedAsParametersTo(add)
+      .then(function (sum) {
+        expect(sum).toEqual(7);
+      });
   });
 
   it('works with an array-like object', () => {
@@ -19,15 +21,13 @@ describe('when passed as parameters to assertion', () => {
     (function () {
       args = arguments;
     })(3, 4);
-    expect(args, 'when passed as parameters to', add, 'to equal', 7);
+    expect(args).whenPassedAsParametersTo(add).toEqual(7);
   });
 
   it('should produce a nested error message when the assertion fails', () => {
-    expect(
-      function () {
-        expect([3, 4], 'when passed as parameters to', add, 'to equal', 8);
-      },
-      'to throw',
+    expect(function () {
+      expect([3, 4]).whenPassedAsParametersTo(add).toEqual(8);
+    }).toThrow(
       'expected [ 3, 4 ]\n' +
         'when passed as parameters to function add(a, b) { return a + b; } to equal 8\n' +
         '  expected 7 to equal 8'
@@ -35,46 +35,35 @@ describe('when passed as parameters to assertion', () => {
   });
 
   it('should combine with other assertions (showcase)', () => {
-    expect(
-      [
-        [1, 2],
-        [3, 4],
-      ],
-      'to have items satisfying',
-      'when passed as parameters to',
-      add,
-      'to be a number'
-    );
+    expect([
+      [1, 2],
+      [3, 4],
+    ])
+      .toHaveItemsSatisfying()
+      .whenPassedAsParametersTo(add)
+      .toBeANumber();
   });
 
   describe('when invoked as "when passed as parameter to"', () => {
     it('should pass the subject as a single parameter', () => {
-      expect(
-        1,
-        'when passed as parameter to',
-        add.bind(null, 1),
-        'to equal',
-        2
-      );
+      expect(1).whenPassedAsParameterTo(add.bind(null, 1)).toEqual(2);
     });
 
     it('should should provide the result as the fulfillment value if no assertion is provided', () => {
-      return expect(2, 'passed as parameter to', add.bind(null, 1)).then(
-        function (sum) {
-          expect(sum, 'to equal', 3);
-        }
-      );
+      return expect(2)
+        .passedAsParameterTo(add.bind(null, 1))
+        .then(function (sum) {
+          expect(sum).toEqual(3);
+        });
     });
 
     it('should fail with the correct error message and diff', () => {
       function increment(n) {
         return n + 1;
       }
-      expect(
-        function () {
-          expect(1, 'when passed as parameter to', increment, 'to equal', 3);
-        },
-        'to throw',
+      expect(function () {
+        expect(1).whenPassedAsParameterTo(increment).toEqual(3);
+      }).toThrow(
         'expected 1\n' +
           'when passed as parameter to function increment(n) { return n + 1; } to equal 3\n' +
           '  expected 2 to equal 3'
@@ -90,18 +79,16 @@ describe('when passed as parameters to assertion', () => {
     }
 
     it('should create a new instance', () => {
-      expect(
-        [1, 2],
-        'when passed as parameters to constructor',
-        Foo,
-        'to satisfy',
-        expect.it(function (obj) {
-          expect(obj, 'to be a', Foo);
-          expect(obj.a, 'to equal', 1);
-          expect(obj.b, 'to equal', 2);
-          expect(obj.numParams, 'to equal', 2);
-        })
-      );
+      expect([1, 2])
+        .whenPassedAsParametersToConstructor(Foo)
+        .toSatisfy(
+          expect.it(function (obj) {
+            expect(obj).toBeA(Foo);
+            expect(obj.a).toEqual(1);
+            expect(obj.b).toEqual(2);
+            expect(obj.numParams).toEqual(2);
+          })
+        );
     });
   });
 
@@ -118,25 +105,17 @@ describe('when passed as parameters to assertion', () => {
     }
 
     it('should succeed', () => {
-      return expect(
-        [123],
-        'when passed as parameters to async',
-        delayedIncrement,
-        'to equal',
-        124
-      );
+      return expect([123])
+        .whenPassedAsParametersToAsync(delayedIncrement)
+        .toEqual(124);
     });
 
     it('should fail if the result of the async function does not meet the criteria', () => {
       return expect(
-        expect(
-          [123],
-          'when passed as parameters to async',
-          delayedIncrement,
-          'to equal',
-          125
-        ),
-        'to be rejected with',
+        expect([123])
+          .whenPassedAsParametersToAsync(delayedIncrement)
+          .toEqual(125)
+      ).toBeRejectedWith(
         'expected [ 123 ] when passed as parameters to async\n' +
           'function delayedIncrement(num, cb) {\n' +
           '  setTimeout(function () {\n' +
@@ -153,14 +132,10 @@ describe('when passed as parameters to assertion', () => {
 
     it('should fail if the async function calls the callback with an error', () => {
       return expect(
-        expect(
-          [false],
-          'when passed as parameters to async',
-          delayedIncrement,
-          'to equal',
-          125
-        ),
-        'to be rejected with',
+        expect([false])
+          .whenPassedAsParametersToAsync(delayedIncrement)
+          .toEqual(125)
+      ).toBeRejectedWith(
         'expected [ false ] when passed as parameters to async\n' +
           'function delayedIncrement(num, cb) {\n' +
           '  setTimeout(function () {\n' +

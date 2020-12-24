@@ -12,12 +12,12 @@ describe('exportAssertion', () => {
       .exportAssertion('<any> foo', function () {})
       .exportAssertion('<any> bar', function () {});
 
-    expect(parentExpect.assertions, 'to have keys', 'foo', 'bar');
+    expect(parentExpect.assertions).toHaveKeys('foo', 'bar');
   });
 
   it('makes the assertion available to the parent expect', () => {
     childExpect.exportAssertion('<string> to foo', function (expect, subject) {
-      expect(subject, 'to equal', 'foo');
+      expect(subject).toEqual('foo');
     });
 
     parentExpect('foo', 'to foo');
@@ -27,15 +27,11 @@ describe('exportAssertion', () => {
     childExpect
       .child()
       .exportAssertion('<string> to foo', function (expect, subject) {
-        expect(subject, 'to equal', 'foo');
+        expect(subject).toEqual('foo');
       });
-    expect(
-      function () {
-        parentExpect('foo', 'to foo');
-      },
-      'to throw',
-      /^Unknown assertion 'to foo'/
-    );
+    expect(function () {
+      parentExpect('foo', 'to foo');
+    }).toThrow(/^Unknown assertion 'to foo'/);
   });
 
   it('binds the assertion to the child expect so custom types are available', () => {
@@ -49,7 +45,7 @@ describe('exportAssertion', () => {
       },
     });
     childExpect.addAssertion('<yadda> to foo', function (expect, subject) {
-      expect(subject, 'to contain', 'foo');
+      expect(subject).toContain('foo');
     });
     childExpect.exportAssertion(
       '<string> to be silly',
@@ -59,11 +55,9 @@ describe('exportAssertion', () => {
     );
     parentExpect('yaddafoo', 'to be silly');
 
-    expect(
-      function () {
-        parentExpect('yaddafo', 'to be silly');
-      },
-      'to throw',
+    expect(function () {
+      parentExpect('yaddafo', 'to be silly');
+    }).toThrow(
       'expected >>yaddafo<< to be silly\n' + '\n' + 'yaddafo\n' + '     ^^'
     );
   });
@@ -72,8 +66,8 @@ describe('exportAssertion', () => {
     childExpect.exportAssertion(
       '<any> to foo <any>',
       function (expect, subject, value) {
-        expect(expect.subjectType.name, 'to equal', 'number');
-        expect(expect.argTypes, 'to satisfy', [{ name: 'string' }]);
+        expect(expect.subjectType.name).toEqual('number');
+        expect(expect.argTypes).toSatisfy([{ name: 'string' }]);
       }
     );
 
@@ -107,11 +101,9 @@ describe('exportAssertion', () => {
       }
     });
 
-    expect(
-      function () {
-        parentExpect('bar', 'to foo');
-      },
-      'to error',
+    expect(function () {
+      parentExpect('bar', 'to foo');
+    }).toError(
       "expected 'bar' to foo\n" +
         '\n' +
         "got >>bar<< but expected >>foo<< and once again 'bar' the difference being\n" +
@@ -139,17 +131,13 @@ describe('exportAssertion', () => {
       }
     });
 
-    expect(
-      function () {
-        expect(
-          function () {
-            parentExpect('bar', 'to foo');
-          },
-          'to error',
-          "expected 'barf' to foo\n" + '\n' + 'got >>bar<< but expected >>foo<<'
-        );
-      },
-      'to error',
+    expect(function () {
+      expect(function () {
+        parentExpect('bar', 'to foo');
+      }).toError(
+        "expected 'barf' to foo\n" + '\n' + 'got >>bar<< but expected >>foo<<'
+      );
+    }).toError(
       "expected function () { parentExpect('bar', 'to foo'); }\n" +
         "to error 'expected \\'barf\\' to foo\\n\\ngot >>bar<< but expected >>foo<<'\n" +
         '  expected\n' +
@@ -179,7 +167,7 @@ describe('exportAssertion', () => {
       );
 
       parentExpect.addAssertion('<string> to foo', function (expect, subject) {
-        expect(subject, 'to equal', 'foo');
+        expect(subject).toEqual('foo');
       });
     });
 
@@ -188,11 +176,9 @@ describe('exportAssertion', () => {
     });
 
     it('should fail with a diff', () => {
-      expect(
-        function () {
-          parentExpect('bar', 'when prepended with foo', 'to foo');
-        },
-        'to throw',
+      expect(function () {
+        parentExpect('bar', 'when prepended with foo', 'to foo');
+      }).toThrow(
         "expected 'bar' when prepended with foo to foo\n" +
           '\n' +
           '-foobar\n' +
@@ -213,7 +199,7 @@ describe('exportAssertion', () => {
       parentExpect
         .child()
         .exportAssertion('<string> to foo', function (expect, subject) {
-          expect(subject, 'to equal', 'foo');
+          expect(subject).toEqual('foo');
         });
     });
 
@@ -222,11 +208,9 @@ describe('exportAssertion', () => {
     });
 
     it('should fail with a diff', () => {
-      expect(
-        function () {
-          parentExpect('bar', 'when prepended with foo', 'to foo');
-        },
-        'to throw',
+      expect(function () {
+        parentExpect('bar', 'when prepended with foo', 'to foo');
+      }).toThrow(
         "expected 'bar' when prepended with foo to foo\n" +
           '\n' +
           '-foobar\n' +
@@ -254,7 +238,7 @@ describe('exportAssertion', () => {
       parentExpect
         .child()
         .exportAssertion('<string> to foo', function (expect, subject) {
-          expect(subject, 'to equal', 'foo');
+          expect(subject).toEqual('foo');
         });
     });
 
@@ -263,15 +247,13 @@ describe('exportAssertion', () => {
     });
 
     it('should fail with a diff', () => {
-      expect(
-        function () {
-          parentExpect(
-            'bar',
-            'when prepended with foo when prepended with foo',
-            'to foo'
-          );
-        },
-        'to throw',
+      expect(function () {
+        parentExpect(
+          'bar',
+          'when prepended with foo when prepended with foo',
+          'to foo'
+        );
+      }).toThrow(
         "expected 'bar' when prepended with foo when prepended with foo to foo\n" +
           '\n' +
           '-foofoobar\n' +
@@ -284,7 +266,7 @@ describe('exportAssertion', () => {
     childExpect.exportAssertion(
       '<string> to have context value <any>',
       function (expect, field, value) {
-        expect(expect.context[field], 'to equal', value);
+        expect(expect.context[field]).toEqual(value);
       }
     );
 

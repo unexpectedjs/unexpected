@@ -9,7 +9,7 @@ describe('use', () => {
     const plugin = {
       name: 'test',
       installInto(expectInstance) {
-        clonedExpect(expectInstance, 'to be', clonedExpect);
+        clonedExpect(expectInstance).toBe(clonedExpect);
         done();
       },
     };
@@ -20,18 +20,16 @@ describe('use', () => {
     clonedExpect.installPlugin({
       name: 'test',
       installInto(expectInstance) {
-        expect(expectInstance, 'to be', clonedExpect);
+        expect(expectInstance).toBe(clonedExpect);
         done();
       },
     });
   });
 
   it('throws if the given arguments does not adhere to the plugin interface', () => {
-    clonedExpect(
-      function () {
-        clonedExpect.use({});
-      },
-      'to throw',
+    clonedExpect(function () {
+      clonedExpect.use({});
+    }).toThrow(
       'Plugins must be functions or adhere to the following interface\n' +
         '{\n' +
         '  name: <an optional plugin name>,\n' +
@@ -47,9 +45,9 @@ describe('use', () => {
       callCount += 1;
     };
     clonedExpect.use(plugin);
-    expect(callCount, 'to equal', 1);
+    expect(callCount).toEqual(1);
     clonedExpect.use(plugin);
-    expect(callCount, 'to equal', 1);
+    expect(callCount).toEqual(1);
   });
 
   it('allows the installation of a plugin given as a named function', () => {
@@ -58,18 +56,16 @@ describe('use', () => {
       callCount += 1;
     };
     clonedExpect.use(plugin);
-    expect(callCount, 'to equal', 1);
+    expect(callCount).toEqual(1);
     clonedExpect.use(plugin);
-    expect(callCount, 'to equal', 1);
+    expect(callCount).toEqual(1);
   });
 
   it('fails if identically named, but different functions are installed', () => {
     clonedExpect.use(function myPlugin() {});
-    expect(
-      function () {
-        clonedExpect.use(function myPlugin() {});
-      },
-      'to throw',
+    expect(function () {
+      clonedExpect.use(function myPlugin() {});
+    }).toThrow(
       "Another instance of the plugin 'myPlugin' is already installed. Please check your node_modules folder for unmet peerDependencies."
     );
   });
@@ -117,7 +113,7 @@ describe('use', () => {
     clonedExpect.use(plugin);
     clonedExpect.use(plugin);
     clonedExpect.use(plugin);
-    expect(callCount, 'to be', 1);
+    expect(callCount).toBe(1);
   });
 
   it('installing two different plugins that are identically named and have the same version (but not ===) will only install the first one', () => {
@@ -138,8 +134,8 @@ describe('use', () => {
       },
     };
     clonedExpect.use(plugin1).use(plugin2);
-    expect(callCount1, 'to be', 1);
-    expect(callCount2, 'to be', 0);
+    expect(callCount1).toBe(1);
+    expect(callCount2).toBe(0);
   });
 
   it('should throw an error when installing two different plugins that are identically named and have different versions', () => {
@@ -148,15 +144,13 @@ describe('use', () => {
       version: '1.2.3',
       installInto() {},
     });
-    expect(
-      function () {
-        clonedExpect.use({
-          name: 'plugin',
-          version: '1.5.6',
-          installInto() {},
-        });
-      },
-      'to throw',
+    expect(function () {
+      clonedExpect.use({
+        name: 'plugin',
+        version: '1.5.6',
+        installInto() {},
+      });
+    }).toThrow(
       "Another instance of the plugin 'plugin' is already installed (version 1.2.3, trying to install 1.5.6). Please check your node_modules folder for unmet peerDependencies."
     );
   });
@@ -167,14 +161,12 @@ describe('use', () => {
       version: '1.2.3',
       installInto() {},
     });
-    expect(
-      function () {
-        clonedExpect.use({
-          name: 'plugin',
-          installInto() {},
-        });
-      },
-      'to throw',
+    expect(function () {
+      clonedExpect.use({
+        name: 'plugin',
+        installInto() {},
+      });
+    }).toThrow(
       "Another instance of the plugin 'plugin' is already installed (version 1.2.3). Please check your node_modules folder for unmet peerDependencies."
     );
   });
@@ -184,27 +176,23 @@ describe('use', () => {
       name: 'test',
       installInto() {},
     });
-    expect(
-      function () {
-        clonedExpect.use({
-          name: 'test',
-          installInto() {},
-        });
-      },
-      'to throw',
+    expect(function () {
+      clonedExpect.use({
+        name: 'test',
+        installInto() {},
+      });
+    }).toThrow(
       "Another instance of the plugin 'test' is already installed. Please check your node_modules folder for unmet peerDependencies."
     );
   });
 
   it('should refuse to install a plugin named unexpected-promise', () => {
-    expect(
-      function () {
-        expect.use({
-          name: 'unexpected-promise',
-          installInto() {},
-        });
-      },
-      'to throw',
+    expect(function () {
+      expect.use({
+        name: 'unexpected-promise',
+        installInto() {},
+      });
+    }).toThrow(
       'The unexpected-promise plugin was pulled into Unexpected as of 8.5.0. This means that the plugin is no longer supported.'
     );
   });

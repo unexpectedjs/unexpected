@@ -7,11 +7,10 @@ describe('when rejected adverbial assertion', () => {
           // eslint-disable-next-line prefer-promise-reject-errors
           reject({ foo: 'bar' });
         }, 0);
-      }),
-      'when rejected',
-      'to satisfy',
-      { foo: 'bar' }
-    );
+      })
+    )
+      .whenRejected()
+      .toSatisfy({ foo: 'bar' });
   });
 
   it('should fail when the next assertion fails', () => {
@@ -22,12 +21,11 @@ describe('when rejected adverbial assertion', () => {
             // eslint-disable-next-line prefer-promise-reject-errors
             reject({ foo: 'bar' });
           }, 0);
-        }),
-        'when rejected',
-        'to satisfy',
-        { foo: 'baz' }
-      ),
-      'to be rejected with',
+        })
+      )
+        .whenRejected()
+        .toSatisfy({ foo: 'baz' })
+    ).toBeRejectedWith(
       "expected Promise when rejected to satisfy { foo: 'baz' }\n" +
         "  expected { foo: 'bar' } to satisfy { foo: 'baz' }\n" +
         '\n' +
@@ -45,12 +43,11 @@ describe('when rejected adverbial assertion', () => {
       expect(
         new Promise(function (resolve, reject) {
           setTimeout(resolve, 0);
-        }),
-        'when rejected',
-        'to equal',
-        new Error('unhappy times')
-      ),
-      'to be rejected with',
+        })
+      )
+        .whenRejected()
+        .toEqual(new Error('unhappy times'))
+    ).toBeRejectedWith(
       "expected Promise when rejected to equal Error('unhappy times')\n" +
         '  Promise unexpectedly fulfilled'
     );
@@ -63,12 +60,11 @@ describe('when rejected adverbial assertion', () => {
           setTimeout(function () {
             resolve('happy times');
           }, 0);
-        }),
-        'when rejected',
-        'to equal',
-        new Error('unhappy times')
-      ),
-      'to be rejected with',
+        })
+      )
+        .whenRejected()
+        .toEqual(new Error('unhappy times'))
+    ).toBeRejectedWith(
       "expected Promise when rejected to equal Error('unhappy times')\n" +
         "  Promise unexpectedly fulfilled with 'happy times'"
     );
@@ -84,13 +80,11 @@ describe('when rejected adverbial assertion', () => {
     });
 
     it('should fail if the function returns a promise that is fulfilled', () => {
-      expect(
-        function () {
-          return expect(function () {
-            return expect.promise.resolve(123);
-          }, 'when rejected to be an object');
-        },
-        'to throw',
+      expect(function () {
+        return expect(function () {
+          return expect.promise.resolve(123);
+        }, 'when rejected to be an object');
+      }).toThrow(
         'expected\n' +
           'function () {\n' +
           '  return expect.promise.resolve(123);\n' +
@@ -113,23 +107,21 @@ describe('when rejected adverbial assertion', () => {
   });
 
   it('should use the stack of the thrown error when failing', () => {
-    return expect(
-      function () {
-        return expect(
-          function () {
-            return expect.promise(function () {
-              (function thisIsImportant() {
-                throw new Error('argh');
-              })();
-            });
-          },
-          'when rejected to have message',
-          'yay'
-        );
-      },
-      'to error',
+    return expect(function () {
+      return expect(
+        function () {
+          return expect.promise(function () {
+            (function thisIsImportant() {
+              throw new Error('argh');
+            })();
+          });
+        },
+        'when rejected to have message',
+        'yay'
+      );
+    }).toError(
       expect.it(function (err) {
-        expect(err.stack, 'to match', /thisIsImportant/);
+        expect(err.stack).toMatch(/thisIsImportant/);
       })
     );
   });

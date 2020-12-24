@@ -1,11 +1,9 @@
 /* global expect */
 describe('to have a value satisfying assertion', () => {
   it('requires a third argument', () => {
-    expect(
-      function () {
-        expect([1, 2, 3], 'to have a value satisfying');
-      },
-      'to throw',
+    expect(function () {
+      expect([1, 2, 3]).toHaveAValueSatisfying();
+    }).toThrow(
       'expected [ 1, 2, 3 ] to have a value satisfying\n' +
         '  The assertion does not have a matching signature for:\n' +
         '    <array> to have a value satisfying\n' +
@@ -17,22 +15,20 @@ describe('to have a value satisfying assertion', () => {
 
   it('accepts objects as the subject', () => {
     expect(function () {
-      expect({ foo: 1 }, 'to have a value satisfying', 'to be a number');
-    }, 'not to throw');
+      expect({ foo: 1 }).toHaveAValueSatisfying().toBeANumber();
+    }).notToThrow();
   });
 
   it('accepts arrays as the subject', () => {
     expect(function () {
-      expect([1], 'to have a value satisfying', 'to be a number');
-    }, 'not to throw');
+      expect([1]).toHaveAValueSatisfying().toBeANumber();
+    }).notToThrow();
   });
 
   it('only accepts objects and arrays as the subject', () => {
-    expect(
-      function () {
-        expect(42, 'to have a value satisfying', function (value) {});
-      },
-      'to throw',
+    expect(function () {
+      expect(42).toHaveAValueSatisfying(function (value) {});
+    }).toThrow(
       'expected 42 to have a value satisfying function (value) {}\n' +
         '  The assertion does not have a matching signature for:\n' +
         '    <number> to have a value satisfying <function>\n' +
@@ -43,110 +39,78 @@ describe('to have a value satisfying assertion', () => {
   });
 
   it('fails if the given object is empty', () => {
-    expect(
-      function () {
-        expect({}, 'to have a value satisfying', 'to be a number');
-      },
-      'to throw',
+    expect(function () {
+      expect({}).toHaveAValueSatisfying().toBeANumber();
+    }).toThrow(
       'expected {} to have a value satisfying to be a number\n' +
         '  expected {} not to be empty'
     );
   });
 
   it('fails if the given array is empty', () => {
-    expect(
-      function () {
-        expect([], 'to have a value satisfying', 'to be a number');
-      },
-      'to throw',
+    expect(function () {
+      expect([]).toHaveAValueSatisfying().toBeANumber();
+    }).toThrow(
       'expected [] to have a value satisfying to be a number\n' +
         '  expected [] not to be empty'
     );
   });
 
   it('asserts that at least one value in the object satisfies the RHS expectation', () => {
-    expect(
-      { foo: 0, bar: 1, baz: 2, qux: 3 },
-      'to have a value satisfying',
-      'to be a number'
-    );
+    expect({ foo: 0, bar: 1, baz: 2, qux: 3 })
+      .toHaveAValueSatisfying()
+      .toBeANumber();
 
-    expect(
-      { foo: '0', bar: 1 },
-      'to have a value satisfying',
+    expect({ foo: '0', bar: 1 }).toHaveAValueSatisfying(
       expect.it(function (value) {
-        expect(value, 'to be a number');
+        expect(value).toBeANumber();
       })
     );
 
-    expect(
-      { foo: 0, bar: 'bar' },
-      'to have a value satisfying',
-      'not to be a number'
-    );
+    expect({ foo: 0, bar: 'bar' }).toHaveAValueSatisfying().notToBeANumber();
 
-    expect(
-      { foo: { foo: 0 }, bar: { bar: 1 } },
-      'to have a value satisfying',
-      'to have a value satisfying',
-      'to be a number'
-    );
+    expect({ foo: { foo: 0 }, bar: { bar: 1 } })
+      .toHaveAValueSatisfying()
+      .toHaveAValueSatisfying()
+      .toBeANumber();
   });
 
   it('asserts that no values in the object satisfies the RHS expectation', () => {
-    expect(
-      { foo: 0, bar: 1, baz: 2, qux: 3 },
-      'not to have a value satisfying',
-      'to be a string'
-    );
+    expect({ foo: 0, bar: 1, baz: 2, qux: 3 })
+      .notToHaveAValueSatisfying()
+      .toBeAString();
 
-    expect(
-      { foo: '0', bar: '1' },
-      'not to have a value satisfying',
+    expect({ foo: '0', bar: '1' }).notToHaveAValueSatisfying(
       expect.it(function (value) {
-        expect(value, 'to be a number');
+        expect(value).toBeANumber();
       })
     );
 
-    expect(
-      { foo: 0, bar: 1 },
-      'not to have a value satisfying',
-      'not to be a number'
-    );
+    expect({ foo: 0, bar: 1 }).notToHaveAValueSatisfying().notToBeANumber();
 
-    expect(
-      { foo: { foo: '0' }, bar: { bar: '1' } },
-      'not to have a value satisfying',
-      'to have a value satisfying',
-      'to be a number'
-    );
+    expect({ foo: { foo: '0' }, bar: { bar: '1' } })
+      .notToHaveAValueSatisfying()
+      .toHaveAValueSatisfying()
+      .toBeANumber();
   });
 
   it("throws the correct error if none of the subject's values match the RHS expectation", () => {
-    expect(
-      function () {
-        expect(
-          { foo: 'foo', bar: 'bar' },
-          'to have a value satisfying',
-          expect.it('to be a number')
-        );
-      },
-      'to throw',
+    expect(function () {
+      expect({ foo: 'foo', bar: 'bar' }).toHaveAValueSatisfying(
+        expect.toBeANumber()
+      );
+    }).toThrow(
       "expected { foo: 'foo', bar: 'bar' }\n" +
         "to have a value satisfying expect.it('to be a number')"
     );
   });
 
   it("throws the correct error, when negated, if any of the subject's values match the RHS expectation", () => {
-    expect(
-      function () {
-        expect(
-          { foo: 'foo', bar: 1 },
-          'not to have a value satisfying',
-          expect.it('to be a number')
-        );
-      },
-      'to throw',
+    expect(function () {
+      expect({ foo: 'foo', bar: 1 }).notToHaveAValueSatisfying(
+        expect.toBeANumber()
+      );
+    }).toThrow(
       "expected { foo: 'foo', bar: 1 }\n" +
         "not to have a value satisfying expect.it('to be a number')\n\n" +
         '{\n' +
@@ -167,7 +131,7 @@ describe('to have a value satisfying assertion', () => {
           return expect.promise(function (run) {
             setTimeout(
               run(function () {
-                expect(subject, 'to be a number');
+                expect(subject).toBeANumber();
               }),
               1
             );
@@ -176,9 +140,7 @@ describe('to have a value satisfying assertion', () => {
       );
 
     it('should succeed', () => {
-      return clonedExpect(
-        { 0: 1, 1: 2, 2: 3 },
-        'to have a value satisfying',
+      return clonedExpect({ 0: 1, 1: 2, 2: 3 }).toHaveAValueSatisfying(
         'to be a number after a short delay'
       );
     });
@@ -186,23 +148,18 @@ describe('to have a value satisfying assertion', () => {
 
   describe('with the exhaustively flag', () => {
     it('should succeed', () => {
-      expect(
-        [{ foo: 'bar', quux: 'baz' }],
-        'to have a value exhaustively satisfying',
-        { foo: 'bar', quux: 'baz' }
-      );
+      expect([{ foo: 'bar', quux: 'baz' }]).toHaveAValueExhaustivelySatisfying({
+        foo: 'bar',
+        quux: 'baz',
+      });
     });
 
     it('should fail when the spec is not met only because of the "exhaustively" semantics', () => {
-      expect(
-        function () {
-          expect(
-            [{ foo: 'bar', quux: 'baz' }],
-            'to have a value exhaustively satisfying',
-            { foo: 'bar' }
-          );
-        },
-        'to throw',
+      expect(function () {
+        expect([
+          { foo: 'bar', quux: 'baz' },
+        ]).toHaveAValueExhaustivelySatisfying({ foo: 'bar' });
+      }).toThrow(
         "expected [ { foo: 'bar', quux: 'baz' } ]\n" +
           "to have a value exhaustively satisfying { foo: 'bar' }"
       );
@@ -228,13 +185,8 @@ describe('to have a value satisfying assertion', () => {
 
     it('should process the value in "to have a value satisfying"', () => {
       expect(
-        clonedExpect(
-          { foo: '' },
-          'to have a value satisfying',
-          expect.it('to be a number')
-        ),
-        'to be fulfilled'
-      );
+        clonedExpect({ foo: '' }).toHaveAValueSatisfying(expect.toBeANumber())
+      ).toBeFulfilled();
     });
   });
 
@@ -242,15 +194,13 @@ describe('to have a value satisfying assertion', () => {
     function foo() {}
 
     it('succeeds when object has that function as a value', function () {
-      expect({ abc: foo }, 'to have a value satisfying', foo);
+      expect({ abc: foo }).toHaveAValueSatisfying(foo);
     });
 
     it('fails when the array does not have that function as a value', function () {
-      expect(
-        function () {
-          expect({ abc: 123 }, 'to have a value satisfying', foo);
-        },
-        'to throw',
+      expect(function () {
+        expect({ abc: 123 }).toHaveAValueSatisfying(foo);
+      }).toThrow(
         'expected { abc: 123 } to have a value satisfying function foo() {}'
       );
     });

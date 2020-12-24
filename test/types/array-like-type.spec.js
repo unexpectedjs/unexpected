@@ -14,10 +14,10 @@ describe('array-like type', () => {
       a.ignoreMe = undefined;
       const b = [];
 
-      clonedExpect(a, 'to equal', b);
-      clonedExpect(b, 'to equal', a);
-      clonedExpect(a, 'to satisfy', b);
-      clonedExpect(b, 'to satisfy', a);
+      clonedExpect(a).toEqual(b);
+      clonedExpect(b).toEqual(a);
+      clonedExpect(a).toSatisfy(b);
+      clonedExpect(b).toSatisfy(a);
     });
 
     it('should error when a LHS key is undefined on the RHS', () => {
@@ -25,11 +25,9 @@ describe('array-like type', () => {
       a.foobar = true;
       const b = ['a'];
 
-      expect(
-        function () {
-          clonedExpect(a, 'to equal', b);
-        },
-        'to throw',
+      expect(function () {
+        clonedExpect(a).toEqual(b);
+      }).toThrow(
         "expected [ 'a', foobar: true ] to equal [ 'a' ]\n" +
           '\n' +
           '[\n' +
@@ -45,11 +43,9 @@ describe('array-like type', () => {
       const b = ['a'];
       b.foobar = undefined;
 
-      expect(
-        function () {
-          clonedExpect(a, 'to equal', b);
-        },
-        'to throw',
+      expect(function () {
+        clonedExpect(a).toEqual(b);
+      }).toThrow(
         "expected [ 'a', foobar: true ] to equal [ 'a', foobar: undefined ]\n" +
           '\n' +
           '[\n' +
@@ -65,11 +61,9 @@ describe('array-like type', () => {
       const b = ['a'];
       b.foobar = undefined;
 
-      expect(
-        function () {
-          clonedExpect(a, 'to satisfy', b);
-        },
-        'to throw',
+      expect(function () {
+        clonedExpect(a).toSatisfy(b);
+      }).toThrow(
         "expected [ 'a', foobar: true ] to satisfy [ 'a', foobar: undefined ]\n" +
           '\n' +
           '[\n' +
@@ -89,11 +83,9 @@ describe('array-like type', () => {
         a[s] = true;
         const b = ['a'];
 
-        expect(
-          function () {
-            clonedExpect(a, 'to equal', b);
-          },
-          'to throw',
+        expect(function () {
+          clonedExpect(a).toEqual(b);
+        }).toThrow(
           "expected [ 'a', [Symbol('foo')]: true ] to equal [ 'a' ]\n" +
             '\n' +
             '[\n' +
@@ -129,11 +121,9 @@ describe('array-like type', () => {
           const b = ['a'];
           b.foobar = undefined;
 
-          localExpect(
-            function () {
-              localExpect(a, 'to equal', b);
-            },
-            'to throw',
+          localExpect(function () {
+            localExpect(a).toEqual(b);
+          }).toThrow(
             "expected [ 'a', foobar: true ] to equal [ 'a', foobar: undefined ]\n" +
               '\n' +
               '[\n' +
@@ -163,8 +153,8 @@ describe('array-like type', () => {
             'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
             'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
           ])
-          .toString(),
-        'to equal',
+          .toString()
+      ).toEqual(
         '[\n' +
           "'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',\n" +
           "'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'\n" +
@@ -173,9 +163,7 @@ describe('array-like type', () => {
     });
 
     it('should not render the indentation when an instance is diffed', () => {
-      expect(
-        clonedExpect.diff(['a', 'b'], ['aa', 'bb']).toString(),
-        'to equal',
+      expect(clonedExpect.diff(['a', 'b'], ['aa', 'bb']).toString()).toEqual(
         '[\n' +
           "'a', // should equal 'aa'\n" +
           '     //\n' +
@@ -190,11 +178,9 @@ describe('array-like type', () => {
     });
 
     it('should not render the indentation when an instance participates in a "to satisfy" diff', () => {
-      expect(
-        function () {
-          clonedExpect(['aaa', 'bbb'], 'to satisfy', { 0: 'foo' });
-        },
-        'to throw',
+      expect(function () {
+        clonedExpect(['aaa', 'bbb']).toSatisfy({ 0: 'foo' });
+      }).toThrow(
         "expected [ 'aaa', 'bbb' ] to satisfy { 0: 'foo' }\n" +
           '\n' +
           '[\n' +
@@ -230,17 +216,15 @@ describe('array-like type', () => {
             'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
             'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
           ])
-          .toString(),
-        'to equal',
+          .toString()
+      ).toEqual(
         "  'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',\n" +
           "  'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'"
       );
     });
 
     it('should not render the prefix, suffix, and the newlines when an instance is diffed', () => {
-      expect(
-        clonedExpect.diff(['a', 'b'], ['aa', 'bb']).toString(),
-        'to equal',
+      expect(clonedExpect.diff(['a', 'b'], ['aa', 'bb']).toString()).toEqual(
         "  'a', // should equal 'aa'\n" +
           '       //\n' +
           '       // -a\n' +
@@ -253,11 +237,9 @@ describe('array-like type', () => {
     });
 
     it('should not render the prefix, suffix, and the newlines when an instance participates in a "to satisfy" diff', () => {
-      expect(
-        function () {
-          clonedExpect(['aaa', 'bbb'], 'to satisfy', { 0: 'foo' });
-        },
-        'to throw',
+      expect(function () {
+        clonedExpect(['aaa', 'bbb']).toSatisfy({ 0: 'foo' });
+      }).toThrow(
         "expected 'aaa', 'bbb' to satisfy { 0: 'foo' }\n" +
           '\n' +
           "  'aaa', // should equal 'foo'\n" +
@@ -280,9 +262,7 @@ describe('array-like type', () => {
     });
 
     it('should inspect in forceMultipleLines mode despite being able to render on one line', () => {
-      expect(
-        clonedExpect.inspect(['a', 'b']).toString(),
-        'to equal',
+      expect(clonedExpect.inspect(['a', 'b']).toString()).toEqual(
         '[\n' + "  'a',\n" + "  'b'\n" + ']'
       );
     });
@@ -297,13 +277,13 @@ describe('array-like type', () => {
       const a = toArguments(1, 2);
       const b = toArguments(1, 2);
       b.foo = 123;
-      expect(a, 'to equal', b);
+      expect(a).toEqual(b);
     });
 
     it('should fail when a numerical property has different values', () => {
       const a = toArguments(1, 3);
       const b = toArguments(1, 2);
-      expect(a, 'not to equal', b);
+      expect(a).notToEqual(b);
     });
   });
 
@@ -328,11 +308,9 @@ describe('array-like type', () => {
         },
       });
 
-      expect(
-        function () {
-          clonedExpect(a, 'to equal', b);
-        },
-        'to throw',
+      expect(function () {
+        clonedExpect(a).toEqual(b);
+      }).toThrow(
         "expected [ 'a', foobar: undefined ] to equal [ 'a', foobar: true ]\n" +
           '\n' +
           '[\n' +
@@ -362,11 +340,9 @@ describe('array-like type', () => {
         },
       });
 
-      expect(
-        function () {
-          clonedExpect(a, 'to satisfy', b);
-        },
-        'to throw',
+      expect(function () {
+        clonedExpect(a).toSatisfy(b);
+      }).toThrow(
         "expected [ 'a', foobar: undefined ] to satisfy [ 'a', foobar: true ]\n" +
           '\n' +
           '[\n' +
@@ -410,11 +386,9 @@ describe('array-like type', () => {
         enumerable: false,
       });
 
-      expect(
-        function () {
-          clonedExpect(foo1, 'to satisfy', foo2);
-        },
-        'to throw',
+      expect(function () {
+        clonedExpect(foo1).toSatisfy(foo2);
+      }).toThrow(
         "expected [ 'hey', 'there', bar: 123 ] to satisfy [ 'hey', 'there', bar: 456 ]\n" +
           '\n' +
           '[\n' +
@@ -487,11 +461,9 @@ describe('array-like type', () => {
       rhs.quux = 'xuuq';
       rhs.foobar = 'baz';
 
-      expect(
-        function () {
-          clonedExpect(lhs, 'to equal', rhs);
-        },
-        'to throw',
+      expect(function () {
+        clonedExpect(lhs).toEqual(rhs);
+      }).toThrow(
         'expected\n' +
           '[\n' +
           '  1,\n' +
@@ -532,11 +504,9 @@ describe('array-like type', () => {
           return value;
         },
       });
-      expect(
-        function () {
-          clonedExpect(['foobar', 'barbar'], 'to equal', ['foobar', 'barbaz']);
-        },
-        'to throw',
+      expect(function () {
+        clonedExpect(['foobar', 'barbar']).toEqual(['foobar', 'barbaz']);
+      }).toThrow(
         "expected [ 'FOOBAR', 'barbar' ] to equal [ 'FOOBAR', 'barbaz' ]\n" +
           '\n' +
           '[\n' +
@@ -559,11 +529,9 @@ describe('array-like type', () => {
   });
 
   it('should render a moved item with an arrow', () => {
-    expect(
-      function () {
-        expect(['a', 'b', 'c'], 'to equal', ['c', 'a', 'b']);
-      },
-      'to error with',
+    expect(function () {
+      expect(['a', 'b', 'c']).toEqual(['c', 'a', 'b']);
+    }).toErrorWith(
       "expected [ 'a', 'b', 'c' ] to equal [ 'c', 'a', 'b' ]\n" +
         '\n' +
         '[\n' +
@@ -576,18 +544,16 @@ describe('array-like type', () => {
   });
 
   it('should stop rendering more arrows when there would be more than 3 lanes', () => {
-    expect(
-      function () {
-        expect(['a', 'b', 'c', 'd', 'e', 'f'], 'to equal', [
-          'f',
-          'c',
-          'd',
-          'e',
-          'a',
-          'b',
-        ]);
-      },
-      'to error with',
+    expect(function () {
+      expect(['a', 'b', 'c', 'd', 'e', 'f']).toEqual([
+        'f',
+        'c',
+        'd',
+        'e',
+        'a',
+        'b',
+      ]);
+    }).toErrorWith(
       "expected [ 'a', 'b', 'c', 'd', 'e', 'f' ] to equal [ 'f', 'c', 'd', 'e', 'a', 'b' ]\n" +
         '\n' +
         '[\n' +
@@ -606,11 +572,9 @@ describe('array-like type', () => {
   });
 
   it('should render multiple moved items with arrows', () => {
-    expect(
-      function () {
-        expect(['a', 'b', 'c', 'd'], 'to equal', ['d', 'b', 'a', 'c']);
-      },
-      'to error with',
+    expect(function () {
+      expect(['a', 'b', 'c', 'd']).toEqual(['d', 'b', 'a', 'c']);
+    }).toErrorWith(
       "expected [ 'a', 'b', 'c', 'd' ] to equal [ 'd', 'b', 'a', 'c' ]\n" +
         '\n' +
         '[\n' +
@@ -625,17 +589,9 @@ describe('array-like type', () => {
   });
 
   it('should render 3 moved neighbor items', () => {
-    expect(
-      function () {
-        expect(['a', 'b', 'c', 'd', 'e'], 'to equal', [
-          'c',
-          'd',
-          'e',
-          'a',
-          'b',
-        ]);
-      },
-      'to error with',
+    expect(function () {
+      expect(['a', 'b', 'c', 'd', 'e']).toEqual(['c', 'd', 'e', 'a', 'b']);
+    }).toErrorWith(
       "expected [ 'a', 'b', 'c', 'd', 'e' ] to equal [ 'c', 'd', 'e', 'a', 'b' ]\n" +
         '\n' +
         '[\n' +

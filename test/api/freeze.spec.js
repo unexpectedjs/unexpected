@@ -13,31 +13,27 @@ describe('freeze', () => {
   });
 
   it('makes .use(...) throw', () => {
-    expect(
-      function () {
-        expect
-          .clone()
-          .freeze()
-          .use(function () {});
-      },
-      'to throw',
+    expect(function () {
+      expect
+        .clone()
+        .freeze()
+        .use(function () {});
+    }).toThrow(
       'Cannot install a plugin into a frozen instance, please run .clone() first'
     );
   });
 
   it('makes .hook(...) throw', () => {
-    expect(
-      function () {
-        expect
-          .clone()
-          .freeze()
-          .hook(function (next) {
-            return function (context, args) {
-              return next(context, args);
-            };
-          });
-      },
-      'to throw',
+    expect(function () {
+      expect
+        .clone()
+        .freeze()
+        .hook(function (next) {
+          return function (context, args) {
+            return next(context, args);
+          };
+        });
+    }).toThrow(
       'Cannot install a hook into a frozen instance, please run .clone() first'
     );
   });
@@ -51,51 +47,43 @@ describe('freeze', () => {
   });
 
   it('makes .addAssertion(...) throw', () => {
-    expect(
-      function () {
-        expect
-          .clone()
-          .freeze()
-          .addAssertion('<string> to foo', function (expect, subject) {
-            expect(subject, 'to equal', 'foo');
-          });
-      },
-      'to throw',
+    expect(function () {
+      expect
+        .clone()
+        .freeze()
+        .addAssertion('<string> to foo', function (expect, subject) {
+          expect(subject).toEqual('foo');
+        });
+    }).toThrow(
       'Cannot add an assertion to a frozen instance, please run .clone() first'
     );
   });
 
   it('makes .addType(...) throw', () => {
-    expect(
-      function () {
-        expect.clone().freeze().addType({ name: 'foo', identify: false });
-      },
-      'to throw',
+    expect(function () {
+      expect.clone().freeze().addType({ name: 'foo', identify: false });
+    }).toThrow(
       'Cannot add a type to a frozen instance, please run .clone() first'
     );
   });
 
   it('makes .addStyle(...) throw', () => {
-    expect(
-      function () {
-        expect
-          .clone()
-          .freeze()
-          .addStyle('smiley', function () {
-            this.red('\u263a');
-          });
-      },
-      'to throw',
+    expect(function () {
+      expect
+        .clone()
+        .freeze()
+        .addStyle('smiley', function () {
+          this.red('\u263a');
+        });
+    }).toThrow(
       'Cannot add a style to a frozen instance, please run .clone() first'
     );
   });
 
   it('makes .installTheme(...) throw', () => {
-    expect(
-      function () {
-        expect.clone().freeze().installTheme('html', { comment: 'gray' });
-      },
-      'to throw',
+    expect(function () {
+      expect.clone().freeze().installTheme('html', { comment: 'gray' });
+    }).toThrow(
       'Cannot install a theme into a frozen instance, please run .clone() first'
     );
   });
@@ -111,36 +99,32 @@ describe('freeze', () => {
         .freeze()
         .child()
         .addAssertion('<string> to foo', function (expect, subject) {
-          expect(subject, 'to equal', 'foo');
+          expect(subject).toEqual('foo');
         });
     });
 
     it('throws on exportAssertion', () => {
-      expect(
-        function () {
-          expect
-            .clone()
-            .freeze()
-            .child()
-            .exportAssertion('<string> to foo', function (expect, subject) {
-              expect(subject, 'to equal', 'foo');
-            });
-        },
-        'to throw',
+      expect(function () {
+        expect
+          .clone()
+          .freeze()
+          .child()
+          .exportAssertion('<string> to foo', function (expect, subject) {
+            expect(subject).toEqual('foo');
+          });
+      }).toThrow(
         'Cannot add an assertion to a frozen instance, please run .clone() first'
       );
     });
 
     it('throws on exportType', () => {
-      expect(
-        function () {
-          expect
-            .clone()
-            .freeze()
-            .child()
-            .exportType({ name: 'foo', identify: false });
-        },
-        'to throw',
+      expect(function () {
+        expect
+          .clone()
+          .freeze()
+          .child()
+          .exportType({ name: 'foo', identify: false });
+      }).toThrow(
         'Cannot add a type to a frozen instance, please run .clone() first'
       );
     });
@@ -156,17 +140,15 @@ describe('freeze', () => {
     });
 
     it('throws on exportStyle', () => {
-      expect(
-        function () {
-          expect
-            .clone()
-            .freeze()
-            .child()
-            .exportStyle('smiley', function () {
-              this.red('\u263a');
-            });
-        },
-        'to throw',
+      expect(function () {
+        expect
+          .clone()
+          .freeze()
+          .child()
+          .exportStyle('smiley', function () {
+            this.red('\u263a');
+          });
+      }).toThrow(
         'Cannot add a style to a frozen instance, please run .clone() first'
       );
     });

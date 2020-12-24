@@ -6,20 +6,16 @@ describe('to be rejected with assertion', () => {
         setTimeout(function () {
           reject(new Error('OMG!'));
         }, 0);
-      }),
-      'to be rejected with',
-      new Error('OMG!')
-    );
+      })
+    ).toBeRejectedWith(new Error('OMG!'));
   });
 
   it('should provide the rejection reason as the fulfillment value', () => {
-    return expect(
-      expect.promise.reject(new Error('foo')),
-      'to be rejected with',
-      'foo'
-    ).then(function (reason) {
-      expect(reason, 'to have message', 'foo');
-    });
+    return expect(expect.promise.reject(new Error('foo')))
+      .toBeRejectedWith('foo')
+      .then(function (reason) {
+        expect(reason).toHaveMessage('foo');
+      });
   });
 
   it('should support matching the error message against a regular expression', () => {
@@ -28,10 +24,8 @@ describe('to be rejected with assertion', () => {
         setTimeout(function () {
           reject(new Error('OMG!'));
         }, 0);
-      }),
-      'to be rejected with',
-      /MG/
-    );
+      })
+    ).toBeRejectedWith(/MG/);
   });
 
   describe('when matching the error message against an expect.it', () => {
@@ -41,10 +35,10 @@ describe('to be rejected with assertion', () => {
           setTimeout(function () {
             reject(new Error('OMG!'));
           }, 0);
-        }),
-        'to be rejected with',
+        })
+      ).toBeRejectedWith(
         expect.it(function (err) {
-          expect(err, 'to have message', 'OMG!');
+          expect(err).toHaveMessage('OMG!');
         })
       );
     });
@@ -56,13 +50,13 @@ describe('to be rejected with assertion', () => {
             setTimeout(function () {
               reject(new Error('OMG!'));
             }, 0);
-          }),
-          'to be rejected with',
-          expect.it(function (err) {
-            expect(err, 'to have message', 'OMGOSH!');
           })
-        ),
-        'to be rejected with',
+        ).toBeRejectedWith(
+          expect.it(function (err) {
+            expect(err).toHaveMessage('OMGOSH!');
+          })
+        )
+      ).toBeRejectedWith(
         'expected Promise to be rejected with\n' +
           'expect.it(function (err) {\n' +
           "  expect(err, 'to have message', 'OMGOSH!');\n" +
@@ -81,15 +75,13 @@ describe('to be rejected with assertion', () => {
       new Promise(function (resolve, reject) {
         setTimeout(function () {
           try {
-            expect(false, 'to be truthy');
+            expect(false).toBeTruthy();
           } catch (err) {
             reject(err);
           }
         }, 0);
-      }),
-      'to be rejected with',
-      /to be/
-    );
+      })
+    ).toBeRejectedWith(/to be/);
   });
 
   it('should fail if the promise is rejected with a reason that does not satisfy the argument', () => {
@@ -99,11 +91,9 @@ describe('to be rejected with assertion', () => {
           setTimeout(function () {
             reject(new Error('OMG!'));
           }, 1);
-        }),
-        'to be rejected with',
-        new Error('foobar')
-      ),
-      'to be rejected with',
+        })
+      ).toBeRejectedWith(new Error('foobar'))
+    ).toBeRejectedWith(
       "expected Promise to be rejected with Error('foobar')\n" +
         "  expected Error('OMG!') to satisfy Error('foobar')\n" +
         '\n' +
@@ -118,17 +108,11 @@ describe('to be rejected with assertion', () => {
 
   describe('when passed a function as the subject', () => {
     it('should fail if the function returns a promise that is rejected with the wrong reason', () => {
-      expect(
-        function () {
-          return expect(
-            function () {
-              return expect.promise.reject(new Error('foo'));
-            },
-            'to be rejected with',
-            new Error('bar')
-          );
-        },
-        'to throw',
+      expect(function () {
+        return expect(function () {
+          return expect.promise.reject(new Error('foo'));
+        }).toBeRejectedWith(new Error('bar'));
+      }).toThrow(
         'expected\n' +
           'function () {\n' +
           "  return expect.promise.reject(new Error('foo'));\n" +
@@ -148,23 +132,17 @@ describe('to be rejected with assertion', () => {
     });
 
     it('should use the stack of the rejection reason when failing', () => {
-      return expect(
-        function () {
-          return expect(
-            function () {
-              return expect.promise(function () {
-                (function thisIsImportant() {
-                  throw new Error('argh');
-                })();
-              });
-            },
-            'to be rejected with',
-            'foobar'
-          );
-        },
-        'to error',
+      return expect(function () {
+        return expect(function () {
+          return expect.promise(function () {
+            (function thisIsImportant() {
+              throw new Error('argh');
+            })();
+          });
+        }).toBeRejectedWith('foobar');
+      }).toError(
         expect.it(function (err) {
-          expect(err.stack, 'to match', /thisIsImportant/);
+          expect(err.stack).toMatch(/thisIsImportant/);
         })
       );
     });
@@ -172,23 +150,17 @@ describe('to be rejected with assertion', () => {
 
   describe('with another promise library', () => {
     it('should use the stack of the rejection reason when failing', () => {
-      return expect(
-        function () {
-          return expect(
-            function () {
-              return new Promise(function (resolve, reject) {
-                (function thisIsImportant() {
-                  throw new Error('argh');
-                })();
-              });
-            },
-            'to be rejected with',
-            'foobar'
-          );
-        },
-        'to error',
+      return expect(function () {
+        return expect(function () {
+          return new Promise(function (resolve, reject) {
+            (function thisIsImportant() {
+              throw new Error('argh');
+            })();
+          });
+        }).toBeRejectedWith('foobar');
+      }).toError(
         expect.it(function (err) {
-          expect(err.stack, 'to match', /thisIsImportant/);
+          expect(err.stack).toMatch(/thisIsImportant/);
         })
       );
     });

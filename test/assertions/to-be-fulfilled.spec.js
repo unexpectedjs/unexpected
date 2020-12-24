@@ -6,9 +6,8 @@ describe('to be fulfilled assertion', () => {
         setTimeout(function () {
           resolve('yay');
         }, 0);
-      }),
-      'to be fulfilled'
-    );
+      })
+    ).toBeFulfilled();
   });
 
   it('should fail if the promise is rejected', () => {
@@ -19,10 +18,9 @@ describe('to be fulfilled assertion', () => {
             // eslint-disable-next-line prefer-promise-reject-errors
             reject('unhappy times');
           }, 0);
-        }),
-        'to be fulfilled'
-      ),
-      'to be rejected with',
+        })
+      ).toBeFulfilled()
+    ).toBeRejectedWith(
       'expected Promise to be fulfilled\n' +
         "  Promise unexpectedly rejected with 'unhappy times'"
     );
@@ -33,10 +31,9 @@ describe('to be fulfilled assertion', () => {
       expect(
         new Promise(function (resolve, reject) {
           setTimeout(reject, 0);
-        }),
-        'to be fulfilled'
-      ),
-      'to be rejected with',
+        })
+      ).toBeFulfilled()
+    ).toBeRejectedWith(
       'expected Promise to be fulfilled\n' + '  Promise unexpectedly rejected'
     );
   });
@@ -47,7 +44,7 @@ describe('to be fulfilled assertion', () => {
         return expect.promise(function () {
           return 123;
         });
-      }, 'to be fulfilled');
+      }).toBeFulfilled();
     });
 
     it('should forward the fulfillment value', () => {
@@ -55,19 +52,19 @@ describe('to be fulfilled assertion', () => {
         return expect.promise(function () {
           return 123;
         });
-      }, 'to be fulfilled').then(function (value) {
-        expect(value, 'to equal', 123);
-      });
+      })
+        .toBeFulfilled()
+        .then(function (value) {
+          expect(value).toEqual(123);
+        });
     });
 
     it('should fail if the function returns a promise that fails', () => {
-      expect(
-        function () {
-          return expect(function () {
-            return expect.promise.reject(new Error('foo'));
-          }, 'to be fulfilled');
-        },
-        'to throw',
+      expect(function () {
+        return expect(function () {
+          return expect.promise.reject(new Error('foo'));
+        }).toBeFulfilled();
+      }).toThrow(
         'expected\n' +
           'function () {\n' +
           "  return expect.promise.reject(new Error('foo'));\n" +
@@ -79,13 +76,11 @@ describe('to be fulfilled assertion', () => {
     });
 
     it('should fail if the function throws synchronously', () => {
-      expect(
-        function () {
-          return expect(function () {
-            throw new Error('foo');
-          }, 'to be fulfilled');
-        },
-        'to throw',
+      expect(function () {
+        return expect(function () {
+          throw new Error('foo');
+        }).toBeFulfilled();
+      }).toThrow(
         "expected function () { throw new Error('foo'); } to be fulfilled\n" +
           "  expected Promise (rejected) => Error('foo') to be fulfilled\n" +
           "    Promise (rejected) => Error('foo') unexpectedly rejected with Error('foo')"
@@ -94,38 +89,34 @@ describe('to be fulfilled assertion', () => {
   });
 
   it('should use the stack of the thrown error when failing', () => {
-    return expect(
-      function () {
-        return expect(function () {
-          return expect.promise(function () {
-            (function thisIsImportant() {
-              throw new Error('argh');
-            })();
-          });
-        }, 'to be fulfilled');
-      },
-      'to error',
+    return expect(function () {
+      return expect(function () {
+        return expect.promise(function () {
+          (function thisIsImportant() {
+            throw new Error('argh');
+          })();
+        });
+      }).toBeFulfilled();
+    }).toError(
       expect.it(function (err) {
-        expect(err.stack, 'to match', /thisIsImportant/);
+        expect(err.stack).toMatch(/thisIsImportant/);
       })
     );
   });
 
   describe('with another promise library', () => {
     it('should use the stack of the thrown error when failing', () => {
-      return expect(
-        function () {
-          return expect(function () {
-            return new Promise(function (resolve, reject) {
-              (function thisIsImportant() {
-                throw new Error('argh');
-              })();
-            });
-          }, 'to be fulfilled');
-        },
-        'to error',
+      return expect(function () {
+        return expect(function () {
+          return new Promise(function (resolve, reject) {
+            (function thisIsImportant() {
+              throw new Error('argh');
+            })();
+          });
+        }).toBeFulfilled();
+      }).toError(
         expect.it(function (err) {
-          expect(err.stack, 'to match', /thisIsImportant/);
+          expect(err.stack).toMatch(/thisIsImportant/);
         })
       );
     });

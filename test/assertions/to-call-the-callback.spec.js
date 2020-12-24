@@ -3,18 +3,16 @@ describe('to call the callback assertion', () => {
   it('should succeed when the callback is called synchronously', () => {
     return expect(function (cb) {
       cb();
-    }, 'to call the callback');
+    }).toCallTheCallback();
   });
 
   it('should fail when the callback is called twice synchronously', () => {
-    return expect(
-      function () {
-        return expect(function (cb) {
-          cb();
-          cb();
-        }, 'to call the callback');
-      },
-      'to error',
+    return expect(function () {
+      return expect(function (cb) {
+        cb();
+        cb();
+      }).toCallTheCallback();
+    }).toError(
       'expected\n' +
         'function (cb) {\n' +
         '  cb();\n' +
@@ -26,17 +24,15 @@ describe('to call the callback assertion', () => {
   });
 
   it('should fail when the callback is called twice asynchronously', () => {
-    return expect(
-      function () {
-        // prettier-ignore
-        return expect(function (cb) {
+    return expect(function () {
+      // prettier-ignore
+      return expect(function (cb) {
           setTimeout(function () {
             cb();
             cb();
           }, 0);
-        }, 'to call the callback');
-      },
-      'to error',
+        }).toCallTheCallback();
+    }).toError(
       'expected\n' +
         'function (cb) {\n' +
         '  setTimeout(function () {\n' +
@@ -52,19 +48,23 @@ describe('to call the callback assertion', () => {
   it('should return a promise that is fulfilled with the values passed to the callback', () => {
     return expect(function (cb) {
       cb(new Error('foo'), 2, 3, 4);
-    }, 'to call the callback').then(function (args) {
-      expect(args, 'to equal', [new Error('foo'), 2, 3, 4]);
-    });
+    })
+      .toCallTheCallback()
+      .then(function (args) {
+        expect(args).toEqual([new Error('foo'), 2, 3, 4]);
+      });
   });
 
   it("should return a promise that is compatible with Bluebird's spread feature", () => {
     return expect(function (cb) {
       cb(new Error('foo'), 2);
-    }, 'to call the callback').spread(function (arg1, arg2) {
-      expect(arg1, 'to equal', new Error('foo'));
-      expect(arg2, 'to equal', 2);
-      expect(arguments, 'to satisfy', [new Error('foo'), 2]);
-    });
+    })
+      .toCallTheCallback()
+      .spread(function (arg1, arg2) {
+        expect(arg1).toEqual(new Error('foo'));
+        expect(arg2).toEqual(2);
+        expect(arguments).toSatisfy([new Error('foo'), 2]);
+      });
   });
 
   it('should succeed when the callback is called asynchronously', () => {
@@ -72,7 +72,7 @@ describe('to call the callback assertion', () => {
       setTimeout(function () {
         cb();
       });
-    }, 'to call the callback');
+    }).toCallTheCallback();
   });
 
   it('should succeed when the callback is called with an error', () => {
@@ -80,95 +80,75 @@ describe('to call the callback assertion', () => {
       setTimeout(function () {
         cb(new Error("don't mind me"));
       });
-    }, 'to call the callback');
+    }).toCallTheCallback();
   });
 
   it('should fail if the function throws an exception', () => {
-    return expect(
-      function () {
-        return expect(function (cb) {
-          throw new Error('argh');
-        }, 'to call the callback');
-      },
-      'to error',
-      'argh'
-    );
+    return expect(function () {
+      return expect(function (cb) {
+        throw new Error('argh');
+      }).toCallTheCallback();
+    }).toError('argh');
   });
 
   describe('with error', () => {
     describe('with an expected error', () => {
       it('should succeed', () => {
-        return expect(
-          function (cb) {
-            setTimeout(function () {
-              cb(new Error('bla'));
-            }, 0);
-          },
-          'to call the callback with error',
-          new Error('bla')
-        );
+        return expect(function (cb) {
+          setTimeout(function () {
+            cb(new Error('bla'));
+          }, 0);
+        }).toCallTheCallbackWithError(new Error('bla'));
       });
 
       it('should provide the error as the promise fulfillment value', () => {
-        return expect(
-          function (cb) {
-            setTimeout(function () {
-              cb(new Error('bla'));
-            }, 0);
-          },
-          'to call the callback with error',
-          new Error('bla')
-        ).then(function (err) {
-          expect(err, 'to equal', new Error('bla'));
-        });
+        return expect(function (cb) {
+          setTimeout(function () {
+            cb(new Error('bla'));
+          }, 0);
+        })
+          .toCallTheCallbackWithError(new Error('bla'))
+          .then(function (err) {
+            expect(err).toEqual(new Error('bla'));
+          });
       });
 
       it('should provide the error as the promise fulfillment value when matching against an UnexpectedError', () => {
         try {
-          expect(true, 'to be falsy');
+          expect(true).toBeFalsy();
         } catch (err) {
-          return expect(
-            function (cb) {
-              setTimeout(function () {
-                cb(err);
-              }, 0);
-            },
-            'to call the callback with error',
-            'expected true to be falsy'
-          ).then(function (err) {
-            expect(err, 'to have message', 'expected true to be falsy');
-          });
+          return expect(function (cb) {
+            setTimeout(function () {
+              cb(err);
+            }, 0);
+          })
+            .toCallTheCallbackWithError('expected true to be falsy')
+            .then(function (err) {
+              expect(err).toHaveMessage('expected true to be falsy');
+            });
         }
       });
 
       describe('given as a string to be tested against the error message', () => {
         it('should succeed', () => {
-          return expect(
-            function (cb) {
-              setTimeout(function () {
-                cb(new Error('bla'));
-              }, 0);
-            },
-            'to call the callback with error',
-            'bla'
-          );
+          return expect(function (cb) {
+            setTimeout(function () {
+              cb(new Error('bla'));
+            }, 0);
+          }).toCallTheCallbackWithError('bla');
         });
 
         it('should fail with a diff', () => {
-          return expect(
-            function () {
-              return expect(
-                // prettier-ignore
-                function (cb) {
+          return expect(function () {
+            return expect(
+              // prettier-ignore
+              function (cb) {
                   setTimeout(function () {
                     cb(new Error('bla'));
                   }, 0);
-                },
-                'to call the callback with error',
-                'quux'
-              );
-            },
-            'to error',
+                }
+            ).toCallTheCallbackWithError('quux');
+          }).toError(
             'expected\n' +
               'function (cb) {\n' +
               '  setTimeout(function () {\n' +
@@ -186,32 +166,24 @@ describe('to call the callback assertion', () => {
 
       describe('given as a regular expression to be matched against the error message', () => {
         it('should succeed', () => {
-          return expect(
-            function (cb) {
-              setTimeout(function () {
-                cb(new Error('bla'));
-              }, 0);
-            },
-            'to call the callback with error',
-            /a/
-          );
+          return expect(function (cb) {
+            setTimeout(function () {
+              cb(new Error('bla'));
+            }, 0);
+          }).toCallTheCallbackWithError(/a/);
         });
 
         it('should fail with a diff', () => {
-          return expect(
-            function () {
-              return expect(
-                // prettier-ignore
-                function (cb) {
+          return expect(function () {
+            return expect(
+              // prettier-ignore
+              function (cb) {
                   setTimeout(function () {
                     cb(new Error('bla'));
                   }, 0);
-                },
-                'to call the callback with error',
-                /q/
-              );
-            },
-            'to error',
+                }
+            ).toCallTheCallbackWithError(/q/);
+          }).toError(
             'expected\n' +
               'function (cb) {\n' +
               '  setTimeout(function () {\n' +
@@ -224,24 +196,20 @@ describe('to call the callback assertion', () => {
         });
 
         it('should support UnexpectedError instances', () => {
-          return expect(
-            function () {
-              return expect(
-                // prettier-ignore
-                function(cb) {
+          return expect(function () {
+            return expect(
+              // prettier-ignore
+              function(cb) {
                   setTimeout(function () {
                     try {
-                      expect(false, 'to be truthy');
+                      expect(false).toBeTruthy();
                     } catch (err) {
                       cb(err);
                     }
                   }, 0);
-                },
-                'to call the callback with error',
-                /qqxqwxeqw/
-              );
-            },
-            'to error',
+                }
+            ).toCallTheCallbackWithError(/qqxqwxeqw/);
+          }).toError(
             'expected\n' +
               'function (cb) {\n' +
               '  setTimeout(function () {\n' +
@@ -260,20 +228,16 @@ describe('to call the callback assertion', () => {
       });
 
       it('should fail with a diff when the error does not satisfy the expected error', () => {
-        return expect(
-          function () {
-            return expect(
-              // prettier-ignore
-              function (cb) {
+        return expect(function () {
+          return expect(
+            // prettier-ignore
+            function (cb) {
                 setTimeout(function () {
                   cb(new Error('foo'));
                 }, 0);
-              },
-              'to call the callback with error',
-              new Error('bla')
-            );
-          },
-          'to error',
+              }
+          ).toCallTheCallbackWithError(new Error('bla'));
+        }).toError(
           'expected\n' +
             'function (cb) {\n' +
             '  setTimeout(function () {\n' +
@@ -293,17 +257,11 @@ describe('to call the callback assertion', () => {
       });
 
       it('should fail with a diff when no error was passed to the callback', () => {
-        return expect(
-          function () {
-            return expect(
-              function (cb) {
-                setTimeout(cb, 0);
-              },
-              'to call the callback with error',
-              new Error('bla')
-            );
-          },
-          'to error',
+        return expect(function () {
+          return expect(function (cb) {
+            setTimeout(cb, 0);
+          }).toCallTheCallbackWithError(new Error('bla'));
+        }).toError(
           'expected function (cb) { setTimeout(cb, 0); }\n' +
             "to call the callback with error Error('bla')"
         );
@@ -316,17 +274,15 @@ describe('to call the callback assertion', () => {
           setTimeout(function () {
             cb(new Error('bla'));
           }, 0);
-        }, 'to call the callback with error');
+        }).toCallTheCallbackWithError();
       });
 
       it('should fail with a diff when no error was passed to the callback', () => {
-        return expect(
-          function () {
-            return expect(function (cb) {
-              setTimeout(cb, 0);
-            }, 'to call the callback with error');
-          },
-          'to error',
+        return expect(function () {
+          return expect(function (cb) {
+            setTimeout(cb, 0);
+          }).toCallTheCallbackWithError();
+        }).toError(
           'expected function (cb) { setTimeout(cb, 0); } to call the callback with error'
         );
       });
@@ -335,20 +291,16 @@ describe('to call the callback assertion', () => {
 
   describe('without error', () => {
     it('should throw if called with an expected error instance', () => {
-      expect(
-        function () {
-          return expect(
-            // prettier-ignore
-            function (cb) {
+      expect(function () {
+        return expect(
+          // prettier-ignore
+          function (cb) {
               setTimeout(function () {
                 cb(new Error('bla'));
               }, 0);
-            },
-            'to call the callback without error',
-            new Error('bla')
-          );
-        },
-        'to throw',
+            }
+        ).toCallTheCallbackWithoutError(new Error('bla'));
+      }).toThrow(
         'expected\n' +
           'function (cb) {\n' +
           '  setTimeout(function () {\n' +
@@ -366,20 +318,18 @@ describe('to call the callback assertion', () => {
     it('should succeed', () => {
       return expect(function (cb) {
         return setTimeout(cb, 0);
-      }, 'to call the callback without error');
+      }).toCallTheCallbackWithoutError();
     });
 
     it('should fail with a diff', () => {
-      return expect(
-        function () {
-          // prettier-ignore
-          return expect(function (cb) {
+      return expect(function () {
+        // prettier-ignore
+        return expect(function (cb) {
             return setTimeout(function () {
               cb(new Error('wat'));
             }, 0);
-          }, 'to call the callback without error');
-        },
-        'to error',
+          }).toCallTheCallbackWithoutError();
+      }).toError(
         'expected\n' +
           'function (cb) {\n' +
           '  return setTimeout(function () {\n' +
@@ -394,26 +344,26 @@ describe('to call the callback assertion', () => {
     it('should return a promise that is fulfilled with the values passed to the callback excluding the first (falsy error) parameter', () => {
       return expect(function (cb) {
         cb(null, 1, 2);
-      }, 'to call the callback without error').then(function (args) {
-        expect(args, 'to equal', [1, 2]);
-      });
+      })
+        .toCallTheCallbackWithoutError()
+        .then(function (args) {
+          expect(args).toEqual([1, 2]);
+        });
     });
 
     it('should support UnexpectedError instances', () => {
-      return expect(
-        function () {
-          // prettier-ignore
-          return expect(function(cb) {
+      return expect(function () {
+        // prettier-ignore
+        return expect(function(cb) {
             setTimeout(function () {
               try {
-                expect(false, 'to be truthy');
+                expect(false).toBeTruthy();
               } catch (err) {
                 cb(err);
               }
             }, 0);
-          }, 'to call the callback without error');
-        },
-        'to error',
+          }).toCallTheCallbackWithoutError();
+      }).toError(
         'expected\n' +
           'function (cb) {\n' +
           '  setTimeout(function () {\n' +

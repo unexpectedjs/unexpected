@@ -21,52 +21,38 @@ describe('utils', () => {
         });
 
         it('should say that the number 123 is itself', () => {
-          expect(
-            utilsWithoutObjectIsAvailable.objectIs(123, 123),
-            'to be true'
-          );
+          expect(utilsWithoutObjectIsAvailable.objectIs(123, 123)).toBeTrue();
         });
 
         it('should say that the NaN is itself', () => {
-          expect(
-            utilsWithoutObjectIsAvailable.objectIs(NaN, NaN),
-            'to be true'
-          );
+          expect(utilsWithoutObjectIsAvailable.objectIs(NaN, NaN)).toBeTrue();
         });
 
         it('should say that -0 is not 0', () => {
-          expect(utilsWithoutObjectIsAvailable.objectIs(-0, 0), 'to be false');
+          expect(utilsWithoutObjectIsAvailable.objectIs(-0, 0)).toBeFalse();
         });
 
         it('should say that 0 is not -0', () => {
-          expect(utilsWithoutObjectIsAvailable.objectIs(0, -0), 'to be false');
+          expect(utilsWithoutObjectIsAvailable.objectIs(0, -0)).toBeFalse();
         });
 
         it('should say that 0 is 0', () => {
-          expect(utilsWithoutObjectIsAvailable.objectIs(0, 0), 'to be true');
+          expect(utilsWithoutObjectIsAvailable.objectIs(0, 0)).toBeTrue();
         });
 
         it('should say that -0 is -0', () => {
-          expect(utilsWithoutObjectIsAvailable.objectIs(-0, -0), 'to be true');
+          expect(utilsWithoutObjectIsAvailable.objectIs(-0, -0)).toBeTrue();
         });
       });
     });
 
     describe('#getFunctionName', () => {
       it('should return the name of a named function', () => {
-        expect(
-          utils.getFunctionName(function foo() {}),
-          'to equal',
-          'foo'
-        );
+        expect(utils.getFunctionName(function foo() {})).toEqual('foo');
       });
 
       it('should return the empty string for an anonymous function', () => {
-        expect(
-          utils.getFunctionName(function () {}),
-          'to equal',
-          ''
-        );
+        expect(utils.getFunctionName(function () {})).toEqual('');
       });
 
       describe('with Function.prototype.toString mocked out', () => {
@@ -85,7 +71,7 @@ describe('utils', () => {
         });
 
         it('should return what Function.prototype.toString says for an object without a name property', () => {
-          expect(utils.getFunctionName({}), 'to equal', 'whatever');
+          expect(utils.getFunctionName({})).toEqual('whatever');
         });
       });
     });

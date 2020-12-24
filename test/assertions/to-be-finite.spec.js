@@ -1,18 +1,16 @@
 /* global expect */
 describe('to be finite assertion', () => {
   it('asserts a finite number', () => {
-    expect(123, 'to be finite');
-    expect(0, 'to be finite');
-    expect(Infinity, 'not to be finite');
-    expect(-Infinity, 'not to be finite');
+    expect(123).toBeFinite();
+    expect(0).toBeFinite();
+    expect(Infinity).notToBeFinite();
+    expect(-Infinity).notToBeFinite();
   });
 
   it('refuses to work on NaN', () => {
-    expect(
-      function () {
-        expect(NaN, 'not to be finite');
-      },
-      'to throw',
+    expect(function () {
+      expect(NaN).notToBeFinite();
+    }).toThrow(
       'expected NaN not to be finite\n' +
         '  The assertion does not have a matching signature for:\n' +
         '    <NaN> not to be finite\n' +
@@ -22,12 +20,8 @@ describe('to be finite assertion', () => {
   });
 
   it('throws when the assertion fails', () => {
-    expect(
-      function () {
-        expect(Infinity, 'to be finite');
-      },
-      'to throw exception',
-      'expected Infinity to be finite'
-    );
+    expect(function () {
+      expect(Infinity).toBeFinite();
+    }).toThrowException('expected Infinity to be finite');
   });
 });

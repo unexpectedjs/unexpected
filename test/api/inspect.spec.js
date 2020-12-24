@@ -215,9 +215,7 @@ describe('inspect', () => {
       },
     ];
 
-    expect(
-      expect.inspect(data, 5).toString(),
-      'to equal',
+    expect(expect.inspect(data, 5).toString()).toEqual(
       '[\n' +
         '  {\n' +
         "    guid: 'db550c87-1680-462a-bacc-655cecdd8907', isActive: false,\n" +
@@ -279,9 +277,7 @@ describe('inspect', () => {
 
     const clonedExpect = expect.clone();
     clonedExpect.output.preferredWidth = 200;
-    expect(
-      clonedExpect.inspect(data, 5).toString(),
-      'to equal',
+    expect(clonedExpect.inspect(data, 5).toString()).toEqual(
       '[\n' +
         '  {\n' +
         "    guid: 'db550c87-1680-462a-bacc-655cecdd8907', isActive: false, age: 38, email: 'huntterry@medalert.com', phone: '+1 (803) 472-3209', address: '944 Milton Street, Madrid, Ohio, 1336',\n" +

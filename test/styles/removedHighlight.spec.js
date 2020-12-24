@@ -7,11 +7,9 @@ describe('removedHighlight', () => {
   describe('in text mode', () => {
     it('escapes the newlines', () => {
       const pen = expect.createOutput('text').removedHighlight(text);
-      expect(pen.toString(), 'to equal', 'foo\\n\n^^^^\nbar\n^^^');
+      expect(pen.toString()).toEqual('foo\\n\n^^^^\nbar\n^^^');
 
-      expect(
-        pen,
-        'to equal',
+      expect(pen).toEqual(
         expect
           .createOutput('text')
           .block(function () {
@@ -30,9 +28,7 @@ describe('removedHighlight', () => {
 
   describe('in ansi mode', () => {
     it('does not output leading + and -', () => {
-      expect(
-        expect.createOutput('ansi').removedHighlight(text),
-        'to equal',
+      expect(expect.createOutput('ansi').removedHighlight(text)).toEqual(
         expect
           .createOutput('ansi')
           .diffRemovedHighlight('foo')

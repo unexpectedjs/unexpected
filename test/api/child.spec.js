@@ -9,20 +9,16 @@ describe('#child', () => {
 
   it('should not leak a "private" assertion into the parent', () => {
     childExpect.addAssertion('<string> to foo', function (expect, subject) {
-      expect(subject, 'to equal', 'foo');
+      expect(subject).toEqual('foo');
     });
-    expect(
-      function () {
-        parentExpect('foo', 'to foo');
-      },
-      'to throw',
-      /^Unknown assertion 'to foo'/
-    );
+    expect(function () {
+      parentExpect('foo', 'to foo');
+    }).toThrow(/^Unknown assertion 'to foo'/);
   });
 
   it('should not leak a "private" style into the parent', () => {
     childExpect.addStyle('foo', function () {});
-    expect(parentExpect.createOutput().foo, 'to be undefined');
+    expect(parentExpect.createOutput().foo).toBeUndefined();
   });
 
   it('should not leak a "private" type into the parent', () => {
@@ -32,19 +28,19 @@ describe('#child', () => {
         return obj === 'abc';
       },
     });
-    expect(parentExpect.findTypeOf('abc'), 'to satisfy', { name: 'string' });
+    expect(parentExpect.findTypeOf('abc')).toSatisfy({ name: 'string' });
   });
 
   it('should have access to assertions defined in the parent after the child was created', () => {
     parentExpect.addAssertion('<string> to foo', function (expect, subject) {
-      expect(subject, 'to equal', 'foo');
+      expect(subject).toEqual('foo');
     });
     childExpect('foo', 'to foo');
   });
 
   it('should prefer an assertion defined in the child, even if it was added before an identically named one in the parent', () => {
     childExpect.addAssertion('<string> to foo', function (expect, subject) {
-      expect(subject, 'to equal', 'foo');
+      expect(subject).toEqual('foo');
     });
     parentExpect.addAssertion('<string> to foo', function (expect, subject) {
       expect.fail('Wrong one!');
@@ -55,11 +51,11 @@ describe('#child', () => {
   it('should have access to identically named assertions with different type signatures in child and parent', () => {
     childExpect.addAssertion('<string> to foo', function (expect, subject) {
       expect.errorMode = 'nested';
-      expect(subject, 'to equal', 'foo');
+      expect(subject).toEqual('foo');
       expect(subject.length, 'to foo');
     });
     parentExpect.addAssertion('<number> to foo', function (expect, subject) {
-      expect(subject, 'to equal', 3);
+      expect(subject).toEqual(3);
     });
     childExpect('foo', 'to foo');
   });
@@ -68,9 +64,7 @@ describe('#child', () => {
     parentExpect.addStyle('yadda', function () {
       this.text('yaddafoo');
     });
-    expect(
-      childExpect.createOutput('text').yadda().toString(),
-      'to equal',
+    expect(childExpect.createOutput('text').yadda().toString()).toEqual(
       'yaddafoo'
     );
   });
@@ -82,9 +76,7 @@ describe('#child', () => {
     parentExpect.addStyle('yadda', function () {
       this.text('yaddabad');
     });
-    expect(
-      childExpect.createOutput('text').yadda().toString(),
-      'to equal',
+    expect(childExpect.createOutput('text').yadda().toString()).toEqual(
       'yaddagood'
     );
   });
@@ -97,7 +89,7 @@ describe('#child', () => {
       },
     });
     childExpect.addAssertion('<yadda> to foo', function (expect, subject) {
-      expect(subject, 'to contain', 'foo');
+      expect(subject).toContain('foo');
     });
     childExpect('yaddafoo', 'to foo');
   });
@@ -110,11 +102,11 @@ describe('#child', () => {
       },
     });
     childExpect.addAssertion('<yadda> to bar', function (expect, subject) {
-      expect(subject, 'to contain', 'bar');
+      expect(subject).toContain('bar');
     });
     childExpect.addAssertion('<yadda> to foobar', function (expect, subject) {
       expect(subject, 'to bar');
-      expect(subject, 'to contain', 'foo');
+      expect(subject).toContain('foo');
     });
     childExpect('yaddafoobar', 'to foobar');
   });
@@ -165,11 +157,11 @@ describe('#child', () => {
     describe('#findTypeOf', () => {
       describe('in the child', () => {
         it('should find the type defined in the child', () => {
-          expect(childExpect.findTypeOf('foo'), 'to satisfy', { child: true });
+          expect(childExpect.findTypeOf('foo')).toSatisfy({ child: true });
         });
 
         it('should find the type defined in the parent when the object is not identified by the type added to the child', () => {
-          expect(childExpect.findTypeOf('foobar'), 'to satisfy', {
+          expect(childExpect.findTypeOf('foobar')).toSatisfy({
             parent: true,
           });
         });
@@ -177,7 +169,7 @@ describe('#child', () => {
 
       describe('in the parent', () => {
         it('should find the type defined in the parent', () => {
-          expect(parentExpect.findTypeOf('foo'), 'to satisfy', {
+          expect(parentExpect.findTypeOf('foo')).toSatisfy({
             parent: true,
           });
         });
@@ -187,13 +179,13 @@ describe('#child', () => {
     describe('#getType', () => {
       describe('in the child', () => {
         it('should find the type defined in the child', () => {
-          expect(childExpect.getType('foo'), 'to satisfy', { child: true });
+          expect(childExpect.getType('foo')).toSatisfy({ child: true });
         });
       });
 
       describe('in the parent', () => {
         it('should find the type defined in the parent', () => {
-          expect(parentExpect.getType('foo'), 'to satisfy', { parent: true });
+          expect(parentExpect.getType('foo')).toSatisfy({ parent: true });
         });
       });
     });
@@ -210,17 +202,13 @@ describe('#child', () => {
     });
 
     it('should use the style defined in the parent when an output is created by the parent', () => {
-      expect(
-        parentExpect.createOutput('text').foo().toString(),
-        'to equal',
+      expect(parentExpect.createOutput('text').foo().toString()).toEqual(
         'parentfoo'
       );
     });
 
     it('should find the type defined in the parent when parentExpect.findTypeOf is used', () => {
-      expect(
-        childExpect.createOutput('text').foo().toString(),
-        'to equal',
+      expect(childExpect.createOutput('text').foo().toString()).toEqual(
         'childfoo'
       );
     });
@@ -237,17 +225,13 @@ describe('#child', () => {
     });
 
     it('should use the style defined in the parent when an output is created by the parent', () => {
-      expect(
-        parentExpect.createOutput('text').foo().toString(),
-        'to equal',
+      expect(parentExpect.createOutput('text').foo().toString()).toEqual(
         'parentfoo'
       );
     });
 
     it('should find the type defined in the parent when parentExpect.findTypeOf is used', () => {
-      expect(
-        childExpect.createOutput('text').foo().toString(),
-        'to equal',
+      expect(childExpect.createOutput('text').foo().toString()).toEqual(
         'childfoo'
       );
     });
@@ -260,7 +244,7 @@ describe('#child', () => {
         return expect.shift(`${String(subject)}foo`);
       }
     );
-    expect(childExpect.assertions.foo, 'to satisfy', {
+    expect(childExpect.assertions.foo).toSatisfy({
       1: {
         subject: { type: { name: 'any' } },
         args: [{ type: { name: 'assertion' } }, { type: { name: 'any' } }],
@@ -299,10 +283,8 @@ describe('#child', () => {
       childExpect
         .createOutput('text')
         .appendInspected('yaddayaddafoo')
-        .toString(),
-      'to equal',
-      '>>yaddayaddafoo<<>>yaddayaddafoo<<'
-    );
+        .toString()
+    ).toEqual('>>yaddayaddafoo<<>>yaddayaddafoo<<');
   });
 
   it('#inspect should use the exported types when inspecting failed assertions', () => {
@@ -328,15 +310,11 @@ describe('#child', () => {
 
     childExpect.exportAssertion(
       '<yadda> to be short gibberish',
-      (expect, gibberish) => expect(gibberish.length < 10, 'to be true')
+      (expect, gibberish) => expect(gibberish.length < 10).toBeTrue()
     );
 
-    expect(
-      () => {
-        parentExpect('yaddayaddafoo', 'to be short gibberish');
-      },
-      'to throw',
-      'expected >>yaddayaddafoo<< to be short gibberish'
-    );
+    expect(() => {
+      parentExpect('yaddayaddafoo', 'to be short gibberish');
+    }).toThrow('expected >>yaddayaddafoo<< to be short gibberish');
   });
 });
