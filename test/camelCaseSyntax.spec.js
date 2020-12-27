@@ -115,7 +115,11 @@ describe('camel case syntax', () => {
     it('should fail', () => {
       expect(() =>
         expect([1, 2, 3]).whenPassedAsParametersTo(Math.max).toEqual(2)
-      ).toThrow('expected 3 to equal 2');
+      ).toThrow(
+        'expected [ 1, 2, 3 ]\n' +
+          'when passed as parameters to function max() { /* native code */ } to equal 2\n' +
+          '  expected 3 to equal 2'
+      );
     });
   });
 
