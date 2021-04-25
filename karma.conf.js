@@ -32,6 +32,9 @@ module.exports = function (config) {
         !process.env.TRAVIS_PULL_REQUEST_BRANCH // Catch Travis "PR" builds
           ? 'unexpected'
           : 'unexpected-dev',
+      // Attempt to fix timeouts on CI:
+      // https://github.com/karma-runner/karma-browserstack-launcher/pull/168#issuecomment-582373514
+      timeout: 1800,
     },
 
     customLaunchers: {
