@@ -16,6 +16,7 @@ describe('function type', () => {
 
   const isIE =
     typeof navigator !== 'undefined' &&
+    typeof navigator.userAgent === 'string' &&
     navigator.userAgent.indexOf('Trident') !== -1;
 
   if (!isIE) {

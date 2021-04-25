@@ -49,6 +49,7 @@ describe('Error type', () => {
 
   const isIE =
     typeof navigator !== 'undefined' &&
+    typeof navigator.userAgent === 'string' &&
     navigator.userAgent.indexOf('Trident') !== -1;
 
   describe('with a custom Error class inheriting from Error', () => {

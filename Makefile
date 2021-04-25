@@ -84,7 +84,7 @@ test-deno: ${TARGETS} build/tests.esm.js
 	if [ ! -f ~/.deno/bin/deno ]; then \
 		curl -fsSL https://deno.land/x/install/install.sh | sh; \
 	fi;
-	~/.deno/bin/deno run test-deno/deno-test.js
+	~/.deno/bin/deno run --location http://localhost test-deno/deno-test.js
 
 .PHONY: travis-coverage
 travis-coverage: clean coverage
