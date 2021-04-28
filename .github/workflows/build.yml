@@ -32,6 +32,8 @@ jobs:
     strategy:
       matrix:
         targets:
+          - name: 'Lint'
+            target: 'lint'
           - target: 'coverage'
             name: 'Coverage'
           - target: 'test-jest'
