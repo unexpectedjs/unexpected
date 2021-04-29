@@ -1,3 +1,26 @@
+### v12.0.1 (2021-04-29)
+
+#### Pull requests
+
+- [#798](https://github.com/unexpectedjs/unexpected/pull/798) Upgrade jasmine to version 3.7.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#800](https://github.com/unexpectedjs/unexpected/pull/800) Upgrade karma to version 6.3.2 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#802](https://github.com/unexpectedjs/unexpected/pull/802) Upgrade eslint-plugin-promise to version 5.1.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#801](https://github.com/unexpectedjs/unexpected/pull/801) Upgrade eslint-plugin-markdown to version 2.0.1 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#780](https://github.com/unexpectedjs/unexpected/pull/780) Add unexpected-snapshot to the plugins page ([Sune Simonsen](mailto:sune@we-knowhow.dk))
+- [#779](https://github.com/unexpectedjs/unexpected/pull/779) Upgrade eslint-config-prettier to version 7.0.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#778](https://github.com/unexpectedjs/unexpected/pull/778) Upgrade eslint-plugin-standard to version 5.0.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#777](https://github.com/unexpectedjs/unexpected/pull/777) Restore coverage upload via GitHub action ([Alex J Burke](mailto:alex@alexjeffburke.com))
+- [#776](https://github.com/unexpectedjs/unexpected/pull/776) Upgrade prettier to version 2.2.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+
+#### Commits to master
+
+- [Remove david-dm dependency status badge that's throwing 500\/503](https://github.com/unexpectedjs/unexpected/commit/806edcbda669fadcab29a3dae9e147e7e1b6dab8) ([Andreas Lind](mailto:andreas.lind@workday.com))
+- [Revert "Update offline-github-changelog to ^2.0.0"](https://github.com/unexpectedjs/unexpected/commit/c9496a52d782753d949bde3cb375e792a16c6057) ([Andreas Lind](mailto:andreas.lind@workday.com))
+- [Update magicpen to ^6.2.2](https://github.com/unexpectedjs/unexpected/commit/4195d9806e0de34bcd16c197457b079474764c5f) ([Andreas Lind](mailto:andreas.lind@workday.com))
+- [Bring in fugl 2.](https://github.com/unexpectedjs/unexpected/commit/0f2a2f7c6508f1561c49c8b105e2a8973f7396d1) ([Alex J Burke](mailto:alex@alexjeffburke.com))
+- [Revert "Merge pull request \#801 from unexpectedjs\/depfu\/update\/npm\/eslint-plugin-markdown-2.0.1"](https://github.com/unexpectedjs/unexpected/commit/2abb3807793b2c5f7470a35af791693b7a579012) ([Alex J Burke](mailto:alex@alexjeffburke.com))
+- [+10 more](https://github.com/unexpectedjs/unexpected/compare/v12.0.0...v12.0.1)
+
 ### v12.0.0 (2020-11-19)
 
 #### Pull requests
@@ -503,7 +526,7 @@
 
 #### Pull requests
 
-- [#457](https://github.com/unexpectedjs/unexpected/pull/457) Fixed wrong error message seen in unexpected-dom ([Sune Simonsen](mailto:sune@we-knowhow.dk))
+- [#457](https://github.com/unexpectedjs/unexpected/pull/457)  Fixed wrong error message seen in unexpected-dom ([Sune Simonsen](mailto:sune@we-knowhow.dk))
 - [#451](https://github.com/unexpectedjs/unexpected/pull/451) Upgrade jest to version 22.4.3 ([Andreas Lind](mailto:andreaslindpetersen@gmail.com), [depfu[bot]](mailto:bot@depfu.com))
 - [#456](https://github.com/unexpectedjs/unexpected/pull/456) Upgrade rollup-plugin-uglify to version 3.0.0 ([depfu[bot]](mailto:bot@depfu.com))
 - [#455](https://github.com/unexpectedjs/unexpected/pull/455) Upgrade rollup-plugin-commonjs to version 9.1.0 ([depfu[bot]](mailto:bot@depfu.com))
@@ -1384,7 +1407,6 @@
 - [Avoid Array.prototype.slice.{call,apply}\(arguments, ...\) in hot code.](https://github.com/unexpectedjs/unexpected/commit/a049f9a5a5c792603bbfa70d895998fa0898d436) ([Andreas Lind](mailto:andreas@one.com))
 
 ### v10.1.0
-
 - [Build unexpected.js](https://github.com/unexpectedjs/unexpected/commit/19226c4b894dcec359c641b0f000faf68b64162c) ([Sune Simonsen](mailto:sune@we-knowhow.dk))
 - [Expose withError on the top level expect](https://github.com/unexpectedjs/unexpected/commit/a5d35c88eb57720d75dd781b66e1f7e6441f2c6a) ([Sune Simonsen](mailto:sune@we-knowhow.dk))
 - [Oh, it's not https.](https://github.com/unexpectedjs/unexpected/commit/8c4753741bbca46d3c30c31f03756290dbd1d0cf) ([Andreas Lind](mailto:andreas@one.com))
@@ -1408,7 +1430,6 @@
 - [+4 more](https://github.com/unexpectedjs/unexpected/compare/v10.0.1...v10.0.2)
 
 ### v10.0.1
-
 - [Build unexpected.js](https://github.com/unexpectedjs/unexpected/commit/9d446062213d892527bd77aa49d7c5e828b16dff) ([Andreas Lind](mailto:andreas@one.com))
 - [Fixed relaxed match.](https://github.com/unexpectedjs/unexpected/commit/b71a7b9959b846ebb19e1211ce74e614f1bb828c) ([Andreas Lind](mailto:andreas@one.com))
 - [Upgraded the documentation generator](https://github.com/unexpectedjs/unexpected/commit/983649dc3eefd30ed1b75005f4935da6608c2bf9) ([Sune Simonsen](mailto:sune@we-knowhow.dk))
@@ -2485,12 +2506,10 @@
 - [Simple validation of arguments to expect](https://github.com/unexpectedjs/unexpected/commit/b8d16e93b2780aea7a7c43249c71974cd11ff3bb) ([Sune Simonsen](mailto:sune@we-knowhow.dk))
 
 ### v1.0.12
-
 - [Set the showDiff property of the thrown errors under the same circumstances as expected\/actual, provided that the types are non-primitive and the same.](https://github.com/unexpectedjs/unexpected/commit/4f72a6a0a840734d7986d3217e6edfcc1a559b3f) ([Andreas Lind Petersen](mailto:andreas@one.com))
 - [Updated readme to avoid scrolling in examples](https://github.com/unexpectedjs/unexpected/commit/7bdec58b7fe19df271811284ed47fe0b18d221db) ([Sune Simonsen](mailto:sune@we-knowhow.dk))
 
 ### v1.0.11
-
 - [Implemented the short string version of 'to be a ... whose items|keys|values satisfy'.](https://github.com/unexpectedjs/unexpected/commit/a79505ccc7bb207bbd7d6159c37e291942321280) ([Andreas Lind Petersen](mailto:andreas@one.com))
 - [Implement 'to be an array of &lt;type&gt;s'. Fixes \#18.](https://github.com/unexpectedjs/unexpected/commit/d081225bca2bd5df6556b043ebccb1c542ed1a01) ([Andreas Lind Petersen](mailto:andreas@one.com))
 - [Put \(a|an\) in a consistent order.](https://github.com/unexpectedjs/unexpected/commit/19fcb258d8373e17a1cef5ae2474f0566db50f2e) ([Andreas Lind Petersen](mailto:andreas@one.com))
@@ -2516,7 +2535,6 @@
 - [#17](https://github.com/unexpectedjs/unexpected/pull/17) Added 'to be an array whose items satisfy' assertion ([Sune Simonsen](mailto:sune@we-knowhow.dk))
 
 ### v1.0.7
-
 - [Implemented the uncontroversial suggestions from \#15.](https://github.com/unexpectedjs/unexpected/commit/4f01be3731c218c316a34f0871cb91352ab05a90) ([Andreas Lind Petersen](mailto:andreas@one.com))
 - [Fixed typo in test.](https://github.com/unexpectedjs/unexpected/commit/8685442772c85dd4a13f754ea19307ad5d829e44) ([Andreas Lind Petersen](mailto:andreas@one.com))
 - [Use the correct plural form of 'parenthesis'.](https://github.com/unexpectedjs/unexpected/commit/7aa7793d6bc892549e8320f00ba01be6fd08f1fc) ([Andreas Lind Petersen](mailto:andreas@one.com))
@@ -2580,7 +2598,7 @@
 
 ### v0.1.1 (2013-09-11)
 
-- [#4](https://github.com/unexpectedjs/unexpected/pull/4) Remove unexpected's entries from the stack traces of the thrown error objects This is really nice - thank very much! ([Andreas Lind Petersen](mailto:andreas@one.com))
+- [#4](https://github.com/unexpectedjs/unexpected/pull/4) Remove unexpected's entries from the stack traces of the thrown error objectsThis is really nice - thank very much! ([Andreas Lind Petersen](mailto:andreas@one.com))
 - [#3](https://github.com/unexpectedjs/unexpected/pull/3) Fixed regular expression assertions and added shorthands ([Andreas Lind Petersen](mailto:andreas@one.com))
 
 ### v0.1.0 (2013-09-03)
@@ -2614,4 +2632,5 @@
 - [Make suggestions when using an unknown assertion](https://github.com/unexpectedjs/unexpected/commit/a40553a2680785ecf8838f1418c5387d1a5e37e6) ([Sune Simonsen](mailto:sune@we-knowhow.dk))
 - [Added missing else](https://github.com/unexpectedjs/unexpected/commit/746c7900f88b412dbfea5adc144f772bed9c2f79) ([Sune Simonsen](mailto:sune@we-knowhow.dk))
 - [Fixing string indexing on IE](https://github.com/unexpectedjs/unexpected/commit/3c123bd9bff9679fd7b99c1368fca00f817abc00) ([Sune Simonsen](mailto:sune@we-knowhow.dk))
-- [+69 more](https://github.com/unexpectedjs/unexpected/compare/3c123bd9bff9679fd7b99c1368fca00f817abc00...v0.0.4)
+- [+69 more](https://github.com/unexpectedjs/unexpected/compare/85468a94a09e905539d53189c33daadbd383c9b9%5E...v0.0.4)
+
