@@ -1,3 +1,7 @@
+### v12.0.2 (2021-05-07)
+
+- [Update magicpen to ^6.2.3](https://github.com/unexpectedjs/unexpected/commit/da184c186b91c05959830e212c45b952b6300c16) ([Andreas Lind](mailto:andreas.lind@workday.com))
+
 ### v12.0.1 (2021-04-29)
 
 #### Pull requests
