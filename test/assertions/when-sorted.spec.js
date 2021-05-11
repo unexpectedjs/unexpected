@@ -5,12 +5,12 @@ describe('when sorted assertion', () => {
   });
 
   it("should sort an array of numbers if the 'numerically' flag is included", () => {
-    expect([5, 12, 20, 2], 'when sorted numerically', 'to equal', [
-      2,
-      5,
-      12,
-      20,
-    ]);
+    expect(
+      [5, 12, 20, 2],
+      'when sorted numerically',
+      'to equal',
+      [2, 5, 12, 20]
+    );
   });
 
   it('should provide the result as the fulfillment value if no assertion is provided', () => {

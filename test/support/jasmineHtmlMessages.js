@@ -1,7 +1,8 @@
 /* global jasmineRequire */
 (function () {
   if (typeof jasmineRequire === 'object') {
-    const originalBuildExpectationResult = jasmineRequire.buildExpectationResult();
+    const originalBuildExpectationResult =
+      jasmineRequire.buildExpectationResult();
     jasmineRequire.buildExpectationResult = function () {
       return function (options) {
         const result = originalBuildExpectationResult.apply(this, arguments);

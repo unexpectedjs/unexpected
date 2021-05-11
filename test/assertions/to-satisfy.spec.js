@@ -174,17 +174,11 @@ describe('to satisfy assertion', () => {
     it('should fall back to comparing index-by-index if one of the arrays has more than 10 entries', () => {
       expect(
         function () {
-          expect([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 'to satisfy', [
-            0,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9,
-          ]);
+          expect(
+            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            'to satisfy',
+            [0, 2, 3, 4, 5, 6, 7, 8, 9]
+          );
         },
         'to throw',
         'expected [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]\n' +
@@ -207,19 +201,11 @@ describe('to satisfy assertion', () => {
 
       expect(
         function () {
-          expect([1, 2, 3, 4, 5, 6, 7, 8], 'to satisfy', [
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9,
-            10,
-            11,
-          ]);
+          expect(
+            [1, 2, 3, 4, 5, 6, 7, 8],
+            'to satisfy',
+            [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+          );
         },
         'to throw',
         'expected [ 1, 2, 3, 4, 5, 6, 7, 8 ]\n' +
