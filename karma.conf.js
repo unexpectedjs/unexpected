@@ -28,8 +28,8 @@ module.exports = function (config) {
     browserStack: {
       video: false,
       project:
-        process.env.TRAVIS_BRANCH === 'master' &&
-        !process.env.TRAVIS_PULL_REQUEST_BRANCH // Catch Travis "PR" builds
+        process.env.GITHUB_REF === 'refs/heads/master' &&
+        !process.env.GITHUB_HEAD_REF // Catch "PR" builds
           ? 'unexpected'
           : 'unexpected-dev',
       // Attempt to fix timeouts on CI:
