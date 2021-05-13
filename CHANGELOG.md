@@ -1,3 +1,12 @@
+### v12.0.3 (2021-05-13)
+
+- [Update magicpen to ^6.2.4](https://github.com/unexpectedjs/unexpected/commit/c6c66aa847b2b0b45868cc514efc3b969adeb78c) ([Andreas Lind](mailto:andreas.lind@workday.com))
+- [Attempt to repair BrowserStack PR build matching for Github Actions.](https://github.com/unexpectedjs/unexpected/commit/0accdda080d7e8e0d0085732d1b2648148ddcee2) ([Alex J Burke](mailto:alex@alexjeffburke.com))
+- [Fix test status link.](https://github.com/unexpectedjs/unexpected/commit/5fd1b4de3d2b5b3fc2fb43ae9ca476033eb87f1f) ([Alex J Burke](mailto:alex@alexjeffburke.com))
+- [Sync the set of badges in the README with the docs index page.](https://github.com/unexpectedjs/unexpected/commit/bf91579a0b499f33385836afc0a853a85906709b) ([Alex J Burke](mailto:alex@alexjeffburke.com))
+- [Adapt a linting exception to prettier's insistence on line breaking.](https://github.com/unexpectedjs/unexpected/commit/caca431d9921b4f7dc6ad0d8bc4cc12a147e99a9) ([Alex J Burke](mailto:alex@alexjeffburke.com))
+- [+2 more](https://github.com/unexpectedjs/unexpected/compare/v12.0.2...v12.0.3)
+
 ### v12.0.2 (2021-05-07)
 
 - [Update magicpen to ^6.2.3](https://github.com/unexpectedjs/unexpected/commit/da184c186b91c05959830e212c45b952b6300c16) ([Andreas Lind](mailto:andreas.lind@workday.com))
