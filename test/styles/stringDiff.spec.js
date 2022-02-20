@@ -188,6 +188,46 @@ describe('stringDiff', () => {
           .diffAddedLine(');')
       );
     });
+
+    it('escapes ansi codes in the differing parts', () => {
+      expect(
+        expect
+          .createOutput('ansi')
+          .stringDiff(
+            '\u001b[35mmagenta\u001b[39m\n\u001b[34mblue\u001b[39m\n\u001b[33myellow\u001b[39m',
+            '\u001b[37mwhite\u001b[39m\n\u001b[34mblue\u001b[39m\n\u001b[36mcyan\u001b[39m',
+            { markUpSpecialCharacters: true }
+          ),
+        'to equal',
+        expect
+          .createOutput('ansi')
+          .diffRemovedSpecialChar('\\x1B')
+          .diffRemovedLine('[')
+          .diffRemovedHighlight('35mmagenta')
+          .diffRemovedSpecialChar('\\x1B')
+          .diffRemovedLine('[39m')
+          .nl()
+          .diffAddedSpecialChar('\\x1B')
+          .diffAddedLine('[')
+          .diffAddedHighlight('37mwhite')
+          .diffAddedSpecialChar('\\x1B')
+          .diffAddedLine('[39m')
+          .nl()
+          .text('\x1b[34mblue\x1b[39m')
+          .nl()
+          .diffRemovedSpecialChar('\\x1B')
+          .diffRemovedLine('[')
+          .diffRemovedHighlight('33myellow')
+          .diffRemovedSpecialChar('\\x1B')
+          .diffRemovedLine('[39m')
+          .nl()
+          .diffAddedSpecialChar('\\x1B')
+          .diffAddedLine('[')
+          .diffAddedHighlight('36mcyan')
+          .diffAddedSpecialChar('\\x1B')
+          .diffAddedLine('[39m')
+      );
+    });
   });
 
   describe('stringDiffFragment', () => {
