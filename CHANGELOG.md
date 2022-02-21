@@ -1,3 +1,23 @@
+### v12.0.4 (2022-02-21)
+
+- [#850](https://github.com/unexpectedjs/unexpected/pull/850) Always escape special characters in string diffs ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [#848](https://github.com/unexpectedjs/unexpected/pull/848) Upgrade jasmine-core to version 4.0.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#843](https://github.com/unexpectedjs/unexpected/pull/843) Upgrade eslint-plugin-mocha to version 10.0.1 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#840](https://github.com/unexpectedjs/unexpected/pull/840) Upgrade prettier to version 2.5.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#839](https://github.com/unexpectedjs/unexpected/pull/839) Upgrade karma to version 6.3.9 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#838](https://github.com/unexpectedjs/unexpected/pull/838) Upgrade karma to version 6.3.8 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#837](https://github.com/unexpectedjs/unexpected/pull/837) Upgrade karma to version 6.3.7 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#836](https://github.com/unexpectedjs/unexpected/pull/836) Upgrade karma to version 6.3.6 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#835](https://github.com/unexpectedjs/unexpected/pull/835) Upgrade eslint to version 8.1.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#834](https://github.com/unexpectedjs/unexpected/pull/834) Upgrade hyperlink to version 5.0.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#833](https://github.com/unexpectedjs/unexpected/pull/833) Upgrade karma to version 6.3.5 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#819](https://github.com/unexpectedjs/unexpected/pull/819) Upgrade prettier to version 2.4.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#816](https://github.com/unexpectedjs/unexpected/pull/816) Upgrade jasmine to version 3.9.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#815](https://github.com/unexpectedjs/unexpected/pull/815) Upgrade jasmine to version 3.8.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#812](https://github.com/unexpectedjs/unexpected/pull/812) Upgrade karma to version 6.3.4 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#810](https://github.com/unexpectedjs/unexpected/pull/810) Upgrade karma to version 6.3.3 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#808](https://github.com/unexpectedjs/unexpected/pull/808) Upgrade eslint-plugin-mocha to version 9.0.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+
 ### v12.0.3 (2021-05-13)
 
 - [Update magicpen to ^6.2.4](https://github.com/unexpectedjs/unexpected/commit/c6c66aa847b2b0b45868cc514efc3b969adeb78c) ([Andreas Lind](mailto:andreas.lind@workday.com))
