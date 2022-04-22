@@ -5,7 +5,7 @@ expect({ a: 'b' }, 'to equal', { a: 'b' });
 const now = new Date();
 expect(now, 'to equal', now);
 expect(now, 'to equal', new Date(now.getTime()));
-expect({ now: now }, 'to equal', { now: now });
+expect({ now }, 'to equal', { now });
 ```
 
 For a lot of types a failing equality test results in a nice

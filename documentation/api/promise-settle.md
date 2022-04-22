@@ -64,7 +64,7 @@ return expect.promise.all(promises).caught(function () {
         } else {
           output
             .error('⨯ ')
-            .block(promises[key].reason().getErrorMessage({ output: output }));
+            .block(promises[key].reason().getErrorMessage({ output }));
         }
         output.nl();
       });

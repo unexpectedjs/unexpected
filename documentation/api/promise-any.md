@@ -96,7 +96,7 @@ return expect.promise
           .nl()
           .i()
           .text(i + ': ')
-          .block(e.getErrorMessage({ output: output }));
+          .block(e.getErrorMessage({ output }));
       });
     });
   });
