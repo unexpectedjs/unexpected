@@ -231,7 +231,7 @@ if (typeof process === 'object') {
             'to contain',
             'should call the callback: You have created a promise that was not returned from the it block'
           );
-          expect(err, 'to satisfy', { code: 1 });
+          expect(err, 'to satisfy', { code: 3 });
         });
       });
 
@@ -245,7 +245,7 @@ if (typeof process === 'object') {
             'not to contain',
             'should call the callback: You have created a promise that was not returned from the it block'
           );
-          expect(err, 'to satisfy', { code: 1 });
+          expect(err, 'to satisfy', { code: 3 });
         });
       });
 
@@ -254,7 +254,7 @@ if (typeof process === 'object') {
           'notToErrorCaughtError',
           'executed through jasmine'
         ).spread(function (err, stdout, stderr) {
-          expect(err, 'to satisfy', { code: 1 });
+          expect(err, 'to satisfy', { code: 3 });
           expect(
             stdout,
             'to contain',
