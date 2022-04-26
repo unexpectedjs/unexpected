@@ -45,7 +45,7 @@ describe('greater than assertion', () => {
             expect(BigInt(0), 'to be greater than', BigInt(0));
           },
           'to throw exception',
-          'expected BigInt(0) to be greater than BigInt(0)'
+          'expected 0n to be greater than 0n'
         );
       });
 
@@ -55,7 +55,7 @@ describe('greater than assertion', () => {
             expect(BigInt(123), 'to be greater than', 1);
           },
           'to throw',
-          'expected BigInt(123) to be greater than 1\n' +
+          'expected 123n to be greater than 1\n' +
             '  The assertion does not have a matching signature for:\n' +
             '    <BigInt> to be greater than <number>\n' +
             '  did you mean:\n' +

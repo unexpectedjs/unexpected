@@ -30,7 +30,7 @@ describe('less than or equal assertion', () => {
             expect(BigInt(0), 'to be less than or equal to', BigInt(-1));
           },
           'to throw exception',
-          'expected BigInt(0) to be less than or equal to BigInt(-1)'
+          'expected 0n to be less than or equal to -1n'
         );
       });
 
@@ -40,7 +40,7 @@ describe('less than or equal assertion', () => {
             expect(BigInt(123), 'to be less than or equal to', 1);
           },
           'to throw',
-          'expected BigInt(123) to be less than or equal to 1\n' +
+          'expected 123n to be less than or equal to 1\n' +
             '  The assertion does not have a matching signature for:\n' +
             '    <BigInt> to be less than or equal to <number>\n' +
             '  did you mean:\n' +
