@@ -1,4 +1,24 @@
-### v12.0.4 (2022-02-21)
+### v13.0.0 (2022-04-26)
+
+#### Pull requests
+
+- [#820](https://github.com/unexpectedjs/unexpected/pull/820) Upgrade eslint-plugin-markdown to version 2.2.1 ([Andreas Lind](mailto:andreaslindpetersen@gmail.com), [depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#847](https://github.com/unexpectedjs/unexpected/pull/847) Upgrade jasmine to version 3.99.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#851](https://github.com/unexpectedjs/unexpected/pull/851) Inspect BigInts as `123n` instead of `BigInt\(123\)` ([Andreas Lind](mailto:andreas.lind@workday.com))
+- [#782](https://github.com/unexpectedjs/unexpected/pull/782) Remove legacy support for addAssertion without a subject type ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [#781](https://github.com/unexpectedjs/unexpected/pull/781) to satisfy: Disallow satisfying against a non-plain object ([Andreas Lind](mailto:andreas.lind@peakon.com))
+- [#785](https://github.com/unexpectedjs/unexpected/pull/785) Add the parent expect to the prototype chain of a child expect ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+
+#### Commits to master
+
+- [Add release notes](https://github.com/unexpectedjs/unexpected/commit/eafc0fbbcff54ae3dd294289e83a5daed18f5c1f) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [Apply the jasmine patch for 4.x as well](https://github.com/unexpectedjs/unexpected/commit/8f03e9e19527c0e75c5093fbe7382263816f0f82) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [Expect jasmine to exit with 3 when tests have failed https:\/\/github.com\/jasmine\/jasmine-npm\/blob\/main\/release\_notes\/4.0.0.md\#breaking-changes](https://github.com/unexpectedjs/unexpected/commit/d925306d26d6b9531778fb7d41f6fdd8d80b02e2) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [Update jasmine to ^4.1.0](https://github.com/unexpectedjs/unexpected/commit/0e32f25cb472f89f0b527ec888cccb735f571622) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [Drop support for node.js 10 and 12, add 16](https://github.com/unexpectedjs/unexpected/commit/1f9cac6d74d6920f9b6cf76d5fbe792f65cf9a03) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [+6 more](https://github.com/unexpectedjs/unexpected/compare/v12.0.4...v13.0.0)
+
+### v12.0.4 (2022-02-22)
 
 - [#850](https://github.com/unexpectedjs/unexpected/pull/850) Always escape special characters in string diffs ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
 - [#848](https://github.com/unexpectedjs/unexpected/pull/848) Upgrade jasmine-core to version 4.0.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
