@@ -57,7 +57,7 @@ describe('within assertion', () => {
             expect(BigInt(4), 'not to be within', BigInt(0), BigInt(4));
           },
           'to throw exception',
-          'expected BigInt(4) not to be within BigInt(0)..BigInt(4)'
+          'expected 4n not to be within 0n..4n'
         );
       });
 
@@ -67,7 +67,7 @@ describe('within assertion', () => {
             expect(BigInt(123), 'to be within', 100, 200);
           },
           'to throw',
-          'expected BigInt(123) to be within 100, 200\n' +
+          'expected 123n to be within 100, 200\n' +
             '  The assertion does not have a matching signature for:\n' +
             '    <BigInt> to be within <number> <number>\n' +
             '  did you mean:\n' +

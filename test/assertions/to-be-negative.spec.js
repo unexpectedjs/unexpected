@@ -26,7 +26,7 @@ describe('negative assertion', () => {
             expect(BigInt(0), 'to be negative');
           },
           'to throw exception',
-          'expected BigInt(0) to be negative'
+          'expected 0n to be negative'
         );
       });
     });

@@ -17,13 +17,13 @@ if (typeof BigInt === 'function') {
       expect(
         () => expect(BigInt(1), 'to equal', 1),
         'to throw',
-        'expected BigInt(1) to equal 1'
+        'expected 1n to equal 1'
       );
     });
 
     it('should inspect as source code', () => {
       const a = BigInt(123);
-      expect(a, 'to inspect as', 'BigInt(123)');
+      expect(a, 'to inspect as', '123n');
     });
   });
 }
