@@ -208,4 +208,17 @@ describe('use', () => {
       'The unexpected-promise plugin was pulled into Unexpected as of 8.5.0. This means that the plugin is no longer supported.'
     );
   });
+
+  it('should refuse to install a plugin named unexpected-set', () => {
+    expect(
+      function () {
+        expect.use({
+          name: 'unexpected-set',
+          installInto() {},
+        });
+      },
+      'to throw',
+      'The unexpected-set plugin was pulled into Unexpected as of 13.0.0. This means that the plugin is no longer supported.'
+    );
+  });
 });
