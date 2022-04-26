@@ -2745,4 +2745,95 @@ describe('to satisfy assertion', () => {
       { foo: 123 }
     );
   });
+
+  describe('with a Set instance', () => {
+    describe('against another Set instance', () => {
+      it('should succeed', () => {
+        expect(new Set([1, 2]), 'to satisfy', new Set([2, 1]));
+      });
+
+      it('should succeed with partial object matches', () => {
+        expect(
+          new Set([{ foo: true, bar: 1 }]),
+          'to satisfy',
+          new Set([{ foo: true }])
+        );
+      });
+
+      it('should fail with a diff', () => {
+        expect(
+          () => {
+            expect(new Set([1, 2]), 'to satisfy', new Set([3]));
+          },
+          'to throw',
+          'expected new Set([ 1, 2 ]) to satisfy new Set([ 3 ])\n' +
+            '\n' +
+            'new Set([\n' +
+            '  1, // should be removed\n' +
+            '  2 // should be removed\n' +
+            '  // missing 3\n' +
+            '])'
+        );
+      });
+
+      it('should not accept extraneous items', () => {
+        expect(
+          () => {
+            expect(new Set([1, 2]), 'to exhaustively satisfy', new Set([1]));
+          },
+          'to throw',
+          'expected new Set([ 1, 2 ]) to exhaustively satisfy new Set([ 1 ])\n' +
+            '\n' +
+            'new Set([\n' +
+            '  1,\n' +
+            '  2 // should be removed\n' +
+            '])'
+        );
+      });
+
+      describe('with the exhaustively flag', () => {
+        it('should succeed', () => {
+          expect(
+            new Set([{ foo: true, bar: 1 }]),
+            'to exhaustively satisfy',
+            new Set([{ foo: true, bar: 1 }])
+          );
+        });
+      });
+    });
+
+    it('should point out missing items', () => {
+      expect(
+        () => {
+          expect(new Set([1]), 'to satisfy', new Set([1, 2]));
+        },
+        'to throw',
+        'expected new Set([ 1 ]) to satisfy new Set([ 1, 2 ])\n' +
+          '\n' +
+          'new Set([\n' +
+          '  1\n' +
+          '  // missing 2\n' +
+          '])'
+      );
+    });
+
+    it('should point out items that were supposed to satisfy an expect.it', () => {
+      expect(
+        () => {
+          expect(
+            new Set([1]),
+            'to satisfy',
+            new Set([1, expect.it('to equal', 2)])
+          );
+        },
+        'to throw',
+        "expected new Set([ 1 ]) to satisfy new Set([ 1, expect.it('to equal', 2) ])\n" +
+          '\n' +
+          'new Set([\n' +
+          '  1\n' +
+          '  // missing: should equal 2\n' +
+          '])'
+      );
+    });
+  });
 });

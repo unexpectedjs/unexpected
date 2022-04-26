@@ -10,6 +10,8 @@ describe('to have an item satisfying assertion', () => {
         '  The assertion does not have a matching signature for:\n' +
         '    <array> to have an item satisfying\n' +
         '  did you mean:\n' +
+        '    <Set> to have an item [exhaustively] satisfying <any>\n' +
+        '    <Set> to have an item [exhaustively] satisfying <assertion>\n' +
         '    <array-like> [not] to have an item [exhaustively] satisfying <any>\n' +
         '    <array-like> [not] to have an item [exhaustively] satisfying <assertion>'
     );
@@ -25,6 +27,8 @@ describe('to have an item satisfying assertion', () => {
         '  The assertion does not have a matching signature for:\n' +
         '    <number> to have an item satisfying <string>\n' +
         '  did you mean:\n' +
+        '    <Set> to have an item [exhaustively] satisfying <any>\n' +
+        '    <Set> to have an item [exhaustively] satisfying <assertion>\n' +
         '    <array-like> [not] to have an item [exhaustively] satisfying <any>\n' +
         '    <array-like> [not] to have an item [exhaustively] satisfying <assertion>'
     );
@@ -200,6 +204,88 @@ describe('to have an item satisfying assertion', () => {
         "expected [ { foo: 'bar', quux: 'baz' } ]\n" +
           "to have an item exhaustively satisfying { foo: 'bar' }"
       );
+    });
+  });
+
+  describe('with a Set instance', () => {
+    it('should succeed with a primitive as the expected value', () => {
+      expect(new Set([1, 2, 3]), 'to have an item satisfying', 3);
+    });
+
+    it('should succeed with an expect.it as the expected value', () => {
+      expect(
+        new Set([1, 2, 3]),
+        'to have an item satisfying',
+        expect.it('to be a number').and('to be greater than', 2)
+      );
+    });
+
+    it('should succeed with an assertion as the expected value', () => {
+      expect(
+        new Set([1, 2, 3]),
+        'to have an item satisfying',
+        'to be a number'
+      );
+    });
+
+    it('should succeed with an array as the expected value', () => {
+      expect(new Set([[1], [2], [3]]), 'to have an item satisfying', [
+        expect.it('to be a number').and('to be greater than', 2),
+      ]);
+    });
+
+    it('should fail with a diff', () => {
+      expect(
+        () => {
+          expect(new Set([[2], ['foo']]), 'to have an item satisfying', [
+            expect.it('to be a number').and('to be greater than', 2),
+          ]);
+        },
+        'to throw',
+        "expected new Set([ [ 2 ], [ 'foo' ] ]) to have an item satisfying\n" +
+          '[\n' +
+          "  expect.it('to be a number')\n" +
+          "          .and('to be greater than', 2)\n" +
+          ']\n' +
+          '\n' +
+          'new Set([\n' +
+          '  [\n' +
+          '    2 // ✓ should be a number and\n' +
+          '      // ⨯ should be greater than 2\n' +
+          '  ],\n' +
+          '  [\n' +
+          "    'foo' // ⨯ should be a number and\n" +
+          '          // ⨯ should be greater than 2\n' +
+          '  ]\n' +
+          '])'
+      );
+    });
+
+    it('should fail with a non-inline diff', () => {
+      expect(
+        () => {
+          expect(
+            new Set(['foo']),
+            'to have an item satisfying',
+            expect.it('to equal', 'bar')
+          );
+        },
+        'to throw',
+        "expected new Set([ 'foo' ]) to have an item satisfying expect.it('to equal', 'bar')\n" +
+          '\n' +
+          'new Set([\n' +
+          "  'foo' // should equal 'bar'\n" +
+          '        //\n' +
+          '        // -foo\n' +
+          '        // +bar\n' +
+          '])'
+      );
+    });
+
+    it('should fail for the empty set', () => {
+      expect(() => {
+        expect(new Set([]), 'to have an item satisfying to be a number');
+      }, 'to throw');
     });
   });
 });

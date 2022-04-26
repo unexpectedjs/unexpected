@@ -39,6 +39,7 @@ describe('empty assertion', () => {
         '  The assertion does not have a matching signature for:\n' +
         '    <null> to be empty\n' +
         '  did you mean:\n' +
+        '    <Set> [not] to be empty\n' +
         '    <object> [not] to be empty\n' +
         '    <string|array-like> [not] to be empty'
     );
@@ -63,5 +64,37 @@ describe('empty assertion', () => {
       'to throw exception',
       'expected {} not to be empty'
     );
+  });
+
+  describe('with a Set instance', () => {
+    it('should succeed', () => {
+      expect(new Set(), 'to be empty');
+    });
+
+    it('should fail', () => {
+      expect(
+        () => {
+          expect(new Set([1, 2, 3]), 'to be empty');
+        },
+        'to throw',
+        'expected new Set([ 1, 2, 3 ]) to be empty'
+      );
+    });
+
+    describe('with the not flag', () => {
+      it('should succeed', () => {
+        expect(new Set([1, 2, 3]), 'not to be empty');
+      });
+
+      it('should fail', () => {
+        expect(
+          () => {
+            expect(new Set(), 'not to be empty');
+          },
+          'to throw',
+          'expected new Set([]) not to be empty'
+        );
+      });
+    });
   });
 });

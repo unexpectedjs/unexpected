@@ -32,6 +32,7 @@ describe('to contain assertion', () => {
         '  The assertion does not have a matching signature for:\n' +
         '    <null> not to contain <string>\n' +
         '  did you mean:\n' +
+        '    <Set> [not] to contain <any+>\n' +
         '    <array-like> [not] to contain <any+>\n' +
         '    <string> [not] to contain <string+>'
     );
@@ -80,6 +81,7 @@ describe('to contain assertion', () => {
         '  The assertion does not have a matching signature for:\n' +
         '    <number> to contain <number>\n' +
         '  did you mean:\n' +
+        '    <Set> [not] to contain <any+>\n' +
         '    <array-like> [not] to contain <any+>\n' +
         '    <array-like> to [only] contain <any+>\n' +
         '    <string> [not] to contain <string+>'
@@ -262,5 +264,126 @@ describe('to contain assertion', () => {
         'foobarquuxfoob\n' +
         '^^^^      ^^^^'
     );
+  });
+
+  describe('with a Set instance', () => {
+    it('should succeed', () => {
+      expect(new Set([1, 2, 3]), 'to contain', 3);
+    });
+
+    it('should fail with a diff', () => {
+      expect(
+        () => {
+          expect(new Set([1, 2, 3]), 'to contain', 4);
+        },
+        'to throw',
+        'expected new Set([ 1, 2, 3 ]) to contain 4\n' +
+          '\n' +
+          'new Set([\n' +
+          '  1,\n' +
+          '  2,\n' +
+          '  3\n' +
+          '  // missing 4\n' +
+          '])'
+      );
+    });
+
+    describe('with a value that is equal according to unexpected, but not the SameValueZero algorithm', function () {
+      it('should succeed', () => {
+        expect(
+          new Set([new Date('2020-01-01T12:34:56.789Z')]),
+          'to contain',
+          new Date('2020-01-01T12:34:56.789Z')
+        );
+      });
+
+      it('not render such an item as different in a diff', () => {
+        expect(
+          () => {
+            expect(
+              new Set([new Date('2020-01-01T12:34:56.789Z')]),
+              'to contain',
+              new Date('2020-01-01T12:34:56.789Z'),
+              1
+            );
+          },
+          'to throw',
+          "expected new Set([ new Date('2020-01-01T12:34:56.789Z') ])\n" +
+            "to contain new Date('2020-01-01T12:34:56.789Z'), 1\n" +
+            '\n' +
+            'new Set([\n' +
+            "  new Date('2020-01-01T12:34:56.789Z')\n" +
+            '  // missing 1\n' +
+            '])'
+        );
+      });
+    });
+
+    describe('with multiple expected values', function () {
+      it('should succeed', () => {
+        expect(new Set([1, 2, 3]), 'to contain', 1, 2);
+      });
+
+      it('should fail with a diff', () => {
+        expect(
+          () => {
+            expect(new Set([1, 2, 3]), 'to contain', 1, 4);
+          },
+          'to throw',
+          'expected new Set([ 1, 2, 3 ]) to contain 1, 4\n' +
+            '\n' +
+            'new Set([\n' +
+            '  1,\n' +
+            '  2,\n' +
+            '  3\n' +
+            '  // missing 4\n' +
+            '])'
+        );
+      });
+    });
+
+    describe('with the not flag', () => {
+      it('should succeed', () => {
+        expect(new Set([1, 2, 3]), 'not to contain', 4);
+      });
+
+      it('should fail with a diff', () => {
+        expect(
+          () => {
+            expect(new Set([1, 2, 3]), 'not to contain', 2);
+          },
+          'to throw',
+          'expected new Set([ 1, 2, 3 ]) not to contain 2\n' +
+            '\n' +
+            'new Set([\n' +
+            '  1,\n' +
+            '  2, // should be removed\n' +
+            '  3\n' +
+            '])'
+        );
+      });
+
+      describe('with multiple expected values', function () {
+        it('should succeed', () => {
+          expect(new Set([1, 2, 3]), 'not to contain', 4, 5);
+        });
+
+        it('should fail with a diff', () => {
+          expect(
+            () => {
+              expect(new Set([1, 2, 3]), 'not to contain', 3, 4, 1);
+            },
+            'to throw',
+            'expected new Set([ 1, 2, 3 ]) not to contain 3, 4, 1\n' +
+              '\n' +
+              'new Set([\n' +
+              '  1, // should be removed\n' +
+              '  2,\n' +
+              '  3 // should be removed\n' +
+              '])'
+          );
+        });
+      });
+    });
   });
 });

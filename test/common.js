@@ -15,6 +15,13 @@ unexpected
     }
   )
   .addAssertion(
+    '<array> to produce a diff of <string>',
+    (expect, subject, value) => {
+      expect.errorMode = 'bubble';
+      expect(expect.diff(subject[0], subject[1]).toString(), 'to equal', value);
+    }
+  )
+  .addAssertion(
     '<any> when delayed a little bit <assertion>',
     function (expect, subject) {
       return expect.promise(function (run) {
