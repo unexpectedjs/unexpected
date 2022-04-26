@@ -46,7 +46,7 @@ describe('hook', () => {
   });
 
   describe('with expect.child', () => {
-    it('should not affect child instances made before installing the hook', () => {
+    it('should affect child instances made before installing the hook', () => {
       const parentExpect = expect.clone();
       const childExpect = parentExpect.child();
 
@@ -59,7 +59,7 @@ describe('hook', () => {
       });
 
       childExpect(123, 'to equal', 123);
-      expect(called, 'to be false');
+      expect(called, 'to be true');
     });
 
     it('should not affect child instances made after installing the hook', () => {
@@ -128,7 +128,8 @@ describe('hook', () => {
 
   // Regression test for https://gitter.im/unexpectedjs/unexpected?at=5fb42b73747be107c1c76095
   it('should not break `this` in clones created after installing the hook', function () {
-    expect.hook(function (next) {
+    const parentExpect = expect.clone();
+    parentExpect.hook(function (next) {
       return function (context, ...rest) {
         return next(context, ...rest);
       };
