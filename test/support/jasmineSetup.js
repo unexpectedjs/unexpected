@@ -14,7 +14,7 @@ function jasmineSuccess() {
 const shouldApplyPatch =
   typeof jasmine !== 'undefined' &&
   typeof jasmine.version === 'string' &&
-  jasmine.version.match(/^[23]\./);
+  jasmine.version.match(/^[234]\./);
 
 if (typeof it === 'function' && shouldApplyPatch) {
   const originalIt = it;
