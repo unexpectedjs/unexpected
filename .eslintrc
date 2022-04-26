@@ -1,6 +1,6 @@
 {
   "extends": ["standard", "prettier"],
-  "plugins": ["import", "mocha"],
+  "plugins": ["import", "mocha", "markdown"],
   "env": {
     "mocha": true
   },
@@ -24,7 +24,10 @@
   "overrides": [
     {
       "files": ["documentation/**/*.md"],
-      "plugins": ["markdown"],
+      "processor": "markdown/markdown"
+    },
+    {
+      "files": ["documentation/**/*.md/*.js"],
       "rules": {
         // Some snippets reference variables from previous ones
         // but eslint-plugin-markdown lints them independently.
