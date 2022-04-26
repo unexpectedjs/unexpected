@@ -73,40 +73,12 @@ describe('parseAssertion', () => {
     ]);
   });
 
-  describe('when the legacy typeless assertion syntax is used', () => {
-    // Poor man's sinon.stub:
-    const originalConsoleWarn = console.warn;
-    const consoleWarnCalls = [];
-    beforeEach(function () {
-      console.warn = (...args) => consoleWarnCalls.push(args);
-    });
-    afterEach(function () {
-      console.warn = originalConsoleWarn;
-    });
-
-    it('assumes <any> ... <any+>', () => {
-      const assertion = expect.parseAssertion('[not] to be');
-      expect(assertion, 'to satisfy', [
-        {
-          subject: { type: { name: 'any' }, minimum: 1, maximum: 1 },
-          assertion: '[not] to be',
-          args: [{ type: { name: 'any' }, minimum: 0, maximum: Infinity }],
-        },
-      ]);
-    });
-
-    it('outputs a warning the first time', () => {
-      expect.parseAssertion('[not] to be');
-      expect(consoleWarnCalls, 'to satisfy', [
-        [
-          'The typeless expect.addAssertion syntax is deprecated and will be removed in a future update\n' +
-            'Please refer to http://unexpected.js.org/api/addAssertion/',
-        ],
-      ]);
-
-      expect.parseAssertion('[not] to be');
-      expect(consoleWarnCalls, 'to have length', 1);
-    });
+  it('throws when the legacy typeless assertion syntax is used', () => {
+    expect(
+      () => expect.parseAssertion('[not] to be'),
+      'to throw',
+      'Missing subject type in [not] to be'
+    );
   });
 
   it('accepts assertions with no arguments', () => {
