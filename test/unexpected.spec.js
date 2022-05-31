@@ -1020,7 +1020,7 @@ describe('unexpected', () => {
           }
         );
 
-      it('should several compound assertions separated by an assertion argument', () => {
+      it('should support several compound assertions separated by an assertion argument', () => {
         expect(
           function () {
             return clonedExpect(
@@ -1039,7 +1039,7 @@ describe('unexpected', () => {
         );
       });
 
-      it('should several long compound assertions separated by an assertion argument', () => {
+      it('should support several long compound assertions separated by an assertion argument', () => {
         expect(
           function () {
             return clonedExpect(
