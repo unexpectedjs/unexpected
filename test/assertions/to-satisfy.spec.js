@@ -2691,8 +2691,7 @@ describe('to satisfy assertion', () => {
   describe('when matching the constructor property of an object', () => {
     function Foo() {}
 
-    // Fails because functions aren't modelled as objects:
-    it.skip('should succeed', () => {
+    it('should succeed', () => {
       expect(new Foo(), 'to satisfy', { constructor: { name: 'Foo' } });
     });
 
