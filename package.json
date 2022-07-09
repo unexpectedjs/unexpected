@@ -19,7 +19,7 @@
     "lint": "eslint . && prettier --check '**/*.{js,json,md}'",
     "generate-site": "generate-site --require ./bootstrap-unexpected-markdown.js",
     "update-examples": "evaldown --comment-marker unexpected-markdown --require ./bootstrap-unexpected-markdown.js --inplace ./documentation",
-    "version": "(test -n \"${IS_MAKE_RELEASE}\" || (echo Please run make release instead && exit 1)) && offline-github-changelog --next=${npm_package_version} > CHANGELOG.md && git add CHANGELOG.md"
+    "version": "(test -n \"${IS_MAKE_RELEASE}\" || (echo Please run make release instead && exit 1)) && offline-github-changelog --next=${npm_new_version} > CHANGELOG.md && git add CHANGELOG.md"
   },
   "main": "./build/lib/index.js",
   "dependencies": {
