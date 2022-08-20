@@ -1747,9 +1747,30 @@ describe('to satisfy assertion', () => {
     });
   });
 
-  it('should assert missing properties with undefined in the RHS object', () => {
-    expect({ foo: 123 }, 'to satisfy', {
-      bar: undefined,
+  describe('when asserting missing properties with undefined in the RHS object', () => {
+    describe('when the property is missing', () => {
+      it('should succeed', () => {
+        expect({ foo: 123 }, 'to satisfy', {
+          bar: undefined,
+        });
+      });
+    });
+
+    describe('when the property is present', () => {
+      it('should fail with an error', () => {
+        expect(
+          () =>
+            expect({ foo: 123 }, 'to satisfy', {
+              foo: undefined,
+            }),
+          'to throw',
+          'expected { foo: 123 } to satisfy { foo: undefined }\n' +
+            '\n' +
+            '{\n' +
+            '  foo: 123 // should equal undefined\n' +
+            '}'
+        );
+      });
     });
   });
 
