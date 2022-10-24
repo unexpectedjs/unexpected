@@ -16,8 +16,8 @@ for more details.
 
 - Drop support for node.js < 14
 - Add support for assertions on `Set` instances, [documentation](../assertions/Set/) ([#783](https://github.com/unexpectedjs/unexpected/pull/783))
-- Remove legacy support for addAssertion without a subject type ([782](https://github.com/unexpectedjs/unexpected/pull/782))
-- Add the parent expect to the prototype chain of a child expect ([785](https://github.com/unexpectedjs/unexpected/pull/785))
+- Remove legacy support for addAssertion without a subject type ([#782](https://github.com/unexpectedjs/unexpected/pull/782))
+- Add the parent expect to the prototype chain of a child expect ([#785](https://github.com/unexpectedjs/unexpected/pull/785))
 
 ### v12.0.0 (2020-11-18)
 
