@@ -1,3 +1,25 @@
+### v13.1.0 (2022-12-23)
+
+#### Pull requests
+
+- [#853](https://github.com/unexpectedjs/unexpected/pull/853) Upgrade ukkonen to version 2.1.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+
+#### Commits to master
+
+- [Fix doc typos](https://github.com/unexpectedjs/unexpected/commit/4876931d038985622e2ac14c4dfc9e7c3e15257f) ([Andreas Lind](mailto:andreas.lind@workday.com))
+
+### v13.0.1 (2022-08-22)
+
+#### Pull requests
+
+- [#852](https://github.com/unexpectedjs/unexpected/pull/852) Fix bug that caused expect\({foo: 123}, 'to satisfy', {foo: undefined}\) to pass ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+
+#### Commits to master
+
+- [Fix CHANGELOG generation in preversion script now that an npm env var changed](https://github.com/unexpectedjs/unexpected/commit/c1ed24216e12c8bcb80f9a2996a63dd8a95ae495) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [Unskip test that succeeds now we treat functions as objects](https://github.com/unexpectedjs/unexpected/commit/34da0beb8984149acfb69e06805db122ad0ad42f) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [Fix typos in test descriptions](https://github.com/unexpectedjs/unexpected/commit/aa1eff45b0dacdb85002afed952e5cf148a73579) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+
 ### v13.0.0 (2022-04-26)
 
 #### Pull requests
