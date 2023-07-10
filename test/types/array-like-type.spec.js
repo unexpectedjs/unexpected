@@ -144,6 +144,38 @@ describe('array-like type', () => {
         }
       );
     }
+
+    it('should treat identical instances of the same subtype as equal, even though they have different constructors', () => {
+      clonedExpect.addType({
+        name: 'subtypeOfSimpleArrayLike',
+        base: 'simpleArrayLike',
+        identify(value) {
+          return value && value._subtypeOfSimpleArrayLike;
+        },
+      });
+
+      class MyArray extends Array {
+        constructor(value) {
+          super(value);
+          this._subtypeOfSimpleArrayLike = true;
+        }
+      }
+
+      class MyOtherArray extends Array {
+        constructor(value) {
+          super(value);
+          this._subtypeOfSimpleArrayLike = true;
+        }
+      }
+
+      const a = new MyArray();
+      a.push(123);
+      const b = new MyOtherArray();
+      b.push(123);
+
+      clonedExpect(a, 'to equal', b);
+      clonedExpect(b, 'to equal', a);
+    });
   });
 
   describe('with a subtype that disables indentation', () => {
