@@ -145,7 +145,7 @@ describe('array-like type', () => {
       );
     }
 
-    it('should treat identical instances of the same subtype as equal, even though they have different constructors', () => {
+    describe('when comparing instances of different classes that are identified by the same array-like subtype', () => {
       clonedExpect.addType({
         name: 'subtypeOfSimpleArrayLike',
         base: 'simpleArrayLike',
@@ -168,13 +168,35 @@ describe('array-like type', () => {
         }
       }
 
-      const a = new MyArray();
-      a.push(123);
-      const b = new MyOtherArray();
-      b.push(123);
+      it('should succeed when the elements match', () => {
+        const a = new MyArray();
+        a.push(123);
+        const b = new MyOtherArray();
+        b.push(123);
 
-      clonedExpect(a, 'to equal', b);
-      clonedExpect(b, 'to equal', a);
+        clonedExpect(a, 'to equal', b);
+        clonedExpect(b, 'to equal', a);
+      });
+
+      it('should fail with a diff when the elements do not match', () => {
+        const a = new MyArray();
+        a.push(123);
+        const b = new MyOtherArray();
+        b.push(456);
+
+        expect(
+          () => clonedExpect(a, 'to equal', b),
+          'to throw',
+          'expected [ undefined, 123, _subtypeOfSimpleArrayLike: true ]\n' +
+            'to equal [ undefined, 456, _subtypeOfSimpleArrayLike: true ]\n' +
+            '\n' +
+            '[\n' +
+            '  undefined,\n' +
+            '  123, // should equal 456\n' +
+            '  _subtypeOfSimpleArrayLike: true\n' +
+            ']'
+        );
+      });
     });
   });
 
