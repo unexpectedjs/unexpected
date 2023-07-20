@@ -1,3 +1,17 @@
+### v13.2.0 (2023-07-20)
+
+#### Pull requests
+
+- [#855](https://github.com/unexpectedjs/unexpected/pull/855) Don't require `array-like` subtypes to have the same constructor in order to be equal ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+
+#### Commits to master
+
+- [Fix anchor references in UnexpectedError docs](https://github.com/unexpectedjs/unexpected/commit/6eca723088fbc7e53a7c4061a0be117c469f19e5) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [Pin Deno to the mostly recently working 1.30.3 version.](https://github.com/unexpectedjs/unexpected/commit/e1d2aa298ce64aef8713a8088136c09418c2f650) ([Alex J Burke](mailto:alex@alexjeffburke.com))
+- [Switch to a newer ubuntu worker version in CI.](https://github.com/unexpectedjs/unexpected/commit/2646c175aeef8d081dbf40a2296781ba9e6520c2) ([Alex J Burke](mailto:alex@alexjeffburke.com))
+- [Upgrade dependencies related to documentation handling.](https://github.com/unexpectedjs/unexpected/commit/7d6454224319e556546adce4ceeb2697ad89472d) ([Alex J Burke](mailto:alex@alexjeffburke.com))
+- [Align .nvmrc with the minimum node raise in commit 1f9cac6.](https://github.com/unexpectedjs/unexpected/commit/ae7deb3438fce525265e1e9385b59c9d667e5ad6) ([Alex J Burke](mailto:alex@alexjeffburke.com))
+
 ### v13.1.0 (2022-12-23)
 
 #### Pull requests
