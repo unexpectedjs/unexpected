@@ -144,6 +144,62 @@ describe('array-like type', () => {
         }
       );
     }
+
+    describe('when comparing instances of different classes that are identified by the same array-like subtype', () => {
+      clonedExpect.addType({
+        name: 'subtypeOfSimpleArrayLike',
+        base: 'array-like',
+        identify(value) {
+          return value && value._subtypeOfSimpleArrayLike;
+        },
+        numericalPropertiesOnly: true,
+      });
+
+      class MyArray extends Array {
+        constructor(value) {
+          super(value);
+          this._subtypeOfSimpleArrayLike = true;
+        }
+      }
+
+      class MyOtherArray extends Array {
+        constructor(value) {
+          super(value);
+          this._subtypeOfSimpleArrayLike = true;
+        }
+      }
+
+      it('should succeed when the elements match', () => {
+        const a = new MyArray(1);
+        a.length = 1;
+        a[0] = 123;
+        const b = new MyOtherArray(1);
+        b.length = 1;
+        b[0] = 123;
+
+        clonedExpect(a, 'to equal', b);
+        clonedExpect(b, 'to equal', a);
+      });
+
+      it('should fail with a diff when the elements do not match', () => {
+        const a = new MyArray(1);
+        a.length = 1;
+        a[0] = 123;
+        const b = new MyOtherArray(1);
+        b.length = 1;
+        b[0] = 456;
+
+        expect(
+          () => clonedExpect(a, 'to equal', b),
+          'to throw',
+          'expected [ 123 ] to equal [ 456 ]\n' +
+            '\n' +
+            '[\n' +
+            '  123 // should equal 456\n' +
+            ']'
+        );
+      });
+    });
   });
 
   describe('with a subtype that disables indentation', () => {
