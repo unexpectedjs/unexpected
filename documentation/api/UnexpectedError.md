@@ -132,12 +132,12 @@ expected 'f00!' to be 'foo!'
 ## UnexpectedError.getParents()
 
 Return an array with all the ancestor errors to this error. See
-<a href="#unexpectederror-parent">parent</a> for more information.
+<a href="#unexpectederrorparent">parent</a> for more information.
 
 ## UnexpectedError.getAllErrors()
 
 Return an array with this error and all its ancestors. See
-<a href="#unexpectederror-parent">parent</a> for more information.
+<a href="#unexpectederrorparent">parent</a> for more information.
 
 ## UnexpectedError.getDiff()
 
