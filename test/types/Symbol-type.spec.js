@@ -113,6 +113,31 @@ if (
             '}'
         );
       });
+
+      describe('when only symbol properties differ', function () {
+        // Regression test for not looping over Object.getOwnPropertySymbols(obj)
+        // in expect.promise.{any,all,settle} when an object is passed:
+        it('should error and include the Symbol properties in the diff', () => {
+          const a = {};
+          a[symbolA] = 'foo';
+          const b = {};
+          b[symbolA] = 'bar';
+          expect(
+            function () {
+              expect(a, 'to satisfy', b);
+            },
+            'to throw',
+            "expected { [Symbol('a')]: 'foo' } to satisfy { [Symbol('a')]: 'bar' }\n" +
+              '\n' +
+              '{\n' +
+              "  [Symbol('a')]: 'foo' // should equal 'bar'\n" +
+              '                       //\n' +
+              '                       // -foo\n' +
+              '                       // +bar\n' +
+              '}'
+          );
+        });
+      });
     });
   });
 }
