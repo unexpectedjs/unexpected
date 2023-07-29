@@ -1,4 +1,68 @@
-### v12.0.4 (2022-02-21)
+### v13.2.1 (2023-07-29)
+
+- [#856](https://github.com/unexpectedjs/unexpected/pull/856) Avoid uncaught exception in 'to satisfy' when the diff is only in properties with symbol keys ([Andreas Lind](mailto:andreas.lind@workday.com))
+
+### v13.2.0 (2023-07-20)
+
+#### Pull requests
+
+- [#855](https://github.com/unexpectedjs/unexpected/pull/855) Don't require `array-like` subtypes to have the same constructor in order to be equal ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+
+#### Commits to master
+
+- [Fix anchor references in UnexpectedError docs](https://github.com/unexpectedjs/unexpected/commit/6eca723088fbc7e53a7c4061a0be117c469f19e5) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [Pin Deno to the mostly recently working 1.30.3 version.](https://github.com/unexpectedjs/unexpected/commit/e1d2aa298ce64aef8713a8088136c09418c2f650) ([Alex J Burke](mailto:alex@alexjeffburke.com))
+- [Switch to a newer ubuntu worker version in CI.](https://github.com/unexpectedjs/unexpected/commit/2646c175aeef8d081dbf40a2296781ba9e6520c2) ([Alex J Burke](mailto:alex@alexjeffburke.com))
+- [Upgrade dependencies related to documentation handling.](https://github.com/unexpectedjs/unexpected/commit/7d6454224319e556546adce4ceeb2697ad89472d) ([Alex J Burke](mailto:alex@alexjeffburke.com))
+- [Align .nvmrc with the minimum node raise in commit 1f9cac6.](https://github.com/unexpectedjs/unexpected/commit/ae7deb3438fce525265e1e9385b59c9d667e5ad6) ([Alex J Burke](mailto:alex@alexjeffburke.com))
+
+### v13.1.0 (2022-12-23)
+
+#### Pull requests
+
+- [#853](https://github.com/unexpectedjs/unexpected/pull/853) Upgrade ukkonen to version 2.1.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+
+#### Commits to master
+
+- [Fix doc typos](https://github.com/unexpectedjs/unexpected/commit/4876931d038985622e2ac14c4dfc9e7c3e15257f) ([Andreas Lind](mailto:andreas.lind@workday.com))
+
+### v13.0.1 (2022-08-22)
+
+#### Pull requests
+
+- [#852](https://github.com/unexpectedjs/unexpected/pull/852) Fix bug that caused expect\({foo: 123}, 'to satisfy', {foo: undefined}\) to pass ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+
+#### Commits to master
+
+- [Fix CHANGELOG generation in preversion script now that an npm env var changed](https://github.com/unexpectedjs/unexpected/commit/c1ed24216e12c8bcb80f9a2996a63dd8a95ae495) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [Unskip test that succeeds now we treat functions as objects](https://github.com/unexpectedjs/unexpected/commit/34da0beb8984149acfb69e06805db122ad0ad42f) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [Fix typos in test descriptions](https://github.com/unexpectedjs/unexpected/commit/aa1eff45b0dacdb85002afed952e5cf148a73579) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+
+### v12.0.5 (2023-07-29)
+
+#### Pull requests
+
+- [#856](https://github.com/unexpectedjs/unexpected/pull/856) Avoid uncaught exception in 'to satisfy' when the diff is only in properties with symbol keys ([Andreas Lind](mailto:andreas.lind@workday.com))
+- [#855](https://github.com/unexpectedjs/unexpected/pull/855) Don't require `array-like` subtypes to have the same constructor in order to be equal ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [#853](https://github.com/unexpectedjs/unexpected/pull/853) Upgrade ukkonen to version 2.1.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#852](https://github.com/unexpectedjs/unexpected/pull/852) Fix bug that caused expect\({foo: 123}, 'to satisfy', {foo: undefined}\) to pass ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [#820](https://github.com/unexpectedjs/unexpected/pull/820) Upgrade eslint-plugin-markdown to version 2.2.1 ([Andreas Lind](mailto:andreaslindpetersen@gmail.com), [depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#847](https://github.com/unexpectedjs/unexpected/pull/847) Upgrade jasmine to version 3.99.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#851](https://github.com/unexpectedjs/unexpected/pull/851) Inspect BigInts as `123n` instead of `BigInt\(123\)` ([Andreas Lind](mailto:andreas.lind@workday.com))
+- [#782](https://github.com/unexpectedjs/unexpected/pull/782) Remove legacy support for addAssertion without a subject type ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [#781](https://github.com/unexpectedjs/unexpected/pull/781) to satisfy: Disallow satisfying against a non-plain object ([Andreas Lind](mailto:andreas.lind@peakon.com))
+- [#785](https://github.com/unexpectedjs/unexpected/pull/785) Add the parent expect to the prototype chain of a child expect ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+
+#### Commits to master
+
+- [Fix anchor references in UnexpectedError docs](https://github.com/unexpectedjs/unexpected/commit/6eca723088fbc7e53a7c4061a0be117c469f19e5) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [Pin Deno to the mostly recently working 1.30.3 version.](https://github.com/unexpectedjs/unexpected/commit/e1d2aa298ce64aef8713a8088136c09418c2f650) ([Alex J Burke](mailto:alex@alexjeffburke.com))
+- [Switch to a newer ubuntu worker version in CI.](https://github.com/unexpectedjs/unexpected/commit/2646c175aeef8d081dbf40a2296781ba9e6520c2) ([Alex J Burke](mailto:alex@alexjeffburke.com))
+- [Upgrade dependencies related to documentation handling.](https://github.com/unexpectedjs/unexpected/commit/7d6454224319e556546adce4ceeb2697ad89472d) ([Alex J Burke](mailto:alex@alexjeffburke.com))
+- [Align .nvmrc with the minimum node raise in commit 1f9cac6.](https://github.com/unexpectedjs/unexpected/commit/ae7deb3438fce525265e1e9385b59c9d667e5ad6) ([Alex J Burke](mailto:alex@alexjeffburke.com))
+- [+15 more](https://github.com/unexpectedjs/unexpected/compare/v12.0.4...v12.0.5)
+
+### v12.0.4 (2022-02-22)
 
 - [#850](https://github.com/unexpectedjs/unexpected/pull/850) Always escape special characters in string diffs ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
 - [#848](https://github.com/unexpectedjs/unexpected/pull/848) Upgrade jasmine-core to version 4.0.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
