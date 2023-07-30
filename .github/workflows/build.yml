@@ -9,7 +9,7 @@ env:
 
 jobs:
   test:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     name: Node ${{ matrix.node }}
     strategy:
       matrix:
@@ -27,7 +27,7 @@ jobs:
       - run: make test
 
   test-targets:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     name: ${{ matrix.targets.name }}
     strategy:
       matrix:
