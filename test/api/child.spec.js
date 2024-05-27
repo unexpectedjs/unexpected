@@ -311,7 +311,7 @@ describe('#child', () => {
     });
 
     childExpect.addType({
-      name: 'yadda-no-qoutes',
+      name: 'yadda-no-quotes',
       identify: (obj) => /^yaddayadda/.test(obj),
       inspect: (value, depth, output) => {
         output.text(value);
@@ -338,5 +338,72 @@ describe('#child', () => {
       'to throw',
       'expected >>yaddayaddafoo<< to be short gibberish'
     );
+  });
+
+  describe('when the parent gets cloned after the child was created', () => {
+    it('should allow assertions in the child to use types defined only in the clone', function () {
+      childExpect.exportAssertion('<string> to foo', function (
+        expect,
+        subject
+      ) {
+        expect(subject, 'to be', 'foo');
+      });
+
+      const parentExpectClone = parentExpect.clone();
+      parentExpectClone.addType({
+        name: 'yadda',
+        identify: (obj) => /^yadda$/.test(obj),
+        inspect: (value, depth, output) => {
+          return output.text('>>').text(value).text('<<');
+        },
+      });
+      expect(
+        () => parentExpectClone('yadda', 'to foo'),
+        'to throw',
+        'expected >>yadda<< to foo'
+      );
+    });
+
+    it('should allow assertions in the child to use assertions defined only in the clone', function () {
+      childExpect.exportAssertion('<string> to foo', function (
+        expect,
+        subject
+      ) {
+        expect.errorMode = 'nested';
+        expect(subject, 'to bar');
+      });
+
+      const parentExpectClone = parentExpect.clone();
+
+      parentExpectClone.addAssertion('<string> to bar', (expect) =>
+        expect(false, 'to be', true)
+      );
+      expect(
+        () => parentExpectClone('yadda', 'to foo'),
+        'to throw',
+        "expected 'yadda' to foo\n  expected 'yadda' to bar"
+      );
+    });
+
+    it('should allow assertions in the child to use styles defined only in the clone', function () {
+      childExpect.exportAssertion('<string> to foo', function (expect) {
+        expect.fail({
+          diff(output) {
+            return output.fancyQuotes('blabla');
+          },
+        });
+      });
+
+      const parentExpectClone = parentExpect.clone();
+      parentExpectClone.addStyle('fancyQuotes', function (text) {
+        this.text('>>').text(text).text('<<');
+      });
+
+      expect(
+        () => parentExpectClone('yadda', 'to foo'),
+        'to throw',
+        "expected 'yadda' to foo\n\n>>blabla<<"
+      );
+    });
   });
 });
