@@ -26,7 +26,7 @@
     "array-changes": "3.0.1",
     "array-changes-async": "3.0.1",
     "detect-indent": "3.0.1",
-    "diff": "^5.0.0",
+    "diff": "^8.0.2",
     "greedy-interval-packer": "1.2.0",
     "magicpen": "^6.2.4",
     "ukkonen": "^2.1.0",
