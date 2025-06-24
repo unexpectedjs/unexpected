@@ -54,7 +54,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v1
         with:
-          node-version: '24'
+          node-version: '18.18.2'
       - run: npm install
       - run: make ${{ matrix.targets.target }}
       - name: Upload coverage
