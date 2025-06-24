@@ -71,10 +71,6 @@ test-browser: ${TARGETS}
 test-chrome-headless: ${TARGETS}
 	@./node_modules/.bin/karma start --browsers=ChromeHeadlessNoSandbox --single-run
 
-.PHONY: test-browserstack
-test-browserstack-%: ${TARGETS}
-	@./node_modules/.bin/karma start --browsers=$* --single-run
-
 .PHONY: test-plugins
 test-plugins: ${TARGETS}
 	./node_modules/.bin/fugl --config .fugl.json --reporter html --ci

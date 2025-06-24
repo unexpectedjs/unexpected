@@ -3,10 +3,6 @@ name: Tests
   push:
   pull_request:
 
-env:
-  BROWSER_STACK_ACCESS_KEY: '${{ secrets.BROWSER_STACK_ACCESS_KEY }}'
-  BROWSER_STACK_USERNAME: '${{ secrets.BROWSER_STACK_USERNAME }}'
-
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -45,8 +41,6 @@ jobs:
             name: 'Jasmine'
           - target: 'test-plugins'
             name: 'Plugins'
-          - target: 'test-browserstack-ie11'
-            name: 'Browser - IE11'
           - target: 'test-deno'
             name: 'Deno'
     steps:
