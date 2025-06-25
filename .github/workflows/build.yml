@@ -3,19 +3,19 @@ name: Tests
   push:
   pull_request:
 
-env:
-  BROWSER_STACK_ACCESS_KEY: '${{ secrets.BROWSER_STACK_ACCESS_KEY }}'
-  BROWSER_STACK_USERNAME: '${{ secrets.BROWSER_STACK_USERNAME }}'
-
 jobs:
   test:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     name: Node ${{ matrix.node }}
     strategy:
       matrix:
         node:
           - '14'
           - '16'
+          - '18'
+          - '20'
+          - '22'
+          - '24'
     steps:
       - uses: actions/checkout@v2
       - name: Setup node
@@ -26,7 +26,7 @@ jobs:
       - run: make test
 
   test-targets:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     name: ${{ matrix.targets.name }}
     strategy:
       matrix:
@@ -41,8 +41,6 @@ jobs:
             name: 'Jasmine'
           - target: 'test-plugins'
             name: 'Plugins'
-          - target: 'test-browserstack-ie11'
-            name: 'Browser - IE11'
           - target: 'test-deno'
             name: 'Deno'
     steps:
@@ -50,7 +48,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v1
         with:
-          node-version: '14'
+          node-version: '18.18.2'
       - run: npm install
       - run: make ${{ matrix.targets.target }}
       - name: Upload coverage
