@@ -29,7 +29,7 @@
     "diff": "^5.0.0",
     "greedy-interval-packer": "1.2.0",
     "magicpen": "^6.2.4",
-    "ukkonen": "^2.1.0",
+    "ukkonen": "2.2.0",
     "unexpected-bluebird": "2.9.34-longstack2"
   },
   "devDependencies": {
