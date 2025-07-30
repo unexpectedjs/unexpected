@@ -595,4 +595,24 @@ describe('to equal assertion', () => {
       expect(errors[0], 'to equal', errors[1]);
     });
   });
+
+  it('handles moving of objects with similar structures', () => {
+    expect(
+      function () {
+        expect([42, { name: 'John', age: 34 }], 'to equal', [
+          { name: 'Jane', age: 24, children: 2 },
+          42,
+        ]);
+      },
+      'to throw exception',
+      "expected [ 42, { name: 'John', age: 34 } ]\n" +
+        "to equal [ { name: 'Jane', age: 24, children: 2 }, 42 ]\n" +
+        '\n' +
+        '[\n' +
+        "  // missing { name: 'Jane', age: 24, children: 2 }\n" +
+        '  42,\n' +
+        "  { name: 'John', age: 34 } // should be removed\n" +
+        ']'
+    );
+  });
 });
