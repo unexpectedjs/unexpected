@@ -22,4 +22,22 @@ describe('when sorted assertion', () => {
   it("should also work without the 'when'", () => {
     expect(['c', 'd', 'a'], 'sorted', 'to equal', ['a', 'c', 'd']);
   });
+
+  describe('when failing', () => {
+    it('shows an error describing what is wrong', () => {
+      expect(
+        () => expect(['c', 'a', 'b'], 'sorted', 'to equal', ['c', 'b', 'a']),
+        'to throw',
+        "expected [ 'c', 'a', 'b' ] sorted to equal [ 'c', 'b', 'a' ]\n" +
+          '\n' +
+          '[\n' +
+          '┌───▷\n' +
+          '│ ┌─▷\n' +
+          "│ │   'a',\n" +
+          "│ └── 'b', // should be moved\n" +
+          "└──── 'c' // should be moved\n" +
+          ']'
+      );
+    });
+  });
 });
