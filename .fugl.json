@@ -2,6 +2,7 @@
   "pretest": true,
   "pretestOrIgnore": true,
   "projects": [
+    "https://github.com/unexpectedjs/unexpected-reaction.git",
     "https://github.com/unexpectedjs/unexpected-sinon.git",
     "https://github.com/unexpectedjs/unexpected-knockout.git",
     "https://github.com/unexpectedjs/unexpected-express.git",
