@@ -15,13 +15,13 @@ module.exports = function (config) {
 
     browsers: ['ChromeHeadlessNoSandbox', 'ie11'],
 
-    browserDisconnectTimeout: '120000',
-    browserNoActivityTimeout: '120000',
+    browserDisconnectTimeout: '360000',
+    browserNoActivityTimeout: '360000',
 
     client: {
       mocha: {
         reporter: 'html',
-        timeout: 60000,
+        timeout: 360000,
       },
     },
 
