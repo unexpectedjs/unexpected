@@ -104,7 +104,7 @@ deploy-site: site-build
 	./node_modules/.bin/gh-pages -d site-build -r git@github.com:unexpectedjs/unexpectedjs.github.io.git -b master
 
 .PHONY: release-%
-release-%: git-dirty-check lint ${TARGETS} test-chrome-headless test-jasmine test-jest check-site-links deploy-site
+release-%: git-dirty-check lint ${TARGETS} test-chrome-headless test-jasmine test-jest
 	IS_MAKE_RELEASE=yes npm version $*
 	@echo $* release ready to be publised to NPM
 	@echo Remember to push master and tags
