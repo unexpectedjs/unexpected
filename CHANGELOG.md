@@ -38,10 +38,11 @@
 - [Unskip test that succeeds now we treat functions as objects](https://github.com/unexpectedjs/unexpected/commit/34da0beb8984149acfb69e06805db122ad0ad42f) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
 - [Fix typos in test descriptions](https://github.com/unexpectedjs/unexpected/commit/aa1eff45b0dacdb85002afed952e5cf148a73579) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
 
-### v12.0.5 (2023-07-29)
+### v12.0.6 (2026-10-14)
 
 #### Pull requests
 
+- [#859](https://github.com/unexpectedjs/unexpected/pull/859) Run CI on Ubuntu latest ([Sune Simonsen](mailto:sune@we-knowhow.dk))
 - [#856](https://github.com/unexpectedjs/unexpected/pull/856) Avoid uncaught exception in 'to satisfy' when the diff is only in properties with symbol keys ([Andreas Lind](mailto:andreas.lind@workday.com))
 - [#855](https://github.com/unexpectedjs/unexpected/pull/855) Don't require `array-like` subtypes to have the same constructor in order to be equal ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
 - [#853](https://github.com/unexpectedjs/unexpected/pull/853) Upgrade ukkonen to version 2.1.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
@@ -55,12 +56,16 @@
 
 #### Commits to master
 
+- [Fix status badges](https://github.com/unexpectedjs/unexpected/commit/5986f9dda885250ca9412fd922919c1d3f90a6be) ([Sune Simonsen](mailto:sune@we-knowhow.dk))
 - [Fix anchor references in UnexpectedError docs](https://github.com/unexpectedjs/unexpected/commit/6eca723088fbc7e53a7c4061a0be117c469f19e5) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
 - [Pin Deno to the mostly recently working 1.30.3 version.](https://github.com/unexpectedjs/unexpected/commit/e1d2aa298ce64aef8713a8088136c09418c2f650) ([Alex J Burke](mailto:alex@alexjeffburke.com))
 - [Switch to a newer ubuntu worker version in CI.](https://github.com/unexpectedjs/unexpected/commit/2646c175aeef8d081dbf40a2296781ba9e6520c2) ([Alex J Burke](mailto:alex@alexjeffburke.com))
 - [Upgrade dependencies related to documentation handling.](https://github.com/unexpectedjs/unexpected/commit/7d6454224319e556546adce4ceeb2697ad89472d) ([Alex J Burke](mailto:alex@alexjeffburke.com))
-- [Align .nvmrc with the minimum node raise in commit 1f9cac6.](https://github.com/unexpectedjs/unexpected/commit/ae7deb3438fce525265e1e9385b59c9d667e5ad6) ([Alex J Burke](mailto:alex@alexjeffburke.com))
-- [+15 more](https://github.com/unexpectedjs/unexpected/compare/v12.0.4...v12.0.5)
+- [+16 more](https://github.com/unexpectedjs/unexpected/compare/v12.0.5...v12.0.6)
+
+### v12.0.5 (2023-07-29)
+
+- [Avoid uncaught exception in 'to satisfy' when the diff is only in properties with symbol keys](https://github.com/unexpectedjs/unexpected/commit/3a2a0c6e6800215751700cefd102bf4ae425fb9b) ([Andreas Lind](mailto:andreas.lind@workday.com))
 
 ### v12.0.4 (2022-02-22)
 
